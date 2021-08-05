@@ -132,15 +132,15 @@ public class DSTLGenCLI {
 
 
   protected void doGenDSTL(String input, MCPath modelPath, MCPath modelsHC) {
-    Log.info("--------------------------------", LOG_ID);
-    Log.info("Generating DSTLs", LOG_ID);
-    Log.info("--------------------------------", LOG_ID);
-    Log.info("Input grammar     : " + input, LOG_ID);
-    Log.info("Model path        : " + modelPath.toString(), LOG_ID);
-    Log.info("HC Model Ext path : " + modelsHC, LOG_ID);
-    Log.info("Output dir        : " + outDirectory, LOG_ID);
-    Log.info("Handcoded sources : " + handcodedPath, LOG_ID);
-    Log.info("Model File extension    : " + modelFileExtension, LOG_ID);
+    Log.debug("--------------------------------", LOG_ID);
+    Log.debug("Generating DSTLs", LOG_ID);
+    Log.debug("--------------------------------", LOG_ID);
+    Log.debug("Input grammar     : " + input, LOG_ID);
+    Log.debug("Model path        : " + modelPath.toString(), LOG_ID);
+    Log.debug("HC Model Ext path : " + modelsHC, LOG_ID);
+    Log.debug("Output dir        : " + outDirectory, LOG_ID);
+    Log.debug("Handcoded sources : " + handcodedPath, LOG_ID);
+    Log.debug("Model File extension    : " + modelFileExtension, LOG_ID);
 
     // Parse Grammar
     ASTMCGrammar g;
@@ -177,9 +177,6 @@ public class DSTLGenCLI {
 
     // Generate DSTL to ODRule translator
     generateTranslator (g);
-
-    // Generate base class
-    generateScript(g, false);
 
     // Generate main class
     generateMainClass(g);
@@ -555,23 +552,6 @@ public class DSTLGenCLI {
 
   }
 
-  /**
-   * Generate Groovy Script
-   *
-   * @param grammar
-   */
-  public void generateScript(ASTMCGrammar grammar, boolean noCoCoGen) {
-    if (!grammar.isComponent()) {
-      // generate script class for groovy
-      String _package = Names.getPathFromPackage(getDSTLPackagePrefix(grammar)  + ".script.");
-      String classname = getSimpleTypeNameToGenerate(grammar.getName()
-                                                             + "TRScript", _package, handcodedPath);
-
-      Path filePath = Paths.get(_package + classname + ".java");
-      generator.generate("dstlgen.script.Script", filePath,
-                         grammar, classname, modelFileExtension, noCoCoGen, getDSTLPackagePrefix(grammar));
-    }
-  }
 
   protected String getDSTLPackagePrefix(ASTMCGrammar grammar) {
     String dslPackage = Joiners.DOT.join(grammar.getPackageList());
@@ -592,7 +572,7 @@ public class DSTLGenCLI {
       Path filePath = Paths.get(packageName + className + ".java");
       generator.generate("dstlgen.MainClass", filePath,
                          grammar, className, modelFileExtension, grammar.getName()
-                                 + "TRScript", getDSTLPackagePrefix(grammar));
+                                 + "TR", getDSTLPackagePrefix(grammar), grammar.getName(), Names.constructQualifiedName(grammar.getPackageList()));
     }
 
   }
