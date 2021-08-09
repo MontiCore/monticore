@@ -17,7 +17,8 @@ fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr'
     group = "montitrans"
     classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
     main = 'mc.testcases.statechart.tr.StatechartCLI'
-    args += ["-models", "$g"]
+    args += ["-i", "$g",
+            "-o", "$buildDir/generated-sources"]
   }
   generateStatechartTRRules.dependsOn("$taskname")
 }
@@ -32,7 +33,8 @@ fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').ea
     group = "montitrans"
     classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
     main = 'mc.testcases.social.tr.SocialNetworkCLI'
-    args += ["-models", "$g"]
+    args += ["-i", "$g",
+             "-o", "$buildDir/generated-sources"]
   }
   generateSocialNetworkTRRules.dependsOn("$taskname")
 }
