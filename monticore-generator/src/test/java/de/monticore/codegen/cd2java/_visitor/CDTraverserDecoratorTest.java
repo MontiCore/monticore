@@ -12,7 +12,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
