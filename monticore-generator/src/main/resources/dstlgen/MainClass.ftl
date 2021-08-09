@@ -58,7 +58,7 @@ public class ${className} {
   
       if (!cmd.hasOption("i")) {
         Log.error(
-            "0xA1000 There is no \".mtr\" file to parse. Please check the \"input\" option.");
+            "0xA1001 There is no \".mtr\" file to parse. Please check the \"input\" option.");
         // do not continue, when this error is logged
         return;
       }

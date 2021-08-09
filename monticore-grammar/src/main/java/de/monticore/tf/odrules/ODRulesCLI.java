@@ -131,7 +131,7 @@ public class ODRulesCLI {
   protected void printHelp(Options options) {
     HelpFormatter formatter = new HelpFormatter();
     formatter.setWidth(80);
-    formatter.printHelp("MontiCoreCLI", options);
+    formatter.printHelp("ODRulesCLI", options);
   }
   
   static final String LOG_ID = "ODRules";
