@@ -9,4 +9,9 @@ grammar Modes extends de.monticore.LexicalsWithMode {
   token Close = "]" : ->popmode;
 
   token SLASH(FOO_MODE) = "/";
+
+  @Override
+  token Digit2 =
+          ('0' ..'9')+;
+
  }

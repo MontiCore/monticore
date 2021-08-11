@@ -290,7 +290,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
 
     Map<String, Collection<String>> tokenModes = grammar.getTokenModesWithInherited();
     assertEquals(3, tokenModes.size());
-    assertEquals(3, tokenModes.get(MCGrammarSymbol.DEFAULT_MODE).size());
+    assertEquals(4, tokenModes.get(MCGrammarSymbol.DEFAULT_MODE).size());
     assertEquals(1, tokenModes.get("FOO_MODE").size());
     assertEquals(1, tokenModes.get("BLA_MODE").size());
   }

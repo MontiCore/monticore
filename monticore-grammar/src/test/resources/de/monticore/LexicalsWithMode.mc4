@@ -10,5 +10,7 @@ component grammar LexicalsWithMode {
   token Digit(BLA_MODE) =
         ('0' ..'9')+;
 
+  token Digit2(BLA2_MODE) =
+        ('0' ..'9')+;
 
 }
