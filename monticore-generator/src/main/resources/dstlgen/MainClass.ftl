@@ -65,7 +65,7 @@ public class ${className} {
   
       ${dstlName}Mill.init();
   
-      Log.info("----- Starting Transformation Generation -----", LOG_ID);
+      Log.debug("----- Starting Transformation Generation -----", LOG_ID);
       Log.debug("Input file   : " + cmd.getOptionValue("i"), LOG_ID);
       Log.debug("Model path    : " + cmd.getOptionValue("mp"), LOG_ID);
       Log.debug("Output dir    : " + cmd.getOptionValue("o"), LOG_ID);
@@ -96,7 +96,7 @@ public class ${className} {
   
   public Optional<AST${grammarName}TFRule> parseRule(Path model) {
     ${dstlName}Mill.init();
-    Log.info("Start parsing of the model " + model, LOG_ID);
+    Log.debug("Start parsing of the model " + model, LOG_ID);
     try {
       ${dstlName}Parser parser = new ${dstlName}Parser();
       Optional<AST${grammarName}TFRule> ast = parser.parse${grammarName}TFRule(model.toString());
@@ -123,17 +123,17 @@ public class ${className} {
   }
   
   public ASTODRule createODRule(AST${grammarName}TFRule ast, MCPath modelPath) {
-    Log.info("Starting odrule generation ", LOG_ID);
+    Log.debug("Starting odrule generation ", LOG_ID);
     ModelTraversal<${dstlName}Traverser> mt = ModelTraversalFactory.getInstance().create((java.util.function.Supplier)${dstlName}Mill::inheritanceTraverser);
     ast.accept(mt.getTraverser());
-    Log.info("Starting rule2odstate ", LOG_ID);
+    Log.debug("Starting rule2odstate ", LOG_ID);
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), mt.getParents());
     state.getGenRule().setGrammarPackageList(Splitter.on('.').splitToList("${grammarPackage}"));
     state.getGenRule().setGrammarName("${grammarName}");
     ${grammarName}RuleCollectVariables variables = new ${grammarName}RuleCollectVariables(state);
     ${grammarName}Rule2OD rule2OD = new ${grammarName}Rule2OD(state);
     
-    Log.info("Switching to OD ", LOG_ID);
+    Log.debug("Switching to OD ", LOG_ID);
     // Switch language to OD
     ODRulesMill.init();
     

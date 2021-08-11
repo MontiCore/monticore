@@ -111,6 +111,18 @@ test_grammar_it:
   except:
     - master
 
+test_montitrans:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -Pci"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+
 deploy:
   stage: deploy
   dependencies:
