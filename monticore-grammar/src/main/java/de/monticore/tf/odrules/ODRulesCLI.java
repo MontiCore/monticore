@@ -6,6 +6,7 @@ package de.monticore.tf.odrules;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.tf.odrules._ast.ASTODRule;
 import de.monticore.tf.odrules._parser.ODRulesParser;
+import de.monticore.tf.odrules._symboltable.ODRulesScopesGenitorDelegator;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 
@@ -51,7 +52,7 @@ public class ODRulesCLI {
   
       ODRulesMill.init();
   
-      Log.info("----- Starting ODRules Generation -----", LOG_ID);
+      Log.debug("----- Starting ODRules Generation -----", LOG_ID);
   
       Log.debug("--------------------------------", LOG_ID);
       Log.debug("Input file   : " + cmd.getOptionValue("i"), LOG_ID);
@@ -62,8 +63,11 @@ public class ODRulesCLI {
       // Parse OD-Rules
       Optional<ASTODRule> astRule = parseODRule(model);
   
-        GlobalExtensionManagement glex = new GlobalExtensionManagement();
-        generate(astRule.get(), glex, Paths.get(cmd.getOptionValue("o")).toFile(), model.getFileName().toFile().getName());
+      ODRulesScopesGenitorDelegator symbolTable = ODRulesMill.scopesGenitorDelegator();
+      symbolTable.createFromAST(astRule.get());
+      
+      GlobalExtensionManagement glex = new GlobalExtensionManagement();
+      generate(astRule.get(), glex, Paths.get(cmd.getOptionValue("o")).toFile(), model.getFileName().toFile().getName().replace(".mtod", ""));
       
     }catch ( ParseException e) {
     // an unexpected error from the Apache CLI parser:
@@ -72,13 +76,13 @@ public class ODRulesCLI {
   }
   
   public void generate(ASTODRule ast, GlobalExtensionManagement glex, File outputDirectory, String filename){
-    Log.info("Generate Transformation for " + filename, LOG_ID);
+    Log.debug("Generate Transformation for " + filename, LOG_ID);
     ast.setName(filename);
     ODRuleCodeGenerator.generate(ast, outputDirectory);
   }
   
   public Optional<ASTODRule> parseODRule(Path model) {
-    Log.info("Start parsing of the model " + model, LOG_ID);
+    Log.debug("Start parsing of the model " + model, LOG_ID);
     try {
       ODRulesParser parser = new ODRulesParser();
       Optional<ASTODRule> ast = parser.parse(model.toString());
@@ -88,6 +92,7 @@ public class ODRulesCLI {
         Log.info(
             "There are parsing errors while parsing of the model " + model, LOG_ID);
       }
+      
       return ast;
     } catch (IOException e) {
       throw new RuntimeException(e);

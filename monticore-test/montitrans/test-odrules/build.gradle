@@ -32,7 +32,8 @@ fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
     group = "montitrans"
     classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
     main = 'de.monticore.tf.odrules.ODRulesCLI'
-    args += ["-models", "$g"]
+    args += ["-i", "$g",
+             "-o", "$buildDir/generated-sources"]
   }
   generateAutomatonTRRules.dependsOn("$taskname")
 }
@@ -46,7 +47,8 @@ fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
     group = "montitrans"
     classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
     main = 'de.monticore.tf.odrules.ODRulesCLI'
-    args += ["-models", "$g"]
+    args += ["-i", "$g",
+             "-o", "$buildDir/generated-sources"]
   }
   generateMiscTRRules.dependsOn("$taskname")
 }
@@ -60,7 +62,8 @@ fileTree(dir: "$modelsDir/petrinet", include: '**/**.mtod').each {
     group = "montitrans"
     classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
     main = 'de.monticore.tf.odrules.ODRulesCLI'
-    args += ["-models", "$g"]
+    args += ["-i", "$g",
+             "-o", "$buildDir/generated-sources"]
   }
   generatePetrinetTRRules.dependsOn("$taskname")
 }
