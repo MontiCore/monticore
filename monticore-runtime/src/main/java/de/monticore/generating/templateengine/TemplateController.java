@@ -9,7 +9,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
@@ -18,9 +17,7 @@ import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import org.apache.commons.io.FilenameUtils;
 
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,7 +33,6 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * Provides methods for manipulating the content of templates, mainly for
  * calling and including of templates.
- *
  */
 public class TemplateController {
 
@@ -44,28 +40,28 @@ public class TemplateController {
    * Variable name for the current node (used in the templates)
    **/
   public static final String AST = "ast";
-
   /**
    * Variable name for the current TemplateController (used in the templates)
    **/
   public static final String TC = "tc";
-
   /**
    * Variable name for the GLEX object (used in the templates)
    **/
   public static final String GLEX = "glex";
-
   /**
    * General config variables that hold for all template executions
    */
   protected final GeneratorSetup config;
-
+  /**
+   * list that contains all the Template names that should be blocked from generating comments for
+   **/
+  protected List<String> templateBlackList;
   /**
    * Name of the current template (usually fully qualified)
    */
   protected String templatename;
 
-   /**
+  /**
    * According to FreeMarker, templates don't have a "signature"
    * We can mimic such a signature through method calls:
    * The signature(...) method defines a list of variables.
@@ -79,6 +75,13 @@ public class TemplateController {
   public TemplateController(GeneratorSetup setup, String templatename) {
     this.config = setup;
     this.templatename = templatename;
+    this.templateBlackList = new ArrayList<>();
+  }
+
+  public TemplateController(GeneratorSetup setup, String templatename, List<String> templateBlackList) {
+    this.config = setup;
+    this.templatename = templatename;
+    this.templateBlackList = templateBlackList;
   }
 
   /**
@@ -96,24 +99,32 @@ public class TemplateController {
     this.templatename = templatename;
   }
 
+  public List<String> getTemplateBlackList() {
+    return templateBlackList;
+  }
+
+  public void setTemplateBlackList(List<String> templateBlackList) {
+    this.templateBlackList = templateBlackList;
+  }
+
   /**
    * Execute each of the templates on each ASTNode of the list. Concatenate the
    * results together in one big String and include that into the currently
    * processed output. We iterate on the templates and ASTNodes. In case order
    * is important: The iteration goes like this:
-   * 
-   *   for ( templates ) { 
-   *     for ( ASTNodes ) {...}
-   *   } 
-   *
+   * <p>
+   * for ( templates ) {
+   * for ( ASTNodes ) {...}
+   * }
+   * <p>
    * Inside the inner loop, it is checked whether Hookpoints are to be called.
-   *
+   * <p>
    * Template filename may be qualified (using "."). When it
    * is not qualified, the filename is taken from the current package (same as
    * the calling template).
    *
    * @param templatenames list of filenames, qualified or not
-   * @param astlist where we execute the template on in an iteration
+   * @param astlist       where we execute the template on in an iteration
    * @return produced output
    */
   public StringBuilder include(List<String> templatenames, List<ASTNode> astlist) {
@@ -121,7 +132,7 @@ public class TemplateController {
     for (String template : templatenames) {
       for (ASTNode ast : astlist) {
         List<HookPoint> templateForwardings =
-			  config.getGlex().getTemplateForwardings(template, ast);
+            config.getGlex().getTemplateForwardings(template, ast);
         for (HookPoint templateHp : templateForwardings) {
           ret.append(templateHp.processValue(this, ast));
         }
@@ -131,12 +142,16 @@ public class TemplateController {
     return ret;
   }
 
+  public boolean isTemplateNoteGenerated(Template template) {
+    return !templateBlackList.contains(template.getName());
+  }
+
   /**
    * Execute a template without resolving the forwardings. This method is
    * package default and should only be used by the template hook point
    *
    * @param templateName the name of the template
-   * @param ast the ast node
+   * @param ast          the ast node
    * @return produced output
    */
   StringBuilder includeWithoutForwarding(String templateName, ASTNode ast) {
@@ -145,7 +160,7 @@ public class TemplateController {
     return ret;
   }
 
-    /**
+  /**
    * Defines the signature of a template. <br />
    * <br />
    * Note that, due to technical constraints, at first, the current template is
@@ -213,7 +228,7 @@ public class TemplateController {
    * current package (same as the calling template).
    *
    * @param templateNames list of filenames, qualified or not
-   * @param ast ast-node the template is operating on
+   * @param ast           ast-node the template is operating on
    * @return produced output
    */
   public StringBuilder include(List<String> templateNames, ASTNode ast) {
@@ -228,7 +243,7 @@ public class TemplateController {
    * the current package (same as the calling template).
    *
    * @param templateName filename, qualified or not
-   * @param astlist where we execute the template on in an iteration
+   * @param astlist      where we execute the template on in an iteration
    * @return produced output
    */
   public StringBuilder include(String templateName, List<ASTNode> astlist) {
@@ -244,7 +259,7 @@ public class TemplateController {
    * taken from the current package (same as the calling template).
    *
    * @param templateName name of the template to be executed, qualified or not
-   * @param ast ast-node the template is operating on
+   * @param ast          ast-node the template is operating on
    * @return output for the file (may be part of a file only)
    */
   public StringBuilder include(String templateName, ASTNode ast) {
@@ -259,9 +274,9 @@ public class TemplateController {
    * qualified, the filename is taken from the current package (same as the
    * calling template).
    *
-   * @param templateName name of the template to be executed, qualified or not
+   * @param templateName      name of the template to be executed, qualified or not
    * @param templateArguments additional data that is passed to the called
-   * template
+   *                          template
    * @return output for the file (may be part of a file only)
    */
   public StringBuilder includeArgs(String templateName, ASTNode node, List<Object> templateArguments) {
@@ -282,9 +297,9 @@ public class TemplateController {
    * qualified, the filename is taken from the current package (same as the
    * calling template).
    *
-   * @param templateName name of the template to be executed, qualified or not
+   * @param templateName      name of the template to be executed, qualified or not
    * @param templateArguments additional data that is passed to the called
-   * template
+   *                          template
    * @return output for the file (may be part of a file only)
    */
   public StringBuilder includeArgs(String templateName, List<Object> templateArguments) {
@@ -320,11 +335,9 @@ public class TemplateController {
     String msg;
     if (empty1 == null && empty2 == null) {
       msg = "0xA2936 Template name and ast node are null in " + templatename;
-    }
-    else if (empty1 == null) {
+    } else if (empty1 == null) {
       msg = "0xA2937 Template name is null in " + templatename + " using " + empty2.getClass();
-    }
-    else {
+    } else {
       msg = "0xA2938 Ast node is null in " + templatename + " calling template " + empty1;
     }
     Log.error(msg + " ## You made an illegal call of includeTemplate. As the error says at least "
@@ -337,7 +350,7 @@ public class TemplateController {
    * opened, written and closed again!
    *
    * @param templateName full qualified filename
-   * @param ast where we execute the template on
+   * @param ast          where we execute the template on
    * @return none (= empty string within Freemarker)
    */
   public void write(String templateName, String qualifiedFileName, ASTNode ast) {
@@ -363,7 +376,7 @@ public class TemplateController {
    * package (same as the calling template).
    *
    * @param templateName full qualified filename
-   * @param ast where we execute the template on
+   * @param ast          where we execute the template on
    * @return none (= empty string within Freemarker)
    */
   public void writeArgs(final String templateName, final String qualifiedFileName,
@@ -385,9 +398,9 @@ public class TemplateController {
    * the <code>filePath</code>. Note: Unless not absolute, the
    * <code>filePath</code> is relative to the configured target directory (i.e.,
    *
-   * @param templateName the template to be processes
-   * @param filePath the file path in which the content is to be written
-   * @param ast the ast
+   * @param templateName      the template to be processes
+   * @param filePath          the file path in which the content is to be written
+   * @param ast               the ast
    * @param templateArguments additional template arguments (if needed).
    */
   public void writeArgs(final String templateName, final Path filePath, final ASTNode ast,
@@ -397,26 +410,25 @@ public class TemplateController {
     StringBuilder content = new StringBuilder();
     // Replacement added: no also writeArgs replaces its Templates
     List<HookPoint> templateForwardings =
-    		config.getGlex().getTemplateForwardings(templateName, ast);
+        config.getGlex().getTemplateForwardings(templateName, ast);
     for (HookPoint tn : templateForwardings) {
       content.append(tn.processValue(this, ast, templateArguments));
     }
 
-    if (content.length()==0) {
+    if (content.length() == 0) {
       Log.warn("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
     }
 
     // add trace to source-model:
     if (config.isTracing() && config.getModelName().isPresent()) {
-      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get() + " " 
+      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get() + " "
           + config.getCommentEnd() + "\n");
     }
 
     Path completeFilePath;
     if (filePath.isAbsolute()) {
       completeFilePath = filePath;
-    }
-    else {
+    } else {
       completeFilePath = Paths.get(config.getOutputDirectory().getAbsolutePath(), filePath.toString());
     }
 
@@ -428,7 +440,7 @@ public class TemplateController {
 
     Reporting.reportFileFinalization(qualifiedTemplateName, filePath, ast);
   }
-  
+
   /**
    * Include a template with additional data: We only handle one template on one
    * node. This method allows to parameterize templates. Template filename may
@@ -436,10 +448,10 @@ public class TemplateController {
    * from the current package. The resulting output may be stored or included in
    * another generation process.
    *
-   * @param templateName name of the template to be executed, qualified or not
-   * @param astNode ast-node the template is operating on
+   * @param templateName    name of the template to be executed, qualified or not
+   * @param astNode         ast-node the template is operating on
    * @param passedArguments additional data that is passed to the included
-   * template
+   *                        template
    * @return output for the file (may be part of a file only)
    */
   protected String processTemplate(String templateName, ASTNode astNode,
@@ -524,8 +536,8 @@ public class TemplateController {
 
           String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
           Log.error("0xA0128 Globally defined data could not be passed to the called template "
-                  + usage + ". ## This is an internal"
-                  + "error that should not happen. Try to remove all global data. ##");
+              + usage + ". ## This is an internal"
+              + "error that should not happen. Try to remove all global data. ##");
         }
       }
       d.put(AST, ast);
@@ -540,8 +552,7 @@ public class TemplateController {
       if (oldAst.isPresent()) {
         d.put(AST, oldAst.get());
       }
-    }
-    else {
+    } else {
       // no template
       String usage = this.templatename != null ? " (used in " + this.templatename + ")" : "";
       Log.error("0xA0127 Missing template "
@@ -552,14 +563,14 @@ public class TemplateController {
     }
 
     // add trace to template:
-    if (ret.length() != 0 && config.isTracing()) {
+    if (ret.length() != 0 && config.isTracing() && isTemplateNoteGenerated(template)) {
       ret.insert(0, config.getCommentStart() + " generated by template " + template.getName()
           + config.getCommentEnd() + "\n");
     }
 
     return ret;
   }
-  
+
   /**
    * checks if the name seems to be already qualified: if not, adds the current
    * package (of the template it operates on)
@@ -588,8 +599,7 @@ public class TemplateController {
   protected Object getValueFromData(String name) {
     try {
       return BeansWrapper.getDefaultInstance().unwrap(data.get(name));
-    }
-    catch (TemplateModelException e) {
+    } catch (TemplateModelException e) {
       Log.error("0xA0139 Could not find value for \"" + name + "\" in template \"" + templatename
           + "\"", e);
     }
@@ -619,14 +629,14 @@ public class TemplateController {
    * as the calling template, or it needs to be qualified (dot-separated).
    *
    * @param className name of the class to be instantiated
-   * @param params parameters provided for the constructor-call
+   * @param params    parameters provided for the constructor-call
    * @return an object of the given className
    */
   public Object instantiate(String className, List<Object> params) {
     Reporting.reportInstantiate(className, params);
     return ObjectFactory.createObject(completeQualifiedName(className), params);
   }
-  
+
   /**
    * @see de.se_rwth.commons.logging.Log#trace(String, String)
    */
