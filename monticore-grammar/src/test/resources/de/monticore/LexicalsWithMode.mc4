@@ -7,7 +7,7 @@ component grammar LexicalsWithMode {
   token Name =
         ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
   
-  token Digit(Foo) =
+  token Digit(BLA_MODE) =
         ('0' ..'9')+;
 
 

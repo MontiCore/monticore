@@ -4,11 +4,9 @@ package de.monticore;
 
 grammar Modes extends de.monticore.LexicalsWithMode {
 
-  tokenmode Bla: Name2;
-
-  token Open = "[" : -> pushmode (Bla);
+  token Open = "[" : -> pushmode (FOO_MODE);
 
   token Close = "]" : ->popmode;
 
-  token SLASH(Foo) = "/";
+  token SLASH(FOO_MODE) = "/";
  }
