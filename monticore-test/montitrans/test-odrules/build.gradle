@@ -21,7 +21,7 @@ fileTree(grammarsDir).each {
   }
 }
 
-task generateAutomatonTRRules {
+task generateMTOD {
   group = "montitrans"
 }
 
@@ -35,10 +35,7 @@ fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
     args += ["-i", "$g",
              "-o", "$buildDir/generated-sources"]
   }
-  generateAutomatonTRRules.dependsOn("$taskname")
-}
-task generateMiscTRRules {
-  group = "montitrans"
+  generateMTOD.dependsOn("$taskname")
 }
 fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
   def g = it
@@ -50,7 +47,7 @@ fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
     args += ["-i", "$g",
              "-o", "$buildDir/generated-sources"]
   }
-  generateMiscTRRules.dependsOn("$taskname")
+  generateMTOD.dependsOn("$taskname")
 }
 task generatePetrinetTRRules {
   group = "montitrans"
@@ -65,12 +62,12 @@ fileTree(dir: "$modelsDir/petrinet", include: '**/**.mtod').each {
     args += ["-i", "$g",
              "-o", "$buildDir/generated-sources"]
   }
-  generatePetrinetTRRules.dependsOn("$taskname")
+  generateMTOD.dependsOn("$taskname")
 }
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
-  dependsOn "generateAutomatonTRRules", "generateMiscTRRules", "generatePetrinetTRRules"
+  dependsOn "generateMTOD"
 }
 
 sourceSets {
