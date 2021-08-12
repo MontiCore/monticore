@@ -123,13 +123,12 @@ public class TemplateController {
    *  }
    *
    * Inside the inner loop, it is checked whether Hookpoints are to be called.
-   * <p>
    * Template filename may be qualified (using "."). When it
    * is not qualified, the filename is taken from the current package (same as
    * the calling template).
    *
    * @param templatenames list of filenames, qualified or not
-   * @param astlist       where we execute the template on in an iteration
+   * @param astlist where we execute the template on in an iteration
    * @return produced output
    */
   public StringBuilder include(List<String> templatenames, List<ASTNode> astlist) {
@@ -634,7 +633,7 @@ public class TemplateController {
    * as the calling template, or it needs to be qualified (dot-separated).
    *
    * @param className name of the class to be instantiated
-   * @param params    parameters provided for the constructor-call
+   * @param params parameters provided for the constructor-call
    * @return an object of the given className
    */
   public Object instantiate(String className, List<Object> params) {
