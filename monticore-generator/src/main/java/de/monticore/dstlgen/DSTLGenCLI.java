@@ -24,8 +24,6 @@ import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.grammar.prettyprint.AntlrPrettyPrinter;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsPrettyPrinter;
 import de.monticore.io.paths.MCPath;
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelCoordinates;
 import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.JavaLightPrettyPrinter;
@@ -42,8 +40,6 @@ import org.apache.commons.cli.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -143,23 +139,9 @@ public class DSTLGenCLI {
     Log.debug("Model File extension    : " + modelFileExtension, LOG_ID);
 
     // Parse Grammar
-    ASTMCGrammar g;
-    if (input.startsWith("jar:file:")) {
-      // deprecated: Rebuild a ModelCoordinate from this url
-      try {
-        // The location is given via the url
-        ModelCoordinate mc = ModelCoordinates.createLocatedCoordinate(new URL(input));
-        // The qualified path is... also in the URL
-        Path qualifiedPath = Paths.get(Names.getPathFromPackage(input.split("!",2)[1].replace('/','.')));
-        mc.setQualifiedPath(qualifiedPath);
-        g = parseGrammar(mc);
-      }catch (MalformedURLException e){
-        throw new RuntimeException(e.getMessage(), e);
-      }
-    }else{ // end: deprecated
-      // Grammar is given as relative file (not packed within a jar)
-      g = parseGrammar(input);
-    }
+    // Grammar is given as relative file (not packed within a jar)
+    ASTMCGrammar g = parseGrammar(input);
+
     // Initialize symbol table
     initSymbolTable(g, modelPath);
 
@@ -207,29 +189,6 @@ public class DSTLGenCLI {
     }
   }
 
-  /**
-   * Parse a single grammar
-   *
-   * @param model
-   * @return
-   */
-  public ASTMCGrammar parseGrammar(ModelCoordinate model) {
-    Log.info("Start parsing of the grammar " + model.getName(), LOG_ID);
-    try {
-      Reader reader = ModelCoordinates.getReader(model);
-      GrammarFamilyParser parser = GrammarFamilyMill.parser();
-      Optional<ASTMCGrammar> ast = parser.parse(reader);
-      if (!parser.hasErrors() && ast.isPresent()) {
-        Log.info("Grammar " + model.getName() + " parsed successfully", LOG_ID);
-        GrammarTransformer.transform(ast.get());
-      } else {
-        Log.error("There are parsing errors while parsing of the model " + model.getName());
-      }
-      return ast.get();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   /**
    * Initialize symbol table
