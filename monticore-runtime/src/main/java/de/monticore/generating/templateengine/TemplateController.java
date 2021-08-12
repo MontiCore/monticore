@@ -40,22 +40,27 @@ public class TemplateController {
    * Variable name for the current node (used in the templates)
    **/
   public static final String AST = "ast";
+
   /**
    * Variable name for the current TemplateController (used in the templates)
    **/
   public static final String TC = "tc";
+
   /**
    * Variable name for the GLEX object (used in the templates)
    **/
   public static final String GLEX = "glex";
+
   /**
    * General config variables that hold for all template executions
    */
   protected final GeneratorSetup config;
+
   /**
    * list that contains all the Template names that should be blocked from generating comments for
    **/
   protected List<String> templateBlackList;
+
   /**
    * Name of the current template (usually fully qualified)
    */
@@ -112,11 +117,11 @@ public class TemplateController {
    * results together in one big String and include that into the currently
    * processed output. We iterate on the templates and ASTNodes. In case order
    * is important: The iteration goes like this:
-   * <p>
-   * for ( templates ) {
-   * for ( ASTNodes ) {...}
-   * }
-   * <p>
+   *
+   *  for ( templates ) {
+   *    for ( ASTNodes ) {...}
+   *  }
+   *
    * Inside the inner loop, it is checked whether Hookpoints are to be called.
    * <p>
    * Template filename may be qualified (using "."). When it
@@ -151,7 +156,7 @@ public class TemplateController {
    * package default and should only be used by the template hook point
    *
    * @param templateName the name of the template
-   * @param ast          the ast node
+   * @param ast the ast node
    * @return produced output
    */
   StringBuilder includeWithoutForwarding(String templateName, ASTNode ast) {
@@ -228,7 +233,7 @@ public class TemplateController {
    * current package (same as the calling template).
    *
    * @param templateNames list of filenames, qualified or not
-   * @param ast           ast-node the template is operating on
+   * @param ast ast-node the template is operating on
    * @return produced output
    */
   public StringBuilder include(List<String> templateNames, ASTNode ast) {
@@ -243,7 +248,7 @@ public class TemplateController {
    * the current package (same as the calling template).
    *
    * @param templateName filename, qualified or not
-   * @param astlist      where we execute the template on in an iteration
+   * @param astlist where we execute the template on in an iteration
    * @return produced output
    */
   public StringBuilder include(String templateName, List<ASTNode> astlist) {
@@ -259,7 +264,7 @@ public class TemplateController {
    * taken from the current package (same as the calling template).
    *
    * @param templateName name of the template to be executed, qualified or not
-   * @param ast          ast-node the template is operating on
+   * @param ast ast-node the template is operating on
    * @return output for the file (may be part of a file only)
    */
   public StringBuilder include(String templateName, ASTNode ast) {
@@ -274,9 +279,9 @@ public class TemplateController {
    * qualified, the filename is taken from the current package (same as the
    * calling template).
    *
-   * @param templateName      name of the template to be executed, qualified or not
+   * @param templateName name of the template to be executed, qualified or not
    * @param templateArguments additional data that is passed to the called
-   *                          template
+   * template
    * @return output for the file (may be part of a file only)
    */
   public StringBuilder includeArgs(String templateName, ASTNode node, List<Object> templateArguments) {
@@ -297,9 +302,9 @@ public class TemplateController {
    * qualified, the filename is taken from the current package (same as the
    * calling template).
    *
-   * @param templateName      name of the template to be executed, qualified or not
+   * @param templateName name of the template to be executed, qualified or not
    * @param templateArguments additional data that is passed to the called
-   *                          template
+   * template
    * @return output for the file (may be part of a file only)
    */
   public StringBuilder includeArgs(String templateName, List<Object> templateArguments) {
@@ -350,7 +355,7 @@ public class TemplateController {
    * opened, written and closed again!
    *
    * @param templateName full qualified filename
-   * @param ast          where we execute the template on
+   * @param ast where we execute the template on
    * @return none (= empty string within Freemarker)
    */
   public void write(String templateName, String qualifiedFileName, ASTNode ast) {
@@ -376,7 +381,7 @@ public class TemplateController {
    * package (same as the calling template).
    *
    * @param templateName full qualified filename
-   * @param ast          where we execute the template on
+   * @param ast where we execute the template on
    * @return none (= empty string within Freemarker)
    */
   public void writeArgs(final String templateName, final String qualifiedFileName,
@@ -398,9 +403,9 @@ public class TemplateController {
    * the <code>filePath</code>. Note: Unless not absolute, the
    * <code>filePath</code> is relative to the configured target directory (i.e.,
    *
-   * @param templateName      the template to be processes
-   * @param filePath          the file path in which the content is to be written
-   * @param ast               the ast
+   * @param templateName the template to be processes
+   * @param filePath the file path in which the content is to be written
+   * @param ast the ast
    * @param templateArguments additional template arguments (if needed).
    */
   public void writeArgs(final String templateName, final Path filePath, final ASTNode ast,
@@ -448,10 +453,10 @@ public class TemplateController {
    * from the current package. The resulting output may be stored or included in
    * another generation process.
    *
-   * @param templateName    name of the template to be executed, qualified or not
-   * @param astNode         ast-node the template is operating on
+   * @param templateName name of the template to be executed, qualified or not
+   * @param astNode ast-node the template is operating on
    * @param passedArguments additional data that is passed to the included
-   *                        template
+   * template
    * @return output for the file (may be part of a file only)
    */
   protected String processTemplate(String templateName, ASTNode astNode,
