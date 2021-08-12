@@ -33,7 +33,7 @@ public class TemplateControllerTest {
 
   private static final Path HWC_DIR = Paths.get("src", "test", "resources", "hwc");
 
-  private TemplateControllerMock  tc;
+  private TemplateControllerMock tc;
 
   private FreeMarkerTemplateEngineMock freeMarkerTemplateEngine;
 
