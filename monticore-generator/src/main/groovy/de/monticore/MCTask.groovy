@@ -201,6 +201,9 @@ abstract public class MCTask extends DefaultTask {
   void execute(InputChanges inputs) {
     logger.info(inputs.isIncremental() ? "CHANGED inputs considered out of date"
             : "ALL inputs considered out of date");
+
+    // generate build info properties file into target resources directory
+    generateBuildInfo()
     
     // if no path for hand coded classes is specified use $projectDir/src/main/java as default
     if (handcodedPath.isEmpty()) {
@@ -389,12 +392,23 @@ abstract public class MCTask extends DefaultTask {
     }
     return true
   }
-  
+
   protected File fromBasePath(String filePath) {
     File file = new File(filePath);
     return !file.isAbsolute()
             ? new File(project.getProjectDir(), filePath)
             : file;
+  }
+
+
+
+  protected void generateBuildInfo() {
+    String outAsString = project.layout.buildDirectory.get().asFile.toString()
+    File file = new File("${outAsString}/resources/main/buildInfo.properties")
+    file.mkdirs()
+    file.delete()
+    file.createNewFile()
+    file.write("version = ${project.version}")
   }
   
 }

@@ -39,8 +39,7 @@ public class UpdateCheckerRunnableTest {
 
   @Test
   public void testFindLocalPropertiesFile() {
-    System.out.println(updateCheckerRunnable.getLocalVersion());
-    Assert.assertEquals("7.2.0-SNAPSHOT", updateCheckerRunnable.getLocalVersion());
+    Assert.assertNotNull(updateCheckerRunnable.getLocalVersion());
   }
 
 

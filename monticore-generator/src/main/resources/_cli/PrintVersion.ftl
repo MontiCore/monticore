@@ -18,7 +18,7 @@ try {
 }
 
 String toolVersion = properties.getProperty("version");
-if (toolVersion == null) toolVersion = "unknown";
+if (toolVersion == null) toolVersion = mcVersion;
 
 System.out.println(toolName +
     ", version " + toolVersion +
