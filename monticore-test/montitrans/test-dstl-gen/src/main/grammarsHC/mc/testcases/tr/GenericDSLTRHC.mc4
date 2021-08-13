@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.testcases.tr;
 
-grammar GenericDSLTR {
+grammar GenericDSLTRHC {
 
 
   Foo_Opt implements ITFFoo, ITFAFoo, ITFIFoo astimplements de.monticore.tf.ast.IOptional =

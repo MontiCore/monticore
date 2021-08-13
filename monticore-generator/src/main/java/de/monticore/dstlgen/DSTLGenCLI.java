@@ -70,6 +70,7 @@ public class DSTLGenCLI {
     GrammarFamilyMill.reset();
   }
 
+  private final String HC_SUFFIX = "HC";
   final String LOG_ID = "DSTLGenScript";
   private GlobalExtensionManagement glex;
   private GeneratorEngine generator;
@@ -266,7 +267,7 @@ public class DSTLGenCLI {
   public Optional<ASTMCGrammar> parseGrammarHC(ASTMCGrammar grammar, MCPath paths) {
     List<String> trGrammarNames = new ArrayList<>(grammar.getPackageList());
     trGrammarNames.add("tr");
-    trGrammarNames.add(grammar.getName() + "TR.mc4");
+    trGrammarNames.add(grammar.getName() + "TR" + HC_SUFFIX + ".mc4");
 
     Path trGrammarPath = Paths.get(trGrammarNames.stream().collect(Collectors.joining(File.separator)));
     Optional<URL> hwGrammar = paths.find(trGrammarPath.toString());
