@@ -39,7 +39,7 @@ sourceSets {
     grammars {
       java.srcDirs = []
         resources {
-            srcDirs(grammarDir)
+            srcDirs([grammarDir, grammarOutDir])
             include "**/*.mc4"
         }
     }
