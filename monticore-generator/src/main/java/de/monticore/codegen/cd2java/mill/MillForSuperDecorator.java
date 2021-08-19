@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd4analysis.CD4AnalysisMill;
@@ -23,6 +26,7 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -142,7 +146,17 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     return builderMethodsList;
   }
 
-  protected void calculateOverriddenCds(DiagramSymbol cd, Collection<String> nativeClasses, HashMap<DiagramSymbol,
+  // Cache CDTypeSymbol#resolveCDTypeDown
+  protected final LoadingCache<Pair<ICDBasisScope, String>, Optional<CDTypeSymbol>> calcOCDCDTypeDownCache = CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .build(new CacheLoader<Pair<ICDBasisScope, String>, Optional<CDTypeSymbol>>() {
+            @Override
+            public Optional<CDTypeSymbol> load(Pair<ICDBasisScope, String> key) {
+              return key.getLeft().resolveCDTypeDown(key.getRight());
+            }
+          });
+
+  protected void calculateOverriddenCds(DiagramSymbol cd, final Collection<String> nativeClasses, HashMap<DiagramSymbol,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
@@ -152,10 +166,10 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     for (DiagramSymbol superCd : importedClasses) {
       Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
       for (String className : nativeClasses) {
-        Optional<CDTypeSymbol> cdType = ((ICDBasisScope) superCd.getEnclosingScope()).resolveCDTypeDown(className);
+        Optional<CDTypeSymbol> cdType = calcOCDCDTypeDownCache.getUnchecked(Pair.of((ICDBasisScope) superCd.getEnclosingScope(),className));
         if (cdType.isPresent()) {
           overriddenSet.add(cdType.get());
-          boolean ignore = firstClasses.stream().filter(s -> s.getName().equals(className)).count() > 0;
+          boolean ignore = firstClasses.stream().anyMatch(s -> s.getName().equals(className));
           if (!ignore && !l.containsKey(className)) {
             l.put(className, cdType.get());
           }
