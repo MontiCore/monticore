@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import de.monticore.cd4analysis.CD4AnalysisMill;
@@ -24,6 +27,7 @@ import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -92,25 +96,39 @@ public class AbstractService<T extends AbstractService> {
     return getSuperCDsTransitive(getCDSymbol());
   }
 
-  public List<DiagramSymbol> getSuperCDsTransitive(DiagramSymbol cdSymbol) {
+  protected final LoadingCache<DiagramSymbol, List<DiagramSymbol>> superCDsTransitiveCache = CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .build(new CacheLoader<DiagramSymbol, List<DiagramSymbol>>() {
+            @Override
+            public List<DiagramSymbol> load(@Nonnull DiagramSymbol cdSymbol) {
+              return getSuperCDsTransitiveUncached(cdSymbol);
+            }
+          });
+
+  // Cache this methods return value
+  protected List<DiagramSymbol> getSuperCDsTransitiveUncached(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
     List<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
-        .map(i -> i.getStatement())
-        .map(this::resolveCD)
-        .collect(Collectors.toList());
+            .map(i -> i.getStatement())
+            .map(AbstractService.this::resolveCD)
+            .collect(Collectors.toList());
     // search for super Cds in super Cds
     List<DiagramSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (DiagramSymbol superSymbol : directSuperCdSymbols) {
       List<DiagramSymbol> superCDs = getSuperCDsTransitive(superSymbol);
       for (DiagramSymbol superCD : superCDs) {
         if (resolvedCds
-            .stream()
-            .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))) {
+                .stream()
+                .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))) {
           resolvedCds.add(superCD);
         }
       }
     }
     return resolvedCds;
+  }
+
+  public List<DiagramSymbol> getSuperCDsTransitive(DiagramSymbol cdSymbol) {
+    return this.superCDsTransitiveCache.getUnchecked(cdSymbol);
   }
   
   public List<CDTypeSymbol> getAllCDTypes(DiagramSymbol cdSymbol) {
