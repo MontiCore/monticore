@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Step0304PreCreateTransitionBodyChart.sctrans
+ *
+ * First part of third preprocessing step of the optimization step 3.
+ * Create for each empty transition at statechart level an empty transition body.
+ */
+
+statechart $_ {
+    [[ opt [[SCStereotype $st ]] $source -> $target not [[SCTransitionBody $B]] :- SCStereotype $st $source -> $target / ]]
+}

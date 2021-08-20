@@ -1,0 +1,16 @@
+social network Netwok1 {
+    user Max Mustermann m de.ree.jpg {
+        entry a.b.jpg ;
+        entry e.f.jpg ;
+        entry g.h.jpg ;
+    }
+
+    user Mia Mustermann w {
+
+    }
+    user Marta Mueller w de.raa.jpg {
+        entry de.bar.jpg ;
+        entry de.me.jpg ;
+        entry de.ha.jpg ;
+    }
+}

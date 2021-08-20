@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.tf;
+
+module ForwardToInitialTest {
+
+	transformation forwardToInitial() {
+        state sourceState;
+    
+        state nestingState { 
+            state nestedState <<initial>>; 
+        }
+
+        sourceState -event> [[nestedState :- nestingState]];
+	}
+}

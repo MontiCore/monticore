@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases;
+
+grammar GenericDSL {
+
+    interface IFoo;
+
+    abstract AFoo;
+
+    Foo extends AFoo implements IFoo = "foo" | "bar" ;
+
+
+
+
+    token OwnName = ('a'..'z'|'A'..'Z');
+
+    astrule Foo =
+        method public String toString() {return "";};
+
+
+
+}

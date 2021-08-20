@@ -5,6 +5,8 @@ import com.google.common.hash.Hashing
 import com.google.common.io.Files
 import de.monticore.cli.MontiCoreStandardCLI
 import de.monticore.mcbasics.MCBasicsMill
+import de.monticore.dstlgen.DSTLGenCLI
+import de.monticore.dstlgen.util.DSTLPathUtil
 import de.se_rwth.commons.logging.Finding
 import de.se_rwth.commons.logging.Log
 import org.gradle.api.DefaultTask
@@ -76,7 +78,9 @@ abstract public class MCTask extends DefaultTask {
   List<String> handcodedPath = []
   
   List<String> modelPath = []
-  
+
+  List<String> handcodedModelPath = []
+
   List<String> templatePath = []
   
   List<String> includeConfigs = []
@@ -92,7 +96,9 @@ abstract public class MCTask extends DefaultTask {
   boolean help = false
   
   boolean dev = false
-  
+
+  boolean dstlGen = false
+
   
   @OutputDirectory
   DirectoryProperty getOutputDir() {
@@ -103,7 +109,7 @@ abstract public class MCTask extends DefaultTask {
   RegularFileProperty getBuildInfoFile() {
     return buildInfoFile
   }
-  
+
   @Incremental
   @InputFile
   RegularFileProperty getGrammar() {
@@ -127,12 +133,18 @@ abstract public class MCTask extends DefaultTask {
     return handcodedPath
   }
   
-  @InputFiles
+  @Input
   @Optional
   List<String> getModelPath() {
     return modelPath
   }
-  
+
+  @Input
+  @Optional
+  List<String> getHandcodedModelPath() {
+    return handcodedModelPath
+  }
+
   @Input
   @Optional
   List<String> getTemplatePath() {
@@ -189,7 +201,12 @@ abstract public class MCTask extends DefaultTask {
   boolean getAddGrammarConfig() {
     return addGrammarConfig
   }
-  
+
+  @Input
+  boolean getDstlGen() {
+    return dstlGen
+  }
+
   public void handcodedPath(String... paths) {
     getHandcodedPath().addAll(paths)
   }
@@ -197,7 +214,11 @@ abstract public class MCTask extends DefaultTask {
   public void modelPath(String... paths) {
     getModelPath().addAll(paths)
   }
-  
+
+  public void handcodedModelPath(String... paths) {
+    getHandcodedModelPath().addAll(paths)
+  }
+
   public void templatePath(String... paths) {
     getTemplatePath().addAll(paths)
   }
@@ -213,7 +234,7 @@ abstract public class MCTask extends DefaultTask {
 
     // generate build info properties file into target resources directory
     generateBuildInfo()
-    
+
     // if no path for hand coded classes is specified use $projectDir/src/main/java as default
     if (handcodedPath.isEmpty()) {
       File hcp = project.layout.projectDirectory.file("src/main/java").getAsFile()
@@ -229,7 +250,15 @@ abstract public class MCTask extends DefaultTask {
         modelPath.add(mp.toString())
       }
     }
-    
+
+    // if no grammar path is specified use $projectDir/src/main/grammars as default
+    if (handcodedModelPath.isEmpty()) {
+      File mhcp = project.layout.projectDirectory.file("src/main/grammarsHC").asFile
+      if (mhcp.exists()) {
+        handcodedModelPath.add(mhcp.toString())
+      }
+    }
+
     // if no template path is specified use $projectDir/src/main/resources as default
     if (templatePath.isEmpty()) {
       File tp = project.layout.projectDirectory.file("src/main/resources").getAsFile()
@@ -277,6 +306,11 @@ abstract public class MCTask extends DefaultTask {
       params.add("-fp")
       params.addAll(templatePath)
     }
+    List<String> dstlParams = params.clone()
+    if (!handcodedModelPath.isEmpty()) {
+      dstlParams.add("-hcg")
+      dstlParams.addAll(handcodedModelPath)
+    }
     if (configTemplate != null) {
       params.add("-ct")
       if (configTemplate.endsWith(".ftl")){
@@ -305,9 +339,10 @@ abstract public class MCTask extends DefaultTask {
     }
     if (help) {
       params.add("-h")
+      dstlParams.add("-h")
     }
     def p = params.toArray() as String[]
-    
+    def dstlP = dstlParams.toArray() as String[]
     
     System.setSecurityManager(new SecurityManager()
     {
@@ -322,6 +357,11 @@ abstract public class MCTask extends DefaultTask {
     try {
       // execute Monticore with the given parameters
       MontiCoreStandardCLI.main(p)
+      if (dstlGen) {
+        // Execute DSTLGen (which, among other, generates the TR grammar)
+        DSTLGenCLI.main(dstlP)
+        // At some point: Move this guarded block into the standard CLI
+      }
       MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
@@ -401,7 +441,19 @@ abstract public class MCTask extends DefaultTask {
     }
     return true
   }
-
+/**
+   * Returns the path to the TR grammar.
+   * Please ensure that the outputDir is previously set
+   * @param originalGrammar the original grammar file
+   * @return the TR grammar
+   */
+  File getTRFile(File originalGrammar) {
+    return new File(outputDir.get().asFile.toString()
+            + "/"
+            + DSTLPathUtil.getTRGrammar(
+            modelPath.isEmpty() ? [project.layout.projectDirectory.file("src/main/grammars").toString()] : modelPath,
+            originalGrammar).toString())
+  }
   protected File fromBasePath(String filePath) {
     File file = new File(filePath);
     return !file.isAbsolute()
@@ -420,7 +472,7 @@ abstract public class MCTask extends DefaultTask {
     file.createNewFile()
     file.write("version = ${project.version}")
   }
-  
+
 }
 
 /**

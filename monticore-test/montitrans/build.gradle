@@ -1,0 +1,42 @@
+plugins {
+  id "monticore" version "$version"
+  id "jacoco"
+}
+
+description = 'MontiCore-MontiTrans Integration Test'
+sourceCompatibility = '1.8'
+
+ext.grammarDir = 'src/main/grammars'
+ext.junit_version = '4.13.1'
+
+configurations {grammar}
+
+sonarqube {
+  skipProject = true
+}
+
+subprojects {
+  apply plugin: 'monticore'
+  apply plugin: 'jacoco'
+
+  dependencies {
+    implementation project(':monticore-runtime')
+    implementation project(':monticore-grammar')
+    implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+    testImplementation group:'junit', name:'junit', version:junit_version
+    grammar (project(path: ':monticore-grammar')){
+      capabilities {
+        requireCapability("de.monticore:monticore-grammar-grammars")
+      }
+    }
+  }
+}
+
+
+
+clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
+
+build.dependsOn(subprojects.collect{it.getTasksByName("build", false)})
+
+jar.enabled = false
+sourcesJar.enabled = false

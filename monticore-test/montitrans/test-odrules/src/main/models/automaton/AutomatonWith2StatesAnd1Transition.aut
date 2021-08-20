@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton AutomatonWith2StatesAnd1Transition {
+	state a;
+	state b;
+	a -x> b;
+}

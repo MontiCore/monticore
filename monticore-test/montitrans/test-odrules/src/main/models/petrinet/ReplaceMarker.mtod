@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Petrinet;
+pattern objectdiagram lhs {
+    place_1 : mc.testcases.petrinet._ast.ASTPlacedeclaration {
+    }
+    
+    marker_1 : mc.testcases.petrinet._ast.ASTBool{
+    }
+    
+    composition place_1 -- (marker) [1] marker_1;
+        
+}
+replacement objectdiagram rhs {
+    place_1 : mc.testcases.petrinet._ast.ASTPlacedeclaration {
+    }
+    
+    marker_2 : mc.testcases.petrinet._ast.ASTNumberMarker{
+    }
+    
+    << genericType = "mc.testcases.petrinet._ast.ASTMarker" >> composition place_1 -- (marker) [1] marker_2;
+        
+}

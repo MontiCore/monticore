@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+  automaton foo {
+    opt [[ state test; ]]
+    opt $O [[ state test2; ]]
+    opt [[ State $C2 ]]
+    opt $O2 [[ State $O2 ]]
+  }
+}

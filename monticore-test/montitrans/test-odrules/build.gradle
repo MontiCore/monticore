@@ -1,0 +1,75 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = 'MontiTrans Test: ODRules'
+def grammarsDir = "$projectDir/src/main/grammars"
+def modelsDir = "$projectDir/src/main/models"
+def _outputDir = "$buildDir/generated-sources"
+
+dependencies {
+  implementation project(':monticore-test:montitrans:test-dstl-gen')
+}
+
+
+// Generate test languages
+// create a task for each grammar in grammarDir
+fileTree(grammarsDir).each {
+  def g = it
+  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+    grammar = file g
+    outputDir = file "$buildDir/generated-sources"
+    def uptoDate = incCheck(g.toString().substring(grammarsDir.length() + 1))
+    outputs.upToDateWhen { uptoDate }
+  }
+}
+
+task generateMTOD {
+  group = "montitrans"
+}
+
+fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
+  def g = it
+  def taskname = "generateAutomatonTRRule${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+  task "$taskname"(type: JavaExec) {
+    group = "montitrans"
+    classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
+    main = 'de.monticore.tf.odrules.ODRulesCLI'
+    args += ["-i", "$g",
+             "-o", "$buildDir/generated-sources"]
+  }
+  generateMTOD.dependsOn("$taskname")
+}
+fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
+  def g = it
+  def taskname = "generateMiscTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+  task "$taskname"(type: JavaExec) {
+    group = "montitrans"
+    classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
+    main = 'de.monticore.tf.odrules.ODRulesCLI'
+    args += ["-i", "$g",
+             "-o", "$buildDir/generated-sources"]
+  }
+  generateMTOD.dependsOn("$taskname")
+}
+task generatePetrinetTRRules {
+  group = "montitrans"
+}
+fileTree(dir: "$modelsDir/petrinet", include: '**/**.mtod').each {
+  def g = it
+  def taskname = "generatePetrinetTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+  task "$taskname"(type: JavaExec) {
+    group = "montitrans"
+    classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
+    main = 'de.monticore.tf.odrules.ODRulesCLI'
+    args += ["-i", "$g",
+             "-o", "$buildDir/generated-sources"]
+  }
+  generateMTOD.dependsOn("$taskname")
+}
+
+compileJava {
+  dependsOn project.collect { it.tasks.withType(MCTask) }
+  dependsOn "generateMTOD"
+}
+
+sourceSets {
+  main.java.srcDirs += [ _outputDir ]
+}

@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+// example of list operator
+// for a specif user all entries are deleted
+{
+    user $_ $_ {
+        [[ opt [[ list[[ TextEntry $textE ]] ]] :- ]]
+        [[ opt [[ list[[ PhotoEntry $photoE ]] ]] :- ]]
+    }
+}

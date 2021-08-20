@@ -16,7 +16,6 @@ subprojects {
   
   dependencies {
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
-    testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
     testImplementation group:'junit', name:'junit', version:junit_version
   }
   
@@ -43,7 +42,6 @@ configure(subprojects.findAll {it.name != 'forParser'})  {
         requireCapability("de.monticore:monticore-grammar-grammars")
       }
     }
-    testImplementation group:'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
     testImplementation group:'junit', name:'junit', version:junit_version
   }
 }

@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton AutomatonWithTwoMatches {
+	state a;
+	
+    a -x> b1;
+    
+    state b1 { 
+        state c1 <<initial>>;
+     }
+
+    a -x> b2;
+    
+    state b2 { 
+        state c2 <<initial>>;
+     }
+}

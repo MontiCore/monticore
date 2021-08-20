@@ -39,7 +39,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     if (getCurrentScope().isPresent()) {
       getCurrentScope().get().add(symbol);
     } else {
-      Log.warn("0xA5021x45404 Symbol cannot be added to current scope, since no scope exists.");
+      Log.warn("0xAE867 Symbol cannot be added to current scope, since no scope exists.");
     }
     IGrammarScope scope = createScope(false);
     putOnStack(scope);
@@ -80,7 +80,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
       if (getCurrentScope().isPresent()) {
         getCurrentScope().get().add(symbol);
       } else {
-        Log.warn("0xA5021x12230 Symbol cannot be added to current scope, since no scope exists.");
+        Log.warn("0xAE862 Symbol cannot be added to current scope, since no scope exists.");
       }
       // symbol -> ast
       symbol.setAstNode(node);
@@ -114,7 +114,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
       if (getCurrentScope().isPresent()) {
         getCurrentScope().get().add(symbol);
       } else {
-        Log.warn("0xA5021x12235 Symbol cannot be added to current scope, since no scope exists.");
+        Log.warn("0xAE863 Symbol cannot be added to current scope, since no scope exists.");
       }
       // symbol -> ast
       symbol.setAstNode(node);
@@ -145,7 +145,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
       if (getCurrentScope().isPresent()) {
         getCurrentScope().get().add(symbol);
       } else {
-        Log.warn("0xA5021x12261 Symbol cannot be added to current scope, since no scope exists.");
+        Log.warn("0xAE864 Symbol cannot be added to current scope, since no scope exists.");
       }
       // symbol -> ast
       symbol.setAstNode(node);
@@ -173,7 +173,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     if (getCurrentScope().isPresent()) {
       getCurrentScope().get().add(symbol);
     } else {
-      Log.warn("0xA5021x12263 Symbol cannot be added to current scope, since no scope exists.");
+      Log.warn("0xAE865 Symbol cannot be added to current scope, since no scope exists.");
     }
     // symbol -> ast
     symbol.setAstNode(node);
@@ -281,7 +281,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     if (getCurrentScope().isPresent()) {
       getCurrentScope().get().add(symbol);
     } else {
-      Log.warn("0xA5021x12264 Symbol cannot be added to current scope, since no scope exists.");
+      Log.warn("0xAE866 Symbol cannot be added to current scope, since no scope exists.");
     }
     // symbol -> ast
     symbol.setAstNode(node);

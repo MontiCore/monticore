@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton AutomatonTwoSubstates {
+    state a {
+        state b;
+        state c;
+    }
+}

@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package transformations;
+
+module SimpleMethod {
+
+	transformation myMethod() {
+        automaton Testautomat {
+            state a  <<initial>><<final>>;
+	
+            a -x> c;
+	
+            state b { 
+                state c;
+                state d <<final>>; 
+		
+                c -y> d;
+                d -y> d;
+	        }
+
+	        b -x> a;
+	    }
+	    where {
+	      1 + 1 == 2
+	      && (true || false)
+	    }
+	}
+}

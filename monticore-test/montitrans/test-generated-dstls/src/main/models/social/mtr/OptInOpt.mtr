@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+// example of an optional element within another optional element
+// in a network there is an optional user "Max Muster"
+// if the user is present it may have an optional entry "MoveIt"
+// if this entry is present replace with a new entry
+// if not present add a new entry
+
+    social network Foo {
+        opt [[
+            user Max Muster m {
+                [[ opt[[ entry MoveIt; ]] :- entry DONOTMoveIt; ]]
+            }
+        ]]
+    }
+
+
