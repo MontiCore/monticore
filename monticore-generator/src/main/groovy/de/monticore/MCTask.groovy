@@ -55,12 +55,16 @@ abstract public class MCTask extends DefaultTask {
     // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
     dependsOn(project.configurations.getByName("grammar"))
+
+    buildInfoFile.set(project.layout.buildDirectory.get().dir("resources").dir("main").file("buildInfo.properties"))
   }
   
   final RegularFileProperty grammar = project.objects.fileProperty()
   
   final DirectoryProperty outputDir = project.objects.directoryProperty()
-  
+
+  final RegularFileProperty buildInfoFile = project.objects.fileProperty()
+
   // this attributes enables to defines super grammars for a grammar build task
   // is super grammar gets updated the task itself is rebuild as well
   final ConfigurableFileCollection superGrammars = project.objects.fileCollection()
@@ -93,6 +97,11 @@ abstract public class MCTask extends DefaultTask {
   @OutputDirectory
   DirectoryProperty getOutputDir() {
     return outputDir
+  }
+
+  @OutputFile
+  RegularFileProperty getBuildInfoFile() {
+    return buildInfoFile
   }
   
   @Incremental
@@ -403,8 +412,9 @@ abstract public class MCTask extends DefaultTask {
 
 
   protected void generateBuildInfo() {
-    String outAsString = project.layout.buildDirectory.get().asFile.toString()
-    File file = new File("${outAsString}/resources/main/buildInfo.properties")
+    File file = buildInfoFile.get().asFile
+//    String outAsString = project.layout.buildDirectory.get().asFile.toString()
+//    File file = new File("${outAsString}/resources/main/buildInfo.properties")
     file.mkdirs()
     file.delete()
     file.createNewFile()
