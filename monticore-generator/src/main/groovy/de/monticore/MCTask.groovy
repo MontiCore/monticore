@@ -465,8 +465,6 @@ abstract public class MCTask extends DefaultTask {
 
   protected void generateBuildInfo() {
     File file = buildInfoFile.get().asFile
-//    String outAsString = project.layout.buildDirectory.get().asFile.toString()
-//    File file = new File("${outAsString}/resources/main/buildInfo.properties")
     file.mkdirs()
     file.delete()
     file.createNewFile()
