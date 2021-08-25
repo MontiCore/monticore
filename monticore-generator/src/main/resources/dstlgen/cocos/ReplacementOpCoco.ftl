@@ -7,6 +7,7 @@ import de.monticore.tf.ast.IPattern;
 import de.monticore.tf.ast.IReplacement;
 import de.se_rwth.commons.logging.Log;
 
+<#assign service = glex.getGlobalVar("service")>
 /**
 * This CoCo makes sure that no replacement is empty.
 */
@@ -22,7 +23,7 @@ public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_PatC
         break;
       } else if (_${compListName} instanceof IReplacement &&
             ((IReplacement) _${compListName}).getReplacementOp().isRelative()) {
-        Log.error(String.format("0xF0C10 Can't use relative replacement operator without preceding pattern to specify insert position."),
+        Log.error(String.format("0xF0C10${service.getGeneratedErrorCode(classname + prod.getName() + compListName)} Can't use relative replacement operator without preceding pattern to specify insert position."),
             _${compListName}.get_SourcePositionStart());
       }
     }
