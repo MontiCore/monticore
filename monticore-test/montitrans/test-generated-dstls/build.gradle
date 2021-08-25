@@ -19,6 +19,7 @@ fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr'
     main = 'mc.testcases.statechart.tr.StatechartCLI'
     args += ["-i", "$g",
             "-o", "$buildDir/generated-sources"]
+    outputs.dir("$buildDir/generated-sources")
   }
   generateStatechartTRRules.dependsOn("$taskname")
 }
@@ -35,6 +36,7 @@ fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').ea
     main = 'mc.testcases.social.tr.SocialNetworkCLI'
     args += ["-i", "$g",
              "-o", "$buildDir/generated-sources"]
+    outputs.dir("$buildDir/generated-sources")
   }
   generateSocialNetworkTRRules.dependsOn("$taskname")
 }
