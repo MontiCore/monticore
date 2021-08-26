@@ -4,6 +4,10 @@ import automata.AutomataMill;
 import automata.AutomataTool;
 import org.junit.*;
 import de.se_rwth.commons.logging.Log;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -69,6 +73,13 @@ public class AutomataToolTest {
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(6, p.size());
+  }
+
+  @Test
+  public void testPrintVersion() {
+
+
+    AutomataTool.main(new String[] {"-v"});
   }
   
 }

@@ -8,6 +8,7 @@ import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -17,6 +18,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
@@ -59,6 +61,7 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
         .addCDMember(createPrettyPrintMethod())
         .addCDMember(createPrintMethod(parserService.getCDSymbol()))
         .addCDMember(createPrintHelpMethod())
+        .addCDMember(createPrintVersionMethod())
         .addCDMember(createReportMethod())
         .addCDMember(createRunDefaultCoCosMethod())
         .addCDMember(createRunAdditionalCoCosMethod())
@@ -255,6 +258,21 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     ASTCDParameter parameter = getCDParameterFacade().createParameter(optionsType, "options");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "printHelp", parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintHelp", cliName));
+    return method;
+  }
+
+  /**
+   * creates a method to print the version information to the CLI
+   *
+   * @return the decorated printVersion method
+   */
+  protected ASTCDMethod createPrintVersionMethod() {
+    String buildDate = LocalDate.now().toString();
+    String toolName = symbolTableService.getCDName() + "Tool";
+    String mcVersion =  new UpdateCheckerRunnable().getLocalVersion();
+
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "printVersion");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", toolName, mcVersion, buildDate));
     return method;
   }
 
