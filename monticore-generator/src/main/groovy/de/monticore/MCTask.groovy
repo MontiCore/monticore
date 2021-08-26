@@ -57,12 +57,16 @@ abstract public class MCTask extends DefaultTask {
     // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
     dependsOn(project.configurations.getByName("grammar"))
+
+    buildInfoFile.set(project.layout.buildDirectory.get().dir("resources").dir("main").file("buildInfo.properties"))
   }
   
   final RegularFileProperty grammar = project.objects.fileProperty()
   
   final DirectoryProperty outputDir = project.objects.directoryProperty()
-  
+
+  final RegularFileProperty buildInfoFile = project.objects.fileProperty()
+
   // this attributes enables to defines super grammars for a grammar build task
   // is super grammar gets updated the task itself is rebuild as well
   final ConfigurableFileCollection superGrammars = project.objects.fileCollection()
@@ -100,7 +104,12 @@ abstract public class MCTask extends DefaultTask {
   DirectoryProperty getOutputDir() {
     return outputDir
   }
-  
+
+  @OutputFile
+  RegularFileProperty getBuildInfoFile() {
+    return buildInfoFile
+  }
+
   @Incremental
   @InputFile
   RegularFileProperty getGrammar() {
@@ -222,7 +231,10 @@ abstract public class MCTask extends DefaultTask {
   void execute(InputChanges inputs) {
     logger.info(inputs.isIncremental() ? "CHANGED inputs considered out of date"
             : "ALL inputs considered out of date");
-    
+
+    // generate build info properties file into target resources directory
+    generateBuildInfo()
+
     // if no path for hand coded classes is specified use $projectDir/src/main/java as default
     if (handcodedPath.isEmpty()) {
       File hcp = project.layout.projectDirectory.file("src/main/java").getAsFile()
@@ -429,8 +441,7 @@ abstract public class MCTask extends DefaultTask {
     }
     return true
   }
-
-  /**
+/**
    * Returns the path to the TR grammar.
    * Please ensure that the outputDir is previously set
    * @param originalGrammar the original grammar file
@@ -443,14 +454,23 @@ abstract public class MCTask extends DefaultTask {
             modelPath.isEmpty() ? [project.layout.projectDirectory.file("src/main/grammars").toString()] : modelPath,
             originalGrammar).toString())
   }
-
   protected File fromBasePath(String filePath) {
     File file = new File(filePath);
     return !file.isAbsolute()
             ? new File(project.getProjectDir(), filePath)
             : file;
   }
-  
+
+
+
+  protected void generateBuildInfo() {
+    File file = buildInfoFile.get().asFile
+    file.mkdirs()
+    file.delete()
+    file.createNewFile()
+    file.write("version = ${project.version}")
+  }
+
 }
 
 /**

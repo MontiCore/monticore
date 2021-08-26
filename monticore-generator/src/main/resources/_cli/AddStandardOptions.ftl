@@ -5,6 +5,12 @@ options.addOption(org.apache.commons.cli.Option.builder("h")
     .desc("Prints this help dialog")
     .build());
 
+//version
+options.addOption(org.apache.commons.cli.Option.builder("v")
+    .longOpt("version")
+    .desc("Prints version information")
+    .build());
+
 //parse input file
 options.addOption(org.apache.commons.cli.Option.builder("i")
     .longOpt("input")

@@ -174,13 +174,32 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   }
 
   public Map<String, Collection<String>> getTokenModesWithInherited() {
+    // A token may only be assigned to one mode
     final Map<String, Collection<String>> ret = Maps.newHashMap(tokenModes);
-
-    for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
-      superGrammarRef.lazyLoadDelegate().getTokenModesWithInherited().forEach((k,v) -> ret.merge(k, v, (v1, v2) -> {v1.addAll(v2); return v1;}));
+    // allToken is the list of all already assigned characters
+    Collection<String> allToken = Sets.newHashSet();
+    ret.forEach((k,v) -> v.forEach(t -> allToken.add(t)));
+    for (MCGrammarSymbol superGrammar: getAllSuperGrammars()) {
+      for (Map.Entry<String, Collection<String>> superMode: superGrammar.getTokenModes().entrySet()) {
+        Collection<String> superTokenSet;
+        if (ret.containsKey(superMode.getKey())) {
+          // the mode already exists
+          superTokenSet = ret.get(superMode.getKey());
+        } else {
+          superTokenSet = Sets.newHashSet();
+        }
+        superMode.getValue().stream().filter(t ->!allToken.contains(t)).forEach(t ->superTokenSet.add(t));
+        if (!superTokenSet.isEmpty()) {
+          ret.put(superMode.getKey(), superTokenSet);
+          allToken.addAll(superTokenSet);
+        }
+      }
     }
     return ret;
+  }
+
+  public Map<String, Collection<String>> getTokenModes() {
+    return  Maps.newHashMap(tokenModes);
   }
 
   public Optional<ASTMCGrammar> getAstGrammar() {

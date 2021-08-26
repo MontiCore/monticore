@@ -7,6 +7,7 @@ import de.monticore.dstlgen.ruletranslation.CollectGrammarInformationVisitor;
 import de.monticore.dstlgen.ruletranslation.DSTLGenAttributeHelper;
 import de.monticore.dstlgen.ruletranslation.DSTLGenInheritanceHelper;
 import de.monticore.dstlgen.util.DSTLPrettyPrinter;
+import de.monticore.dstlgen.util.DSTLService;
 import de.monticore.expressions.prettyprint.*;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -119,7 +120,7 @@ public class DSTLGenCLI {
       }
     } catch (ParseException e) {
       // ann unexpected error from the apache CLI parser:
-      Log.error("0xA5C01 Could not process CLI parameters: " + e.getMessage());
+      Log.error("0xA5C02 Could not process CLI parameters: " + e.getMessage());
     }
   }
 
@@ -200,7 +201,7 @@ public class DSTLGenCLI {
         Log.info("Grammar " + grammar + " parsed successfully", LOG_ID);
         GrammarTransformer.transform(ast.get());
       } else {
-        Log.error("There are parsing errors while parsing of the model " + grammar);
+        Log.error("0xA5C03 There are parsing errors while parsing of the model " + grammar);
       }
       return ast.get();
     } catch (IOException e) {
@@ -224,7 +225,7 @@ public class DSTLGenCLI {
         Log.info("Grammar " + model.getName() + " parsed successfully", LOG_ID);
         GrammarTransformer.transform(ast.get());
       } else {
-        Log.error("There are parsing errors while parsing of the model " + model.getName());
+        Log.error("0xA5C04 There are parsing errors while parsing of the model " + model.getName());
       }
       return ast.get();
     } catch (IOException e) {
@@ -297,6 +298,7 @@ public class DSTLGenCLI {
   }
 
   public void generateDSTL(ASTMCGrammar grammar, Optional<ASTMCGrammar> grammarExt) {
+    this.glex.setGlobalValue("service", new DSTLService(grammar));
     //    CommonVisitor.run(new RemoveCommentsVisitor(), dslAst);
     DSL2TransformationLanguageVisitor dsl2TfLang = new DSL2TransformationLanguageVisitor();
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
