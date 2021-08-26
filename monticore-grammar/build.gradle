@@ -126,6 +126,7 @@ fileTree("src/main/examples").matching { include '**/*.mc4' }.each {
 }
 
 compileTestJava.dependsOn(generateTest)
+processGrammarsResources.dependsOn(generateTR)
 
 java {
     registerFeature('grammars') {
