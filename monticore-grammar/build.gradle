@@ -80,6 +80,7 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
         def uptoDate = incCheck(grammarIncludingPackage)
         outputs.upToDateWhen { uptoDate }
         dstlGen = false
+        dependsOn("$taskname")
       }
       generateTR.dependsOn("${taskname}TR")
     }
