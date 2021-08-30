@@ -49,7 +49,7 @@ public class CLIDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(16, cliClass.getCDMethodList().size());
+    assertEquals(17, cliClass.getCDMethodList().size());
   }
 
   @Test

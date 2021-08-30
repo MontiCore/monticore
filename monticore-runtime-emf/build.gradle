@@ -10,7 +10,6 @@ dependencies {
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.match:' + emf_compare_version
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.diff:' + emf_compare_version
   testImplementation "junit:junit:$junit_version"
-  testImplementation 'ch.qos.logback:logback-classic:1.1.2'
   testImplementation 'org.codehaus.groovy:groovy:3.0.7'
 }
 

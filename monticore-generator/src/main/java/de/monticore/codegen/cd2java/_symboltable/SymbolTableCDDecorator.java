@@ -20,7 +20,6 @@ import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecora
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 

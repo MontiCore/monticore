@@ -7,6 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +35,11 @@ public class UpdateCheckerRunnableTest {
     httpGetter = mock(HttpGetter.class);
 
     updateCheckerRunnable.setHttpGetter(httpGetter);
+  }
+
+  @Test
+  public void testFindLocalPropertiesFile() {
+    Assert.assertNotNull(updateCheckerRunnable.getLocalVersion());
   }
 
 

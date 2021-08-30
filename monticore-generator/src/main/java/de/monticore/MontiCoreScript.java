@@ -619,7 +619,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
       TemplateController tc = setup.getNewTemplateController(configTemplate);
       TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
-      List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService());
+      List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService(), cds.get(0).getCDDefinition());
       hp.processValue(tc, cds.get(0).getCDDefinition(), args);
     }
   }
@@ -860,7 +860,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex,  cliDecorator,parserService);
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
-
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(cliCD);

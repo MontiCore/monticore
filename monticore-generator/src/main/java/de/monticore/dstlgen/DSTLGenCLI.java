@@ -7,6 +7,7 @@ import de.monticore.dstlgen.ruletranslation.CollectGrammarInformationVisitor;
 import de.monticore.dstlgen.ruletranslation.DSTLGenAttributeHelper;
 import de.monticore.dstlgen.ruletranslation.DSTLGenInheritanceHelper;
 import de.monticore.dstlgen.util.DSTLPrettyPrinter;
+import de.monticore.dstlgen.util.DSTLService;
 import de.monticore.expressions.prettyprint.*;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -70,6 +71,7 @@ public class DSTLGenCLI {
     GrammarFamilyMill.reset();
   }
 
+  private final String HC_SUFFIX = "HC";
   final String LOG_ID = "DSTLGenScript";
   private GlobalExtensionManagement glex;
   private GeneratorEngine generator;
@@ -118,7 +120,7 @@ public class DSTLGenCLI {
       }
     } catch (ParseException e) {
       // ann unexpected error from the apache CLI parser:
-      Log.error("0xA5C01 Could not process CLI parameters: " + e.getMessage());
+      Log.error("0xA5C02 Could not process CLI parameters: " + e.getMessage());
     }
   }
 
@@ -132,15 +134,15 @@ public class DSTLGenCLI {
 
 
   protected void doGenDSTL(String input, MCPath modelPath, MCPath modelsHC) {
-    Log.info("--------------------------------", LOG_ID);
-    Log.info("Generating DSTLs", LOG_ID);
-    Log.info("--------------------------------", LOG_ID);
-    Log.info("Input grammar     : " + input, LOG_ID);
-    Log.info("Model path        : " + modelPath.toString(), LOG_ID);
-    Log.info("HC Model Ext path : " + modelsHC, LOG_ID);
-    Log.info("Output dir        : " + outDirectory, LOG_ID);
-    Log.info("Handcoded sources : " + handcodedPath, LOG_ID);
-    Log.info("Model File extension    : " + modelFileExtension, LOG_ID);
+    Log.debug("--------------------------------", LOG_ID);
+    Log.debug("Generating DSTLs", LOG_ID);
+    Log.debug("--------------------------------", LOG_ID);
+    Log.debug("Input grammar     : " + input, LOG_ID);
+    Log.debug("Model path        : " + modelPath.toString(), LOG_ID);
+    Log.debug("HC Model Ext path : " + modelsHC, LOG_ID);
+    Log.debug("Output dir        : " + outDirectory, LOG_ID);
+    Log.debug("Handcoded sources : " + handcodedPath, LOG_ID);
+    Log.debug("Model File extension    : " + modelFileExtension, LOG_ID);
 
     // Parse Grammar
     ASTMCGrammar g;
@@ -178,9 +180,6 @@ public class DSTLGenCLI {
     // Generate DSTL to ODRule translator
     generateTranslator (g);
 
-    // Generate base class
-    generateScript(g, false);
-
     // Generate main class
     generateMainClass(g);
 
@@ -202,7 +201,7 @@ public class DSTLGenCLI {
         Log.info("Grammar " + grammar + " parsed successfully", LOG_ID);
         GrammarTransformer.transform(ast.get());
       } else {
-        Log.error("There are parsing errors while parsing of the model " + grammar);
+        Log.error("0xA5C03 There are parsing errors while parsing of the model " + grammar);
       }
       return ast.get();
     } catch (IOException e) {
@@ -226,7 +225,7 @@ public class DSTLGenCLI {
         Log.info("Grammar " + model.getName() + " parsed successfully", LOG_ID);
         GrammarTransformer.transform(ast.get());
       } else {
-        Log.error("There are parsing errors while parsing of the model " + model.getName());
+        Log.error("0xA5C04 There are parsing errors while parsing of the model " + model.getName());
       }
       return ast.get();
     } catch (IOException e) {
@@ -269,7 +268,7 @@ public class DSTLGenCLI {
   public Optional<ASTMCGrammar> parseGrammarHC(ASTMCGrammar grammar, MCPath paths) {
     List<String> trGrammarNames = new ArrayList<>(grammar.getPackageList());
     trGrammarNames.add("tr");
-    trGrammarNames.add(grammar.getName() + "TR.mc4");
+    trGrammarNames.add(grammar.getName() + "TR" + HC_SUFFIX + ".mc4");
 
     Path trGrammarPath = Paths.get(trGrammarNames.stream().collect(Collectors.joining(File.separator)));
     Optional<URL> hwGrammar = paths.find(trGrammarPath.toString());
@@ -299,6 +298,7 @@ public class DSTLGenCLI {
   }
 
   public void generateDSTL(ASTMCGrammar grammar, Optional<ASTMCGrammar> grammarExt) {
+    this.glex.setGlobalValue("service", new DSTLService(grammar));
     //    CommonVisitor.run(new RemoveCommentsVisitor(), dslAst);
     DSL2TransformationLanguageVisitor dsl2TfLang = new DSL2TransformationLanguageVisitor();
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
@@ -555,23 +555,6 @@ public class DSTLGenCLI {
 
   }
 
-  /**
-   * Generate Groovy Script
-   *
-   * @param grammar
-   */
-  public void generateScript(ASTMCGrammar grammar, boolean noCoCoGen) {
-    if (!grammar.isComponent()) {
-      // generate script class for groovy
-      String _package = Names.getPathFromPackage(getDSTLPackagePrefix(grammar)  + ".script.");
-      String classname = getSimpleTypeNameToGenerate(grammar.getName()
-                                                             + "TRScript", _package, handcodedPath);
-
-      Path filePath = Paths.get(_package + classname + ".java");
-      generator.generate("dstlgen.script.Script", filePath,
-                         grammar, classname, modelFileExtension, noCoCoGen, getDSTLPackagePrefix(grammar));
-    }
-  }
 
   protected String getDSTLPackagePrefix(ASTMCGrammar grammar) {
     String dslPackage = Joiners.DOT.join(grammar.getPackageList());
@@ -592,7 +575,7 @@ public class DSTLGenCLI {
       Path filePath = Paths.get(packageName + className + ".java");
       generator.generate("dstlgen.MainClass", filePath,
                          grammar, className, modelFileExtension, grammar.getName()
-                                 + "TRScript", getDSTLPackagePrefix(grammar));
+                                 + "TR", getDSTLPackagePrefix(grammar), grammar.getName(), Names.constructQualifiedName(grammar.getPackageList()));
     }
 
   }

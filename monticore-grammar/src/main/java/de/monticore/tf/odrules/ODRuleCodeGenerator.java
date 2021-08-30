@@ -84,7 +84,11 @@ public class ODRuleCodeGenerator {
     List<String> millImportList = new ArrayList<>(parsedModel.getGrammarPackageList());
     millImportList.add(parsedModel.getGrammarName().toLowerCase());
     millImportList.add(parsedModel.getGrammarName() + "Mill");
-    odRuleCodeGenerator.hierarchyHelper.addCustomImports("import " + Joiners.DOT.join(millImportList) + ";");
+    String p = Joiners.DOT.join(millImportList);
+    if(p.startsWith(".")){
+      p = p.substring(1);
+    }
+    odRuleCodeGenerator.hierarchyHelper.addCustomImports("import " + p + ";");
     glex.setGlobalValue("hierarchyHelper", odRuleCodeGenerator.hierarchyHelper);
     glex.setGlobalValue("grammarName", parsedModel.getGrammarName());
 
