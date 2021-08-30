@@ -6,6 +6,7 @@ import de.se_rwth.commons.logging.Log;
 import ${package}.${grammarNameLower}tr._ast.*;
 import ${package}.${grammarNameLower}tr._visitor.${ast.getName()}TRVisitor2;
 
+<#assign service = glex.getGlobalVar("service")>
 /**
  * This CoCo makes sure no optional nodes appear on the right-hand side of replacements.
  */
@@ -37,7 +38,7 @@ public class ${className}
   <#list productions as prod>
   @Override
   public void check(AST${prod.getName()}_Opt node) {
-    Log.error("Optional nodes must not appear on the right-hand side of replacements.", node.get_SourcePositionStart());
+    Log.error("0xF0C20${service.getGeneratedErrorCode(className + prod.getName())} Optional nodes must not appear on the right-hand side of replacements.", node.get_SourcePositionStart());
   }
   </#list>
 

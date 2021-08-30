@@ -4,6 +4,7 @@ package ${package}.${grammarNameLower}tr._cocos;
 
 import de.se_rwth.commons.logging.Log;
 
+<#assign service = glex.getGlobalVar("service")>
 /**
  * This CoCo makes sure that no negative element is changed.
  */
@@ -15,7 +16,7 @@ public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_NegC
     node.accept(v.getTraverser());
 
     if(v.getRepElements() > 0) {
-        Log.error(String.format("0xF0C09 Negative elements must not be changed.",
+        Log.error(String.format("0xF0C09${service.getGeneratedErrorCode(classname + prod.getName())} Negative elements must not be changed.",
             node.getClass().getName()),
             node.get_SourcePositionStart());
     }

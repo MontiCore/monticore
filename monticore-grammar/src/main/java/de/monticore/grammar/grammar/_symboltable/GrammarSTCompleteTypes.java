@@ -64,17 +64,13 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   }
 
   @Override
-  public void visit(ASTTokenMode node) {
-    node.streamTokenName().forEach(t -> grammarSymbol.addMode(node.getName(), t));
-  }
-
-  @Override
   public void visit(ASTLexProd node) {
     GrammarVisitor2.super.visit(node);
-    if (node.isEmptyMode()) {
-      grammarSymbol.addMode(MCGrammarSymbol.DEFAULT_MODE, node.getName());
+    if (node.isPresentMode()) {
+      grammarSymbol.addMode(node.getMode(), node.getName());
     } else {
-      node.streamMode().forEach(m -> grammarSymbol.addMode(m, node.getName()));
+      grammarSymbol.addMode(MCGrammarSymbol.DEFAULT_MODE, node.getName());
+
     }
   }
 

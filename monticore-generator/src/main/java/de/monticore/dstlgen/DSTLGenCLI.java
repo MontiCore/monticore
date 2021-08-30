@@ -7,6 +7,7 @@ import de.monticore.dstlgen.ruletranslation.CollectGrammarInformationVisitor;
 import de.monticore.dstlgen.ruletranslation.DSTLGenAttributeHelper;
 import de.monticore.dstlgen.ruletranslation.DSTLGenInheritanceHelper;
 import de.monticore.dstlgen.util.DSTLPrettyPrinter;
+import de.monticore.dstlgen.util.DSTLService;
 import de.monticore.expressions.prettyprint.*;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -66,6 +67,7 @@ public class DSTLGenCLI {
     GrammarFamilyMill.reset();
   }
 
+  private final String HC_SUFFIX = "HC";
   final String LOG_ID = "DSTLGenScript";
   private GlobalExtensionManagement glex;
   private GeneratorEngine generator;
@@ -114,7 +116,7 @@ public class DSTLGenCLI {
       }
     } catch (ParseException e) {
       // ann unexpected error from the apache CLI parser:
-      Log.error("0xA5C01 Could not process CLI parameters: " + e.getMessage());
+      Log.error("0xA5C02 Could not process CLI parameters: " + e.getMessage());
     }
   }
 
@@ -181,7 +183,7 @@ public class DSTLGenCLI {
         Log.info("Grammar " + grammar + " parsed successfully", LOG_ID);
         GrammarTransformer.transform(ast.get());
       } else {
-        Log.error("There are parsing errors while parsing of the model " + grammar);
+        Log.error("0xA5C03 There are parsing errors while parsing of the model " + grammar);
       }
       return ast.get();
     } catch (IOException e) {
@@ -189,6 +191,29 @@ public class DSTLGenCLI {
     }
   }
 
+  /**
+   * Parse a single grammar
+   *
+   * @param model
+   * @return
+   */
+  public ASTMCGrammar parseGrammar(ModelCoordinate model) {
+    Log.info("Start parsing of the grammar " + model.getName(), LOG_ID);
+    try {
+      Reader reader = ModelCoordinates.getReader(model);
+      GrammarFamilyParser parser = GrammarFamilyMill.parser();
+      Optional<ASTMCGrammar> ast = parser.parse(reader);
+      if (!parser.hasErrors() && ast.isPresent()) {
+        Log.info("Grammar " + model.getName() + " parsed successfully", LOG_ID);
+        GrammarTransformer.transform(ast.get());
+      } else {
+        Log.error("0xA5C04 There are parsing errors while parsing of the model " + model.getName());
+      }
+      return ast.get();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   /**
    * Initialize symbol table
@@ -225,7 +250,7 @@ public class DSTLGenCLI {
   public Optional<ASTMCGrammar> parseGrammarHC(ASTMCGrammar grammar, MCPath paths) {
     List<String> trGrammarNames = new ArrayList<>(grammar.getPackageList());
     trGrammarNames.add("tr");
-    trGrammarNames.add(grammar.getName() + "TR.mc4");
+    trGrammarNames.add(grammar.getName() + "TR" + HC_SUFFIX + ".mc4");
 
     Path trGrammarPath = Paths.get(trGrammarNames.stream().collect(Collectors.joining(File.separator)));
     Optional<URL> hwGrammar = paths.find(trGrammarPath.toString());
@@ -255,6 +280,7 @@ public class DSTLGenCLI {
   }
 
   public void generateDSTL(ASTMCGrammar grammar, Optional<ASTMCGrammar> grammarExt) {
+    this.glex.setGlobalValue("service", new DSTLService(grammar));
     //    CommonVisitor.run(new RemoveCommentsVisitor(), dslAst);
     DSL2TransformationLanguageVisitor dsl2TfLang = new DSL2TransformationLanguageVisitor();
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();

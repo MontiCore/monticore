@@ -32,6 +32,7 @@ import ${package}.translation.${grammarName}Rule2OD;
 import ${package}.translation.${grammarName}RuleCollectVariables;
 import org.apache.commons.cli.*;
 
+<#assign service = glex.getGlobalVar("service")>
 
 public class ${className} {
   
@@ -58,7 +59,7 @@ public class ${className} {
   
       if (!cmd.hasOption("i")) {
         Log.error(
-            "0xA1001 There is no \".mtr\" file to parse. Please check the \"input\" option.");
+            "0xA1001${service.getGeneratedErrorCode(classname)} There is no \".mtr\" file to parse. Please check the \"input\" option.");
         // do not continue, when this error is logged
         return;
       }
@@ -90,7 +91,7 @@ public class ${className} {
       generate(odrule, Paths.get(cmd.getOptionValue("o")).toFile());
     } catch ( ParseException e) {
         // an unexpected error from the Apache CLI parser:
-        Log.error("0xA6151 Could not process CLI parameters: " + e.getMessage());
+        Log.error("0xA6151${service.getGeneratedErrorCode(classname)} Could not process CLI parameters: " + e.getMessage());
       }
   }
   
@@ -101,13 +102,13 @@ public class ${className} {
       ${dstlName}Parser parser = new ${dstlName}Parser();
       Optional<AST${grammarName}TFRule> ast = parser.parse${grammarName}TFRule(model.toString());
       if (!parser.hasErrors() && ast.isPresent()) {
-        Log.info("Model " + model + " parsed successfully", LOG_ID);
+        Log.info("${service.getGeneratedErrorCode(classname)} Model " + model + " parsed successfully", LOG_ID);
         String name = model.toString().replace(".mtr", "");
         ast.get().getTFRule().setName(name.substring(model.toString().lastIndexOf(File.separator) + 1, name.length()));
       }
       else {
         Log.info(
-            "There are parsing errors while parsing of the model " + model, LOG_ID);
+            "${service.getGeneratedErrorCode(classname)} There are parsing errors while parsing of the model " + model, LOG_ID);
       }
       return ast;
     }

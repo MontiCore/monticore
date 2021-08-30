@@ -556,9 +556,6 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  /**
-   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator)
-   */
   @Override
   public void handle(ASTNonTerminalSeparator node) {
     if (node.isPresentUsageName()) {
@@ -682,6 +679,12 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
     println(a.getName());
     getPrinter().indent();
+
+    if (a.isPresentMode()) {
+      print("(");
+      print(a.getMode());
+      print(")");
+    }
 
     if (a.isPresentLexOption()) {
       a.getLexOption().accept(getTraverser());
@@ -1057,9 +1060,6 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-  /**
-   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTSymbolDefinition)
-   */
   @Override
   public void handle(ASTSymbolDefinition node) {
     if (node.isGenSymbol()) {
@@ -1098,9 +1098,6 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
   }
 
 
-  /**
-   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTStartRule)
-   */
   @Override
   public void handle(ASTStartRule node) {
     getPrinter().println(" start " + node.getName() + ";");

@@ -26,7 +26,7 @@ public class DSTLPathUtil {
             File relFile = relP.toFile();
             return new File(new File(relFile.getParent(), "tr"), relFile.getName().replace(".mc4", "TR.mc4"));
         }
-        Log.error("Could not determine TR path for grammar " + grammar);
+        Log.error("0xA5C01 Could not determine TR path for grammar " + grammar);
         return null;
     }
 }

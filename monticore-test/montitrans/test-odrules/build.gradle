@@ -34,6 +34,7 @@ fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
     main = 'de.monticore.tf.odrules.ODRulesCLI'
     args += ["-i", "$g",
              "-o", "$buildDir/generated-sources"]
+    outputs.dir("$buildDir/generated-sources")
   }
   generateMTOD.dependsOn("$taskname")
 }
@@ -46,6 +47,7 @@ fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
     main = 'de.monticore.tf.odrules.ODRulesCLI'
     args += ["-i", "$g",
              "-o", "$buildDir/generated-sources"]
+    outputs.dir("$buildDir/generated-sources")
   }
   generateMTOD.dependsOn("$taskname")
 }
@@ -61,6 +63,7 @@ fileTree(dir: "$modelsDir/petrinet", include: '**/**.mtod').each {
     main = 'de.monticore.tf.odrules.ODRulesCLI'
     args += ["-i", "$g",
              "-o", "$buildDir/generated-sources"]
+    outputs.dir("$buildDir/generated-sources")
   }
   generateMTOD.dependsOn("$taskname")
 }

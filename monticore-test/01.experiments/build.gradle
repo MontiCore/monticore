@@ -10,7 +10,7 @@ plugins {
 subprojects {
   apply plugin: 'monticore'
   apply plugin: 'jacoco'
-  
+
   ext.grammarDir = 'src/main/grammars'
   ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
   
@@ -23,7 +23,7 @@ subprojects {
   sourceSets {
     main.java.srcDirs += [ outDir ]
   }
-  
+
   compileJava {
     dependsOn project.collect { it.tasks.withType(MCTask) }
   }

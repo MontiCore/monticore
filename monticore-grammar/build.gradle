@@ -39,7 +39,7 @@ sourceSets {
     grammars {
       java.srcDirs = []
         resources {
-            srcDirs(grammarDir)
+            srcDirs([grammarDir, grammarOutDir])
             include "**/*.mc4"
         }
     }
@@ -80,6 +80,7 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
         def uptoDate = incCheck(grammarIncludingPackage)
         outputs.upToDateWhen { uptoDate }
         dstlGen = false
+        dependsOn(generate)
       }
       generateTR.dependsOn("${taskname}TR")
     }
@@ -126,6 +127,7 @@ fileTree("src/main/examples").matching { include '**/*.mc4' }.each {
 }
 
 compileTestJava.dependsOn(generateTest)
+processGrammarsResources.dependsOn(generateTR)
 
 java {
     registerFeature('grammars') {
