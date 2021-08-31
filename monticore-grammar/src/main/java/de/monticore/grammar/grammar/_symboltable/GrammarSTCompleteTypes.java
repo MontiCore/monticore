@@ -323,6 +323,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     for (ASTAlt alt : ast.getAltList()) {
       if (detector.isAlternativeLeftRecursive(alt, names)) {
         prodSymbol.setIsIndirectLeftRecursive(true);
+        superProds.stream().filter(s -> s.isInterface).forEach(s ->s.setIsIndirectLeftRecursive(true));
       } else if (detector.isAlternativeLeftRecursive(alt, ast.getName())) {
         prodSymbol.setIsDirectLeftRecursive(true);
       }
