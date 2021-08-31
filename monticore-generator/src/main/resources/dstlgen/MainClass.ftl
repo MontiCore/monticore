@@ -38,7 +38,7 @@ public class ${className} {
   
   public static void main(String[] args) {
     Log.init();
-    new ${grammarName}CLI().run(args);
+    new ${grammarName}TFGenCLI().run(args);
   }
   
   protected void run(String[] args){
@@ -102,13 +102,13 @@ public class ${className} {
       ${dstlName}Parser parser = new ${dstlName}Parser();
       Optional<AST${grammarName}TFRule> ast = parser.parse${grammarName}TFRule(model.toString());
       if (!parser.hasErrors() && ast.isPresent()) {
-        Log.info("${service.getGeneratedErrorCode(classname)} Model " + model + " parsed successfully", LOG_ID);
+        Log.debug("Model " + model + " parsed successfully", LOG_ID);
         String name = model.toString().replace(".mtr", "");
         ast.get().getTFRule().setName(name.substring(model.toString().lastIndexOf(File.separator) + 1, name.length()));
       }
       else {
-        Log.info(
-            "${service.getGeneratedErrorCode(classname)} There are parsing errors while parsing of the model " + model, LOG_ID);
+        Log.error(
+            "0xA6152${service.getGeneratedErrorCode(classname)} There are parsing errors while parsing of the model " + model);
       }
       return ast;
     }
