@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
-  protected final String QUOTE = "\"";
+  protected static final String QUOTE = "\"";
 
   protected GrammarTraverser traverser;
   
