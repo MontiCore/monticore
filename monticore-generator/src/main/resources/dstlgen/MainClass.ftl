@@ -69,7 +69,7 @@ public class ${className} {
       Log.debug("----- Starting Transformation Generation -----", LOG_ID);
       Log.debug("Input file   : " + cmd.getOptionValue("i"), LOG_ID);
       Log.debug("Model path    : " + cmd.getOptionValue("mp"), LOG_ID);
-      Log.debug("Output dir    : " + cmd.getOptionValue("o"), LOG_ID);
+      Log.debug("Output dir    : " + cmd.getOptionValue("o", "out"), LOG_ID);
   
       Path model = Paths.get(cmd.getOptionValue("i"));
   
@@ -88,7 +88,7 @@ public class ${className} {
         odrule = createODRule(rule, new MCPath());
       }
       // generate
-      generate(odrule, Paths.get(cmd.getOptionValue("o")).toFile());
+      generate(odrule, Paths.get(cmd.getOptionValue("o", "out")).toFile());
     } catch ( ParseException e) {
         // an unexpected error from the Apache CLI parser:
         Log.error("0xA6151${service.getGeneratedErrorCode(classname)} Could not process CLI parameters: " + e.getMessage());

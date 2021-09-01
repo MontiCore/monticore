@@ -103,7 +103,7 @@ public class DSTLGenCLI {
         }
         MCPath modelPath = new MCPath(modelPathFile);
 
-        outDirectory = new File(cmd.getOptionValue("o", "target/generated-sources"));
+        outDirectory = new File(cmd.getOptionValue("o", "out"));
         modelFileExtension = cmd.getOptionValue("fe", "mtr");
 
         MCPath modelsHC = new MCPath();
