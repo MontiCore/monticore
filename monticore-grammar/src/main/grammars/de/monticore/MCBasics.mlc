@@ -1,0 +1,30 @@
+mlc MCBasics {
+
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/MCBasics.mc4";
+  }
+
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/mcbasics/**/*.java";
+    include "de/monticore/mcbasics/*.java";
+  }
+
+  promote {  // allow using the JDK except for reflection
+    include "$mp/java/**";
+    exclude "$mp/java/lang/reflect/**";
+  }
+
+  promote {  // allow using everything from MontiCore RTE and co.
+    include "$mp/de/monticore/ast/**";
+    include "$mp/de/monticore/generating/**";
+    include "$mp/de/monticore/io/**";
+    include "$mp/de/monticore/parser/**";
+    include "$mp/de/monticore/prettyprint/**";
+    include "$mp/de/monticore/symboltable/**";
+    include "$mp/de/monticore/utils/**";
+    include "$mp/de/monticore/visitor/**";
+    include "$mp/de/se_rwth/commons/**";
+    include "$mp/org/antlr/v4/runtime/**";
+  }
+
+}
