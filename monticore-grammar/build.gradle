@@ -134,7 +134,7 @@ processGrammarsResources.dependsOn(generateTR)
  * Integration with MLC language and tool
  */
 configurations { MLC }
-dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: '7.1.0-SNAPSHOT') }
+dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: '7.2.0-SNAPSHOT') }
 StringJoiner joiner = new StringJoiner(" ")
 configurations.compileClasspath.resolve().each{joiner.add(it.toString()) }
 joiner.add "$rootDir/target/symbols"
