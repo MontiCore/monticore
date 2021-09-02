@@ -133,6 +133,7 @@ processGrammarsResources.dependsOn(generateTR)
 /**
  * Integration with MLC language and tool
  */
+task checkArtifacts {}
 configurations { MLC }
 dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: '7.2.0-SNAPSHOT') }
 StringJoiner joiner = new StringJoiner(" ")
@@ -159,6 +160,7 @@ fileTree(".").matching { include '**/*.mlc' }.each {
         mainClass = 'de.monticore.mlc.MLCCLI'
         args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
         dependsOn("generateGrammar${mlcName}")
+        checkArtifacts.dependsOn("checkArtifacts${mlcName}")
     }
 }
 

@@ -38,6 +38,7 @@ mlc MCBasics {
     include "$mp/de/monticore/visitor/**";
     include "$mp/de/se_rwth/commons/**";
     include "$mp/org/antlr/v4/runtime/**";
+    include "$mp/com/google/common/collect/**";
   }
 
 }
