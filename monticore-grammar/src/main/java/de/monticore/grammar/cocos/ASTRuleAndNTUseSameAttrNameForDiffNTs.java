@@ -81,11 +81,12 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
                     rc.getName()),
                     a.get_SourcePositionStart());
           }
-        } else
+        } else {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType(),
                   attr.getName(), attr.getType(),
                   rc.getName()),
                   a.get_SourcePositionStart());
+        }
       }
     }
   }

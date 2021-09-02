@@ -60,7 +60,7 @@ public class GenerateAutomataParser {
     }
     catch (IOException e) {
       // If something happens ... handling necessary
-      e.printStackTrace();
+      Log.error("0xEE632 Cannot parse " + args[0], e);
     }
   }
 

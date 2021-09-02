@@ -99,7 +99,7 @@ public class DSTLGenCLI {
         }
         MCPath modelPath = new MCPath(modelPathFile);
 
-        outDirectory = new File(cmd.getOptionValue("o", "target/generated-sources"));
+        outDirectory = new File(cmd.getOptionValue("o", "out"));
         modelFileExtension = cmd.getOptionValue("fe", "mtr");
 
         MCPath modelsHC = new MCPath();
@@ -175,12 +175,12 @@ public class DSTLGenCLI {
    * @return
    */
   public ASTMCGrammar parseGrammar(String grammar) {
-    Log.info("Start parsing of the grammar " + grammar, LOG_ID);
+    Log.debug("Start parsing of the grammar " + grammar, LOG_ID);
     try {
       GrammarFamilyParser parser = GrammarFamilyMill.parser();
       Optional<ASTMCGrammar> ast = parser.parse(grammar);
       if (!parser.hasErrors() && ast.isPresent()) {
-        Log.info("Grammar " + grammar + " parsed successfully", LOG_ID);
+        Log.debug("Grammar " + grammar + " parsed successfully", LOG_ID);
         GrammarTransformer.transform(ast.get());
       } else {
         Log.error("0xA5C03 There are parsing errors while parsing of the model " + grammar);
@@ -529,7 +529,7 @@ public class DSTLGenCLI {
   public void generateMainClass(ASTMCGrammar grammar) {
     if (!grammar.isComponent()) {
       String packageName = Names.getPathFromPackage(getDSTLPackagePrefix(grammar) +".");
-      String className = getSimpleTypeNameToGenerate(grammar.getName() + "CLI", packageName, handcodedPath);
+      String className = getSimpleTypeNameToGenerate(grammar.getName() + "TFGenCLI", packageName, handcodedPath);
       Path filePath = Paths.get(packageName + className + ".java");
       generator.generate("dstlgen.MainClass", filePath,
                          grammar, className, modelFileExtension, grammar.getName()

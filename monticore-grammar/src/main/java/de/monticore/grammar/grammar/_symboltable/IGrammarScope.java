@@ -52,7 +52,7 @@ public interface IGrammarScope extends IGrammarScopeTOP {
       setProdSymbolsAlreadyResolved(false);
       return resolvedSymbols;
     }
-    final Collection<ProdSymbol> resolvedFromEnclosing = continueProdWithEnclosingScope((foundSymbols | resolvedSymbols.size() > 0), name, modifier, predicate);
+    final Collection<ProdSymbol> resolvedFromEnclosing = continueProdWithEnclosingScope((foundSymbols | !resolvedSymbols.isEmpty()), name, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
     setProdSymbolsAlreadyResolved(false);
     return resolvedSymbols;
