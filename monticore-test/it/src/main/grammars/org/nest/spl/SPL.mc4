@@ -9,7 +9,7 @@ grammar SPL extends org.nest.commons.Commons {
 
   Block = ( Stmt | SL_COMMENT | NEWLINE )*;
 
-  Stmt = Simple_Stmt ((SL_COMMENT | NEWLINE)* | EOF) | Compound_Stmt;
+  Stmt = Simple_Stmt ((SL_COMMENT | NEWLINE)*) | Compound_Stmt;
 
   Compound_Stmt = IF_Stmt
                 | FOR_Stmt

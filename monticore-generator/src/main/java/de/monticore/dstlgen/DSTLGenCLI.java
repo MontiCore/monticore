@@ -192,30 +192,6 @@ public class DSTLGenCLI {
   }
 
   /**
-   * Parse a single grammar
-   *
-   * @param model
-   * @return
-   */
-  public ASTMCGrammar parseGrammar(ModelCoordinate model) {
-    Log.info("Start parsing of the grammar " + model.getName(), LOG_ID);
-    try {
-      Reader reader = ModelCoordinates.getReader(model);
-      GrammarFamilyParser parser = GrammarFamilyMill.parser();
-      Optional<ASTMCGrammar> ast = parser.parse(reader);
-      if (!parser.hasErrors() && ast.isPresent()) {
-        Log.info("Grammar " + model.getName() + " parsed successfully", LOG_ID);
-        GrammarTransformer.transform(ast.get());
-      } else {
-        Log.error("0xA5C04 There are parsing errors while parsing of the model " + model.getName());
-      }
-      return ast.get();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
    * Initialize symbol table
    *
    * @param grammar
