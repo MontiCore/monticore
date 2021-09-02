@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/**
+*   TODO@AB: Check HW Code and promoted MLCs
+*/
+mlc UMLStereotype {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/UMLStereotype.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/umlstereotype/**/*.java";
+    include "de/monticore/umlstereotype/*.java";
+  }
+
+  // promote using the JDK except for reflection
+  promote {
+    mlc "de.monticore.literals.MCCommonLiterals";
+  }
+
+}

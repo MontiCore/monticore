@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/**
+*   TODO@AB: Check HW Code and promoted MLCs
+*/
+mlc Cardinality {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/Cardinality.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/cardinality/**/*.java";
+    include "de/monticore/cardinality/*.java";
+  }
+
+  // promote using the JDK except for reflection
+  promote {
+    mlc "de.monticore.MCBasics";
+    mlc "de.monticore.literals.MCCommonLiterals";
+  }
+
+}

@@ -2,22 +2,22 @@
 package de.monticore;
 
 /**
- * Language component of the MCBasics grammar. This language component
+ * Language component of the Completeness grammar. This language component
  * promotes the usage of the MontiCore RTE, the JDK, etc. Hence, language
- * components using this MCBasics language component do not need to allow
+ * components using this Completeness language component do not need to allow
  * their usage again.
  */
-mlc MCBasics {
+mlc Completeness {
 
   // export the grammar
   export "$projectDir/src/main/grammars" {
-    include "de/monticore/MCBasics.mc4";
+    include "de/monticore/Completeness.mc4";
   }
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/mcbasics/**/*.java";
-    include "de/monticore/mcbasics/*.java";
+    include "de/monticore/completeness/**/*.java";
+    include "de/monticore/completeness/*.java";
   }
 
   // promote using the JDK except for reflection
