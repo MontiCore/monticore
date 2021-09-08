@@ -11,7 +11,7 @@ import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
+import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -132,7 +132,7 @@ public class Util {
   }
 
   public static String printImportDeclaration(ASTMCImportStatement importDeclaration){
-    MCBasicTypesPrettyPrinter p = new MCBasicTypesPrettyPrinter (new IndentPrinter());
+    MCBasicTypesFullPrettyPrinter p = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     importDeclaration.accept(p.getTraverser());
     return p.getPrinter().getContent();
   }
