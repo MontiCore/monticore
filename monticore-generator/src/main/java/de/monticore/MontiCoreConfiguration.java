@@ -54,6 +54,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String OUT = "o";
   public static final String MODELPATH = "mp";
   public static final String HANDCODEDPATH = "hcp";
+  public static final String HANDCODEDMODELPATH = "hcg";
   public static final String SCRIPT = "sc";
   public static final String GROOVYHOOK1 = "gh1";
   public static final String GROOVYHOOK2 = "gh2";
@@ -68,6 +69,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String OUT_LONG = "out";
   public static final String MODELPATH_LONG = "modelPath";
   public static final String HANDCODEDPATH_LONG = "handcodedPath";
+  public static final String HANDCODEDMODELPATH_LONG = "modelPathHC";
   public static final String SCRIPT_LONG = "script";
   public static final String GROOVYHOOK1_LONG = "groovyHook1";
   public static final String GROOVYHOOK2_LONG = "groovyHook2";
@@ -76,6 +78,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String DEV_LONG = "dev";
   public static final String CUSTOMLOG_LONG = "customLog";
   public static final String REPORT_LONG = "report";
+  public static final String DSTLGEN_LONG = "dstlGen";
   public static final String HELP_LONG = "help";
 
   protected final CommandLine cmdConfig;
@@ -162,6 +165,22 @@ public final class MontiCoreConfiguration implements Configuration {
         .map(this::convertEntryNamesToMCPath);
     if (modelPath.isPresent()) {
       return modelPath.get();
+    }
+    // default model path is empty
+    return new MCPath();
+  }
+
+  /**
+   * Getter for the list of handcoded model path elements (files and directories) stored
+   * in this configuration.
+   *
+   * @return list of handcoded model path files
+   */
+  public MCPath getHandcodedModelPath() {
+    Optional<MCPath> modelPathHC = getAsStrings(HANDCODEDMODELPATH)
+            .map(this::convertEntryNamesToMCPath);
+    if (modelPathHC.isPresent()) {
+      return modelPathHC.get();
     }
     // default model path is empty
     return new MCPath();
@@ -317,6 +336,15 @@ public final class MontiCoreConfiguration implements Configuration {
    */
   public Optional<String> getGroovyHook2() {
     return getAsString(GROOVYHOOK2);
+  }
+
+  /**
+   * Getter for the optional dstl generation.
+   *
+   * @return Optional boolean for the dstl generation
+   */
+  public Optional<Boolean> getDSTLGen() {
+    return getAsBoolean(DSTLGEN_LONG);
   }
 
   /**

@@ -16,7 +16,7 @@ fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr'
   task "$taskname"(type: JavaExec) {
     group = "montitrans"
     classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
-    main = 'mc.testcases.statechart.tr.StatechartCLI'
+    main = 'mc.testcases.statechart.tr.StatechartTFGenCLI'
     args += ["-i", "$g",
             "-o", "$buildDir/generated-sources"]
     outputs.dir("$buildDir/generated-sources")
@@ -33,7 +33,7 @@ fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').ea
   task "$taskname"(type: JavaExec) {
     group = "montitrans"
     classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
-    main = 'mc.testcases.social.tr.SocialNetworkCLI'
+    main = 'mc.testcases.social.tr.SocialNetworkTFGenCLI'
     args += ["-i", "$g",
              "-o", "$buildDir/generated-sources"]
     outputs.dir("$buildDir/generated-sources")

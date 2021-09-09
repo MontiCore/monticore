@@ -182,8 +182,9 @@ public class ReportingRepository {
     
     @Override
     public void trace(String msg) {
-      if (isTraceEnabled())
+      if (isTraceEnabled()) {
         System.out.println("[TRACE] " + msg);
+      }
     }
     
     @Override

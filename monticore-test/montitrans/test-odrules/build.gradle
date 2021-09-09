@@ -1,3 +1,5 @@
+import de.monticore.MCTask
+
 /* (c) https://github.com/MontiCore/monticore */
 description = 'MontiTrans Test: ODRules'
 def grammarsDir = "$projectDir/src/main/grammars"
@@ -23,6 +25,7 @@ fileTree(grammarsDir).each {
 
 task generateMTOD {
   group = "montitrans"
+  dependsOn(tasks.withType(MCTask))
 }
 
 fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
