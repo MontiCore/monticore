@@ -142,24 +142,25 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
    * cannot be linked with the BinaryExpressions because they are not calculated the same way
    */
   protected Optional<SymTypeExpression> shiftCalculator(ASTShiftExpression expr, SymTypeExpression left, SymTypeExpression right) {
-    if (left.isTypeConstant() && right.isTypeConstant()) {
-      SymTypeConstant leftResult = (SymTypeConstant) left;
-      SymTypeConstant rightResult = (SymTypeConstant) right;
+    if (!left.isTypeConstant() || !right.isTypeConstant()){
+      return Optional.empty();
+    }
+    SymTypeConstant leftResult = (SymTypeConstant) left;
+    SymTypeConstant rightResult = (SymTypeConstant) right;
 
-      //only defined on integral type - integral type
-      if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
-        if (isLong(rightResult)) {
-          if (isLong(leftResult)) {
-            return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
-          } else {
-            return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
-          }
+    //only defined on integral type - integral type
+    if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
+      if (isLong(rightResult)) {
+        if (isLong(leftResult)) {
+          return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
         } else {
           return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
         }
+      } else {
+        return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
       }
     }
-    //should never happen, no valid result, error will be handled in traverse
+    //should never happen
     return Optional.empty();
   }
 

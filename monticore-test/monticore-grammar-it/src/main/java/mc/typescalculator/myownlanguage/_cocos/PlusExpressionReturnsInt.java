@@ -6,7 +6,6 @@ import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsASTPlu
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.DeriveSymTypeOfMyOwnLanguage;
 
 public class PlusExpressionReturnsInt implements CommonExpressionsASTPlusExpressionCoCo {

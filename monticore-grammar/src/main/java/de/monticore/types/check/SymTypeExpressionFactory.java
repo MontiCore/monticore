@@ -6,7 +6,6 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;

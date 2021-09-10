@@ -8,9 +8,9 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-abstract public class AbstractSynthesizeFromType {
+public abstract class AbstractSynthesizeFromType {
 
-  abstract public MCBasicTypesTraverser getTraverser();
+  public abstract MCBasicTypesTraverser getTraverser();
 
   public IBasicSymbolsScope getScope (IMCBasicTypesScope mcBasicTypesScope){
     // is accepted only here, decided on 07.04.2020
