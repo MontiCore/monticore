@@ -31,7 +31,7 @@ public class NoForbiddenSymbolName implements GrammarASTMCGrammarCoCo {
       List<ProdSymbol> forbidden = symbolProds.stream()
           .filter(p -> p.getName().equals(nameWithoutSymbol))
           .collect(Collectors.toList());
-      if(forbidden.size()>0){
+      if(!forbidden.isEmpty()){
         for(ProdSymbol prod: forbidden){
           Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prod.getName(), grammarName));
         }

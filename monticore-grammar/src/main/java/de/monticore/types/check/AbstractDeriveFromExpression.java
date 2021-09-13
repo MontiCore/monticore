@@ -15,9 +15,9 @@ import static de.monticore.types.check.SymTypeConstant.unbox;
 import static de.monticore.types.check.TypeCheck.*;
 import static de.monticore.types.check.TypeCheck.isFloat;
 
-abstract public class AbstractDeriveFromExpression {
+public abstract class AbstractDeriveFromExpression {
 
-  abstract public ExpressionsBasisTraverser getTraverser();
+  public abstract ExpressionsBasisTraverser getTraverser();
 
   public IBasicSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020

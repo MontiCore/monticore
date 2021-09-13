@@ -34,28 +34,32 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
       for (ASTMCModifier modifier : modifiers) {
         if (modifier instanceof ASTJavaModifier) {
           // visibility
-          switch (((ASTJavaModifier) modifier).getModifier()) {
-            case PUBLIC:
-              symbol.setIsPublic(true);
-              break;
-            case PROTECTED:
-              symbol.setIsProtected(true);
-              break;
-            case PRIVATE:
-              symbol.setIsPrivate(true);
-              // other variable modifiers as in jls7 8.3.1 Field Modifiers
-              break;
-            case STATIC:
-              symbol.setIsStatic(true);
-              break;
-            case FINAL:
-              symbol.setIsFinal(true);
-              break;
-            default:
-              break;
-          }
+          handleVisibility(symbol, modifier);
         }
       }
+    }
+  }
+
+  protected void handleVisibility(FieldSymbol symbol, ASTMCModifier modifier) {
+    switch (((ASTJavaModifier) modifier).getModifier()) {
+      case PUBLIC:
+        symbol.setIsPublic(true);
+        break;
+      case PROTECTED:
+        symbol.setIsProtected(true);
+        break;
+      case PRIVATE:
+        symbol.setIsPrivate(true);
+        // other variable modifiers as in jls7 8.3.1 Field Modifiers
+        break;
+      case STATIC:
+        symbol.setIsStatic(true);
+        break;
+      case FINAL:
+        symbol.setIsFinal(true);
+        break;
+      default:
+        break;
     }
   }
 
@@ -65,4 +69,6 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
     ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
   }
+
+
 }

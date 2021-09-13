@@ -38,7 +38,7 @@ public class NoForbiddenProdNameAddon implements GrammarASTMCGrammarCoCo {
         .filter(p -> p.getName().equals(prodNameWithoutAddon))
         .collect(Collectors.toList());
 
-    if(forbidden.size()>0){
+    if(!forbidden.isEmpty()){
       for(ProdSymbol prod: forbidden){
         Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName, prod.getName()));
       }
