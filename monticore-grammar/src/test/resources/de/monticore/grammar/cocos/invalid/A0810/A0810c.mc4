@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.grammar.cocos.invalid.A0810;
+
+grammar A0810c extends de.monticore.common.TestLexicals {
+
+  interface symbol A = Name;
+
+  I implements A = Name;
+
+  scope J extends I = Name;
+
+}
