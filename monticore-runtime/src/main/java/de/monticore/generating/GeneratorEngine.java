@@ -5,11 +5,8 @@ package de.monticore.generating;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,7 +36,7 @@ public class GeneratorEngine {
   /**
    * Contains all configuration data
    */
-  private GeneratorSetup setup;
+  protected GeneratorSetup setup;
 
   public GeneratorEngine(GeneratorSetup gs) {
     Log.errorIfNull(gs);

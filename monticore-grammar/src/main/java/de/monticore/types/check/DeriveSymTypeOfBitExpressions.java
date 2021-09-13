@@ -92,7 +92,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   /**
    * helper method for the calculation of the type of the ShiftExpressions
    */
-  private Optional<SymTypeExpression> calculateTypeShift(ASTShiftExpression expr, ASTExpression right, ASTExpression left) {
+  protected Optional<SymTypeExpression> calculateTypeShift(ASTShiftExpression expr, ASTExpression right, ASTExpression left) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0206");
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0207");
     return calculateTypeShift(expr, leftResult, rightResult);
@@ -115,7 +115,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   /**
    * helper method for the calculation of the type of the BinaryExpressions
    */
-  private Optional<SymTypeExpression> calculateTypeBinary(ASTExpression left, ASTExpression right) {
+  protected Optional<SymTypeExpression> calculateTypeBinary(ASTExpression left, ASTExpression right) {
     SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0208");
     SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0209");
     return calculateTypeBinary(leftResult, rightResult);
@@ -142,31 +142,32 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
    * cannot be linked with the BinaryExpressions because they are not calculated the same way
    */
   protected Optional<SymTypeExpression> shiftCalculator(ASTShiftExpression expr, SymTypeExpression left, SymTypeExpression right) {
-    if (left.isTypeConstant() && right.isTypeConstant()) {
-      SymTypeConstant leftResult = (SymTypeConstant) left;
-      SymTypeConstant rightResult = (SymTypeConstant) right;
+    if (!left.isTypeConstant() || !right.isTypeConstant()){
+      return Optional.empty();
+    }
+    SymTypeConstant leftResult = (SymTypeConstant) left;
+    SymTypeConstant rightResult = (SymTypeConstant) right;
 
-      //only defined on integral type - integral type
-      if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
-        if (isLong(rightResult)) {
-          if (isLong(leftResult)) {
-            return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
-          } else {
-            return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
-          }
+    //only defined on integral type - integral type
+    if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
+      if (isLong(rightResult)) {
+        if (isLong(leftResult)) {
+          return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
         } else {
           return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
         }
+      } else {
+        return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
       }
     }
-    //should never happen, no valid result, error will be handled in traverse
+    //should never happen
     return Optional.empty();
   }
 
   /**
    * helper method to calculate the type of the BinaryExpressions
    */
-  private Optional<SymTypeExpression> getBinaryNumericPromotion(SymTypeExpression left, SymTypeExpression right){
+  protected Optional<SymTypeExpression> getBinaryNumericPromotion(SymTypeExpression left, SymTypeExpression right){
     //only integral type - integral type
     if(left.isTypeConstant() && right.isTypeConstant()) {
       SymTypeConstant leftResult = (SymTypeConstant) left;

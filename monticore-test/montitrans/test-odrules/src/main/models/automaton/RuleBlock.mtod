@@ -1,0 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+  pattern  objectdiagram lhs { } 
+  replacement objectdiagram rhs { }

@@ -7,8 +7,6 @@ import de.monticore.expressions.prettyprint.JavaClassExpressionsPrettyPrinter;
 import de.monticore.javalight.JavaLightMill;
 import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.javalight._visitor.JavaLightTraverser;
-import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
-import de.monticore.statements.mcvardeclarationstatements._ast.ASTMCVarDeclarationStatementsNode;
 import de.monticore.statements.prettyprint.MCArrayStatementsPrettyPrinter;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
 import de.monticore.statements.prettyprint.MCVarDeclarationStatementsPrettyPrinter;
@@ -16,7 +14,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
 public class JavaLightFullPrettyPrinter {
 
-  private JavaLightTraverser traverser;
+  protected JavaLightTraverser traverser;
 
   protected IndentPrinter printer;
 

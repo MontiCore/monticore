@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
+import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -49,8 +50,11 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
   @Override
   public ASTCDInterface decorate(final ASTCDInterface originalInput, ASTCDInterface changedInput) {
-    changedInput.addInterface(getMCTypeFacade().createQualifiedType(AST_INTERFACE));
-    changedInput.addInterface(astService.getASTBaseInterface());
+    if (!changedInput.isPresentCDExtendUsage()) {
+      changedInput.setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().build());
+    }
+    changedInput.getCDExtendUsage().addSuperclass(getMCTypeFacade().createQualifiedType(AST_INTERFACE));
+    changedInput.getCDExtendUsage().addSuperclass(astService.getASTBaseInterface());
     changedInput.clearCDAttributeList();
 
     methodDecorator.disableTemplates();

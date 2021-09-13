@@ -4,11 +4,10 @@ package de.monticore.prettyprint;
 import de.monticore.completeness.CompletenessMill;
 import de.monticore.completeness._ast.ASTCompletenessNode;
 import de.monticore.completeness._visitor.CompletenessTraverser;
-import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 
 public class CompletenessFullPrettyPrinter {
 
-  private CompletenessTraverser traverser;
+  protected CompletenessTraverser traverser;
 
   protected IndentPrinter printer;
 

@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+    state_1 : mc.testcases.automaton._ast.ASTState{
+    }
+    
+    <<list>> list_1 : de.monticore.tf.ast.IList {
+        list_1_state_2 : mc.testcases.automaton._ast.ASTState {
+        }
+    }
+            
+    <<not>> not_state_3 : mc.testcases.automaton._ast.ASTState {
+        boolean initial [1] = true;
+    }
+
+    composition state_1 -- (states) [*] list_1_state_2;
+    composition state_1 -- (states) [*] not_state_3;
+}
+replacement objectdiagram rhs {
+    state_1 : mc.testcases.automaton._ast.ASTState{
+    }
+
+    <<list>> list_1 : de.monticore.tf.ast.IList {
+        list_1_state_2 : mc.testcases.automaton._ast.ASTState {
+            boolean initial [1] = true;
+        }
+    }
+            
+    <<not>> not_state_3 : mc.testcases.automaton._ast.ASTState {
+        boolean initial [1] = true;
+    }
+
+    composition state_1 -- (states) [*] list_1_state_2;
+    composition state_1 -- (states) [*] not_state_3;
+}

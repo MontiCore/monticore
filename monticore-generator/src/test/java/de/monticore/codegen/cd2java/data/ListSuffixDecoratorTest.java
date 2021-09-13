@@ -48,7 +48,6 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
   @Test
   public void testNoSBefore() {
     ASTCDAttribute lists = getAttributeBy("list", originalClass);
-    assertTrue(lists.isPresentModifier());
     assertTrue(lists.getModifier().isProtected());
     assertDeepEquals("List<String>", lists.getMCType());
   }
@@ -61,7 +60,6 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
   @Test
   public void testWithSAfter() {
     ASTCDAttribute lists = getAttributeBy("lists", classWithS);
-    assertTrue(lists.isPresentModifier());
     assertTrue(lists.getModifier().isProtected());
     assertDeepEquals("List<String>", lists.getMCType());
   }

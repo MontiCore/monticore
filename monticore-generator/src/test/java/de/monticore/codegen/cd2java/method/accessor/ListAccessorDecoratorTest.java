@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
@@ -32,7 +33,8 @@ public class ListAccessorDecoratorTest {
   @Before
   public void setup() {
     LogStub.init();
-    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttributeByDefinition("protected List<String> a;");
+    ASTMCType listType = MCTypeFacade.getInstance().createListTypeOf(String.class);
+    ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), listType, "a");
     ListAccessorDecorator listAccessorDecorator = new ListAccessorDecorator(glex);
     this.methods = listAccessorDecorator.decorate(attribute);
   }

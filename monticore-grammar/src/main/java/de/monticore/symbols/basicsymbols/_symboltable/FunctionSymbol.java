@@ -2,13 +2,11 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FunctionSymbol extends FunctionSymbolTOP {
 

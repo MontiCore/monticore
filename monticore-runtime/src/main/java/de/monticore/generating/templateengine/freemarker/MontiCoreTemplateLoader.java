@@ -16,7 +16,7 @@ import freemarker.cache.URLTemplateLoader;
 public class MontiCoreTemplateLoader extends URLTemplateLoader {
   
   /** the used class loader */
-  private final ClassLoader classLoader;
+  protected final ClassLoader classLoader;
   
   /**
    * Creates a new {@link MontiCoreTemplateLoader} that uses the given class loader to load

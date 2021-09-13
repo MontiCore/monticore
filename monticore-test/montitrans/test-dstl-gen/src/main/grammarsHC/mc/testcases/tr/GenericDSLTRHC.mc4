@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases.tr;
+
+grammar GenericDSLTRHC {
+
+
+  Foo_Opt implements ITFFoo, ITFAFoo, ITFIFoo astimplements de.monticore.tf.ast.IOptional =
+    "opt" "[[" foo:ITFFoo "]]" | "opt" "[[" foo:ITFFoo "]]";
+
+    astrule Foo_Opt =
+      method public Class _getTFElementType() {
+        return mc.testcases.genericdsl._ast.ASTFoo.class;
+      }
+      method public ASTITFFoo getTFElement() {
+        return getFoo();
+      }
+      method public String newMethod() {
+        return "";
+      }
+    ;
+
+
+
+  NewClassProd = "dummy";
+
+  astrule NewClassProd =
+        method public String toString() {
+          return "";
+        };
+
+
+  interface NewInterface;
+
+  interface ITFFoo extends ITFIFoo, ITFAFoo, NewInterface astextends de.monticore.tf.ast.ITFElement;
+}

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+statechart Substates {
+
+    state Top {
+
+      [[ :last- state New; ]]
+      [[ :last- state New2; ]]
+
+    }
+}

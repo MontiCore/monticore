@@ -32,7 +32,6 @@ public class ExternalInterfaceTranslationTest {
   @Test
   public void testExternalInterface(){
     ASTCDInterface a = getInterfaceBy("ASTAExt", externalInterface);
-    assertTrue(a.isPresentModifier());
     assertTrue(a.getModifier().isPresentStereotype());
     assertEquals(1, a.getModifier().getStereotype().sizeValues());
     assertEquals("externalInterface", a.getModifier().getStereotype().getValues(0).getName());

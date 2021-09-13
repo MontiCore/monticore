@@ -25,25 +25,25 @@ import java.util.*;
 public class GlobalExtensionManagement {
 
 
-  private SimpleHash globalData = SimpleHashFactory.getInstance().createSimpleHash();
+  protected SimpleHash globalData = SimpleHashFactory.getInstance().createSimpleHash();
 
   // This list contains hook point decorations that are added **before**
   // a template is called (may be a list)
-  private final Multimap<String, HookPoint> before = ArrayListMultimap.create();
+  protected final Multimap<String, HookPoint> before = ArrayListMultimap.create();
 
   // This list of hookpoints replaces a template (i.e. the hookpoints are 
   // executed and their results printed to output in the order they arrive)
   // but the original template is not executed anymore.
-  private final Multimap<String, HookPoint> replace = ArrayListMultimap.create();
+  protected final Multimap<String, HookPoint> replace = ArrayListMultimap.create();
 
   // This list contains hook point decorations that are added **after**
   // a template is called (may be a list)
-  private final Multimap<String, HookPoint> after = ArrayListMultimap.create();
+  protected final Multimap<String, HookPoint> after = ArrayListMultimap.create();
 
   // While Variable "replace" replaces all templates when executed, this
   // specificReplacement is only applied when template name and ASTnode fit
   // (thus the replacement is individual for each ASTnode)
-  private final Map<String, Map<ASTNode, HookPoint>> specificReplacement = Maps.newHashMap();
+  protected final Map<String, Map<ASTNode, HookPoint>> specificReplacement = Maps.newHashMap();
 
   /**
    * Map of all hook points
@@ -56,7 +56,7 @@ public class GlobalExtensionManagement {
    * This could be harmonized with the replace hook points
    * (by simple integration with replacements, before and after structure)
    */
-  private final Map<String, HookPoint> hookPoints = Maps.newHashMap();
+  protected final Map<String, HookPoint> hookPoints = Maps.newHashMap();
 
   public GlobalExtensionManagement() {
   }
@@ -434,7 +434,7 @@ public class GlobalExtensionManagement {
     }
 
     List<HookPoint> hps = getSpecificReplacement(templateName, ast);
-    if(hps != null){
+    if(!hps.isEmpty()){
       Reporting.reportCallSpecificReplacementHookPoint(templateName, hps, ast);
     }
     else {
@@ -454,7 +454,7 @@ public class GlobalExtensionManagement {
     if (replacedTemplates != null && replacedTemplates.containsKey(ast)) {
       return Lists.newArrayList(replacedTemplates.get(ast));
     }
-    return null;
+    return Lists.newArrayList();
   }
 
   /**
@@ -484,7 +484,7 @@ public class GlobalExtensionManagement {
     return forwardings;
   }
 
-  private boolean containsTemplateForwarding(String templateName) {
+  protected boolean containsTemplateForwarding(String templateName) {
     return this.before.containsKey(templateName)
         | this.replace.containsKey(templateName)
         | this.after.containsKey(templateName);
@@ -590,7 +590,7 @@ public class GlobalExtensionManagement {
     }
   }
 
-  private void warnIfHookPointExists(String hookName) {
+  protected void warnIfHookPointExists(String hookName) {
     if (hookPoints.containsKey(hookName)) {
       Log.warn("0xA1036 Hook point '" + hookName + "' is already defined. It will be overwritten.");
     }

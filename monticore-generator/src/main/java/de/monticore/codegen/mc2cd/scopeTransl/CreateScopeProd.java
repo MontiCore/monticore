@@ -22,7 +22,7 @@ public class CreateScopeProd implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
   }
 
 
-  private void createScopeClass(Link<ASTMCGrammar, ASTCDDefinition> link) {
+  protected void createScopeClass(Link<ASTMCGrammar, ASTCDDefinition> link) {
     ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder().
             setModifier(CD4AnalysisMill.modifierBuilder().setPublic(true).build()).
             setName(link.source().getName()).uncheckedBuild();

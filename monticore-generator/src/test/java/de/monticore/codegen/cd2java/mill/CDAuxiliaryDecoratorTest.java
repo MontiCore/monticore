@@ -101,12 +101,12 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackageName() {
     assertEquals(6, auxiliaryCD.sizePackage());
-    assertEquals("de", auxiliaryCD.getPackageList().get(0));
-    assertEquals("monticore", auxiliaryCD.getPackageList().get(1));
-    assertEquals("codegen", auxiliaryCD.getPackageList().get(2));
-    assertEquals("symboltable", auxiliaryCD.getPackageList().get(3));
-    assertEquals("automaton", auxiliaryCD.getPackageList().get(4));
-    assertEquals("_auxiliary", auxiliaryCD.getPackageList().get(5));
+    assertEquals("de", auxiliaryCD.getCDPackageList().get(0));
+    assertEquals("monticore", auxiliaryCD.getCDPackageList().get(1));
+    assertEquals("codegen", auxiliaryCD.getCDPackageList().get(2));
+    assertEquals("symboltable", auxiliaryCD.getCDPackageList().get(3));
+    assertEquals("automaton", auxiliaryCD.getCDPackageList().get(4));
+    assertEquals("_auxiliary", auxiliaryCD.getCDPackageList().get(5));
   }
 
   @Test

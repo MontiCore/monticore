@@ -92,7 +92,7 @@ public class ParserService extends AbstractService<ParserService> {
   }
 
   public Optional<String> getStartProd(ASTCDDefinition astcdDefinition){
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
+    if (hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
     }
     for (ASTCDClass prod : astcdDefinition.getCDClassesList()) {

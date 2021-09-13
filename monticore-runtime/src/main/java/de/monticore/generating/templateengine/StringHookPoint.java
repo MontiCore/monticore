@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class StringHookPoint extends HookPoint {
 
-  private final String value;
+  protected final String value;
 
   public StringHookPoint(String value) {
     super();

@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Misc;
+pattern objectdiagram lhs {
+    definition_1 : mc.testcases.misc._ast.ASTDef { }
+        
+    <<list>> list_1 : de.monticore.tf.ast.IList {
+      sub_1 : mc.testcases.misc._ast.ASTSub { }
+    }
+
+    composition definition_1 -- (sub) [0..1] sub_1;
+}
+replacement objectdiagram rhs {
+     definition_1 : mc.testcases.misc._ast.ASTDef { }
+    <<list>> list_1 : de.monticore.tf.ast.IList {
+
+    }
+}

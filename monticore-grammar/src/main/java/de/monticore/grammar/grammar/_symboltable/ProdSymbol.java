@@ -15,22 +15,22 @@ public class ProdSymbol extends ProdSymbolTOP {
   /**
    * A extends B, C = ...
    */
-  private final List<ProdSymbolSurrogate> superProds = new ArrayList<>();
+  protected final List<ProdSymbolSurrogate> superProds = new ArrayList<>();
 
   /**
    * A implements B, C = ...
    */
-  private final List<ProdSymbolSurrogate> superInterfaceProds = new ArrayList<>();
+  protected final List<ProdSymbolSurrogate> superInterfaceProds = new ArrayList<>();
 
   /**
    * A astextends B, C, external.java.Type
    */
-  private List<ProdSymbolSurrogate> astSuperClasses = new ArrayList<>();
+  protected List<ProdSymbolSurrogate> astSuperClasses = new ArrayList<>();
 
   /**
    * A implements B, C, external.java.Type
    */
-  private List<ProdSymbolSurrogate> astSuperInterfaces = new ArrayList<>();
+  protected List<ProdSymbolSurrogate> astSuperInterfaces = new ArrayList<>();
 
   public ProdSymbol(String name) {
     super(name);

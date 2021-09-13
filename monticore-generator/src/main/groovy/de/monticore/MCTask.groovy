@@ -4,15 +4,14 @@ package de.monticore
 import com.google.common.hash.Hashing
 import com.google.common.io.Files
 import de.monticore.cli.MontiCoreStandardCLI
+import de.monticore.mcbasics.MCBasicsMill
+import de.monticore.dstlgen.util.DSTLPathUtil
 import de.se_rwth.commons.logging.Finding
 import de.se_rwth.commons.logging.Log
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
@@ -54,12 +53,16 @@ abstract public class MCTask extends DefaultTask {
     // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
     dependsOn(project.configurations.getByName("grammar"))
+
+    buildInfoFile.set(project.layout.buildDirectory.get().dir("resources").dir("main").file("buildInfo.properties"))
   }
   
   final RegularFileProperty grammar = project.objects.fileProperty()
   
   final DirectoryProperty outputDir = project.objects.directoryProperty()
-  
+
+  final RegularFileProperty buildInfoFile = project.objects.fileProperty()
+
   // this attributes enables to defines super grammars for a grammar build task
   // is super grammar gets updated the task itself is rebuild as well
   final ConfigurableFileCollection superGrammars = project.objects.fileCollection()
@@ -71,7 +74,9 @@ abstract public class MCTask extends DefaultTask {
   List<String> handcodedPath = []
   
   List<String> modelPath = []
-  
+
+  List<String> handcodedModelPath = []
+
   List<String> templatePath = []
   
   List<String> includeConfigs = []
@@ -87,13 +92,20 @@ abstract public class MCTask extends DefaultTask {
   boolean help = false
   
   boolean dev = false
-  
+
+  boolean dstlGen = false
+
   
   @OutputDirectory
   DirectoryProperty getOutputDir() {
     return outputDir
   }
-  
+
+  @OutputFile
+  RegularFileProperty getBuildInfoFile() {
+    return buildInfoFile
+  }
+
   @Incremental
   @InputFile
   RegularFileProperty getGrammar() {
@@ -117,12 +129,18 @@ abstract public class MCTask extends DefaultTask {
     return handcodedPath
   }
   
-  @InputFiles
+  @Input
   @Optional
   List<String> getModelPath() {
     return modelPath
   }
-  
+
+  @Input
+  @Optional
+  List<String> getHandcodedModelPath() {
+    return handcodedModelPath
+  }
+
   @Input
   @Optional
   List<String> getTemplatePath() {
@@ -179,7 +197,12 @@ abstract public class MCTask extends DefaultTask {
   boolean getAddGrammarConfig() {
     return addGrammarConfig
   }
-  
+
+  @Input
+  boolean getDstlGen() {
+    return dstlGen
+  }
+
   public void handcodedPath(String... paths) {
     getHandcodedPath().addAll(paths)
   }
@@ -187,7 +210,11 @@ abstract public class MCTask extends DefaultTask {
   public void modelPath(String... paths) {
     getModelPath().addAll(paths)
   }
-  
+
+  public void handcodedModelPath(String... paths) {
+    getHandcodedModelPath().addAll(paths)
+  }
+
   public void templatePath(String... paths) {
     getTemplatePath().addAll(paths)
   }
@@ -200,7 +227,10 @@ abstract public class MCTask extends DefaultTask {
   void execute(InputChanges inputs) {
     logger.info(inputs.isIncremental() ? "CHANGED inputs considered out of date"
             : "ALL inputs considered out of date");
-    
+
+    // generate build info properties file into target resources directory
+    generateBuildInfo()
+
     // if no path for hand coded classes is specified use $projectDir/src/main/java as default
     if (handcodedPath.isEmpty()) {
       File hcp = project.layout.projectDirectory.file("src/main/java").getAsFile()
@@ -216,7 +246,15 @@ abstract public class MCTask extends DefaultTask {
         modelPath.add(mp.toString())
       }
     }
-    
+
+    // if no grammar path is specified use $projectDir/src/main/grammars as default
+    if (handcodedModelPath.isEmpty()) {
+      File mhcp = project.layout.projectDirectory.file("src/main/grammarsHC").asFile
+      if (mhcp.exists()) {
+        handcodedModelPath.add(mhcp.toString())
+      }
+    }
+
     // if no template path is specified use $projectDir/src/main/resources as default
     if (templatePath.isEmpty()) {
       File tp = project.layout.projectDirectory.file("src/main/resources").getAsFile()
@@ -264,6 +302,16 @@ abstract public class MCTask extends DefaultTask {
       params.add("-fp")
       params.addAll(templatePath)
     }
+    if (!templatePath.isEmpty()) {
+      params.add("-fp")
+      params.addAll(templatePath)
+    }
+    if (!handcodedModelPath.isEmpty()) {
+      params.add("-hcg")
+      params.addAll(handcodedModelPath)
+    }
+    params.add("-dstlGen")
+    params.add(Boolean.toString(dstlGen))
     if (configTemplate != null) {
       params.add("-ct")
       if (configTemplate.endsWith(".ftl")){
@@ -294,8 +342,7 @@ abstract public class MCTask extends DefaultTask {
       params.add("-h")
     }
     def p = params.toArray() as String[]
-    
-    
+
     System.setSecurityManager(new SecurityManager()
     {
       @Override public void checkExit(int status) {
@@ -309,12 +356,14 @@ abstract public class MCTask extends DefaultTask {
     try {
       // execute Monticore with the given parameters
       MontiCoreStandardCLI.main(p)
+      MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
       String error = Log.getFindings().stream().
               filter({f -> f.getType().equals(Finding.Type.ERROR)})
               .map({f -> f.getMsg()})
               .collect(Collectors.joining("\n"))
+      MCBasicsMill.globalScope().getSymbolPath().close();
       ant.fail(error)
     }
   }
@@ -386,14 +435,36 @@ abstract public class MCTask extends DefaultTask {
     }
     return true
   }
-  
+/**
+   * Returns the path to the TR grammar.
+   * Please ensure that the outputDir is previously set
+   * @param originalGrammar the original grammar file
+   * @return the TR grammar
+   */
+  File getTRFile(File originalGrammar) {
+    return new File(outputDir.get().asFile.toString()
+            + "/"
+            + DSTLPathUtil.getTRGrammar(
+            modelPath.isEmpty() ? [project.layout.projectDirectory.file("src/main/grammars").toString()] : modelPath,
+            originalGrammar).toString())
+  }
   protected File fromBasePath(String filePath) {
     File file = new File(filePath);
     return !file.isAbsolute()
             ? new File(project.getProjectDir(), filePath)
             : file;
   }
-  
+
+
+
+  protected void generateBuildInfo() {
+    File file = buildInfoFile.get().asFile
+    file.mkdirs()
+    file.delete()
+    file.createNewFile()
+    file.write("version = ${project.version}")
+  }
+
 }
 
 /**

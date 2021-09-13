@@ -9,6 +9,8 @@ import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressio
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+import java.util.List;
+
 public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVisitor2, JavaClassExpressionsHandler {
 
   protected JavaClassExpressionsTraverser traverser;
@@ -46,14 +48,7 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     if (node.isPresentName()) {
       getPrinter().print(".");
       if (!node.getExtTypeArgumentList().isEmpty()) {
-        getPrinter().print("<");
-        for (int i = 0; i < node.getExtTypeArgumentList().size(); i++) {
-          node.getExtTypeArgument(i).accept(getTraverser());
-          if (i != node.getExtTypeArgumentList().size() - 1) {
-            getPrinter().print(",");
-          }
-        }
-        getPrinter().print(">");
+        handleTypeArguments(node.getExtTypeArgumentList());
       }
       getPrinter().print(node.getName());
       if (node.isPresentArguments()) {
@@ -63,6 +58,17 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
       node.getArguments().accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
+  protected void handleTypeArguments(List<ASTExtTypeArgumentExt> typeArguments){
+    getPrinter().print("<");
+    for (int i = 0; i < typeArguments.size(); i++) {
+     typeArguments.get(i).accept(getTraverser());
+      if (i != typeArguments.size() - 1) {
+        getPrinter().print(",");
+      }
+    }
+    getPrinter().print(">");
   }
 
   @Override

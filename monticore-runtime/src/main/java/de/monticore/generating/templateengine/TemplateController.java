@@ -9,7 +9,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.Macro;
@@ -18,9 +17,7 @@ import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import org.apache.commons.io.FilenameUtils;
 
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,7 +33,6 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * Provides methods for manipulating the content of templates, mainly for
  * calling and including of templates.
- *
  */
 public class TemplateController {
 
@@ -58,27 +54,39 @@ public class TemplateController {
   /**
    * General config variables that hold for all template executions
    */
-  private final GeneratorSetup config;
+  protected final GeneratorSetup config;
+
+  /**
+   * list that contains all the Template names that should be blocked from generating comments for
+   **/
+  protected List<String> templateBlackList;
 
   /**
    * Name of the current template (usually fully qualified)
    */
-  private String templatename;
+  protected String templatename;
 
-   /**
+  /**
    * According to FreeMarker, templates don't have a "signature"
    * We can mimic such a signature through method calls:
    * The signature(...) method defines a list of variables.
    * And the include call allows a list of arguments that are bound to
    * these variables, when the template is executed.
    */
-  private List<Object> arguments = newArrayList();
+  protected List<Object> arguments = newArrayList();
 
-  private SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
+  protected SimpleHash data = SimpleHashFactory.getInstance().createSimpleHash();
 
   public TemplateController(GeneratorSetup setup, String templatename) {
     this.config = setup;
     this.templatename = templatename;
+    this.templateBlackList = new ArrayList<>();
+  }
+
+  public TemplateController(GeneratorSetup setup, String templatename, List<String> templateBlackList) {
+    this.config = setup;
+    this.templatename = templatename;
+    this.templateBlackList = templateBlackList;
   }
 
   /**
@@ -96,18 +104,25 @@ public class TemplateController {
     this.templatename = templatename;
   }
 
+  public List<String> getTemplateBlackList() {
+    return templateBlackList;
+  }
+
+  public void setTemplateBlackList(List<String> templateBlackList) {
+    this.templateBlackList = templateBlackList;
+  }
+
   /**
    * Execute each of the templates on each ASTNode of the list. Concatenate the
    * results together in one big String and include that into the currently
    * processed output. We iterate on the templates and ASTNodes. In case order
    * is important: The iteration goes like this:
-   * 
-   *   for ( templates ) { 
-   *     for ( ASTNodes ) {...}
-   *   } 
+   *
+   *  for ( templates ) {
+   *    for ( ASTNodes ) {...}
+   *  }
    *
    * Inside the inner loop, it is checked whether Hookpoints are to be called.
-   *
    * Template filename may be qualified (using "."). When it
    * is not qualified, the filename is taken from the current package (same as
    * the calling template).
@@ -121,7 +136,7 @@ public class TemplateController {
     for (String template : templatenames) {
       for (ASTNode ast : astlist) {
         List<HookPoint> templateForwardings =
-			  config.getGlex().getTemplateForwardings(template, ast);
+            config.getGlex().getTemplateForwardings(template, ast);
         for (HookPoint templateHp : templateForwardings) {
           ret.append(templateHp.processValue(this, ast));
         }
@@ -129,6 +144,10 @@ public class TemplateController {
     }
 
     return ret;
+  }
+
+  public boolean isTemplateNoteGenerated(Template template) {
+    return !templateBlackList.contains(template.getName());
   }
 
   /**
@@ -145,7 +164,7 @@ public class TemplateController {
     return ret;
   }
 
-    /**
+  /**
    * Defines the signature of a template. <br />
    * <br />
    * Note that, due to technical constraints, at first, the current template is
@@ -320,11 +339,9 @@ public class TemplateController {
     String msg;
     if (empty1 == null && empty2 == null) {
       msg = "0xA2936 Template name and ast node are null in " + templatename;
-    }
-    else if (empty1 == null) {
+    } else if (empty1 == null) {
       msg = "0xA2937 Template name is null in " + templatename + " using " + empty2.getClass();
-    }
-    else {
+    } else {
       msg = "0xA2938 Ast node is null in " + templatename + " calling template " + empty1;
     }
     Log.error(msg + " ## You made an illegal call of includeTemplate. As the error says at least "
@@ -397,26 +414,25 @@ public class TemplateController {
     StringBuilder content = new StringBuilder();
     // Replacement added: no also writeArgs replaces its Templates
     List<HookPoint> templateForwardings =
-    		config.getGlex().getTemplateForwardings(templateName, ast);
+        config.getGlex().getTemplateForwardings(templateName, ast);
     for (HookPoint tn : templateForwardings) {
       content.append(tn.processValue(this, ast, templateArguments));
     }
 
-    if (content.length()==0) {
+    if (content.length() == 0) {
       Log.warn("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
     }
 
     // add trace to source-model:
     if (config.isTracing() && config.getModelName().isPresent()) {
-      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get() + " " 
+      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get() + " "
           + config.getCommentEnd() + "\n");
     }
 
     Path completeFilePath;
     if (filePath.isAbsolute()) {
       completeFilePath = filePath;
-    }
-    else {
+    } else {
       completeFilePath = Paths.get(config.getOutputDirectory().getAbsolutePath(), filePath.toString());
     }
 
@@ -428,7 +444,7 @@ public class TemplateController {
 
     Reporting.reportFileFinalization(qualifiedTemplateName, filePath, ast);
   }
-  
+
   /**
    * Include a template with additional data: We only handle one template on one
    * node. This method allows to parameterize templates. Template filename may
@@ -524,8 +540,8 @@ public class TemplateController {
 
           String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
           Log.error("0xA0128 Globally defined data could not be passed to the called template "
-                  + usage + ". ## This is an internal"
-                  + "error that should not happen. Try to remove all global data. ##");
+              + usage + ". ## This is an internal"
+              + "error that should not happen. Try to remove all global data. ##");
         }
       }
       d.put(AST, ast);
@@ -540,8 +556,7 @@ public class TemplateController {
       if (oldAst.isPresent()) {
         d.put(AST, oldAst.get());
       }
-    }
-    else {
+    } else {
       // no template
       String usage = this.templatename != null ? " (used in " + this.templatename + ")" : "";
       Log.error("0xA0127 Missing template "
@@ -552,19 +567,19 @@ public class TemplateController {
     }
 
     // add trace to template:
-    if (ret.length() != 0 && config.isTracing()) {
+    if (ret.length() != 0 && config.isTracing() && isTemplateNoteGenerated(template)) {
       ret.insert(0, config.getCommentStart() + " generated by template " + template.getName()
           + config.getCommentEnd() + "\n");
     }
 
     return ret;
   }
-  
+
   /**
    * checks if the name seems to be already qualified: if not, adds the current
    * package (of the template it operates on)
    */
-  private String completeQualifiedName(String name) {
+  protected String completeQualifiedName(String name) {
     Log.errorIfNull(!isNullOrEmpty(name));
 
     if (name.contains(".")) {
@@ -585,11 +600,10 @@ public class TemplateController {
     return ast;
   }
 
-  private Object getValueFromData(String name) {
+  protected Object getValueFromData(String name) {
     try {
       return BeansWrapper.getDefaultInstance().unwrap(data.get(name));
-    }
-    catch (TemplateModelException e) {
+    } catch (TemplateModelException e) {
       Log.error("0xA0139 Could not find value for \"" + name + "\" in template \"" + templatename
           + "\"", e);
     }
@@ -626,7 +640,7 @@ public class TemplateController {
     Reporting.reportInstantiate(className, params);
     return ObjectFactory.createObject(completeQualifiedName(className), params);
   }
-  
+
   /**
    * @see de.se_rwth.commons.logging.Log#trace(String, String)
    */

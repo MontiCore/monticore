@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+    automaton_1 : mc.testcases.automaton._ast.ASTAutomaton {
+    }
+
+    state_top : mc.testcases.automaton._ast.ASTState {
+    }
+
+    <<optional>> opt1 : de.monticore.tf.ast.IOptional {
+        state_sub : mc.testcases.automaton._ast.ASTState {
+        }
+
+        <<not>> not_state_sub_sub : mc.testcases.automaton._ast.ASTState {
+        }
+    }
+
+    <<not>> not_state_sub_2 : mc.testcases.automaton._ast.ASTState {
+    }
+
+    composition automaton_1 -- (states) [*] state_top;
+    composition state_top -- (states) [*] state_sub;
+    composition state_top -- (states) [*] not_state_sub_2;
+    composition state_sub -- (states) [*] not_state_sub_sub;
+}
+
+replacement objectdiagram rhs {
+    automaton_1 : mc.testcases.automaton._ast.ASTAutomaton {
+    }
+
+    state_top : mc.testcases.automaton._ast.ASTState {
+    }
+
+    <<optional>> opt1 : de.monticore.tf.ast.IOptional {
+        state_sub : mc.testcases.automaton._ast.ASTState {
+        }
+
+        <<not>> not_state_sub_sub : mc.testcases.automaton._ast.ASTState {
+        }
+    }
+
+    <<not>> not_state_sub_2 : mc.testcases.automaton._ast.ASTState {
+    }
+
+    composition automaton_1 -- (states) [*] state_top;
+    composition state_top -- (states) [*] state_sub;
+    composition state_top -- (states) [*] not_state_sub_2;
+    composition state_sub -- (states) [*] not_state_sub_sub;
+}

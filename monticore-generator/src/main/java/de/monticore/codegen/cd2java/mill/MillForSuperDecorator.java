@@ -1,14 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
@@ -19,26 +22,28 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_STATIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
-import static de.monticore.codegen.cd2java._parser.ParserConstants.*;
+import static de.monticore.codegen.cd2java._parser.ParserConstants.FOR_SUFFIX;
+import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.INHERITANCE_TRAVERSER;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
-  protected ASTCDDefinition astcdDefinition;
 
   protected final AbstractService<?> service;
   protected final VisitorService visitorService;
@@ -55,20 +60,17 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   public List<ASTCDClass> decorate(final ASTCDCompilationUnit compilationUnit) {
-    astcdDefinition = compilationUnit.getCDDefinition().deepClone();
     //filter out all classes that are abstract and remove AST prefix
-    astcdDefinition.setCDClassesList(astcdDefinition.getCDClassesList()
+    List<ASTCDClass> astcdClassList = compilationUnit.getCDDefinition().getCDClassesList()
         .stream()
-        .filter(ASTCDClass::isPresentModifier)
         .filter(x -> !x.getModifier().isAbstract())
-        .collect(Collectors.toList()));
+        .collect(Collectors.toList());
 
     Collection<DiagramSymbol> superSymbolList = service.getSuperCDsTransitive();
     List<ASTCDClass> superMills = new ArrayList<>();
-    List<ASTCDClass> astcdClassList = Lists.newArrayList(astcdDefinition.getCDClassesList());
 
     for (DiagramSymbol superSymbol : superSymbolList) {
-      String millClassName = superSymbol.getName() + MillConstants.MILL_FOR + astcdDefinition.getName();
+      String millClassName = superSymbol.getName() + MillConstants.MILL_FOR + compilationUnit.getCDDefinition().getName();
       List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol);
       String basePackage = superSymbol.getPackageName().isEmpty() ? "" : superSymbol.getPackageName().toLowerCase() + ".";
 
@@ -79,15 +81,15 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       ASTCDClass superMill = CD4AnalysisMill.cDClassBuilder()
           .setModifier(PUBLIC.build())
           .setName(millClassName)
-          .setSuperclass(superclass)
+          .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(superclass).build())
           .addAllCDMembers(builderMethodsList)
           .addAllCDMembers(correctScopeMethods)
           .addCDMember(getSuperTraverserMethod(superSymbol))
           .addCDMember(getSuperInheritanceTraverserMethod(superSymbol))
           .build();
 
-      if(!((ASTCDDefinition) superSymbol.getAstNode()).isPresentModifier() || !service.hasComponentStereotype(((ASTCDDefinition) superSymbol.getAstNode()).getModifier())){
-        if(!((ASTCDDefinition) service.getCDSymbol().getAstNode()).isPresentModifier() || !service.hasComponentStereotype(((ASTCDDefinition) service.getCDSymbol().getAstNode()).getModifier())) {
+      if(!service.hasComponentStereotype(((ASTCDDefinition) superSymbol.getAstNode()).getModifier())){
+        if(!service.hasComponentStereotype(((ASTCDDefinition) service.getCDSymbol().getAstNode()).getModifier())) {
           superMill.addCDMember(createParserMethod(superSymbol));
         }
       }
@@ -144,7 +146,17 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     return builderMethodsList;
   }
 
-  protected void calculateOverriddenCds(DiagramSymbol cd, Collection<String> nativeClasses, HashMap<DiagramSymbol,
+  // Cache CDTypeSymbol#resolveCDTypeDown
+  protected final LoadingCache<Pair<ICDBasisScope, String>, Optional<CDTypeSymbol>> calcOCDCDTypeDownCache = CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .build(new CacheLoader<Pair<ICDBasisScope, String>, Optional<CDTypeSymbol>>() {
+            @Override
+            public Optional<CDTypeSymbol> load(Pair<ICDBasisScope, String> key) {
+              return key.getLeft().resolveCDTypeDown(key.getRight());
+            }
+          });
+
+  protected void calculateOverriddenCds(DiagramSymbol cd, final Collection<String> nativeClasses, HashMap<DiagramSymbol,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
     HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
     Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
@@ -154,10 +166,10 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     for (DiagramSymbol superCd : importedClasses) {
       Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
       for (String className : nativeClasses) {
-        Optional<CDTypeSymbol> cdType = ((ICDBasisScope) superCd.getEnclosingScope()).resolveCDTypeLocally(className);
+        Optional<CDTypeSymbol> cdType = calcOCDCDTypeDownCache.getUnchecked(Pair.of((ICDBasisScope) superCd.getEnclosingScope(),className));
         if (cdType.isPresent()) {
           overriddenSet.add(cdType.get());
-          boolean ignore = firstClasses.stream().filter(s -> s.getName().equals(className)).count() > 0;
+          boolean ignore = firstClasses.stream().anyMatch(s -> s.getName().equals(className));
           if (!ignore && !l.containsKey(className)) {
             l.put(className, cdType.get());
           }

@@ -48,7 +48,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
     }
   }
 
-  private void findMultipleGenericAttributes(List<ASTAdditionalAttribute> astAdditionalAttributes, String ruleName,
+  protected void findMultipleGenericAttributes(List<ASTAdditionalAttribute> astAdditionalAttributes, String ruleName,
                                              String grammarName, String prodName) {
     for (ASTAdditionalAttribute astAdditionalAttribute : astAdditionalAttributes) {
       ASTMCType mcType = astAdditionalAttribute.getMCType();
@@ -73,7 +73,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
   /**
    * for e.g. A<B<C>>
    */
-  private boolean hasNestedGeneric(ASTMCType mcType){
+  protected boolean hasNestedGeneric(ASTMCType mcType){
     return((ASTMCGenericType) mcType).getMCTypeArgumentList()
         .stream()
         .filter(ta -> ta.getMCTypeOpt().isPresent())
@@ -83,7 +83,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
   /**
    * for e.g. A<B>*, A<B>+, A<B>?
    */
-  private boolean hasGenericIteration(ASTAdditionalAttribute astAdditionalAttribute){
+  protected boolean hasGenericIteration(ASTAdditionalAttribute astAdditionalAttribute){
     return astAdditionalAttribute.getCard().getIteration() == STAR || astAdditionalAttribute.getCard().getIteration() == PLUS ||
         astAdditionalAttribute.getCard().getIteration() == QUESTION;
   }
@@ -91,18 +91,18 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
   /**
    * for e.g. A<B> min=0, A<B> max=2, A<B> max=*
    */
-  private boolean hasGenericMaxValue(ASTAdditionalAttribute astAdditionalAttribute){
+  protected boolean hasGenericMaxValue(ASTAdditionalAttribute astAdditionalAttribute){
     return (astAdditionalAttribute.getCard().isPresentMax() && ("*".equals(astAdditionalAttribute.getCard().getMax()) ||
         Integer.parseInt(astAdditionalAttribute.getCard().getMax()) > 1) ||
         (astAdditionalAttribute.getCard().isPresentMin() && Integer.parseInt(astAdditionalAttribute.getCard().getMin()) == 0));
   }
 
-  private void logError(String ruleName, String grammarName, String prodName, ASTAdditionalAttribute astAdditionalAttribute) {
+  protected void logError(String ruleName, String grammarName, String prodName, ASTAdditionalAttribute astAdditionalAttribute) {
     Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, ruleName, grammarName, prodName,
         printASTAdditionalAttribute(astAdditionalAttribute)));
   }
 
-  private String printASTAdditionalAttribute(ASTAdditionalAttribute astAdditionalAttribute) {
+  protected String printASTAdditionalAttribute(ASTAdditionalAttribute astAdditionalAttribute) {
     String attribute = "";
     if (astAdditionalAttribute.isPresentName()) {
       attribute += astAdditionalAttribute.getName() + ":";

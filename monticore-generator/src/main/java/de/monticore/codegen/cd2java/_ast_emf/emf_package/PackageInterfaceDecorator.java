@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast_emf.emf_package;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -54,7 +55,7 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     return CD4AnalysisMill.cDInterfaceBuilder()
         .setName(interfaceName)
         .setModifier(PUBLIC.build())
-        .addInterface(getMCTypeFacade().createQualifiedType(ASTE_PACKAGE))
+        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(ASTE_PACKAGE)).build())
         .addCDMember(createENameAttribute(definitionName))
         .addCDMember(createENSURIAttribute(definitionName))
         .addCDMember(createENSPrefixAttribute(definitionName))

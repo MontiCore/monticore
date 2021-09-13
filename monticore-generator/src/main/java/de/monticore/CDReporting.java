@@ -13,9 +13,9 @@ import java.nio.file.Paths;
 
 public class CDReporting {
 
-  private final CD4CodeFullPrettyPrinter cdPrettyPrinter;
+  protected final CD4CodeFullPrettyPrinter cdPrettyPrinter;
 
-  private static final String CD_EXTENSION = ".cd";
+  protected static final String CD_EXTENSION = ".cd";
 
   public CDReporting() {
     this.cdPrettyPrinter = new CD4CodeFullPrettyPrinter();
@@ -53,7 +53,7 @@ public class CDReporting {
     FileReaderWriter.storeInFile(path, output);
   }
 
-  private Path createDestinationFile(String fileName, String fileExtension,
+  protected Path createDestinationFile(String fileName, String fileExtension,
                                      File outputDirectory, String subDirectory) {
     final Path filePath = Paths.get(subDirectory, fileName + fileExtension);
     return Paths.get(outputDirectory.getAbsolutePath(), filePath.toString());

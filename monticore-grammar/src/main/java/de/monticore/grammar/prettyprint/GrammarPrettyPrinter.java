@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
-  private final String QUOTE = "\"";
+  protected static final String QUOTE = "\"";
 
   protected GrammarTraverser traverser;
   
@@ -25,15 +25,6 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
   public GrammarPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
     printer.setIndentLength(2);
-  }
-
-  @Override
-  public void handle(ASTEof a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-
-    print("EOF");
-
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
   @Override
@@ -565,9 +556,6 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  /**
-   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator)
-   */
   @Override
   public void handle(ASTNonTerminalSeparator node) {
     if (node.isPresentUsageName()) {
@@ -691,6 +679,12 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
     println(a.getName());
     getPrinter().indent();
+
+    if (a.isPresentMode()) {
+      print("(");
+      print(a.getMode());
+      print(")");
+    }
 
     if (a.isPresentLexOption()) {
       a.getLexOption().accept(getTraverser());
@@ -869,7 +863,7 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
    *
    * @param i .getIteration() value
    */
-  private void outputIteration(int i) {
+  protected void outputIteration(int i) {
     if (i == ASTConstantsGrammar.QUESTION) {
       print("?");
     }
@@ -884,15 +878,15 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
     }
   }
 
-  private void print(String o) {
+  protected void print(String o) {
     getPrinter().print(o);
   }
 
-  private void println(String o) {
+  protected void println(String o) {
     getPrinter().println(o);
   }
 
-  private void println() {
+  protected void println() {
     getPrinter().println();
   }
 
@@ -1066,9 +1060,6 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-  /**
-   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTSymbolDefinition)
-   */
   @Override
   public void handle(ASTSymbolDefinition node) {
     if (node.isGenSymbol()) {
@@ -1107,9 +1098,6 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
   }
 
 
-  /**
-   * @see de.monticore.grammar.grammar._visitor.GrammarVisitor#handle(de.monticore.grammar.grammar._ast.ASTStartRule)
-   */
   @Override
   public void handle(ASTStartRule node) {
     getPrinter().println(" start " + node.getName() + ";");

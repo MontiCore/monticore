@@ -1,14 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4code._symboltable.ICD4CodeScope;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._symboltable.CDPackageSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.exception.DecorateException;
@@ -19,8 +24,10 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,12 +41,12 @@ import static de.se_rwth.commons.Names.getQualifier;
 
 public class AbstractService<T extends AbstractService> {
 
-  private final DiagramSymbol cdSymbol;
+  protected final DiagramSymbol cdSymbol;
 
 
-  private final MCTypeFacade mcTypeFacade;
+  protected final MCTypeFacade mcTypeFacade;
 
-  private final DecorationHelper decorationHelper;
+  protected final DecorationHelper decorationHelper;
 
   public AbstractService(final ASTCDCompilationUnit compilationUnit) {
     this(compilationUnit.getCDDefinition().getSymbol());
@@ -89,25 +96,46 @@ public class AbstractService<T extends AbstractService> {
     return getSuperCDsTransitive(getCDSymbol());
   }
 
-  public List<DiagramSymbol> getSuperCDsTransitive(DiagramSymbol cdSymbol) {
+  protected final LoadingCache<DiagramSymbol, List<DiagramSymbol>> superCDsTransitiveCache = CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .build(new CacheLoader<DiagramSymbol, List<DiagramSymbol>>() {
+            @Override
+            public List<DiagramSymbol> load(@Nonnull DiagramSymbol cdSymbol) {
+              return getSuperCDsTransitiveUncached(cdSymbol);
+            }
+          });
+
+  // Cache this methods return value
+  protected List<DiagramSymbol> getSuperCDsTransitiveUncached(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
     List<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
-        .map(i -> i.getStatement())
-        .map(this::resolveCD)
-        .collect(Collectors.toList());
+            .map(i -> i.getStatement())
+            .map(AbstractService.this::resolveCD)
+            .collect(Collectors.toList());
     // search for super Cds in super Cds
     List<DiagramSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (DiagramSymbol superSymbol : directSuperCdSymbols) {
       List<DiagramSymbol> superCDs = getSuperCDsTransitive(superSymbol);
       for (DiagramSymbol superCD : superCDs) {
         if (resolvedCds
-            .stream()
-            .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))) {
+                .stream()
+                .noneMatch(c -> c.getFullName().equals(superCD.getFullName()))) {
           resolvedCds.add(superCD);
         }
       }
     }
     return resolvedCds;
+  }
+
+  public List<DiagramSymbol> getSuperCDsTransitive(DiagramSymbol cdSymbol) {
+    return this.superCDsTransitiveCache.getUnchecked(cdSymbol);
+  }
+  
+  public List<CDTypeSymbol> getAllCDTypes(DiagramSymbol cdSymbol) {
+    List<CDPackageSymbol> directPackages = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getLocalCDPackageSymbols().stream().collect(Collectors.toList());
+    List<CDTypeSymbol> types = Lists.newArrayList();
+    directPackages.forEach(p -> types.addAll(p.getSpannedScope().getLocalCDTypeSymbols()));
+    return types;
   }
 
   /**
@@ -116,30 +144,31 @@ public class AbstractService<T extends AbstractService> {
   public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
     return getAllSuperClassesTransitive(astcdClass.getSymbol())
         .stream()
-        .map(s -> createASTFullName(s.getFullName()))
+        .map(s -> createASTFullName(s))
         .collect(Collectors.toList());
   }
 
-  private List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
+  protected List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<CDTypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
-      String superName = cdTypeSymbol.getSuperClass().getTypeInfo().getName();
-      CDTypeSymbol superSymbol = ((ICD4CodeScope) cdTypeSymbol.getSuperClass().getTypeInfo().getEnclosingScope()).resolveCDType(superName).get();
-      superSymbolList.add(superSymbol);
-      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
+      String superName = cdTypeSymbol.getSuperClass().getTypeInfo().getFullName();
+      Optional<CDTypeSymbol> superSymbol = CD4CodeMill.globalScope().resolveCDType(superName);
+      if (superSymbol.isPresent()) {
+        superSymbolList.add(superSymbol.get());
+        superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol.get()));
+      }
     }
     return superSymbolList;
   }
 
   public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
-        List<CDTypeSymbol> localSuperInterfaces = cdTypeSymbol.getSuperTypesList().stream()
+        List<CDTypeSymbol> localSuperInterfaces = Lists.newArrayList();
+        cdTypeSymbol.getSuperTypesList().stream()
             .map(s -> s.getTypeInfo().getFullName())
-            .map(s -> resolveCDType(s))
-            .filter(s -> s.isIsInterface())
-            .collect(Collectors.toList());
+            .forEach(s -> CD4CodeMill.globalScope().resolveCDType(s).ifPresent(t -> {if(t.isIsInterface()) localSuperInterfaces.add(t);}));
     for (CDTypeSymbol superInterface : localSuperInterfaces) {
-      superSymbolList.add(createASTFullName(superInterface.getFullName()));
+      superSymbolList.add(createASTFullName(superInterface));
       superSymbolList.addAll(getAllSuperInterfacesTransitive(superInterface));
     }
     return superSymbolList;
@@ -238,10 +267,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public boolean hasSymbolStereotype(ASTCDType type) {
-    if(type.isPresentModifier()){
-      return hasStereotype(type.getModifier(), MC2CDStereotypes.SYMBOL);
-    }
-    return false;
+    return hasStereotype(type.getModifier(), MC2CDStereotypes.SYMBOL);
   }
 
   public boolean isMethodBodyPresent(ASTCDMethod method) {
@@ -249,7 +275,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public boolean isReferencedSymbolAttribute(ASTCDAttribute attribute) {
-    return attribute.isPresentModifier() && hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE);
+    return hasStereotype(attribute.getModifier(), MC2CDStereotypes.REFERENCED_SYMBOL_ATTRIBUTE);
   }
 
   public String getMethodBody(ASTCDMethod method) {
@@ -293,7 +319,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public boolean hasStartProd(ASTCDDefinition astcdDefinition) {
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
+    if (hasStartProdStereotype(astcdDefinition.getModifier())) {
       return true;
     }
     for (ASTCDClass prod : astcdDefinition.getCDClassesList()) {
@@ -317,7 +343,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public Optional<String> getStartProd(ASTCDDefinition astcdDefinition) {
-    if (astcdDefinition.isPresentModifier() && hasStartProdStereotype(astcdDefinition.getModifier())) {
+    if (hasStartProdStereotype(astcdDefinition.getModifier())) {
       return getStartProdValue(astcdDefinition.getModifier());
     }
     for (ASTCDClass prod : astcdDefinition.getCDClassesList()) {
@@ -494,14 +520,17 @@ public class AbstractService<T extends AbstractService> {
   /**
    * adds the '_ast' package to a fullName to create an valid AST-package
    */
-  public String createASTFullName(String simpleName) {
-    String packageName = simpleName.substring(0, simpleName.lastIndexOf("."));
-    packageName = packageName.toLowerCase();
-    String astName = simpleName.substring(simpleName.lastIndexOf(".") + 1);
-    return packageName + "." + AST_PACKAGE + "." + astName;
+  public String createASTFullName(CDTypeSymbol typeSymbol) {
+    ICDBasisScope scope = typeSymbol.getEnclosingScope();
+    List<DiagramSymbol> diagramSymbols = scope.getLocalDiagramSymbols();
+    while (diagramSymbols.isEmpty()) {
+      scope = scope.getEnclosingScope();
+      diagramSymbols = scope.getLocalDiagramSymbols();
+    }
+    return Joiners.DOT.join(getASTPackage(diagramSymbols.get(0)), typeSymbol.getName());
   }
 
-  private int count = 0;
+  protected int count = 0;
 
   public String getGeneratedErrorCode(String name) {
     // Use the string representation
@@ -564,5 +593,4 @@ public class AbstractService<T extends AbstractService> {
   public String getCliFullName() {
     return getCliFullName(getCDSymbol());
   }
-
 }

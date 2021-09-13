@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
@@ -20,8 +21,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.PRIVATE;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._cocos.CoCoConstants.*;
@@ -53,7 +53,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit compilationUnit) {
     String cocoCheckerName = cocoService.getCheckerSimpleTypeName();
-    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), visitorService.getTraverserInterfaceType(), TRAVERSER);
+    ASTCDAttribute traverserAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), visitorService.getTraverserInterfaceType(), TRAVERSER);
     List<ASTCDMethod> traverserMethods = methodDecorator.decorate(traverserAttribute);
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PUBLIC.build(), cocoCheckerName);
@@ -82,9 +82,9 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
       cocoChecker.addCDMember(checkAll);
 
-      for (CDTypeSymbol cdTypeSymbol : ((ICDBasisScope) currentCDSymbol.getEnclosingScope()).getLocalCDTypeSymbols()) {
+      for (CDTypeSymbol cdTypeSymbol :cocoService.getAllCDTypes(currentCDSymbol)) {
         // do not generate for enums (only classes and interfaces)
-        if (cdTypeSymbol.isIsEnum()) {
+        if (cdTypeSymbol.getAstNode() instanceof ASTCDEnum) {
           continue;
         }
 
@@ -112,7 +112,7 @@ public class CoCoCheckerDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   protected ASTCDAttribute createCoCoCollectionAttribute(ASTMCType cocoType, String cocoCollectionName) {
     ASTMCType cocoCollectionType = getMCTypeFacade().createCollectionTypeOf(cocoType);
-    ASTCDAttribute cocoCollectionAttribute = getCDAttributeFacade().createAttribute(PRIVATE.build(), cocoCollectionType, cocoCollectionName);
+    ASTCDAttribute cocoCollectionAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), cocoCollectionType, cocoCollectionName);
     this.replaceTemplate(VALUE, cocoCollectionAttribute, new StringHookPoint("= new LinkedHashSet<>()"));
     return cocoCollectionAttribute;
   }

@@ -8,7 +8,7 @@ import de.monticore.umlmodifier._visitor.UMLModifierTraverser;
 
 public class UMLModifierFullPrettyPrinter {
 
-  private UMLModifierTraverser traverser;
+  protected UMLModifierTraverser traverser;
 
   protected IndentPrinter printer;
 

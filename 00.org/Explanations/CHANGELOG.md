@@ -1,9 +1,24 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 # Release Notes
-
-##  MontiCore 7.1.0
+## MontiCore 7.2.0
 to be released
+
+### Changes
+* Several modes can now be specified in a grammar (for further
+explanations see [ANTLR](https://www.antlr.org/)). For the grammars, one
+file is now generated for lexer rules and one for the parser rules.
+
+* delete deprecated classes:
+  `ModelPath`, `IterablePath`, `ModelCoordinate`, `ModelCoordinateImpl`, `ModelCoordinates`, and `FileFinder`
+
+* The symbol table now stores for productions whether a 
+  production is left-recursive.
+  
+* In the log class the dependency to ch.qos.logback:logback-core was removed
+  
+##  MontiCore 7.1.0
+released: 05.07.2021
 
 ### Additions
 * introduced language-specific CLI generation

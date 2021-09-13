@@ -16,17 +16,17 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
 public class GMLFormatter extends AFormatter {
   
-  private Map<Element, Integer> elementIds = new HashMap<Element, Integer>();
+  protected Map<Element, Integer> elementIds = new HashMap<Element, Integer>();
   
-  private Map<APkg, Integer> packageIds = new HashMap<APkg, Integer>();
+  protected Map<APkg, Integer> packageIds = new HashMap<APkg, Integer>();
   
-  private int nodeIdCounter = 0;
+  protected int nodeIdCounter = 0;
   
-  private int edgeIdCounter = 0;
+  protected int edgeIdCounter = 0;
   
-  private long maxEdgeCalls = 0;
+  protected long maxEdgeCalls = 0;
   
-  private double edgeSizeRange = 0;
+  protected double edgeSizeRange = 0;
   
   /**
    * @see AFormatter.printer.APrinter#print(visualization.model.RootPkg)
@@ -47,7 +47,7 @@ public class GMLFormatter extends AFormatter {
     return lines;
   }
   
-  private void calculateMaxEdgeCalls(APkg pkg) {
+  protected void calculateMaxEdgeCalls(APkg pkg) {
     for (Element e : pkg.getElements()) {
       for (Element link : e.getLinks()) {
         Long linkCalls = e.getNumberOfLinkCalls(link);
@@ -65,7 +65,7 @@ public class GMLFormatter extends AFormatter {
   /**
    * @param pkg
    */
-  private List<String> getAllLinkContent(APkg pkg) {
+  protected List<String> getAllLinkContent(APkg pkg) {
     List<String> lines = Lists.newArrayList();
     
     for (Element e : pkg.getElements()) {
@@ -79,7 +79,7 @@ public class GMLFormatter extends AFormatter {
     return lines;
   }
 
-  private List<String> getAllPkgContent(APkg pkg) {
+  protected List<String> getAllPkgContent(APkg pkg) {
     List<String> lines = Lists.newArrayList();
     
     if (pkg.hasElements()) {
@@ -97,7 +97,7 @@ public class GMLFormatter extends AFormatter {
     return lines;
   }
   
-  private List<String> getPkgContent(APkg pkg) {
+  protected List<String> getPkgContent(APkg pkg) {
     List<String> lines = Lists.newArrayList();
     
     if (!pkg.containsNonFileElement()) {
@@ -179,7 +179,7 @@ public class GMLFormatter extends AFormatter {
    * @param name
    * @return
    */
-  private String getShape(ElementType type) {
+  protected String getShape(ElementType type) {
     switch (type) {
       case HELPER:
         return "diamond";
@@ -196,7 +196,7 @@ public class GMLFormatter extends AFormatter {
    * @param pkg
    * @return
    */
-  private Integer getGroupIDByPackage(APkg pkg) {
+  protected Integer getGroupIDByPackage(APkg pkg) {
     if (packageIds.containsKey(pkg)) {
       return packageIds.get(pkg);
     }
@@ -210,7 +210,7 @@ public class GMLFormatter extends AFormatter {
    * @param element
    * @return
    */
-  private Integer getID(Element element) {
+  protected Integer getID(Element element) {
     if (elementIds.containsKey(element)) {
       return elementIds.get(element);
     }
@@ -255,7 +255,7 @@ public class GMLFormatter extends AFormatter {
    * @param calls
    * @return
    */
-  private int getEdgeWith(long calls) {    
+  protected int getEdgeWith(long calls) {
     return Math.min((int) (calls/edgeSizeRange) + 1, 7);
   }
 }

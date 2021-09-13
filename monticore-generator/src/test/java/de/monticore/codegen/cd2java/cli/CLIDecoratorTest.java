@@ -49,7 +49,7 @@ public class CLIDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(14, cliClass.getCDMethodList().size());
+    assertEquals(17, cliClass.getCDMethodList().size());
   }
 
   @Test
@@ -83,6 +83,17 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, method.getMCReturnType().getMCType());
+    assertFalse(method.isEmptyCDParameters());
+    assertEquals(1, method.getCDParameterList().size());
+    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
+    assertEquals("node", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testCompleteSymbolTableMethod(){
+    ASTCDMethod method = getMethodBy("completeSymbolTable", cliClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertFalse(method.isEmptyCDParameters());
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
@@ -170,6 +181,16 @@ public class CLIDecoratorTest extends DecoratorTestCase {
   @Test
   public void testRunDefaultCoCosMethod() {
     ASTCDMethod method = getMethodBy("runDefaultCoCos", cliClass);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.getCDParameterList().size());
+    assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
+    assertEquals("ast", method.getCDParameter(0).getName());
+  }
+
+  @Test
+  public void testRunAdditionalCoCosMethod(){
+    ASTCDMethod method = getMethodBy("runAdditionalCoCos", cliClass);
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.getCDParameterList().size());

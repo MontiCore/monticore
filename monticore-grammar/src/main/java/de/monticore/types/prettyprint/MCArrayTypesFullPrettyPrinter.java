@@ -8,7 +8,7 @@ import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
 
 public class MCArrayTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter {
 
-  private MCArrayTypesTraverser traverser;
+  protected MCArrayTypesTraverser traverser;
 
   public MCArrayTypesFullPrettyPrinter(IndentPrinter printer) {
     super(printer);

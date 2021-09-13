@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
@@ -12,8 +11,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
-import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.ISymbol;
 
 /**
  * The usage of this class is to transform a call expression so that it is easier to resolve in the TypeCheck
@@ -46,8 +43,8 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
     this.traverser = (CommonExpressionsTraverser) traverser;
   }
 
-  private String lastName = null;
-  private ASTExpression lastExpression = null;
+  protected String lastName = null;
+  protected ASTExpression lastExpression = null;
 
   @Override
   public void traverse(ASTCallExpression expr){
@@ -74,44 +71,11 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
     }
   }
 
-  //to implement both ExpressionsBasisVisitor and CommonExpressionsVisitor, these methods must be overridden
-
   @Override
   public void traverse(ASTNameExpression expr){
     if(lastName==null){
       lastName = expr.getName();
     }
   }
-
-  @Override
-  public void visit(IScope node) {
-
-  }
-
-  @Override
-  public void endVisit(IScope node) {
-
-  }
-
-  @Override
-  public void visit(ASTNode node) {
-
-  }
-
-  @Override
-  public void endVisit(ASTNode node) {
-
-  }
-
-  @Override
-  public void visit(ISymbol node) {
-
-  }
-
-  @Override
-  public void endVisit(ISymbol node) {
-
-  }
-
 
 }

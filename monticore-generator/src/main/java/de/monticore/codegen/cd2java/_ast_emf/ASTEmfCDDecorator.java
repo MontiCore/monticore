@@ -56,7 +56,7 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit ast) {
     ASTCDCompilationUnit compilationUnit = super.decorate(ast);
 
-    List<String> astPackage = new ArrayList<>(ast.getPackageList());
+    List<String> astPackage = new ArrayList<>(ast.getCDPackageList());
     astPackage.addAll(Arrays.asList(ast.getCDDefinition().getName().toLowerCase(), ASTConstants.AST_PACKAGE));
 
     compilationUnit.getCDDefinition().addCDElement(createPackageInterface(ast, astPackage));

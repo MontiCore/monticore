@@ -2,7 +2,6 @@
 package de.monticore.statements.prettyprint;
 
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
-import de.monticore.expressions.prettyprint.ExpressionsBasisFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.statements.mcreturnstatements.MCReturnStatementsMill;
@@ -11,7 +10,7 @@ import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTra
 
 public class MCReturnStatementsFullPrettyPrinter {
 
-  private MCReturnStatementsTraverser traverser;
+  protected MCReturnStatementsTraverser traverser;
 
   protected IndentPrinter printer;
 

@@ -5,7 +5,6 @@ package de.monticore.generating.templateengine.reporting.commons;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.SourcePosition;
@@ -16,9 +15,6 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -29,61 +25,31 @@ import java.util.regex.Pattern;
  */
 public class ReportingRepository {
   
-  private IASTNodeIdentHelper astNodeIdentHelper;
+  protected IASTNodeIdentHelper astNodeIdentHelper;
   
   // save objects that have no position
-  private Map<Object, Integer> node2Ident = Maps.newHashMap();
+  protected Map<Object, Integer> node2Ident = Maps.newHashMap();
   
-  private Map<Object, String> node2Name = Maps.newHashMap();
+  protected Map<Object, String> node2Name = Maps.newHashMap();
   
   // save nodes that have a position
-  private Map<String, Integer> name2maxidSourcePos = Maps.newHashMap();
+  protected Map<String, Integer> name2maxidSourcePos = Maps.newHashMap();
   
-  private Map<Object, Integer> nodeWithSource2Ident = Maps.newHashMap();
+  protected Map<Object, Integer> nodeWithSource2Ident = Maps.newHashMap();
   
-  private Map<Object, String> nodeWithSource2Name = Maps.newHashMap();
+  protected Map<Object, String> nodeWithSource2Name = Maps.newHashMap();
   
   // save current maxID for aSTNode string
-  private Map<String, Integer> name2maxid = Maps.newHashMap();
+  protected Map<String, Integer> name2maxid = Maps.newHashMap();
   
-  private Set<String> allTemplateNames = Sets.newLinkedHashSet();
+  protected Set<String> allTemplateNames = Sets.newLinkedHashSet();
   
-  private Set<String> allHWJavaNames = Sets.newLinkedHashSet();
+  protected Set<String> allHWJavaNames = Sets.newLinkedHashSet();
   
-  private Set<String> allHWTemplateNames = Sets.newLinkedHashSet();
+  protected Set<String> allHWTemplateNames = Sets.newLinkedHashSet();
   
   public ReportingRepository(IASTNodeIdentHelper astNodeIdentHelper) {
     this.astNodeIdentHelper = astNodeIdentHelper;
-  }
-  
-  /**
-   * Populates this repository with all resolved paths from the given iterable path.
-   * 
-   * @param hwcPath
-   * @see IterablePath#getResolvedPaths()
-   * @see IterablePath#from(List, String)
-   */
-  @Deprecated
-  public void initAllHWJava(IterablePath hwcPath) {
-    Iterator<Path> hwcFiles = hwcPath.getResolvedPaths();
-    while (hwcFiles.hasNext()) {
-      allHWJavaNames.add(hwcFiles.next().toAbsolutePath().toString());
-    }
-  }
-  
-  /**
-   * Populates this repository with all resolved paths from the given iterable path.
-   * 
-   * @param hwtPath
-   * @see IterablePath#getResolvedPaths()
-   * @see IterablePath#from(List, String)
-   */
-  @Deprecated
-  public void initAllHWTemplates(IterablePath hwtPath) {
-    Iterator<Path> hwtFiles = hwtPath.get();
-    while (hwtFiles.hasNext()) {
-      allHWTemplateNames.add(hwtFiles.next().toFile().toString().replaceAll("\\\\", "/"));
-    }
   }
   
   /**
@@ -93,14 +59,15 @@ public class ReportingRepository {
     // it's a kind of magic
     Reflections.log = new Helper();
     Reflections helper = new Reflections(new ConfigurationBuilder()
-        .addClassLoader(ClasspathHelper.contextClassLoader())
-        .setUrls(ClasspathHelper.forClassLoader())
-        .setScanners(new ResourcesScanner()));
-    
+            .addClassLoader(ClasspathHelper.contextClassLoader())
+            .addUrls(ClasspathHelper.forClassLoader())
+            .addUrls(ClasspathHelper.forPackage(""))
+            .setScanners(new ResourcesScanner()));
+
     this.allTemplateNames = helper.getResources(Pattern.compile(".*\\.ftl"));
   }
   
-  private String getNameFormatted(Object obj, String out, SourcePosition sourcePos) {
+  protected String getNameFormatted(Object obj, String out, SourcePosition sourcePos) {
     String pos = Layouter.sourcePos(sourcePos);
     // node has a source position
     if (!sourcePos.equals(
@@ -205,7 +172,7 @@ public class ReportingRepository {
   }
   
   /* This is the magic. Don't touch it ;-) */
-  private class Helper implements Logger {
+  protected class Helper implements Logger {
     
     @Override
     public boolean isTraceEnabled() {
@@ -215,8 +182,9 @@ public class ReportingRepository {
     
     @Override
     public void trace(String msg) {
-      if (isTraceEnabled())
+      if (isTraceEnabled()) {
         System.out.println("[TRACE] " + msg);
+      }
     }
     
     @Override

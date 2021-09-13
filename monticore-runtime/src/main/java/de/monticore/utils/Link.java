@@ -33,13 +33,13 @@ import de.se_rwth.commons.Util;
  */
 public final class Link<S extends ASTNode, T extends ASTNode> implements Iterable<Link<?, ?>> {
   
-  private final S source;
+  protected final S source;
   
-  private final T target;
+  protected final T target;
   
-  private final Link<?, ?> parent;
+  protected final Link<?, ?> parent;
   
-  private final Set<Link<?, ?>> childLinks = new LinkedHashSet<Link<?, ?>>();
+  protected final Set<Link<?, ?>> childLinks = new LinkedHashSet<Link<?, ?>>();
   
   public Link(S source, T target, @Nullable Link<?, ?> parent) {
     this.source = source;
@@ -50,7 +50,7 @@ public final class Link<S extends ASTNode, T extends ASTNode> implements Iterabl
     }
   }
   
-  private void addChildLink(Link<?, ?> childLink) {
+  protected void addChildLink(Link<?, ?> childLink) {
     childLinks.add(childLink);
   }
   

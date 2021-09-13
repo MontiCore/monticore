@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar._symboltable;
 
-import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
+import de.monticore.grammar.DirectLeftRecursionDetector;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
@@ -23,8 +24,8 @@ import static java.util.Collections.max;
 
 public class GrammarSTCompleteTypes implements GrammarVisitor2 {
 
-  private MCGrammarSymbol grammarSymbol;
-  private ASTMCGrammar astGrammar;
+  protected MCGrammarSymbol grammarSymbol;
+  protected ASTMCGrammar astGrammar;
 
   @Override
   public void visit(ASTSplitRule ast) {
@@ -32,7 +33,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   }
 
   @Override
-  public void visit(ASTMCGrammar ast){
+  public void visit(ASTMCGrammar ast) {
     this.astGrammar = ast;
     this.grammarSymbol = ast.getSymbol();
   }
@@ -42,6 +43,8 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     setComponentsCardinality(ast);
 
     computeStartParserProd(ast);
+
+    ast.getClassProdList().forEach(p -> setIfProdIsLeftRecursive(p));
   }
 
   @Override
@@ -60,23 +63,19 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   }
 
   @Override
-  public void visit(ASTTokenMode node) {
-    node.streamTokenName().forEach(t -> grammarSymbol.addMode(node.getName(), t));
-  }
-
-  @Override
   public void visit(ASTLexProd node) {
     GrammarVisitor2.super.visit(node);
-    if (node.isEmptyMode()) {
-      grammarSymbol.addMode(MCGrammarSymbol.DEFAULT_MODE, node.getName());
+    if (node.isPresentMode()) {
+      grammarSymbol.addMode(node.getMode(), node.getName());
     } else {
-      node.streamMode().forEach(m -> grammarSymbol.addMode(m, node.getName()));
+      grammarSymbol.addMode(MCGrammarSymbol.DEFAULT_MODE, node.getName());
+
     }
   }
 
   @Override
-  public void endVisit(ASTTerminal node){
-    if(node.isPresentUsageName()) {
+  public void endVisit(ASTTerminal node) {
+    if (node.isPresentUsageName()) {
       RuleComponentSymbol prodComponent = node.getSymbol();
       prodComponent.setIsTerminal(true);
       setComponentMultiplicity(prodComponent, node);
@@ -84,8 +83,8 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   }
 
   @Override
-  public void endVisit(ASTKeyTerminal node){
-    if(node.isPresentUsageName()) {
+  public void endVisit(ASTKeyTerminal node) {
+    if (node.isPresentUsageName()) {
       RuleComponentSymbol prodComponent = node.getSymbol();
       prodComponent.setIsTerminal(true);
       setComponentMultiplicity(prodComponent, node);
@@ -102,32 +101,32 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   }
 
   @Override
-  public void endVisit(ASTNonTerminal node){
+  public void endVisit(ASTNonTerminal node) {
     RuleComponentSymbol prodComponent = node.getSymbol();
     prodComponent.setReferencedType(node.getName());
     prodComponent.setIsNonterminal(true);
   }
 
   @Override
-  public void endVisit(ASTLexNonTerminal node){
+  public void endVisit(ASTLexNonTerminal node) {
     RuleComponentSymbol prodComponent = node.getSymbol();
     prodComponent.setReferencedType(node.getName());
     prodComponent.setIsLexerNonterminal(true);
   }
 
   @Override
-  public void endVisit(ASTInterfaceProd node){
+  public void endVisit(ASTInterfaceProd node) {
     ProdSymbol prodSymbol = node.getSymbol();
     prodSymbol.setIsInterface(true);
 
     setSymbolDefinition(prodSymbol, node.getSymbolDefinitionList());
 
     setSuperProdsAndTypes(prodSymbol, emptyList(),
-        emptyList(), node.getSuperInterfaceRuleList(), node.getASTSuperInterfaceList());
+            emptyList(), node.getSuperInterfaceRuleList(), node.getASTSuperInterfaceList());
   }
 
   @Override
-  public void endVisit(ASTLexProd node){
+  public void endVisit(ASTLexProd node) {
     ProdSymbol prodSymbol = node.getSymbol();
     prodSymbol.setIsLexerProd(true);
   }
@@ -145,7 +144,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
 
     setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
-        ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
+            ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
   }
 
   @Override
@@ -156,7 +155,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
 
     setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
-        ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
+            ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
   }
 
   @Override
@@ -168,7 +167,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   }
 
   @Override
-  public void endVisit(ASTConstantGroup node){
+  public void endVisit(ASTConstantGroup node) {
     RuleComponentSymbol symbol = node.getSymbol();
     symbol.setIsConstantGroup(true);
     for (ASTConstant c : node.getConstantList()) {
@@ -182,7 +181,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  private void setComponentMultiplicity(RuleComponentSymbol prod, ASTRuleComponent ast) {
+  protected void setComponentMultiplicity(RuleComponentSymbol prod, ASTRuleComponent ast) {
     Multiplicity multiplicity = determineMultiplicity(astGrammar, ast);
     if (multiplicity == LIST) {
       prod.setIsList(true);
@@ -191,8 +190,8 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  private void setSymbolDefinition(ProdSymbol prodSymbol,
-                                   List<ASTSymbolDefinition> listOfDefs) {
+  protected void setSymbolDefinition(ProdSymbol prodSymbol,
+                                     List<ASTSymbolDefinition> listOfDefs) {
     for (ASTSymbolDefinition symbolDefinition : listOfDefs) {
       if (symbolDefinition.isGenSymbol()) {
         prodSymbol.setIsSymbolDefinition(true);
@@ -203,9 +202,9 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  private void setSuperProdsAndTypes(ProdSymbol prodSymbol, List<ASTRuleReference> superProds,
-                                     List<ASTMCType> astSuperClasses, List<ASTRuleReference> superInterfaceProds,
-                                     List<ASTMCType> astSuperInterfaces) {
+  protected void setSuperProdsAndTypes(ProdSymbol prodSymbol, List<ASTRuleReference> superProds,
+                                       List<ASTMCType> astSuperClasses, List<ASTRuleReference> superInterfaceProds,
+                                       List<ASTMCType> astSuperInterfaces) {
     final IGrammarScope enclosingScope = grammarSymbol.getSpannedScope();
 
     // A extends B
@@ -240,13 +239,12 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   /**
    * Set cardinality of all grammar's nonterminals
    */
-  private void setComponentsCardinality(ASTMCGrammar astGrammar) {
+  protected void setComponentsCardinality(ASTMCGrammar astGrammar) {
     for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProds()) {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols();
-      LinkedListMultimap<String, RuleComponentSymbol> map = prodSymbol.getSpannedScope().getRuleComponentSymbols();
       for (String compName : prodSymbol.getSpannedScope().getRuleComponentSymbols().keySet()) {
         Optional<AdditionalAttributeSymbol> attribute = astAttributes.stream()
-            .filter(a -> a.getName().equals(compName)).findAny();
+                .filter(a -> a.getName().equals(compName)).findAny();
         Multiplicity multiplicity = STANDARD;
         if (attribute.isPresent()) {
           multiplicity = determineMultiplicity(attribute.get().getAstNode());
@@ -258,7 +256,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
             }
           }
         }
-        for (RuleComponentSymbol component: prodSymbol.getSpannedScope().getRuleComponentSymbols().get(compName)) {
+        for (RuleComponentSymbol component : prodSymbol.getSpannedScope().getRuleComponentSymbols().get(compName)) {
           if (component.isIsNonterminal()) {
             component.setIsList(multiplicity == LIST);
             component.setIsOptional(multiplicity == OPTIONAL);
@@ -268,7 +266,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     }
   }
 
-  private void computeStartParserProd(ASTMCGrammar astGrammar) {
+  protected void computeStartParserProd(ASTMCGrammar astGrammar) {
     if (astGrammar.isPresentStartRule()) {
       String name = astGrammar.getStartRule().getName();
       Optional<ProdSymbol> prod = astGrammar.getSymbol().getProdWithInherited(name);
@@ -298,13 +296,13 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   /**
    * Set start parser production
    */
-  private void setStartProd(ASTMCGrammar astGrammar, Set<ASTProd> firstProductions) {
+  protected void setStartProd(ASTMCGrammar astGrammar, Set<ASTProd> firstProductions) {
     // Set start parser rule
     ASTProd firstProduction = null;
     for (ASTProd prod : firstProductions) {
       if ((firstProduction == null)
-          || (firstProduction.get_SourcePositionStart()
-          .compareTo(prod.get_SourcePositionStart()) > 0)) {
+              || (firstProduction.get_SourcePositionStart()
+              .compareTo(prod.get_SourcePositionStart()) > 0)) {
         firstProduction = prod;
       }
     }
@@ -313,6 +311,22 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
       ProdSymbol prod = firstProduction.getSymbol();
       prod.setIsStartProd(true);
       astGrammar.getSymbol().setStartProd(prod);
+    }
+  }
+
+  protected void setIfProdIsLeftRecursive(ASTClassProd ast) {
+    ProdSymbol prodSymbol = ast.getSymbol();
+    Set<ProdSymbol> superProds = MCGrammarSymbolTableHelper.getAllSuperProds(prodSymbol);
+    Collection<String> names = Lists.newArrayList();
+    superProds.forEach(s -> names.add(s.getName()));
+    DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
+    for (ASTAlt alt : ast.getAltList()) {
+      if (detector.isAlternativeLeftRecursive(alt, names)) {
+        prodSymbol.setIsIndirectLeftRecursive(true);
+        superProds.stream().filter(s -> s.isInterface).forEach(s ->s.setIsIndirectLeftRecursive(true));
+      } else if (detector.isAlternativeLeftRecursive(alt, ast.getName())) {
+        prodSymbol.setIsDirectLeftRecursive(true);
+      }
     }
   }
 

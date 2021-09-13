@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+{
+
+state $s_name {
+  not [[ state $_ <<initial>>; ]]
+  list<State> [[ state $_ ; ]]
+}
+
+}

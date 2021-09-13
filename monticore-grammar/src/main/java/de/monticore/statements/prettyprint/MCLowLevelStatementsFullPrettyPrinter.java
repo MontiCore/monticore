@@ -9,7 +9,7 @@ import de.monticore.statements.mclowlevelstatements._visitor.MCLowLevelStatement
 
 public class MCLowLevelStatementsFullPrettyPrinter {
 
-  private MCLowLevelStatementsTraverser traverser;
+  protected MCLowLevelStatementsTraverser traverser;
 
   protected IndentPrinter printer;
 

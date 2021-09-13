@@ -12,7 +12,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    MCPath targetPath = Mockito.mock(MCPath.class);
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     this.glex.setGlobalValue("service", visitorService);
@@ -84,7 +84,7 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackageChanged() {
-    String packageName = visitorCompilationUnit.getPackageList().stream().reduce((a, b) -> a + "." + b).get();
+    String packageName = visitorCompilationUnit.getCDPackageList().stream().reduce((a, b) -> a + "." + b).get();
     assertEquals("de.monticore.codegen.ast.automaton._visitor", packageName);
   }
 
@@ -92,7 +92,7 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "automaton", "_visitor");
-    assertEquals(expectedPackage, visitorCompilationUnit.getPackageList());
+    assertEquals(expectedPackage, visitorCompilationUnit.getCDPackageList());
   }
 
   @Test

@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportCreator;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -38,15 +40,20 @@ public abstract class IncGenReporter extends AReporter {
   }
 
   @Override
-  @Deprecated
-  public void reportHWCExistenceCheck(IterablePath parentDirs, Path fileName,
-                                      Optional<Path> result) {
+  public void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> result) {
+
     if (result.isPresent()) {
-      String usedHWCFile = toUnixPath(result.get().toString());
-      usedHWCFiles.add(usedHWCFile);
+      String usedHWCFile = null;
+      try {
+        usedHWCFile = toUnixPath(new File(result.get().toURI()).toString());
+        usedHWCFiles.add(usedHWCFile);
+      } catch (URISyntaxException e) {
+        Log.warn("0xA0136 Cannot report hwc file", e);
+
+      }
     }
     else {
-      for (Path p : parentDirs.getPaths()) {
+      for (Path p : mcp.getEntries()) {
         String notExistentHWCFile = toUnixPath(p.resolve(fileName).toString());
         notExistentHWCFiles.add(notExistentHWCFile);
       }

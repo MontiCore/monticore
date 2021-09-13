@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -19,7 +20,8 @@ import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecora
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +63,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected final CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator;
 
-  protected final IterablePath handCodedPath;
+  protected final MCPath handCodedPath;
 
   protected final SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator;
 
@@ -76,7 +78,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
   protected final ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator;
 
   public SymbolTableCDDecorator(final GlobalExtensionManagement glex,
-                                final IterablePath handCodedPath,
+                                final MCPath handCodedPath,
                                 final SymbolTableService symbolTableService,
                                 final SymbolDecorator symbolDecorator,
                                 final SymbolBuilderDecorator symbolBuilderDecorator,
@@ -119,9 +121,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit astCD, ASTCDCompilationUnit symbolCD, ASTCDCompilationUnit scopeCD) {
     List<String> symbolTablePackage = Lists.newArrayList();
-    astCD.getPackageList().forEach(p -> symbolTablePackage.add(p.toLowerCase()));
+    astCD.getCDPackageList().forEach(p -> symbolTablePackage.add(p.toLowerCase()));
     symbolTablePackage.addAll(Arrays.asList(astCD.getCDDefinition().getName().toLowerCase(), SYMBOL_TABLE_PACKAGE));
-    boolean isComponent = astCD.getCDDefinition().isPresentModifier() && symbolTableService.hasComponentStereotype(astCD.getCDDefinition().getModifier());
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(astCD.getCDDefinition());
 
     // create symbol classes
@@ -138,6 +139,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
     ASTCDDefinition symTabCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(astCD.getCDDefinition().getName())
+        .setModifier(CD4CodeMill.modifierBuilder().build())
         .addAllCDElements(decoratedSymbolClasses)
         .addAllCDElements(createSymbolBuilderClasses(symbolCD.getCDDefinition().getCDClassesList()))
         .addCDElement(scopeClass)
@@ -181,8 +183,13 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
     addPackageAndAnnotation(symTabCD, symbolTablePackage);
 
+    ASTMCPackageDeclaration mCPackageDeclaration = CD4AnalysisMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+            CD4AnalysisMill.mCQualifiedNameBuilder()
+                    .setPartsList(symbolTablePackage)
+                    .build())
+            .build();
     return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setPackageList(symbolTablePackage)
+        .setMCPackageDeclaration(mCPackageDeclaration)
         .setCDDefinition(symTabCD)
         .build();
   }
@@ -190,23 +197,17 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
   protected void addPackageAndAnnotation(ASTCDDefinition symTabCD, List<String> symbolTablePackage) {
     for (ASTCDClass cdClass : symTabCD.getCDClassesList()) {
       this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
-      if (cdClass.isPresentModifier()) {
-        this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
-      }
+      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
     }
 
     for (ASTCDInterface cdInterface : symTabCD.getCDInterfacesList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
-      if (cdInterface.isPresentModifier()) {
-        this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
-      }
+      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
     }
 
     for (ASTCDEnum cdEnum : symTabCD.getCDEnumsList()) {
       this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
-      if (cdEnum.isPresentModifier()) {
-        this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
-      }
+      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
     }
   }
 

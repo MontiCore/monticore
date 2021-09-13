@@ -17,7 +17,7 @@ public class MCVarDeclarationStatementsPrettyPrinter implements
 
   protected IndentPrinter printer;
 
-  private MCVarDeclarationStatementsTraverser traverser;
+  protected MCVarDeclarationStatementsTraverser traverser;
 
   public MCVarDeclarationStatementsPrettyPrinter(IndentPrinter out) {
     this.printer = out;

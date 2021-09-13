@@ -117,8 +117,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClass() {
-    assertTrue(scopeClass.isPresentSuperclass());
-    assertDeepEquals("de.monticore.FooScope", scopeClass.getSuperclass());
+    assertTrue(scopeClass.isPresentCDExtendUsage());
+    assertDeepEquals("de.monticore.FooScope", scopeClass.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test

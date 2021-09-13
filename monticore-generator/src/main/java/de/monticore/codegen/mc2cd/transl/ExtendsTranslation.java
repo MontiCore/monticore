@@ -2,6 +2,7 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
@@ -46,13 +47,16 @@ public class ExtendsTranslation implements
     return rootLink;
   }
 
-  private void translateClassProd(ASTClassProd classProd, ASTCDClass cdClass,
+  protected void translateClassProd(ASTClassProd classProd, ASTCDClass cdClass,
       ASTMCGrammar astGrammar) {
     // translates "extends"
+    if (!(classProd.getSuperRuleList().isEmpty() && classProd.getASTSuperClassList().isEmpty()) && !cdClass.isPresentCDExtendUsage()) {
+      cdClass.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
+    }
     for (ASTRuleReference ruleReference : classProd.getSuperRuleList()) {
       ProdSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(TransformationHelper.createObjectType(
+      cdClass.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -60,17 +64,20 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : classProd.getASTSuperClassList()) {
       String qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
+      cdClass.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 
-  private void translateAbstractProd(ASTAbstractProd abstractProd,
+  protected void translateAbstractProd(ASTAbstractProd abstractProd,
       ASTCDClass cdClass, ASTMCGrammar astGrammar) {
     // translates "extends"
+    if (!(abstractProd.getSuperRuleList().isEmpty() && abstractProd.getASTSuperClassList().isEmpty()) && !cdClass.isPresentCDExtendUsage()) {
+      cdClass.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
+    }
     for (ASTRuleReference ruleReference : abstractProd.getSuperRuleList()) {
       ProdSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdClass.setSuperclass(TransformationHelper.createObjectType(
+      cdClass.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -79,17 +86,20 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : abstractProd.getASTSuperClassList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
+      cdClass.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 
-  private void translateInterfaceProd(ASTInterfaceProd interfaceProd,
+  protected void translateInterfaceProd(ASTInterfaceProd interfaceProd,
       ASTCDInterface cdInterface, ASTMCGrammar astGrammar) {
     // translates "extends"
+    if (!(interfaceProd.getSuperInterfaceRuleList().isEmpty() && interfaceProd.getASTSuperInterfaceList().isEmpty()) && !cdInterface.isPresentCDExtendUsage()) {
+      cdInterface.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
+    }
     for (ASTRuleReference ruleReference : interfaceProd.getSuperInterfaceRuleList()) {
       ProdSymbol ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(astGrammar, ruleReference.getName()).get();
       String packageName = getPackageName(ruleSymbol);
-      cdInterface.addInterface(TransformationHelper.createObjectType(
+      cdInterface.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(
           packageName + "AST" + ruleReference.getName()));
     }
 
@@ -98,7 +108,7 @@ public class ExtendsTranslation implements
     for (ASTMCType typeReference : interfaceProd.getASTSuperInterfaceList()) {
       qualifiedRuleName = TransformationHelper.getQualifiedTypeNameAndMarkIfExternal(
           typeReference, astGrammar, cdInterface);
-      cdInterface.addInterface(TransformationHelper.createObjectType(qualifiedRuleName));
+      cdInterface.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(qualifiedRuleName));
     }
   }
 }

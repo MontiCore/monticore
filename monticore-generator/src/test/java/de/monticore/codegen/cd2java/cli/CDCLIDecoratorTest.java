@@ -75,12 +75,12 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
   }
   @Test
   public void testPackage() {
-    assertEquals(5, cliCD.getPackageList().size());
-    assertEquals("de", cliCD.getPackageList().get(0));
-    assertEquals("monticore", cliCD.getPackageList().get(1));
-    assertEquals("codegen", cliCD.getPackageList().get(2));
-    assertEquals("ast", cliCD.getPackageList().get(3));
-    assertEquals("automaton", cliCD.getPackageList().get(4));
+    assertEquals(5, cliCD.getCDPackageList().size());
+    assertEquals("de", cliCD.getCDPackageList().get(0));
+    assertEquals("monticore", cliCD.getCDPackageList().get(1));
+    assertEquals("codegen", cliCD.getCDPackageList().get(2));
+    assertEquals("ast", cliCD.getCDPackageList().get(3));
+    assertEquals("automaton", cliCD.getCDPackageList().get(4));
   }
   @Test
   public void testImports() {

@@ -40,7 +40,7 @@ public class TemplateTreeReporter extends AReporter {
   
   static final String SIMPLE_FILE_NAME = "09_TemplateTree";
   
-  private int currentIndentLevel = 0;
+  protected int currentIndentLevel = 0;
   
   public TemplateTreeReporter(String outputDir, String modelName) {
     super(outputDir
@@ -53,7 +53,7 @@ public class TemplateTreeReporter extends AReporter {
     writeLine("========================================================== Protocol");
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("========================================================== Explanation");
     writeLine("Tree structure for template calls.");
     writeLine("Short forms:");
@@ -67,7 +67,7 @@ public class TemplateTreeReporter extends AReporter {
     writeLine("(EOF)");
   }
   
-  private String getIndent() {
+  protected String getIndent() {
     String ret = "";
     for (int i = 0; i < currentIndentLevel; i++) {
       ret += INDENTATION;
@@ -162,14 +162,14 @@ public class TemplateTreeReporter extends AReporter {
     callSpecificHPS(oldTemplate, hps);
   }
   
-  private void callSpecificHPS(String oldTemplate, List<HookPoint> hps) {
+  protected void callSpecificHPS(String oldTemplate, List<HookPoint> hps) {
     for (HookPoint hp : hps) {
       callSpecificHP(hp);
     }
     
   }
   
-  private void callSpecificHP(HookPoint hp) {
+  protected void callSpecificHP(HookPoint hp) {
     if (hp != null) {
       String line = getIndent();
       if (hp instanceof StringHookPoint) {
@@ -190,13 +190,13 @@ public class TemplateTreeReporter extends AReporter {
     }
   }
   
-  private void callHPS(String oldTemplate, Collection<HookPoint> hps) {
+  protected void callHPS(String oldTemplate, Collection<HookPoint> hps) {
     for (HookPoint hp : hps) {
       callHP(hp);
     }
   }
   
-  private void callHP(HookPoint hp) {
+  protected void callHP(HookPoint hp) {
     if (hp != null) {
       String line = getIndent();
       if (hp instanceof StringHookPoint) {
@@ -217,11 +217,11 @@ public class TemplateTreeReporter extends AReporter {
     }
   }
   
-  private void resetVariables() {
+  protected void resetVariables() {
     currentIndentLevel = 0;
   }
   
-  private String getHookPointValue(HookPoint hp) {
+  protected String getHookPointValue(HookPoint hp) {
     String value = null;
     if (hp != null && hp instanceof TemplateHookPoint) {
       value = ((TemplateHookPoint) hp).getTemplateName();

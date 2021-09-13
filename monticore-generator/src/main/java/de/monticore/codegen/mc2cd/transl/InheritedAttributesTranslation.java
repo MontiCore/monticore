@@ -42,14 +42,14 @@ public class InheritedAttributesTranslation implements
   /**
    * handleInherited method for each RuleComponent type
    */
-  private void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link) {
+  protected void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link) {
     for (Entry<ASTProd, List<ASTRuleComponent>> entry : getInheritedRuleComponents(link.source())
             .entrySet()) {
       handleInheritedRuleComponents(link, entry.getKey(), entry.getValue());
     }
   }
 
-  private void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd astProd,
+  protected void handleInheritedRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd astProd,
                                              List<? extends ASTRuleComponent> ruleComponents) {
     for (ASTRuleComponent ruleComponent : ruleComponents) {
       if ((ruleComponent instanceof ASTNonTerminal)
@@ -65,7 +65,7 @@ public class InheritedAttributesTranslation implements
   /**
    * handleInherited method for astrules
    */
-  private void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
+  protected void handleInheritedAttributeInASTs(Link<ASTClassProd, ASTCDClass> link) {
     for (Entry<ASTProd, Collection<AdditionalAttributeSymbol>> entry : getInheritedAttributeInASTs(
             link.source()).entrySet()) {
       for (AdditionalAttributeSymbol attributeInAST : entry.getValue()) {
@@ -81,7 +81,7 @@ public class InheritedAttributesTranslation implements
   /**
    * Methods to get special RuleComponent Types for a Prod
    */
-  private Map<ASTProd, List<ASTRuleComponent>> getInheritedRuleComponents(ASTProd sourceNode) {
+  protected Map<ASTProd, List<ASTRuleComponent>> getInheritedRuleComponents(ASTProd sourceNode) {
     return TransformationHelper.getAllSuperProds(sourceNode).stream()
             .distinct()
             .collect(Collectors.toMap(Function.identity(),
@@ -123,7 +123,7 @@ public class InheritedAttributesTranslation implements
   /**
    * handleOverwritten method for each RuleComponent type
    */
-  private void handleOverwrittenRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd superProd) {
+  protected void handleOverwrittenRuleComponents(Link<ASTClassProd, ASTCDClass> link, ASTProd superProd) {
     List<ASTRuleComponent> overwrittenComponents = TransformationHelper.getAllComponents(superProd)
             .stream()
             .filter(c -> !(c instanceof ASTTerminal) || ((ASTTerminal) c).isPresentUsageName())
@@ -138,7 +138,7 @@ public class InheritedAttributesTranslation implements
    * grammar A { Foo = Name;}
    * grammar B extends A {interface Bar; Foo implements Bar;}
    */
-  private Optional<ASTProd> getOverwrittenProdIfNoNewRightSide(ASTClassProd astProd) {
+  protected Optional<ASTProd> getOverwrittenProdIfNoNewRightSide(ASTClassProd astProd) {
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper
             .resolveRuleInSupersOnly(
                     astProd,

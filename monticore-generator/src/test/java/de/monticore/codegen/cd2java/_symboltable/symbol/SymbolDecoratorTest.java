@@ -4,13 +4,12 @@ package de.monticore.codegen.cd2java._symboltable.symbol;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.codegen.cd2java.*;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -18,7 +17,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -114,7 +113,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testNoSuperClass() {
-    assertFalse(symbolClassAutomaton.isPresentSuperclass());
+    assertFalse(symbolClassAutomaton.isPresentCDExtendUsage());
   }
 
   @Test
@@ -465,8 +464,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testFooSymbolSuperClass() {
-    assertTrue(symbolClassFoo.isPresentSuperclass());
-    assertDeepEquals("NotASymbol", symbolClassFoo.getSuperclass());
+    assertTrue(symbolClassFoo.isPresentCDExtendUsage());
+    assertDeepEquals("NotASymbol", symbolClassFoo.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test

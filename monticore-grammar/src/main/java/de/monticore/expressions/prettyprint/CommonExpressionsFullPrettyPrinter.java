@@ -7,7 +7,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
 public class CommonExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
-  private CommonExpressionsTraverser traverser;
+  protected CommonExpressionsTraverser traverser;
 
   @Override
   public CommonExpressionsTraverser getTraverser() {

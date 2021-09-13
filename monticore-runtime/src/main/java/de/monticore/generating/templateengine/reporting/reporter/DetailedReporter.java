@@ -37,9 +37,9 @@ public class DetailedReporter extends AReporter {
   
   static final String WARNING = "warn";
   
-  private ReportingRepository repository;
+  protected ReportingRepository repository;
   
-  private int templateDepth = 0;
+  protected int templateDepth = 0;
   
   public DetailedReporter(String outputDir, String modelName,
       ReportingRepository repository) {
@@ -54,7 +54,7 @@ public class DetailedReporter extends AReporter {
     writeLine("========================================================== Detailed Report");
   }
   
-  private void writeFooter() {
+  protected void writeFooter() {
     writeLine("");
     writeLine("");
     writeLine("========================================================== Explanation");
@@ -253,11 +253,11 @@ public class DetailedReporter extends AReporter {
     super.flush(ast);
   }
   
-  private void resetVariables() {
+  protected void resetVariables() {
     templateDepth = 0;
   }
   
-  private String getLineStart(ASTNode node) {
+  protected String getLineStart(ASTNode node) {
     String lineStart = "(" + templateDepth + "T)";
     return lineStart;
   }
@@ -271,15 +271,10 @@ public class DetailedReporter extends AReporter {
     writeLine(value);
   }
   
-  private static String calculateLine(String value) {
+  protected static String calculateLine(String value) {
     String line = ReportingHelper.formatLineToReportingLine(value,
         ReportingConstants.REPORTING_ROW_LENGTH);
     return line;
   }
-  
-  public static void main(String[] args) {
-    System.out
-        .println(calculateLine("looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\n\n\n\n\n\nloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"));
-  }
-  
+
 }

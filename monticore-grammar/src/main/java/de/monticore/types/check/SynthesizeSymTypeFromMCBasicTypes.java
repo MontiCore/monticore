@@ -1,23 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
 import java.util.Optional;
-
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 
 
 /**

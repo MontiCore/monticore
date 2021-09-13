@@ -4,32 +4,27 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.codegen.cd2java.CDModifier;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.codegen.cd2java.*;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static org.junit.Assert.*;
 
 public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
@@ -87,12 +82,12 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperClassCount() {
-    assertTrue(scopeClass.isPresentSuperclass());
+    assertTrue(scopeClass.isPresentCDExtendUsage());
   }
 
   @Test
   public void testSuperClass() {
-    assertDeepEquals(AUTOMATON_SCOPE, scopeClass.getSuperclass());
+    assertDeepEquals(AUTOMATON_SCOPE, scopeClass.getCDExtendUsage().getSuperclass(0));
   }
 
   @Test
@@ -155,7 +150,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackageNameAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("packageName", scopeClass);
-    assertDeepEquals(CDModifier.PRIVATE, astcdAttribute.getModifier());
+    assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
   }
 

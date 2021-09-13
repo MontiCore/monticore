@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Automaton;
+pattern objectdiagram lhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+        boolean initial [1] = true;
+    }
+}
+
+replacement objectdiagram rhs {
+    state_1 : mc.testcases.automaton._ast.ASTState {
+        boolean initial [1] = false;
+        String name [1] = $n;
+    }
+}
+
+assign { $n = "bla" + m.state_1.getName() ;}

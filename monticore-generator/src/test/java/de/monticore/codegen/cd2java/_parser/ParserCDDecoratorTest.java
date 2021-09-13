@@ -18,8 +18,9 @@ import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.io.paths.MCPath;
+
 import de.se_rwth.commons.logging.LogStub;
 
 public class ParserCDDecoratorTest extends DecoratorTestCase {
@@ -41,7 +42,7 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 //     LogStub.initPlusLog();  // for manual testing purpose only
 //    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    MCPath targetPath = Mockito.mock(MCPath.class);
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
@@ -99,13 +100,13 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackage() {
-    assertEquals(6, parserCD.getPackageList().size());
-    assertEquals("de", parserCD.getPackageList().get(0));
-    assertEquals("monticore", parserCD.getPackageList().get(1));
-    assertEquals("codegen", parserCD.getPackageList().get(2));
-    assertEquals("symboltable", parserCD.getPackageList().get(3));
-    assertEquals("automaton", parserCD.getPackageList().get(4));
-    assertEquals("_parser", parserCD.getPackageList().get(5));
+    assertEquals(6, parserCD.getCDPackageList().size());
+    assertEquals("de", parserCD.getCDPackageList().get(0));
+    assertEquals("monticore", parserCD.getCDPackageList().get(1));
+    assertEquals("codegen", parserCD.getCDPackageList().get(2));
+    assertEquals("symboltable", parserCD.getCDPackageList().get(3));
+    assertEquals("automaton", parserCD.getCDPackageList().get(4));
+    assertEquals("_parser", parserCD.getCDPackageList().get(5));
   }
 
   @Test

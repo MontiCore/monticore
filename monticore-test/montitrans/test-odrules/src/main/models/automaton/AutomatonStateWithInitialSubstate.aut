@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton AutomatonStateWithInitialSubstates {
+    state a {
+        state b;
+        state c <<initial>>;
+        state d;
+    }
+
+    state e {
+        state f;
+        state g;
+    }
+}

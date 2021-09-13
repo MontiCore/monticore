@@ -4,7 +4,6 @@ package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 
@@ -141,6 +140,7 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   @Override
   public void reportTemplateReplacement(String oldTemplate,
       List<? extends HookPoint> newHps) {
+    // default
   }
 
   @Override
@@ -167,11 +167,6 @@ public class DefaultReportEventHandler implements IReportEventHandler {
 
   @Override
   public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
-    // default
-  }
-
-  @Override
-  public void reportHWCExistenceCheck(IterablePath parentDir, Path fileName, Optional<Path> exists){
     // default
   }
 

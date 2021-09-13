@@ -9,11 +9,11 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CommonExpressionsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -219,7 +219,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected Optional<SymTypeExpression> calculateBooleanAndOpExpression(ASTBooleanAndOpExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isBoolean(leftResult) && isBoolean(rightResult)) {
-      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
     }
     return wholeResult;
   }
@@ -237,7 +237,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected Optional<SymTypeExpression> calculateBooleanOrOpExpression(ASTBooleanOrOpExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isBoolean(leftResult) && isBoolean(rightResult)) {
-      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
     }
     return wholeResult;
   }
@@ -255,7 +255,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected Optional<SymTypeExpression> calculateLogicalNotExpression(ASTLogicalNotExpression expr, SymTypeExpression innerResult) {
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isBoolean(innerResult)) {
-      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
     }
     return wholeResult;
   }
@@ -271,8 +271,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateBracketExpression(ASTBracketExpression expr, SymTypeExpression innerResult) {
-    Optional<SymTypeExpression> wholeResult = Optional.of(innerResult);
-    return wholeResult;
+    return Optional.of(innerResult);
   }
 
   /**
@@ -366,8 +365,14 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       } else if (typeVarOpt.isPresent()) {
         //test for type var first
         TypeVarSymbol typeVar = typeVarOpt.get();
-
-
+        if(checkModifierType(typeVar)){
+          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVariable(typeVar);
+          typeCheckResult.setType();
+          typeCheckResult.setCurrentResult(wholeResult);
+        }else{
+          typeCheckResult.reset();
+          logError("0xA0305", expr.get_SourcePositionStart());
+        }
       } else if (typeSymbolOpt.isPresent()) {
         //no variable found, test type
         TypeSymbol typeSymbol = typeSymbolOpt.get();
@@ -454,12 +459,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       //there can only be one method with the correct arguments and return type
       if (!fittingMethods.isEmpty()) {
         if (fittingMethods.size() > 1) {
-          SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
-          for (FunctionSymbol method : fittingMethods) {
-            if (!returnType.deepEquals(method.getReturnType())) {
-              logError("0xA0238", expr.get_SourcePositionStart());
-            }
-          }
+          checkForReturnType(expr, fittingMethods);
         }
         SymTypeExpression result = fittingMethods.get(0).getReturnType();
         typeCheckResult.setMethod();
@@ -481,6 +481,15 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       } else {
         typeCheckResult.reset();
         logError("0xA0240", expr.get_SourcePositionStart());
+      }
+    }
+  }
+
+  protected void checkForReturnType(ASTCallExpression expr, List<FunctionSymbol> fittingMethods){
+    SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
+    for (FunctionSymbol method : fittingMethods) {
+      if (!returnType.deepEquals(method.getReturnType())) {
+        logError("0xA0238", expr.get_SourcePositionStart());
       }
     }
   }
@@ -538,7 +547,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     // if the left and the right part of the expression are numerics,
     // then the whole expression is a boolean
     if (isNumericType(leftResult) && isNumericType(rightResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
     }
     //should never happen, no valid result, error will be handled in traverse
     return Optional.empty();
@@ -560,13 +569,13 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     //Option one: they are both numeric types
     if (isNumericType(leftResult) && isNumericType(rightResult)
         || isBoolean(leftResult) && isBoolean(rightResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
     }
     //Option two: none of them is a primitive type and they are either the same type or in a super/sub type relation
     if (!leftResult.isTypeConstant() && !rightResult.isTypeConstant() &&
         (compatible(leftResult, rightResult) || compatible(rightResult, leftResult))
     ) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+      return Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
     }
     //should never happen, no valid result, error will be handled in traverse
     return Optional.empty();

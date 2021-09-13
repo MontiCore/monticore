@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+// example of an list element within a optional element
+// Max wants to change his lifestyle and post a HealthyMeal entry
+// he also wants to delete all previously added Pizza entries, but is not sure if there are any
+
+    opt[[ user Max Muster m {
+        [[ list[[ entry Pizza; ]] :-  ]]
+    }
+
+]]

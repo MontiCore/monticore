@@ -3,8 +3,7 @@
 package de.monticore;
 
 import com.google.common.collect.Sets;
-import de.monticore.io.paths.IterablePath;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -55,6 +54,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String OUT = "o";
   public static final String MODELPATH = "mp";
   public static final String HANDCODEDPATH = "hcp";
+  public static final String HANDCODEDMODELPATH = "hcg";
   public static final String SCRIPT = "sc";
   public static final String GROOVYHOOK1 = "gh1";
   public static final String GROOVYHOOK2 = "gh2";
@@ -69,6 +69,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String OUT_LONG = "out";
   public static final String MODELPATH_LONG = "modelPath";
   public static final String HANDCODEDPATH_LONG = "handcodedPath";
+  public static final String HANDCODEDMODELPATH_LONG = "modelPathHC";
   public static final String SCRIPT_LONG = "script";
   public static final String GROOVYHOOK1_LONG = "groovyHook1";
   public static final String GROOVYHOOK2_LONG = "groovyHook2";
@@ -77,9 +78,10 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String DEV_LONG = "dev";
   public static final String CUSTOMLOG_LONG = "customLog";
   public static final String REPORT_LONG = "report";
+  public static final String DSTLGEN_LONG = "dstlGen";
   public static final String HELP_LONG = "help";
 
-  private final CommandLine cmdConfig;
+  protected final CommandLine cmdConfig;
 
   /**
    * Factory method for {@link MontiCoreConfiguration}.
@@ -98,18 +100,18 @@ public final class MontiCoreConfiguration implements Configuration {
   /**
    * Constructor for {@link MontiCoreConfiguration}
    */
-  private MontiCoreConfiguration(Configuration internal) {
+  protected MontiCoreConfiguration(Configuration internal) {
     this.cmdConfig = internal.getConfig();
   }
 
   /**
    * Constructor for {@link MontiCoreConfiguration}
    */
-  private MontiCoreConfiguration(CommandLine cmdConfig) {
+  protected MontiCoreConfiguration(CommandLine cmdConfig) {
     this.cmdConfig = cmdConfig;
   }
 
-  private boolean checkPath(List<String> grammars) {
+  protected boolean checkPath(List<String> grammars) {
     for (String g: grammars) {
       Path p = Paths.get(g);
       if (!Files.exists(p)) {
@@ -120,24 +122,24 @@ public final class MontiCoreConfiguration implements Configuration {
     return true;
   }
   /**
-   * Getter for the {@link IterablePath} consisting of grammar files stored in
+   * Getter for the {@link MCPath} consisting of grammar files stored in
    * this configuration.
    *
    * @return iterable grammar files
    */
-  public IterablePath getGrammars() {
+  public MCPath getGrammars() {
     Optional<List<String>> grammars = getAsStrings(GRAMMAR);
     if (grammars.isPresent() && checkPath(grammars.get())) {
-      return IterablePath.from(toFileList(grammars.get()), MC4_EXTENSIONS);
+      return new MCPath(toFileList(grammars.get()));
     }
     // no default; must specify grammar files/directories to process
     Log.error("0xA1013 Please specify the grammar file(s).");
-    return IterablePath.empty();
+    return new MCPath();
   }
 
   /**
    * Getter for the actual value of the grammar argument. This is not the
-   * prepared {@link IterablePath} as in
+   * prepared {@link MCPath} as in
    * {@link MontiCoreConfiguration#getGrammars()} but the raw input arguments.
    *
    * @return
@@ -158,28 +160,43 @@ public final class MontiCoreConfiguration implements Configuration {
    *
    * @return list of model path files
    */
-  public ModelPath getModelPath() {
-    Optional<ModelPath> modelPath = getAsStrings(MODELPATH)
-        .map(this::convertEntryNamesToModelPath);
+  public MCPath getModelPath() {
+    Optional<MCPath> modelPath = getAsStrings(MODELPATH)
+        .map(this::convertEntryNamesToMCPath);
     if (modelPath.isPresent()) {
       return modelPath.get();
     }
     // default model path is empty
-    return new ModelPath();
+    return new MCPath();
   }
 
-  private ModelPath convertEntryNamesToModelPath(List<String> modelPathEntryNames) {
-    List<File> modelPathFiles = toFileList(modelPathEntryNames);
+  /**
+   * Getter for the list of handcoded model path elements (files and directories) stored
+   * in this configuration.
+   *
+   * @return list of handcoded model path files
+   */
+  public MCPath getHandcodedModelPath() {
+    Optional<MCPath> modelPathHC = getAsStrings(HANDCODEDMODELPATH)
+            .map(this::convertEntryNamesToMCPath);
+    if (modelPathHC.isPresent()) {
+      return modelPathHC.get();
+    }
+    // default model path is empty
+    return new MCPath();
+  }
+
+  protected MCPath convertEntryNamesToMCPath(List<String> modelPathEntryNames) {
+    List<Path> modelPathFiles = toFileList(modelPathEntryNames);
     List<Path> modelPathEntries = modelPathFiles.stream()
-        .map(File::toPath)
         .map(Path::toAbsolutePath)
         .collect(Collectors.toList());
-    return new ModelPath(modelPathEntries);
+    return new MCPath(modelPathEntries);
   }
 
   /**
    * Getter for the actual value of the model path argument. This is not the
-   * prepared {@link ModelPath} as in
+   * prepared {@link MCPath} as in
    * {@link MontiCoreConfiguration#getModelPath()} but the raw input arguments.
    *
    * @return
@@ -229,22 +246,22 @@ public final class MontiCoreConfiguration implements Configuration {
    *
    * @return iterable handcoded files
    */
-  public IterablePath getHandcodedPath() {
+  public MCPath getHandcodedPath() {
     Optional<List<String>> handcodedPath = getAsStrings(HANDCODEDPATH);
     if (handcodedPath.isPresent()) {
-      return IterablePath.from(toFileList(handcodedPath.get()), HWC_EXTENSIONS);
+      return new MCPath(toFileList(handcodedPath.get()));
     }
     // default handcoded path is "java"
     File defaultFile = new File(DEFAULT_HANDCODED_JAVA_PATH);
     if (!defaultFile.exists()) {
-      return IterablePath.empty();
+      return new MCPath();
     }
-    return IterablePath.from(new File(DEFAULT_HANDCODED_JAVA_PATH), HWC_EXTENSIONS);
+    return new MCPath(new File(DEFAULT_HANDCODED_JAVA_PATH).toPath());
   }
 
   /**
    * Getter for the actual value of the handcoded path argument. This is not the
-   * prepared {@link IterablePath} as in
+   * prepared {@link MCPath} as in
    * {@link MontiCoreConfiguration#getHandcodedPath()} but the raw input
    * arguments.
    *
@@ -264,22 +281,22 @@ public final class MontiCoreConfiguration implements Configuration {
    *
    * @return iterable template files
    */
-  public IterablePath getTemplatePath() {
+  public MCPath getTemplatePath() {
     Optional<List<String>> templatePath = getAsStrings(TEMPLATEPATH);
     if (templatePath.isPresent()) {
-      return IterablePath.from(toFileList(templatePath.get()), FTL_EXTENSIONS);
+      return new MCPath(toFileList(templatePath.get()));
     }
     // default handcoded template path is "resource"
     File defaultFile = new File(DEFAULT_HANDCODED_TEMPLATE_PATH);
     if (!defaultFile.exists()) {
-      return IterablePath.empty();
+      return new MCPath();
     }
-    return IterablePath.from(new File(DEFAULT_HANDCODED_TEMPLATE_PATH), FTL_EXTENSIONS);
+    return new MCPath(new File(DEFAULT_HANDCODED_TEMPLATE_PATH).toPath());
   }
 
   /**
    * Getter for the actual value of the template path argument. This is not the
-   * prepared {@link IterablePath} as in
+   * prepared {@link MCPath} as in
    * {@link MontiCoreConfiguration#getTemplatePath()} but the raw input
    * arguments.
    *
@@ -322,12 +339,21 @@ public final class MontiCoreConfiguration implements Configuration {
   }
 
   /**
+   * Getter for the optional dstl generation.
+   *
+   * @return Optional boolean for the dstl generation
+   */
+  public Optional<Boolean> getDSTLGen() {
+    return getAsBoolean(DSTLGEN_LONG);
+  }
+
+  /**
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings
    */
-  protected static List<File> toFileList(List<String> files) {
+  protected static List<Path> toFileList(List<String> files) {
     return files.stream().collect(
-        Collectors.mapping(file -> new File(file).getAbsoluteFile(), Collectors.toList()));
+        Collectors.mapping(file -> new File(file).getAbsoluteFile().toPath(), Collectors.toList()));
   }
 
   /**

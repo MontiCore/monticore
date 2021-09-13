@@ -18,7 +18,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     CoCoService coCoService = new CoCoService(ast);
     VisitorService visitorService = new VisitorService(ast);
     ASTService astService = new ASTService(ast);
-    IterablePath targetPath = Mockito.mock(IterablePath.class);
+    MCPath targetPath = Mockito.mock(MCPath.class);
 
     MethodDecorator methodDecorator = new MethodDecorator(glex, coCoService);
 
@@ -62,7 +62,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
   @Test
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "cocos", "cocos", "_cocos");
-    assertEquals(expectedPackage, ast.getPackageList());
+    assertEquals(expectedPackage, ast.getCDPackageList());
   }
 
   @Test

@@ -23,7 +23,7 @@ public class ConstantsTranslation implements
   
   public static final String CONSTANTS_ENUM = "Literals";
   
-  private LexNamer lexNamer;
+  protected LexNamer lexNamer;
   
   /**
    * Constructor for de.monticore.codegen.mc2cd.transl.ConstantsTranslation

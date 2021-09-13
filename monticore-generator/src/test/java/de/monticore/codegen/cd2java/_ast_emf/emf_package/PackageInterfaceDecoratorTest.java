@@ -4,11 +4,13 @@ package de.monticore.codegen.cd2java._ast_emf.emf_package;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast_emf.EmfService;
@@ -42,6 +44,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
+
     PackageInterfaceDecorator decorator = new PackageInterfaceDecorator(this.glex, new EmfService(ast));
     packageInterface = decorator.decorate(ast);
   }
@@ -72,7 +76,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testENameAttribute() {
     ASTCDAttribute attribute = getAttributeBy("eNAME", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals(String.class, attribute.getMCType());
   }
@@ -80,7 +83,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testENSUriAttribute() {
     ASTCDAttribute attribute = getAttributeBy("eNS_URI", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals(String.class, attribute.getMCType());
   }
@@ -88,7 +90,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testENSPrefixAttribute() {
     ASTCDAttribute attribute = getAttributeBy("eNS_PREFIX", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals(String.class, attribute.getMCType());
   }
@@ -96,7 +97,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testEInstanceAttribute() {
     ASTCDAttribute attribute = getAttributeBy("eINSTANCE", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals("AutomataPackage", attribute.getMCType());
   }
@@ -104,7 +104,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testConstantsAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ConstantsAutomata", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -112,7 +111,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTAutomatonAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTAutomaton", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -120,7 +118,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTStateAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTState", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -128,7 +125,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTTransitionAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -137,7 +133,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   public void testASTBodyExtAttribute() {
     //ASTBodyExt is interface but has to be generated as well
     ASTCDAttribute attribute = getAttributeBy("ASTBodyExt", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -145,7 +140,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTTransitionWithActionAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTTransitionWithAction", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -153,7 +147,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTAutNameAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTAutName", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -161,7 +154,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTAutomaton_NameAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTAutomaton_Name", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -169,7 +161,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTAutomaton_StatesAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTAutomaton_States", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -177,7 +168,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTAutomaton_TransitionsAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTAutomaton_Transitions", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -185,7 +175,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTState_NameAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTState_Name", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -193,7 +182,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTState_StatesAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTState_States", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -201,7 +189,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTState_TransitionsAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTState_Transitions", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -209,7 +196,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTTransition_FromAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition_From", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -217,7 +203,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTTransition_InputAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition_Input", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -225,7 +210,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testASTTransition_ToAttribute() {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition_To", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }
@@ -233,7 +217,6 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testInheritedAttributeExists() {
     ASTCDAttribute attribute = getAttributeBy("ASTAutName_Input", packageInterface);
-    assertTrue(attribute.isPresentModifier());
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
   }

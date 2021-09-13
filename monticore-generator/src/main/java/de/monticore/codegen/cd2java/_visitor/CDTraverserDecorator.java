@@ -10,7 +10,8 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.io.paths.IterablePath;
+import de.monticore.io.paths.MCPath;
+import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,11 +29,11 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   protected final Visitor2Decorator visitor2Decorator;
   protected final HandlerDecorator handlerDecorator;
   protected final InheritanceHandlerDecorator inheritanceHandlerDecorator;
-  protected final IterablePath handCodedPath;
+  protected final MCPath handCodedPath;
   protected final VisitorService visitorService;
 
   public CDTraverserDecorator(final GlobalExtensionManagement glex,
-                            final IterablePath handCodedPath,
+                            final MCPath handCodedPath,
                             final VisitorService visitorService,
                             final TraverserInterfaceDecorator iTraverserDecorator,
                             final TraverserClassDecorator traverserDecorator,
@@ -52,8 +53,10 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   @Override
   public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
     List<String> visitorPackage = Lists.newArrayList();
-    input.getPackageList().forEach(p -> visitorPackage.add(p.toLowerCase()));
+    input.getCDPackageList().forEach(p -> visitorPackage.add(p.toLowerCase()));
     visitorPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), VISITOR_PACKAGE));
+    ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
+            CD4CodeMill.mCQualifiedNameBuilder().setPartsList(visitorPackage).build()).build();
 
     // check for TOP classes
     setIfExistsHandwrittenFile(visitorPackage);
@@ -68,6 +71,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     // build cd
     ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
         .setName(input.getCDDefinition().getName())
+        .setModifier(CD4CodeMill.modifierBuilder().build())
         .addCDElement(traverserInterface)
         .addCDElement(traverserClass)
         .addCDElement(visitor2Interface)
@@ -84,7 +88,7 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     }
 
     return CD4CodeMill.cDCompilationUnitBuilder()
-        .setPackageList(visitorPackage)
+        .setMCPackageDeclaration(packageDecl)
         .setCDDefinition(astCD)
         .build();
   }

@@ -5,6 +5,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -218,35 +219,7 @@ public class VisitorService extends AbstractService<VisitorService> {
     return CDMethodFacade.getInstance().createMethod(PUBLIC.build(), methodName, visitorParameter);
   }
 
-  /**
-   * add AST package to all classes, interfaces and enums at the beginning
-   * needed because visitor classes are in a different package and so need to fully qualify the ast classes
-   */
-  public ASTCDCompilationUnit calculateCDTypeNamesWithASTPackage(ASTCDCompilationUnit input) {
-    // transform own cd
-    ASTCDCompilationUnit compilationUnit = input.deepClone();
-    //set classname to correct Name with path
-    String astPath = getASTPackage();
-    // in this version, all CD elements should only be classes, interfaces, and enums
-    compilationUnit.getCDDefinition().getCDElementList().forEach(e -> e.setName(astPath + "." + e.getName()));
-    return compilationUnit;
-  }
 
-  /**
-   * add AST package to all classes, interfaces and enums at the beginning
-   * needed because visitor classes are in a different package and so need to fully qualify the ast classes
-   */
-  public ASTCDDefinition calculateCDTypeNamesWithASTPackage(DiagramSymbol input) {
-    // transform inherited cd
-    ASTCDDefinition astcdDefinition = (ASTCDDefinition) input.getAstNode().deepClone();
-    //set classname to correct Name with path
-    String astPath = getASTPackage(input);
-    astcdDefinition.getCDClassesList().forEach(c -> c.setName(astPath + "." + c.getName()));
-    astcdDefinition.getCDInterfacesList().forEach(i -> i.setName(astPath + "." + i.getName()));
-    astcdDefinition.getCDEnumsList().forEach(e -> e.setName(astPath + "." + e.getName()));
-    return astcdDefinition;
-  }
-  
   /**
    * Retrieves the super traverser interfaces with respect to the type
    * hierarchy.

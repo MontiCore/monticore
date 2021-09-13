@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.mc2cd.symbolTransl;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TransformationHelper;
@@ -24,17 +25,23 @@ public class SymbolRuleInheritanceTranslation implements UnaryOperator<Link<ASTM
     return rootLink;
   }
 
-  private void translateClassProd(ASTSymbolRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
+  protected void translateClassProd(ASTSymbolRule rule, ASTCDClass cdClass, ASTMCGrammar astGrammar) {
+    if (!rule.getSuperClassList().isEmpty() && !cdClass.isPresentCDExtendUsage()) {
+      cdClass.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().build());
+    }
     for (ASTMCType superClass : rule.getSuperClassList()) {
       String qualifiedSuperClass = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superClass, astGrammar, cdClass);
-      cdClass.setSuperclass(TransformationHelper.createObjectType(qualifiedSuperClass));
+      cdClass.getCDExtendUsage().addSuperclass(TransformationHelper.createObjectType(qualifiedSuperClass));
     }
 
+    if (!rule.getSuperInterfaceList().isEmpty() && !cdClass.isPresentCDInterfaceUsage()) {
+      cdClass.setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().build());
+    }
     for (ASTMCType superInterface : rule.getSuperInterfaceList()) {
       String qualifiedSuperInterface = TransformationHelper
           .getQualifiedTypeNameAndMarkIfExternal(superInterface, astGrammar, cdClass);
-      cdClass.addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
+      cdClass.getCDInterfaceUsage().addInterface(TransformationHelper.createObjectType(qualifiedSuperInterface));
     }
   }
 }

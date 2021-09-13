@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -307,7 +306,7 @@ public class TypeCheck {
    * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
-  private static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
+  protected static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
     if (!subType.getTypeInfo().getSuperTypesList().isEmpty()) {
       for (SymTypeExpression type : subType.getTypeInfo().getSuperTypesList()) {
         if(type.print().equals(superType.print())){
