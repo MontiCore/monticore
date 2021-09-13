@@ -18,14 +18,13 @@ import de.monticore.generating.templateengine.reporting.commons.ReportManager.Re
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
 
 /**
  * Facade for all reporting activities. Invoking a report method causes all
  * AReporter implementing this method to execute it.
  *
  */
-public class Reporting extends Slf4jLog {
+public class Reporting extends Log {
 
   /**
    * Map of model names to actual report managers.

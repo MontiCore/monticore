@@ -5,17 +5,13 @@ import com.google.common.hash.Hashing
 import com.google.common.io.Files
 import de.monticore.cli.MontiCoreStandardCLI
 import de.monticore.mcbasics.MCBasicsMill
-import de.monticore.dstlgen.DSTLGenCLI
 import de.monticore.dstlgen.util.DSTLPathUtil
 import de.se_rwth.commons.logging.Finding
 import de.se_rwth.commons.logging.Log
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
@@ -306,11 +302,16 @@ abstract public class MCTask extends DefaultTask {
       params.add("-fp")
       params.addAll(templatePath)
     }
-    List<String> dstlParams = params.clone()
-    if (!handcodedModelPath.isEmpty()) {
-      dstlParams.add("-hcg")
-      dstlParams.addAll(handcodedModelPath)
+    if (!templatePath.isEmpty()) {
+      params.add("-fp")
+      params.addAll(templatePath)
     }
+    if (!handcodedModelPath.isEmpty()) {
+      params.add("-hcg")
+      params.addAll(handcodedModelPath)
+    }
+    params.add("-dstlGen")
+    params.add(Boolean.toString(dstlGen))
     if (configTemplate != null) {
       params.add("-ct")
       if (configTemplate.endsWith(".ftl")){
@@ -339,11 +340,9 @@ abstract public class MCTask extends DefaultTask {
     }
     if (help) {
       params.add("-h")
-      dstlParams.add("-h")
     }
     def p = params.toArray() as String[]
-    def dstlP = dstlParams.toArray() as String[]
-    
+
     System.setSecurityManager(new SecurityManager()
     {
       @Override public void checkExit(int status) {
@@ -357,11 +356,6 @@ abstract public class MCTask extends DefaultTask {
     try {
       // execute Monticore with the given parameters
       MontiCoreStandardCLI.main(p)
-      if (dstlGen) {
-        // Execute DSTLGen (which, among other, generates the TR grammar)
-        DSTLGenCLI.main(dstlP)
-        // At some point: Move this guarded block into the standard CLI
-      }
       MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail

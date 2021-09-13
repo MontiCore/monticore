@@ -6,8 +6,6 @@ import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import questionnaire._ast.*;
 import questionnaire._visitor.*;
 
-import java.util.Optional;
-
 /**
  * Small pretty printer for questionnaires
  */

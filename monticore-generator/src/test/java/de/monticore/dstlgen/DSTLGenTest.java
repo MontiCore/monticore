@@ -14,9 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.File;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
  *
  */
 @Ignore // TODO: This test will fail until MC 7.2.0 is the previous grammar version
+//TODO: The DSTLGenCLI has been merged into the standard MontiCore script - adapt this test
 public class DSTLGenTest {
 
   @BeforeClass
@@ -49,9 +48,9 @@ public class DSTLGenTest {
     final MCGrammarSymbol grammarSymbol = scope.resolveMCGrammar("mc.testcases.statechart.Statechart").orElse(null);
     assertNotNull(grammarSymbol);
     assertNotNull(grammarSymbol.getAstGrammar());
-    DSTLGenCLI cli = new DSTLGenCLI();
-    cli.initGenerator(grammarSymbol.getAstGrammar().get(),new File("target/generated-test-sources/testgen"));
-    cli.generateDSTL(grammarSymbol.getAstGrammar().get(), Optional.empty());
+    DSTLGenScript cli = new DSTLGenScript();
+//    cli.initGenerator(grammarSymbol.getAstGrammar().get(),new File("target/generated-test-sources/testgen"));
+//    cli.generateDSTL(grammarSymbol.getAstGrammar().get(), Optional.empty());
 
     GrammarFamilyGlobalScope scope2 = new GrammarFamilyGlobalScope(new MCPath(Paths.get("target/generated-test-sources/testgen"), Paths.get("src/test/resources" )), "mc4");
 
