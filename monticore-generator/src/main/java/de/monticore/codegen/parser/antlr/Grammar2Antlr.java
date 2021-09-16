@@ -185,7 +185,10 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       options = "@rulecatch{}";
     }
 
-     // Start code codeSection for rules
+    addDummyRules(ast.getName(), ruleName,
+            classnameFromRulenameorInterfacename);
+
+    // Start code codeSection for rules
     addToCodeSection(ruleName);
     List<PredicatePair> subRules = grammarInfo
             .getSubRulesForParsing(ast.getName());
@@ -836,9 +839,13 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     clearAntlrCode();
 
     String interfacename = interfaceRule.getName();
+    // Dummy rules
+    String ruleName = getRuleNameForAntlr(interfacename);
     String usageName = getQualifiedName(interfaceRule);
 
     startCodeSection(interfaceRule.getName());
+
+    addDummyRules(interfacename, ruleName, usageName);
 
     addToAntlrCode(getRuleNameForAntlr(interfacename));
     if (embeddedJavaCode) {
@@ -1129,6 +1136,18 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     endCodeSection();
 
+  }
+
+  protected void addDummyRules(String rulenameInternal, String ruleName,
+                             String usageName) {
+    Optional<ASTAlt> follow2 = parserHelper.getAlternativeForFollowOption(rulenameInternal);
+    if (!follow2.isPresent()) {
+      return;
+    }
+
+    follow2.get().accept(getTraverser());
+
+    addToAntlrCode(" ;\n\n");
   }
 
   public boolean isEmbeddedJavaCode() {
