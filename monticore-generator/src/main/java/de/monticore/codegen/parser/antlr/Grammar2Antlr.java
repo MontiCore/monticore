@@ -185,10 +185,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       options = "@rulecatch{}";
     }
 
-    addDummyRules(ast.getName(), ruleName,
-            classnameFromRulenameorInterfacename);
-
-    // Start code codeSection for rules
+     // Start code codeSection for rules
     addToCodeSection(ruleName);
     List<PredicatePair> subRules = grammarInfo
             .getSubRulesForParsing(ast.getName());
@@ -786,7 +783,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
   }
 
-  public void traverse(de.monticore.grammar.grammar._ast.ASTAbstractProd node) {
+  public void traverse(ASTAbstractProd node) {
     //no parser generation for abstract classes
   }
 
@@ -839,13 +836,9 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     clearAntlrCode();
 
     String interfacename = interfaceRule.getName();
-    // Dummy rules
-    String ruleName = getRuleNameForAntlr(interfacename);
     String usageName = getQualifiedName(interfaceRule);
 
     startCodeSection(interfaceRule.getName());
-
-    addDummyRules(interfacename, ruleName, usageName);
 
     addToAntlrCode(getRuleNameForAntlr(interfacename));
     if (embeddedJavaCode) {
@@ -1136,34 +1129,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     endCodeSection();
 
-  }
-
-  protected void addDummyRules(String rulenameInternal, String ruleName,
-                             String usageName) {
-
-    addToCodeSection("\n\n", ruleName, "_eof");
-
-    if (embeddedJavaCode) {
-      addToCodeSection(" returns [", usageName, " ret = null] :\n  tmp = ",
-              ruleName, " {$ret = $tmp.ret;} ");
-    } else {
-      addToCodeSection(" :\n tmp = ", ruleName, " ");
-    }
-
-    String follow = "EOF";
-    String end = " ;\n\n";
-
-    Optional<ASTAlt> follow2 = parserHelper.getAlternativeForFollowOption(rulenameInternal);
-    if (!follow2.isPresent()) {
-      addToCodeSection(follow, end);
-      endCodeSection();
-      return;
-    }
-    endCodeSection();
-
-    follow2.get().accept(getTraverser());
-
-    addToAntlrCode(end);
   }
 
   public boolean isEmbeddedJavaCode() {
