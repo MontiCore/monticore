@@ -185,9 +185,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       options = "@rulecatch{}";
     }
 
-    addDummyRules(ast.getName(), ruleName,
-            classnameFromRulenameorInterfacename);
-
     // Start code codeSection for rules
     addToCodeSection(ruleName);
     List<PredicatePair> subRules = grammarInfo
@@ -269,6 +266,9 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     // Iterate over all Components
     createAntlrCodeForAlts(alts);
+
+    addDummyRules(ast.getName(), ruleName,
+            classnameFromRulenameorInterfacename);
 
     addToAntlrCode(";");
 
@@ -554,7 +554,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
     addToCodeSection(printIteration(ast.getIteration()));
 
-    endCodeSection(ast);
+    endCodeSection();
 
   }
 
@@ -845,8 +845,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     startCodeSection(interfaceRule.getName());
 
-    addDummyRules(interfacename, ruleName, usageName);
-
     addToAntlrCode(getRuleNameForAntlr(interfacename));
     if (embeddedJavaCode) {
       addToAntlrCode(" returns [" + usageName + " ret]");
@@ -929,6 +927,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
       del = "|";
     }
+
+    addDummyRules(interfacename, ruleName, usageName);
 
     addToAntlrCode(";");
 
@@ -1144,10 +1144,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     if (!follow2.isPresent()) {
       return;
     }
-
     follow2.get().accept(getTraverser());
 
-    addToAntlrCode(" ;\n\n");
   }
 
   public boolean isEmbeddedJavaCode() {
