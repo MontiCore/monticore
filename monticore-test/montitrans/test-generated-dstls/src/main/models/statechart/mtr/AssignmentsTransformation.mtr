@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Duplicate of Assignments, but the expanded notation,
+
+package de.monticore.testtr.statecharts; // a package,
+
+import java.util.ArrayList; // and an import statement
+transformation AssignmentsTransformation {
+
+    [[ :- state $q ;]]
+
+    State $S
+
+    assign {
+     $q = $S.getName() + "test" ;
+    }
+}

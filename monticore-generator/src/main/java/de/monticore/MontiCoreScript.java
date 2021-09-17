@@ -80,6 +80,8 @@ import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
+import de.monticore.dstlgen.DSTLGenScript;
+import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
@@ -619,7 +621,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
       TemplateController tc = setup.getNewTemplateController(configTemplate);
       TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
-      List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService());
+      List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService(), cds.get(0).getCDDefinition());
       hp.processValue(tc, cds.get(0).getCDDefinition(), args);
     }
   }
@@ -860,7 +862,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex,  cliDecorator,parserService);
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
-
 
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(cliCD);
@@ -1211,6 +1212,28 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return scope;
   }
 
+  public void generateDSTL(ASTMCGrammar astGrammar, File out, MCPath modelPathHC) {
+    DSTLGenScript dstlgenUtil = new DSTLGenScript();
+    // D1 Initialize glex and generator
+    GlobalExtensionManagement dstlGlex = dstlgenUtil.initGlex(astGrammar);
+
+    GeneratorEngine dstlGenerator = dstlgenUtil.initGenerator(dstlGlex, out);
+    // D2 Parse TF grammar extension
+    Optional<ASTMCGrammar> gext = dstlgenUtil.parseGrammarHC(astGrammar, modelPathHC);
+
+    // D3 Generate grammar
+    dstlgenUtil.generateDSTL(astGrammar, gext, dstlGlex, out);
+
+    // D4 Generate context conditions
+    dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, modelPathHC, dstlGlex);
+
+    // D5 Generate DSTL to ODRule translator
+    dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, modelPathHC);
+
+    // D6 Generate TFGenCLI class
+    dstlgenUtil.generateTFGenCLIClass(astGrammar, dstlGenerator, modelPathHC);
+  }
+
   /**
    * Instantiates the glex and initializes it with all available default
    * options based on the current configuration.
@@ -1295,6 +1318,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         // we add a trailing "s" for the proper plural
         builder.addVariable(GRAMMAR_LONG + "s", mcConfig.getGrammars());
         builder.addVariable(MODELPATH_LONG, mcConfig.getModelPath());
+        builder.addVariable(HANDCODEDMODELPATH_LONG, mcConfig.getHandcodedModelPath());
+        builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
         builder.addVariable(OUT_LONG, mcConfig.getOut());
         builder.addVariable(REPORT_LONG, mcConfig.getReport());
         builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());

@@ -434,7 +434,7 @@ public class GlobalExtensionManagement {
     }
 
     List<HookPoint> hps = getSpecificReplacement(templateName, ast);
-    if(hps != null){
+    if(!hps.isEmpty()){
       Reporting.reportCallSpecificReplacementHookPoint(templateName, hps, ast);
     }
     else {
@@ -454,7 +454,7 @@ public class GlobalExtensionManagement {
     if (replacedTemplates != null && replacedTemplates.containsKey(ast)) {
       return Lists.newArrayList(replacedTemplates.get(ast));
     }
-    return null;
+    return Lists.newArrayList();
   }
 
   /**

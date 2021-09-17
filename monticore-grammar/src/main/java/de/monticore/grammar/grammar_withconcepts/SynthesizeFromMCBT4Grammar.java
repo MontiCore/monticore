@@ -8,14 +8,15 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 
-import java.util.Optional;
-
 public class SynthesizeFromMCBT4Grammar extends SynthesizeSymTypeFromMCBasicTypes {
 
   @Override
-  protected Optional<SymTypeExpression> handleIfNotFound(ASTMCQualifiedName qName) {
+  public void endVisit(ASTMCQualifiedName qName) {
     TypeSymbol surrogate = new TypeSymbolSurrogate(qName.getQName());
     surrogate.setEnclosingScope(getScope(qName.getEnclosingScope()));
-    return Optional.of(SymTypeExpressionFactory.createTypeObject(surrogate));
+    SymTypeExpression symType = SymTypeExpressionFactory.createTypeObject(surrogate);
+
+    typeCheckResult.setCurrentResult(symType);
   }
+
 }

@@ -1,8 +1,6 @@
 /*(c) https://github.com/MontiCore/monticore*/
 package de.monticore.statements.mcvardeclarationstatements._symboltable;
 
-import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
-import de.monticore.statements.mccommonstatements._symboltable.IMCCommonStatementsArtifactScope;
 import de.monticore.statements.mcvardeclarationstatements.MCVarDeclarationStatementsMill;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclarationStatement;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsTraverser;
@@ -24,7 +22,8 @@ public class MCVarDeclarationStatementsPhasedSymbolTableCreatorDelegator {
     this.priorityList = new ArrayList<>();
     MCVarDeclarationStatementsTraverser traverser = MCVarDeclarationStatementsMill.traverser();
     traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
-    this.priorityList.add(traverser);  }
+    this.priorityList.add(traverser);
+  }
 
   public IMCVarDeclarationStatementsArtifactScope createFromAST(ASTLocalVariableDeclarationStatement rootNode){
     IMCVarDeclarationStatementsArtifactScope as = scopesGenitorDelegator.createFromAST(rootNode);

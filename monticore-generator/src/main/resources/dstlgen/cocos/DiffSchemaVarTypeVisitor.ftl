@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.tf.tfcommons._ast.ASTITFPart;
 
+<#assign service = glex.getGlobalVar("service")>
 /**
  * This CoCo makes sure that the same schema variable is not used for different elements of a different type.
  */
@@ -58,13 +59,13 @@ public class ${className} implements ${ast.getName()}TRVisitor2, ${ast.getName()
         if (vars${prod.getName()}_Pat.containsKey(node.getSchemaVarName())) {
           AST${prod.getName()}_Pat existingNode = vars${prod.getName()}_Pat.get(node.getSchemaVarName());
           if (!existingNode.deepEquals(node)) { //ToDo: weakEquals
-            Log.error(String.format("0xF0C02 The schema variable %s is used several times. The same schema variable must not be"
+            Log.error(String.format("0xF0C02${service.getGeneratedErrorCode(className + prod.getName())} The schema variable %s is used several times. The same schema variable must not be"
                 + " used for different elements of the same type",
                 node.getSchemaVarName()),
                 node.get_SourcePositionStart());
           }
         } else {
-        Log.error(String.format("0xF0C01 The schema variable %s is used several times. The same schema variable must not be"
+        Log.error(String.format("0xF0C01${service.getGeneratedErrorCode(className + prod.getName())} The schema variable %s is used several times. The same schema variable must not be"
                 + " used for different elements of different type",
                 node.getSchemaVarName()),
                 node.get_SourcePositionStart());

@@ -17,7 +17,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.io.paths.IterablePath;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;

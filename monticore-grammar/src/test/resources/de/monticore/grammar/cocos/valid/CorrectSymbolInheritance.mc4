@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.grammar.cocos.valid;
+
+grammar CorrectSymbolInheritance extends de.monticore.common.TestLexicals {
+
+  interface symbol A = Name;
+
+  symbol scope B implements A = "Test" Name;
+
+  symbol C = Name;
+
+  symbol scope D extends C = "Test2" Name;
+
+}

@@ -10,7 +10,7 @@ buildscript {
 plugins {
   id "java-library"
   id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
-  id "monticore-bs" version "7.1.0-SNAPSHOT" // MontiCore Plugin
+  id "monticore-bs" version "$previous_mc_version"// MontiCore Plugin
   id "com.github.johnrengelman.shadow" version "6.0.0"
   id 'groovy'
   id 'java-gradle-plugin'
@@ -52,8 +52,8 @@ dependencies {
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
   implementation "commons-cli:commons-cli:$commons_cli_version"
 //  implementation 'org.slf4j:slf4j-api:1.7.10'
-  implementation 'ch.qos.logback:logback-classic:1.1.2'
-  implementation 'ch.qos.logback:logback-core:1.1.2'
+  implementation 'ch.qos.logback:logback-classic:1.2.0'
+  implementation 'ch.qos.logback:logback-core:1.2.0'
 
   implementation "de.monticore.lang.bs:cd4analysis:$cd4a_version"
   grammar "de.monticore.lang.bs:cd4analysis:$cd4a_version:grammars"

@@ -92,6 +92,11 @@ while (grammarIterator.hasNext()) {
     // M8 Generate ast classes, symbol table, visitor, and context conditions
     generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath)
 
+    // DSTLGen part
+    if (dstlGen) {
+      generateDSTL(astGrammar, out, modelPathHC)
+    }
+
     // M9: Write reports to files
     // M9.1: Inform about successful completion for grammar
     Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)

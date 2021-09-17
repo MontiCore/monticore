@@ -111,6 +111,18 @@ test_grammar_it:
   except:
     - master
 
+test_montitrans:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -Pci"
+  only:
+    - merge_requests
+    - branches
+  except:
+    - master
+
 deploy:
   stage: deploy
   dependencies:
@@ -369,7 +381,7 @@ checkMDLinks:
     - dev
 
 githubmirror:
-  image: maven:3-jdk-8
+  # image: maven:3-jdk-8
   stage: mirror
   dependencies:
     - checkMDLinks
@@ -400,7 +412,8 @@ githubmirror:
 # remove all contents of github repo
     - rm -r tmp/monticore/*
 # move contents of gitlab repo to github repo
-    - mv monticore/* tmp/monticore/
+    - shopt -s extglob
+    - mv monticore/!(MDLinkChangerCLI.jar) tmp/monticore/
 # force push all changes
     - cd tmp/monticore
     - git add --all

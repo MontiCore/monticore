@@ -8,15 +8,18 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
 import de.monticore.io.paths.MCPath;
+import freemarker.template.Template;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
 import static org.junit.Assert.*;
@@ -114,6 +117,58 @@ public class TemplateControllerTest {
     assertNotNull(result);
     assertEquals("A", result.toString().trim());
     FileReaderWriter.init();
+  }
+
+  /**
+   *
+   * tests if comments are being generated for the Blacklisted Templates using the normal
+   * Template Constructor
+   */
+  @Test
+  public void testBlacklisteTemplatesI() throws IOException {
+    // init Template Controller under test
+    GeneratorSetup setup = new GeneratorSetup();
+    TemplateController tc  = new TemplateController(setup, "");
+
+    // init test data
+    String templateNameI = "foo";
+    String templateNameII = "bar";
+    Template templateI = new Template(templateNameI, "", null);
+    Template templateII = new Template(templateNameII, "", null);
+    List<String> blackList = new ArrayList<>();
+    blackList.add(templateNameI);
+
+    // configure Template Controller with black list
+    tc.setTemplateBlackList(blackList);
+
+    assertEquals(1, tc.getTemplateBlackList().size());
+    assertFalse(tc.isTemplateNoteGenerated(templateI));
+    assertTrue(tc.isTemplateNoteGenerated(templateII));
+
+  }
+  /**
+   *
+   * tests if comments are being generated for the Blacklisted Templates using the second Template
+   * Constructor
+   */
+  @Test
+  public void testBlacklistTemplatesII() throws IOException {
+    // init Template Controller with black-list under test
+    List<String> blackList = new ArrayList<>();
+    GeneratorSetup setup = new GeneratorSetup();
+    TemplateController tc  = new TemplateController(setup, "",blackList);
+
+    // init test data
+    String templateNameI = "foo";
+    String templateNameII = "bar";
+    blackList.add(templateNameI);
+    Template templateI = new Template(templateNameI, "", null);
+    Template templateII = new Template(templateNameII, "", null);
+
+
+    assertEquals(1, tc.getTemplateBlackList().size());
+    assertFalse(tc.isTemplateNoteGenerated(templateI));
+    assertTrue(tc.isTemplateNoteGenerated(templateII));
   }
 
 }

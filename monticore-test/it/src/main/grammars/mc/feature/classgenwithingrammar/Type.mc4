@@ -15,7 +15,7 @@ grammar Type extends mc.common.Basics {
 
 	;
 
- 	Type = (sub:SubRule1)* EOF;
+ 	Type = (sub:SubRule1)*;
 
 	SubRule1=  "Hallo";
 

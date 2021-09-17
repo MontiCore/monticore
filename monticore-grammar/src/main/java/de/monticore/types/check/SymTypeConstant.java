@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
@@ -192,9 +191,6 @@ public class SymTypeConstant extends SymTypeExpression {
     if(this.typeSymbol == null ||symCon.typeSymbol ==null){
       return false;
     }
-//    if(!this.typeSymbol.getEnclosingScope().equals(symCon.typeSymbol.getEnclosingScope())){
-//      return false;
-//    }
     if(!this.typeSymbol.getName().equals(symCon.typeSymbol.getName())){
       return false;
     }

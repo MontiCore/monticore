@@ -9,7 +9,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OOTypeSymbol extends OOTypeSymbolTOP {
 

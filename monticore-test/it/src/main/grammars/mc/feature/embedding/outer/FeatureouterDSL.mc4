@@ -5,12 +5,12 @@ package mc.feature.embedding.outer;
 
 component grammar FeatureouterDSL extends mc.common.Basics { 
 	
-	Outer= "out" "{" (inner:Ext) "}" EOF;
+	Outer= "out" "{" (inner:Ext) "}";
 	
 	
 	// Trick to handle optional embedding
 	Outer3= "out"
-	        ( "{" inner2:Ext "}" )?  EOF;
+	        ( "{" inner2:Ext "}" )?;
 	
 	Outer4= a:Outer3 (b:Outer3)*;
 	

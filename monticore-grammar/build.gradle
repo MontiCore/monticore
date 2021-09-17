@@ -27,7 +27,6 @@ dependencies {
     implementation "com.google.guava:guava:$guava_version"
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     testImplementation "junit:junit:$junit_version"
-    testImplementation 'ch.qos.logback:logback-classic:1.1.2'
 }
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
@@ -40,7 +39,7 @@ sourceSets {
     grammars {
       java.srcDirs = []
         resources {
-            srcDirs(grammarDir)
+            srcDirs([grammarDir, grammarOutDir])
             include "**/*.mc4"
         }
     }
@@ -81,6 +80,7 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
         def uptoDate = incCheck(grammarIncludingPackage)
         outputs.upToDateWhen { uptoDate }
         dstlGen = false
+        dependsOn(generate)
       }
       generateTR.dependsOn("${taskname}TR")
     }
@@ -127,6 +127,7 @@ fileTree("src/main/examples").matching { include '**/*.mc4' }.each {
 }
 
 compileTestJava.dependsOn(generateTest)
+processGrammarsResources.dependsOn(generateTR)
 
 java {
     registerFeature('grammars') {

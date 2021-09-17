@@ -72,8 +72,6 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
            SplitRule
          |
            KeywordRule
-         |
-           TokenMode
          )*
       "}" ;
 
@@ -167,6 +165,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
     isLexerProd:boolean 
     isScopeSpanning:boolean
     isSymbolDefinition:boolean
+    isDirectLeftRecursive:boolean
+    isIndirectLeftRecursive:boolean
     ;
 
   /**
@@ -195,7 +195,7 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   */
   LexProd implements Prod =
     GrammarAnnotation* (["fragment"] | ["comment"])*
-    "token" Name ("(" mode:( Name || ",")+ ")")?
+    "token" Name ("(" mode: Name ")")?
     (
       (
         LexOption ("{" initAction:Action "}")? // Statements
@@ -520,13 +520,6 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   */
   KeywordRule =
     "nokeyword" (String || ",")+ ";";
-
-  /**
-    Defines token for the given mode
-  */
-  TokenMode =
-    "tokenmode" Name ":" tokenName:(Name || ",")+ ";";
-
 
   // ----------------------------------------------------------------------
   // AST

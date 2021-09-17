@@ -10,7 +10,7 @@ options {
 		
 }
       
-  Statechart implements SCStructure= "statechart" Name "{" (States:State | Transitions:Transition | UserCode:Code)* "}" EOF;
+  Statechart implements SCStructure= "statechart" Name "{" (States:State | Transitions:Transition | UserCode:Code)* "}";
   
   
   EntryAction= "entry" ":" Block:BlockStatement;

@@ -208,7 +208,7 @@ public class ProductionFactory {
     //ANTRL does not accept left recursion in blocks
     if (skipForSpecialRecursion) {
       if (srcNode.getAltList().size() != 1) {
-        Log.error("pattern creation: More than one alt during detected left recursion - aborting");
+        Log.error("0xA5C05 pattern creation: More than one alt during detected left recursion - aborting");
       }
       ASTAlt aDeepClone = srcNode.getAltList().get(0).deepClone();
       aDeepClone.setRightAssoc(false); //TODO: Do i need the rightassoc?

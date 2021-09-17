@@ -5,9 +5,11 @@ import com.google.common.io.Files;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportCreator;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,8 +43,14 @@ public abstract class IncGenReporter extends AReporter {
   public void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> result) {
 
     if (result.isPresent()) {
-      String usedHWCFile = toUnixPath(result.get().toString());
-      usedHWCFiles.add(usedHWCFile);
+      String usedHWCFile = null;
+      try {
+        usedHWCFile = toUnixPath(new File(result.get().toURI()).toString());
+        usedHWCFiles.add(usedHWCFile);
+      } catch (URISyntaxException e) {
+        Log.warn("0xA0136 Cannot report hwc file", e);
+
+      }
     }
     else {
       for (Path p : mcp.getEntries()) {

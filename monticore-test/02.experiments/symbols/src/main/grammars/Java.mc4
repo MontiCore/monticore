@@ -7,7 +7,7 @@
 
 component grammar Java extends de.monticore.MCBasics {
 
-CompilationUnit =  TypeDeclaration* EOF ;
+CompilationUnit =  TypeDeclaration*;
 
 // Type declarations
 interface TypeDeclaration;
