@@ -115,22 +115,11 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Map<String, ProdSymbol> map = new LinkedHashMap<>();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
-
-      for (ProdSymbol prod:superGrammarRef.lazyLoadDelegate().getProdsWithInherited().values()) {
-        if (map.containsKey(prod.getName())) {
-          ProdSymbol superProd = map.get(prod.getName());
-          if (MCGrammarSymbolTableHelper.getAllSuperProds(prod).contains(superProd)) {
-            map.put(prod.getName(), prod);
-          }
-        } else {
-          map.put(prod.getName(), prod);
-        }
+      final MCGrammarSymbol superGrammar = superGrammars.get(i).lazyLoadDelegate();
+      Optional<ProdSymbol> inheritedProd = superGrammar.getProdWithInherited(ruleName);
+      if (inheritedProd.isPresent()) {
+        return inheritedProd;
       }
-    }
-
-    if (map.containsKey(ruleName)) {
-      return Optional.of(map.get(ruleName));
     }
     return Optional.empty();
   }
