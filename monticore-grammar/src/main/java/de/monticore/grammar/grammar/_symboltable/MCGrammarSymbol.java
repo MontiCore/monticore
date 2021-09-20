@@ -2,6 +2,9 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -25,6 +28,19 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   protected final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
 
   protected Map<String, Collection<String>> tokenModes = Maps.newHashMap();
+
+  protected final LoadingCache<String, Optional<ProdSymbol>> prodCache = CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .build(new CacheLoader<String, Optional<ProdSymbol>>() {
+                   @Override
+                   public Optional<ProdSymbol> load(String key) throws Exception {
+                     Optional<ProdSymbol> mcProd = getProd(key);
+                     if (mcProd.isPresent()) {
+                       return mcProd;
+                     }
+                     return getInheritedProd(key);
+                   }
+                 });
 
   // the start production of the grammar
   protected ProdSymbol startProd;
@@ -91,11 +107,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   // return local prod or prod from supergrammars
   public Optional<ProdSymbol> getProdWithInherited(String ruleName) {
-    Optional<ProdSymbol> mcProd = getProd(ruleName);
-    if (mcProd.isPresent()) {
-      return mcProd;
-    }
-    return getInheritedProd(ruleName);
+   return prodCache.getUnchecked(ruleName);
   }
 
   // return only prod from supergrammars
