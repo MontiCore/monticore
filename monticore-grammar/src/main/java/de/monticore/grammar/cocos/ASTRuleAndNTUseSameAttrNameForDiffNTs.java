@@ -32,7 +32,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
   public void check(ASTASTRule a) {
     ProdSymbol prodSymbol = a.getEnclosingScope().resolveProd(a.getType()).get();
     for (AdditionalAttributeSymbol attr : prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols()) {
-      List<RuleComponentSymbol> rcs = prodSymbol.getSpannedScope().resolveRuleComponentMany(attr.getName());
+      List<RuleComponentSymbol> rcs = prodSymbol.getSpannedScope().resolveRuleComponentDownMany(attr.getName());
       if (!rcs.isEmpty()) {
         RuleComponentSymbol rc = rcs.get(0);
         if (rc.isIsNonterminal()) {
