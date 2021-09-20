@@ -98,19 +98,19 @@ public enum Multiplicity {
   }
 
   public static Multiplicity determineMultiplicity(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
-    Multiplicity byAlternative = multiplicityByAlternative(rootNode, astNode);
-    Multiplicity byDuplicates = multiplicityByDuplicates(rootNode, astNode);
-    Multiplicity byIteration = multiplicityByIteration(rootNode, astNode);
-    ArrayList<Multiplicity> newArrayList = newArrayList(byDuplicates, byIteration, byAlternative);
-    return max(newArrayList);
-  }
-
-  protected static Multiplicity multiplicityByAlternative(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
     MultiplicityVisitor mv = new MultiplicityVisitor(astNode);
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
     traverser.add4Grammar(mv);
     rootNode.accept(traverser);
     List<ASTGrammarNode> intermediates = mv.getComponents();
+    Multiplicity byAlternative = multiplicityByAlternative(rootNode, astNode, intermediates);
+    Multiplicity byDuplicates = multiplicityByDuplicates(rootNode, astNode, intermediates);
+    Multiplicity byIteration = multiplicityByIteration(rootNode, astNode, intermediates);
+    ArrayList<Multiplicity> newArrayList = newArrayList(byDuplicates, byIteration, byAlternative);
+    return max(newArrayList);
+  }
+
+  protected static Multiplicity multiplicityByAlternative(ASTMCGrammar rootNode, ASTRuleComponent astNode, List<ASTGrammarNode> intermediates) {
     boolean containedInAlternative = false;
     for (ASTNode intermediate : intermediates) {
       if (intermediate instanceof ASTClassProd) {
@@ -122,8 +122,8 @@ public enum Multiplicity {
     return containedInAlternative ? OPTIONAL : STANDARD;
   }
 
-  protected static Multiplicity multiplicityByDuplicates(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
-    boolean hasDuplicate = getAllNodesInRelatedRuleComponents(rootNode, astNode)
+  protected static Multiplicity multiplicityByDuplicates(ASTMCGrammar rootNode, ASTRuleComponent astNode, List<ASTGrammarNode> intermediates) {
+    boolean hasDuplicate = getAllNodesInRelatedRuleComponents(rootNode, astNode, intermediates)
         .anyMatch(sibling -> areDuplicates(rootNode, astNode, sibling));
     if (hasDuplicate) {
       return LIST;
@@ -165,17 +165,15 @@ public enum Multiplicity {
   }
 
   protected static Stream<ASTRuleComponent> getAllNodesInRelatedRuleComponents(ASTMCGrammar rootNode,
-                                                                    ASTRuleComponent astNode) {
-    MultiplicityVisitor mv = new MultiplicityVisitor(astNode);
-    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
-    traverser.add4Grammar(mv);
-    rootNode.accept(traverser);
-    Set<ASTRuleComponent> ancestorRuleComponents = mv.getComponents().stream()
+                                                                               ASTRuleComponent astNode,
+                                                                               List<ASTGrammarNode> intermediates) {
+
+    Set<ASTRuleComponent> ancestorRuleComponents = intermediates.stream()
         .filter(ASTRuleComponent.class::isInstance)
         .map(ASTRuleComponent.class::cast)
         .collect(Collectors.toSet());
 
-    return mv.getComponents().stream()
+    return intermediates.stream()
         .filter(ASTAlt.class::isInstance)
         .map(ASTAlt.class::cast)
         .flatMap(alt -> alt.getComponentList().stream())
@@ -183,13 +181,9 @@ public enum Multiplicity {
         .flatMap(ruleComponent -> ComponentCollector.getAllComponents(ruleComponent).stream());
   }
 
-  public static Multiplicity multiplicityByIteration(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
+  public static Multiplicity multiplicityByIteration(ASTMCGrammar rootNode, ASTRuleComponent astNode, List<ASTGrammarNode> intermediates) {
     Multiplicity multiplicity = STANDARD;
-    MultiplicityVisitor mv = new MultiplicityVisitor(astNode);
-    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
-    traverser.add4Grammar(mv);
-    rootNode.accept(traverser);
-    for (ASTNode intermediate :mv.getComponents()) {
+    for (ASTNode intermediate :intermediates) {
       int iteration = getIterationInt(intermediate);
 
       if (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.STAR) {
