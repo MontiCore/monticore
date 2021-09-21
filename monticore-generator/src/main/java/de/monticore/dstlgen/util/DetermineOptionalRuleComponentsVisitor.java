@@ -67,11 +67,6 @@ public class DetermineOptionalRuleComponentsVisitor implements
   }
 
   @Override
-  public void traverse(ASTEof node) {
-
-  }
-
-  @Override
   public void traverse(ASTSemanticpredicateOrAction node) {
 
   }

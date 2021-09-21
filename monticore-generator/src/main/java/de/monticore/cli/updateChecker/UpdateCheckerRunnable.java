@@ -12,7 +12,7 @@ import java.util.Properties;
 public class UpdateCheckerRunnable implements Runnable {
 
   final protected static String REMOTE_PROPERTIES_PATH = "https://raw.githubusercontent.com/MontiCore/monticore/dev/gradle.properties";
-  final protected static String LOCAL_PROPERTIES_PATH = "gradle.properties";
+  final protected static String LOCAL_PROPERTIES_PATH = "/buildInfo.properties";
 
   protected String newVersion;
 
@@ -72,6 +72,10 @@ public class UpdateCheckerRunnable implements Runnable {
     return newVersion;
   }
 
+  public String getLocalVersion() {
+    return getLocalProperties().getProperty("version");
+  }
+
   public boolean newVersionAvailable() {
     Properties local = getLocalProperties();
     Properties remote = getRemoteProperties();
@@ -118,7 +122,7 @@ public class UpdateCheckerRunnable implements Runnable {
     Properties properties = new Properties();
 
     try {
-      properties.load(new FileInputStream(LOCAL_PROPERTIES_PATH));
+      properties.load(this.getClass().getResourceAsStream(LOCAL_PROPERTIES_PATH));
     } catch (Exception e) {
       Log.debug("0xA9004 Could not find local properties file", UpdateCheckerRunnable.class.getName());
     }

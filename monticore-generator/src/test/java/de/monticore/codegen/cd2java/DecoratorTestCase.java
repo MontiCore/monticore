@@ -9,7 +9,7 @@ import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Joiners;
@@ -35,7 +35,7 @@ public abstract class DecoratorTestCase {
     CD4CodeMill.init();
     ICD4CodeGlobalScope globalScope = CD4CodeMill.globalScope();
     BuiltInTypes.addBuiltInTypes(globalScope);
-    globalScope.setModelPath(new ModelPath(Paths.get(MODEL_PATH)));
+   // globalScope.setModelPath(new ModelPath(Paths.get(MODEL_PATH)));
   }
 
   public ASTCDCompilationUnit parse(String... names) {

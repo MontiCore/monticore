@@ -3,14 +3,19 @@
 
 package de.monticore.tf.odrules;
 
-import de.se_rwth.commons.cli.CLIArguments;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.tf.odrules._ast.ASTODRule;
+import de.monticore.tf.odrules._parser.ODRulesParser;
+import de.monticore.tf.odrules._symboltable.ODRulesScopesGenitorDelegator;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.Slf4jLog;
-import de.monticore.tf.script.DSTLCLIConfiguration;
+import org.apache.commons.cli.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Iterator;
-//TODO: Use the default CLI
+import java.nio.file.Paths;
+import java.util.Optional;
+
 public class ODRulesCLI {
 
   /**
@@ -19,45 +24,121 @@ public class ODRulesCLI {
    * @param args the CLI arguments
    */
   public static void main(String[] args) {
-    if (args.length == 0) {
-      printHelp();
-      return;
-    }
-
-    CLIArguments arguments = CLIArguments.forArguments(args);
-    DSTLCLIConfiguration configuration = DSTLCLIConfiguration.fromArguments(arguments);
-
-    if (arguments.asMap().containsKey(DSTLCLIConfiguration.Options.HELP.toString()) ||
-        arguments.asMap().containsKey(DSTLCLIConfiguration.Options.HELP_SHORT.toString())) {
-      printHelp();
-      return;
-    }
-
-    // this needs to be called after the statement above; otherwise logback will
-    // ignore custom configurations supplied via system property
-    Slf4jLog.init();
-
-    // before we launch MontiCore we check if there are any ".mtr" files in the input argument (source path)
-    if (configuration.getInternal().getModels("mtod").getEntries().isEmpty()) {
-      Log.error("0xA1000 There are no \".mtod\" files to parse. Please check the \"grammars\" option.");
-      return;
-    }
-
-    // execute the scripts (either default or custom)
-    new ODRulesScript().run( configuration.getInternal());
+    Log.init();
+    new ODRulesCLI().run(args);
   }
-
-  protected void run(String[] args){}
-
-  protected ODRulesCLI() {
+  
+  protected void run(String[] args){
+  
+    Options options = initOptions();
+  
+    try {
+      // create CLI parser and parse input options from command line
+      CommandLineParser cliParser = new DefaultParser();
+      CommandLine cmd = cliParser.parse(options, args);
+  
+      // help: when --help
+      if (cmd.hasOption("h")) {
+        printHelp(options);
+        // do not continue, when help is printed
+        return;
+      }
+  
+      if (!cmd.hasOption("i")) {
+        Log.error("0xA1000 There is no \".mtod\" file to parse. Please check the \"input\" option.");
+        // do not continue, when this error is logged
+        return;
+      }
+  
+      ODRulesMill.init();
+  
+      Log.debug("----- Starting ODRules Generation -----", LOG_ID);
+  
+      Log.debug("--------------------------------", LOG_ID);
+      Log.debug("Input file   : " + cmd.getOptionValue("i"), LOG_ID);
+      Log.debug("Output dir    : " + cmd.getOptionValue("o"), LOG_ID);
+  
+      Path model = Paths.get(cmd.getOptionValue("i"));
+  
+      // Parse OD-Rules
+      Optional<ASTODRule> astRule = parseODRule(model);
+  
+      ODRulesScopesGenitorDelegator symbolTable = ODRulesMill.scopesGenitorDelegator();
+      symbolTable.createFromAST(astRule.get());
+      
+      GlobalExtensionManagement glex = new GlobalExtensionManagement();
+      generate(astRule.get(), glex, Paths.get(cmd.getOptionValue("o")).toFile(), model.getFileName().toFile().getName().replace(".mtod", ""));
+      
+    }catch ( ParseException e) {
+    // an unexpected error from the Apache CLI parser:
+    Log.error("0xA6151 Could not process CLI parameters: " + e.getMessage());
+    }
   }
-
-  protected static void printHelp() {
-    System.out.println("ODRulesCLI Usage: java -jar StatechartCLI.jar -g <grammar> -m <model files> <options>");
-    System.out.println();
-    System.out.println("Options:");
-    System.out.println("-o, -out <path>              Optional output directory for all generated code; defaults to target/generated-sources");
-    System.out.println("-r, -reports <path>          Optional report directory for all generated repors; defaults to target/reports");
+  
+  public void generate(ASTODRule ast, GlobalExtensionManagement glex, File outputDirectory, String filename){
+    Log.debug("Generate Transformation for " + filename, LOG_ID);
+    ast.setName(filename);
+    ODRuleCodeGenerator.generate(ast, outputDirectory);
   }
+  
+  public Optional<ASTODRule> parseODRule(Path model) {
+    Log.debug("Start parsing of the model " + model, LOG_ID);
+    try {
+      ODRulesParser parser = new ODRulesParser();
+      Optional<ASTODRule> ast = parser.parse(model.toString());
+      if (!parser.hasErrors() && ast.isPresent()) {
+        Log.debug("Model " + model + " parsed successfully", LOG_ID);
+      } else {
+        Log.info(
+            "There are parsing errors while parsing of the model " + model, LOG_ID);
+      }
+      
+      return ast;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  /**
+   * Initializes the available CLI options for the MontiCore tool.
+   *
+   * @return The CLI options with arguments.
+   */
+  protected Options initOptions() {
+    Options options = new Options();
+    
+    // parse input grammars
+    options.addOption(Option.builder("i")
+        .longOpt("input")
+        .argName("file")
+        .hasArg()
+        .desc("Processes the given model and triggers the transformation generation.")
+        .build());
+    
+    // specify custom output directory
+    options.addOption(Option.builder("o")
+        .longOpt("out")
+        .argName("path")
+        .hasArg()
+        .desc("Output directory for all generated artifacts.")
+        .build());
+    
+    
+    // help dialog
+    options.addOption(Option.builder("h")
+        .longOpt("help")
+        .desc("Prints this help dialog")
+        .build());
+    
+    return options;
+  }
+  
+  protected void printHelp(Options options) {
+    HelpFormatter formatter = new HelpFormatter();
+    formatter.setWidth(80);
+    formatter.printHelp("ODRulesCLI", options);
+  }
+  
+  static final String LOG_ID = "ODRules";
 
 }

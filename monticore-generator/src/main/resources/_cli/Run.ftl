@@ -13,6 +13,12 @@ try{
     //do not continue, when help is printed.
         return;
     }
+    //version: when --version
+    else if(cmd.hasOption("v")){
+        printVersion();
+        //do not continue when help is printed
+        return;
+    }
 
 }catch (org.apache.commons.cli.ParseException e) {
    // e.getMessage displays the incorrect input-parameters

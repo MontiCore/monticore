@@ -5,6 +5,7 @@ package ${package}.${grammarNameLower}tr._cocos;
 import de.se_rwth.commons.logging.Log;
 import ${package}.${grammarNameLower}tr._ast.*;
 
+<#assign service = glex.getGlobalVar("service")>
 /**
  * This CoCo makes sure no optional nodes appear within negative nodes.
  */
@@ -36,7 +37,7 @@ public class ${className}
   <#list productions as prod>
   @Override
   public void check(AST${prod.getName()}_Opt node) {
-    Log.error("Negative nodes must not contain optional nodes.", node.get_SourcePositionStart());
+    Log.error("0xF0C21${service.getGeneratedErrorCode(className + prod.getName())} Negative nodes must not contain optional nodes.", node.get_SourcePositionStart());
   }
   </#list>
 

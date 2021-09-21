@@ -5,17 +5,13 @@ import com.google.common.hash.Hashing
 import com.google.common.io.Files
 import de.monticore.cli.MontiCoreStandardCLI
 import de.monticore.mcbasics.MCBasicsMill
-import de.monticore.dstlgen.DSTLGenCLI
 import de.monticore.dstlgen.util.DSTLPathUtil
 import de.se_rwth.commons.logging.Finding
 import de.se_rwth.commons.logging.Log
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
@@ -57,12 +53,16 @@ abstract public class MCTask extends DefaultTask {
     // always add the files from the configuration 'grammar' to the config files
     grammarConfigFiles.setFrom(project.configurations.getByName("grammar").getFiles())
     dependsOn(project.configurations.getByName("grammar"))
+
+    buildInfoFile.set(project.layout.buildDirectory.get().dir("resources").dir("main").file("buildInfo.properties"))
   }
   
   final RegularFileProperty grammar = project.objects.fileProperty()
   
   final DirectoryProperty outputDir = project.objects.directoryProperty()
-  
+
+  final RegularFileProperty buildInfoFile = project.objects.fileProperty()
+
   // this attributes enables to defines super grammars for a grammar build task
   // is super grammar gets updated the task itself is rebuild as well
   final ConfigurableFileCollection superGrammars = project.objects.fileCollection()
@@ -100,7 +100,12 @@ abstract public class MCTask extends DefaultTask {
   DirectoryProperty getOutputDir() {
     return outputDir
   }
-  
+
+  @OutputFile
+  RegularFileProperty getBuildInfoFile() {
+    return buildInfoFile
+  }
+
   @Incremental
   @InputFile
   RegularFileProperty getGrammar() {
@@ -222,7 +227,10 @@ abstract public class MCTask extends DefaultTask {
   void execute(InputChanges inputs) {
     logger.info(inputs.isIncremental() ? "CHANGED inputs considered out of date"
             : "ALL inputs considered out of date");
-    
+
+    // generate build info properties file into target resources directory
+    generateBuildInfo()
+
     // if no path for hand coded classes is specified use $projectDir/src/main/java as default
     if (handcodedPath.isEmpty()) {
       File hcp = project.layout.projectDirectory.file("src/main/java").getAsFile()
@@ -294,11 +302,16 @@ abstract public class MCTask extends DefaultTask {
       params.add("-fp")
       params.addAll(templatePath)
     }
-    List<String> dstlParams = params.clone()
-    if (!handcodedModelPath.isEmpty()) {
-      dstlParams.add("-hcg")
-      dstlParams.addAll(handcodedModelPath)
+    if (!templatePath.isEmpty()) {
+      params.add("-fp")
+      params.addAll(templatePath)
     }
+    if (!handcodedModelPath.isEmpty()) {
+      params.add("-hcg")
+      params.addAll(handcodedModelPath)
+    }
+    params.add("-dstlGen")
+    params.add(Boolean.toString(dstlGen))
     if (configTemplate != null) {
       params.add("-ct")
       if (configTemplate.endsWith(".ftl")){
@@ -327,11 +340,9 @@ abstract public class MCTask extends DefaultTask {
     }
     if (help) {
       params.add("-h")
-      dstlParams.add("-h")
     }
     def p = params.toArray() as String[]
-    def dstlP = dstlParams.toArray() as String[]
-    
+
     System.setSecurityManager(new SecurityManager()
     {
       @Override public void checkExit(int status) {
@@ -345,11 +356,6 @@ abstract public class MCTask extends DefaultTask {
     try {
       // execute Monticore with the given parameters
       MontiCoreStandardCLI.main(p)
-      if (dstlGen) {
-        // Execute DSTLGen (which, among other, generates the TR grammar)
-        DSTLGenCLI.main(dstlP)
-        // At some point: Move this guarded block into the standard CLI
-      }
       MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
@@ -429,8 +435,7 @@ abstract public class MCTask extends DefaultTask {
     }
     return true
   }
-
-  /**
+/**
    * Returns the path to the TR grammar.
    * Please ensure that the outputDir is previously set
    * @param originalGrammar the original grammar file
@@ -443,14 +448,23 @@ abstract public class MCTask extends DefaultTask {
             modelPath.isEmpty() ? [project.layout.projectDirectory.file("src/main/grammars").toString()] : modelPath,
             originalGrammar).toString())
   }
-
   protected File fromBasePath(String filePath) {
     File file = new File(filePath);
     return !file.isAbsolute()
             ? new File(project.getProjectDir(), filePath)
             : file;
   }
-  
+
+
+
+  protected void generateBuildInfo() {
+    File file = buildInfoFile.get().asFile
+    file.mkdirs()
+    file.delete()
+    file.createNewFile()
+    file.write("version = ${project.version}")
+  }
+
 }
 
 /**

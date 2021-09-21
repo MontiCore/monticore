@@ -7,13 +7,13 @@
 
   <groupId>de.monticore.mojo</groupId>
   <artifactId>monticore-maven-plugin</artifactId>
-  <version>7.2.0-SNAPSHOT</version>
+  <version>7.3.0-SNAPSHOT</version>
 
   <packaging>maven-plugin</packaging>
   
   <properties>
-    <monticore.version>7.2.0-SNAPSHOT</monticore.version>
-    <last.mc.release>7.1.0-SNAPSHOT</last.mc.release>
+    <monticore.version>7.3.0-SNAPSHOT</monticore.version>
+    <last.mc.release>7.2.0</last.mc.release>
 
     <compiler.plugin>3.2</compiler.plugin>
     <java.version>1.8</java.version>
@@ -21,7 +21,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <se-commons.version>7.1.1-SNAPSHOT</se-commons.version>
+    <se-commons.version>7.2.0</se-commons.version>
     <maven-artifact.version>3.2.3</maven-artifact.version>
     <maven-core.version>3.2.3</maven-core.version>
     <maven-plugin-api.version>3.3.3</maven-plugin-api.version>

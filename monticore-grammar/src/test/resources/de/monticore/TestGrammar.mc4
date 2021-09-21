@@ -376,11 +376,6 @@ component grammar TestGrammar extends de.monticore.common.TestLiterals {
      "[" Constant ("|" Constant )* "]"
      (iteration:["?"|"*"|"+"])? ;
 
-
-  /** End of file as EOF keyword */
-  Eof implements RuleComponent =
-    "EOF";
-
   /** MCAnything is a special lexer production which represents
   */
   MCAnything implements RuleComponent =

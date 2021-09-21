@@ -33,8 +33,6 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
 
   protected ExpressionsBasisTraverser traverser;
 
-  protected static final String ERROR_MSG = " The expression at source position %s cannot be calculated.";
-
   @Override
   public ExpressionsBasisTraverser getTraverser() {
     return traverser;
@@ -73,7 +71,7 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
     Optional<VariableSymbol> optVar = getScope(expr.getEnclosingScope()).resolveVariable(expr.getName());
     Optional<TypeVarSymbol> optTypeVar = getScope(expr.getEnclosingScope()).resolveTypeVar(expr.getName());
     Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
-    if(expr.getName().equals("null")){
+    if("null".equals(expr.getName())){
       SymTypeExpression res = createTypeOfNull();
       return Optional.of(res);
     }else if (optVar.isPresent()) {

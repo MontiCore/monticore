@@ -35,11 +35,11 @@ public class GenerateAutomataParser {
       
       // Initialize symbol table
       // (using imported grammars from the model path)
-      MCPath modelPath = new MCPath(Paths.get(
+      MCPath symbolPath = new MCPath(Paths.get(
           "target/monticore-grammar-grammars.jar"));
       IGrammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
           .globalScope();
-      gs.setSymbolPath(modelPath);
+      gs.setSymbolPath(symbolPath);
       
       Grammar_WithConceptsMill.scopesGenitorDelegator()
           .createFromAST(ast);

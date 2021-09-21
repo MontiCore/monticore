@@ -40,7 +40,7 @@ public class SM2ToolTest {
     assertEquals(9, p.size());
   
     // Check some "[INFO]" outputs
-    Assert.assertTrue(p.get(0), p.get(0).matches(".*.INFO.  SM2Tool SM2 DSL Tool.*\n"));
+    Assert.assertTrue(p.get(0), p.get(0).matches(".*.INFO.  sm2.SM2Tool SM2 DSL Tool.*\n"));
     Assert.assertTrue(p.get(3), p.get(3).matches(".*.INFO. .* StateSymbol defined for NoGame.*\n"));
     Assert.assertTrue(p.get(6), p.get(6).matches(".*.INFO. .* The model contains 3 states.*\n"));
   

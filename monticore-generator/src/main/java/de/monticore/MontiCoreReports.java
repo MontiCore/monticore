@@ -4,6 +4,7 @@ package de.monticore;
 
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.generating.templateengine.reporting.reporter.*;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
@@ -46,7 +47,7 @@ public class MontiCoreReports implements ReportManagerFactory {
   public ReportManager provide(String modelName) {
     String lowerCaseName = modelName.toLowerCase();
     MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
-    ReportingRepositoryFix repository = new ReportingRepositoryFix(identifierHelper);
+    ReportingRepository repository = new ReportingRepository(identifierHelper);
     repository.initAllTemplates();
     
     ReportManager reports = new ReportManager(this.outputDirectory);
