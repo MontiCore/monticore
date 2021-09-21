@@ -11,6 +11,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,20 +49,23 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
           if (mcProdSymbol.isIsAbstract() || mcProdSymbol.isClass()) {
             prods.add(mcProdSymbol);
           }
+
         }
       }
 
       if(!abstractProds.isEmpty()) {
+        List<ProdSymbol> temp = new ArrayList<>(abstractProds);
         for(ProdSymbol abstractProdSymbol : abstractProds){
           for(ProdSymbolSurrogate abstractProdExtended : abstractProdSymbol.getSuperProds()){
             for(int i = abstractProds.size()-1;i>=0;--i){
               ProdSymbol abstractProd = abstractProds.get(i);
-              if(abstractProdExtended.getName().equals(abstractProd.getName())){
-                abstractProds.remove(abstractProdExtended.lazyLoadDelegate());
+              if(abstractProdExtended.lazyLoadDelegate().getName().equals(abstractProd.getName())){
+                temp.remove(abstractProdExtended.lazyLoadDelegate());
               }
             }
           }
         }
+        abstractProds = temp;
       }
 
       if(!abstractProds.isEmpty()){
