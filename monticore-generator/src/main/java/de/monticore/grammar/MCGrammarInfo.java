@@ -44,9 +44,7 @@ public class MCGrammarInfo {
    * Lexer patterns
    */
   protected Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
-  
-  protected Collection<String> leftRecursiveRules = new HashSet<>();
-  
+
   /**
    * Additional java code for parser defined in antlr concepts of the processed
    * grammar and its super grammars
@@ -87,7 +85,6 @@ public class MCGrammarInfo {
 
     addSubRules();
     addHWAntlrCode();
-    addLeftRecursiveRules();
   }
 
   protected void addSplitRule(String s) {
@@ -181,17 +178,6 @@ public class MCGrammarInfo {
       }
     }
     return Lists.newArrayList();
-  }
-  
-  protected void addLeftRecursiveRules() {
-    Set<MCGrammarSymbol> grammarsToHandle = Sets
-        .newLinkedHashSet(Arrays.asList(grammarSymbol));
-    grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
-    for (MCGrammarSymbol grammar : grammarsToHandle) {
-      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode()).getClassProdList()) {
-        leftRecursiveRules.addAll(addLeftRecursiveRuleForProd(classProd));
-      }
-    }
   }
   
   /**
@@ -295,11 +281,7 @@ public class MCGrammarInfo {
     
     return matches;
   }
-  
-  public boolean isProdLeftRecursive(String name) {
-    return leftRecursiveRules.contains(name);
-  }
-  
+
   public List<PredicatePair> getSubRulesForParsing(String ruleName) {
     // Consider superclass
     Optional<ProdSymbol> ruleByName = grammarSymbol.getProdWithInherited(ruleName);

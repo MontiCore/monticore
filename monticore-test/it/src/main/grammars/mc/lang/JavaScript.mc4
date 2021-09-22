@@ -373,8 +373,7 @@ grammar JavaScript /*extends mc.grammar.lexicals.Lexicals*/ {
 
 	//End of statement
 	EOS = (
-		EOF |
-		";" | 
+		";" |
 		{lineTerminatorHere()}? |
 		{_input.LT(1).getType() == CloseBrace}?
 	);

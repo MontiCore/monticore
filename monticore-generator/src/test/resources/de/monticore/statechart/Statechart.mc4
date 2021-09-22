@@ -4,7 +4,7 @@ package de.monticore.statechart;
 
 component grammar Statechart extends mc.grammars.lexicals.TestLexicals {
       
-  Statechart implements SCStructure= "statechart" Name "{" (State | transition:Transition | userCode:Code)* "}" EOF;
+  Statechart implements SCStructure= "statechart" Name "{" (State | transition:Transition | userCode:Code)* "}";
   
   
   EntryAction= "entry" ":" block:BlockStatement;
