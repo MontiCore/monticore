@@ -1,0 +1,28 @@
+package de.monticore.grammar;
+
+mlc Grammar {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/grammar/Grammar.mc4";
+  }
+
+  //export handwritten top classes
+  export "$projectDir/src/main/java" {
+    include "de/monticore/grammar/grammar/**/*.java";
+    include "de/monticore/grammar/grammar/*.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/grammar/grammar/**/*.java";
+    include "de/monticore/grammar/grammar/*.java";
+  }
+
+  // promote using the JDK except for reflection
+  promote {
+    mlc "de.monticore.literals.MCCommonLiterals";
+    mlc "de.monticore.types.MCSimpleGenericTypes";
+  }
+
+}

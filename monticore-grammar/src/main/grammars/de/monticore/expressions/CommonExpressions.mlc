@@ -1,0 +1,21 @@
+package de.monticore.expressions;
+
+mlc CommonExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/CommonExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/commonexpressions/**/*.java";
+    include "de/monticore/expressions/commonexpressions/*.java";
+  }
+
+  // promote using the JDK except for reflection
+  promote {
+    mlc "de.monticore.expressions.ExpressionsBasis";
+  }
+
+}
