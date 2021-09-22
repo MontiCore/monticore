@@ -13,7 +13,9 @@
         // This thing does not have a builder class, store this on the stereotype
         if(!o_rhs.isPresentStereotype())
           o_rhs.setStereotype(de.monticore.tf.odrules.ODRulesMill.stereotypeBuilder().build());
-        o_rhs.getStereotype().addValues(de.monticore.tf.odrules.ODRulesMill.stereoValueBuilder().setName("noBuilder").setContent("i").build());
+        o_rhs.getStereotype().addValues(de.monticore.tf.odrules.ODRulesMill.stereoValueBuilder()
+                .setName("noBuilder")
+                .setText(ODRulesMill.stringLiteralBuilder().setSource("i").build()).build());
       </#if>
 
       if (isOnRHS()) {
