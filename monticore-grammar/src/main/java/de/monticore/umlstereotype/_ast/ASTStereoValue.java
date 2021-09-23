@@ -13,9 +13,11 @@ public  class ASTStereoValue extends ASTStereoValueTOP {
     }
 
     // Don't check derived attributes
-    this.content = null;
-    comp.content = null;
-
-    return super.equalAttributes(o);
+    // comparing name
+    if ( (this.name == null && comp.name != null)
+            || (this.name != null && !this.name.equals(comp.name)) ) {
+      return false;
+    }
+    return true;
   }
 }
