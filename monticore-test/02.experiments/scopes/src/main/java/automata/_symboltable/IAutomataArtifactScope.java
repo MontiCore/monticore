@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IAutomataArtifactScope extends IAutomataArtifactScopeTOP {
 
-  default public List<StateSymbol> resolveStateDownMany (boolean foundSymbols, String name, de.monticore.symboltable.modifiers.AccessModifier modifier, java.util.function.Predicate<automata._symboltable.StateSymbol> predicate)  {
+  default List<StateSymbol> resolveStateDownMany (boolean foundSymbols, String name, de.monticore.symboltable.modifiers.AccessModifier modifier, java.util.function.Predicate<automata._symboltable.StateSymbol> predicate)  {
     if (isStateSymbolsAlreadyResolved()) {
       return new ArrayList<>();
     }

@@ -310,6 +310,14 @@ public class MontiCoreStandardCLI {
         .hasArgs()
         .desc("Optional list of directories to look for handwritten code to integrate.")
         .build());
+
+    // specify hand-written model path
+    options.addOption(Option.builder(HANDCODEDMODELPATH)
+            .longOpt(HANDCODEDMODELPATH_LONG)
+            .argName("pathlist")
+            .hasArgs()
+            .desc("Optional list of directories or files to be included for importing other TR grammars.")
+            .build());
     
     // specify custom output
     options.addOption(Option.builder(SCRIPT)
@@ -372,7 +380,14 @@ public class MontiCoreStandardCLI {
         .hasArg(true)
         .desc("Specifies the directory for printing reports based on the given MontiCore grammars.")
         .build());
-    
+
+    // toggle dstl generation
+    options.addOption(Option.builder(DSTLGEN_LONG)
+            .argName("boolean")
+            .hasArg(true)
+            .desc("Specifies the dstl generation.")
+            .build());
+
     // help dialog
     options.addOption(Option.builder(HELP)
         .longOpt(HELP_LONG)

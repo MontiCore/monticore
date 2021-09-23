@@ -6,7 +6,6 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.MCPath;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -36,12 +35,11 @@ public class GenerateAutomataParser {
       
       // Initialize symbol table
       // (using imported grammars from the model path)
-      //TODO: change to MCPath in the next MC version
-      ModelPath modelPath = new ModelPath(Paths.get(
+      MCPath symbolPath = new MCPath(Paths.get(
           "target/monticore-grammar-grammars.jar"));
       IGrammar_WithConceptsGlobalScope gs = Grammar_WithConceptsMill
           .globalScope();
-      gs.setModelPath(modelPath);
+      gs.setSymbolPath(symbolPath);
       
       Grammar_WithConceptsMill.scopesGenitorDelegator()
           .createFromAST(ast);
@@ -62,7 +60,7 @@ public class GenerateAutomataParser {
     }
     catch (IOException e) {
       // If something happens ... handling necessary
-      e.printStackTrace();
+      Log.error("0xEE632 Cannot parse " + args[0], e);
     }
   }
 

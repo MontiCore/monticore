@@ -87,7 +87,7 @@ public class ODRulesCLI {
       ODRulesParser parser = new ODRulesParser();
       Optional<ASTODRule> ast = parser.parse(model.toString());
       if (!parser.hasErrors() && ast.isPresent()) {
-        Log.info("Model " + model + " parsed successfully", LOG_ID);
+        Log.debug("Model " + model + " parsed successfully", LOG_ID);
       } else {
         Log.info(
             "There are parsing errors while parsing of the model " + model, LOG_ID);

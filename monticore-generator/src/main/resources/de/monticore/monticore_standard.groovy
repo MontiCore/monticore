@@ -27,6 +27,7 @@ Log.debug("Grammar argument    : "
         + _configuration.getGrammarsAsStrings(), LOG_ID)
 Log.debug("Grammar files       : " + grammars, LOG_ID)
 Log.debug("Modelpath           : " + modelPath, LOG_ID)
+Log.debug("handcoded modelpath : " + modelPathHC, LOG_ID)
 Log.debug("Output dir          : " + out, LOG_ID)
 Log.debug("Report dir          : " + report, LOG_ID)
 Log.debug("Handcoded argument  : "
@@ -94,6 +95,11 @@ while (grammarIterator.hasNext()) {
     // M8 Generate ast classes, symbol table, visitor,
     // and context conditions
     generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath)
+
+    // DSTLGen part
+    if (dstlGen) {
+      generateDSTL(astGrammar, out, modelPathHC)
+    }
 
     // M9: Write reports to files
     // M9.1: Inform about successful completion for grammar

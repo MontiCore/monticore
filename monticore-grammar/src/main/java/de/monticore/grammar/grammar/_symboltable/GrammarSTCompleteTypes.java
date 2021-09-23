@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar._symboltable;
 
-import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
@@ -243,7 +242,6 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   protected void setComponentsCardinality(ASTMCGrammar astGrammar) {
     for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProds()) {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols();
-      LinkedListMultimap<String, RuleComponentSymbol> map = prodSymbol.getSpannedScope().getRuleComponentSymbols();
       for (String compName : prodSymbol.getSpannedScope().getRuleComponentSymbols().keySet()) {
         Optional<AdditionalAttributeSymbol> attribute = astAttributes.stream()
                 .filter(a -> a.getName().equals(compName)).findAny();
@@ -325,6 +323,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     for (ASTAlt alt : ast.getAltList()) {
       if (detector.isAlternativeLeftRecursive(alt, names)) {
         prodSymbol.setIsIndirectLeftRecursive(true);
+        superProds.stream().filter(s -> s.isInterface).forEach(s ->s.setIsIndirectLeftRecursive(true));
       } else if (detector.isAlternativeLeftRecursive(alt, ast.getName())) {
         prodSymbol.setIsDirectLeftRecursive(true);
       }

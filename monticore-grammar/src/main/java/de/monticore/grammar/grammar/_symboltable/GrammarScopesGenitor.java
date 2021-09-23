@@ -62,8 +62,6 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
 
   @Override
   public void endVisit(ASTMCGrammar astGrammar) {
-    // Initialize during creation
-    // initialize_MCGrammar(astGrammar.getSymbol(), astGrammar);
     // remove grammar scope
     removeCurrentScope();
     removeCurrentScope();

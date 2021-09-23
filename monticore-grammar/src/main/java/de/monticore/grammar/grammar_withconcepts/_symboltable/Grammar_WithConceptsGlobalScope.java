@@ -7,13 +7,11 @@ package de.monticore.grammar.grammar_withconcepts._symboltable;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.io.paths.MCPath;
-import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 
