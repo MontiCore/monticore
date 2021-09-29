@@ -98,6 +98,21 @@ task generateGenericDSLTR (type: MCTask, dependsOn: generateGenericDSL) {
   outputs.upToDateWhen { uptoDate }
   dstlGen = false
 }
+task generateExpressionDSL (type: MCTask) {
+  grammar = file "$grammarsDir/mc/testcases/ExpressionDSL.mc4"
+  outputDir = file _outputDir
+  def uptoDate = incCheck("mc/testcases/ExpressionDSL.mc4")
+  outputs.upToDateWhen { uptoDate }
+  dstlGen = true
+}
+task generateExpressionDSLTR (type: MCTask, dependsOn: generateExpressionDSL) {
+  grammar = file "$_outputDir/mc/testcases/tr/ExpressionDSLTR.mc4"
+  outputDir = file _outputDir
+  modelPath += file _outputDir
+  def uptoDate = incCheck("mc/testcases/tr/ExpressionDSLTR.mc4")
+  outputs.upToDateWhen { uptoDate }
+  dstlGen = false
+}
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }

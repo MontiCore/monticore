@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases;
+
+// This DSL tests if the expressions are TR/TF-usable
+// This tests, e.g., the left-recursive behaviour of the DSTL generator
+grammar ExpressionDSL extends
+    de.monticore.expressions.CommonExpressions,
+    de.monticore.expressions.AssignmentExpressions,
+    de.monticore.literals.MCCommonLiterals {
+
+    Foo = "expr" Expression;
+}
