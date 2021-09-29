@@ -69,9 +69,13 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     Collection<DiagramSymbol> superSymbolList = service.getSuperCDsTransitive();
     List<ASTCDClass> superMills = new ArrayList<>();
 
+    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+    Collection<CDTypeSymbol> firstClasses = Lists.newArrayList();
+    calculateOverriddenCds(service.getCDSymbol(), astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
+
     for (DiagramSymbol superSymbol : superSymbolList) {
       String millClassName = superSymbol.getName() + MillConstants.MILL_FOR + compilationUnit.getCDDefinition().getName();
-      List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol);
+      List<ASTCDMethod> builderMethodsList = addBuilderMethodsForSuper(astcdClassList, superSymbol, overridden, firstClasses);
       String basePackage = superSymbol.getPackageName().isEmpty() ? "" : superSymbol.getPackageName().toLowerCase() + ".";
 
       ASTMCQualifiedType superclass = this.getMCTypeFacade().createQualifiedType(
@@ -99,12 +103,12 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     return superMills;
   }
 
-  protected List<ASTCDMethod> addBuilderMethodsForSuper(List<ASTCDClass> astcdClassList, DiagramSymbol superSymbol) {
+  protected List<ASTCDMethod> addBuilderMethodsForSuper(List<ASTCDClass> astcdClassList,
+                                                        DiagramSymbol superSymbol,
+                                                        HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden,
+                                                        Collection<CDTypeSymbol> firstClasses) {
     List<ASTCDMethod> builderMethodsList = new ArrayList<>();
 
-    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
-    Collection<CDTypeSymbol> firstClasses = Lists.newArrayList();
-    calculateOverriddenCds(service.getCDSymbol(), astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
     Collection<CDTypeSymbol> cdsForSuper = overridden.get(superSymbol);
 
     // check if super cds exist

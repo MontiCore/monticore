@@ -30,19 +30,21 @@ public class TypeCD2JavaVisitor implements MCBasicTypesVisitor2 {
   public void visit(ASTMCQualifiedType node) {
     //only take first one because at first the type has just one name which contains the complete qualified name
     //e.g. "de.monticore.Automaton.ASTAutomaton"
-    Optional<CDTypeSymbol> typeSymbol = scope.resolveCDType(String.join(".", node.getNameList()));
-    if (typeSymbol.isPresent()) {
-      ArrayList<String> l = Lists.newArrayList();
-      for (String name: node.getNameList()) {
-        l.add(name.toLowerCase());
+    if (node.getNameList().size() > 1) {
+      Optional<CDTypeSymbol> typeSymbol = scope.resolveCDType(String.join(".", node.getNameList()));
+      if (typeSymbol.isPresent()) {
+        ArrayList<String> l = Lists.newArrayList();
+        for (String name : node.getNameList()) {
+          l.add(name.toLowerCase());
+        }
+        l.remove(node.getNameList().size() - 1);
+        l.add(ASTConstants.AST_PACKAGE);
+        l.add(simpleName(node));
+        node.getMCQualifiedName().setPartsList(l);
       }
-      l.remove(node.getNameList().size()-1);
-      l.add( ASTConstants.AST_PACKAGE);
-      l.add(simpleName(node));
-      node.getMCQualifiedName().setPartsList(l);
-    }
-    if(node.getNameList().size() <= 1){
-      node.getMCQualifiedName().setPartsList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));
+      if (node.getNameList().size() <= 1) {
+        node.getMCQualifiedName().setPartsList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));
+      }
     }
   }
 
