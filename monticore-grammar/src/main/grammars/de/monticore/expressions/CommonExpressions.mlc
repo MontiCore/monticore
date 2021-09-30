@@ -9,8 +9,7 @@ mlc CommonExpressions {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/expressions/commonexpressions/**/*.java";
-    include "de/monticore/expressions/commonexpressions/*.java";
+    include "de/monticore/expressions/commonexpressions/**.java";
   }
 
   // promote using the JDK except for reflection

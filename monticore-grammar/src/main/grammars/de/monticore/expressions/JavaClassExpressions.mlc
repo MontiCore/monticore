@@ -9,8 +9,7 @@ mlc JavaClassExpressions {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/expressions/javaclassexpressions/**/*.java";
-    include "de/monticore/expressions/javaclassexpressions/*.java";
+    include "de/monticore/expressions/javaclassexpressions/**.java";
   }
 
   // promote using the JDK except for reflection

@@ -9,8 +9,7 @@ mlc BitExpressions {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/expressions/bitexpressions/**/*.java";
-    include "de/monticore/expressions/bitexpressions/*.java";
+    include "de/monticore/expressions/bitexpressions/**.java";
   }
 
   // promote using the JDK except for reflection

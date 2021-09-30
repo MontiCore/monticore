@@ -9,8 +9,7 @@ mlc AssignmentExpressions {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/expressions/assignmentexpressions/**/*.java";
-    include "de/monticore/expressions/assignmentexpressions/*.java";
+    include "de/monticore/expressions/assignmentexpressions/**.java";
   }
 
   // promote using the JDK except for reflection
