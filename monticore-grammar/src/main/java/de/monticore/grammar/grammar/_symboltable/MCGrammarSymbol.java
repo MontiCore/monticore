@@ -33,7 +33,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
           .maximumSize(10000)
           .build(new CacheLoader<String, Optional<ProdSymbol>>() {
                    @Override
-                   public Optional<ProdSymbol> load(String key) throws Exception {
+                   public Optional<ProdSymbol> load(String key) {
                      Optional<ProdSymbol> mcProd = getProd(key);
                      if (mcProd.isPresent()) {
                        return mcProd;
