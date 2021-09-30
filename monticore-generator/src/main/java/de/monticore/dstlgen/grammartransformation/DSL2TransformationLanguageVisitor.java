@@ -216,9 +216,9 @@ public class DSL2TransformationLanguageVisitor implements
       boolean overridden = false;
       boolean superExternal = false;
 
-      boolean isLeftRecursive = srcNode.getSymbol().isIsDirectLeftRecursive() ||  srcNode.getSymbol().getSuperInterfaceProds()
+      boolean isLeftRecursive = srcNode.getSymbol().isIsDirectLeftRecursive() || srcNode.getSymbol().isIsIndirectLeftRecursive() || srcNode.getSymbol().getSuperInterfaceProds()
               .stream().map(s -> s.lazyLoadDelegate())
-              .anyMatch(x -> x.isIsDirectLeftRecursive());
+              .anyMatch(x -> x.isIsDirectLeftRecursive() || x.isIsIndirectLeftRecursive());
 
       boolean isEmpty = DSTLUtil.isEmptyProduction(srcNode.getSymbol());
 
