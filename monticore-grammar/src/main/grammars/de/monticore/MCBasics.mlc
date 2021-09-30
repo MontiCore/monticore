@@ -1,0 +1,43 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/**
+ * Language component of the MCBasics grammar. This language component
+ * promotes the usage of the MontiCore RTE, the JDK, etc. Hence, language
+ * components using this MCBasics language component do not need to allow
+ * their usage again.
+ */
+mlc MCBasics {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/MCBasics.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/mcbasics/**.java";
+  }
+
+  // promote using the JDK except for reflection
+  promote {
+    include "$mp/java/**";
+    exclude "$mp/java/lang/reflect/**";
+  }
+
+  // promote using everything from MontiCore RTE and co.
+  promote {
+    include "$mp/de/monticore/ast/**";
+    include "$mp/de/monticore/generating/**";
+    include "$mp/de/monticore/io/**";
+    include "$mp/de/monticore/parser/**";
+    include "$mp/de/monticore/prettyprint/**";
+    include "$mp/de/monticore/symboltable/**";
+    include "$mp/de/monticore/utils/**";
+    include "$mp/de/monticore/visitor/**";
+    include "$mp/de/se_rwth/commons/**";
+    include "$mp/org/antlr/v4/runtime/**";
+    include "$mp/com/google/common/collect/**";
+  }
+
+}

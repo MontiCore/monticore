@@ -1,0 +1,25 @@
+package de.monticore.tf;
+
+mlc ODRuleGeneration {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/tf/ODRuleGeneration.mc4";
+  }
+
+  //export handwritten top classes
+  export "$projectDir/src/main/java" {
+    include "de/monticore/tf/odrulegeneration/**.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/tf/odrulegeneration/**.java";
+  }
+
+  // promote using the JDK except for reflection
+  promote {
+    mlc "de.monticore.types.MCFullGenericTypes";
+  }
+
+}
