@@ -9,8 +9,7 @@ mlc TFCommons {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/tf/tfcommons/**/*.java";
-    include "de/monticore/tf/tfcommons/*.java";
+    include "de/monticore/tf/tfcommons/**.java";
   }
 
   // promote using the JDK except for reflection

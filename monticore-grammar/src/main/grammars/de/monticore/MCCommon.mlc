@@ -13,8 +13,7 @@ mlc MCCommon {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/mccommon/**/*.java";
-    include "de/monticore/mccommon/*.java";
+    include "de/monticore/mccommon/**.java";
   }
 
   // promote using the JDK except for reflection

@@ -9,13 +9,12 @@ mlc ODRuleGeneration {
 
   //export handwritten top classes
   export "$projectDir/src/main/java" {
-    include "de/monticore/tf/odrules/**/*.java";
+    include "de/monticore/tf/odrules/**.java";
   }
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/tf/odrules/**/*.java";
-    include "de/monticore/tf/odrules/*.java";
+    include "de/monticore/tf/odrules/**.java";
   }
 
   // promote using the JDK except for reflection

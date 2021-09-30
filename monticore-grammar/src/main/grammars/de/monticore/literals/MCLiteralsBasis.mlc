@@ -7,8 +7,7 @@ mlc MCLiteralsBasis {
   }
 
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/literals/mcliteralsbasis/**/*.java";
-    include "de/monticore/literals/mcliteralsbasis/*.java";
+    include "de/monticore/literals/mcliteralsbasis/**.java";
   }
 
   //handwritten sources

@@ -9,8 +9,7 @@ mlc MCSynchronizedStatements {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/statements/mcsynchronizedstatements/**/*.java";
-    include "de/monticore/statements/mcsynchronizedstatements/*.java";
+    include "de/monticore/statements/mcsynchronizedstatements/**.java";
   }
 
   // promote using the JDK except for reflection

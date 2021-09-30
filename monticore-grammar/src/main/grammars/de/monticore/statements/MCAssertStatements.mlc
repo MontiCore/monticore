@@ -9,8 +9,7 @@ mlc MCAssertStatements {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/statements/mcassertstatements/**/*.java";
-    include "de/monticore/statements/mcassertstatements/*.java";
+    include "de/monticore/statements/mcassertstatements/**.java";
   }
 
   // promote using the JDK except for reflection

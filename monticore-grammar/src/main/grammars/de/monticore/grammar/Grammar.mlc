@@ -9,14 +9,12 @@ mlc Grammar {
 
   //export handwritten top classes
   export "$projectDir/src/main/java" {
-    include "de/monticore/grammar/grammar/**/*.java";
-    include "de/monticore/grammar/grammar/*.java";
+    include "de/monticore/grammar/grammar/**.java";
   }
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/grammar/grammar/**/*.java";
-    include "de/monticore/grammar/grammar/*.java";
+    include "de/monticore/grammar/grammar/**.java";
   }
 
   // promote using the JDK except for reflection

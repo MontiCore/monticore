@@ -9,14 +9,12 @@ mlc MCCommonStatements {
 
   //export the handwritten TOP-classes
   export "$projectDir/src/main/java" {
-    include "de/monticore/statements/mccommonstatements/**/*.java";
-    include "de/monticore/statements/mccommonstatements/*.java";
+    include "de/monticore/statements/mccommonstatements/**.java";
   }
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/statements/mccommonstatements/**/*.java";
-    include "de/monticore/statements/mccommonstatements/*.java";
+    include "de/monticore/statements/mccommonstatements/**.java";
   }
 
   // promote using the JDK except for reflection

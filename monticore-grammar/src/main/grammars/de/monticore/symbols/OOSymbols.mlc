@@ -13,14 +13,12 @@ mlc OOSymbols {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/symbols/oosymbols/**/*.java";
-    include "de/monticore/symbols/oosymbols/*.java";
+    include "de/monticore/symbols/oosymbols/**.java";
   }
 
   // export all handwritten TOP-mechanism extensions
   export "$projectDir/src/main/java" {
-    include "de/monticore/symbols/oosymbols/**/*.java";
-    include "de/monticore/symbols/oosymbols/*.java";
+    include "de/monticore/symbols/oosymbols/**.java";
   }
 
   promote mlc "de.monticore.symbols.BasicSymbols";

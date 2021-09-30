@@ -9,14 +9,12 @@ mlc MCCollectionTypes {
 
   //export handwritten top classes
   export "$projectDir/src/main/java" {
-    include "de/monticore/types/mccollectiontypes/**/*.java";
-    include "de/monticore/types/mccollectiontypes/*.java";
+    include "de/monticore/types/mccollectiontypes/**.java";
   }
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/types/mccollectiontypes/**/*.java";
-    include "de/monticore/types/mccollectiontypes/*.java";
+    include "de/monticore/types/mccollectiontypes/**.java";
   }
 
   // promote using the JDK except for reflection

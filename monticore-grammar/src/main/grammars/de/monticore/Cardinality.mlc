@@ -13,8 +13,7 @@ mlc Cardinality {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/cardinality/**/*.java";
-    include "de/monticore/cardinality/*.java";
+    include "de/monticore/cardinality/**.java";
   }
 
   // promote using the JDK except for reflection

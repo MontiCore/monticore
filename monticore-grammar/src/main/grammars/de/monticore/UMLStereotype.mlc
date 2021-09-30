@@ -13,8 +13,7 @@ mlc UMLStereotype {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/umlstereotype/**/*.java";
-    include "de/monticore/umlstereotype/*.java";
+    include "de/monticore/umlstereotype/**.java";
   }
 
   // promote using the JDK except for reflection

@@ -9,14 +9,12 @@ mlc MCSimpleGenericTypes {
 
   //export handwritten top classes
   export "$projectDir/src/main/java" {
-    include "de/monticore/types/mcsimplegenerictypes/**/*.java";
-    include "de/monticore/types/mcsimplegenerictypes/*.java";
+    include "de/monticore/types/mcsimplegenerictypes/**.java";
   }
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/types/mcsimplegenerictypes/**/*.java";
-    include "de/monticore/types/mcsimplegenerictypes/*.java";
+    include "de/monticore/types/mcsimplegenerictypes/**.java";
   }
 
   // promote using the JDK except for reflection

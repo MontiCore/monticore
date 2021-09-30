@@ -13,14 +13,12 @@ mlc JavaLight {
 
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/javalight/**/*.java";
-    include "de/monticore/javalight/*.java";
+    include "de/monticore/javalight/**.java";
   }
 
   // export all handwritten TOP-mechanism extensions
   export "$projectDir/src/main/java" {
-    include "de/monticore/javalight/**/*.java";
-    include "de/monticore/javalight/*.java";
+    include "de/monticore/javalight/**.java";
   }
 
   // promote using the JDK except for reflection
