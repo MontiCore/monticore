@@ -1,0 +1,22 @@
+package de.monticore.literals;
+
+mlc MCLiteralsBasis {
+
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/literals/MCLiteralsBasis.mc4";
+  }
+
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/literals/mcliteralsbasis/**.java";
+  }
+
+  //handwritten sources
+  export "$projectDir/src/main/java" {
+    include "de/monticore/grammar/literals/prettyprint/*.java";
+  }
+
+  promote {
+    mlc "de.monticore.MCBasics";
+  }
+
+}
