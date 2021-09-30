@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-// TODO Delete after release 7.2.0
+// TODO Delete after release 7.3.0
 @Deprecated
 public class LexNamerFix extends LexNamer {
 
