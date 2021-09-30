@@ -6,7 +6,7 @@ import de.monticore.grammar.grammar._cocos.GrammarASTLexProdCoCo;
 import de.se_rwth.commons.logging.Log;
 
 public class LexProdModeNameUpperCase implements GrammarASTLexProdCoCo {
-  public static final String ERROR_CODE = "0xA40136";//              <-
+  public static final String ERROR_CODE = "0xA4038";
 
   public static final String ERROR_MSG_FORMAT = " The lexical production %s must use Upper-case mode names.";
 

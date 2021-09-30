@@ -6,24 +6,26 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class LexProdModeNameUpperCaseTest extends CocoTest{
-  private final String MESSAGE = " The lexical production %s must use Upper-case mode names.";
+public class NoTokenModeInComponentGrammarTest extends CocoTest{
+  private final String MESSAGE = " The lexical production %s must not define a mode in a Component Grammar.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar = "de.monticore.grammar.cocos.invalid.A4038.A4038";
+  private final String grammar = "de.monticore.grammar.cocos.invalid.A4068.A4068";
 
   @BeforeClass
   public static void disableFailQuick() {
     LogStub.enableFailQuick(false);
-    checker.addCoCo(new LexProdModeNameUpperCase());
+    checker.addCoCo(new NoTokenModeInComponentGrammar());
   }
 
   @Test
   public void testUpperCasedPackage() {
-    testInvalidGrammar(grammar, LexProdModeNameUpperCase.ERROR_CODE,
-                         String.format(LexProdModeNameUpperCase.ERROR_MSG_FORMAT,
-                              "StartTag"), checker);
+    testInvalidGrammar(grammar, NoTokenModeInComponentGrammar.ERROR_CODE,
+        String.format(NoTokenModeInComponentGrammar.ERROR_MSG_FORMAT,
+            "StartTag"), checker);
   }
 
 
 
 }
+
+

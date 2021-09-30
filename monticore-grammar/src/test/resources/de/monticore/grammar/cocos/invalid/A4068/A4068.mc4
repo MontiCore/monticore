@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package  de.monticore.grammar.cocos.invalid.A0136;
+package  de.monticore.grammar.cocos.invalid.A4068;
 
-grammar A0136 {
+component grammar A4068 {
     symbol scope Automaton = "automaton" Name "{" (State | Transition | Tag)* "}" ;
     State = "Foo";
     Transition = "Baa";
