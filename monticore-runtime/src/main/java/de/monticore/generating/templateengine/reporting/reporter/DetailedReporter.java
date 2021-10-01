@@ -276,10 +276,5 @@ public class DetailedReporter extends AReporter {
         ReportingConstants.REPORTING_ROW_LENGTH);
     return line;
   }
-  
-  public static void main(String[] args) {
-    System.out
-        .println(calculateLine("looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong\n\n\n\n\n\nloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"));
-  }
-  
+
 }

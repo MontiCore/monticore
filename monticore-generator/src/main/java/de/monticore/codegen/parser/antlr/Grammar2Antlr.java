@@ -173,7 +173,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     String options = "";
 
-    if (grammarInfo.isProdLeftRecursive(ast.getName())) {
+    if (ast.getSymbol().isIsIndirectLeftRecursive()) {
       addToCodeSection("// No code generation because of indirect left recursive rules");
       endCodeSection();
       return;
@@ -952,7 +952,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         continue;
       }
       ASTNode astNode = superSymbol.getAstNode();
-      if (grammarInfo.isProdLeftRecursive(superSymbol.getName())) {
+      if (superSymbol.isIsIndirectLeftRecursive()) {
         isLeft = true;
         if (superSymbol.isClass()) {
           List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAltList();

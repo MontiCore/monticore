@@ -58,20 +58,18 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     //check recursively until there is no enclosing scope or the spanningsymbol of the scope is a type
     //while the enclosing scope is not null, it is possible that the expression can be calculated
     int count = 0;
-    if(typeCheckResult.isType()) {
-      if(getScope(node.getEnclosingScope()).getEnclosingScope()!=null){
-        IBasicSymbolsScope testScope = getScope(node.getEnclosingScope());
-        while (testScope!=null) {
-          if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
-            count++;
-            OOTypeSymbol sym = (OOTypeSymbol) testScope.getSpanningSymbol();
-            if (sym.getName().equals(innerResult.getTypeInfo().getName())&&count>1) {
-              wholeResult = innerResult;
-              break;
-            }
+    if(typeCheckResult.isType() && getScope(node.getEnclosingScope()).getEnclosingScope()!=null) {
+      IBasicSymbolsScope testScope = getScope(node.getEnclosingScope());
+      while (testScope!=null) {
+        if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
+          count++;
+          OOTypeSymbol sym = (OOTypeSymbol) testScope.getSpanningSymbol();
+          if (sym.getName().equals(innerResult.getTypeInfo().getName())&&count>1) {
+            wholeResult = innerResult;
+            break;
           }
-          testScope = testScope.getEnclosingScope();
         }
+        testScope = testScope.getEnclosingScope();
       }
     }
 
@@ -241,25 +239,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         SymTypeExpression superClass = superClasses.get(0);
         if (null != node.getSuperSuffix().getName() || !"".equals(node.getSuperSuffix().getName())) {
           ASTSuperSuffix superSuffix = node.getSuperSuffix();
-          if (superSuffix.isPresentArguments()) {
-            //case 1 -> Expression.super.<TypeArgument>Method(Args)
-            List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
-            List<FunctionSymbol> methods = superClass.getMethodList(superSuffix.getName(), false);
-            if (!methods.isEmpty() && null != superSuffix.getArguments()) {
-              //check if the methods fit and return the right returntype
-              ASTArguments args = superSuffix.getArguments();
-              wholeResult = checkMethodsAndReplaceTypeVariables(methods, args, typeArgsList);
-            }
-          }
-          else {
-            //case 2 -> Expression.super.Field
-            List<VariableSymbol> fields = superClass.getFieldList(superSuffix.getName(), false);
-            if (fields.size()==1) {
-              wholeResult = fields.get(0).getType();
-            }else{
-              Log.error("0xA0304 there cannot be more than one field with the same name");
-            }
-          }
+          wholeResult = handleSuperSuffix(superSuffix, superClass);
         }
       }
     }
@@ -269,6 +249,29 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       typeCheckResult.reset();
       logError("0xA0261",node.get_SourcePositionStart());
     }
+  }
+
+  protected SymTypeExpression handleSuperSuffix(ASTSuperSuffix superSuffix, SymTypeExpression superClass){
+    if (superSuffix.isPresentArguments()) {
+      //case 1 -> Expression.super.<TypeArgument>Method(Args)
+      List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
+      List<FunctionSymbol> methods = superClass.getMethodList(superSuffix.getName(), false);
+      if (!methods.isEmpty() && null != superSuffix.getArguments()) {
+        //check if the methods fit and return the right returntype
+        ASTArguments args = superSuffix.getArguments();
+        return checkMethodsAndReplaceTypeVariables(methods, args, typeArgsList);
+      }
+    }
+    else {
+      //case 2 -> Expression.super.Field
+      List<VariableSymbol> fields = superClass.getFieldList(superSuffix.getName(), false);
+      if (fields.size()==1) {
+        return fields.get(0).getType();
+      }else{
+        Log.error("0xA0304 there cannot be more than one field with the same name");
+      }
+    }
+    return null;
   }
 
   @Override

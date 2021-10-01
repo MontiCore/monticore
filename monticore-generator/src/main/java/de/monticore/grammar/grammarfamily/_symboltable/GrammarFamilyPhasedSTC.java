@@ -43,9 +43,6 @@ public class GrammarFamilyPhasedSTC {
     traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
     traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
 
-    // TODO NJ: CD type completion is currently handled in the MontiCoreScript. Check for new
-    // cd4a version, if it can be completed here again, or should remain externally.
-
     priorityList.add(traverser);
   }
 
@@ -65,6 +62,7 @@ public class GrammarFamilyPhasedSTC {
     as.setImportsList(imports);
     as.setPackageName(packageName);
 
+    // Complete symbol table
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
     CDSymbolTableHelper symbolTableHelper = new CDSymbolTableHelper(new DeriveSymType())
             .setImports(node.getMCImportStatementList())

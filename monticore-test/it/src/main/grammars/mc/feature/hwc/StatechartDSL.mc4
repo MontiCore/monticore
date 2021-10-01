@@ -4,7 +4,7 @@ package mc.feature.hwc;
 
 component grammar StatechartDSL extends mc.common.Basics {      
 
-  Statechart implements SCStructure= "statechart" Name "{" (states:State | transitions:Transition | userCode:Code)* "}" EOF;
+  Statechart implements SCStructure= "statechart" Name "{" (states:State | transitions:Transition | userCode:Code)* "}";
   
   EntryAction= "entry" ":" block:BlockStatement;
   

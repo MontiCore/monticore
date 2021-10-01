@@ -5,7 +5,6 @@ package de.monticore;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import de.monticore.cd4analysis._symboltable.CD4AnalysisSymbolTableCompleter;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
@@ -80,6 +79,8 @@ import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
+import de.monticore.dstlgen.DSTLGenScript;
+import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
@@ -427,24 +428,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return cds;
   }
 
-  /**
-   * Collects all compilation units and calls the cd type completer for
-   * completing the symbol table of each cd.
-   *
-   * @param gs The given global scope to extract all compilation units
-   */
-  protected void completeCDTypes(ICD4AnalysisGlobalScope gs) {
-    for (ICD4AnalysisScope scope : gs.getSubScopes()) {
-      if (!scope.getDiagramSymbols().isEmpty()) {
-        // artifact scopes with a diagram symbol always yield to the AST node of a compilation unit
-        ASTCDCompilationUnit comp = (ASTCDCompilationUnit) scope.getAstNode();
-
-        // complete types for CD
-        CD4AnalysisSymbolTableCompleter v = new CD4AnalysisSymbolTableCompleter(comp);
-        comp.accept(v.getTraverser());
-      }
-    }
-  }
   
   /**
    * Transforms grammar AST to class diagram AST.
@@ -461,7 +444,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Optional<ASTCDCompilationUnit> ast = TransformationHelper.getCDforGrammar(cdScope, astGrammar);
     ASTCDCompilationUnit astCD = ast.orElse(transformAndCreateSymbolTable(astGrammar, glex, cdScope));
     createCDSymbolsForSuperGrammars(glex, astGrammar, cdScope);
-    // TODO MB, NJ: completeCDTypes(cdScope);
     storeCDForGrammar(astGrammar, astCD);
     return astCD;
   }
@@ -861,7 +843,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTCDCompilationUnit cliCD = cdcliDecorator.decorate(cd);
 
-
     TopDecorator topDecorator = new TopDecorator(handCodedPath);
     return topDecorator.decorate(cliCD);
   }
@@ -1211,6 +1192,28 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return scope;
   }
 
+  public void generateDSTL(ASTMCGrammar astGrammar, File out, MCPath modelPathHC) {
+    DSTLGenScript dstlgenUtil = new DSTLGenScript();
+    // D1 Initialize glex and generator
+    GlobalExtensionManagement dstlGlex = dstlgenUtil.initGlex(astGrammar);
+
+    GeneratorEngine dstlGenerator = dstlgenUtil.initGenerator(dstlGlex, out);
+    // D2 Parse TF grammar extension
+    Optional<ASTMCGrammar> gext = dstlgenUtil.parseGrammarHC(astGrammar, modelPathHC);
+
+    // D3 Generate grammar
+    dstlgenUtil.generateDSTL(astGrammar, gext, dstlGlex, out);
+
+    // D4 Generate context conditions
+    dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, modelPathHC, dstlGlex);
+
+    // D5 Generate DSTL to ODRule translator
+    dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, modelPathHC);
+
+    // D6 Generate TFGenCLI class
+    dstlgenUtil.generateTFGenCLIClass(astGrammar, dstlGenerator, modelPathHC);
+  }
+
   /**
    * Instantiates the glex and initializes it with all available default
    * options based on the current configuration.
@@ -1295,6 +1298,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         // we add a trailing "s" for the proper plural
         builder.addVariable(GRAMMAR_LONG + "s", mcConfig.getGrammars());
         builder.addVariable(MODELPATH_LONG, mcConfig.getModelPath());
+        builder.addVariable(HANDCODEDMODELPATH_LONG, mcConfig.getHandcodedModelPath());
+        builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
         builder.addVariable(OUT_LONG, mcConfig.getOut());
         builder.addVariable(REPORT_LONG, mcConfig.getReport());
         builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());

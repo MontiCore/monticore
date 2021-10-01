@@ -4,6 +4,7 @@ package ${package}.${grammarNameLower}tr._cocos;
 
 import de.se_rwth.commons.logging.Log;
 
+<#assign service = glex.getGlobalVar("service")>
 /**
  * This CoCo makes sure that no negative element is created or added.
  */
@@ -17,7 +18,7 @@ public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_RepC
         node.getRhs().accept(v.getTraverser());
 
         if (v.getRepElements() > 0) {
-            Log.error(String.format("0xF0C07 Replacements on the RHS are forbidden.",
+            Log.error(String.format("0xF0C07${service.getGeneratedErrorCode(classname + prod.getName())} Replacements on the RHS are forbidden.",
                 node.getClass().getName()),
                 node.get_SourcePositionStart());
         }

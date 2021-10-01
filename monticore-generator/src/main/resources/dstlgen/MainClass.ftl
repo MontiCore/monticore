@@ -32,12 +32,13 @@ import ${package}.translation.${grammarName}Rule2OD;
 import ${package}.translation.${grammarName}RuleCollectVariables;
 import org.apache.commons.cli.*;
 
+<#assign service = glex.getGlobalVar("service")>
 
 public class ${className} {
   
   public static void main(String[] args) {
     Log.init();
-    new ${grammarName}CLI().run(args);
+    new ${grammarName}TFGenCLI().run(args);
   }
   
   protected void run(String[] args){
@@ -58,7 +59,7 @@ public class ${className} {
   
       if (!cmd.hasOption("i")) {
         Log.error(
-            "0xA1001 There is no \".mtr\" file to parse. Please check the \"input\" option.");
+            "0xA1001${service.getGeneratedErrorCode(classname)} There is no \".mtr\" file to parse. Please check the \"input\" option.");
         // do not continue, when this error is logged
         return;
       }
@@ -68,7 +69,7 @@ public class ${className} {
       Log.debug("----- Starting Transformation Generation -----", LOG_ID);
       Log.debug("Input file   : " + cmd.getOptionValue("i"), LOG_ID);
       Log.debug("Model path    : " + cmd.getOptionValue("mp"), LOG_ID);
-      Log.debug("Output dir    : " + cmd.getOptionValue("o"), LOG_ID);
+      Log.debug("Output dir    : " + cmd.getOptionValue("o", "out"), LOG_ID);
   
       Path model = Paths.get(cmd.getOptionValue("i"));
   
@@ -87,10 +88,10 @@ public class ${className} {
         odrule = createODRule(rule, new MCPath());
       }
       // generate
-      generate(odrule, Paths.get(cmd.getOptionValue("o")).toFile());
+      generate(odrule, Paths.get(cmd.getOptionValue("o", "out")).toFile());
     } catch ( ParseException e) {
         // an unexpected error from the Apache CLI parser:
-        Log.error("0xA6151 Could not process CLI parameters: " + e.getMessage());
+        Log.error("0xA6151${service.getGeneratedErrorCode(classname)} Could not process CLI parameters: " + e.getMessage());
       }
   }
   
@@ -101,13 +102,13 @@ public class ${className} {
       ${dstlName}Parser parser = new ${dstlName}Parser();
       Optional<AST${grammarName}TFRule> ast = parser.parse${grammarName}TFRule(model.toString());
       if (!parser.hasErrors() && ast.isPresent()) {
-        Log.info("Model " + model + " parsed successfully", LOG_ID);
+        Log.debug("Model " + model + " parsed successfully", LOG_ID);
         String name = model.toString().replace(".mtr", "");
         ast.get().getTFRule().setName(name.substring(model.toString().lastIndexOf(File.separator) + 1, name.length()));
       }
       else {
-        Log.info(
-            "There are parsing errors while parsing of the model " + model, LOG_ID);
+        Log.error(
+            "0xA6152${service.getGeneratedErrorCode(classname)} There are parsing errors while parsing of the model " + model);
       }
       return ast;
     }

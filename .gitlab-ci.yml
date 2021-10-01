@@ -24,7 +24,6 @@ stages:
   - build
   - test
   - deploy
-  - deploy_mvn
   - trigger_languages
   - sonar
   - report
@@ -129,18 +128,6 @@ deploy:
     - build
   script:
     - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -Pci"
-  only:
-    - dev
-  except:
-    - master
-      
-deploy_mvn_plugin:
-  stage: deploy_mvn
-  image: registry.git.rwth-aachen.de/monticore/container-registry/maven:3-jdk-8
-  dependencies:
-    - deploy
-  script:
-    - "cd monticore-maven-plugin && mvn $MC_MAVEN_CLI_OPTS $MC_MAVEN_OPTS deploy -Dpass=$password -Duser=$username"
   only:
     - dev
   except:
@@ -381,7 +368,7 @@ checkMDLinks:
     - dev
 
 githubmirror:
-  image: maven:3-jdk-8
+  # image: maven:3-jdk-8
   stage: mirror
   dependencies:
     - checkMDLinks
@@ -412,7 +399,8 @@ githubmirror:
 # remove all contents of github repo
     - rm -r tmp/monticore/*
 # move contents of gitlab repo to github repo
-    - mv monticore/* tmp/monticore/
+    - shopt -s extglob
+    - mv monticore/!(MDLinkChangerCLI.jar) tmp/monticore/
 # force push all changes
     - cd tmp/monticore
     - git add --all

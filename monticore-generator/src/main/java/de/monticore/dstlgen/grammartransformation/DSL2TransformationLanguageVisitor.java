@@ -5,7 +5,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.monticore.dstlgen.ruletranslation.DSTLGenInheritanceHelper;
 import de.monticore.dstlgen.util.DSTLUtil;
-import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -36,7 +35,6 @@ public class DSL2TransformationLanguageVisitor implements
   private final Set<String> productions = new HashSet<>();
 
   private MCGrammarSymbol grammarSymbol;
-  private MCGrammarInfo grammarInfo;
 
   private int grammar_depth;
 
@@ -66,7 +64,6 @@ public class DSL2TransformationLanguageVisitor implements
   @Override
   public void visit(ASTMCGrammar srcNode) {
     grammarSymbol = srcNode.getSymbol();
-    grammarInfo = new MCGrammarInfo(grammarSymbol);
     grammar_depth = recursiveCalculateGrammarDepth(grammarSymbol) * 10;
     tfLang.setPackageList(new LinkedList<>());
     tfLang.getPackageList().addAll(srcNode.getPackageList());
@@ -219,10 +216,9 @@ public class DSL2TransformationLanguageVisitor implements
       boolean overridden = false;
       boolean superExternal = false;
 
-      boolean isLeftRecursive = grammarInfo.isProdLeftRecursive(srcNode.getName()) ||  srcNode.getSuperInterfaceRuleList()
-              .stream().map(ASTRuleReference::getName).anyMatch(
-                      x -> grammarInfo.isProdLeftRecursive(x));
-
+      boolean isLeftRecursive = srcNode.getSymbol().isIsDirectLeftRecursive() || srcNode.getSymbol().isIsIndirectLeftRecursive() || srcNode.getSymbol().getSuperInterfaceProds()
+              .stream().map(s -> s.lazyLoadDelegate())
+              .anyMatch(x -> x.isIsDirectLeftRecursive() || x.isIsIndirectLeftRecursive());
 
       boolean isEmpty = DSTLUtil.isEmptyProduction(srcNode.getSymbol());
 

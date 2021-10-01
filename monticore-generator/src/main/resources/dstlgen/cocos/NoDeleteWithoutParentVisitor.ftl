@@ -9,7 +9,7 @@ import ${package}.${grammarNameLower}tr._visitor.*;
 import de.monticore.tf.grammartransformation.CollectCoCoInformationState;
 import de.monticore.tf.tfcommons._ast.ASTITFPart;
 
-
+<#assign service = glex.getGlobalVar("service")>
 /**
 * This Visitor makes sure that no elements are deleted without specifying a parent pattern.
 */
@@ -48,7 +48,7 @@ public class ${className} implements ${ast.getName()}TRVisitor2,${ast.getName()}
     @Override
     public void visit(AST${prod.getName()}_Rep node) {
         if(state.getParentNest() == 0 && !node.isPresentRhs()) {
-            Log.error("0xF0C11 Elements must not be deleted without a parent pattern.", node.get_SourcePositionStart());
+            Log.error("0xF0C11${service.getGeneratedErrorCode(className + prod.getName())} Elements must not be deleted without a parent pattern.", node.get_SourcePositionStart());
         }
     }
 

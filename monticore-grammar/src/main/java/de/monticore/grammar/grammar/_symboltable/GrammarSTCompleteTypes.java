@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar._symboltable;
 
-import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
@@ -64,17 +63,13 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   }
 
   @Override
-  public void visit(ASTTokenMode node) {
-    node.streamTokenName().forEach(t -> grammarSymbol.addMode(node.getName(), t));
-  }
-
-  @Override
   public void visit(ASTLexProd node) {
     GrammarVisitor2.super.visit(node);
-    if (node.isEmptyMode()) {
-      grammarSymbol.addMode(MCGrammarSymbol.DEFAULT_MODE, node.getName());
+    if (node.isPresentMode()) {
+      grammarSymbol.addMode(node.getMode(), node.getName());
     } else {
-      node.streamMode().forEach(m -> grammarSymbol.addMode(m, node.getName()));
+      grammarSymbol.addMode(MCGrammarSymbol.DEFAULT_MODE, node.getName());
+
     }
   }
 
@@ -247,7 +242,6 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   protected void setComponentsCardinality(ASTMCGrammar astGrammar) {
     for (ProdSymbol prodSymbol : astGrammar.getSymbol().getProds()) {
       Collection<AdditionalAttributeSymbol> astAttributes = prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols();
-      LinkedListMultimap<String, RuleComponentSymbol> map = prodSymbol.getSpannedScope().getRuleComponentSymbols();
       for (String compName : prodSymbol.getSpannedScope().getRuleComponentSymbols().keySet()) {
         Optional<AdditionalAttributeSymbol> attribute = astAttributes.stream()
                 .filter(a -> a.getName().equals(compName)).findAny();
@@ -329,6 +323,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     for (ASTAlt alt : ast.getAltList()) {
       if (detector.isAlternativeLeftRecursive(alt, names)) {
         prodSymbol.setIsIndirectLeftRecursive(true);
+        superProds.stream().filter(s -> s.isInterface).forEach(s ->s.setIsIndirectLeftRecursive(true));
       } else if (detector.isAlternativeLeftRecursive(alt, ast.getName())) {
         prodSymbol.setIsDirectLeftRecursive(true);
       }

@@ -17,7 +17,7 @@ grammar Petrinet extends de.monticore.MCBasics {
  Petrinet=
         "petrinet" Name Type:["bool"| "num"] "{" 
         (places:Placedeclaration)* (Transition)*
-        "}" EOF ;
+        "}";
 
  /** ASTPlacedeclaration represents a place in a petri net.
 	 @attribute Name Name of the place.

@@ -231,7 +231,7 @@ public class ParserGeneratorHelper {
     String ruleName = rule.getName();
 
     if (rule.isClass()) {
-      if (!grammarInfo.isProdLeftRecursive(rule.getName())) {
+      if (!rule.isIsIndirectLeftRecursive()) {
         generateParserForRule = true;
       }
     }
@@ -395,11 +395,25 @@ public class ParserGeneratorHelper {
     // Default mode
     if (modeMap.containsKey("")) {
       for (String tokenName : modeMap.get("")) {
-        Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
-        if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
-          prodList.add((ASTLexProd) localToken.get().getAstNode());
-        } else {
-          grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
+        // TODO(MB): Wenn die Token beim Aufbau in der Symboltabelle nur einmal eingetragen sind, kann man
+        // den folgenden Check wieder rausnehmen
+        boolean isOverriden = false;
+        for (Entry<String, Collection<String>> e : grammarSymbol.getTokenModesWithInherited().entrySet()) {
+          if (!e.getKey().equals("")) {
+            if (e.getValue().contains(tokenName)) {
+              System.out.println("Override " + tokenName);
+
+              isOverriden = true;
+            }
+          }
+        }
+        if (!isOverriden) {
+          Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
+          if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
+            prodList.add((ASTLexProd) localToken.get().getAstNode());
+          } else {
+            grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
+          }
         }
       }
     }

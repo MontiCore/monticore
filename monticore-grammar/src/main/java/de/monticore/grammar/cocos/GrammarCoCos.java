@@ -76,6 +76,7 @@ public class GrammarCoCos {
     checker.addCoCo(new KeyRuleWithoutName());
     checker.addCoCo(new SymbolWithManyNames());
     checker.addCoCo(new OverridingAdditionalAttributes());
+    checker.addCoCo(new NoExtensionOfSymbolThatOnlySpansScope());
     // checker.addCoCo(new NoNTInheritanceCycle());
     checker.addCoCo(new LexProdModeNameUpperCase());
     checker.addCoCo(new NoTokenModeInComponentGrammar());
