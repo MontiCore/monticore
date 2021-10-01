@@ -18,10 +18,10 @@ public class LexProdModeNameUpperCaseTest extends CocoTest{
   }
 
   @Test
-  public void testUpperCasedPackage() {
+  public void testInvalid() {
     testInvalidGrammar(grammar, LexProdModeNameUpperCase.ERROR_CODE,
                          String.format(LexProdModeNameUpperCase.ERROR_MSG_FORMAT,
-                              "StartTag"), checker);
+                              "EndTag"), checker);
   }
 
 

@@ -18,6 +18,7 @@ public class LexProdModeNameUpperCase implements GrammarASTLexProdCoCo {
         if (!Character.isUpperCase(c)) {
           Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName()),
               node.get_SourcePositionStart());
+          break;
         }
       }
     }

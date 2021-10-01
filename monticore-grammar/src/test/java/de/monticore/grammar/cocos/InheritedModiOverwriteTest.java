@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class InheritedModiOverwriteTest extends CocoTest{
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-  private final String grammar = "de.monticore.grammar.cocos.invalid.A4068.A4069Sub";
+  private final String grammar = "de.monticore.grammar.cocos.invalid.A4069.A4069Sub";
 
   @BeforeClass
   public static void disableFailQuick() {
@@ -20,7 +20,7 @@ public class InheritedModiOverwriteTest extends CocoTest{
   public void testInvalid() {
     testInvalidGrammar(grammar, InheritedModiOverwrite.ERROR_CODE,
         String.format(InheritedModiOverwrite.ERROR_MSG_FORMAT,
-            "StartTag","A4069Super","A4069Sub", "TEXT"), checker);
+            "EndTag","A4069Super","A4069Sub", "TEXT"), checker);
   }
 
 }

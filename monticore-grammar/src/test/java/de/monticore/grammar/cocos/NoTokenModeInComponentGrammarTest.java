@@ -6,9 +6,9 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class NoTokenModeInComponentGrammarTest extends CocoTest{
-  private final String MESSAGE = " The lexical production %s must not define a mode in a Component Grammar.";
+public class NoTokenModeInComponentGrammarTest extends CocoTest {
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
+  private final String MESSAGE = " The lexical production %s must not define a mode in a Component Grammar.";
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4068.A4068";
 
   @BeforeClass
@@ -21,9 +21,8 @@ public class NoTokenModeInComponentGrammarTest extends CocoTest{
   public void testUpperCasedPackage() {
     testInvalidGrammar(grammar, NoTokenModeInComponentGrammar.ERROR_CODE,
         String.format(NoTokenModeInComponentGrammar.ERROR_MSG_FORMAT,
-            "StartTag"), checker);
+            "EndTag"), checker); //kommt EndTag instead
   }
-
 
 
 }
