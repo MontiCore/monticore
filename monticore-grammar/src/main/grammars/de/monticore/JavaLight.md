@@ -30,7 +30,7 @@ supported. But is it possible to extend the language accordingly.
 
 ## Symboltable
 - JavaLight introduces the JavaMethodSymbol extending the provided MethodSymbol
- for general object oriented types.
+ for general object-oriented types.
  The symbol receives the additional attributes:
   - annotations
   - exceptions
@@ -41,9 +41,9 @@ supported. But is it possible to extend the language accordingly.
   - isNative
   - isStrictfp
   
- - A VarDeclSymbol is created for formal parameters and variable declarations.
- The VarDeclSymbol is  defined in `MCVarDeclarationStatements` and extends the
- object oriented type symbols Field.
+ - A `Declarator` is created for formal parameters and variable declarations.
+ It is defined in `MCVarDeclarationStatements` and extends the FieldSymbol for
+ object-oriented types.
  
 ## Functionality
 ### CoCos
