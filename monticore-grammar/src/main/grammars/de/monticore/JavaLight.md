@@ -29,8 +29,9 @@ supported. But is it possible to extend the language accordingly.
 - JavaLight is a component grammar, no parser is generated
 
 ## Symboltable
-- JavaLight introduces the MethOrConstrSymbol extending TypeSymbols.MethodSymbol.
-The symbol receives the additional attributes:
+- JavaLight introduces the JavaMethodSymbol extending the provided MethodSymbol
+ for general object oriented types.
+ The symbol receives the additional attributes:
   - annotations
   - exceptions
   - isEllipsisParameterMethod
@@ -41,11 +42,13 @@ The symbol receives the additional attributes:
   - isStrictfp
   
  - A VarDeclSymbol is created for formal parameters and variable declarations.
- The VarDeclSymbol is  defined in MCVarDeclarationStatements and extends
- TypeSymbols.Field.
+ The VarDeclSymbol is  defined in `MCVarDeclarationStatements` and extends the
+ object oriented type symbols Field.
  
 ## Functionality
 ### CoCos
+- None provided as corresponding well-formedness checks are only applicable on
+languages that embed or extend JavaLight.
 
 ### PrettyPrinter
 - The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter`][PrettyPrinter]
