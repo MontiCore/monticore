@@ -3,9 +3,15 @@
 <!-- Beta-version: This is intended to become a MontiCore stable explanation. -->
 
 # JavaLight
-JavaLight is a subset of Java. JavaLight provides methods, a subset 
-of statments and expressions and basic types. It is possible to enrich the
-language with more complex types, expressions and statements.
+The JavaLight language defines a subset of the Java
+programming language. The language introduces Java
+method declarations, constructor declarations,
+interface method declarations, attributes, a subset
+of statments and expressions, basic types, and
+annotations. The JavaLight language neither defines
+classes nor interfaces. However, it is easily reusable
+and extensible for the creation of more complex
+languages such as the complete Java programming language.
 
 The grammar file is [`de.monticore.JavaLight`][JavaLight].
 
