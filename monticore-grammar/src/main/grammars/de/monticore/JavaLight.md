@@ -7,7 +7,7 @@ The JavaLight language defines a subset of the Java
 programming language. The language introduces Java
 method declarations, constructor declarations,
 interface method declarations, attributes, a subset
-of statments and expressions, basic types, and
+of statements and expressions, basic types, and
 annotations. The JavaLight language neither defines
 classes nor interfaces. However, it is easily reusable
 and extensible for the creation of more complex
@@ -65,5 +65,5 @@ languages that embed or extend JavaLight.
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+* [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
