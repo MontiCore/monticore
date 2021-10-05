@@ -15,7 +15,7 @@ languages such as the complete Java programming language.
 
 The grammar file is [`de.monticore.JavaLight`][JavaLight].
 
-##Example
+## Example
 ```
 public void print(String name) {
   System.out.println("Hello " + name);
