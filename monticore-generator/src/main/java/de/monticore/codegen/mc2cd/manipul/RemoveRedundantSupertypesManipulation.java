@@ -18,8 +18,7 @@ public class RemoveRedundantSupertypesManipulation implements UnaryOperator<ASTC
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
     for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassesList()) {
-      // TODO SO <- GV: don't need it any more?
-      // removeRedundantSuperTypes(cdClass.getSuperclass());
+      removeRedundantSuperTypes(cdClass.getSuperclassList());
       removeRedundantSuperTypes(cdClass.getInterfaceList());
     }
     for (ASTCDInterface cdInterface : cdCompilationUnit.getCDDefinition().getCDInterfacesList()){

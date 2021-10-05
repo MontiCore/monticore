@@ -13,13 +13,11 @@ task generateStatechartTRRules {
 fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr').each {
   def g = it
   def taskname = "generateStatechartTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: JavaExec) {
-    group = "montitrans"
-    classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
-    main = 'mc.testcases.statechart.tr.StatechartTFGenCLI'
-    args += ["-i", "$g",
-            "-o", "$buildDir/generated-sources"]
-    outputs.dir("$buildDir/generated-sources")
+  task "$taskname"(type: MontiTransExec) {
+    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
+    TFGenCLI = 'mc.testcases.statechart.tr.StatechartTFGenCLI'
+    input = file(g)
+    outputDir = file("$buildDir/generated-sources")
   }
   generateStatechartTRRules.dependsOn("$taskname")
 }
@@ -30,13 +28,11 @@ task generateSocialNetworkTRRules {
 fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').each {
   def g = it
   def taskname = "generateSocialNetworkTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: JavaExec) {
-    group = "montitrans"
-    classpath += project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath
-    main = 'mc.testcases.social.tr.SocialNetworkTFGenCLI'
-    args += ["-i", "$g",
-             "-o", "$buildDir/generated-sources"]
-    outputs.dir("$buildDir/generated-sources")
+  task "$taskname"(type: MontiTransExec) {
+    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
+    TFGenCLI = 'mc.testcases.social.tr.SocialNetworkTFGenCLI'
+    input = file(g)
+    outputDir = file("$buildDir/generated-sources")
   }
   generateSocialNetworkTRRules.dependsOn("$taskname")
 }

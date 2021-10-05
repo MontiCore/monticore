@@ -8,9 +8,11 @@ import de.monticore.ast.ASTNode;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._parser.CD4CodeParser;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
@@ -23,7 +25,6 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -42,9 +43,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 public final class TransformationHelper {
 
@@ -92,23 +90,6 @@ public final class TransformationHelper {
       name = type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
     }
     return Names.getSimpleName(name);
-  }
-
-  /**
-   * Pretty prints a CD AST to a String object.
-   *
-   * @param astNode the top node of the CD AST to be pretty printed
-   */
-  // TODO: should be placed somewhere in the UML/P CD project
-  public static String prettyPrint(ASTCDBasisNode astNode) {
-    // set up objects
-    CD4CodeFullPrettyPrinter prettyPrinter = new CD4CodeFullPrettyPrinter(
-        new IndentPrinter());
-
-    // run, check result and return
-    String prettyPrintedAst = prettyPrinter.prettyprint(astNode);
-    checkArgument(!isNullOrEmpty(prettyPrintedAst));
-    return prettyPrintedAst;
   }
 
   public static Optional<String> getUsageName(ASTNode root,

@@ -14,7 +14,7 @@ import de.monticore.types.*;
  * programming language. The language introduces Java
  * method declarations, constructor declarations,
  * interface method declarations, attributes, and
- * annotations. The JavaLight language neither denes
+ * annotations. The JavaLight language neither defines
  * classes nor interfaces. However, it is easily reusable
  * and extensible for the creation of more complex
  * languages such as the complete Java programming language.

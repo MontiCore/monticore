@@ -244,7 +244,10 @@ task cleanMC {
           ":monticore-grammar-emf:clean"
   
   )
-  dependsOn(
+}
+
+if (!hasProperty('bootstrap')) {
+  cleanMC.dependsOn(
           project(":monticore-test").subprojects.collect {
             it.tasks.getByName "clean"
           }
