@@ -4,7 +4,7 @@ description = 'MontiTrans Test: Generated DSTL Test'
 def _outputDir = "$buildDir/generated-sources"
 
 dependencies {
-  compile project(':monticore-test:montitrans:test-dstl-gen')
+  implementation project(':monticore-test:montitrans:test-dstl-gen')
 }
 
 task generateStatechartTRRules {

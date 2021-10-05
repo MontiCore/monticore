@@ -2,7 +2,7 @@
 
 plugins {
   // provides a convenient way to have multiple test sets
-  id 'org.unbroken-dome.test-sets' version '3.0.0'
+  id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
 
 dependencies {
