@@ -412,8 +412,10 @@ abstract public class MCTask extends DefaultTask {
       inout.withReader {
         it.eachLine {
           line ->
-            if (line.startsWith('mc4:')) {
-              def (grammarString, checksum) = line.toString().substring(4).tokenize(' ')
+            if (line.startsWith('mc4:') && line.length()>36) {
+              // Since the path can also contain spaces, do not use tokenize
+              def grammarString=line.toString().substring(4, line.length()-32)
+              def checksum = line.toString().substring(line.length()-33)
               def grammarFile = new File(grammarString)
               if (!grammarFile.exists()) { // deleted grammar -> generate
                 logger.info("Regenerating Code for " + grammar + " : Grammar " + grammarString + " does so longer exist.")
