@@ -33,14 +33,7 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
   }
 
   @Override
-  public  void loadMCGrammar (String name) {
-    for (String modelName : calculateModelNamesForMCGrammar(name)) {
-      loadGrammarFileForModelName(modelName);
-    }
-  }
-
-
-  public  void loadGrammarFileForModelName (String modelName)  {
+  public  void loadFileForModelName (String modelName)  {
     // 1. call super implementation to start with employing the DeSer
     // super.loadFileForModelName(modelName);
 
