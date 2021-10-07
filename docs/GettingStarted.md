@@ -1285,6 +1285,39 @@ the example project and executing MontiCore</figcaption>
     <td>FreeMarker website. http://freemarker.org/, 2021.</td>
   </tr>
 </table>
+
+## Using MontiCore with GitPod
+
+Installing all the prerequisites and an IDE can take some time.
+Alternatively to this, you can use [Gitpod](https://www.gitpod.io), an open-source
+Kubernetes application for ready-to-code developer environments. It already
+has all the prerequisites and an operational Web IDE similar to Microsoft's
+Visual Studio Code installed. You need to login with an existing GitHub account
+to use it. 
+
+[This link](https://gitpod.io/#https://github.com/MontiCore/automaton) can be used
+to access the Gitpod project for the `Automata` language.
+First, an environment for the project with the proper Java and Gradle version
+will be prepared and initialized automatically.
+After that, you will be directed to the Web IDE. The project will be built
+with Gradle first, and after that it is ready-to-use. The Web IDE also has a 
+built-in terminal which can be used to build the project via `gradle build` 
+or execute other tasks. 
+
+The Web IDE can be used to change existing project files, such as the `Automata`
+grammar or the handwritten classes for the language. Simply navigate to the grammars
+or classes in the file explorer on the left-hand side of the IDE and edit the files. 
+This makes experimenting with MontiCore possible. The changes will be compiled by the
+IDE immediately and compilation errors will be marked with red color. To run the project,
+execute the command `gradle build` in the terminal.
+
+You will notice that the link to the Gitpod project is generated and always
+has the same pattern.
+An example for a link is https://indigo-ostrich-8psdfoer.ws-eu18.gitpod.io.
+After 30 minutes of non-use, Gitpod will "freeze" the environment.
+It can be reactivated by using the same link to access it. The environment is
+reactivated, and you do not even need to rebuild the project with Gradle to use
+the project again.
  	
 ## Further Information
 
