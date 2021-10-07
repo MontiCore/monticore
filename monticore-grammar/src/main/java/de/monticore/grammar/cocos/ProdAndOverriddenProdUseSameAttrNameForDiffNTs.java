@@ -63,7 +63,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
             }
           } else {
             //try to find NonTerminal with same Name, but with capitalised start -> will both become the same attribute
-            rcs = ruleSymbol.get().getSpannedScope().resolveRuleComponentMany(StringTransformations.capitalize(attributename));
+            rcs = ruleSymbol.get().getSpannedScope().resolveRuleComponentDownMany(StringTransformations.capitalize(attributename));
             if (!rcs.isEmpty() && rcs.get(0).isIsNonterminal() && rcs.get(0).getReferencedProd().isPresent()
                     && !rcs.get(0).getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
               // logs error when e.g. State = F; A extends State = f:R;

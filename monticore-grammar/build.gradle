@@ -129,6 +129,41 @@ fileTree("src/main/examples").matching { include '**/*.mc4' }.each {
 compileTestJava.dependsOn(generateTest)
 processGrammarsResources.dependsOn(generateTR)
 
+
+/**
+ * Integration with MLC language and tool
+ */
+task checkArtifacts {}
+configurations { MLC }
+dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: '7.2.0-SNAPSHOT') }
+StringJoiner joiner = new StringJoiner(" ")
+configurations.compileClasspath.resolve().each{joiner.add(it.toString()) }
+joiner.add "$projectDir/target/symbols"
+String mp = joiner.toString()
+
+// two tasks per MLC file
+fileTree(".").matching { include '**/*.mlc' }.each {
+    def f = it
+    def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
+
+    task "showArtifacts${mlcName}"(type: JavaExec) {
+        classpath = configurations.MLC
+        group = 'MLC'
+        mainClass = 'de.monticore.mlc.MLCCLI'
+        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
+        dependsOn("generateGrammar${mlcName}")
+    }
+
+    task "checkArtifacts${mlcName}"(type: JavaExec) {
+        classpath = configurations.MLC
+        group = 'MLC'
+        mainClass = 'de.monticore.mlc.MLCCLI'
+        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
+        dependsOn("generateGrammar${mlcName}")
+        checkArtifacts.dependsOn("checkArtifacts${mlcName}")
+    }
+}
+
 java {
     registerFeature('grammars') {
         usingSourceSet(sourceSets.grammars)
