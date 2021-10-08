@@ -34,7 +34,7 @@ fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
   task "$taskname"(type: MontiTransExec) {
     group = "montitrans"
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
-    TFGenCLI = 'de.monticore.tf.odrules.ODRulesCLI'
+    TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
     input = file(g)
     outputDir = file("$buildDir/generated-sources")
   }
@@ -45,7 +45,7 @@ fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
   def taskname = "generateMiscTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
   task "$taskname"(type: MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
-    TFGenCLI = 'de.monticore.tf.odrules.ODRulesCLI'
+    TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
     input = file(g)
     outputDir = file("$buildDir/generated-sources")
   }
@@ -59,7 +59,7 @@ fileTree(dir: "$modelsDir/petrinet", include: '**/**.mtod').each {
   def taskname = "generatePetrinetTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
   task "$taskname"(type: MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
-    TFGenCLI = 'de.monticore.tf.odrules.ODRulesCLI'
+    TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
     input = file(g)
     outputDir = file("$buildDir/generated-sources")
   }
