@@ -38,7 +38,7 @@ public class ${className} {
   
   public static void main(String[] args) {
     Log.init();
-    new ${grammarName}TFGenCLI().run(args);
+    new ${grammarName}TFGenTool().run(args);
   }
   
   protected void run(String[] args){
@@ -68,7 +68,6 @@ public class ${className} {
   
       Log.debug("----- Starting Transformation Generation -----", LOG_ID);
       Log.debug("Input file   : " + cmd.getOptionValue("i"), LOG_ID);
-      Log.debug("Model path    : " + cmd.getOptionValue("mp"), LOG_ID);
       Log.debug("Output dir    : " + cmd.getOptionValue("o", "out"), LOG_ID);
   
       Path model = Paths.get(cmd.getOptionValue("i"));
@@ -82,11 +81,7 @@ public class ${className} {
       ASTODRule odrule;
   
       //create od rule
-      if(cmd.hasOption("mp")) {
-        odrule= createODRule(rule, new MCPath(cmd.getOptionValue("mp")));
-      } else {
-        odrule = createODRule(rule, new MCPath());
-      }
+      odrule = createODRule(rule);
       // generate
       generate(odrule, Paths.get(cmd.getOptionValue("o", "out")).toFile());
     } catch ( ParseException e) {
@@ -123,7 +118,7 @@ public class ${className} {
     Log.debug("Finished coco checking ", LOG_ID);
   }
   
-  public ASTODRule createODRule(AST${grammarName}TFRule ast, MCPath modelPath) {
+  public ASTODRule createODRule(AST${grammarName}TFRule ast) {
     Log.debug("Starting odrule generation ", LOG_ID);
     ModelTraversal<${dstlName}Traverser> mt = ModelTraversalFactory.getInstance().create((java.util.function.Supplier)${dstlName}Mill::inheritanceTraverser);
     ast.accept(mt.getTraverser());
@@ -167,7 +162,7 @@ public class ${className} {
   }
   
     /**
-     * Initializes the available CLI options for the MontiCore tool.
+     * Initializes the available CLI options for the TFGen tool.
      *
      * @return The CLI options with arguments.
      */
@@ -190,14 +185,6 @@ public class ${className} {
           .desc("Output directory for all generated artifacts.")
           .build());
   
-      // specify model path
-      options.addOption(Option.builder("mp")
-          .longOpt("modelPath")
-          .argName("pathlist")
-          .hasArgs()
-          .desc("Optional list of directories or files to be included for importing other grammars.")
-          .build());
-    
       // help dialog
       options.addOption(Option.builder("h")
           .longOpt("help")
@@ -217,7 +204,7 @@ public class ${className} {
   protected void printHelp(Options options) {
     HelpFormatter formatter = new HelpFormatter();
     formatter.setWidth(80);
-    formatter.printHelp("${dstlName}CLI", options);
+    formatter.printHelp("${dstlName}TFGenTool", options);
   }
   
   static final String LOG_ID = "${dstlName}";
