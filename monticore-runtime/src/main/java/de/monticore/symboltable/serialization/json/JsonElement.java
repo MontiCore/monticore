@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
+import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -103,5 +104,7 @@ public interface JsonElement {
     Log.error("0xA0610 "+ this + " is not a Json Null!");
     return null;
   }
+  
+  String print(IndentPrinter p);
   
 }

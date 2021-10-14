@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -15,7 +16,7 @@ public class JsonObject implements JsonElement {
   protected Map<String, JsonElement> members;
 
   public JsonObject() {
-    this.members = new HashMap<>();
+    this.members = new LinkedHashMap<>();
   }
 
   /**
@@ -130,18 +131,7 @@ public class JsonObject implements JsonElement {
    */
   @Override
   public String toString() {
-    JsonPrinter printer = new JsonPrinter();
-    printer.beginObject();
-    for (String s : members.keySet()) {
-      if (members.get(s).isJsonString()) {
-        printer.member(s, members.get(s).toString());
-      }
-      else {
-        printer.memberJson(s, members.get(s).toString());
-      }
-    }
-    printer.endObject();
-    return printer.getContent();
+    return print(new IndentPrinter());
   }
 
   //////////////////// Convenience Methods ////////////////////
@@ -457,4 +447,48 @@ public class JsonObject implements JsonElement {
     }
     return Optional.empty();
   }
+
+  @Override public String print(IndentPrinter p) {
+    boolean indent = JsonPrinter.isIndentationEnabled();
+    if (members.isEmpty() && !JsonPrinter.isSerializingDefaults()) {
+      return p.getContent();
+    }
+
+    // print members of object with a buffer to check whether it is empty
+    IndentPrinter buffer = new IndentPrinter();
+    buffer.setIndentation(p.getIndentation() + 1);
+
+    // print the value of each member with another buffer to check emptiness
+    IndentPrinter tmp = new IndentPrinter();
+    tmp.setIndentation(p.getIndentation() + 1);
+
+    String sep = "";
+    for (String k : members.keySet()) {
+      members.get(k).print(tmp);
+      if (!tmp.getContent().isEmpty()) {
+        buffer.print(sep + "\"" + k + (indent ? "\": " : "\":") + tmp.getContent());
+        tmp.clearBuffer();
+        sep = indent ? ",\n" : ",";
+      }
+    }
+
+    if (!buffer.getContent().isEmpty() || JsonPrinter.isSerializingDefaults()) {
+      if (indent) {
+        p.println("{");
+        p.indent();
+        p.print(buffer.getContent());
+        p.println();
+        p.unindent();
+        p.print("}");
+      }
+      else {
+        p.print("{");
+        p.print(buffer.getContent());
+        p.print("}");
+      }
+    }
+
+    return p.getContent();
+  }
+
 }

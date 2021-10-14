@@ -23,8 +23,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
-  IOOSymbolsScope scope;
-
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
   SymTypeConstant teDouble;
@@ -316,48 +314,60 @@ public class SymTypeExpressionDeSerTest {
 
     // usual member
     JsonPrinter printer = new JsonPrinter();
+    printer.beginObject();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", expr);
+    printer.endObject();
     //produce a fake JSON object from the serialized member and parse this
-    JsonObject json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
+    JsonObject json = JsonParser.parseJsonObject(printer.getContent());
     SymTypeExpression deserialized = SymTypeExpressionDeSer.deserializeMember("foo", json);
     assertEquals(expr.print(), deserialized.print());
 
     // optional member that is present
     printer = new JsonPrinter();
+    printer.beginObject();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", Optional.ofNullable(expr));
-    json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
+    printer.endObject();
+    json = JsonParser.parseJsonObject(printer.getContent());
     Optional<SymTypeExpression> deserializedOpt = SymTypeExpressionDeSer
         .deserializeOptionalMember("foo", json);
     assertTrue(deserializedOpt.isPresent());
     assertEquals(expr.print(), deserializedOpt.get().print());
 
     // optional member that is empty
-    printer = new JsonPrinter();
+    printer = new JsonPrinter(true);
+    printer.beginObject();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", Optional.empty());
-    json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
+    printer.endObject();
+    json = JsonParser.parseJsonObject(printer.getContent());
     deserializedOpt = SymTypeExpressionDeSer.deserializeOptionalMember("foo", json);
     assertTrue(!deserializedOpt.isPresent());
 
     // list member that is empty
-    printer = new JsonPrinter();
+    printer = new JsonPrinter(true);
+    printer.beginObject();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", new ArrayList<>());
-    json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
+    printer.endObject();
+    json = JsonParser.parseJsonObject(printer.getContent());
     List<SymTypeExpression> deserializedList = SymTypeExpressionDeSer
         .deserializeListMember("foo", json);
     assertEquals(0, deserializedList.size());
 
     // list member with single element
     printer = new JsonPrinter();
+    printer.beginObject();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", Lists.newArrayList(expr));
-    json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
+    printer.endObject();
+    json = JsonParser.parseJsonObject(printer.getContent());
     deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json);
     assertEquals(1, deserializedList.size());
     assertEquals(expr.print(), deserializedList.get(0).print());
 
     // list member with two elements
     printer = new JsonPrinter();
+    printer.beginObject();
     SymTypeExpressionDeSer.serializeMember(printer, "foo", Lists.newArrayList(expr, expr));
-    json = JsonParser.parseJsonObject("{" + printer.getContent() + "}");
+    printer.endObject();
+    json = JsonParser.parseJsonObject(printer.getContent());
     deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json);
     assertEquals(2, deserializedList.size());
     assertEquals(expr.print(), deserializedList.get(0).print());
