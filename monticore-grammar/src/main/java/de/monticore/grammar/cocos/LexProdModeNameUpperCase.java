@@ -12,7 +12,8 @@ public class LexProdModeNameUpperCase implements GrammarASTLexProdCoCo {
 
   @Override
   public void check(ASTLexProd node) {
-    for (String m : node.getModeList()) {
+    if (node.isPresentMode()) {
+      String m = node.getMode();
       char[] charArray = m.toCharArray();
       for (char c : charArray) {
         if (!Character.isUpperCase(c)) {

@@ -14,7 +14,7 @@ public class NoTokenModeInComponentGrammar implements GrammarASTMCGrammarCoCo {
   public void check(ASTMCGrammar node) {
     if( node.isComponent()){
       for(ASTLexProd prod : node.getLexProdList()){
-        if (!prod.isEmptyMode()){
+        if (prod.isPresentMode()){
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prod.getName()),
               node.get_SourcePositionStart());
         }

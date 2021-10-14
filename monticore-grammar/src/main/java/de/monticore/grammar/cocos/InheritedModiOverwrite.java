@@ -9,6 +9,7 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
@@ -25,9 +26,8 @@ public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
       ASTMCGrammar astNode = superGrammar.getAstNode();
       String superGrammarName = superGrammar.getName();
       for (ASTLexProd lexProd : astNode.getLexProdList()) {
-        List<String> modeList = lexProd.getModeList();
-        if (!modeList.isEmpty()) {
-          String modeString = Joiners.COMMA.join(modeList);
+        if (lexProd.isPresentMode()) {
+          String modeString = lexProd.getMode();
           String prodName = lexProd.getName();
           List<ASTLexProd> supLexProdList = node.getLexProdList().stream().filter(prod -> prod.getName().equals(prodName)).collect(Collectors.toList());
           if (supLexProdList.isEmpty()) {
@@ -35,9 +35,8 @@ public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
                 node.get_SourcePositionStart());
           }
           for (ASTLexProd lex : supLexProdList) {
-            List<String> lexModes = lex.getModeList();
-            for (String mode : modeList) {
-              if (!lexModes.contains(mode)) {
+            if (lex.isPresentMode()) {
+              if (!lex.getMode().equals(lexProd.getMode())) {
                 Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, superGrammarName, grammarName, modeString),
                     node.get_SourcePositionStart());
               }
