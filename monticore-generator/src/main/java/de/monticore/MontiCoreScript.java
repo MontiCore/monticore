@@ -1207,8 +1207,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // D5 Generate DSTL to ODRule translator
     dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, modelPathHC);
 
-    // D6 Generate TFGenCLI class
-    dstlgenUtil.generateTFGenCLIClass(astGrammar, dstlGenerator, modelPathHC);
+    // D6 Generate TFGenTool class
+    dstlgenUtil.generateTFGenToolClass(astGrammar, dstlGenerator, modelPathHC);
   }
 
   /**

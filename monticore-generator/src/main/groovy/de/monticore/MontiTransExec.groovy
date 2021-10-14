@@ -13,7 +13,7 @@ import org.gradle.api.tasks.*
 import java.lang.reflect.Method
 
 /**
- * This task enables the calling of MontiTrans TFGenCLIs
+ * This task enables the calling of MontiTrans TFGenTools
  * in a subsequent matter, reducing the class loading by reusing a classloader,
  * while still enabling gradle to control individual files.
  *
@@ -25,7 +25,7 @@ import java.lang.reflect.Method
 abstract class MontiTransExec extends DefaultTask {
 
   @Input
-  abstract Property<String> getTFGenCLI();
+  abstract Property<String> getTFGenTool();
 
   @Classpath
   abstract ConfigurableFileCollection getClassPath();
@@ -39,7 +39,7 @@ abstract class MontiTransExec extends DefaultTask {
   @Input@Optional
   abstract Property<Boolean> getUseCache();
 
-  // We use static by design here to cache the TFGenCLIs main method
+  // We use static by design here to cache the TFGenTools main method
   protected static Map<Integer, Method> tfgenMethodCache = new HashMap<>()
 
   MontiTransExec() {
@@ -55,17 +55,17 @@ abstract class MontiTransExec extends DefaultTask {
 
     // Construct a new classloader without a delegated-parent and with the configured classpath
     ClassLoader newCL = new URLClassLoader(urls, (ClassLoader) null)
-    return newCL.loadClass(getTFGenCLI().get()) // Load the TFGenClass
+    return newCL.loadClass(getTFGenTool().get()) // Load the TFGenClass
             .getMethod("main", String[].class) // and return the main method
   }
 
   /**
-   * Returns a hash for the name of the TFGenCLI and the contents of the files within the classpath.
+   * Returns a hash for the name of the TFGenTool and the contents of the files within the classpath.
    * @see Objects#hash(java.lang.Object...)
    * @return the hash
    */
   private int getHash() {
-    int result = getTFGenCLI().get().hashCode() // hash of the TRGenCLI class
+    int result = getTFGenTool().get().hashCode() // hash of the TFGenTool class
     for (File f : getClassPath()) // hash of the content of the files within the classpath
       result = 31 * result + getHash(f)
     return result
@@ -94,7 +94,7 @@ abstract class MontiTransExec extends DefaultTask {
     if (getUseCache().isPresent() && !getUseCache().get()) {
       m = loadTFGenMain() // cache disabled using config
     } else {
-      // it may be cached depending on the TFGenCLI class name and classpath
+      // it may be cached depending on the TFGenTool class name and classpath
       m = tfgenMethodCache.computeIfAbsent(getHash(), { loadTFGenMain() })
     }
 

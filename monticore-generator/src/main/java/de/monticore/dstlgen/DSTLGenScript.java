@@ -405,10 +405,10 @@ public class DSTLGenScript {
   /**
    * Generate Main Class so that generated language JAR is CLI executable
    */
-  public void generateTFGenCLIClass(ASTMCGrammar grammar, GeneratorEngine generator, MCPath handcodedPath) {
+  public void generateTFGenToolClass(ASTMCGrammar grammar, GeneratorEngine generator, MCPath handcodedPath) {
     if (!grammar.isComponent()) {
       String packageName = Names.getPathFromPackage(getDSTLPackagePrefix(grammar) +".");
-      String className = getSimpleTypeNameToGenerate(grammar.getName() + "TFGenCLI", packageName, handcodedPath);
+      String className = getSimpleTypeNameToGenerate(grammar.getName() + "TFGenTool", packageName, handcodedPath);
       Path filePath = Paths.get(packageName + className + ".java");
       generator.generate("dstlgen.MainClass", filePath,
                          grammar, className, modelFileExtension, grammar.getName()
