@@ -40,6 +40,8 @@ public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
                 Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, superGrammarName, grammarName, modeString),
                     node.get_SourcePositionStart());
               }
+            }else{
+              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, superGrammarName, grammarName, modeString));
             }
           }
         }
