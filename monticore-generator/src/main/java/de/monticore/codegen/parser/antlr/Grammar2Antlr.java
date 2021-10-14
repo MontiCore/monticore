@@ -185,9 +185,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       options = "@rulecatch{}";
     }
 
-    addDummyRules(ast.getName(), ruleName,
-            classnameFromRulenameorInterfacename);
-
     // Start code codeSection for rules
     addToCodeSection(ruleName);
     List<PredicatePair> subRules = grammarInfo
@@ -269,6 +266,9 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     // Iterate over all Components
     createAntlrCodeForAlts(alts);
+
+    addDummyRules(ast.getName(), ruleName,
+            classnameFromRulenameorInterfacename);
 
     addToAntlrCode(";");
 
@@ -554,7 +554,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
     addToCodeSection(printIteration(ast.getIteration()));
 
-    endCodeSection(ast);
+    endCodeSection();
 
   }
 
@@ -786,7 +786,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
   }
 
-  public void traverse(de.monticore.grammar.grammar._ast.ASTAbstractProd node) {
+  public void traverse(ASTAbstractProd node) {
     //no parser generation for abstract classes
   }
 
@@ -844,8 +844,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     String usageName = getQualifiedName(interfaceRule);
 
     startCodeSection(interfaceRule.getName());
-
-    addDummyRules(interfacename, ruleName, usageName);
 
     addToAntlrCode(getRuleNameForAntlr(interfacename));
     if (embeddedJavaCode) {
@@ -929,6 +927,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
       del = "|";
     }
+
+    addDummyRules(interfacename, ruleName, usageName);
 
     addToAntlrCode(";");
 
@@ -1140,30 +1140,12 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected void addDummyRules(String rulenameInternal, String ruleName,
                              String usageName) {
-
-    addToCodeSection("\n\n", ruleName, "_eof");
-
-    if (embeddedJavaCode) {
-      addToCodeSection(" returns [", usageName, " ret = null] :\n  tmp = ",
-              ruleName, " {$ret = $tmp.ret;} ");
-    } else {
-      addToCodeSection(" :\n tmp = ", ruleName, " ");
-    }
-
-    String follow = "EOF";
-    String end = " ;\n\n";
-
     Optional<ASTAlt> follow2 = parserHelper.getAlternativeForFollowOption(rulenameInternal);
     if (!follow2.isPresent()) {
-      addToCodeSection(follow, end);
-      endCodeSection();
       return;
     }
-    endCodeSection();
-
     follow2.get().accept(getTraverser());
 
-    addToAntlrCode(end);
   }
 
   public boolean isEmbeddedJavaCode() {

@@ -6,12 +6,15 @@ package de.monticore.grammar.grammar_withconcepts._symboltable;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 
@@ -31,18 +34,32 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
 
   @Override
   public  void loadFileForModelName (String modelName)  {
-    Optional<URL> location = getSymbolPath().find(modelName, "mc4");
-    if(location.isPresent() && !isFileLoaded(location.get().toString())){
-      addLoadedFile(location.get().toString());
-      ASTMCGrammar ast = parse(location.get().getFile());
-      IGrammar_WithConceptsArtifactScope as = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
-      addSubScope(as);
+    // 1. call super implementation to start with employing the DeSer
+    // super.loadFileForModelName(modelName);
+
+    String filePath = Paths
+      .get(Names.getPathFromPackage(modelName) + ".mc4").toString();
+
+
+    if (!isFileLoaded(filePath)) {
+
+      // 2. calculate potential location of model file and try to find it in model path
+      Optional<URL> url = getSymbolPath().find(Names.getPathFromPackage(modelName)+".mc4");
+
+      // 3. if the file was found, parse the model and create its symtab
+      if (url.isPresent()) {
+        ASTMCGrammar ast = parse(url.get());
+        IGrammar_WithConceptsArtifactScope artScope = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
+        addSubScope(artScope);
+        addLoadedFile(filePath);
+      }
     }
   }
 
-  protected ASTMCGrammar parse(String model){
+  protected ASTMCGrammar parse(URL url){
     try {
-      Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(new FileReader(model));
+      Reader reader = FileReaderWriter.getReader(url);
+      Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(reader);
       if(optAST.isPresent()){
         return optAST.get();
       }
