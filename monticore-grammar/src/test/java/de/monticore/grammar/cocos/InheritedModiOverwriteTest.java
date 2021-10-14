@@ -20,7 +20,7 @@ public class InheritedModiOverwriteTest extends CocoTest{
   public void testInvalid() {
     testInvalidGrammar(grammar, InheritedModiOverwrite.ERROR_CODE,
         String.format(InheritedModiOverwrite.ERROR_MSG_FORMAT,
-            "EndTag","A4069Super","A4069Sub", "TEXT"), checker);
+            "EndTag","A4069Sub", "TEXT","EndTag", "A4069Super"), checker);
   }
 
 }
