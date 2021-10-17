@@ -20,6 +20,28 @@ The JavaLight language allows to parse
   (XXX welche fehlen noch???), 
   which are omitted because there are many DSLs, where these are of no use.
 
+## Example
+```
+public int print(String name, Set<Person> p) {
+  int a = 2 + name.length();
+  if(a < p.size()) {
+    System.out.println("Hello " + name);
+  }
+  return a;
+}
+```
+The example shows a simple Java method with one parameter and three statements. 
+Expressions are supported completely and from the statements only the Java specific
+forms for exception handling, continue- and break-statements are omitted.
+
+## Grammar
+
+- The grammar file is [`de.monticore.JavaLight`][JavaLight].
+  It mainly deals with the definition of the method and constructor signatures, 
+  and the annotations, while it reuses MontiCore's library components 
+  `AssignmentExpressions`, `JavaClassExpressions`, `MCCommonStatements`, 
+  and `MCArrayStatements` for expressions and statements.
+
 ## Extension of JavaLight
 
 JavaLight is designed for _easy reuse_.  
@@ -46,22 +68,6 @@ StateCharts.
    
 JavaLight is a strict subset of the Java programming language and
 thus can be mapped directly to itself when generating code for Java.
-
-The grammar file is [`de.monticore.JavaLight`][JavaLight].
-
-## Example
-```
-public int print(String name, Set<Person> p) {
-  int a = 2 + name.length();
-  if(a < p.size()) {
-    System.out.println("Hello " + name);
-  }
-  return a;
-}
-```
-The example shows a simple Java method with one parameter and three statements. 
-Expressions are supported completely and from the statements only the Java specific
-forms for exception handling, continue- and break-statements are omitted.
 
 ## Parser
 - JavaLight is a component grammar. To gretrieve a parser it is to be embedded into a full grammar. 
