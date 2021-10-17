@@ -7,51 +7,99 @@ The JavaLight language defines a subset of the Java
 programming language. The language introduces Java
 method declarations, constructor declarations,
 interface method declarations, attributes, a subset
-of statements and expressions, basic types, and
-annotations. The JavaLight language neither defines
-classes nor interfaces. However, it is easily reusable
-and extensible for the creation of more complex
-languages such as the complete Java programming language.
+of statements and expressions, includes all basic types, and
+allows annotations. 
+The JavaLight language does not define
+classes and interfaces. 
+
+The JavaLight language allows to parse
+* all forms of **attribute and method declarations**.
+* all forms of **Java expressions**, (XXX bitte verifizieren: sind Nebeneffekte wie i++ mit dabei?)
+* and almost all **statements**, with the exception of 
+  statements for exception handling, continue- and break-statement
+  (XXX welche fehlen noch???), 
+  which are omitted because there are many DSLs, where these are of no use.
+
+JavaLight is designed for _easy reuse_.  
+
+1. It can be **extended** by domain specific constructs, such as 
+   1. special **statements** for message processing (`c?x; c!3+x`), or
+   2. **statements** for testing such as Hoare-like `asserts` or pre/postconditions 
+   3. additional logical or otherwise interesting **expression** operators 
+      (`forall x in Set:`) 
+2. Its **expressions** can be embedded as expression sublanguage in any 
+   other interesting domain specific language, such as Automata, Activity
+   Diagrams, etc. (even MontiCore's primary language uses this).
+3. Its **statements** can also be embedded as sublanguage e.g. as actions in 
+   StateCharts.
+   
+JavaLight is a strict subset of the Java programming language and
+thus can be mapped directly to itself when generating code for Java.
+
+JavaLight is fully compatible with various expression language components
+that [MontiCore's library](XXXurlToMD-File) provides. These extensions can 
+simply be added by MontiCore's language composition mechanism 
+(see [Handbook](http://monticore.de/handbook.pdf)).
 
 The grammar file is [`de.monticore.JavaLight`][JavaLight].
 
 ## Example
 ```
-public void print(String name) {
-  System.out.println("Hello " + name);
+public int print(String name) {
+  int a = 6 + name.length();
+  if(a < 42) {
+    System.out.println("Hello " + name);
+  }
+  return a;
 }
 ```
-The example shows a simple method with one parameter. Some statements 
+The example shows a simple Java method with one parameter and three statements. Some statements 
 (statements for exception handling, continue- and break-statement, etc.) are not
 supported. But is it possible to extend the language accordingly.
 
 ## Parser
-- JavaLight is a component grammar, no parser is generated
+- JavaLight is a component grammar. To gretrieve a parser it is to be embedded into a full grammar. 
 
 ## Symboltable
-- JavaLight introduces the JavaMethodSymbol extending the provided MethodSymbol
+- JavaLight introduces the `JavaMethodSymbol` extending the provided `MethodSymbol`
  for general object-oriented types.
- The symbol receives the additional attributes:
+ The `JavaMethodSymbol` class carries the additional attributes:
   - annotations
   - exceptions
-  - isEllipsisParameterMethod
-  - isFinal
-  - isAbstract
-  - isSynchronized
-  - isNative
-  - isStrictfp
+  - and Booleans for isEllipsisParameterMethod, isFinal, isAbstract, isSynchronized, isNative, and isStrictfp
   
- - A `Declarator` is created for formal parameters and variable declarations.
- It is defined in `MCVarDeclarationStatements` and extends the FieldSymbol for
+ - A `Declarator` class is created for formal parameters and variable declarations.
+ It is defined in `MCVarDeclarationStatements` and extends the `FieldSymbol` for
  object-oriented types.
- 
+    (XXX Verstehe ich nicht: ASTDeclarator? Wer "created" die? Besser beschreiben)
+
+## Symbols
+- XXX to be described (see idea below)
+- Import: the following symbols can be used from outside, when the symbol table 
+  in the embedding language provides these symbols:
+  - `VariableSymbol` for attributes and otherwise accessible variables
+  - `MethodSymbol` for methods and constructors 
+  - `TypeSymbols` for classes, interfaces (used for example in constructor statements 
+     and type definitions), and enums.
+- Symbol definition and export: it is possible to define new symbols, namely attributes, 
+  methods and constructors. The provided symbol table will include them as
+  - `VariableSymbol` for attributes
+  - `MethodSymbol` for methods and constructors 
+  and thus will make the accessibility of these symbols available outside the JavaLight 
+  sub-models.
+
 ## Functionality
 ### CoCos
+- XXX Update wäre hilfreich:
 - None provided as corresponding well-formedness checks are only applicable on
 languages that embed or extend JavaLight.
 
 ### PrettyPrinter
 - The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter`][PrettyPrinter]
+
+- When the expression language is used as high-level language, it might make sense to map attribute
+  access to get-functions respectively also use set-functions for modification.
+  This can be done using a more elaborated pretty printer.
 
 [JavaLight]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4
 [PrettyPrinter]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/java/de/monticore/prettyprint/JavaLightPrettyPrinter.java
