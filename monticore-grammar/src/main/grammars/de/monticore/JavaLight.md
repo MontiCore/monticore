@@ -15,7 +15,7 @@ classes and interfaces.
 The JavaLight language allows to parse
 * all forms of **attribute and method declarations**.
 * all forms of **Java expressions**, (XXX bitte verifizieren: sind Nebeneffekte wie i++ mit dabei?)
-* and almost all **statements**, with the exception of 
+* and almost all **Java statements**, with the exception of 
   statements for exception handling, continue- and break-statement
   (XXX welche fehlen noch???), 
   which are omitted because there are many DSLs, where these are of no use.
