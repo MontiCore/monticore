@@ -20,42 +20,48 @@ The JavaLight language allows to parse
   (XXX welche fehlen noch???), 
   which are omitted because there are many DSLs, where these are of no use.
 
-JavaLight is designed for _easy reuse_.  
+## Extension of JavaLight
 
-1. It can be **extended** by domain specific constructs, such as 
+JavaLight is designed for _easy reuse_.  
+It can be **extended** by domain specific constructs, such as 
    1. special **statements** for message processing (`c?x; c!3+x`), or
    2. **statements** for testing such as Hoare-like `asserts` or pre/postconditions 
    3. additional logical or otherwise interesting **expression** operators 
       (`forall x in Set:`) 
-2. Its **expressions** can be embedded as expression sublanguage in any 
-   other interesting domain specific language, such as Automata, Activity
-   Diagrams, etc. (even MontiCore's primary language uses this).
-3. Its **statements** can also be embedded as sublanguage e.g. as actions in 
-   StateCharts.
-   
-JavaLight is a strict subset of the Java programming language and
-thus can be mapped directly to itself when generating code for Java.
+   4. The omitted Java-special statements, such as eception handling can be addded
+      through a predefined language library component. 
 
 JavaLight is fully compatible with various expression language components
 that [MontiCore's library](XXXurlToMD-File) provides. These extensions can 
 simply be added by MontiCore's language composition mechanism 
 (see [Handbook](http://monticore.de/handbook.pdf)).
 
+## Embedding of JavaLight `Expression` or `Statement`
+
+JavaLight's **expressions** can be embedded as expression sublanguage in any 
+other interesting domain specific language, such as Automata, Activity
+Diagrams, etc. (even MontiCore's primary language uses this).
+The **statements** can also be embedded as sublanguage e.g. as actions in 
+StateCharts.
+   
+JavaLight is a strict subset of the Java programming language and
+thus can be mapped directly to itself when generating code for Java.
+
 The grammar file is [`de.monticore.JavaLight`][JavaLight].
 
 ## Example
 ```
-public int print(String name) {
-  int a = 6 + name.length();
-  if(a < 42) {
+public int print(String name, Set<Person> p) {
+  int a = 2 + name.length();
+  if(a < p.size()) {
     System.out.println("Hello " + name);
   }
   return a;
 }
 ```
-The example shows a simple Java method with one parameter and three statements. Some statements 
-(statements for exception handling, continue- and break-statement, etc.) are not
-supported. But is it possible to extend the language accordingly.
+The example shows a simple Java method with one parameter and three statements. 
+Expressions are supported completely and from the statements only the Java specific
+forms for exception handling, continue- and break-statements are omitted.
 
 ## Parser
 - JavaLight is a component grammar. To gretrieve a parser it is to be embedded into a full grammar. 
