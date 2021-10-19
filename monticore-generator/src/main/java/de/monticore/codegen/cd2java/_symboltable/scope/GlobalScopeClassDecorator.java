@@ -57,6 +57,8 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected static final String LOAD = "load%s";
 
+  protected static final String PUTSYMBOLDESER = "put%sSymbolDeSer";
+
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
                                    final MethodDecorator methodDecorator) {
@@ -136,6 +138,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMembers(resolverAttributes.values())
         .addAllCDMembers(resolverMethods)
         .addAllCDMembers(createLoadMethods(symbolClasses))
+        .addAllCDMembers(createPutDeSerMethods(symbolClasses))
         .addCDMember(createLoadFileForModelNameMethod(definitionName))
         //
         .addCDMember(createGetRealThisMethod(globalScopeName))
@@ -255,6 +258,25 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     }
 
     return loadMethods;
+  }
+
+  protected List<ASTCDMethod> createPutDeSerMethods(List<? extends ASTCDType> symbolProds) {
+    List<ASTCDMethod> deSerMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, KIND_VAR);
+
+    for (ASTCDType symbolProd : symbolProds) {
+      String className = symbolTableService.removeASTPrefix(symbolProd);
+      String methodName = String.format(PUTSYMBOLDESER, className);
+      String deSerName = symbolTableService.getSymbolDeSerFullName(symbolProd);
+
+      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), methodName, nameParameter);
+      String hook = String.format("putSymbolDeSer(kind, new %s());", deSerName);
+      this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
+
+      deSerMethods.add(method);
+    }
+
+    return deSerMethods;
   }
 
   protected ASTCDMethod createLoadFileForModelNameMethod(String definitionName){
