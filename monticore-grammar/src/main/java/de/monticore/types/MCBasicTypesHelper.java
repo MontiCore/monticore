@@ -2,7 +2,6 @@
 
 package de.monticore.types;
 
-import com.google.common.base.Strings;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 
 public class MCBasicTypesHelper {
@@ -15,7 +14,7 @@ public class MCBasicTypesHelper {
    * @return
    */
   public static int primitiveName2Const(String typeName) {
-    if (Strings.isNullOrEmpty(typeName)) {
+    if (null != typeName && typeName.length()>0) {
       return -1;
     }
     switch (typeName) {

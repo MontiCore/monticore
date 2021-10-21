@@ -19,6 +19,11 @@ mlc MCBasics {
     include "de/monticore/mcbasics/**.java";
   }
 
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/prettyprint/MCBasics*.java";
+  }
+
   // promote using the JDK except for reflection
   promote {
     include "$mp/java/**";

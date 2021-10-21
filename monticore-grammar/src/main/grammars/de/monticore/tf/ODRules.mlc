@@ -1,6 +1,6 @@
 package de.monticore.tf;
 
-mlc ODRuleGeneration {
+mlc ODRules {
 
   //export the grammar
   export "$projectDir/src/main/grammars" {

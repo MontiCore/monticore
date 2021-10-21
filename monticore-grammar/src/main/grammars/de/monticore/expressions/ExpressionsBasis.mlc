@@ -12,10 +12,13 @@ mlc ExpressionsBasis {
     include "de/monticore/expressions/expressionsbasis/**.java";
   }
 
-  // promote using the JDK except for reflection
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/expressions/prettyprint/ExpressionsBasis*.java";
+  }
+
   promote {
     mlc "de.monticore.MCBasics";
     mlc "de.monticore.literals.MCLiteralsBasis";
   }
-
 }

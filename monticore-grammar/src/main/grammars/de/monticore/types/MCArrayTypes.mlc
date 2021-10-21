@@ -7,9 +7,11 @@ mlc MCArrayTypes {
     include "de/monticore/types/MCArrayTypes.mc4";
   }
 
-  //export handwritten top classes
+  //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mcarraytypes/**.java";
+    include "de/monticore/types/prettyprint/MCArrayTypes**.java";
+    include "de/monticore/types/MCArrayTypes**.java";
   }
 
   // export all Java files generated from the grammar
@@ -17,7 +19,6 @@ mlc MCArrayTypes {
     include "de/monticore/types/mcarraytypes/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.types.MCBasicTypes";
   }

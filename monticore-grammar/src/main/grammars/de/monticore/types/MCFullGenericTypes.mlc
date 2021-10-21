@@ -7,9 +7,11 @@ mlc MCFullGenericTypes {
     include "de/monticore/types/MCFullGenericTypes.mc4";
   }
 
-  //export handwritten top classes
+  //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mcfullgenerictypes/**.java";
+    include "de/monticore/types/prettyprint/MCFullGenericTypes**.java";
+    include "de/monticore/types/MCFullGenericTypes**.java";
   }
 
   // export all Java files generated from the grammar
@@ -17,7 +19,6 @@ mlc MCFullGenericTypes {
     include "de/monticore/types/mcfullgenerictypes/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.types.MCSimpleGenericTypes";
   }

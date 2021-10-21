@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
-/**
-*   TODO@AB: Check HW Code and promoted MLCs
-*/
 mlc JavaLight {
 
   // export the grammar
@@ -16,12 +13,12 @@ mlc JavaLight {
     include "de/monticore/javalight/**.java";
   }
 
-  // export all handwritten TOP-mechanism extensions
+  // export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/javalight/**.java";
+    include "de/monticore/prettyprint/JavaLight*.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.expressions.AssignmentExpressions";
     mlc "de.monticore.expressions.JavaClassExpressions";

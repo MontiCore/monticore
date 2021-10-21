@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols;
 
-/**
-*   TODO@AB: Check HW Code and promoted MLCs
-*/
 mlc OOSymbols {
 
   // export the grammar

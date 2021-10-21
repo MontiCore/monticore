@@ -7,9 +7,11 @@ mlc MCBasicTypes {
     include "de/monticore/types/MCBasicTypes.mc4";
   }
 
-  //export handwritten top classes
+  //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mcbasictypes/**.java";
+    include "de/monticore/types/prettyprint/MCBasicTypes**.java";
+    include "de/monticore/types/MCBasicTypes**.java";
   }
 
   // export all Java files generated from the grammar
@@ -17,9 +19,19 @@ mlc MCBasicTypes {
     include "de/monticore/types/mcbasictypes/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.MCBasics";
   }
 
+  // TBD: promote using the type check or consider it part of the language?
+  promote {
+    include "$projectDir/src/main/java/de/monticore/types/check/*.java";
+  }
+
+  // TODO: !!! remove the following in the code, these are illegal !!!
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types/mccollectiontypes/_ast/ASTMCGenericType.java";
+    include "$projectDir/src/main/java/de/monticore/types/prettyprint/MCFullGenericTypesFullPrettyPrinter.java";
+    include "$projectDir/src/main/java/de/monticore/types/prettyprint/MCCollectionTypesFullPrettyPrinter.java";
+  }
 }

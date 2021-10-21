@@ -7,9 +7,15 @@ mlc Grammar_WithConcepts {
     include "de/monticore/grammar/Grammar_WithConcepts.mc4";
   }
 
-  //export handwritten top classes
+  //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/grammar/grammar_withconcepts/**.java";
+
+    include "de/monticore/grammar/prettyprint/Grammar_WithConcepts*.java";
+
+    include "de/monticore/grammar/ComponentCollector.java";
+    include "de/monticore/grammar/MCGrammarSymbolTableHelper.java";
+    include "de/monticore/grammar/Multiplicity.java";
   }
 
   // export all Java files generated from the grammar
@@ -17,7 +23,6 @@ mlc Grammar_WithConcepts {
     include "de/monticore/grammar/grammar_withconcepts/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.grammar.Grammar";
     mlc "de.monticore.statements.MCCommonStatements";
@@ -29,5 +34,4 @@ mlc Grammar_WithConcepts {
     mlc "de.monticore.expressions.CommonExpressions";
     mlc "de.monticore.expressions.BitExpressions";
   }
-
 }

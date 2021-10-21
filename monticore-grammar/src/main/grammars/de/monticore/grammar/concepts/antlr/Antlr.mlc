@@ -7,14 +7,17 @@ mlc Antlr {
     include "de/monticore/grammar/concepts/antlr/Antlr.mc4";
   }
 
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/grammar/prettyprint/AntlrPrettyPrinter.java";
+  }
+
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
     include "de/monticore/grammar/concepts/antlr/antlr/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.MCBasics";
   }
-
 }

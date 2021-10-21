@@ -18,5 +18,4 @@ mlc MCLiteralsBasis {
   promote {
     mlc "de.monticore.MCBasics";
   }
-
 }
