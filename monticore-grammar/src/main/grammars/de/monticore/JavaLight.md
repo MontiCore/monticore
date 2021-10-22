@@ -14,10 +14,9 @@ classes and interfaces.
 
 The JavaLight language allows to parse
 * all forms of **attribute and method declarations**.
-* all forms of **Java expressions**, (XXX bitte verifizieren: sind Nebeneffekte wie i++ mit dabei?)
+* all forms of **Java expressions**, (including short forms of incrementation, such as `i++`)
 * and almost all **Java statements**, with the exception of 
-  statements for exception handling, continue- and break-statement
-  (XXX welche fehlen noch???), 
+  statements for exception handling, continue- and break-statement, amd synchronization,
   which are omitted because there are many DSLs, where these are of no use.
 
 ## Example
