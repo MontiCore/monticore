@@ -78,22 +78,17 @@ thus can be mapped directly to itself when generating code for Java.
   - annotations
   - exceptions
   - and Booleans for isEllipsisParameterMethod, isFinal, isAbstract, isSynchronized, isNative, and isStrictfp
-  
- - A `Declarator` class is created for formal parameters and variable declarations.
- It is defined in `MCVarDeclarationStatements` and extends the `FieldSymbol` for
- object-oriented types.
-    (XXX Verstehe ich nicht: ASTDeclarator? Wer "created" die? Besser beschreiben)
+
 
 ## Symbols
-- XXX to be described (see idea below)
 - Import: the following symbols can be used from outside, when the symbol table 
   in the embedding language provides these symbols:
   - `VariableSymbol` for attributes and otherwise accessible variables
-  - `MethodSymbol` for methods and constructors 
-  - `TypeSymbols` for classes, interfaces (used for example in constructor statements 
-     and type definitions), and enums.
-- Symbol definition and export: it is possible to define new symbols, namely attributes, 
-  methods and constructors. The provided symbol table will include them as
+  - `MethodSymbol` for method and constructor calls 
+  - `TypeSymbols` for using types, e.g., defined via classes, interfaces 
+    (used for example in constructor statements and type definitions), and enums.
+- Symbol definition and export: It is possible to define new symbols, for attributes, 
+  methods, and constructors. The provided symbol table will include them as
   - `VariableSymbol` for attributes
   - `MethodSymbol` for methods and constructors 
   and thus will make the accessibility of these symbols available outside the JavaLight 
@@ -101,9 +96,7 @@ thus can be mapped directly to itself when generating code for Java.
 
 ## Functionality
 ### CoCos
-- XXX Update wäre hilfreich:
-- None provided as corresponding well-formedness checks are only applicable on
-languages that embed or extend JavaLight.
+- CoCos are currently being explored and implemented.
 
 ### PrettyPrinter
 - The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter`][PrettyPrinter]
