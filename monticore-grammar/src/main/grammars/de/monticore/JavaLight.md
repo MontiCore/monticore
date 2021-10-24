@@ -71,7 +71,7 @@ thus can be mapped directly to itself when generating code for Java.
 ## Parser
 - JavaLight is a component grammar. To gretrieve a parser it is to be embedded into a full grammar. 
 
-## Symboltable
+## Symboltable and Symbol classes
 - JavaLight introduces the `JavaMethodSymbol` extending the provided `MethodSymbol`
  for general object-oriented types.
  The `JavaMethodSymbol` class carries the additional attributes:
@@ -80,7 +80,7 @@ thus can be mapped directly to itself when generating code for Java.
   - and Booleans for isEllipsisParameterMethod, isFinal, isAbstract, isSynchronized, isNative, and isStrictfp
 
 
-## Symbols
+## Symbols (imported and exported)
 - Import: the following symbols can be used from outside, when the symbol table 
   in the embedding language provides these symbols:
   - `VariableSymbol` for attributes and otherwise accessible variables
