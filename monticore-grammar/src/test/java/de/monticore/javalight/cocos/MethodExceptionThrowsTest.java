@@ -4,6 +4,8 @@ package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.monticore.testjavalight.TestJavaLightMill;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfObject;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,8 +31,12 @@ public class MethodExceptionThrowsTest extends JavaLightCocoTest {
   }
 
   @Test
-  public void testCorrect(){
-    testValid("de.monticore.javalight.cocos.valid.MethodDecl", checker);
+  public void testCorrect() {
+    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", globalScope);
+    globalScope.add(TestJavaLightMill.oOTypeSymbolBuilder().setName("A").addSuperTypes(sType).build());
+    globalScope.add(TestJavaLightMill.oOTypeSymbolBuilder().setName("java.lang.Throwable").build());
+
+    testValid("de.monticore.javalight.cocos.valid.MethodDecl", "meth1", checker);
   }
 
 }

@@ -46,10 +46,11 @@ public abstract class JavaLightCocoTest {
     globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources"));
   }
 
-  protected void testValid(String fileName, JavaLightCoCoChecker checker) {
+  protected void testValid(String fileName, String methodName, JavaLightCoCoChecker checker) {
+    loadFileForModelName(fileName);
     // test method symbol
-    final MethodSymbol methodSymbol = globalScope
-            .resolveMethod(fileName)
+    final MethodSymbol methodSymbol = artifactScope
+            .resolveMethod(methodName)
             .orElse(null);
     assertNotNull(methodSymbol);
     assertTrue(methodSymbol.isPresentAstNode());
