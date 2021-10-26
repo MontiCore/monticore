@@ -3,6 +3,7 @@
 package de.monticore;
 
 grammar TestJavaLight extends de.monticore.JavaLight, de.monticore.literals.MCCommonLiterals, de.monticore.types.MCCollectionTypes  {
+  start JavaMethod;
 
   ExtTypeParameters = MCTypeArgument;
 
