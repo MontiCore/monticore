@@ -1,1 +1,1 @@
-public void meth1() throws A {}
+public void meth1(int i, boolean b) throws A {}
