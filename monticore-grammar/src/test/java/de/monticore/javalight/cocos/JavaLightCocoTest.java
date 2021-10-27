@@ -48,6 +48,7 @@ public abstract class JavaLightCocoTest {
     globalScope.clear();
 
     globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources"));
+    globalScope.getSymbolPath().addEntry(Paths.get("target/test/resources"));
     BasicSymbolsMill.initializePrimitives();
   }
 
