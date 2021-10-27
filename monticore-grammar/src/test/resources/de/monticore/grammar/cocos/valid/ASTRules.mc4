@@ -31,5 +31,9 @@ grammar ASTRules {
  interface H;
  
  astrule H astextends java.util.Observer;
-
+ 
+ I;
+ 
+ astrule I = d:A; // Must not trigger ASTRuleAndNTUseSameAttrNameForDiffNTs
+ 
 }
