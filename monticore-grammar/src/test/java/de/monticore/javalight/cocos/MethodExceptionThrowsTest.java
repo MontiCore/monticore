@@ -16,8 +16,7 @@ public class MethodExceptionThrowsTest extends JavaLightCocoTest {
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0811.A0811";
 
   @BeforeClass
-  public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+  public static void initCoco() {
     checker.addCoCo(new MethodExceptionThrows());
   }
 

@@ -16,8 +16,7 @@ public class MethodFormalParametersDifferentNameTest extends JavaLightCocoTest {
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0812.A0812";
 
   @BeforeClass
-  public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+  public static void initCoCo() {
     checker.addCoCo(new MethodFormalParametersDifferentName());
   }
 
