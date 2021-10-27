@@ -17,6 +17,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.io.IOException;
@@ -37,13 +38,17 @@ public abstract class JavaLightCocoTest {
   public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
-
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
-    BasicSymbolsMill.initializePrimitives();
+  }
 
+  @Before
+  public void init() {
     globalScope = (TestJavaLightGlobalScope) TestJavaLightMill.globalScope();
+    globalScope.clear();
+
     globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources"));
+    BasicSymbolsMill.initializePrimitives();
   }
 
   protected void testValid(String fileName, String methodName, JavaLightCoCoChecker checker) {

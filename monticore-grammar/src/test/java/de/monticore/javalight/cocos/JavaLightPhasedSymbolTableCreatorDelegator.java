@@ -7,6 +7,7 @@ import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._symboltable.ITestJavaLightArtifactScope;
 import de.monticore.testjavalight._symboltable.ITestJavaLightGlobalScope;
 import de.monticore.testjavalight._symboltable.TestJavaLightScopesGenitorDelegator;
+import de.monticore.testjavalight._visitor.TestJavaLightTraverser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class JavaLightPhasedSymbolTableCreatorDelegator {
 
   protected TestJavaLightScopesGenitorDelegator scopesGenitorDelegator ;
 
-  protected List<JavaLightTraverser> priorityList ;
+  protected List<TestJavaLightTraverser> priorityList ;
 
   public JavaLightPhasedSymbolTableCreatorDelegator()  {
     this.globalScope = TestJavaLightMill.globalScope();
