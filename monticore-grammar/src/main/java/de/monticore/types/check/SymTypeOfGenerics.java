@@ -2,6 +2,8 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
@@ -227,6 +229,31 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       }
     }
     return this.print().equals(symGen.print());
+  }
+
+  @Override
+  public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
+    for(int i = 0; i<this.getArgumentList().size(); i++){
+      SymTypeExpression type = this.getArgument(i);
+      TypeSymbol realTypeInfo;
+      TypeSymbol typeInfo = type.getTypeInfo();
+      if(typeInfo instanceof TypeSymbolSurrogate){
+        realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
+      }else{
+        realTypeInfo = typeInfo;
+      }
+      if(type.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
+        Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
+        if(typeVar.isPresent()){
+          List<SymTypeExpression> args = new ArrayList<>(getArgumentList());
+          args.remove(type);
+          args.add(i, replaceMap.get(typeVar.get()));
+          this.setArgumentList(args);
+        }
+      }else{
+        type.replaceTypeVariables(replaceMap);
+      }
+    }
   }
 
   // --------------------------------------------------------------------------
