@@ -14,10 +14,9 @@ classes and interfaces.
 
 The JavaLight language allows to parse
 * all forms of **attribute and method declarations**.
-* all forms of **Java expressions**, (XXX bitte verifizieren: sind Nebeneffekte wie i++ mit dabei?)
+* all forms of **Java expressions**, (including short forms of incrementation, such as `i++`)
 * and almost all **Java statements**, with the exception of 
-  statements for exception handling, continue- and break-statement
-  (XXX welche fehlen noch???), 
+  statements for exception handling, continue- and break-statement, amd synchronization,
   which are omitted because there are many DSLs, where these are of no use.
 
 ## Example
@@ -72,29 +71,24 @@ thus can be mapped directly to itself when generating code for Java.
 ## Parser
 - JavaLight is a component grammar. To gretrieve a parser it is to be embedded into a full grammar. 
 
-## Symboltable
+## Symboltable and Symbol classes
 - JavaLight introduces the `JavaMethodSymbol` extending the provided `MethodSymbol`
  for general object-oriented types.
  The `JavaMethodSymbol` class carries the additional attributes:
   - annotations
   - exceptions
   - and Booleans for isEllipsisParameterMethod, isFinal, isAbstract, isSynchronized, isNative, and isStrictfp
-  
- - A `Declarator` class is created for formal parameters and variable declarations.
- It is defined in `MCVarDeclarationStatements` and extends the `FieldSymbol` for
- object-oriented types.
-    (XXX Verstehe ich nicht: ASTDeclarator? Wer "created" die? Besser beschreiben)
 
-## Symbols
-- XXX to be described (see idea below)
+
+## Symbols (imported and exported)
 - Import: the following symbols can be used from outside, when the symbol table 
   in the embedding language provides these symbols:
   - `VariableSymbol` for attributes and otherwise accessible variables
-  - `MethodSymbol` for methods and constructors 
-  - `TypeSymbols` for classes, interfaces (used for example in constructor statements 
-     and type definitions), and enums.
-- Symbol definition and export: it is possible to define new symbols, namely attributes, 
-  methods and constructors. The provided symbol table will include them as
+  - `MethodSymbol` for method and constructor calls 
+  - `TypeSymbols` for using types, e.g., defined via classes, interfaces 
+    (used for example in constructor statements and type definitions), and enums.
+- Symbol definition and export: It is possible to define new symbols, for attributes, 
+  methods, and constructors. The provided symbol table will include them as
   - `VariableSymbol` for attributes
   - `MethodSymbol` for methods and constructors 
   and thus will make the accessibility of these symbols available outside the JavaLight 
@@ -102,9 +96,7 @@ thus can be mapped directly to itself when generating code for Java.
 
 ## Functionality
 ### CoCos
-- XXX Update wäre hilfreich:
-- None provided as corresponding well-formedness checks are only applicable on
-languages that embed or extend JavaLight.
+- CoCos are currently being explored and implemented.
 
 ### PrettyPrinter
 - The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter`][PrettyPrinter]
