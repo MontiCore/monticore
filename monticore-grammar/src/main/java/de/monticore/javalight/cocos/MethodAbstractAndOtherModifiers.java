@@ -10,36 +10,23 @@ import de.se_rwth.commons.logging.Log;
 
 public class MethodAbstractAndOtherModifiers implements JavaLightASTMethodDeclarationCoCo {
 
+  public static final String ERROR_CODE = "0xA0802";
+
+
+  public static final String ERROR_MSG_FORMAT = " The abstract method %s must be public. ";
+
   //JLS3 8.4.3-3
   @Override
   public void check(ASTMethodDeclaration node) {
     JavaMethodSymbol methodSymbol = node.getSymbol();
     if (methodSymbol.isIsAbstract()) {
-      if (methodSymbol.isIsPrivate()) {
-        Log.error("0xA0802 abstract method must not be declared 'private'.",
-                node.get_SourcePositionStart());
-      }
-      if (methodSymbol.isIsStatic()) {
-        Log.error("0xA0803 abstract method must not be declared 'static'.",
-                node.get_SourcePositionStart());
-      }
-      if (methodSymbol.isIsFinal()) {
-        Log.error("0xA0804 abstract method must not be declared 'final'.",
-                node.get_SourcePositionStart());
-      }
-      if (methodSymbol.isIsNative()) {
-        Log.error("0xA0805 abstract method must not be declared 'native'.",
-                node.get_SourcePositionStart());
-      }
-      if (methodSymbol.isIsStrictfp()) {
-        Log.error("0xA0806 abstract method must not be declared 'strictfp'.",
-                node.get_SourcePositionStart());
-      }
-      if (methodSymbol.isIsSynchronized()) {
-        Log.error("0xA0807 abstract method must not be declared 'synchronized'.",
-                node.get_SourcePositionStart());
+      if (methodSymbol.isIsPrivate() || methodSymbol.isIsStatic() || methodSymbol.isIsFinal() ||
+          methodSymbol.isIsNative() || methodSymbol.isIsStrictfp() || methodSymbol.isIsSynchronized()) {
+        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName()),
+            node.get_SourcePositionStart());
       }
     }
-
   }
+
 }
+
