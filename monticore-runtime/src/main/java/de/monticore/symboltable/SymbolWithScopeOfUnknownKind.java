@@ -97,6 +97,10 @@ public class SymbolWithScopeOfUnknownKind implements IScopeSpanningSymbol {
     return this.packageName;
   }
 
+  public void accept(ITraverser visitor) {
+    visitor.handle(this);
+  }
+
   protected String determinePackageName() {
     IScope optCurrentScope = this.enclosingScope;
 

@@ -2,6 +2,7 @@
 package de.monticore.symboltable;
 
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -134,5 +135,20 @@ public interface IScope {
     return new ArrayList<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).collect(toSet()));
   }
 
-}
+  default LinkedListMultimap<String, SymbolWithScopeOfUnknownKind> getUnknownSymbols() {
+    return LinkedListMultimap.create();
+  }
 
+  default List<SymbolWithScopeOfUnknownKind> getLocalUnknownSymbols() {
+    return getUnknownSymbols().values();
+  }
+
+  default void add(SymbolWithScopeOfUnknownKind symbol) {
+    throw new UnsupportedOperationException("This operation is not implemented.");
+  }
+
+  default void remove(SymbolWithScopeOfUnknownKind symbol) {
+    throw new UnsupportedOperationException("This operation is not implemented.");
+  }
+
+}
