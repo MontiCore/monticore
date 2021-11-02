@@ -134,12 +134,15 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   @Override
   public String print() {
+    return typeSymbol.getName();
+    /*
     StringBuffer r = new StringBuffer(typeSymbol.getName()).append('<');
     for(int i = 0; i<arguments.size();i++){
       r.append(arguments.get(i).print());
       if(i<arguments.size()-1) { r.append(','); }
     }
     return r.append('>').toString();
+    */
   }
 
   @Override
