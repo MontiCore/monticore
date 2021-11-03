@@ -162,7 +162,7 @@ public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
 
   @Test
   public void genericsTest() throws IOException {
-    check("genericSuper = genericSub", "GenSuper<GenArg>");
+    check("genericSuper = genericSub", "GenSuper");
   }
 
 }
