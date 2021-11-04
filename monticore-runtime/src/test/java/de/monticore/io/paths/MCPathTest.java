@@ -62,13 +62,13 @@ public class MCPathTest {
     assertTrue(grammar2.isPresent());
     assertFalse(nonExistent2.isPresent());
 
-//    mp.addEntry(Paths.get("src/test/resources/jar/Test.jar"));
-//    Optional<URL> fileInJar = mp.find("de.monticore.MCBasics", "mc4");
-//    Optional<URL> fileInJar2 = mp.find("de.monticore.MCBasics", "m.4");
-//    Optional<URL> fileNotInJar = mp.find("MCBasics", "m.4");
-//    assertTrue(fileInJar.isPresent());
-//    assertTrue(fileInJar2.isPresent());
-//    assertFalse(fileNotInJar.isPresent());
+    mp.addEntry(Paths.get("src/test/resources/jar/Test.jar"));
+    Optional<URL> fileInJar = mp.find("de.monticore.MCBasics", "mc4");
+    Optional<URL> fileInJar2 = mp.find("de.monticore.MCBasics", "m.4");
+    Optional<URL> fileNotInJar = mp.find("MCBasics", "m.4");
+    assertTrue(fileInJar.isPresent());
+    assertTrue(fileInJar2.isPresent());
+    assertFalse(fileNotInJar.isPresent());
   }
 
   @Test
