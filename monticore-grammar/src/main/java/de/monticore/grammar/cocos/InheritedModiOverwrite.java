@@ -13,9 +13,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
-  public static final String ERROR_CODE = "0xA4069";
 
-  public static final String ERROR_MSG_FORMAT = " The lexical production %s of the grammar %s must be overwritten in the grammar %s with the modes %s.";
+  public static final String ERROR_CODE = "0xA4069";
+  public static final String ERROR_MSG_FORMAT = " The lexical production %s of the grammar %s will inherit the token mode %s as it overwrites the lexical production %s of the grammar %s";
 
 
   @Override
@@ -30,18 +30,10 @@ public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
           String modeString = lexProd.getMode();
           String prodName = lexProd.getName();
           List<ASTLexProd> supLexProdList = node.getLexProdList().stream().filter(prod -> prod.getName().equals(prodName)).collect(Collectors.toList());
-          if (supLexProdList.isEmpty()) {
-            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, superGrammarName, grammarName, modeString),
-                node.get_SourcePositionStart());
-          }
           for (ASTLexProd lex : supLexProdList) {
-            if (lex.isPresentMode()) {
-              if (!lex.getMode().equals(lexProd.getMode())) {
-                Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, superGrammarName, grammarName, modeString),
-                    node.get_SourcePositionStart());
-              }
-            }else{
-              Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, superGrammarName, grammarName, modeString));
+            if (!lex.isPresentMode()) {
+              //warn the user that he inherits a token mode
+              Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, grammarName, modeString, prodName, superGrammarName));
             }
           }
         }

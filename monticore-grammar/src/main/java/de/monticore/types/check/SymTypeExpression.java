@@ -171,7 +171,7 @@ public abstract class SymTypeExpression {
       }
     }
     if(isGenericType()){
-      //compare type arguments of SymTypeExpression(actual type) and its TypeSymbol(type definition)
+      //compare type arguments of SymTypeExpression(actual type) and its TypeVarSymbol(type definition)
       List<SymTypeExpression> arguments = ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = getTypeInfo().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
@@ -186,19 +186,10 @@ public abstract class SymTypeExpression {
       // actual symtypeexpression
       for(FunctionSymbol method: matchingMethods) {
         //return type
-        for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
-          if (method.getReturnType().print().equals(typeVariableArgument.getName())&&method.getReturnType().isTypeVariable()) {
-            method.setReturnType(map.get(typeVariableArgument));
-          }
-        }
+        method.replaceTypeVariables(map);
         //type parameters
         for (VariableSymbol parameter : method.getParameterList()) {
-          SymTypeExpression parameterType = parameter.getType();
-          for (TypeVarSymbol typeVariableArgument : typeVariableArguments) {
-            if (parameterType.print().equals(typeVariableArgument.getName())&& parameterType.isTypeVariable()) {
-              parameter.setType(map.get(typeVariableArgument));
-            }
-          }
+          parameter.replaceTypeVariables(map);
         }
       }
       //if there are two methods with the same parameters and return type remove the second method
@@ -224,6 +215,10 @@ public abstract class SymTypeExpression {
       }
     }
     return matchingMethods;
+  }
+
+  public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
+    //empty so it only needs to be overridden by some SymTypeExpressions
   }
 
   /**
@@ -321,11 +316,7 @@ public abstract class SymTypeExpression {
       }
       //every field in fieldList: replace typevariables in type with its actual symtypeexpression
       for(VariableSymbol field: fieldList){
-        for(TypeVarSymbol typeVariableArgument:typeVariableArguments) {
-          if (field.getType().print().equals(typeVariableArgument.getName())&&field.getType().isTypeVariable()) {
-            field.setType(map.get(typeVariableArgument));
-          }
-        }
+        field.replaceTypeVariables(map);
       }
     }
     //if there are two fields with the same type remove the second field in the list because it is a

@@ -128,7 +128,7 @@ public class SymbolTableConstants {
 
   public static final String SYM_DESERS_VAR = "symbolDeSers";
 
-  public static final String DESER_VAR = "deSer";
+  public static final String KIND_VAR = "kind";
 
   public static final String FOUND_SYMBOL_DELEGATE = "false";
 
