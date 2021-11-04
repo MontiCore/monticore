@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTest {
 
-  private ICombineExpressionsWithLiteralsScope scope;
+  protected ICombineExpressionsWithLiteralsScope scope;
 
   @Override
   protected void setupTypeCheck() {
