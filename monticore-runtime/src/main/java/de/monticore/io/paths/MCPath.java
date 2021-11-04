@@ -8,13 +8,12 @@ import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.CharBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -200,7 +199,7 @@ public final class MCPath {
         c.close();
       }
       catch (IOException e) {
-        Log.error("0xA1035 An exception occured while trying to close a class loader!", e);
+        Log.error("0xA1035 An exception occurred while trying to close a class loader!", e);
       }
     });
   }
