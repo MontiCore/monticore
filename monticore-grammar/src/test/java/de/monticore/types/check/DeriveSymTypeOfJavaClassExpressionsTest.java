@@ -320,7 +320,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     check("test()[3]", "int[]");
     check("b[3][4]", "int");
     check("test()[3][4]", "int");
-    check("c[1]", "List");
+    check("c[1]", "List<int>");
   }
 
   @Test 
@@ -364,9 +364,9 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     //soll es so funktionieren wie in Java? Dann duerfte man naemlich keine Generics akzeptieren
     //hier sind erst einmal Generics mit dabei, s. Testfall #3
     //falls man einschränken möchte, kann man die CoCo NoClassExpressionForGenerics
-    check("String.class", "Class");
-    check("Integer.class", "Class");
-    check("java.util.Set<double>.class", "Class");
+    check("String.class", "Class<String>");
+    check("Integer.class", "Class<Integer>");
+    check("java.util.Set<double>.class", "Class<Set<double>>");
   }
 
   @Test

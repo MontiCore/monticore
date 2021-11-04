@@ -410,7 +410,7 @@ public class SymTypeExpressionTest {
     assertTrue(tInt.isIntegralType());
 
     SymTypeOfGenerics tA = SymTypeExpressionFactory.createGenerics("A",scope);
-    assertEquals("A",tA.print());
+    assertEquals("A<>",tA.print());
     assertTrue(tA.isEmptyArguments());
 
     SymTypeOfGenerics tB = SymTypeExpressionFactory.createGenerics("B",scope,Lists.newArrayList(teArr1,teIntA));
