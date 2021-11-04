@@ -312,6 +312,25 @@ public class TypeCheck {
         if(type.print().equals(superType.print())){
           return true;
         }
+        if(type.isGenericType() && superType.isGenericType()){
+          //TODO check recursively, this is only a hotfix, see #2977
+          SymTypeOfGenerics typeGen = (SymTypeOfGenerics) type;
+          SymTypeOfGenerics supTypeGen = (SymTypeOfGenerics) superType;
+          if(typeGen.printTypeWithoutTypeArgument().equals(supTypeGen.printTypeWithoutTypeArgument())
+          && typeGen.sizeArguments() == supTypeGen.sizeArguments()){
+            boolean success = true;
+            for(int i = 0; i<typeGen.sizeArguments(); i++){
+              if(!typeGen.getArgument(i).isTypeVariable()){
+                if(!typeGen.getArgument(i).print().equals(supTypeGen.getArgument(i).print())){
+                  success = false;
+                }
+              }
+            }
+            if(success){
+              return true;
+            }
+          }
+        }
       }
     }
     boolean subtype = false;
