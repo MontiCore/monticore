@@ -633,7 +633,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidCallExpression() throws IOException {
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     init_advanced();
-    checkError("isNot()", "0xA0240");
+    checkError("isNot()", "0xA1240");
   }
 
   /**
@@ -1298,7 +1298,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidStaticType() throws IOException {
     init_static_example();
 
-    checkError("B.D", "0xA0303");
+    checkError("B.D", "0xA1317");
   }
 
   @Test
@@ -1312,7 +1312,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidStaticField() throws IOException {
     init_static_example();
 
-    checkError("B.field", "0xA0237");
+    checkError("B.field", "0xA1236");
   }
 
   @Test
@@ -1326,21 +1326,21 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidStaticMethod() throws IOException {
     init_static_example();
 
-    checkError("B.test()", "0xA0239");
+    checkError("B.test()", "0xA2239");
   }
 
   @Test
   public void testSubClassesDoNotKnowStaticMethodsOfSuperClasses() throws IOException{
     init_static_example();
 
-    checkError("C.test()", "0xA0239");
+    checkError("C.test()", "0xA2239");
   }
 
   @Test
   public void testSubClassesDoNotKnowStaticFieldsOfSuperClasses() throws IOException{
     init_static_example();
 
-    checkError("C.field", "0xA0306");
+    checkError("C.field", "0xA1317");
   }
 
   @Test

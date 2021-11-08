@@ -1102,7 +1102,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
   @Test
   public void failDeriveFromCreatorExpressionAnonymousClass1() throws IOException {
     //1) Error when using primitive types
-    checkError("new int()", "0xA0312");
+    checkError("new int()", "0xA1312");
   }
 
   @Test
@@ -1117,7 +1117,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
 
     add2scope(scope, bsp2);
     setFlatExpressionScopeSetter(scope);
-    checkError("new Bsp2(3,4)", "0xA0312");
+    checkError("new Bsp2(3,4)", "0xA1312");
   }
 
   @Test
@@ -1159,7 +1159,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     add2scope(scope, bsp3);
 
     setFlatExpressionScopeSetter(scope);
-    checkError("new Bsp3()", "0xA0312");
+    checkError("new Bsp3()", "0xA1312");
   }
 
   @Test
@@ -1198,7 +1198,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     add2scope(scope,bsp4);
 
     setFlatExpressionScopeSetter(scope);
-    checkError("new Bsp4(true, 4)", "0xA0312");
+    checkError("new Bsp4(true, 4)", "0xA1312");
   }
 
   @Test
