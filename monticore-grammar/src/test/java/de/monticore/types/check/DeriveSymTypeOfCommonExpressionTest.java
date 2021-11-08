@@ -633,7 +633,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidCallExpression() throws IOException {
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     init_advanced();
-    checkError("isNot()", "0xA1240");
+    checkError("isNot()", "0xA1242");
   }
 
   /**
@@ -1298,7 +1298,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidStaticType() throws IOException {
     init_static_example();
 
-    checkError("B.D", "0xA1317");
+    checkError("B.D", "0xA1303");
   }
 
   @Test
