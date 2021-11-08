@@ -69,7 +69,7 @@ public interface JsonElement {
    * @return this object as JsonArray if it is of this type and throws an error otherwise.
    */
   default public JsonArray getAsJsonArray() {
-    Log.error("0xA0606 "+ this + " is not a Json Array!");
+    Log.error("0xA1606 "+ this + " is not a Json Array!");
     return null;
   }
   

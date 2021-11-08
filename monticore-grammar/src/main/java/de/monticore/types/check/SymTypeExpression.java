@@ -176,7 +176,7 @@ public abstract class SymTypeExpression {
       List<TypeVarSymbol> typeVariableArguments = getTypeInfo().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
-        Log.error("0xA0300 Different number of type arguments in TypeSymbol and SymTypeExpression");
+        Log.error("0xA1300 Different number of type arguments in TypeSymbol and SymTypeExpression");
       }
       for(int i=0;i<typeVariableArguments.size();i++){
         //put the type arguments in a map TypeVarSymbol -> SymTypeExpression
@@ -208,7 +208,7 @@ public abstract class SymTypeExpression {
             if(equal){
               matchingMethods.remove(matchingMethods.get(j));
             }else{
-              Log.error("0xA0298 The types of the return type and the parameters of the methods have to be the same");
+              Log.error("0xA2298 The types of the return type and the parameters of the methods have to be the same");
             }
           }
         }
@@ -308,7 +308,7 @@ public abstract class SymTypeExpression {
       List<TypeVarSymbol> typeVariableArguments = getTypeInfo().getTypeParameterList();
       Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
-        Log.error("0xA0301 Different number of type arguments in TypeSymbol and SymTypeExpression");
+        Log.error("0xA1301 Different number of type arguments in TypeSymbol and SymTypeExpression");
       }
       for(int i=0;i<typeVariableArguments.size();i++){
         //put the type arguments in a map TypeVarSymbol -> SymTypeExpression
@@ -326,7 +326,7 @@ public abstract class SymTypeExpression {
         if(fieldList.get(i).getType().print().equals(fieldList.get(j).getType().print())){
           fieldList.remove(fieldList.get(j));
         }else{
-          Log.error("0xA0299 The types of the fields have to be same");
+          Log.error("0xA2299 The types of the fields have to be same");
         }
       }
     }

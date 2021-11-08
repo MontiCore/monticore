@@ -18,7 +18,7 @@ public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_RepC
         node.getRhs().accept(v.getTraverser());
 
         if (v.getNegElements() > 0) {
-            Log.error(String.format("0xF0C07${service.getGeneratedErrorCode(classname + prod.getName())} Negative Elements must not be created or added.",
+            Log.error(String.format("0xF0C16${service.getGeneratedErrorCode(classname + prod.getName())} Negative Elements must not be created or added.",
                 node.getClass().getName()),
                 node.get_SourcePositionStart());
         }

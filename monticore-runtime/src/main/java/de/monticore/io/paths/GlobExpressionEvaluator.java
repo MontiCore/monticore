@@ -66,7 +66,7 @@ public class GlobExpressionEvaluator extends SimpleFileVisitor<Path> {
       Files.walkFileTree(startingPath, this);
     }
     catch (IOException e) {
-      Log.error("0x1C190 Error while traversing the file system!", e);
+      Log.error("0x1C193 Error while traversing the file system!", e);
       e.printStackTrace();
       return null;
     }

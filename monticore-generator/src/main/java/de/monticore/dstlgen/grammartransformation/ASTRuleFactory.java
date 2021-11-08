@@ -284,7 +284,7 @@ public class ASTRuleFactory {
       return ggtp.parseMCBasicGenericType(type).get();
     }
     catch (IOException e) {
-      throw new RuntimeException("0xF1002 Unable to create GenericType for " + type);
+      throw new RuntimeException("0xF1006 Unable to create GenericType for " + type);
     }
   }
 
@@ -294,7 +294,7 @@ public class ASTRuleFactory {
       return ggtp.parse_StringMCReturnType(type).get();
     }
     catch (IOException e) {
-      throw new RuntimeException("0xF1002 Unable to create GenericType for " + type);
+      throw new RuntimeException("0xF1007 Unable to create GenericType for " + type);
     }
   }
 

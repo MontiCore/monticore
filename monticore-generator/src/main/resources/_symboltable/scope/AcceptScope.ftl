@@ -3,5 +3,5 @@ ${tc.signature("visitorTypeName", "scopeName", "superVisitorTypeName", "errorCod
   if (visitor instanceof ${visitorTypeName}) {
     accept((${visitorTypeName}) visitor);
   } else {
-    throw new UnsupportedOperationException("0xA7010${errorCode} Scope node type ${scopeName} expected a visitor of type ${visitorTypeName}, but got ${superVisitorTypeName}.");
+    throw new UnsupportedOperationException("0xA7012${errorCode} Scope node type ${scopeName} expected a visitor of type ${visitorTypeName}, but got ${superVisitorTypeName}.");
   }

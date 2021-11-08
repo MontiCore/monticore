@@ -100,7 +100,7 @@ public class TypeCheck {
     ast.accept(iSynthesize.getTraverser());
     Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
-      Log.error("0xE9FD5 Internal Error: No SymType for return type: "
+      Log.error("0xE9FD9 Internal Error: No SymType for return type: "
               + ast.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
               + ". Probably TypeCheck mis-configured.");
     }
