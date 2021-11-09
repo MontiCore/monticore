@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-  //id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+  id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
   id "org.sonarqube" version "3.0"
   id "jacoco"
   id 'org.barfuin.gradle.jacocolog' version '1.2.3'
@@ -46,17 +46,11 @@ allprojects {
     mavenCentral()
   }
 
-  configurations {
-    ecj
-  }
-  dependencies {
-    ecj 'org.eclipse.jdt:ecj:3.26.0'
-  }
 }
 
 subprojects {
   apply plugin: 'java-library'
-  //apply plugin : 'de.set.ecj'
+  apply plugin : 'de.set.ecj'
   
   tasks.withType(Test) {
     useJUnit()
