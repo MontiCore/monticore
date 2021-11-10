@@ -1,0 +1,3 @@
+abstract void method () {
+  return;
+    }

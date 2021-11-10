@@ -1,0 +1,1 @@
+native strictfp method() {}

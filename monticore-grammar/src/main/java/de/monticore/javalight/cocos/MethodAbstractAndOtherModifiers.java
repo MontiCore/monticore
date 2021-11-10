@@ -12,7 +12,6 @@ public class MethodAbstractAndOtherModifiers implements JavaLightASTMethodDeclar
 
   public static final String ERROR_CODE = "0xA0802";
 
-
   public static final String ERROR_MSG_FORMAT = " The abstract method %s must be public. ";
 
   //JLS3 8.4.3-3

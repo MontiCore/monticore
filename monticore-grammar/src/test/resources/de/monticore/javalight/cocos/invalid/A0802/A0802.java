@@ -1,1 +1,1 @@
-abstract private a() {}
+private abstract  a() {}
