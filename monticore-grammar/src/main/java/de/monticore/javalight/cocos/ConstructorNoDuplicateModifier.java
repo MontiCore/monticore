@@ -3,6 +3,15 @@ package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._ast.ASTConstructorDeclaration;
 import de.monticore.javalight._cocos.JavaLightASTConstructorDeclarationCoCo;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.prettyprint.JavaLightFullPrettyPrinter;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ConstructorNoDuplicateModifier implements JavaLightASTConstructorDeclarationCoCo {
 
@@ -10,32 +19,36 @@ public class ConstructorNoDuplicateModifier implements JavaLightASTConstructorDe
 
   public static final String ERROR_MSG_FORMAT = " Formal parameter '%s' is already declared in constructor '%s'. ";
 
-  @Override
-  public void check(ASTConstructorDeclaration node) {
-
+  protected String prettyprint(ASTMCModifier a) {
+    JavaLightFullPrettyPrinter printer = new JavaLightFullPrettyPrinter(new IndentPrinter());
+    a.accept(printer.getTraverser());
+    return printer.getPrinter().getContent();
   }
 
-/*  // JLS3 8.8.3-1
-  @Override
-  public void check(ASTConstructorDeclaration node) {
-    List<String> modifiers = new ArrayList<>();
- //print the modifier -> add to list
-    for (ASTModifier modifier : node.getMCModifierList()) {
-      if (modifier instanceof ASTPrimitiveModifier) {
-        modifier.accept(typeResolver);
-        JavaTypeSymbolReference modType = typeResolver.getResult()
-            .get();
-        if (modifiers.contains(modType.getName())) {
-          Log.error("0xA0311 modifier '" + modType.getName()
-              + "' is mentioned more than once in the constructor declaration '" + node.getName()
-              + "'.", node.get_SourcePositionStart());
-        }
-        else {
-          modifiers.add(modType.getName());
-        }
+  public Set<String> findDuplicates(List<String> listContainingDuplicates) {
+    final Set<String> setToReturn = new HashSet<>();
+    final Set<String> set1 = new HashSet<>();
+
+    for (String yourString : listContainingDuplicates) {
+      if (!set1.add(yourString)) {
+        setToReturn.add(yourString);
       }
     }
+    return setToReturn;
   }
-*/
 
+  // JLS3 8.8.3-1
+  @Override
+  public void check(ASTConstructorDeclaration node) {
+    //print the modifier -> add to list
+    List<String> listModifier = new ArrayList<>();
+    for (ASTMCModifier modifier : node.getMCModifierList()) {
+      listModifier.add(prettyprint(modifier));
+    }
+    Set<String> duplicates = findDuplicates(listModifier);
+    for (String duplicate : duplicates) {
+      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, duplicate, node.getName()),
+          node.get_SourcePositionStart());
+    }
+  }
 }

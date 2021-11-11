@@ -1,1 +1,1 @@
-private abstract  a() {}
+private abstract void a(){}

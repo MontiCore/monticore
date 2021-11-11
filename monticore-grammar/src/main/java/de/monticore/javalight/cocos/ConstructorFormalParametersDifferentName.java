@@ -30,6 +30,5 @@ public class ConstructorFormalParametersDifferentName implements JavaLightASTCon
           }
         }
       }
-
     }
 }
