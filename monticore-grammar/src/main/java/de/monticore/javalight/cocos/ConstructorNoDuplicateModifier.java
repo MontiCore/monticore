@@ -15,9 +15,9 @@ import java.util.Set;
 
 public class ConstructorNoDuplicateModifier implements JavaLightASTConstructorDeclarationCoCo {
 
-  public static final String ERROR_CODE = "0xA0302";
+  public static final String ERROR_CODE = "0xA0808";
 
-  public static final String ERROR_MSG_FORMAT = " Formal parameter '%s' is already declared in constructor '%s'. ";
+  public static final String ERROR_MSG_FORMAT = " modifier '%s' is mentioned more than once in the constructor '%s'. ";
 
   protected String prettyprint(ASTMCModifier a) {
     JavaLightFullPrettyPrinter printer = new JavaLightFullPrettyPrinter(new IndentPrinter());

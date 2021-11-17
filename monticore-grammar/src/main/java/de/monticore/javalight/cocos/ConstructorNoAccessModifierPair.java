@@ -14,9 +14,9 @@ import java.util.List;
 
 public class ConstructorNoAccessModifierPair implements JavaLightASTConstructorDeclarationCoCo {
 
-  public static final String ERROR_CODE = "0xA0302";
+  public static final String ERROR_CODE = "0xA0809";
 
-  public static final String ERROR_MSG_FORMAT = " Formal parameter '%s' is already declared in constructor '%s'. ";
+  public static final String ERROR_MSG_FORMAT = " Invalid modifiers are mentioned in constructor's '%s' declaration.";
 
   protected String prettyprint(ASTMCModifier a) {
     JavaLightFullPrettyPrinter printer = new JavaLightFullPrettyPrinter(new IndentPrinter());
@@ -31,8 +31,8 @@ public class ConstructorNoAccessModifierPair implements JavaLightASTConstructorD
     for (ASTMCModifier modifier : node.getMCModifierList()) {
       listModifier.add(prettyprint(modifier));
     }
-    if ((listModifier.contains("public") && listModifier.contains("protected") && listModifier
-        .contains("private")) || (listModifier.contains("public") && listModifier.contains("protected"))
+    if ((listModifier.contains("public") && listModifier.contains("protected") && listModifier.contains("private"))
+        || (listModifier.contains("public") && listModifier.contains("protected"))
         || (listModifier.contains("public") && listModifier.contains("private"))
         || (listModifier.contains("protected") && listModifier.contains("private"))) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName(),

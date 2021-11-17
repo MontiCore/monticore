@@ -8,7 +8,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class ConstructorModifiersValid implements JavaLightASTConstructorDeclarationCoCo {
 
-  public static final String ERROR_CODE = "0xA0302";
+  public static final String ERROR_CODE = "0xA0820";
 
   public static final String ERROR_MSG_FORMAT = " a constructor cannot be declared 'abstract', 'final', 'static' or 'native'.";
 
