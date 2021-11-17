@@ -1,1 +1,1 @@
-native strictfp method() {}
+native strictfp void method() {}

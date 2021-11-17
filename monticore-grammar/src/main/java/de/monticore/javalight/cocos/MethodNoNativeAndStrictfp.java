@@ -15,11 +15,10 @@ public class MethodNoNativeAndStrictfp implements JavaLightASTMethodDeclarationC
   @Override
   public void check(ASTMethodDeclaration node) {
     if (node.isPresentSymbol()) {
-      JavaMethodSymbol methodSymbol = (JavaMethodSymbol) node.getSymbol();
+      JavaMethodSymbol methodSymbol = node.getSymbol();
       if (methodSymbol.isIsNative() && methodSymbol.isIsStrictfp()) {
-        Log.error(String.format(ERROR_CODE,ERROR_MESSAGE ,node.getName()),
+        Log.error(String.format(ERROR_CODE + ERROR_MESSAGE ,node.getName()),
             node.get_SourcePositionStart());
-
       }
     }
 

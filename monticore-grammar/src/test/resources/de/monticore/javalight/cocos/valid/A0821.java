@@ -1,1 +1,1 @@
-public const1(int i, boolean b) ;
+public const1(int i, boolean b){}

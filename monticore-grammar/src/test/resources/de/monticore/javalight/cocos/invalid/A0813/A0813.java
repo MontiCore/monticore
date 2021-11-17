@@ -1,1 +1,1 @@
-public int method(int[] ... x) {}
+public void method(int [] ... x) {}

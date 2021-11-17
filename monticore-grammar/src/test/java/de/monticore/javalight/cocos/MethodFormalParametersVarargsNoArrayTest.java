@@ -18,6 +18,4 @@ public class MethodFormalParametersVarargsNoArrayTest extends JavaLightCocoTest{
     testInvalid(fileName, "method", MethodFormalParametersVarargsNoArray.ERROR_CODE,
         String.format(MethodFormalParametersVarargsNoArray.ERROR_MESSAGE, "x", "method"), checker);
   }
-
-
 }
