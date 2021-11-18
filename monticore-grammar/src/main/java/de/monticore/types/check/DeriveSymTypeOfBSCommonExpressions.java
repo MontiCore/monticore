@@ -271,7 +271,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateBracketExpression(ASTBracketExpression expr, SymTypeExpression innerResult) {
-    return Optional.ofNullable(innerResult);
+    return Optional.of(innerResult);
   }
 
   /**

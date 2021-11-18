@@ -20,25 +20,24 @@ package de.monticore.expressions.cocos;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTExpressionCoCo;
-import de.monticore.types.check.IDerive;
-import de.monticore.types.check.SymTypeExpression;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.types.check.TypeCheck;
 
 import java.util.Optional;
 
 
 public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
 
-  public static final String ERROR_CODE = "0xA0513";
+  // The error message is thrown in typeCheck
+  // public static final String ERROR_CODE = "0xA0513";
 
-  public static final String ERROR_MSG_FORMAT = " No Type for Expression %s";
+  // public static final String ERROR_MSG_FORMAT = " No Type for Expression %s";
 
   protected Optional<ASTExpression> checkingNode = Optional.empty();
 
-  protected IDerive iDerive;
+  protected TypeCheck typeCheck;
 
-  public ExpressionValid(IDerive iDerive) {
-    this.iDerive = iDerive;
+  public ExpressionValid(TypeCheck typeCheck) {
+    this.typeCheck = typeCheck;
   }
 
   @Override
@@ -52,12 +51,7 @@ public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
   public void check(ASTExpression expr) {
     if (!checkingNode.isPresent()) {
       // TypeCheck
-      iDerive.init();
-      expr.accept(iDerive.getTraverser());
-      Optional<SymTypeExpression> result = iDerive.getResult();
-      if (!result.isPresent()) {
-        Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, expr));
-      }
+      typeCheck.typeOf(expr);
       checkingNode = Optional.of(expr);
     }
   }
