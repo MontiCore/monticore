@@ -595,4 +595,38 @@ public class GlobalExtensionManagement {
       Log.warn("0xA1036 Hook point '" + hookName + "' is already defined. It will be overwritten.");
     }
   }
+
+  /**
+   * Returns a new template hook point.
+   * It executes a template and injects the result at the hook point.
+   * @see TemplateHookPoint#TemplateHookPoint(String)
+   * @param template qualified name of the template
+   * @return the TemplateHookPoint
+   */
+  public TemplateHookPoint templateHP(String template) {
+    return new TemplateHookPoint(template.contains(".") ? template : template + ".ftl");
+  }
+
+  /**
+   * Returns a new string hook point.
+   * It injects the uninterpreted string value at the hook point.
+   * @see StringHookPoint#StringHookPoint(String)
+   * @param value the uninterpreted string value
+   * @return the StringHookPoint
+   */
+  public StringHookPoint stringHP(String value) {
+    return new StringHookPoint(value);
+  }
+
+  /**
+   * Returns a new template string hook point.
+   * It executes the statement as template content and injects the result at the hook point.
+   * @see TemplateStringHookPoint#TemplateStringHookPoint(String)
+   * @param statement the inlined template text
+   * @return the TemplateStringHookPoint
+   */
+  public TemplateStringHookPoint templateStringHP(String statement) throws IOException {
+    return new TemplateStringHookPoint(statement);
+  }
+
 }
