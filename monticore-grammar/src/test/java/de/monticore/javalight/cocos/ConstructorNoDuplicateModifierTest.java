@@ -17,7 +17,7 @@ public class ConstructorNoDuplicateModifierTest extends JavaLightCocoTest{
   @Test
   public void testInvalid() {
     testInvalid(fileName, "constructor", ConstructorNoDuplicateModifier.ERROR_CODE,
-        String.format(ConstructorNoDuplicateModifier.ERROR_MSG_FORMAT, " public ", "constructor"), checker);
+        String.format(ConstructorNoDuplicateModifier.ERROR_MSG_FORMAT, "public", "constructor"), checker);
   }
 
   @Test

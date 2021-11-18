@@ -21,7 +21,7 @@ public class ConstructorNoAccessModifierPair implements JavaLightASTConstructorD
   protected String prettyprint(ASTMCModifier a) {
     JavaLightFullPrettyPrinter printer = new JavaLightFullPrettyPrinter(new IndentPrinter());
     a.accept(printer.getTraverser());
-    return printer.getPrinter().getContent();
+    return printer.getPrinter().getContent().trim();
   }
   // JLS3 8.8.3-2
   @Override

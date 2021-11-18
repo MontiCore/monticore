@@ -22,7 +22,7 @@ public class ConstructorNoDuplicateModifier implements JavaLightASTConstructorDe
   protected String prettyprint(ASTMCModifier a) {
     JavaLightFullPrettyPrinter printer = new JavaLightFullPrettyPrinter(new IndentPrinter());
     a.accept(printer.getTraverser());
-    return printer.getPrinter().getContent();
+    return printer.getPrinter().getContent().trim();
   }
 
   public Set<String> findDuplicates(List<String> listContainingDuplicates) {
