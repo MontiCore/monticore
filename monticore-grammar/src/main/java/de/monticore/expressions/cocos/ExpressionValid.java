@@ -28,9 +28,6 @@ import java.util.Optional;
 public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
 
   // The error message is thrown in typeCheck
-  // public static final String ERROR_CODE = "0xA0513";
-
-  // public static final String ERROR_MSG_FORMAT = " No Type for Expression %s";
 
   protected Optional<ASTExpression> checkingNode = Optional.empty();
 
