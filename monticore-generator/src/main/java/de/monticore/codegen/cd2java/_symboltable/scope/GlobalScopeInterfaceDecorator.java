@@ -1,14 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
@@ -99,6 +97,7 @@ public class GlobalScopeInterfaceDecorator
         .addAllCDMembers(createResolveAdaptedSuperMethods())
         .addAllCDMembers(createResolveMethods(symbolClasses, definitionName))
         .addAllCDMembers(createSuperProdResolveMethods(definitionName))
+        .addCDMember(createLoadFileForModelNameMethod())
         .addAllCDMembers(createEnclosingScopeMethods(globalScopeName))
         .addCDMember(createGetNameMethod(globalScopeName))
         .addCDMember(createIsPresentNameMethod())
@@ -284,6 +283,11 @@ public class GlobalScopeInterfaceDecorator
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint(TEMPLATE_PATH + "ResolveMany4GlobalScope", className, fullSymbolName));
     return method;
+  }
+
+  protected ASTCDMethod createLoadFileForModelNameMethod() {
+    ASTCDParameter modelNameParameter = cdParameterFacade.createParameter(String.class, "modelName");
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), "loadFileForModelName", modelNameParameter);
   }
 
   protected ASTCDMethod createLoadModelsForMethod(String className,
