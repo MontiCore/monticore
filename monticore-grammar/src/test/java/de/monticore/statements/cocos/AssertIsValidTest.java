@@ -31,6 +31,7 @@ public class AssertIsValidTest extends CocoTest{
     TestMCAssertStatementsMill.reset();
     TestMCAssertStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker.setTraverser(TestMCAssertStatementsMill.traverser());
     checker.addCoCo(new AssertIsValid(new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
     
   }

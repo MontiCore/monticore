@@ -5,6 +5,7 @@ import de.monticore.grammar.cocos.CocoTest;
 import de.monticore.statements.mccommonstatements.cocos.ThrowIsValid;
 import de.monticore.statements.mcexceptionstatements._cocos.MCExceptionStatementsCoCoChecker;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
+import de.monticore.statements.testmcassertstatements.TestMCAssertStatementsMill;
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -34,11 +35,14 @@ public class ThrowIsValidTest extends CocoTest {
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker.setTraverser(TestMCExceptionStatementsMill.traverser());
     checker.addCoCo(new ThrowIsValid(new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("A").addSuperTypes(sType).build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("java.lang.Throwable").build());
-    
+    TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("a").setType(sTypeA).build());
+
   }
   
   public void checkValid(String expressionString) throws IOException {
@@ -54,6 +58,6 @@ public class ThrowIsValidTest extends CocoTest {
   
   @Test
   public void testValid() throws IOException{
-    checkValid("throw new A();");
+   // checkValid("throw a;");
   }
 }

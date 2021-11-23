@@ -2,5 +2,6 @@
 
 package de.monticore.statements;
 
-grammar TestMCExceptionStatements extends de.monticore.statements.MCExceptionStatements, de.monticore.literals.MCCommonLiterals {
+grammar TestMCExceptionStatements extends de.monticore.statements.MCExceptionStatements, de.monticore.literals.MCCommonLiterals, de.monticore.types.MCCollectionTypes, de.monticore.symbols.OOSymbols {
+
 }
