@@ -10,7 +10,7 @@ ${tc.signature("scopeInterface")}
   final Deque<String> nameParts = new ArrayDeque<>();
     nameParts.addFirst(name);
 
-    de.monticore.symboltable.IScope optCurrentScope = enclosingScope;
+    de.monticore.symboltable.IScope optCurrentScope = getEnclosingScope();
 
   while (optCurrentScope != null) {
   final de.monticore.symboltable.IScope currentScope = optCurrentScope;
