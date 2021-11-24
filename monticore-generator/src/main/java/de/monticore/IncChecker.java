@@ -17,7 +17,7 @@ public class IncChecker {
   /**
    * Provides the logic for the incremental build checks
    * @param incGenGradleCheckFile the IncGenGradleCheck.txt file
-   * @param modelName name of the model (such as grammar), used for logging
+   * @param modelName name of the model (such as name of the grammar), used for logging
    * @param logger logger
    * @param fileExtension file extension (such as "mc4") of the input model files (must be equal to the one used in the IncGenGradleCheck)
    * @return false, if the input files have changed and the task should not be skipped
@@ -29,7 +29,7 @@ public class IncChecker {
       StringBuilder newFiles = new StringBuilder();
       // check for considered but deleted files
       StringBuilder removedFiles = new StringBuilder();
-      // check whether local super grammars have changed
+      // consider every file referenced in the inc gen gradle check file
       for (String line : Files.readLines(incGenGradleCheckFile, Charset.defaultCharset())) {
         if (line.startsWith("gen:") && new File(line.substring(4)).exists()) {
           newFiles.append(line);
@@ -37,17 +37,17 @@ public class IncChecker {
         if (line.startsWith("hwc:") && !new File(line.substring(4)).exists()) {
           removedFiles.append(line);
         }
-        // check whether local super grammars have changed
+        // check whether local modals (such as super grammars) have changed
         if (line.startsWith(fileExtension + ":") && line.length() > 33 + fileExtensionLength) {
           // Since the path can also contain spaces, do not use tokenize
           String inputModelString = line.substring(fileExtensionLength + 1, line.length() - 32);
           String checksum = line.substring(line.length() - 33);
           File inputModelFile = new File(inputModelString);
-          if (!inputModelFile.exists()) { // deleted grammar -> generate
+          if (!inputModelFile.exists()) { // deleted model -> generate
             logger.info("Regenerating Code for " + modelName + " : Input Model " + inputModelString + " does so longer exist.");
             return false;
           } else if (!Files.asByteSource(inputModelFile).hash(Hashing.md5()).toString().equals(checksum.trim())) {
-            // changed grammar -> generate
+            // changed model -> generate
             logger.info("Regenerating Code for " + modelName + " : Input Model " + inputModelString + " has changed");
             return false;
           }
