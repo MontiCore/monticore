@@ -1,14 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import de.monticore.cd.facade.CDParameterFacade;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -18,11 +16,13 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,6 +58,8 @@ public class GlobalScopeInterfaceDecorator
    */
   protected boolean isGlobalScopeInterfaceTop = false;
 
+  protected static final String PUTSYMBOLDESER = "put%sSymbolDeSer";
+
   public GlobalScopeInterfaceDecorator(final GlobalExtensionManagement glex,
                                        final SymbolTableService symbolTableService,
                                        final MethodDecorator methodDecorator) {
@@ -71,6 +73,8 @@ public class GlobalScopeInterfaceDecorator
   @Override
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     String globalScopeInterfaceName = symbolTableService.getGlobalScopeInterfaceSimpleName();
+
+    List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
 
     List<ASTCDType> symbolClasses = symbolTableService
         .getSymbolDefiningProds(input.getCDDefinition());
@@ -102,6 +106,8 @@ public class GlobalScopeInterfaceDecorator
         .addCDMember(createGetNameMethod(globalScopeName))
         .addCDMember(createIsPresentNameMethod())
         .addCDMember(creatCheckIfContinueAsSubScopeMethod())
+        .addAllCDMembers(createDeSerMapMethods())
+        .addAllCDMembers(createPutDeSerMethods(symbolProds))
         .addCDMember(createGetRealThisMethod(globalScopeInterfaceName))
         .build();
   }
@@ -367,6 +373,65 @@ public class GlobalScopeInterfaceDecorator
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "checkIfContinueAsSubScope", modelNameParameter);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return false;"));
     return method;
+  }
+
+  /**
+   * DeSer methods
+   */
+
+  protected Collection<? extends ASTCDMethod> createDeSerMapMethods() {
+    List<ASTCDMethod> deSerMapMethods = new ArrayList<>();
+    ASTCDMethod mapAccessor = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), getMCTypeFacade().createQualifiedType("Map<String," + I_SYMBOL_DE_SER + ">"), "getSymbolDeSers");
+    deSerMapMethods.add(mapAccessor);
+
+    // Create simple putDeSer(String key, IDeSer value)
+    ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
+    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER), "value");
+    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "putSymbolDeSer", key, value);
+    replaceTemplate(EMPTY_BODY, putMethod, new StringHookPoint("getSymbolDeSers()" + ".put(key, value);"));
+    deSerMapMethods.add(putMethod);
+
+    // Create simple value getDeSer(String key)
+    key = getCDParameterFacade().createParameter(String.class, "key");
+    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER);
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "getSymbolDeSer", key);
+    replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return " + "getSymbolDeSers()" + ".get(key);"));
+    deSerMapMethods.add(getMethod);
+
+    return deSerMapMethods;
+  }
+
+  protected List<ASTCDMethod> createPutDeSerMethods(List<? extends ASTCDType> symbolProds) {
+    List<ASTCDMethod> deSerMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, KIND_VAR);
+
+    for (ASTCDType symbolProd : symbolProds) {
+      String className = symbolTableService.removeASTPrefix(symbolProd);
+      String methodName = String.format(PUTSYMBOLDESER, className);
+      String deSerName = symbolTableService.getSymbolDeSerFullName(symbolProd);
+
+      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), methodName, nameParameter);
+      String hook = String.format("putSymbolDeSer(kind, new %s());", deSerName);
+      this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
+
+      deSerMethods.add(method);
+    }
+
+    for (DiagramSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
+      symbolTableService.getSymbolDefiningProds((ASTCDDefinition) cdSymbol.getAstNode()).forEach(s -> {
+        String className = symbolTableService.removeASTPrefix(s);
+        String methodName = String.format(PUTSYMBOLDESER, className);
+        String deSerName = symbolTableService.getSymbolDeSerFullName(s, cdSymbol);
+
+        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), methodName, nameParameter);
+        String hook = String.format("putSymbolDeSer(kind, new %s());", deSerName);
+        this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
+
+        deSerMethods.add(method);
+      });
+    }
+
+    return deSerMethods;
   }
 
   public boolean isGlobalScopeInterfaceTop() {
