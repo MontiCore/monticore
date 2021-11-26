@@ -67,16 +67,20 @@ public class IfConditionHasBooleanTypeTest extends CocoTest {
   
   @Test
   public void testValid() throws IOException{
+    
     checkValid("if(true){}");
     checkValid("if(1<2){}");
     checkValid("if(!true&&(5==6)){}");
     checkValid("if((1<2)||(5%2==1)){}");
+  
   }
   
   @Test
   public void testInvalid()throws IOException{
+    
     checkInvalid("if(1+1){}");
     checkInvalid("if('c'+10){}");
     checkInvalid("if(1.2-5.5){}");
+    
   }
 }

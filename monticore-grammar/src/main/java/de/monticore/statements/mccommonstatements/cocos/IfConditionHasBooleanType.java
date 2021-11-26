@@ -23,6 +23,7 @@ public class IfConditionHasBooleanType implements MCCommonStatementsASTIfStateme
   //JLS3 14.9-1
   @Override
   public void check(ASTIfStatement node) {
+  
     SymTypeExpression result = typeCheck.typeOf(node.getCondition());
     
     if(!TypeCheck.isBoolean(result)){

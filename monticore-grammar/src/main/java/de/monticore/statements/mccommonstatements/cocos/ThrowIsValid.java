@@ -25,8 +25,8 @@ public class ThrowIsValid implements MCExceptionStatementsASTThrowStatementCoCo{
   @Override
   public void check(ASTThrowStatement node) {
     
-    
     SymTypeExpression throwable = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", node.getEnclosingScope());
+    
     if(!TypeCheck.isSubtypeOf(typeCheck.typeOf(node.getExpression()),throwable)){
       Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }

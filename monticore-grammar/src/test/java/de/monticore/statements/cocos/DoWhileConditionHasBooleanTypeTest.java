@@ -2,11 +2,11 @@
 package de.monticore.statements.cocos;
 
 import de.monticore.grammar.cocos.CocoTest;
-import de.monticore.statements.mcassertstatements._cocos.MCAssertStatementsCoCoChecker;
-import de.monticore.statements.mccommonstatements.cocos.AssertIsValid;
+import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsCoCoChecker;
+import de.monticore.statements.mccommonstatements.cocos.DoWhileConditionHasBooleanType;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
-import de.monticore.statements.testmcassertstatements.TestMCAssertStatementsMill;
-import de.monticore.statements.testmcassertstatements._parser.TestMCAssertStatementsParser;
+import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
+import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
 import de.monticore.types.check.TypeCheck;
@@ -17,27 +17,28 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class AssertIsValidTest extends CocoTest{
+public class DoWhileConditionHasBooleanTypeTest extends CocoTest {
   
-  private static final MCAssertStatementsCoCoChecker checker = new MCAssertStatementsCoCoChecker();
+  
+  private static final MCCommonStatementsCoCoChecker checker = new MCCommonStatementsCoCoChecker();
   
   @BeforeClass
   public static void disableFailQuick(){
-  
+    
     Log.enableFailQuick(false);
-    TestMCAssertStatementsMill.reset();
-    TestMCAssertStatementsMill.init();
+    TestMCCommonStatementsMill.reset();
+    TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    checker.setTraverser(TestMCAssertStatementsMill.traverser());
-    checker.addCoCo(new AssertIsValid(new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new DoWhileConditionHasBooleanType(new TypeCheck(null,new DeriveSymTypeOfCombineExpressionsDelegator())));
     
   }
   
   public void checkValid(String expressionString) throws IOException {
-  
-    TestMCAssertStatementsParser parser = new TestMCAssertStatementsParser();
+    
+    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
     Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
     assertTrue(optAST.isPresent());
     Log.getFindings().clear();
@@ -48,7 +49,7 @@ public class AssertIsValidTest extends CocoTest{
   
   public void checkInvalid(String expressionString) throws IOException {
     
-    TestMCAssertStatementsParser parser = new TestMCAssertStatementsParser();
+    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
     Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
     assertTrue(optAST.isPresent());
     Log.getFindings().clear();
@@ -60,18 +61,19 @@ public class AssertIsValidTest extends CocoTest{
   @Test
   public void testValid() throws IOException {
     
-    checkValid("assert 5 >= 0;");
-    checkValid("assert !(true||false)&&(5<6);");
+    checkValid("do{}while(5>6);");
+    checkValid("do{}while(true||false);");
+    checkValid("do{}while(!true&&(5==6));");
     
   }
   
   @Test
   public void testInvalid() throws IOException {
     
-    checkInvalid("assert 5 >= 0: 1+1;");
-    checkInvalid("assert 4;");
-    checkInvalid("assert 'c';");
-    
+    checkInvalid("do{}while(5+5);");
+    checkInvalid("do{}while('c');");
+    checkInvalid("do{}while(1.2-3.4);");
+  
   }
   
 }

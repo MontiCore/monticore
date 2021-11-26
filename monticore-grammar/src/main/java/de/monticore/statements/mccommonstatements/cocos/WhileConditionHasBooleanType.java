@@ -19,7 +19,6 @@ public class WhileConditionHasBooleanType implements MCCommonStatementsASTWhileS
     this.typeCheck = typeCheck;
   }
   
-  
   //JLS3 14.12-1
   @Override
   public void check(ASTWhileStatement node) {
