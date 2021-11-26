@@ -34,7 +34,7 @@ public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_PatC
         if (node.isPresent${Name}()) {
             ASTTfIdentifier tfIdentifier = node.get${Name}();
             if (tfIdentifier.isPresentNewIdentifier() && tfIdentifier.getNewIdentifier().equals("$_")) {
-                Log.error(String.format("0xF0C15${service.getGeneratedErrorCode(classname + prod.getName())} Schema variables on the RHS of replacements must not be anonymous.",
+                Log.error(String.format("0xF0C19${service.getGeneratedErrorCode(classname + prod.getName())} Schema variables on the RHS of replacements must not be anonymous.",
                     node.getClass().getName()),
                     node.get${Name}().get_SourcePositionStart());
             }

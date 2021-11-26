@@ -158,7 +158,7 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     ASTMCType startProdType = getMCTypeFacade().createQualifiedType(startProd.get());
     ASTCDParameter parameter = getCDParameterFacade().createParameter(startProdType, "node");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "completeSymbolTable", parameter);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1058" + generatedError + " This symbol table phase is not implemented yet.\");"));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1158" + generatedError + " This symbol table phase is not implemented yet.\");"));
     return method;
   }
 

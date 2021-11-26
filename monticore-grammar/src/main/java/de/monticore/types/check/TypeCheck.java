@@ -100,7 +100,7 @@ public class TypeCheck {
     ast.accept(iSynthesize.getTraverser());
     Optional<SymTypeExpression> result = iSynthesize.getResult();
     if(!result.isPresent()) {
-      Log.error("0xE9FD5 Internal Error: No SymType for return type: "
+      Log.error("0xE9FD9 Internal Error: No SymType for return type: "
               + ast.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
               + ". Probably TypeCheck mis-configured.");
     }
@@ -311,6 +311,25 @@ public class TypeCheck {
       for (SymTypeExpression type : subType.getTypeInfo().getSuperTypesList()) {
         if(type.print().equals(superType.print())){
           return true;
+        }
+        if(type.isGenericType() && superType.isGenericType()){
+          //TODO check recursively, this is only a hotfix, see #2977
+          SymTypeOfGenerics typeGen = (SymTypeOfGenerics) type;
+          SymTypeOfGenerics supTypeGen = (SymTypeOfGenerics) superType;
+          if(typeGen.printTypeWithoutTypeArgument().equals(supTypeGen.printTypeWithoutTypeArgument())
+          && typeGen.sizeArguments() == supTypeGen.sizeArguments()){
+            boolean success = true;
+            for(int i = 0; i<typeGen.sizeArguments(); i++){
+              if(!typeGen.getArgument(i).isTypeVariable()){
+                if(!typeGen.getArgument(i).print().equals(supTypeGen.getArgument(i).print())){
+                  success = false;
+                }
+              }
+            }
+            if(success){
+              return true;
+            }
+          }
         }
       }
     }

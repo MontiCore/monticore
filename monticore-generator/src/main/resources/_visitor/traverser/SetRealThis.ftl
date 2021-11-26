@@ -2,7 +2,7 @@
 ${tc.signature("traverserType", "traverserName", "inheritedTraversersSimpleNames", "generatedErrorCode")}
 if (this.realThis != realThis) {
   if (!(realThis instanceof ${traverserType})) {
-  Log.error("0xA7111${generatedErrorCode} realThis of ${traverserType} must be ${traverserType} itself.");
+  Log.error("0xA7114${generatedErrorCode} realThis of ${traverserType} must be ${traverserType} itself.");
   }
   this.realThis = (${traverserType}) realThis;
   // register the known delegates to the realThis (and therby also set their new realThis)

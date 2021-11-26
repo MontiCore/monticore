@@ -9,6 +9,7 @@ package de.monticore.visitor;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.SymbolWithScopeOfUnknownKind;
 
 public interface IHandler {
 
@@ -26,7 +27,22 @@ public interface IHandler {
 
   default void handle(IScope scope) {
     getTraverser().visit(scope);
+    getTraverser().traverse(scope);
     getTraverser().endVisit(scope);
   }
+
+  default void traverse(IScope scope) {
+    for (SymbolWithScopeOfUnknownKind s : scope.getLocalUnknownSymbols()) {
+      s.accept(getTraverser());
+    }
+  }
+
+  default void handle(SymbolWithScopeOfUnknownKind symbol) {
+    getTraverser().visit(symbol);
+    getTraverser().traverse(symbol);
+    getTraverser().endVisit(symbol);
+  }
+
+  default void traverse(SymbolWithScopeOfUnknownKind symbol) {}
 
 }

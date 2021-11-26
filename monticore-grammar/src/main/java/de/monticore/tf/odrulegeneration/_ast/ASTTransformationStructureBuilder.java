@@ -24,22 +24,22 @@ public class ASTTransformationStructureBuilder extends ASTTransformationStructur
 
         if (!isValid()) {
             if (r__package == null) {
-                Log.error("0xA7222 r__package of type String must not be null");
+                Log.error("0xA7230 r__package of type String must not be null");
             }
             if (classname == null) {
-                Log.error("0xA7222 classname of type String must not be null");
+                Log.error("0xA7231 classname of type String must not be null");
             }
             if (pattern == null) {
-                Log.error("0xA7222 pattern of type de.monticore.tf.odrulegeneration._ast.ASTPattern must not be null");
+                Log.error("0xA7232 pattern of type de.monticore.tf.odrulegeneration._ast.ASTPattern must not be null");
             }
             if (replacement == null) {
-                Log.error("0xA7222 replacement of type de.monticore.tf.odrulegeneration._ast.ASTReplacement must not be null");
+                Log.error("0xA7233 replacement of type de.monticore.tf.odrulegeneration._ast.ASTReplacement must not be null");
             }
             if (constraintExpression == null) {
-                Log.error("0xA7222 constraintExpression of type String must not be null");
+                Log.error("0xA7234 constraintExpression of type String must not be null");
             }
             if (doStatement == null) {
-                Log.error("0xA7222 doStatement of type String must not be null");
+                Log.error("0xA7235 doStatement of type String must not be null");
             }
             if (undoStatement == null) {
                 Log.error("0xA7222 undoStatement of type String must not be null");

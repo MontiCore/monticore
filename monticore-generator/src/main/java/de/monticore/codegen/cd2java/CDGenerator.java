@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum ._ast.*;
 import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;

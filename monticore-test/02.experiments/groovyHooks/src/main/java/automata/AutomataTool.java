@@ -32,10 +32,10 @@ public class AutomataTool {
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
-      Log.error("0xEE840 Model could not be parsed.");
+      Log.error("0xEE851 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("0xEE640 Failed to parse " + model, e);
+      Log.error("0xEE650 Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

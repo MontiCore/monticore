@@ -715,7 +715,7 @@ public class ProductionFactory {
               .get();
     } catch (IOException e) {
       throw new RuntimeException(
-              "0xF1001 Unable to create Interface prod for" + tfReplacementRule);
+              "0xF1005 Unable to create Interface prod for" + tfReplacementRule);
     }
   }
 

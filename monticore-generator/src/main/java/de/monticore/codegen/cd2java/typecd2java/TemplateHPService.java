@@ -9,6 +9,10 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 
+/**
+ * @deprecated Methods have been moved to the {@link de.monticore.generating.templateengine.GlobalExtensionManagement}
+ */
+@Deprecated
 public class TemplateHPService {
 
   public HookPoint templateHP(String template) {

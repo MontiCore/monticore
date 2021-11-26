@@ -45,6 +45,7 @@ allprojects {
     }
     mavenCentral()
   }
+
 }
 
 subprojects {
@@ -92,6 +93,10 @@ subprojects {
     options.warnings = false
     options.fork = true
     options.headerOutputDirectory.convention(null)
+    options.forkOptions.with {
+      executable = 'java'
+      jvmArgs = ['-classpath', project.configurations.ecj.asPath, 'org.eclipse.jdt.internal.compiler.batch.Main', '-nowarn', "-Xmx2048m"]
+    }
   }
   java {
     withSourcesJar()

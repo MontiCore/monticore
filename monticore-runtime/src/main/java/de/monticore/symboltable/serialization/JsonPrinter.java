@@ -2,11 +2,19 @@
 package de.monticore.symboltable.serialization;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.serialization.json.JsonArray;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonElementFactory;
+import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Optional;
 import java.util.function.Function;
+
+import static de.monticore.symboltable.serialization.json.JsonElementFactory.*;
 
 /**
  * Facade for the {@link IndentPrinter} that is capable of printing JSON syntax only. It hides
@@ -15,31 +23,20 @@ import java.util.function.Function;
  */
 public class JsonPrinter {
 
-  protected boolean DEFAULT_BOOLEAN = false;
+  public static boolean DEFAULT_BOOLEAN = false;
 
-  protected int DEFAULT_NUMBER = 0;
+  public static int DEFAULT_NUMBER = 0;
 
-  protected String DEFAULT_STRING = "";
+  public static String DEFAULT_STRING = "";
 
   protected static boolean enableIndentation = false;
 
-  protected boolean serializeDefaults;
+  protected static boolean serializeDefaults = false;
 
-  protected IndentPrinter printer;
+  protected Deque<JsonElement> currElements;
 
-  protected boolean isFirstAttribute;
-
-  protected int nestedArrayDepth;
-
-  protected int nestedObjectDepth;
-
-  protected boolean indentBeforeNewLine;
-
-  protected boolean isInEmptyArray = false;
-
-  protected String arrayBeginBuffer;
-
-  protected String objectBeginBuffer;
+  //denotes the root object or array, otherwise it is empty
+  protected Optional<JsonElement> root;
 
   /**
    * Constructor for de.monticore.symboltable.serialization.JsonPrinter
@@ -47,12 +44,10 @@ public class JsonPrinter {
    * @param serializeDefaults
    */
   public JsonPrinter(boolean serializeDefaults) {
-    this.serializeDefaults = serializeDefaults;
-    this.printer = new IndentPrinter();
-    this.isFirstAttribute = true;
-    this.nestedArrayDepth = 0;
-    this.nestedObjectDepth = 0;
-    this.indentBeforeNewLine = false;
+    this.currElements = new ArrayDeque<>();
+    this.root = Optional.empty();
+    JsonPrinter.serializeDefaults = serializeDefaults;
+    JsonElementFactory.setInstance(new JsonElementFactory());
   }
 
   /**
@@ -87,144 +82,93 @@ public class JsonPrinter {
   /**
    * @return serializeDefaults
    */
-  public boolean isSerializingDefaults() {
+  public static boolean isSerializingDefaults() {
     return serializeDefaults;
   }
 
   /**
    * @param serializeDefaults
    */
-  public void setSerializeDefaults(boolean serializeDefaults) {
-    this.serializeDefaults = serializeDefaults;
-  }
-
-  /**
-   * returns true, if the JsonPrinter is in a state in which at least
-   * one object has been opened that is not closed yet.
-   *
-   * @return
-   */
-  public boolean isInObject() {
-    return nestedObjectDepth > 0;
+  public static void setSerializeDefaults(boolean serializeDefaults) {
+    JsonPrinter.serializeDefaults = serializeDefaults;
   }
 
   /**
    * Prints the begin of an object in Json notation.
    */
   public void beginObject() {
-    printBufferedBeginArray();
-    printCommaIfNecessary();
-    print("{");
-    isFirstAttribute = true;
-    nestedObjectDepth++;
-    indentBeforeNewLine = true;
+    if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
+      Log.error("0xA0600 JsonPrinter detected an invalid nesting of Json. "
+          + "A JSON object within a JSON object must be a member!");
+    }
+    else {
+      currElements.push(createJsonObject());
+      if (!root.isPresent()) {
+        root = Optional.of(currElements.peek());
+      }
+    }
   }
 
   /**
    * Prints the begin of an object in Json notation as member or the current object.
    */
   public void beginObject(String kind) {
-    printCommaIfNecessary();
-    print("\"");
-    print(kind);
-    if (isIndentationEnabled()) {
-      print("\": {");
-    }
-    else {
-      print("\":{");
-    }
-    isFirstAttribute = true;
-    nestedObjectDepth++;
-    indentBeforeNewLine = true;
+    JsonObject o = createJsonObject();
+    getParentObject().putMember(kind, o);
+    currElements.push(o);
   }
 
   /**
    * Prints the end of an object in Json notation.
    */
   public void endObject() {
-    println("");
-    print("}");
-    if (0 == nestedObjectDepth) {
-      isFirstAttribute = true;
-    }
-    nestedObjectDepth--;
-    unindent();
-  }
-
-  /**
-   * Prints the beginning of a collection in Json notation as member or the current object.
-   */
-  public void beginArray(String kind) {
-    printBufferedBeginArray();
-    StringBuilder sb = new StringBuilder();
-    if (!isFirstAttribute) {
-      sb.append(",");
+    if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
+      JsonObject o = currElements.poll().getAsJsonObject();
+      addToArray(o);
     }
     else {
-      isFirstAttribute = false;
+      Log.error("0xA0611 JsonPrinter detected an invalid nesting of Json. "
+          + "Detected an unexpected end of an object!");
     }
-    if (JsonPrinter.isIndentationEnabled()) {
-      sb.append("\n");
-    }
-    sb.append("\"");
-    sb.append(kind);
-    if (isIndentationEnabled()) {
-      sb.append("\": [");
-    }
-    else {
-      sb.append("\":[");
-    }
-    isFirstAttribute = true;
-    nestedArrayDepth++;
-    indentBeforeNewLine = true;
-
-    isInEmptyArray = true;
-    arrayBeginBuffer = sb.toString();
   }
 
   /**
    * Prints the beginning of a collection in Json notation.
    */
   public void beginArray() {
-    printBufferedBeginArray();
-    StringBuilder sb = new StringBuilder();
-    if (!isFirstAttribute) {
-      sb.append(",");
+    if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
+      Log.error("0xA0601 JsonPrinter detected an invalid nesting of Json. "
+          + "A JSON array within a JSON object must be a member!");
     }
     else {
-      isFirstAttribute = false;
+      currElements.push(createJsonArray());
+      if (!root.isPresent()) {
+        root = Optional.of(currElements.peek());
+      }
     }
-    if (JsonPrinter.isIndentationEnabled()) {
-      sb.append("\n");
-    }
-    sb.append("[");
-    isFirstAttribute = true;
-    nestedArrayDepth++;
-    indentBeforeNewLine = true;
+  }
 
-    isInEmptyArray = true;
-    arrayBeginBuffer = sb.toString();
+  /**
+   * Prints the beginning of a collection in Json notation as member or the current object.
+   */
+  public void beginArray(String kind) {
+    JsonArray a = createJsonArray();
+    getParentObject().putMember(kind, a);
+    currElements.push(a);
   }
 
   /**
    * Prints the end of a collection in Json notation.
    */
   public void endArray() {
-    if (serializeDefaults) {
-      printBufferedBeginArray();
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
+      JsonArray o = currElements.poll().getAsJsonArray();
+      addToArray(o);
     }
-    if (!isInEmptyArray) {
-      println("");
-      print("]");
-      isFirstAttribute = false; // This is to handle empty lists
-      unindent();
+    else {
+      Log.error("0xA0612 JsonPrinter detected an invalid nesting of Json. "
+          + "Detected an unexpected end of an array!");
     }
-    else if (!serializeDefaults) {
-      //restore isFirstAttribute
-      isFirstAttribute = !arrayBeginBuffer.startsWith(",");
-      arrayBeginBuffer = "";
-    }
-    nestedArrayDepth--;
   }
 
   /**
@@ -272,15 +216,9 @@ public class JsonPrinter {
    * @param values The values of the Json attribute
    */
   public void member(String kind, Collection<String> values) {
-    if (!values.isEmpty()) {
-      beginArray(kind);
-      values.stream().forEach(o -> value(o));
-      endArray();
-    }
-    else if (serializeDefaults) {
-      beginArray(kind);
-      endArray();
-    }
+    beginArray(kind);
+    values.stream().forEach(o -> value(o));
+    endArray();
   }
 
   /**
@@ -298,7 +236,7 @@ public class JsonPrinter {
       member(kind, value.get());
     }
     else if (serializeDefaults) {
-      internalMember(kind, null);
+      getParentObject().putMember(kind, createJsonNull());
     }
   }
 
@@ -312,11 +250,13 @@ public class JsonPrinter {
    */
   public void member(String kind, double value) {
     if (DEFAULT_NUMBER != value || serializeDefaults) {
-      internalMember(kind, value);
+      memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, double value) {
-      internalMember(kind, value);
+    JsonElement member = createJsonNumber(String.valueOf(value));
+    getParentObject().putMember(kind, member);
   }
 
   /**
@@ -329,11 +269,13 @@ public class JsonPrinter {
    */
   public void member(String kind, long value) {
     if (DEFAULT_NUMBER != value || serializeDefaults) {
-      internalMember(kind, value);
+      memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, long value) {
-      internalMember(kind, value);
+    JsonElement member = createJsonNumber(String.valueOf(value));
+    getParentObject().putMember(kind, member);
   }
 
   /**
@@ -346,11 +288,13 @@ public class JsonPrinter {
    */
   public void member(String kind, float value) {
     if (DEFAULT_NUMBER != value || serializeDefaults) {
-      internalMember(kind, value);
+      memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, float value) {
-    internalMember(kind, value);
+    JsonElement member = createJsonNumber(String.valueOf(value));
+    getParentObject().putMember(kind, member);
   }
 
   /**
@@ -363,11 +307,13 @@ public class JsonPrinter {
    */
   public void member(String kind, int value) {
     if (DEFAULT_NUMBER != value || serializeDefaults) {
-      internalMember(kind, value);
+      memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, int value) {
-    internalMember(kind, value);
+    JsonElement member = createJsonNumber(String.valueOf(value));
+    getParentObject().putMember(kind, member);
   }
 
   /**
@@ -380,11 +326,13 @@ public class JsonPrinter {
    */
   public void member(String kind, boolean value) {
     if (DEFAULT_BOOLEAN != value || serializeDefaults) {
-      internalMember(kind, value);
+      memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, boolean value) {
-    internalMember(kind, value);
+    JsonElement member = createJsonNumber(String.valueOf(value));
+    getParentObject().putMember(kind, member);
   }
 
   /**
@@ -399,11 +347,14 @@ public class JsonPrinter {
    */
   public void member(String kind, String value) {
     if (DEFAULT_STRING != value || serializeDefaults) {
-      internalMember(kind, "\"" + escapeSpecialChars(value) + "\"");
+      memberNoDef(kind, value);
     }
   }
+
   public void memberNoDef(String kind, String value) {
-    internalMember(kind, "\"" + escapeSpecialChars(value) + "\"");
+    String escValue = escapeSpecialChars(value);
+    JsonElement member = createJsonString("\"" + escValue + "\"");
+    getParentObject().putMember(kind, member);
   }
 
   /**
@@ -418,11 +369,13 @@ public class JsonPrinter {
    */
   public void memberJson(String kind, String value) {
     if (DEFAULT_STRING != value || serializeDefaults) {
-      internalMember(kind, value);
+      memberJsonNoDef(kind, value);
     }
   }
+
   public void memberJsonNoDef(String kind, String value) {
-      internalMember(kind, value);
+    JsonElement member = createJsonString(value);
+    getParentObject().putMember(kind, member);
   }
 
   /**
@@ -442,7 +395,7 @@ public class JsonPrinter {
    * @param value The double value of the Json attribute
    */
   public void value(double value) {
-      internalValue(value);
+    intenalNumberValue(String.valueOf(value));
   }
 
   /**
@@ -451,7 +404,7 @@ public class JsonPrinter {
    * @param value The long value of the Json attribute
    */
   public void value(long value) {
-      internalValue(value);
+    intenalNumberValue(String.valueOf(value));
   }
 
   /**
@@ -460,7 +413,7 @@ public class JsonPrinter {
    * @param value The float value of the Json attribute
    */
   public void value(float value) {
-      internalValue(value);
+    intenalNumberValue(String.valueOf(value));
   }
 
   /**
@@ -470,7 +423,7 @@ public class JsonPrinter {
    * @param value The int value of the Json attribute
    */
   public void value(int value) {
-    internalValue(value);
+    intenalNumberValue(String.valueOf(value));
   }
 
   /**
@@ -479,7 +432,18 @@ public class JsonPrinter {
    * @param value The boolean value of the Json attribute
    */
   public void value(boolean value) {
-    internalValue(value);
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
+      JsonArray parent = currElements.peek().getAsJsonArray();
+      parent.add(createJsonBoolean(value));
+    }
+    else if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
+      Log.error("0xA0606 JsonPrinter detected an invalid nesting of Json. "
+          + "Cannot add a numeric value `" + value + "` to the JSON object: `"
+          + toString() + "`");
+    }
+    else {
+      currElements.push(createJsonBoolean(value));
+    }
   }
 
   /**
@@ -489,7 +453,7 @@ public class JsonPrinter {
    * @param value The String value of the Json attribute
    */
   public void value(String value) {
-    internalValue("\"" + escapeSpecialChars(value) + "\"");
+    intenalStringValue("\"" +escapeSpecialChars(value) +"\"");
   }
 
   /**
@@ -499,7 +463,7 @@ public class JsonPrinter {
    * @param value The String encoded in JSON
    */
   public void valueJson(String value) {
-      internalValue(value);
+    intenalStringValue(value);
   }
 
   /**
@@ -508,7 +472,7 @@ public class JsonPrinter {
    * @param value The JsonPrinter of the value object
    */
   public void value(JsonPrinter value) {
-    valueJson(value.getContent());
+    intenalStringValue(value.getContent());
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -529,52 +493,65 @@ public class JsonPrinter {
         .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
   }
 
-  /**
-   * This method is for internal use of this class only. It prints a comma to separate attributes,
-   * if the following attribute is not the first one in the current Json object.
-   */
-  protected void printCommaIfNecessary() {
-    if (!isFirstAttribute) {
-      println(",");
+  protected void intenalNumberValue(String value) {
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
+      JsonArray parent = currElements.peek().getAsJsonArray();
+      parent.add(createJsonNumber(String.valueOf(value)));
+    }
+    else if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
+      Log.error("0xA0604 JsonPrinter detected an invalid nesting of Json. "
+          + "Cannot add a numeric value `" + value + "` to the JSON object: `"
+          + toString() + "`");
     }
     else {
-      isFirstAttribute = false;
-      println("");
+      currElements.push(createJsonNumber(String.valueOf(value)));
     }
-    if (indentBeforeNewLine) {
-      indent();
-      indentBeforeNewLine = false;
-    }
-
   }
 
-  protected void internalMember(String kind, Object value) {
-    printCommaIfNecessary();
-    print("\"");
-    print(kind);
-    if (isIndentationEnabled()) {
-      print("\": ");
+  protected void intenalStringValue(String value) {
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
+      JsonArray parent = currElements.peek().getAsJsonArray();
+      parent.add(createJsonString(value));
+    }
+    else if (!currElements.isEmpty() && currElements.peek().isJsonObject()) {
+      Log.error("0xA0603 JsonPrinter detected an invalid nesting of Json. "
+          + "Cannot add a String value `" + value + "` to the JSON object: `"
+          + toString() + "`");
     }
     else {
-      print("\":");
+      currElements.push(createJsonString(value));
     }
-    print(value);
   }
 
-  protected void internalValue(Object value) {
-    printBufferedBeginArray();
-    printCommaIfNecessary();
-    print(value);
+  private JsonObject getParentObject() {
+    if (currElements.isEmpty()) {
+      Log.error("0xA0613 JsonPrinter detected an invalid nesting of Json. "
+          + "Cannot add a member as the first element of a Json String!");
+    }
+    if (currElements.peek().isJsonObject()) {
+      return currElements.peek().getAsJsonObject();
+    }
+    IndentPrinter p = new IndentPrinter();
+    currElements.peek().print(p);
+    Log.error("0xA0602 JsonPrinter detected an invalid nesting of Json. "
+        + "Cannot add a child member to: `" + p.toString() + "`");
+    return createJsonObject();
   }
 
-  protected void printBufferedBeginArray() {
-    if (isInEmptyArray) {
-      isInEmptyArray = false;
-      print(arrayBeginBuffer);
+  public void addToArray(JsonElement e){
+    if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
+      JsonArray parent = currElements.peek().getAsJsonArray();
+      parent.add(e);
     }
-    if (indentBeforeNewLine) {
-      indent();
-      indentBeforeNewLine = false;
+    else if (currElements.isEmpty() || currElements.peek().isJsonObject()) {
+      // no op here, because nested objects are handled elsewhere and
+      // it is not an error if a JsonObject or JsonArray is the "outermost"
+      // JSON element
+    }
+    else {
+      Log.error("0xA0653 JsonPrinter detected an invalid nesting of Json arrays. "
+          + "Cannot add `" + e + "` to the JSON : `"
+          + toString() + "`");
     }
   }
 
@@ -582,26 +559,18 @@ public class JsonPrinter {
    * Resets everything printed so far
    */
   public void clearBuffer() {
-    this.printer = new IndentPrinter();
-    this.isFirstAttribute = true;
-    this.nestedArrayDepth = 0;
-    this.nestedObjectDepth = 0;
-    this.indentBeforeNewLine = false;
-    this.isInEmptyArray = false;
+    this.currElements = new ArrayDeque<>();
+    this.root = Optional.empty();
   }
 
   /**
-   * Returns the current value of the Json code produced so far And performs basic checks for
-   * correct nesting of composed data
+   * Returns the current value of the Json code produced so far and performs basic
+   * checking for correct nestings
    */
   public String getContent() {
-    if (0 != nestedArrayDepth) {
-      Log.error("0xA0600 Invalid nesting of Json lists in " + toString());
+    if (currElements.size() > 1 || (currElements.size() == 1 && root.isPresent())) {
+      Log.error("0xA0615 JsonPrinter detected an invalid nesting of Json.");
     }
-    if (0 != nestedObjectDepth) {
-      Log.error("0xA0601 Invalid nesting of Json objects in " + toString());
-    }
-    // return content of printer without first character, which is a newline
     return toString();
   }
 
@@ -612,38 +581,18 @@ public class JsonPrinter {
    */
   @Override
   public String toString() {
-    // return content of printer without first character, which is a newline
-    String content = printer.getContent();
-    if (content.startsWith("\n")) {
-      content = content.substring(1);
-    }
-    return content;
-  }
-
-  /////////////////////////// methods to handle optional pretty printing with line breaks and
-  /////////////////////////// indentation ////////////////////////////
-  protected void print(Object o) {
-    printer.print(o);
-  }
-
-  protected void println(Object o) {
-    if (JsonPrinter.isIndentationEnabled()) {
-      printer.println(o);
+    if (currElements.isEmpty()) {
+      if (!root.isPresent()) {
+        return "";
+      }
+      IndentPrinter p = new IndentPrinter();
+      root.get().print(p);
+      return p.getContent();
     }
     else {
-      printer.print(o);
-    }
-  }
-
-  protected void indent() {
-    if (JsonPrinter.isIndentationEnabled()) {
-      printer.indent();
-    }
-  }
-
-  protected void unindent() {
-    if (JsonPrinter.isIndentationEnabled()) {
-      printer.unindent();
+      IndentPrinter p = new IndentPrinter();
+      currElements.peek().print(p);
+      return p.getContent();
     }
   }
 

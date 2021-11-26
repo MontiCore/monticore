@@ -22,7 +22,7 @@ public abstract class AbstractDeriveFromExpression {
   public IBasicSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020
     if(!(expressionsBasisScope instanceof IBasicSymbolsScope)){
-      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface IBasicSymbolsScope");
+      Log.error("0xA2307 the enclosing scope of the expression does not implement the interface IBasicSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
     return (IBasicSymbolsScope) expressionsBasisScope;

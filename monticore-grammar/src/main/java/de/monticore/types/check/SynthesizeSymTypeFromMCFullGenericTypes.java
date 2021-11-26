@@ -44,7 +44,7 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeF
     if (wildcardType.isPresentLowerBound()) {
       wildcardType.getLowerBound().accept(getTraverser());
       if (!typeCheckResult.isPresentCurrentResult()) {
-        Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
+        Log.error("0xE9CDD Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");
       }
       tex = SymTypeExpressionFactory.createWildcard(false, typeCheckResult.getCurrentResult());

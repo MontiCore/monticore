@@ -30,7 +30,7 @@ subprojects {
 
 }
 
-configure(subprojects.findAll {it.name != 'forParser'})  {
+configure(subprojects.findAll {it.name != 'forParser' })  {
   dependencies {
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
@@ -48,7 +48,7 @@ configure(subprojects.findAll {it.name != 'forParser'})  {
 
 clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
 
-build.dependsOn(subprojects.collect{it.getTasksByName("build", false)})
+build.dependsOn(subprojects.collect{ it.getTasksByName("build", false)})
 
 jar.enabled = false
 sourcesJar.enabled = false

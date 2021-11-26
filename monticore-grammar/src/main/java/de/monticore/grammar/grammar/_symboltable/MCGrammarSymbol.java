@@ -2,6 +2,9 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -25,6 +28,19 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   protected final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
 
   protected Map<String, Collection<String>> tokenModes = Maps.newHashMap();
+
+  protected final LoadingCache<String, Optional<ProdSymbol>> prodCache = CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .build(new CacheLoader<String, Optional<ProdSymbol>>() {
+                   @Override
+                   public Optional<ProdSymbol> load(String key) {
+                     Optional<ProdSymbol> mcProd = getProd(key);
+                     if (mcProd.isPresent()) {
+                       return mcProd;
+                     }
+                     return getInheritedProd(key);
+                   }
+                 });
 
   // the start production of the grammar
   protected ProdSymbol startProd;
@@ -91,11 +107,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   // return local prod or prod from supergrammars
   public Optional<ProdSymbol> getProdWithInherited(String ruleName) {
-    Optional<ProdSymbol> mcProd = getProd(ruleName);
-    if (mcProd.isPresent()) {
-      return mcProd;
-    }
-    return getInheritedProd(ruleName);
+   return prodCache.getUnchecked(ruleName);
   }
 
   // return only prod from supergrammars
@@ -103,22 +115,11 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Map<String, ProdSymbol> map = new LinkedHashMap<>();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
-
-      for (ProdSymbol prod:superGrammarRef.lazyLoadDelegate().getProdsWithInherited().values()) {
-        if (map.containsKey(prod.getName())) {
-          ProdSymbol superProd = map.get(prod.getName());
-          if (MCGrammarSymbolTableHelper.getAllSuperProds(prod).contains(superProd)) {
-            map.put(prod.getName(), prod);
-          }
-        } else {
-          map.put(prod.getName(), prod);
-        }
+      final MCGrammarSymbol superGrammar = superGrammars.get(i).lazyLoadDelegate();
+      Optional<ProdSymbol> inheritedProd = superGrammar.getProdWithInherited(ruleName);
+      if (inheritedProd.isPresent()) {
+        return inheritedProd;
       }
-    }
-
-    if (map.containsKey(ruleName)) {
-      return Optional.of(map.get(ruleName));
     }
     return Optional.empty();
   }

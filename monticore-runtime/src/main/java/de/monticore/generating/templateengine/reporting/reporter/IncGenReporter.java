@@ -17,7 +17,7 @@ import java.util.*;
 
 public abstract class IncGenReporter extends AReporter {
 
-  protected Set<String> grammarFiles = new OrderedHashSet<>();
+  protected Set<String> modelFiles = new OrderedHashSet<>();
 
   protected Set<String> usedHWCFiles = new OrderedHashSet<>();
 
@@ -74,7 +74,7 @@ public abstract class IncGenReporter extends AReporter {
     this.reportingHelper = new ReportCreator(outputDir + File.separator + lowerCaseName);
     notExistentHWCFiles.clear();
     usedHWCFiles.clear();
-    grammarFiles.clear();
+    modelFiles.clear();
     userTemplates.clear();
     filesThatMatterButAreNotThereInTime.clear();
     inputFile = inputFilePath.toString();
@@ -108,9 +108,13 @@ public abstract class IncGenReporter extends AReporter {
         filesThatMatterButAreNotThereInTime.add(file);
       }
     }
-    if (!toAdd.isEmpty() && toAdd.endsWith(".mc4")) {
-      grammarFiles.add(toAdd);
+    if (!toAdd.isEmpty() && isModelFile(toAdd)) {
+      modelFiles.add(toAdd);
     }
+  }
+
+  protected boolean isModelFile(String fileName) {
+    return fileName.endsWith(".mc4");
   }
 
   /**

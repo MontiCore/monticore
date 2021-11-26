@@ -69,7 +69,7 @@ public class AntlrTool extends Tool {
 
     // Print message
     if (isError) {
-      String output = "0xA0129 " + "Error from Antlr subsystem: "
+      String output = "0xA1129 " + "Error from Antlr subsystem: "
               + messageST.render() + " (see e.g. www.antlr.org)";
       if (position.equals(SourcePosition.getDefaultSourcePosition())) {
         Log.error(output);
