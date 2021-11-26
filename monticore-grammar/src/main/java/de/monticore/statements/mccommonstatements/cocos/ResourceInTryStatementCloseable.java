@@ -15,7 +15,7 @@ public class ResourceInTryStatementCloseable implements MCExceptionStatementsAST
   
   public static final String ERROR_CODE = "0xA0920";
   
-  public static final String ERROR_MSG_FORMAT = "resource in try-statement must be closeable.";
+  public static final String ERROR_MSG_FORMAT = " Resource in try-statement must be closeable.";
   
   public ResourceInTryStatementCloseable(TypeCheck typeCheck){
     this.typeCheck = typeCheck;

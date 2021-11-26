@@ -66,7 +66,7 @@ public class ResourceInTryStatementCloseableTest extends CocoTest {
   @Test
   public void testValid() throws IOException {
     
-   // checkValid("try ( int i = 0; double d = 3.0) {long l = 3;");
+   checkValid("try (A b = a) {long l = 3;}");
     
   }
   
