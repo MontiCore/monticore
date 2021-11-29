@@ -150,18 +150,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testPutStateDeSer() {
-    ASTCDMethod method = getMethodBy("putStateSymbolDeSer", scopeClass);
-
-    assertDeepEquals(PUBLIC, method.getModifier());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-    assertEquals(1, method.sizeCDParameters());
-    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
-    assertEquals("kind", method.getCDParameter(0).getName());
-  }
-
-
-  @Test
   public void testLoadSuperProdMethod() {
     ASTCDMethod method = getMethodBy("loadQualifiedName", scopeClass);
 
@@ -211,7 +199,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(31, scopeClass.getCDMethodList().size());
+    assertEquals(26, scopeClass.getCDMethodList().size());
   }
 
   @Test
