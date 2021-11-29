@@ -16,11 +16,19 @@ public class TypeSymbolSurrogate extends TypeSymbolSurrogateTOP {
     return lazyLoadDelegate().getSpannedScope();
   }
 
+  @Override
   public List<TypeVarSymbol> getTypeParameterList(){
+    if (!checkLazyLoadDelegate()) {
+      return Lists.newArrayList();
+    }
     return lazyLoadDelegate().getSpannedScope().getLocalTypeVarSymbols();
   }
 
+  @Override
   public List<SymTypeExpression> getSuperClassesOnly(){
+    if (!checkLazyLoadDelegate()) {
+      return Lists.newArrayList();
+    }
     return lazyLoadDelegate().getSuperClassesOnly();
   }
 
