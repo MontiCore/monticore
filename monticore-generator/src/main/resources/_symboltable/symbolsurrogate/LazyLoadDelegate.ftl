@@ -17,7 +17,7 @@ ${tc.signature("symbolReferenceName", "symbolName", "simpelName", "scopeName", "
       Log.error("0xA1038 " + ${symbolReferenceName}.class.getSimpleName() + " Could not load full information of '" +
         name + "' (Kind " + "${symbolName}" + ").");
     }
-    return resolvedSymbol.get();
+    return this;
   }else{
     return delegate.get();
   }
