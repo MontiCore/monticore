@@ -13,11 +13,12 @@ ${tc.signature("symbolReferenceName", "symbolName", "simpelName", "scopeName", "
       Log.debug("Loaded full information of '" + name + "' successfully.",
       ${symbolReferenceName}.class.getSimpleName());
       delegate = Optional.of(resolvedSymbol.get());
+      return delegate.get();
     } else {
       Log.error("0xA1038 " + ${symbolReferenceName}.class.getSimpleName() + " Could not load full information of '" +
         name + "' (Kind " + "${symbolName}" + ").");
+      return this;
     }
-    return this;
   }else{
     return delegate.get();
   }
