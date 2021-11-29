@@ -21,7 +21,6 @@ public class ResourceInTryStatementCloseable implements MCExceptionStatementsAST
     this.typeCheck = typeCheck;
   }
   
-  //
   @Override
   public void check(ASTTryStatement3 node) {
     

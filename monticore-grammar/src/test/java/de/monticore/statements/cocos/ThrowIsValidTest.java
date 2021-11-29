@@ -17,6 +17,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class ThrowIsValidTest extends CocoTest {
   @BeforeClass
   public static void disableFailQuick(){
   
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
@@ -44,6 +45,11 @@ public class ThrowIsValidTest extends CocoTest {
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("A").addSuperTypes(sType).build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("java.lang.Throwable").build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("a").setType(sTypeA).build());
+  
+    SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObject("B", TestMCExceptionStatementsMill.globalScope());
+    TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("B").build());
+    TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("b").setType(sTypeB).build());
+    
   }
   
   public void checkValid(String expressionString) throws IOException {
@@ -60,8 +66,27 @@ public class ThrowIsValidTest extends CocoTest {
 
   }
   
+  public void checkInvalid(String expressionString) throws IOException {
+    
+    TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
+    Optional<ASTThrowStatement> optAST = parser.parse_StringThrowStatement(expressionString);
+    assertTrue(optAST.isPresent());
+    ASTThrowStatement ast = optAST.get();
+    ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
+    ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
+    Log.getFindings().clear();
+    checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
+    assertFalse(Log.getFindings().isEmpty());
+    
+  }
+  
   @Test
   public void testValid() throws IOException{
     checkValid("throw a;");
+  }
+  
+  @Test
+  public void testInvalid() throws IOException{
+    checkInvalid("throw b;");
   }
 }

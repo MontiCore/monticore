@@ -17,12 +17,14 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ResourceInTryStatementCloseableTest extends CocoTest {
@@ -32,7 +34,7 @@ public class ResourceInTryStatementCloseableTest extends CocoTest {
   @BeforeClass
   public static void disableFailQuick(){
     
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
@@ -44,6 +46,11 @@ public class ResourceInTryStatementCloseableTest extends CocoTest {
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("A").addSuperTypes(sType).build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("java.io.Closeable").build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("a").setType(sTypeA).build());
+  
+    SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObject("B", TestMCExceptionStatementsMill.globalScope());
+    TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("B").build());
+    TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("b").setType(sTypeB).build());
+  
   }
   
   public void checkValid(String expressionString) throws IOException {
@@ -63,10 +70,34 @@ public class ResourceInTryStatementCloseableTest extends CocoTest {
     }
   }
   
+  public void checkInvalid(String expressionString) throws IOException {
+    
+    TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
+    Optional<ASTTryStatement3> optAST = parser.parse_StringTryStatement3(expressionString);
+    assertTrue(optAST.isPresent());
+    ASTTryStatement3 ast = optAST.get();
+    ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
+    for (ASTTryLocalVariableDeclaration dec: ast.getTryLocalVariableDeclarationList()){
+      
+      dec.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
+      Log.getFindings().clear();
+      checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
+      assertFalse(Log.getFindings().isEmpty());
+      
+    }
+  }
+  
   @Test
   public void testValid() throws IOException {
     
-   checkValid("try (A b = a) {long l = 3;}");
+   checkValid("try(A c = a){}");
+    
+  }
+  
+  @Test
+  public void testInvalid() throws IOException {
+    
+    checkInvalid("try(B c = b){}");
     
   }
   
