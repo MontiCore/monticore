@@ -59,8 +59,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected static final String LOAD = "load%s";
 
-  protected static final String PUTSYMBOLDESER = "put%sSymbolDeSer";
-
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
                                    final MethodDecorator methodDecorator) {
@@ -139,7 +137,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addAllCDMembers(resolverAttributes.values())
         .addAllCDMembers(resolverMethods)
         .addAllCDMembers(createLoadMethods(allSymbolClasses))
-        .addAllCDMembers(createPutDeSerMethods(symbolProds))
         .addCDMember(createLoadFileForModelNameMethod(definitionName))
         //
         .addCDMember(createGetRealThisMethod(globalScopeName))
@@ -180,20 +177,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected Collection<? extends ASTCDMethod> createDeSerMapMethods(ASTCDAttribute deSerMapAttribute) {
     List<ASTCDMethod> deSerMapMethods = accessorDecorator.decorate(deSerMapAttribute);
     deSerMapMethods.addAll(mutatorDecorator.decorate(deSerMapAttribute));
-
-    // Create simple putDeSer(String key, IDeSer value)
-    ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
-    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER), "value");
-    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "putSymbolDeSer", key, value);
-    replaceTemplate(EMPTY_BODY, putMethod, new StringHookPoint(SYM_DESERS_VAR + ".put(key, value);"));
-    deSerMapMethods.add(putMethod);
-
-    // Create simple value getDeSer(String key)
-    key = getCDParameterFacade().createParameter(String.class, "key");
-    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER);
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "getSymbolDeSer", key);
-    replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return " + SYM_DESERS_VAR + ".get(key);"));
-    deSerMapMethods.add(getMethod);
 
     return deSerMapMethods;
   }
@@ -259,40 +242,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     }
 
     return loadMethods;
-  }
-
-  protected List<ASTCDMethod> createPutDeSerMethods(List<? extends ASTCDType> symbolProds) {
-    List<ASTCDMethod> deSerMethods = new ArrayList<>();
-    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, KIND_VAR);
-
-    for (ASTCDType symbolProd : symbolProds) {
-      String className = symbolTableService.removeASTPrefix(symbolProd);
-      String methodName = String.format(PUTSYMBOLDESER, className);
-      String deSerName = symbolTableService.getSymbolDeSerFullName(symbolProd);
-
-      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), methodName, nameParameter);
-      String hook = String.format("putSymbolDeSer(kind, new %s());", deSerName);
-      this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
-
-      deSerMethods.add(method);
-    }
-
-    for (DiagramSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
-      symbolTableService.getSymbolDefiningProds((ASTCDDefinition) cdSymbol.getAstNode()).forEach(s -> {
-        String className = symbolTableService.removeASTPrefix(s);
-        String methodName = String.format(PUTSYMBOLDESER, className);
-        String deSerName = symbolTableService.getSymbolDeSerFullName(s, cdSymbol);
-
-        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), methodName, nameParameter);
-        String hook = String.format("putSymbolDeSer(kind, new %s());", deSerName);
-        this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
-
-        deSerMethods.add(method);
-      });
-    }
-
-
-    return deSerMethods;
   }
 
   protected ASTCDMethod createLoadFileForModelNameMethod(String definitionName){

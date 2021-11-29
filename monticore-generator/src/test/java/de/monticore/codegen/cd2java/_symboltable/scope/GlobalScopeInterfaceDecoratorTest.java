@@ -252,7 +252,18 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(86, scopeInterface.getCDMethodList().size());
+    assertEquals(92, scopeInterface.getCDMethodList().size());
+  }
+
+  @Test
+  public void testPutStateDeSer() {
+    ASTCDMethod method = getMethodBy("putStateSymbolDeSer", scopeInterface);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("kind", method.getCDParameter(0).getName());
   }
 
 }
