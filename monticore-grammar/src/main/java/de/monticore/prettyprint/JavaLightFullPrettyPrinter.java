@@ -9,6 +9,7 @@ import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.javalight._visitor.JavaLightTraverser;
 import de.monticore.statements.prettyprint.MCArrayStatementsPrettyPrinter;
 import de.monticore.statements.prettyprint.MCCommonStatementsPrettyPrinter;
+import de.monticore.statements.prettyprint.MCReturnStatementsPrettyPrinter;
 import de.monticore.statements.prettyprint.MCVarDeclarationStatementsPrettyPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
@@ -53,6 +54,10 @@ public class JavaLightFullPrettyPrinter {
     MCArrayStatementsPrettyPrinter arrayStatements = new MCArrayStatementsPrettyPrinter(printer);
     traverser.add4MCArrayStatements(arrayStatements);
     traverser.setMCArrayStatementsHandler(arrayStatements);
+
+    MCReturnStatementsPrettyPrinter returnStatements = new MCReturnStatementsPrettyPrinter(printer);
+    traverser.add4MCReturnStatements(returnStatements);
+    traverser.setMCReturnStatementsHandler(returnStatements);
 
     traverser.add4MCBasics(new MCBasicsPrettyPrinter(printer));
   }
