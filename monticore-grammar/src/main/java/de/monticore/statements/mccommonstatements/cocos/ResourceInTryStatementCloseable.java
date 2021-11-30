@@ -26,8 +26,6 @@ public class ResourceInTryStatementCloseable implements MCExceptionStatementsAST
     
     SymTypeExpression closeable = SymTypeExpressionFactory.createTypeObject("java.io.Closeable", node.getEnclosingScope());
   
-    ASTTryLocalVariableDeclaration object = node.getTryLocalVariableDeclaration(0);
-  
     for (ASTTryLocalVariableDeclaration dec: node.getTryLocalVariableDeclarationList()){
     
       if (!TypeCheck.isSubtypeOf(typeCheck.typeOf(dec.getExpression()), closeable)) {
