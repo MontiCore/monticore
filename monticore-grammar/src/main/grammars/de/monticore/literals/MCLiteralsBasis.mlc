@@ -12,7 +12,7 @@ mlc MCLiteralsBasis {
 
   //handwritten sources
   export "$projectDir/src/main/java" {
-    include "de/monticore/grammar/literals/prettyprint/*.java";
+    include "de/monticore/literals/prettyprint/*.java";
   }
 
   promote {

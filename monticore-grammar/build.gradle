@@ -41,6 +41,7 @@ sourceSets {
         resources {
             srcDirs([grammarDir, grammarOutDir])
             include "**/*.mc4"
+            include "**/*.mlc"
         }
     }
 }
