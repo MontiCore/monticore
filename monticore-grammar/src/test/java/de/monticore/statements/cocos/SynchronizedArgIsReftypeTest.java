@@ -61,7 +61,18 @@ public class SynchronizedArgIsReftypeTest extends CocoTest {
     
   }
   
-  //public void checkInvalid(String expressionString){}
+  public void checkInvalid(String expressionString) throws IOException {
+    
+    TestMCSynchronizedStatementsParser parser = new TestMCSynchronizedStatementsParser();
+    Optional<ASTSynchronizedStatement> optAST = parser.parse_StringSynchronizedStatement(expressionString);
+    assertTrue(optAST.isPresent());
+    ASTSynchronizedStatement ast = optAST.get();
+    ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
+    Log.getFindings().clear();
+    checker.checkAll((ASTMCSynchronizedStatementsNode) optAST.get());
+    assertFalse(Log.getFindings().isEmpty());
+    
+  }
   
   @Test
   public void testValid() throws IOException {
@@ -70,6 +81,13 @@ public class SynchronizedArgIsReftypeTest extends CocoTest {
     
   }
   
-  //public void testInvalid(){}
+  @Test
+  public void testInvalid() throws IOException {
+    
+    checkInvalid("synchronized('f'){}");
+    checkInvalid("synchronized(5.5){}");
+    checkInvalid("synchronized(false){}");
+    
+  }
   
 }
