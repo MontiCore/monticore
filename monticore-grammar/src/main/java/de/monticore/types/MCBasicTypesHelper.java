@@ -14,7 +14,7 @@ public class MCBasicTypesHelper {
    * @return
    */
   public static int primitiveName2Const(String typeName) {
-    if (null == typeName && typeName.isEmpty()) {
+    if (null == typeName || typeName.isEmpty()) {
       return -1;
     }
     switch (typeName) {
