@@ -1,3 +1,1 @@
-abstract void method () {
-  return;
-    }
+private void method ();

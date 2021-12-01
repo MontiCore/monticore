@@ -6,21 +6,20 @@ import de.monticore.javalight._cocos.JavaLightASTMethodDeclarationCoCo;
 import de.monticore.javalight._symboltable.JavaMethodSymbol;
 import de.se_rwth.commons.logging.Log;
 
-public class MethodNoNativeAndStrictfp implements JavaLightASTMethodDeclarationCoCo {
+public class MethodBodyPresence implements JavaLightASTMethodDeclarationCoCo {
+  public static final String ERROR_CODE = "0xA0803";
 
-  public static final String ERROR_CODE = "0xA0819";
-
-  public static final String ERROR_MESSAGE = "Method %s must not be both 'native' and 'strictfp'.";
+  public static final String ERROR_MESSAGE = "Method '%s' must not be 'abstract' or 'native' if it specifies a body.";
 
   @Override
   public void check(ASTMethodDeclaration node) {
     if (node.isPresentSymbol()) {
       JavaMethodSymbol methodSymbol = node.getSymbol();
-      if (methodSymbol.isIsNative() && methodSymbol.isIsStrictfp()) {
-        Log.error(String.format(ERROR_CODE + ERROR_MESSAGE ,node.getName()),
+      // JLS3 8.4.7-1
+      if ((node.isPresentMCJavaBlock() && methodSymbol.isIsAbstract()) || (node.isPresentMCJavaBlock() && methodSymbol.isIsNative())) {
+        Log.error(String.format(ERROR_CODE + ERROR_MESSAGE, methodSymbol.getName()),
             node.get_SourcePositionStart());
       }
     }
-
   }
 }

@@ -10,13 +10,13 @@ public class ConstructorModifiersValid implements JavaLightASTConstructorDeclara
 
   public static final String ERROR_CODE = "0xA0820";
 
-  public static final String ERROR_MSG_FORMAT = " a constructor cannot be declared 'abstract', 'final', 'static' or 'native'.";
+  public static final String ERROR_MSG_FORMAT = "  Constructor '%s' cannot be declared 'abstract', 'final', 'static' or 'native'.";
 
   @Override
   public void check(ASTConstructorDeclaration node) {
     JavaMethodSymbol symbol = node.getSymbol();
     if (symbol.isIsAbstract() || symbol.isIsFinal() || symbol.isIsStatic() || symbol.isIsNative()) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName()),
+      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT ,node.getName()),
           node.get_SourcePositionStart());
     }
   }

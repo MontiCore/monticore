@@ -8,6 +8,8 @@ import de.monticore.statements.mccommonstatements._ast.ASTFormalParameter;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class MethodFormalParametersDifferentName implements JavaLightASTMethodDeclarationCoCo {
@@ -19,8 +21,12 @@ public class MethodFormalParametersDifferentName implements JavaLightASTMethodDe
   //JLS3 8.4.1-1
   @Override
   public void check(ASTMethodDeclaration node) {
-    List<String> names = new ArrayList<>();
+    Collection<String> names = new HashSet<>();
     if (node.getFormalParameters().isPresentFormalParameterListing()) {
+      if(node.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()){
+        names.add(node.getFormalParameters().getFormalParameterListing().getLastFormalParameter()
+            .getDeclaratorId().getName());
+      }
       for (ASTFormalParameter formalParameter : node.getFormalParameters()
           .getFormalParameterListing().getFormalParameterList()) {
         if (names.contains(formalParameter.getDeclaratorId().getName())) {
