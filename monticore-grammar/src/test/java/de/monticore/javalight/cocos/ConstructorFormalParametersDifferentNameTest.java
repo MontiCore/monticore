@@ -21,6 +21,12 @@ public class ConstructorFormalParametersDifferentNameTest extends JavaLightCocoT
   }
 
   @Test
+  public void testInvalid2() {
+    testInvalid(fileName+"a", "const1", ConstructorFormalParametersDifferentName.ERROR_CODE,
+        String.format(ConstructorFormalParametersDifferentName.ERROR_MSG_FORMAT, "i", "const1"), checker);
+  }
+
+  @Test
   public void testCorrect() {
     testValid("de.monticore.javalight.cocos.valid.A0821", "const1", checker);
   }

@@ -18,23 +18,14 @@ public class ConstructorNoAccessModifierPair implements JavaLightASTConstructorD
 
   public static final String ERROR_MSG_FORMAT = " Invalid modifiers are mentioned in constructor's '%s' declaration.";
 
-  protected String prettyprint(ASTMCModifier a) {
-    JavaLightFullPrettyPrinter printer = new JavaLightFullPrettyPrinter(new IndentPrinter());
-    a.accept(printer.getTraverser());
-    return printer.getPrinter().getContent().trim();
-  }
   // JLS3 8.8.3-2
   @Override
   public void check(ASTConstructorDeclaration node) {
     JavaMethodSymbol symbol = node.getSymbol();
-    List<String> listModifier = new ArrayList<>();
-    for (ASTMCModifier modifier : node.getMCModifierList()) {
-      listModifier.add(prettyprint(modifier));
-    }
-    if ((listModifier.contains("public") && listModifier.contains("protected") && listModifier.contains("private"))
-        || (listModifier.contains("public") && listModifier.contains("protected"))
-        || (listModifier.contains("public") && listModifier.contains("private"))
-        || (listModifier.contains("protected") && listModifier.contains("private"))) {
+    if((symbol.isIsPublic() && symbol.isIsProtected() && symbol.isIsPrivate())
+      || (symbol.isIsPublic() && symbol.isIsProtected())
+      || (symbol.isIsPublic() && symbol.isIsPrivate())
+      || (symbol.isIsProtected() && symbol.isIsPrivate())) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName(),
           node.get_SourcePositionStart()));
     }

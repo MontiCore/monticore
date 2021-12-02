@@ -19,6 +19,10 @@ public class ConstructorFormalParametersDifferentName implements JavaLightASTCon
   public void check(ASTConstructorDeclaration node) {
       List<String> names = new ArrayList<>();
       if (node.getFormalParameters().isPresentFormalParameterListing()) {
+        if(node.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()){
+          names.add(node.getFormalParameters().getFormalParameterListing().getLastFormalParameter()
+              .getDeclaratorId().getName());
+        }
         for (ASTFormalParameter formalParameter : node.getFormalParameters()
             .getFormalParameterListing().getFormalParameterList()) {
           if (names.contains(formalParameter.getDeclaratorId().getName())) {
