@@ -303,7 +303,7 @@ public class GlobalExtensionManagement {
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast) {
 
-    String result = null;
+    String result = "// Hookpoint: " + hookName;
     HookPoint hp = hookPoints.get(hookName);
     Reporting.reportCallHookPointStart(hookName, hp, ast);
 
