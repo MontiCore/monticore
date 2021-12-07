@@ -2,6 +2,6 @@
 
 package de.monticore.statements;
 
-grammar TestMCCommonStatements extends de.monticore.statements.MCCommonStatements, de.monticore.literals.MCCommonLiterals, de.monticore.expressions.CommonExpressions {
+grammar TestMCCommonStatements extends de.monticore.statements.MCCommonStatements, de.monticore.literals.MCCommonLiterals, de.monticore.expressions.CommonExpressions, de.monticore.types.MCCollectionTypes, de.monticore.symbols.OOSymbols, de.monticore.types.MCArrayTypes {
 
 }

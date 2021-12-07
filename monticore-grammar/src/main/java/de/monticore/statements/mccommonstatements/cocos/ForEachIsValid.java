@@ -29,18 +29,18 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
     SymTypeExpression expression = typeCheck.typeOf(node.getExpression());
     ASTFormalParameter parameter = node.getFormalParameter();
   
-    SymTypeExpression typeOfMethod = typeCheck.symTypeFromAST(parameter.getMCType());
-    
+    SymTypeExpression typeOfParameter = typeCheck.symTypeFromAST(parameter.getMCType());
+  
     SymTypeExpression arrays  = SymTypeExpressionFactory.createTypeObject("java.util.Arrays", node.getEnclosingScope());
     SymTypeExpression lists = SymTypeExpressionFactory.createTypeObject("java.lang.Iterable", node.getEnclosingScope());
     
     if(!TypeCheck.isSubtypeOf(expression, arrays)){
       if(!TypeCheck.isSubtypeOf(expression, lists)){
         Log.error(ERROR_CODE+ERROR_MSG_FORMAT, node.get_SourcePositionStart());
-      } else if (!TypeCheck.isSubtypeOf(typeOfMethod, expression)){
+      } else if (!TypeCheck.isSubtypeOf(typeOfParameter, expression)){
         Log.error(ERROR_CODE+ERROR_MSG_FORMAT, node.get_SourcePositionStart());
       }
-    } else if (!TypeCheck.isSubtypeOf(typeOfMethod, expression)){
+    } else if (!TypeCheck.isSubtypeOf(typeOfParameter, expression)){
       Log.error(ERROR_CODE+ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
   
