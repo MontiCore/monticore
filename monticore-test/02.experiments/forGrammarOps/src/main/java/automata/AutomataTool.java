@@ -39,7 +39,7 @@ public class AutomataTool {
     // Retrieve the model name
     // (this is only a very reduced CLI)
     if (args.length != 1) {
-      Log.error("0xEE7400 Please specify 1. the path to the input model");
+      Log.error("0xEE750 Please specify 1. the path to the input model");
       return;
     }
     Log.info("Automaton DSL Tool", "AutomataTool");
@@ -86,10 +86,10 @@ public class AutomataTool {
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
-      Log.error("0xEE840 Model could not be parsed.");
+      Log.error("0xEE852 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("0xEE640 Failed to parse " + model, e);
+      Log.error("0xEE651 Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

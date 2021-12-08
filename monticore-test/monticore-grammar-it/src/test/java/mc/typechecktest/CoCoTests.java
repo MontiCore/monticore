@@ -145,19 +145,19 @@ public class CoCoTests {
   @Test
   public void testStaticAbstractOOMethods(){
     testValidAbstract(staticAbstractOOMethods);
-    testInvalidOO("0xA0239", staticAbstractOOMethods);
+    testInvalidOO("0xA2239", staticAbstractOOMethods);
   }
 
   @Test
   public void testStaticAbstractOOFields(){
     testValidAbstract(staticAbstractOOFields);
-    testInvalidOO("0xA0237", staticAbstractOOFields);
+    testInvalidOO("0xA1236", staticAbstractOOFields);
   }
 
   @Test
   public void testInheritedCannotUseStaticFromSuper(){
     testValidAbstract(inheritedCannotUseStaticFromSuper);
-    testInvalidOO("0xA0239",inheritedCannotUseStaticFromSuper);
+    testInvalidOO("0xA2239",inheritedCannotUseStaticFromSuper);
   }
 
   @Test

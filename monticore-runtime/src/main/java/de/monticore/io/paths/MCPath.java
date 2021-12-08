@@ -8,13 +8,14 @@ import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.CharBuffer;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -102,6 +103,18 @@ public final class MCPath {
     List<URL> resolvedURLs = new ArrayList<>();
     // iterate MCPath entries and check whether folder path exists within these
     for (Path p : getEntries()) {
+      if(p.toString().endsWith(".jar")){
+        String path = "/" + folderPath.replaceAll("\\\\", "/") + "/" + fileNameRegEx;
+        GlobExpressionEvaluator evaluator = new GlobExpressionEvaluator(path, getJarFS(p.toFile()), true);
+        resolvedURLs.addAll(evaluator.evaluate(p.toFile()).stream().map(uri -> {
+          try {
+            return uri.toURL();
+          } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+          }
+        }).collect(Collectors.toList()));
+      }
       File folder = p.resolve(folderPath).toFile(); //e.g., "src/test/resources/foo/bar"
       if (folder.exists() && folder.isDirectory()) {
         // perform the actual file filter on the folder and collect result
@@ -200,9 +213,19 @@ public final class MCPath {
         c.close();
       }
       catch (IOException e) {
-        Log.error("0xA1035 An exception occured while trying to close a class loader!", e);
+        Log.error("0xA1035 An exception occurred while trying to close a class loader!", e);
       }
     });
+  }
+
+  public static FileSystem getJarFS(File jar) {
+    try {
+      return FileSystems.newFileSystem(jar.toPath(), MCPath.class.getClassLoader());
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    return FileSystems.getDefault();
   }
 
 }

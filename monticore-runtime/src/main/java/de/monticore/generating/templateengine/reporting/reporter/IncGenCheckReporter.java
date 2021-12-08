@@ -23,12 +23,12 @@ public class IncGenCheckReporter extends IncGenReporter {
   @Override
   public void flush(ASTNode node) {
     openFile();
-    //create check: grammar changed?
+    //create check: input model (such as grammar) changed?
     for (Path lateOne : filesThatMatterButAreNotThereInTime) {
       if (modelToArtifactMap.keySet().contains(lateOne)) {
         String toAdd = Paths.get(modelToArtifactMap.get(lateOne).toString(), lateOne.toString()).toString();
-        if (!grammarFiles.contains(toAdd)) {
-          grammarFiles.add(toAdd);
+        if (!modelFiles.contains(toAdd)) {
+          modelFiles.add(toAdd);
         }
       }
     }
@@ -43,7 +43,7 @@ public class IncGenCheckReporter extends IncGenReporter {
         //test if file was changed by comparing its hash to its previous hash
         writeLine("md5sum -c <<<\"" +checkSum +" *" + file + "\" || (touch $1; echo " + file + " changed!; exit 0;)");
       }
-      for (String s : grammarFiles) {
+      for (String s : modelFiles) {
         String digest;
         if (!s.contains(".jar")) {
           File inputFile = new File(s);

@@ -55,7 +55,7 @@ public class AutomataTool {
 
     // Retrieve the model name
     if (args.length != 2) {
-      Log.error("0xEE7400 Arguments are: (1) input "
+      Log.error("0xEE751 Arguments are: (1) input "
                +"model and (2) symbol store.");
       return;
     }
@@ -133,10 +133,10 @@ public class AutomataTool {
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
-      Log.error("0xEE840 Model could not be parsed.");
+      Log.error("0xEE853 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("0xEE640 Failed to parse " + model, e);
+      Log.error("0xEE652 Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

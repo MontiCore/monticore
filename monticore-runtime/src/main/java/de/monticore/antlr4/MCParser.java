@@ -251,7 +251,7 @@ public abstract class MCParser extends Parser {
   
   protected boolean checkToken(int i) {
     if (_input.LT(i) == null) {
-      Log.warn("0xA0610 The token at position + " + i + " is not defined!");
+      Log.warn("0xA1610 The token at position + " + i + " is not defined!");
       return false;
     }
     return true;

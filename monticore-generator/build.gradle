@@ -9,7 +9,7 @@ buildscript {
 
 plugins {
   id "java-library"
-  //id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+  id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
   id "monticore-bs" version "$previous_mc_version"// MontiCore Plugin
   id "com.github.johnrengelman.shadow" version "6.0.0"
   id 'groovy'

@@ -18,5 +18,5 @@ public class GrammarGlobalScopeTestFactory {
     scope.getSymbolPath().addEntry(Paths.get("src/test/resources"));
     return (GrammarFamilyGlobalScope) scope;
   }
-
+  
 }

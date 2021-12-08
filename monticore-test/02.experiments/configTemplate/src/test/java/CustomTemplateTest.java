@@ -44,6 +44,8 @@ public class CustomTemplateTest {
     // actual state list is empty
     assertEquals(0, aut.getStateList().size()); // actual state list size
     assertEquals(10, aut.sizeStates());         // modified state list size
+
+    assertEquals(0, aut.count());
   }
 
 }

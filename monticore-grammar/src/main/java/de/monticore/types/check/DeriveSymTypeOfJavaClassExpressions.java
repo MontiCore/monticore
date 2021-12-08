@@ -157,7 +157,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   protected SymTypeExpression replaceTypeVariables(SymTypeExpression wholeResult, List<SymTypeExpression> typeArgs, List<SymTypeExpression> argumentList) {
     Map<SymTypeExpression,SymTypeExpression> map = Maps.newHashMap();
     if(typeArgs.size()!=argumentList.size()){
-      Log.error("0xA0297 different amount of type variables and type arguments");
+      Log.error("0xA2297 different amount of type variables and type arguments");
     }else{
       for(int i = 0;i<typeArgs.size();i++){
         map.put(typeArgs.get(i),argumentList.get(i));
@@ -268,7 +268,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       if (fields.size()==1) {
         return fields.get(0).getType();
       }else{
-        Log.error("0xA0304 there cannot be more than one field with the same name");
+        Log.error("0xA1305 there cannot be more than one field with the same name");
       }
     }
     return null;
@@ -650,7 +650,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         extType = typeCheckResult.getCurrentResult();
       }else{
         typeCheckResult.reset();
-        logError("0xA0311",creator.getExtType().get_SourcePositionStart());
+        logError("0xA1311",creator.getExtType().get_SourcePositionStart());
       }
       if(!extType.isTypeConstant()){
         //see if there is a constructor fitting for the arguments
@@ -669,7 +669,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         typeCheckResult.setCurrentResult(wholeResult);
       }else{
         typeCheckResult.reset();
-        logError("0xA0312",creator.get_SourcePositionStart());
+        logError("0xA1312",creator.get_SourcePositionStart());
       }
     }
 

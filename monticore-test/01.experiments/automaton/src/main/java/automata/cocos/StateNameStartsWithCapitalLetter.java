@@ -18,7 +18,7 @@ public class StateNameStartsWithCapitalLetter
       // Issue warning...
       Log.warn(
           String.format(
-            "0xADD02 State name '%s' is not capitalized.",
+            "0xADD21 State name '%s' is not capitalized.",
             stateName),
           state.get_SourcePositionStart());
     }
