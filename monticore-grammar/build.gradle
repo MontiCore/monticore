@@ -77,8 +77,9 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
           script = "de/monticore/monticore_noreports.groovy"
         }
         def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
-        def uptoDate = incCheck(grammarIncludingPackage)
-        outputs.upToDateWhen { uptoDate }
+        def trGrammarIncludingPackage = file(grammarOutDir).toURI().relativize(file(grammar).toURI()).toString()
+        outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
+        outputs.upToDateWhen { incCheck(trGrammarIncludingPackage) }
         dstlGen = false
         dependsOn(generate)
       }
