@@ -49,7 +49,7 @@ public class TemplateControllerHookPointsTest {
   
   @Test
   public void testUndefinedHook() {
-    assertEquals("// Hookpoint: hp1", glex.defineHookPoint(tc, "hp1"));
+    assertEquals("/* Hookpoint: hp1 */", glex.defineHookPoint(tc, "hp1"));
   }
   
   @Test
