@@ -95,8 +95,30 @@ thus can be mapped directly to itself when generating code for Java.
   sub-models.
 
 ## Functionality
-### CoCos
-- CoCos are currently being explored and implemented.
+### Context Conditions
+JavaLight defines the following CoCos:
+* [```ConstructorFormalParametersDifferentName```](../../../java/de/monticore/javalight/cocos/ConstructorFormalParametersDifferentName.java)  
+checks if all input parameters of a constructor have distinct names.
+* [```ConstructorModifiersValid```](../../../java/de/monticore/javalight/cocos/ConstructorModifiersValid.java)  
+checks that a constructor is not marked as `abstract`, `final`, `static`, or `native`.
+* [```ConstructorNoAccessModifierPair```](../../../java/de/monticore/javalight/cocos/ConstructorNoAccessModifierPair.java)  
+checks if the visibility of a constructor is unique.
+* [```ConstructorNoDuplicateModifier```](../../../java/de/monticore/javalight/cocos/ConstructorNoDuplicateModifier.java)  
+checks that no duplicate modifier occurs for a constructor.
+* [```MethodAbstractAndOtherModifiers```](../../../java/de/monticore/javalight/cocos/MethodAbstractAndOtherModifiers.java)  
+checks that an `abstract` method is not marked as `private`, `static`, `final`, `native`, or `synchronized`.
+* [```MethodBodyAbsence```](../../../java/de/monticore/javalight/cocos/MethodBodyAbsence.java)  
+ensures that a method body may only be absent for `abstract` or `native` methods. 
+* [```MethodBodyPresence```](../../../java/de/monticore/javalight/cocos/MethodBodyPresence.java)  
+checks that a method with a present method body is neither `abstract` nor `native`. 
+* [```MethodExceptionThrows```](../../../java/de/monticore/javalight/cocos/MethodExceptionThrows.java)  
+ensures that thrown exceptions are of type `java.lang.Throwable`.
+* [```MethodFormalParametersDifferentName```](../../../java/de/monticore/javalight/cocos/MethodFormalParametersDifferentName.java)  
+checks if all input parameters of a method have distinct names.
+* [```MethodNoDuplicateModifier```](../../../java/de/monticore/javalight/cocos/MethodNoDuplicateModifier.java)  
+checks that no duplicate modifier occurs for a method.
+* [```MethodNoNativeAndStrictfp```](../../../java/de/monticore/javalight/cocos/MethodNoNativeAndStrictfp.java)  
+checks that method is not marked as `native` and `strictfp` at the same time.
 
 ### PrettyPrinter
 - The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter`][PrettyPrinter]
