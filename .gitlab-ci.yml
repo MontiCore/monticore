@@ -139,7 +139,7 @@ checkMLCs:
   dependencies:
     - build
   script:
-    - "gradle checkArtifacts" $GRADLE_OPTS"
+    - "gradle checkArtifacts"
   allow_failure: true
 
 sonar:
