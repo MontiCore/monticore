@@ -17,7 +17,8 @@ public class AutomataToolTest {
   
   @BeforeClass
   public static void init(){
-    LogStub.init();         // replace log by a sideffect free variant
+    LogStub.init();// replace log by a sideffect free variant
+    Log.enableFailQuick(false);
     // LogStub.initPlusLog();  // for manual testing purpose only
   }
   
@@ -34,7 +35,8 @@ public class AutomataToolTest {
     AutomataTool.main(new String[] { "-i", "src/test/resources/example/PingPong.aut",
                                      "-path", "target/PingPong.autsym",
                                      "-hw", "src/product/java",
-                                     "-o", "target/statepattern" });
+                                     "-o", "target/statepattern",
+                                      "-s", "target/example/PingPong.autsym"});
     assertEquals(0, Log.getErrorCount());
   }
   
@@ -43,7 +45,8 @@ public class AutomataToolTest {
     AutomataTool.main(new String[] { "-i", "src/test/resources/example/Simple12.aut",
                                      "-path", "target/Simple12.autsym",
                                      "-hw", "src/product/java",
-                                     "-o", "target/statepattern" });
+                                     "-o", "target/statepattern",
+                                     "-s", "target/example/Simple12.autsym"});
     assertEquals(0, Log.getErrorCount());
   }
   
@@ -51,12 +54,7 @@ public class AutomataToolTest {
   public void testWrongArguments(){
     AutomataTool.main(new String[] {  });
     assertEquals(1, Log.getErrorCount());
-    assertEquals("0xDE631 Please specify at least 4 arguments: \n"
-          + "1. automata modelfile,\n"
-          + "2. symbol file,\n"
-          + "3. handcodedPath,\n"
-          + "4. output directory,\n"
-          + "5. (optional) templatePath\n"
+    assertEquals("0xA5C02 Must specify an Input file."
           , Log.getFindings().get(0).buildMsg());
   }
   

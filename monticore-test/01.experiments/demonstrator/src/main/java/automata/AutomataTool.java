@@ -143,6 +143,11 @@ public class AutomataTool extends AutomataToolTOP {
     }
   }
 
+  @Override
+  public void init() {
+    AutomataMill.init();
+  }
+
   /**
    * The execution workflow:
    * a single larger method calling all the individual steps needed
