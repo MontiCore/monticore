@@ -7,9 +7,10 @@ mlc MCCommonStatements {
     include "de/monticore/statements/MCCommonStatements.mc4";
   }
 
-  //export the handwritten TOP-classes
+  //export the handwritten TOP-classes and pretty printer
   export "$projectDir/src/main/java" {
     include "de/monticore/statements/mccommonstatements/**.java";
+    include "de/monticore/statements/prettyprint/MCCommonStatements*.java";
   }
 
   // export all Java files generated from the grammar

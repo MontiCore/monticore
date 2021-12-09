@@ -7,6 +7,11 @@ mlc MCAssertStatements {
     include "de/monticore/statements/MCAssertStatements.mc4";
   }
 
+  //export the pretty printer
+  export "$projectDir/src/main/java" {
+    include "de/monticore/statements/prettyprint/MCAssertStatements*.java";
+  }
+
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
     include "de/monticore/statements/mcassertstatements/**.java";

@@ -10,9 +10,14 @@ mlc Grammar {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/grammar/grammar/**.java";
+
+    // additional, general Java source code
     include "de/monticore/grammar/*.java";
+
+    // pretty printer
     include "de/monticore/grammar/prettyprint/GrammarPrettyPrinter.java";
-    include "de/monticore/grammar/cocos/**.java";
+
+    // TODO: Discuss whether we want to include general CoCos here
   }
 
   // export all Java files generated from the grammar
@@ -20,25 +25,24 @@ mlc Grammar {
     include "de/monticore/grammar/grammar/**.java";
   }
 
-  // TODO: !!! remove the following in the code, these are illegal !!!
-  uses {
-    include "$projectDir/src/main/java/de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
-    include "$projectDir/src/main/java/de/monticore/types/mcfullgenerictypes/MCFullGenericTypesMill.java";
-    include "$projectDir/src/main/java/de/monticore/types/mcarraytypes/_ast/ASTMCArrayType.java";
-    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/Grammar_WithConceptsMill.java";
-    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_visitor/Grammar_WithConceptsTraverser.java";
-    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_cocos/Grammar_WithConceptsCoCoChecker.java";
-    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_symboltable/IGrammar_WithConceptsArtifactScope.java";
-    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_symboltable/IGrammar_WithConceptsGlobalScope.java";
-  }
 
   promote {
     mlc "de.monticore.literals.MCCommonLiterals";
     mlc "de.monticore.types.MCSimpleGenericTypes";
     include "$mp/com/google/common/**.class";
-  }
-
-  uses {
     include "$mp/org/apache/commons/lang3/StringUtils.class";
   }
+
+  // TODO: check the following in the code, are these illegal?
+   uses {
+     // relations to the Grammar_WithConcepts language:
+     include "$projectDir/src/main/java/de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
+     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar/grammar_withconcepts/Grammar_WithConceptsMill.java";
+     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar/grammar_withconcepts/_symboltable/IGrammar_WithConceptsArtifactScope.java";
+     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar/grammar_withconcepts/_symboltable/IGrammar_WithConceptsGlobalScope.java";
+     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar/grammar_withconcepts/_visitor/Grammar_WithConceptsTraverser.java";
+
+     // used by GrammarSTCompleteTypes and GrammarScopesGenitor
+     include "$projectDir/src/main/java/de/monticore/types/mcfullgenerictypes/MCFullGenericTypesMill.java";
+   }
 }

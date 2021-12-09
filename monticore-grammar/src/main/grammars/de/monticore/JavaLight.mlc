@@ -26,4 +26,9 @@ mlc JavaLight {
     mlc "de.monticore.statements.MCArrayStatements";
   }
 
+  // TODO: check whether this is illegal !!!
+  uses {
+    include "$projectDir/src/main/java/de/monticore/grammar/grammar_withconcepts/FullSynthesizeFromMCFGT4Grammar.java";
+  }
+
 }

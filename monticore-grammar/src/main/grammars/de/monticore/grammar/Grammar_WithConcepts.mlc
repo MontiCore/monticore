@@ -13,9 +13,8 @@ mlc Grammar_WithConcepts {
 
     include "de/monticore/grammar/prettyprint/Grammar_WithConcepts*.java";
 
-    include "de/monticore/grammar/ComponentCollector.java";
-    include "de/monticore/grammar/MCGrammarSymbolTableHelper.java";
-    include "de/monticore/grammar/Multiplicity.java";
+    // CoCos
+    include "de/monticore/grammar/cocos/**.java";
   }
 
   // export all Java files generated from the grammar
