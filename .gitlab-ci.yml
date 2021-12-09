@@ -133,6 +133,15 @@ deploy:
   except:
     - master
 
+checkMLCs:
+  stage: check
+  needs: ["build"]
+  dependencies:
+    - build
+  script:
+    - "gradle checkArtifacts" $GRADLE_OPTS
+  allow_failure: true
+
 sonar:
   stage: check
   needs: ["build"]

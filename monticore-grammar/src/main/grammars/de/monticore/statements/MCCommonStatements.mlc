@@ -22,4 +22,9 @@ mlc MCCommonStatements {
     mlc "de.monticore.statements.MCVarDeclarationStatements";
   }
 
+  // TODO: check whether this is illegal !!!
+  uses {
+    include "$projectDir/de/monticore/grammar/grammar_withconcepts/FullSynthesizeFromMCFGT4Grammar.java";
+  }
+
 }
