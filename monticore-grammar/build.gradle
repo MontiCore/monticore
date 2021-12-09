@@ -143,7 +143,7 @@ joiner.add "$projectDir/target/symbols"
 String mp = joiner.toString()
 
 // two tasks per MLC file
-fileTree(".").matching { include '**/*.mlc' }.each {
+fileTree("src").matching { include '**/*.mlc' }.each {
     def f = it
     def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
 
