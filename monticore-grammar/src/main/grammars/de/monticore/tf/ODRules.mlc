@@ -23,6 +23,8 @@ mlc ODRules {
     mlc "de.monticore.tf.TFBasisExts";
     mlc "de.monticore.literals.MCJavaLiterals";
     mlc "de.monticore.UMLStereotype";
+
+    include "$mp/de/monticore/tf/rule2od/**.class";
     include "$mp/com/google/common/**.class";
   }
   
