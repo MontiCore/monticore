@@ -367,7 +367,7 @@ checkMDLinks:
   only:
     - dev
 
-# Mirrors this repository's `dev` branch to GitHub.
+# Mirrors this repository's `dev` and `master` branches to GitHub.
 #
 # The mirror will always be at either HEAD or HEAD+1 (depending on whether cleanup is necessary).
 # For more information, visit: https://git.rwth-aachen.de/monticore/auxiliary-development-tools/github-mirror-tools (Available internally only)
@@ -405,3 +405,4 @@ githubmirror:
     - git push github $CI_COMMIT_BRANCH --force
   only:
     - dev
+    - master
