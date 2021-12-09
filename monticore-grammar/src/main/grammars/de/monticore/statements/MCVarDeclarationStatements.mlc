@@ -7,18 +7,28 @@ mlc MCVarDeclarationStatements {
     include "de/monticore/statements/MCVarDeclarationStatements.mc4";
   }
 
-  // export all Java files generated from the grammar
-  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+  //export the handwritten TOP-classes and pretty printer
+  export "$projectDir/src/main/java" {
     include "de/monticore/statements/mcvardeclarationstatements/**.java";
     include "de/monticore/statements/prettyprint/MCVarDeclarationStatements*.java";
   }
 
-  // promote using the JDK except for reflection
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/statements/mcvardeclarationstatements/**.java";
+  }
+
   promote {
     mlc "de.monticore.statements.MCStatementsBasis";
     mlc "de.monticore.types.MCBasicTypes";
     mlc "de.monticore.expressions.ExpressionsBasis";
     mlc "de.monticore.symbols.OOSymbols";
+  }
+
+  // TODO: check whether this is illegal !!!
+  uses {
+    include "$projectDir/src/main/java/de/monticore/grammar/grammar_withconcepts/FullSynthesizeFromMCFGT4Grammar.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/statements/mccommonstatements/_ast/ASTJavaModifier.java";
   }
 
 }

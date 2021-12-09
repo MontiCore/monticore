@@ -17,7 +17,6 @@ mlc MCExceptionStatements {
     include "de/monticore/statements/mcexceptionstatements/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.statements.MCCommonStatements";
   }

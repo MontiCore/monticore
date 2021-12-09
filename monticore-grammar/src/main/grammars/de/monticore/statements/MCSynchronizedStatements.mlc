@@ -17,7 +17,6 @@ mlc MCSynchronizedStatements {
     include "de/monticore/statements/mcsynchronizedstatements/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.statements.MCCommonStatements";
   }

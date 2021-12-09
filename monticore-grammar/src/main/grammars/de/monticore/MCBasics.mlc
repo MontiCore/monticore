@@ -32,6 +32,7 @@ mlc MCBasics {
 
   // promote using everything from MontiCore RTE and co.
   promote {
+    include "$mp/de/monticore/antlr4/**";
     include "$mp/de/monticore/ast/**";
     include "$mp/de/monticore/generating/**";
     include "$mp/de/monticore/io/**";

@@ -17,7 +17,6 @@ mlc MCAssertStatements {
     include "de/monticore/statements/mcassertstatements/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.statements.MCStatementsBasis";
     mlc "de.monticore.expressions.ExpressionsBasis";

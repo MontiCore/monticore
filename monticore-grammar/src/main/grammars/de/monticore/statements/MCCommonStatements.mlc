@@ -18,7 +18,6 @@ mlc MCCommonStatements {
     include "de/monticore/statements/mccommonstatements/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.statements.MCVarDeclarationStatements";
   }
