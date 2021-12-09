@@ -26,19 +26,19 @@ mlc ODRules {
     include "$mp/com/google/common/**.class";
   }
   
-  local {   // TODO check whether this should be allowed
-  include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/MCGrammarSymbol.java";
-  include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/ProdSymbol.java";
-  include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/RuleComponentSymbol.java";
-  include "$projectDir/src/main/java/de/monticore/statements/prettyprint/MCCommonStatementsPrettyPrinter.java";
-  include "$projectDir/src/main/java/de/monticore/statements/prettyprint/MCVarDeclarationStatementsPrettyPrinter.java";
-  include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/ODRuleGenerationMill.java";
-  include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTChangeOperation.java";
-  include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTDependency.java";
-  include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTLinkCondition.java";
-  include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTMatchingObject.java";
-  include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTObjectCondition.java";
-  include "$mp/de/monticore/tf/rule2od/Variable2AttributeMap.java";
+  uses {   // TODO check whether this should be allowed
+    include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/MCGrammarSymbol.java";
+    include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/ProdSymbol.java";
+    include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/RuleComponentSymbol.java";
+    include "$projectDir/src/main/java/de/monticore/statements/prettyprint/MCCommonStatementsPrettyPrinter.java";
+    include "$projectDir/src/main/java/de/monticore/statements/prettyprint/MCVarDeclarationStatementsPrettyPrinter.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/ODRuleGenerationMill.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTChangeOperation.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTDependency.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTLinkCondition.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTMatchingObject.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTObjectCondition.java";
+    include "$mp/de/monticore/tf/rule2od/Variable2AttributeMap.java";
   }
 
 }
