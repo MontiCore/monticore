@@ -29,6 +29,7 @@ mlc BasicSymbols {
   // TODO: !!! remove the following in the code, these are illegal !!!
   uses {
     include "$projectDir/src/main/java/de/monticore/symbols/oosymbols/_symboltable/OOTypeSymbol.java";
+    include "$projectDir/src/main/java/de/monticore/symbols/oosymbols/_symboltable/FieldSymbol.java";
     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/symbols/oosymbols/_symboltable/IOOSymbolsScope.java";
   }
 

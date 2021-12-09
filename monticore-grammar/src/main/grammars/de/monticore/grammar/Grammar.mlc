@@ -10,15 +10,8 @@ mlc Grammar {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/grammar/grammar/**.java";
-
+    include "de/monticore/grammar/*.java";
     include "de/monticore/grammar/prettyprint/GrammarPrettyPrinter.java";
-
-    include "de/monticore/grammar/DirectLeftRecursionDetector.java";
-    include "de/monticore/grammar/LexNamer.java";
-    include "de/monticore/grammar/MultiplicityVisitor.java";
-    include "de/monticore/grammar/PredicatePair.java";
-    include "de/monticore/grammar/RegExpBuilder.java";
-
     include "de/monticore/grammar/cocos/**.java";
   }
 
@@ -27,9 +20,22 @@ mlc Grammar {
     include "de/monticore/grammar/grammar/**.java";
   }
 
+  // TODO: !!! remove the following in the code, these are illegal !!!
+  uses {
+    include "$projectDir/src/main/java/de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
+    include "$projectDir/src/main/java/de/monticore/types/mcfullgenerictypes/MCFullGenericTypesMill.java";
+    include "$projectDir/src/main/java/de/monticore/types/mcarraytypes/_ast/ASTMCArrayType.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/Grammar_WithConceptsMill.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_visitor/Grammar_WithConceptsTraverser.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_cocos/Grammar_WithConceptsCoCoChecker.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_symboltable/IGrammar_WithConceptsArtifactScope.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_symboltable/IGrammar_WithConceptsGlobalScope.java";
+  }
+
   promote {
     mlc "de.monticore.literals.MCCommonLiterals";
     mlc "de.monticore.types.MCSimpleGenericTypes";
+    include "$mp/com/google/common/**.class";
   }
 
   uses {
