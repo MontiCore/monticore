@@ -31,19 +31,19 @@ public class AutomataToolTest {
    */
   @Test
   public void testPingPong(){
-    AutomataTool.main(new String[] { "src/test/resources/example/PingPong.aut", 
-                                     "target/PingPong.autsym",
-                                      "src/product/java", 
-                                     "target/statepattern" });
+    AutomataTool.main(new String[] { "-i", "src/test/resources/example/PingPong.aut",
+                                     "-path", "target/PingPong.autsym",
+                                     "-hw", "src/product/java",
+                                     "-o", "target/statepattern" });
     assertEquals(0, Log.getErrorCount());
   }
   
   @Test
   public void testSimple12(){
-    AutomataTool.main(new String[] { "src/test/resources/example/Simple12.aut",
-                                     "target/Simple12.autsym",
-                                     "src/product/java", 
-                                     "target/statepattern" });
+    AutomataTool.main(new String[] { "-i", "src/test/resources/example/Simple12.aut",
+                                     "-path", "target/Simple12.autsym",
+                                     "-hw", "src/product/java",
+                                     "-o", "target/statepattern" });
     assertEquals(0, Log.getErrorCount());
   }
   
