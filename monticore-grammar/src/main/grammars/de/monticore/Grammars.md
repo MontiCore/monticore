@@ -212,6 +212,19 @@ as they allow math oriented style of specification.
 * `x ?>= y` equals `x.isPresent && x.get >= y` 
 * This grammar resides in the [MontiCore/OCL][OCL] project.
 
+### [Regular Expressions](https://git.rwth-aachen.de/monticore/languages/regex) (stable)
+* This grammar defines regular expressions (RegEx) as defined by Java.
+* It provides common regex tokens such as 
+  * anchors, e.g., start of line (`^`), end of line (`$`), word boundary (`\b`),
+  * quantifiers, e.g., zero or one (`?`), zero or more (`*`), exactly 3 (`{3}`),
+  * character classes, e.g., lowercase letters (`[a-z]`), the letters a, b, 
+    and c (`[abc]`)
+* RegExs also support capture groups and referencing these capute groups 
+  in replacements  
+* For example, `^([01][0-9]|2[0-3]):[0-5][0-9]$` matches a timestamp in 
+  `HH:MM` format
+* This grammar resides in the [MontiCore/RegEx][RegEx] project
+
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (stable)
 * This grammar the international system of units (SI units), based on 
@@ -398,6 +411,7 @@ These can also be used if someone is interested:
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
 <!-- Links to other sites-->
+[RegEx]: https://git.rwth-aachen.de/monticore/languages/regex
 [OCL]: https://git.rwth-aachen.de/monticore/languages/OCL
 [OCL-OCLExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4
 [OCL-OptionalOperators]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4
