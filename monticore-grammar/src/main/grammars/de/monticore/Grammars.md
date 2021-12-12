@@ -61,8 +61,7 @@ other. Some snipets for type definitions:
     MCFullGenericTypes
                       Foo<? extends .>
                       Foo<? super .>
-    MCArrayTypes
-                      Person[]  int[][]
+    MCArrayTypes      Person[]  int[][]
     SI Unit types     km/h  km/h<long>
   
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
