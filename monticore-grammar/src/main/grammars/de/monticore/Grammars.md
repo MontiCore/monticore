@@ -221,8 +221,13 @@ as they allow math oriented style of specification.
   * quantifiers, e.g., zero or one (`?`), zero or more (`*`), exactly 3 (`{3}`),
   * RegEx also supports to capture groups and referencing these captured groups 
   in replacements.  
-* For example, `^([01][0-9]|2[0-3]):[0-5][0-9]$` matches a timestamp in 
-  `HH:MM` format
+* For example, `^([01][0-9]|2[0-3]):[0-5][0-9]$` matches all valid timestamps in 
+  `HH:MM` format.
+* The main nonterminal `RegularExpression`is not part of the expression hierarchy, and 
+  thus regular expressions cannot be used as ordinary values. Instead it is possible to use
+  the nonterminal `RegularExpression` wher it is appropriate to define such a regular
+  expression within the modelling language. One possible usage is e.g. as additional 
+  restriction for String values in input/output channels in architectural langages.
 * This grammar resides in the [MontiCore/RegEx][RegEx] project
 
 
