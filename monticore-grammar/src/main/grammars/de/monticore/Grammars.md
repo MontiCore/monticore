@@ -63,6 +63,7 @@ other. Some snipets for type definitions:
                       Foo<? super .>
     MCArrayTypes
                       Person[]  int[][]
+    SI Unit types     km/h  km/h<long>
   
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
 * This grammar defines basic types. This eases the reuse of type 
