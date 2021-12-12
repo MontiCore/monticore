@@ -212,24 +212,6 @@ as they allow math oriented style of specification.
 * `x ?>= y` equals `x.isPresent && x.get >= y` 
 * This grammar resides in the [MontiCore/OCL][OCL] project.
 
-### [Regular Expressions](https://git.rwth-aachen.de/monticore/languages/regex) (stable)
-* This grammar defines regular expressions (RegEx) as used in Java (see e.g. `java.util.regex.Pattern`)).
-* It provides common regex tokens such as 
-  * character classes, e.g., lowercase letters (`[a-z]`), the letters a, b, 
-    and c (`[abc]`)
-  * anchors, e.g., start of line (`^`), end of line (`$`), word boundary (`\b`),
-  * quantifiers, e.g., zero or one (`?`), zero or more (`*`), exactly 3 (`{3}`),
-  * RegEx also supports to capture groups and referencing these captured groups 
-  in replacements.  
-* For example, `^([01][0-9]|2[0-3]):[0-5][0-9]$` matches all valid timestamps in 
-  `HH:MM` format.
-* The main nonterminal `RegularExpression`is not part of the expression hierarchy, and 
-  thus regular expressions cannot be used as ordinary values. Instead it is possible to use
-  the nonterminal `RegularExpression` wher it is appropriate to define such a regular
-  expression within the modelling language. One possible usage is e.g. as additional 
-  restriction for String values in input/output channels in architectural langages.
-* This grammar resides in the [MontiCore/RegEx][RegEx] project
-
 
 ### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (stable)
 * This grammar the international system of units (SI units), based on 
@@ -344,7 +326,25 @@ is inspired by Java (actually subset of Java). Some example statements:
 
 ## Further grammars in package `de.monticore`
 
-several smaller grammars are also available:
+several other grammars are also available:
+
+### [RegularExpressions.mc4](https://git.rwth-aachen.de/monticore/languages/regex) (stable)
+* This grammar defines regular expressions (RegEx) as used in Java (see e.g. `java.util.regex.Pattern`)).
+* It provides common regex tokens such as 
+  * character classes, e.g., lowercase letters (`[a-z]`), the letters a, b, 
+    and c (`[abc]`)
+  * anchors, e.g., start of line (`^`), end of line (`$`), word boundary (`\b`),
+  * quantifiers, e.g., zero or one (`?`), zero or more (`*`), exactly 3 (`{3}`),
+  * RegEx also supports to capture groups and referencing these captured groups 
+  in replacements.  
+* For example, `^([01][0-9]|2[0-3]):[0-5][0-9]$` matches all valid timestamps in 
+  `HH:MM` format.
+* The main nonterminal `RegularExpression` is not part of the expression hierarchy and 
+  thus regular expressions are not used as ordinary values. Instead 
+  the nonterminal `RegularExpression` is can be used in aother places of a language
+  e.g. we do that as additional 
+  restriction for String values in input/output channels in architectural langages.
+* This grammar resides in the [MontiCore/RegEx][RegEx] project
 
 ### [Cardinality.mc4](Cardinality.mc4) (stable)
 * This grammar defines UML Cardinalities of forms ``*``, ``[n..m]`` or ``[n..*]``.
