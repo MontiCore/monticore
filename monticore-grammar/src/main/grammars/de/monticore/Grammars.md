@@ -213,14 +213,14 @@ as they allow math oriented style of specification.
 * This grammar resides in the [MontiCore/OCL][OCL] project.
 
 
-### [SI Units](https://git.rwth-aachen.de/monticore/languages/siunits) (stable)
+### [SIUnits.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
 * This grammar the international system of units (SI units), based on 
   the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
   as `m`(milli), `k`(kilo), etc.
 * The SI Unit grammar provides an extension to expressions, but also to the 
-  typing system, e.g.  `km/h` or `km/h<long>`,
-  and literals, allowing e.g. `5 km/h`.
+  typing system, e.g. types such as `km/h` or `km/h<long>`,
+  and literals, such as e.g. `5.3 km/h`.
 * The grammars reside in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project
 
 
