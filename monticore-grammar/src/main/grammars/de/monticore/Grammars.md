@@ -274,6 +274,7 @@ truth values. Some snipets:
                       3L  2.17d  2.17f  0xAF  "string"  
                       "str\uAF01\u0001"  null
     MCJavaLiterals    999_999  0x3F2A  0b0001_0101  0567  1.2e-7F
+    SIUnitLiterals    5.3km/h  7mg
 
 ### [MCLiteralsBasis.mc4](literals/MCLiteralsBasis.mc4) (stable)
 * This grammar defines core interface for literals.
