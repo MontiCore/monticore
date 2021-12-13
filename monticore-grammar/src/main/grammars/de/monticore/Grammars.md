@@ -329,7 +329,7 @@ is inspired by Java (actually subset of Java). Some example statements:
 several other grammars are also available:
 
 ### [RegularExpressions.mc4](https://git.rwth-aachen.de/monticore/languages/regex) (stable)
-* This grammar defines regular expressions (RegEx) as used in Java (see e.g. `java.util.regex.Pattern`)).
+* This grammar defines regular expressions (RegEx) as used in Java (see e.g. `java.util.regex.Pattern`).
 * It provides common regex tokens such as 
   * character classes, e.g., lowercase letters (`[a-z]`), the letters a, b, 
     and c (`[abc]`)
