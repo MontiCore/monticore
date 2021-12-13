@@ -2,7 +2,7 @@
 
 <!-- This is a MontiCore stable explanation. -->
 
-# MontiCore Core Grammars - an Overview
+# MontiCore Grammars for Expressions, Literals and Types - an Overview
 
 [[_TOC_]]
 
@@ -108,15 +108,15 @@ possibilities to add arrays, such as `Person[]` or `int[][]`.
 ### [SIUnitTypes4Math.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
 
 The known units `s, m, kg, A, K, mol, cd` from the international system of 
-units (SI Units) and  their kombinations, such as `km/h` or `mg`, etc. can 
-be used as ordinary types (instead of only numbers without concrete). 
+units (SI Units) and  their combinations, such as `km/h` or `mg`, etc. can 
+be used as ordinary types (instead of only numbers). 
 The typecheck is extended to prevent e.g. assignment of a weight to a length 
-variable, or to add appropriate conversion, when a `km/h`-based velocity is 
+variable or to add appropriate conversion, e.g. when a `km/h`-based velocity is 
 e.g. stored in a `m/s`-based variable.
 
 The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
 
-### [SIUnitTypes4Computing.mc4.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
+### [SIUnitTypes4Computing.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
 
 Includes the types from `SIUnitTypes4Math`(see above), like `km/h`, but also allows to add a
 resolution, such as `km/h<int>`. Here SI Unit types, 
@@ -125,6 +125,16 @@ such as `int`, `long`, `double`, `float` as argument.
 
 The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
 
+
+### [RegExType.mc4](https://git.rwth-aachen.de/monticore/languages/regex) (stable)
+
+Regular Expressions, such as `[a-z]` /single character) or `^([01][0-9]|2[0-3])$` (hours),
+can be used as ordinary types to constrain the values allowed for stored variables, attributes, 
+parameters. A typecheck for these variables can only be executed at runtime and e.g. issue
+exceptions (or trigger repair functions) if violated. The static typecheck only uses `String` as 
+underlying carrier type.
+
+This grammar resides in the [MontiCore/RegEx][RegEx] project.
 
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
@@ -290,6 +300,11 @@ various forms of literals.
 * Like above `getValue()` and `getSource()` allow to retrive the content
   as value resp. as text string.
 
+### [SIUnitLiterals.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
+
+Provides concrete values, such as `5.3 km/h`or `7 mg` for the international system of 
+units (SI Units). 
+The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
 
 
 ## Statements: List of Grammars in package `de.monticore.statements`
