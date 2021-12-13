@@ -105,6 +105,27 @@ thus be combined with any of the above variants.
 Language component MCArrayTypes provides
 possibilities to add arrays, such as `Person[]` or `int[][]`.
 
+### [SIUnitTypes4Math.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
+
+The known units `s, m, kg, A, K, mol, cd` from the international system of 
+units (SI Units) and  their kombinations, such as `km/h` or `mg`, etc. can 
+be used as ordinary types (instead of only numbers without concrete). 
+The typecheck is extended to prevent e.g. assignment of a weight to a length 
+variable, or to add appropriate conversion, when a `km/h`-based velocity is 
+e.g. stored in a `m/s`-based variable.
+
+The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
+
+### [SIUnitTypes4Computing.mc4.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
+
+Includes the types from `SIUnitTypes4Math`(see above), like `km/h`, but also allows to add a
+resolution, such as `km/h<int>`. Here SI Unit types, 
+like `km/h<.>`, are used as generic type constructor that may take a number type,
+such as `int`, `long`, `double`, `float` as argument.
+
+The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
+
+
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
 
