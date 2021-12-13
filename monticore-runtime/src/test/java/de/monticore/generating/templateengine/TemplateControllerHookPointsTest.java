@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import de.monticore.io.FileReaderWriter;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ public class TemplateControllerHookPointsTest {
   
   @Before
   public void setup() {
+    LogStub.init();
     glex = new GlobalExtensionManagement();
         
     GeneratorSetup config = new GeneratorSetup();
@@ -46,8 +48,8 @@ public class TemplateControllerHookPointsTest {
   }
   
   @Test
-  public void testUndefinedHookReturnsEmptyString() {
-    assertEquals("", glex.defineHookPoint(tc, "hp1"));
+  public void testUndefinedHook() {
+    assertEquals("/* Hookpoint: hp1 */", glex.defineHookPoint(tc, "hp1"));
   }
   
   @Test
