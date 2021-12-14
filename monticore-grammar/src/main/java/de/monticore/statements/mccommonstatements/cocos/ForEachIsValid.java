@@ -10,6 +10,7 @@ import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCoCo {
   
