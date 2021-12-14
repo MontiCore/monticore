@@ -1,8 +1,19 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 # Release Notes
-## MontiCore 7.2.0
+## MontiCore 7.3.0
 to be released
+
+### Additions
+* add cocos for lexical mode
+* add coco for Expression
+* add cocos for JavaLight
+* new methods putSymbolDeSer, putXYSymbolDeSer and loadFileForModelNamed (GlobalScope Interface)
+* new method getToken (MCParser)
+* use CD4C in 02experiment.configTemplate
+
+## MontiCore 7.2.0
+released: 13.09.2021
 
 ### Changes
 * Several modes can now be specified in a grammar (for further

@@ -367,50 +367,42 @@ checkMDLinks:
   only:
     - dev
 
+# Mirrors this repository's `dev` and `master` branches to GitHub.
+#
+# The mirror will always be at either HEAD or HEAD+1 (depending on whether cleanup is necessary).
+# For more information, visit: https://git.rwth-aachen.de/monticore/auxiliary-development-tools/github-mirror-tools (Available internally only)
 githubmirror:
-  # image: maven:3-jdk-8
   stage: mirror
+  variables:
+    # The repository is edited during this job. To make sure that no changes persist, we instruct GitLab to always
+    # create a fresh clone of the repository instead of caching it and attempting to remove any changes.
+    #
+    # See https://docs.gitlab.com/ee/ci/runners/configure_runners.html#git-strategy
+    GIT_STRATEGY: clone
   dependencies:
     - checkMDLinks
   before_script:
-# install ssh and update
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
-# add key for github repository
     - ssh-add <(echo "$SE_CIBUILD_SSH_PRIV_KEY")
     - echo "$SE_CIBUILD_SSH_PRIV_KEY" | tr -d '\r' | ssh-add -
-# configure user for github repository
     - git config --global user.email "noreply-ci@se-rwth.de"
     - git config --global user.name "MontiCore Mirroring Bot"
+    - git checkout "$CI_COMMIT_REF_NAME" # GitLab checks out a commit in detached HEAD mode by default, but we want to commit to the branch and push.
     - mkdir -p ~/.ssh
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   script:
-# download newest version of MDLinkChangerCLI tool
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkChangerCLI.jar?job=build\" --output MDLinkChangerCLI.jar"
-# preprocess repository (e.g. change markdown files)
-    - sh pre/mirror.sh
-# clone github repo
-    - cd ..
-    - "if [ -d \"tmp\" ]; then rm -rf tmp; fi"
-    - mkdir "tmp"
-    - cd tmp
-    - git clone git@github.com:MontiCore/monticore.git
-    - cd ..
-# remove all contents of github repo
-    - rm -r tmp/monticore/*
-# move contents of gitlab repo to github repo
-    - shopt -s extglob
-    - mv monticore/!(MDLinkChangerCLI.jar) tmp/monticore/
-# force push all changes
-    - cd tmp/monticore
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fgithub-mirror-tools/repository/files/mirror.sh/raw\" --output mirror.sh"
+    - sh mirror.sh
+    - rm MDLinkChangerCLI.jar
+    - rm mirror.sh
     - git add --all
-    - "(git commit -m 'Updated branch with most recent version.') || true"
-    - git push --force
-    - cd ..
-    - cd ..
-    - rm -rf tmp
-    - exit 0
+    # We'll simply ignore failures during commit because there is a chance that no files were changed. In this case the
+    # remote will be on the same commit as the upstream repository.
+    - (git commit -m "[Mirror] Replace all internal links and references") || true
+    - git remote add github git@github.com:MontiCore/monticore.git
+    - git push github $CI_COMMIT_BRANCH --force
   only:
     - dev
-
-
+    - master

@@ -35,10 +35,10 @@ Transition =
 
 Tag = StartTag Text2 EndTag;
 
-token StartTag = "<": -> pushMode(text);
+token StartTag = "<": -> pushMode(TEXT);
 
-token EndTag (text) = ">": ->popMode;
+token EndTag (TEXT) = ">": ->popMode;
 
-token Text2(text) = (~('>'))* ;
+token Text2(TEXT) = (~('>'))* ;
   
 }
