@@ -155,7 +155,7 @@ public class TypeCheckTest {
     char1.accept(traverser);
 
 
-    assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
+    assertTrue(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(double1)));
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(bool1)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
