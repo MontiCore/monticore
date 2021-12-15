@@ -2,13 +2,8 @@
 
 package de.monticore.types.mcbasictypes._ast;
 
-
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.prettyprint.MCFullGenericTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
-
-import java.util.List;
 
 public  class ASTMCImportStatement extends ASTMCImportStatementTOP {
 

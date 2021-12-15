@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols;
 
-/**
-*   TODO@AB: Check HW Code and promoted MLCs
-*/
 mlc BasicSymbols {
 
   // export the grammar
@@ -27,6 +24,13 @@ mlc BasicSymbols {
   uses {
     include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
     include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionDeSer.java";
+  }
+
+  // TODO: !!! remove the following in the code, these are illegal !!!
+  uses {
+    include "$projectDir/src/main/java/de/monticore/symbols/oosymbols/_symboltable/OOTypeSymbol.java";
+    include "$projectDir/src/main/java/de/monticore/symbols/oosymbols/_symboltable/FieldSymbol.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/symbols/oosymbols/_symboltable/IOOSymbolsScope.java";
   }
 
 }

@@ -12,7 +12,8 @@ mlc MCCommonLiterals {
 
   //handwritten sources
   export "$projectDir/src/main/java" {
-    include "de/monticore/grammar/literals/prettyprint/MCCommonLiterals*.java";
+    include "de/monticore/literals/prettyprint/MCCommonLiterals*.java";
+    include "de/monticore/literals/MCLiteralsDecoder.java";
   }
 
   promote {

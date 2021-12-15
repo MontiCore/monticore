@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
-/**
-*   TODO@AB: Check HW Code and promoted MLCs
-*/
 mlc UMLModifier {
 
   // export the grammar
@@ -11,9 +8,10 @@ mlc UMLModifier {
     include "de/monticore/UMLModifier.mc4";
   }
 
-  //export handwritten top classes
+  //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/umlmodifier/**.java";
+    include "de/monticore/prettyprint/UMLModifier*.java";
   }
 
   // export all Java files generated from the grammar
@@ -21,9 +19,8 @@ mlc UMLModifier {
     include "de/monticore/umlmodifier/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
-    mlc "de.monticore.literals.UMLStereotype";
+    mlc "de.monticore.UMLStereotype";
   }
 
 }

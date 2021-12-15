@@ -12,7 +12,6 @@ mlc MCFullJavaStatements {
     include "de/monticore/statements/mcfulljavastatements/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.statements.MCAssertStatements";
     mlc "de.monticore.statements.MCExceptionStatements";
