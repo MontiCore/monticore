@@ -155,12 +155,12 @@ public class TypeCheckTest {
     char1.accept(traverser);
 
 
-    assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
+    assertTrue(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(double1)));
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(bool1)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(long1)));
-    assertFalse(isSubtypeOf(tc.typeOf(char1), tc.typeOf(char1)));
+    assertTrue(isSubtypeOf(tc.typeOf(char1), tc.typeOf(char1)));
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(char1)));
     assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(double1)));
     assertFalse(isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
@@ -180,7 +180,7 @@ public class TypeCheckTest {
     assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(stud)));
     assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(fstud)));
     assertFalse(isSubtypeOf(tc.typeOf(stud), tc.typeOf(fstud)));
-    assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
+    assertTrue(isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
 
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
   }
