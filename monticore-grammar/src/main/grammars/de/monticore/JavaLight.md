@@ -21,6 +21,10 @@ The JavaLight language introduces
 
 ## Example
 ```
+int age = 3+x; 
+List<Person> myParents;
+
+@Override
 public int print(String name, Set<Person> p) {
   int a = 2 + name.length();
   if(a < p.size()) {
