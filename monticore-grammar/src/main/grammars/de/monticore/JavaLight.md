@@ -52,9 +52,9 @@ It can be **extended** by domain specific constructs, such as
       be addded through a predefined language library component. 
 
 JavaLight is fully compatible with various expression language components
-that [MontiCore's library](XXXurlToMD-File) provides. These extensions can 
+that [MontiCore's library](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md) provides. These extensions can 
 simply be added by MontiCore's language composition mechanism 
-(see [Handbook](http://monticore.de/handbook.pdf)).
+(see [Handbook](https://monticore.de/handbook.pdf)).
 
 ## Embedding of JavaLight `Expression` or `Statement`
 
