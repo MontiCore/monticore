@@ -132,6 +132,9 @@ checks that no duplicate modifier occurs for a method.
 * [```MethodNoNativeAndStrictfp```](../../../java/de/monticore/javalight/cocos/MethodNoNativeAndStrictfp.java)  
 checks that method is not marked as `native` and `strictfp`.
 
+The CoCos of embedded languages, such as statements and expressions are defined there and reused as black-boxes.
+
+
 ### PrettyPrinter
 - The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter`][PrettyPrinter]
 
