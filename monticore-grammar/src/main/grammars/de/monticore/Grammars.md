@@ -418,6 +418,21 @@ several other grammars are also available:
 
 
 ### [JavaLight.mc4](JavaLight.mc4) (stable)
+
+```
+int age = 3+x; 
+List<Person> myParents;
+
+@Override
+public int print(String name, Set<Person> p) {
+  int a = 2 + name.length();
+  if(a < p.size()) {
+    System.out.println("Hello " + name);
+  }
+  return a;
+}
+```
+
 * JavaLight is a subset of Java that MontiCore itself
   uses as intermediate language for the code generation process.
 * JavaLight doesn't provide all forms of classes (e.g. inner classes)
@@ -427,12 +442,12 @@ several other grammars are also available:
 * Included are: the full Java expressions (without anonymous classes),
   the relevant Java statements, declaration of methods, constructors,
   constants, interface methods, and annotations.
-* JavaLight composes from CommonExpressions,
-                                    AssignmentExpressions,
-                                    JavaClassExpressions,
-                                    MCCommonStatements,
-                                    MCBasicTypes, and
-                                    OOSymbols.
+* JavaLight composes from `CommonExpressions`,
+                                    `AssignmentExpressions`,
+                                    `JavaClassExpressions`,
+                                    `MCCommonStatements`,
+                                    `MCBasicTypes`, and
+                                    `OOSymbols`.
 * JavaLight can be used for other generator tools as well,
   especially as its core templates are reusable and new templates
   for specific method bodies can be added using MontiCore's
