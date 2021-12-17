@@ -12,9 +12,10 @@ i.e. for black box reuse (without need for copy-paste).
 The JavaLight language introduces
 * all forms of **attribute declarations**,
 * all forms of **method declarations** (including **constructors**),
-* all forms of **Java expressions** (including those with side effects, such as `i++`),
+* all forms of **Java expressions** (including those with side effects, 
+  such as `i++`, but without anonymous classes),
 * almost all **Java statements**, with the exception of 
-  statements for exception handling, continue- and break-statement, amd synchronization,
+  statements for exception handling, continue- and break-statement, and synchronization,
   which are omitted because there are many DSLs, where these are of no use;
 * and it allows to import usable types, method, and attribute symbols,
   which may be predefined or imported from of Java-like models.
