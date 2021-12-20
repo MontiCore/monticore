@@ -2,6 +2,7 @@
 
 package de.monticore.statements;
 
-grammar TestMCAssertStatements extends de.monticore.statements.MCAssertStatements, de.monticore.literals.MCCommonLiterals, de.monticore.expressions.CommonExpressions {
+grammar TestMCAssertStatements extends de.monticore.statements.MCAssertStatements,
+                                       de.monticore.expressions.CombineExpressionsWithLiterals {
 
 }

@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.statements.mccommonstatements.cocos;
+package de.monticore.javalight.cocos;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.javalight.JavaLightMill;

@@ -1,16 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
-import de.monticore.grammar.cocos.CocoTest;
 import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsCoCoChecker;
 import de.monticore.statements.mccommonstatements.cocos.DoWhileConditionHasBooleanType;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
+import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,14 +21,15 @@ import java.util.Optional;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class DoWhileConditionHasBooleanTypeTest extends CocoTest {
+public class DoWhileConditionHasBooleanTypeTest {
   
   
-  private static final MCCommonStatementsCoCoChecker checker = new MCCommonStatementsCoCoChecker();
+  private static final TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
   
   @BeforeClass
   public static void disableFailQuick(){
-    
+
+    LogStub.init();
     Log.enableFailQuick(false);
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();

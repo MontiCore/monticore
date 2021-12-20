@@ -1,31 +1,33 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
-import de.monticore.grammar.cocos.CocoTest;
-import de.monticore.statements.mcassertstatements._cocos.MCAssertStatementsCoCoChecker;
 import de.monticore.statements.mccommonstatements.cocos.AssertIsValid;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmcassertstatements.TestMCAssertStatementsMill;
+import de.monticore.statements.testmcassertstatements._cocos.TestMCAssertStatementsCoCoChecker;
 import de.monticore.statements.testmcassertstatements._parser.TestMCAssertStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class AssertIsValidTest extends CocoTest{
+public class AssertIsValidTest {
   
-  private static final MCAssertStatementsCoCoChecker checker = new MCAssertStatementsCoCoChecker();
+  private static final TestMCAssertStatementsCoCoChecker checker = new TestMCAssertStatementsCoCoChecker();
   
   @BeforeClass
   public static void disableFailQuick(){
-  
+
+    LogStub.init();
     Log.enableFailQuick(false);
     TestMCAssertStatementsMill.reset();
     TestMCAssertStatementsMill.init();

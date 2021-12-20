@@ -1,22 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
-import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
-import de.monticore.grammar.cocos.CocoTest;
-import de.monticore.statements.mccommonstatements._ast.ASTIfStatement;
-import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
-import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsCoCoChecker;
 import de.monticore.statements.mccommonstatements.cocos.IfConditionHasBooleanType;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.*;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
+import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -28,13 +20,14 @@ import java.util.Optional;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class IfConditionHasBooleanTypeTest extends CocoTest {
+public class IfConditionHasBooleanTypeTest {
   
-  private static final MCCommonStatementsCoCoChecker checker = new MCCommonStatementsCoCoChecker();
+  private static final TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
   
   @BeforeClass
   public static void disableFailQuick(){
-  
+
+    LogStub.init();
     Log.enableFailQuick(false);
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();

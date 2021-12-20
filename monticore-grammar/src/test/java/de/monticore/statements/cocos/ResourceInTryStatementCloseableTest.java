@@ -1,15 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
-import de.monticore.grammar.cocos.CocoTest;
 import de.monticore.statements.mccommonstatements.cocos.ResourceInTryStatementCloseable;
-import de.monticore.statements.mccommonstatements.cocos.ThrowIsValid;
 import de.monticore.statements.mcexceptionstatements._ast.ASTMCExceptionStatementsNode;
-import de.monticore.statements.mcexceptionstatements._ast.ASTThrowStatement;
 import de.monticore.statements.mcexceptionstatements._ast.ASTTryLocalVariableDeclaration;
 import de.monticore.statements.mcexceptionstatements._ast.ASTTryStatement3;
-import de.monticore.statements.mcexceptionstatements._cocos.MCExceptionStatementsCoCoChecker;
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
+import de.monticore.statements.testmcexceptionstatements._cocos.TestMCExceptionStatementsCoCoChecker;
 import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
@@ -27,9 +24,9 @@ import java.util.Optional;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ResourceInTryStatementCloseableTest extends CocoTest {
+public class ResourceInTryStatementCloseableTest {
   
-  private static final MCExceptionStatementsCoCoChecker checker = new MCExceptionStatementsCoCoChecker();
+  private static final TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
   
   @BeforeClass
   public static void disableFailQuick(){

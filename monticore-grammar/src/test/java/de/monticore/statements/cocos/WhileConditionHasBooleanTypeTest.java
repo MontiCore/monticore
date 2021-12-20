@@ -1,12 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
-import de.monticore.grammar.cocos.CocoTest;
-import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsCoCoChecker;
-import de.monticore.statements.mccommonstatements.cocos.IfConditionHasBooleanType;
 import de.monticore.statements.mccommonstatements.cocos.WhileConditionHasBooleanType;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
+import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
@@ -22,9 +20,9 @@ import java.util.Optional;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class WhileConditionHasBooleanTypeTest extends CocoTest {
+public class WhileConditionHasBooleanTypeTest {
   
-  private static final MCCommonStatementsCoCoChecker checker = new MCCommonStatementsCoCoChecker();
+  private static final TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
   
   @BeforeClass
   public static void disableFailQuick(){

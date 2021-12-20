@@ -1,17 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.grammar.cocos.CocoTest;
 import de.monticore.statements.mccommonstatements.cocos.SynchronizedArgIsReftype;
-import de.monticore.statements.mcexceptionstatements._ast.ASTThrowStatement;
-import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
-import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode;
 import de.monticore.statements.mcsynchronizedstatements._ast.ASTMCSynchronizedStatementsNode;
 import de.monticore.statements.mcsynchronizedstatements._ast.ASTSynchronizedStatement;
-import de.monticore.statements.mcsynchronizedstatements._cocos.MCSynchronizedStatementsCoCoChecker;
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcsynchronizedstatements.TestMCSynchronizedStatementsMill;
+import de.monticore.statements.testmcsynchronizedstatements._cocos.TestMCSynchronizedStatementsCoCoChecker;
 import de.monticore.statements.testmcsynchronizedstatements._parser.TestMCSynchronizedStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
@@ -29,27 +24,28 @@ import java.util.Optional;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class SynchronizedArgIsReftypeTest extends CocoTest {
-  
-  private static final MCSynchronizedStatementsCoCoChecker checker = new MCSynchronizedStatementsCoCoChecker();
-  
+public class SynchronizedArgIsReftypeTest {
+
+  private static final TestMCSynchronizedStatementsCoCoChecker checker = new TestMCSynchronizedStatementsCoCoChecker();
+
   @BeforeClass
-  public static void disableFailQuick(){
-  
-    LogStub.enableFailQuick(false);
+  public static void disableFailQuick() {
+
+    LogStub.init();
+    Log.enableFailQuick(false);
     TestMCSynchronizedStatementsMill.reset();
     TestMCSynchronizedStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    checker.addCoCo(new SynchronizedArgIsReftype(new TypeCheck(null,new DeriveSymTypeOfCombineExpressionsDelegator())));
-  
+    checker.addCoCo(new SynchronizedArgIsReftype(new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
+
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("java.lang.Object").build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("a").setType(sType).build());
-    
+
   }
-  
+
   public void checkValid(String expressionString) throws IOException {
-    
+
     TestMCSynchronizedStatementsParser parser = new TestMCSynchronizedStatementsParser();
     Optional<ASTSynchronizedStatement> optAST = parser.parse_StringSynchronizedStatement(expressionString);
     assertTrue(optAST.isPresent());
@@ -58,11 +54,11 @@ public class SynchronizedArgIsReftypeTest extends CocoTest {
     Log.getFindings().clear();
     checker.checkAll((ASTMCSynchronizedStatementsNode) optAST.get());
     assertTrue(Log.getFindings().isEmpty());
-    
+
   }
-  
+
   public void checkInvalid(String expressionString) throws IOException {
-    
+
     TestMCSynchronizedStatementsParser parser = new TestMCSynchronizedStatementsParser();
     Optional<ASTSynchronizedStatement> optAST = parser.parse_StringSynchronizedStatement(expressionString);
     assertTrue(optAST.isPresent());
@@ -71,23 +67,23 @@ public class SynchronizedArgIsReftypeTest extends CocoTest {
     Log.getFindings().clear();
     checker.checkAll((ASTMCSynchronizedStatementsNode) optAST.get());
     assertFalse(Log.getFindings().isEmpty());
-    
+
   }
-  
+
   @Test
   public void testValid() throws IOException {
-    
+
     checkValid("synchronized(a){}");
-    
+
   }
-  
+
   @Test
   public void testInvalid() throws IOException {
-    
+
     checkInvalid("synchronized('f'){}");
     checkInvalid("synchronized(5.5){}");
     checkInvalid("synchronized(false){}");
-    
+
   }
-  
+
 }

@@ -1,14 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.statements.cocos;
+package de.monticore.javalight.cocos;
 
-import de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTArgumentsCoCo;
 import de.monticore.grammar.cocos.CocoTest;
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
-import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode;
-import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
-import de.monticore.statements.mccommonstatements.cocos.ReturnTypeAssignmentIsValid;
-import de.monticore.statements.mcreturnstatements._cocos.MCReturnStatementsCoCoChecker;
-import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
+import de.monticore.javalight.cocos.ReturnTypeAssignmentIsValid;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._ast.ASTBasicSymbolsNode;
 import de.monticore.symbols.oosymbols._ast.ASTMethod;
@@ -28,7 +23,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ReturnTypeAssignmentIsValidTest extends CocoTest {
+public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
 
   private static final JavaLightCoCoChecker checker = new JavaLightCoCoChecker();
   
