@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
+image: gradle:6.8.2-jdk8
 
 #include:
 #  - template: Code-Quality.gitlab-ci.yml
@@ -132,6 +132,15 @@ deploy:
     - dev
   except:
     - master
+
+checkMLCs:
+  stage: check
+  needs: ["build"]
+  dependencies:
+    - build
+  script:
+    - "gradle checkArtifacts"
+  allow_failure: true
 
 sonar:
   stage: check

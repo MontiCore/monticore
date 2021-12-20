@@ -21,7 +21,7 @@ This product includes the following software:
 
 ## License overview 
 
-The MontiCore Languag Workbench deals with three levels of code:
+The MontiCore Language Workbench deals with three levels of code:
 
 * (Level 3) MontiCore: the main libary constituting the LWB,
 

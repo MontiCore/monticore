@@ -17,7 +17,6 @@ mlc ODRuleGeneration {
     include "de/monticore/tf/odrulegeneration/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.types.MCFullGenericTypes";
   }

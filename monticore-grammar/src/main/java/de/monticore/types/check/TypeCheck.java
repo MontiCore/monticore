@@ -277,6 +277,9 @@ public class TypeCheck {
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
+    if(unbox(subType.printFullName()).equals(unbox(superType.printFullName()))){
+      return true;
+    }
     if(subType.isTypeConstant()&&superType.isTypeConstant()) {
       SymTypeConstant sub = (SymTypeConstant) subType;
       SymTypeConstant supert = (SymTypeConstant) superType;

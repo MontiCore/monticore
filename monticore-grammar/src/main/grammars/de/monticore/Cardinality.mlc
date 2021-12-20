@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
-/**
-*   TODO@AB: Check HW Code and promoted MLCs
-*/
 mlc Cardinality {
 
   // export the grammar
@@ -16,10 +13,13 @@ mlc Cardinality {
     include "de/monticore/cardinality/**.java";
   }
 
-  // promote using the JDK except for reflection
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/prettyprint/Cardinality*.java";
+  }
+
   promote {
     mlc "de.monticore.MCBasics";
     mlc "de.monticore.literals.MCCommonLiterals";
   }
-
 }

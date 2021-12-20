@@ -19,6 +19,11 @@ mlc Completeness {
     include "de/monticore/completeness/**.java";
   }
 
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/prettyprint/Completeness*.java";
+  }
+
   // promote using the JDK except for reflection
   promote {
     include "$mp/java/**";
@@ -38,5 +43,4 @@ mlc Completeness {
     include "$mp/de/se_rwth/commons/**";
     include "$mp/org/antlr/v4/runtime/**";
   }
-
 }

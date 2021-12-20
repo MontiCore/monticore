@@ -12,9 +12,12 @@ mlc BitExpressions {
     include "de/monticore/expressions/bitexpressions/**.java";
   }
 
-  // promote using the JDK except for reflection
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/expressions/prettyprint/BitExpressions*.java";
+  }
+
   promote {
     mlc "de.monticore.expressions.ExpressionsBasis";
   }
-
 }
