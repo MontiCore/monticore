@@ -9,7 +9,6 @@ import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommonStatementsScope;
 import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonStatementsTraverser;
-import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonStatementsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
@@ -18,7 +17,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -70,7 +68,8 @@ public class ForEachIsValidTest extends CocoTest {
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
     addToTraverser(traverser, TestMCCommonStatementsMill.globalScope());
     ast.accept(traverser);
-    
+    ast.setEnclosingScope(TestMCCommonStatementsMill.globalScope());
+
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
     assertTrue(Log.getFindings().isEmpty());
@@ -89,7 +88,6 @@ public class ForEachIsValidTest extends CocoTest {
     ast.accept(traverser);
   
     ast.setEnclosingScope(TestMCCommonStatementsMill.globalScope());
-    ast.getExpression().setEnclosingScope(TestMCCommonStatementsMill.globalScope());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
     assertFalse(Log.getFindings().isEmpty());
@@ -105,11 +103,12 @@ public class ForEachIsValidTest extends CocoTest {
   
   @Test
   public void testInvalid() throws IOException {
-    
     checkInvalid("Object o : 3");
-    
-  //  checkInvalid("ArrayList a : o");
-  //  checkInvalid("Object o : o");
-  
   }
+
+  @Test
+  public void testInvalid2() throws IOException {
+    checkInvalid("Object o : o");
+  }
+
 }

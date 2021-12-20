@@ -13,37 +13,32 @@ import java.util.ArrayList;
 import java.util.stream.IntStream;
 
 public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCoCo {
-  
+
   TypeCheck typeCheck;
-  
+
   public static final String ERROR_CODE = "0xA0907 ";
-  
+
   public static final String ERROR_MSG_FORMAT = "for-each loop is wrong.";
-  
-  public ForEachIsValid(TypeCheck typeCheck){
+
+  public ForEachIsValid(TypeCheck typeCheck) {
     this.typeCheck = typeCheck;
   }
-  
+
   @Override
   public void check(ASTEnhancedForControl node) {
-    
+
     SymTypeExpression expression = typeCheck.typeOf(node.getExpression());
     ASTFormalParameter parameter = node.getFormalParameter();
-  
+
     SymTypeExpression typeOfParameter = typeCheck.symTypeFromAST(parameter.getMCType());
-  
-    SymTypeExpression arrays  = SymTypeExpressionFactory.createTypeObject("java.util.Arrays", node.getEnclosingScope());
+
+    SymTypeExpression arrays = SymTypeExpressionFactory.createTypeObject("java.util.Arrays", node.getEnclosingScope());
     SymTypeExpression lists = SymTypeExpressionFactory.createTypeObject("java.lang.Iterable", node.getEnclosingScope());
-    
-    if(!TypeCheck.isSubtypeOf(expression, arrays)){
-      if(!TypeCheck.isSubtypeOf(expression, lists)){
-        Log.error(ERROR_CODE+ERROR_MSG_FORMAT, node.get_SourcePositionStart());
-      } else if (!TypeCheck.isSubtypeOf(typeOfParameter, expression)){
-        Log.error(ERROR_CODE+ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+
+    if (!TypeCheck.isSubtypeOf(expression, arrays)) {
+      if (!TypeCheck.isSubtypeOf(expression, lists)) {
+        Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
       }
-    } else if (!TypeCheck.isSubtypeOf(typeOfParameter, expression)){
-      Log.error(ERROR_CODE+ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
-  
   }
 }
