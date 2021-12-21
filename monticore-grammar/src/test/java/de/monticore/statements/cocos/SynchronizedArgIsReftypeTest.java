@@ -40,7 +40,7 @@ public class SynchronizedArgIsReftypeTest {
 
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("java.lang.Object").build());
-    TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("a").setType(sType).build());
+    TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("a1").setType(sType).build());
 
   }
 
@@ -73,7 +73,7 @@ public class SynchronizedArgIsReftypeTest {
   @Test
   public void testValid() throws IOException {
 
-    checkValid("synchronized(a){}");
+    checkValid("synchronized(a1){}");
 
   }
 
