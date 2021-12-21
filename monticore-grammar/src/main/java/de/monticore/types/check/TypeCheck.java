@@ -243,8 +243,6 @@ public class TypeCheck {
       return true;
     } else if (left.deepEquals(right) || right.deepEquals(left)) {
       return true;
-    }else if (left.getTypeInfo().getName().equals(right.getTypeInfo().getName())){
-      return true;
     }
     return false;
   }
