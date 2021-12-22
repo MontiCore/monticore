@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import automata.AutomataTool;
+import automata.AutomataExpTool;
 import automata._ast.ASTAutomaton;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  */
 public class GroovyHookTest {
 
-  private AutomataTool tool = new AutomataTool();
+  private AutomataExpTool tool = new AutomataExpTool();
 
   /**
    * @throws IOException

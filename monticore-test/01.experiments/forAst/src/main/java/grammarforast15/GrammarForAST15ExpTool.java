@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
  * Main class for the grammarforast15 DSL tool.
  *
  */
-public class GrammarForAST15Tool {
+public class GrammarForAST15ExpTool {
   
   /**
    * Use the single argument for specifying the single input grammarforast15 file.
