@@ -28,7 +28,7 @@ public class AutomataToolTest {
   
   @Test
   public void executePingPong() {
-    AutomataExpTool.main(new String[] { "src/test/resources/example/PingPong.aut", "target/PingPong.autsym" });
+    AutomataTool.main(new String[] { "src/test/resources/example/PingPong.aut", "target/PingPong.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();  // for manual testing purpose only
@@ -50,7 +50,7 @@ public class AutomataToolTest {
   
   @Test
   public void executeSimple12() {
-    AutomataExpTool.main(new String[] { "src/test/resources/example/Simple12.aut", "target/Simple12.autsym" });
+    AutomataTool.main(new String[] { "src/test/resources/example/Simple12.aut", "target/Simple12.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
@@ -60,7 +60,7 @@ public class AutomataToolTest {
   
   @Test
   public void executeHierarchyPingPong() {
-    AutomataExpTool.main(new String[] { "src/test/resources/example/HierarchyPingPong.aut", "target/HierarchyPingPong.autsym" });
+    AutomataTool.main(new String[] { "src/test/resources/example/HierarchyPingPong.aut", "target/HierarchyPingPong.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();

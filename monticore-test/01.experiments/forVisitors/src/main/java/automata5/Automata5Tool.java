@@ -1,18 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
-package automata6;
+package automata5;
 
 import java.io.IOException;
 import java.util.*;
 
-import automata5.Automata5Mill;
-import automata5.Automata5PrettyPrinter;
-import automata5._visitor.Automata5Traverser;
 import org.antlr.v4.runtime.RecognitionException;
 
 import automata5._ast.*;
-import automata6._ast.*;
-import automata6._parser.*;
-import automata6._visitor.*;
+import automata5._cocos.*;
+import automata5._parser.*;
+import automata5._symboltable.*;
+import automata5._visitor.*;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.*;
 
@@ -20,7 +18,7 @@ import de.se_rwth.commons.logging.*;
  * Main class for the Automata DSL tool.
  *
  */
-public class Automata6ExpTool {
+public class Automata5Tool {
   
   /**
    * Use the single argument for specifying the single input automata file.
@@ -34,25 +32,23 @@ public class Automata6ExpTool {
 
     // Retrieve the model name
     if (args.length != 1) {
-      Log.error("0xEE746 Please specify only one single path to the input model.");
+      Log.error("0xEE745 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("Automata6 DSL Tool", "Automata6Tool");
-    Log.info("------------------", "Automata6Tool");
+    Log.info("Automata5 DSL Tool", "Automata5Tool");
+    Log.info("------------------", "Automata5Tool");
     String model = args[0];
     
     // parse the model and create the AST representation
     ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", "Automata6Tool");
+    Log.info(model + " parsed successfully!", "Automata5Tool");
     
     // execute a pretty printer
-    Automata6PrettyPrinter pp = new Automata6PrettyPrinter();
-    Automata5PrettyPrinter pp5 = new Automata5PrettyPrinter();
-    Automata6Traverser traverser = Automata6Mill.traverser();
-    traverser.add4Automata6(pp);
-    traverser.add4Automata5(pp5);
+    Automata5PrettyPrinter pp = new Automata5PrettyPrinter();
+    Automata5Traverser traverser = Automata5Mill.traverser();
+    traverser.add4Automata5(pp);
     ast.accept(traverser);
-    Log.info("Pretty printing the parsed automaton into console:", "Automata6Tool");
+    Log.info("Pretty printing the parsed automaton into console:", "Automata5Tool");
     System.out.println(pp.getResult());
   }
   
@@ -64,16 +60,16 @@ public class Automata6ExpTool {
    */
   public static ASTAutomaton parse(String model) {
     try {
-      Automata6Parser parser = new Automata6Parser() ;
+      Automata5Parser parser = new Automata5Parser() ;
       Optional<ASTAutomaton> optAutomaton = parser.parse(model);
       
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
-      Log.error("0xEE846 Model could not be parsed.");
+      Log.error("0xEE845 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("0xEE646 Failed to parse " + model, e);
+      Log.error("0xEE645 Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

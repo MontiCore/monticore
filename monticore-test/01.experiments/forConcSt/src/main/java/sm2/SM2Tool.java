@@ -8,11 +8,11 @@ import sm2._ast.ASTAutomaton;
 import sm2._cocos.SM2CoCoChecker;
 import sm2._parser.SM2Parser;
 import sm2._symboltable.*;
+import sm2._visitor.SM2Traverser;
 import sm2.cocos.AtLeastOneInitialState;
 import sm2.cocos.SM2CoCos;
 import sm2.cocos.StateNameStartsWithCapitalLetter;
 import sm2.cocos.TransitionSourceExists;
-import sm2._visitor.SM2Traverser;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,7 +21,7 @@ import java.util.Optional;
  * Main class for the SM2 DSL tool.
  *
  */
-public class SM2ExpTool {
+public class SM2Tool {
   
   /**
    * Use the single argument for specifying the single input sm2 file.
@@ -37,13 +37,13 @@ public class SM2ExpTool {
       Log.error("0xEE744 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("SM2 DSL Tool", SM2ExpTool.class.getName());
-    Log.info("------------------", SM2ExpTool.class.getName());
+    Log.info("SM2 DSL Tool", "SM2Tool");
+    Log.info("------------------", "SM2Tool");
     String model = args[0];
     
     // parse the model and create the AST representation
     final ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", SM2ExpTool.class.getName());
+    Log.info(model + " parsed successfully!", "SM2Tool");
     
     // setup the symbol table
     ISM2ArtifactScope modelTopScope = createSymbolTable(ast);
@@ -51,7 +51,7 @@ public class SM2ExpTool {
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
-          SM2ExpTool.class.getName());
+          "SM2Tool");
     }
     
     // execute default context conditions
@@ -63,20 +63,21 @@ public class SM2ExpTool {
     customCoCos.checkAll(ast);
 
     // analyze the model with a visitor
-    SM2Traverser t1 = SM2Mill.traverser();
     CountStates cs = new CountStates();
-    t1.add4SM2(cs);
-    t1.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", SM2ExpTool.class.getName());
+    SM2Traverser traverser = SM2Mill.traverser();
+    traverser.add4SM2(cs);
+    ast.accept(traverser);
+    Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
     
     // execute a pretty printer
-    SM2Traverser t2 = SM2Mill.traverser();
     PrettyPrinter pp = new PrettyPrinter();
-    t2.add4SM2(pp);
-    t2.setSM2Handler(pp);
-    t2.handle(ast);
-    Log.info("Pretty printing the parsed sm2 into console:", SM2ExpTool.class.getName());
+    SM2Traverser traverser2 = SM2Mill.traverser();
+    traverser2.add4SM2(pp);
+    traverser2.setSM2Handler(pp);
+    ast.accept(traverser2);
+    Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
     Log.println(pp.getResult());
+
   }
   
   /**
@@ -109,11 +110,12 @@ public class SM2ExpTool {
    */
   public static ISM2ArtifactScope createSymbolTable(ASTAutomaton ast) {
     ISM2GlobalScope globalScope = SM2Mill.globalScope();
-    globalScope.setSymbolPath(new MCPath());
     globalScope.setFileExt("aut");
+    globalScope.setSymbolPath(new MCPath());
 
     SM2ScopesGenitorDelegator symbolTable = SM2Mill
         .scopesGenitorDelegator();
+
 
     return symbolTable.createFromAST(ast);
   }

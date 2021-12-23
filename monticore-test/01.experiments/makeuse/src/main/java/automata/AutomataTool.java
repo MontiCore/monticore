@@ -23,7 +23,7 @@ import java.util.Optional;
  * Main class for the Automata DSL tool.
  *
  */
-public class AutomataExpTool {
+public class AutomataTool {
 
   /**
    * Main method of the Tool
@@ -37,7 +37,7 @@ public class AutomataExpTool {
   public static void main(String[] args) {
     // delegate main to instantiatable method for better integration,
     // reuse, etc.
-    new AutomataExpTool().run(args);
+    new AutomataTool().run(args);
   }
 
   /**
