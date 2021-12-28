@@ -1,5 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
+
 # MontiCore Best Practices - A Guide For Small Solutions
 
 [MontiCore](http://www.monticore.de) provides a number of options to design 
