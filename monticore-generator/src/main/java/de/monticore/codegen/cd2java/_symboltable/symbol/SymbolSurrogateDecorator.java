@@ -168,28 +168,28 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
         return method;
     }
 
-  protected List<ASTCDMethod> createOverriddenMethodDelegates(List<ASTCDMethod> inheritedMethods){
-    List<ASTCDMethod> overriddenDelegates = new ArrayList<>();
-    for(ASTCDMethod inherited: inheritedMethods){
-      ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParameterList());
-      StringBuilder message = new StringBuilder();
-      if(!method.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())).equals("void")){
-        message.append("return ");
-      }
-      message.append("lazyLoadDelegate().").append(method.getName()).append("(");
-      int count = 0;
-      for (ASTCDParameter parameter: method.getCDParameterList()){
-        count++;
-        message.append(parameter.getName()).append(",");
-      }
-      if(count>0){
-        message.deleteCharAt(message.length()-1);
-      }
-      message.append(");");
-      this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(message.toString()));
-      overriddenDelegates.add(method);
+    protected List<ASTCDMethod> createOverriddenMethodDelegates(List<ASTCDMethod> inheritedMethods){
+        List<ASTCDMethod> overriddenDelegates = new ArrayList<>();
+        for(ASTCDMethod inherited: inheritedMethods){
+            ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParameterList());
+            StringBuilder message = new StringBuilder();
+            if(!method.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())).equals("void")){
+                message.append("return ");
+            }
+            message.append("lazyLoadDelegate().").append(method.getName()).append("(");
+            int count = 0;
+            for (ASTCDParameter parameter: method.getCDParameterList()){
+                count++;
+                message.append(parameter.getName()).append(",");
+            }
+            if(count>0){
+                message.deleteCharAt(message.length()-1);
+            }
+            message.append(");");
+            this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(message.toString()));
+            overriddenDelegates.add(method);
+        }
+        return overriddenDelegates;
     }
-    return overriddenDelegates;
-  }
 
 }
