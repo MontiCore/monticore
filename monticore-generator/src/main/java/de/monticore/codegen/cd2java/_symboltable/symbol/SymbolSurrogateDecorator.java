@@ -168,22 +168,59 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
         return method;
     }
 
-    protected List<ASTCDMethod> createOverriddenMethodDelegates(List<ASTCDMethod> inheritedMethods){
+    protected List<ASTCDMethod> createOverriddenMethodDelegates(List<ASTCDMethod> inheritedMethods) {
         List<ASTCDMethod> overriddenDelegates = new ArrayList<>();
-        for(ASTCDMethod inherited: inheritedMethods){
+        MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
+        for (ASTCDMethod inherited : inheritedMethods) {
             ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParameterList());
             StringBuilder message = new StringBuilder();
-            if(!method.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())).equals("void")){
-                message.append("return ");
+
+            message.append("if (!checkLazyLoadDelegate()) {\n");
+
+            if (method.getMCReturnType().isPresentMCVoidType()) {
+                message.append("return;\n}\n");
+            } else {
+                if (method.getMCReturnType().getMCType() instanceof ASTMCListType) {
+                    message.append("return new ArrayList<>();\n}\n");
+                } else if (method.getMCReturnType().getMCType() instanceof ASTMCArrayType) {
+                    String typeOfMethod = method.getMCReturnType().printType(printer);
+                    message.append("return new " + typeOfMethod + "[0];\n}\n");
+                } else if (method.getMCReturnType().getMCType() instanceof ASTMCGenericType) {
+                    if (((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0).equals("Iterator")) {
+                        String typeOfList = method.getMCReturnType().printType(printer);
+                        message.append("return new ArrayList<" + typeOfList + ">().iterator();\n}\n");
+                    } else if (((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0).equals("ListIterator")) {
+                        String typeOfList = method.getMCReturnType().printType(printer);
+                        message.append("return new ArrayList<" + typeOfList + ">().listIterator();\n}\n");
+                    } else if (((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0).equals("Spliterator")) {
+                        String typeOfList = method.getMCReturnType().printType(printer);
+                        message.append("return new ArrayList<" + typeOfList + ">().spliterator();\n}\n");
+                    } else if (((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0).equals("Stream")) {
+                        String typeOfList = method.getMCReturnType().printType(printer);
+                        message.append("return new ArrayList<" + typeOfList + ">().stream();\n}\n");
+                    } else {
+                        message.append("}\n");
+                    }
+                } else if (method.getMCReturnType().printType(printer).equals("boolean")) {
+                    message.append("return false;\n}\n");
+                } else if (method.getMCReturnType().printType(printer).equals("int")) {
+                    message.append("return 0;\n}\n");
+                } else if (method.getMCReturnType().printType(printer).equals("String")) {
+                    message.append("return \"\";\n}\n");
+                } else if (method.getMCReturnType().printType(printer).equals("de.monticore.types.check.SymTypeExpression")) {
+                    message.append("return new de.monticore.types.check.SymTypeOfNull();\n}\n");
+                } else {
+                    message.append("}\n");
+                }
+            }
+            if (!method.getMCReturnType().isPresentMCVoidType()) {
+                message.append("\treturn ");
             }
             message.append("lazyLoadDelegate().").append(method.getName()).append("(");
-            int count = 0;
-            for (ASTCDParameter parameter: method.getCDParameterList()){
-                count++;
-                message.append(parameter.getName()).append(",");
-            }
-            if(count>0){
-                message.deleteCharAt(message.length()-1);
+            String seperator = "";
+            for (ASTCDParameter parameter : method.getCDParameterList()) {
+                message.append(seperator).append(parameter.getName());
+                seperator = ",";
             }
             message.append(");");
             this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(message.toString()));
