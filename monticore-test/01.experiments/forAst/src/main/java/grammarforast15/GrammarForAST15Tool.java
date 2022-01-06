@@ -25,7 +25,6 @@ public class GrammarForAST15Tool extends GrammarForAST15ToolTOP {
 
     Log.info("GrammarForAST15 DSL Tool", "GrammarForAST15Tool");
     Log.info("------------------", "GrammarForAST15Tool");
-    String model = args[0];
 
     GrammarForAST15Tool tool = new GrammarForAST15Tool();
     tool.run(args);
