@@ -8,7 +8,6 @@ import automata._symboltable.AutomataSymbols2Json;
 import automata._symboltable.IAutomataArtifactScope;
 import automata._symboltable.StateSymbol;
 import automata._visitor.AutomataTraverser;
-import automata._symboltable.*;
 import automata.cocos.AtLeastOneInitialAndFinalState;
 import automata.cocos.StateNameStartsWithCapitalLetter;
 import automata.cocos.TransitionSourceExists;
@@ -16,7 +15,7 @@ import automata.prettyprint.PrettyPrinter;
 import automata.visitors.CountStates;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
-import automata.AutomataMill;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -24,7 +23,7 @@ import java.util.Optional;
  * Main class for the Automata DSL tool.
  *
  */
-public class AutomataTool {
+public class AutomataExpTool {
 
   /**
    * Main method of the Tool
@@ -38,7 +37,7 @@ public class AutomataTool {
   public static void main(String[] args) {
     // delegate main to instantiatable method for better integration,
     // reuse, etc.
-    new AutomataTool().run(args);
+    new AutomataExpTool().run(args);
   }
 
   /**

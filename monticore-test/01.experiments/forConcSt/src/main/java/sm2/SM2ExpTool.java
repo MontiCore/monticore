@@ -21,7 +21,7 @@ import java.util.Optional;
  * Main class for the SM2 DSL tool.
  *
  */
-public class SM2Tool {
+public class SM2ExpTool {
   
   /**
    * Use the single argument for specifying the single input sm2 file.

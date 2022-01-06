@@ -21,7 +21,7 @@ import java.util.Optional;
  * Main class for the SM2 DSL tool.
  *
  */
-public class SM2Tool {
+public class SM2ExpTool {
   
   /**
    * Use the single argument for specifying the single input sm2 file.
@@ -37,13 +37,13 @@ public class SM2Tool {
       Log.error("0xEE753 Please specify only one single path to the input model.");
       return;
     }
-    Log.info("SM2 DSL Tool", SM2Tool.class.getName());
-    Log.info("------------------", SM2Tool.class.getName());
+    Log.info("SM2 DSL Tool", SM2ExpTool.class.getName());
+    Log.info("------------------", SM2ExpTool.class.getName());
     String model = args[0];
     
     // parse the model and create the AST representation
     final ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", SM2Tool.class.getName());
+    Log.info(model + " parsed successfully!", SM2ExpTool.class.getName());
     
     // setup the symbol table
     ISM2ArtifactScope modelTopScope = createSymbolTable(ast);
@@ -51,7 +51,7 @@ public class SM2Tool {
     Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
     if (aSymbol.isPresent()) {
       Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
-          SM2Tool.class.getName());
+          SM2ExpTool.class.getName());
     }
     
     // execute default context conditions
@@ -67,7 +67,7 @@ public class SM2Tool {
     CountStates cs = new CountStates();
     t1.add4SM2(cs);
     t1.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", SM2Tool.class.getName());
+    Log.info("The model contains " + cs.getCount() + " states.", SM2ExpTool.class.getName());
     
     // execute a pretty printer
     SM2Traverser t2 = SM2Mill.traverser();
@@ -75,7 +75,7 @@ public class SM2Tool {
     t2.add4SM2(pp);
     t2.setSM2Handler(pp);
     t2.handle(ast);
-    Log.info("Pretty printing the parsed sm2 into console:", SM2Tool.class.getName());
+    Log.info("Pretty printing the parsed sm2 into console:", SM2ExpTool.class.getName());
     Log.println(pp.getResult());
   }
   

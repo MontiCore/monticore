@@ -62,7 +62,7 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
   }
   @Test
   public void testClassNames() {
-    ASTCDClass automatonCli = getClassBy("AutomatonCLI", cliCD);
+    ASTCDClass automatonCli = getClassBy("AutomatonTool", cliCD);
   }
   @Test
   public void testNoInterface() {

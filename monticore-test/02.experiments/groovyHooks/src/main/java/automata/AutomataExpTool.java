@@ -15,7 +15,7 @@ import java.util.Optional;
  * Main class for the Automata DSL tool.
  *
  */
-public class AutomataTool {
+public class AutomataExpTool {
 
 
   /**
