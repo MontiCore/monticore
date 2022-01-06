@@ -12,6 +12,9 @@ to be released
 * new method getToken (MCParser)
 * use CD4C in 02experiment.configTemplate
 
+### Changes
+* rename generated classes `XYCLI` -> `XYTool`
+
 ## MontiCore 7.2.0
 released: 13.09.2021
 
