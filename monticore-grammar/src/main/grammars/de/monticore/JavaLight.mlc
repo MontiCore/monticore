@@ -24,6 +24,7 @@ mlc JavaLight {
     mlc "de.monticore.expressions.JavaClassExpressions";
     mlc "de.monticore.statements.MCCommonStatements";
     mlc "de.monticore.statements.MCArrayStatements";
+    mlc "de.monticore.statements.MCReturnStatements";
   }
 
   // TODO: check whether this is illegal !!!

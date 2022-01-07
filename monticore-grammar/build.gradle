@@ -100,7 +100,7 @@ fileTree("src/test/grammars").matching { include '**/*.mc4' }.each {
         grammar = file g
         outputDir = file testGrammarOutDir
         handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
-        modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+        modelPath "$projectDir/$grammarDir", "$projectDir/src/test/grammars", "$projectDir/src/main/examples"
         if (findProperty("ci") != null) {
             script = "de/monticore/monticore_noreports.groovy"
         }
