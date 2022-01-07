@@ -16,7 +16,7 @@ public class ForConditionHasBooleanType implements MCCommonStatementsASTForState
   
   public static final String ERROR_CODE = "0xA0906";
   
-  public static final String ERROR_MSG_FORMAT = "condition of for-loop must be a boolean expression.";
+  public static final String ERROR_MSG_FORMAT = "Condition of for-loop must be a boolean expression.";
   
   public ForConditionHasBooleanType(TypeCheck typeCheck){
     this.typeCheck = typeCheck;

@@ -13,7 +13,7 @@ public class WhileConditionHasBooleanType implements MCCommonStatementsASTWhileS
   
   public static final String ERROR_CODE = "0xA0919";
   
-  public static final String ERROR_MSG_FORMAT = "condition in while-statement must be a boolean expression.";
+  public static final String ERROR_MSG_FORMAT = "Condition in while-statement must be a boolean expression.";
   
   public WhileConditionHasBooleanType(TypeCheck typeCheck){
     this.typeCheck = typeCheck;

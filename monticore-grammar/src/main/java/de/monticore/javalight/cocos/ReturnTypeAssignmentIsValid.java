@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight.cocos;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.javalight.JavaLightMill;
 import de.monticore.javalight._ast.ASTMethodDeclaration;
 import de.monticore.javalight._cocos.JavaLightASTMethodDeclarationCoCo;
@@ -12,7 +11,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,89 +18,71 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
   
   public static final String ERROR_CODE = "0xA0910 ";
   
-  public static final String ERROR_MSG_FORMAT = "return statement is wrong.";
+  public static final String ERROR_MSG_FORMAT = "Return statements of void methods must all be empty.";
+  
+  public static final String ERROR_CODE_2 = "0xA0911 ";
+  
+  public static final String ERROR_MSG_FORMAT_2 = "Return statements of non void methods must not be empty.";
+  
+  public static final String ERROR_CODE_3 = "0xA0912 ";
+  
+  public static final String ERROR_MSG_FORMAT_3 = "Return statement must be of the type of the method or a subtype of it.";
   
   TypeCheck typeCheck;
   
-  public ReturnTypeAssignmentIsValid(TypeCheck typeCheck){
+  public ReturnTypeAssignmentIsValid(TypeCheck typeCheck) {
     this.typeCheck = typeCheck;
   }
   
   @Override
   public void check(ASTMethodDeclaration node) {
-  
-    // Collect return-statments
+    
+    // Collect return-statements
     JavaLightTraverser traverser = JavaLightMill.traverser();
-    JavaReturnStatementCollector returnStatementCollector = new JavaReturnStatementCollector(){};
+    JavaReturnStatementCollector returnStatementCollector = new JavaReturnStatementCollector();
     traverser.add4MCReturnStatements(returnStatementCollector);
     node.accept(traverser);
     List<ASTReturnStatement> returnStatements = returnStatementCollector.getReturnStatementList();
-  
+    
     SymTypeExpression typeOfMethod = typeCheck.symTypeFromAST(node.getMCReturnType());
     
     // Check return-Statements
-    
-    if(node.isPresentMCJavaBlock()){
-      
-      if(TypeCheck.isVoid(typeOfMethod)){
-      
-        for(ASTReturnStatement statement : returnStatements){
-          
-          if(statement.isPresentExpression()){
-  
+    if (node.isPresentMCJavaBlock()) {
+      if (TypeCheck.isVoid(typeOfMethod)) {
+        for (ASTReturnStatement statement : returnStatements) {
+          if (statement.isPresentExpression()) {
             Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
-            
           }
-          
         }
-      
       }
-      
-      if(!TypeCheck.isVoid(typeOfMethod) && returnStatements.isEmpty()){
-        
-        Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
-        
+      if (!TypeCheck.isVoid(typeOfMethod) && returnStatements.isEmpty()) {
+        Log.error(ERROR_CODE_2 + ERROR_MSG_FORMAT_2, node.get_SourcePositionStart());
       }
-      
-      if(!TypeCheck.isVoid(typeOfMethod) && !returnStatements.isEmpty()){
-        
-        for(ASTReturnStatement returnStatement : returnStatements){
-          
-          if(!returnStatement.isPresentExpression()){
-            
-            Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
-            
-          }
-          else{
-  
+      if (!TypeCheck.isVoid(typeOfMethod) && !returnStatements.isEmpty()) {
+        for (ASTReturnStatement returnStatement : returnStatements) {
+          if (!returnStatement.isPresentExpression()) {
+            Log.error(ERROR_CODE_2 + ERROR_MSG_FORMAT_2, node.get_SourcePositionStart());
+          } else {
             SymTypeExpression returnType = typeCheck.typeOf(returnStatement.getExpression());
-            
-            if(!returnType.deepEquals(typeOfMethod)){
-              
-              Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
-              
+            if (!returnType.deepEquals(typeOfMethod)) {
+              Log.error(ERROR_CODE_3 + ERROR_MSG_FORMAT_3, node.get_SourcePositionStart());
             }
-            
           }
-          
         }
-        
       }
-      
     }
-    
   }
   
   private class JavaReturnStatementCollector implements MCReturnStatementsVisitor2 {
     
     List<ASTReturnStatement> returnStatementList = new ArrayList<>();
     
-    private List<ASTReturnStatement> getReturnStatementList(){
+    private List<ASTReturnStatement> getReturnStatementList() {
       return this.returnStatementList;
     }
     
     @Override
-    public void visit(ASTReturnStatement node){
+    public void visit(ASTReturnStatement node) {
       returnStatementList.add(node);
     }
     

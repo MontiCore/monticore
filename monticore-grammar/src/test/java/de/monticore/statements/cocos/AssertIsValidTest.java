@@ -64,13 +64,13 @@ public class AssertIsValidTest {
     
     checkValid("assert 5 >= 0;");
     checkValid("assert !(true||false)&&(5<6);");
+    checkInvalid("assert 5 >= 0: 1+1;");
     
   }
   
   @Test
   public void testInvalid() throws IOException {
     
-    checkInvalid("assert 5 >= 0: 1+1;");
     checkInvalid("assert 4;");
     checkInvalid("assert 'c';");
     

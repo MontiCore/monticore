@@ -13,7 +13,7 @@ public class CatchIsValid implements MCExceptionStatementsASTCatchClauseCoCo {
   
   public static final String ERROR_CODE = "0xA0903";
   
-  public static final String ERROR_MSG_FORMAT = "catch-statement has a wrong parameter.";
+  public static final String ERROR_MSG_FORMAT = "Parameter in catch-statement has to be throwable or subtype of it.";
   
   public CatchIsValid(TypeCheck typeCheck){
     

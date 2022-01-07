@@ -18,7 +18,7 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
 
   public static final String ERROR_CODE = "0xA0907 ";
 
-  public static final String ERROR_MSG_FORMAT = "for-each loop is wrong.";
+  public static final String ERROR_MSG_FORMAT = "For-each loop expression must be an array of subtype of list.";
 
   public ForEachIsValid(TypeCheck typeCheck) {
     this.typeCheck = typeCheck;
@@ -28,10 +28,6 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
   public void check(ASTEnhancedForControl node) {
 
     SymTypeExpression expression = typeCheck.typeOf(node.getExpression());
-    ASTFormalParameter parameter = node.getFormalParameter();
-
-    SymTypeExpression typeOfParameter = typeCheck.symTypeFromAST(parameter.getMCType());
-
     SymTypeExpression arrays = SymTypeExpressionFactory.createTypeObject("java.util.Arrays", node.getEnclosingScope());
     SymTypeExpression lists = SymTypeExpressionFactory.createTypeObject("java.lang.Iterable", node.getEnclosingScope());
 

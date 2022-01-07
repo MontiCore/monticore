@@ -15,7 +15,7 @@ public class ThrowIsValid implements MCExceptionStatementsASTThrowStatementCoCo{
   
   public static final String ERROR_CODE = "0xA0918";
   
-  public static final String ERROR_MSG_FORMAT = " exception in throw-statement must be Throwable or subtype of it.";
+  public static final String ERROR_MSG_FORMAT = " Exception in throw-statement must be Throwable or subtype of it.";
   
   public ThrowIsValid(TypeCheck typeCheck){
     this.typeCheck = typeCheck;

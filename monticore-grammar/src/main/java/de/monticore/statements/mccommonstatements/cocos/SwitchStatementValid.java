@@ -13,7 +13,7 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
   
   public static final String ERROR_CODE = "0xA0917";
   
-  public static final String ERROR_MSG_FORMAT = "switch expression in the switch-statement must be char, byte, short, int, Character," +
+  public static final String ERROR_MSG_FORMAT = "Switch expression in the switch-statement must be char, byte, short, int, Character," +
     "Byte, Short, Integer, or an enum type.";
   
   public SwitchStatementValid(TypeCheck typeCheck){

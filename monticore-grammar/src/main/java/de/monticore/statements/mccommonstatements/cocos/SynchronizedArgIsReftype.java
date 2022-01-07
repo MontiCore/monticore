@@ -13,7 +13,7 @@ public class SynchronizedArgIsReftype implements MCSynchronizedStatementsASTSync
   
   public static final String ERROR_CODE = "0xA0918 ";
   
-  public static final String ERROR_MSG_FORMAT = "expression in synchronized-statement must have a reference type.";
+  public static final String ERROR_MSG_FORMAT = "Expression in synchronized-statement must have a reference type.";
   
   public SynchronizedArgIsReftype(TypeCheck typeCheck){
     this.typeCheck = typeCheck;

@@ -11,8 +11,11 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
   
   public static final String ERROR_CODE = "0xA0901";
   
-  public static final String ERROR_MSG_FORMAT = "assert-statement has a wrong type.";
+  public static final String ERROR_MSG_FORMAT = "Assert-statement must be of boolean type.";
   
+  public static final String ERROR_CODE_2 = "0xA0902";
+  
+  public static final String ERROR_MSG_FORMAT_2 = "Assert-statement must not be of void type.";
   
   TypeCheck typeCheck;
   
@@ -34,7 +37,7 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
     if(node.isPresentMessage()) {
       result = typeCheck.typeOf(node.getMessage());
       if (!TypeCheck.isVoid(result)) {
-        Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.getMessage().get_SourcePositionStart());
+        Log.error(ERROR_CODE_2 + ERROR_MSG_FORMAT_2, node.getMessage().get_SourcePositionStart());
       }
     }
   }
