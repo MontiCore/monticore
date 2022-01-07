@@ -30,7 +30,7 @@ import static de.monticore.MontiCoreConfiguration.*;
  * and executes the corresponding command line options and arguments, such as
  * --help
  */
-public class MontiCoreStandardCLI {
+public class MontiCoreTool {
 
   /**
    * Dedicated XML file that configures the logging for users (i.e. users of 
@@ -62,7 +62,7 @@ public class MontiCoreStandardCLI {
   public static void main(String[] args) {
     Log.init();
     Grammar_WithConceptsMill.init();
-    new MontiCoreStandardCLI().run(args);
+    new MontiCoreTool().run(args);
   }
 
   /**
@@ -155,7 +155,7 @@ public class MontiCoreStandardCLI {
     // Case 1: Logging if already configured by system configuration
     if (System.getProperty(LOGBACK_CONFIGURATIONFILE) != null) {
       Log.debug("Using system property logback configuration " 
-          + System.getProperty(LOGBACK_CONFIGURATIONFILE), MontiCoreStandardCLI.class.getName());
+          + System.getProperty(LOGBACK_CONFIGURATIONFILE), MontiCoreTool.class.getName());
     }
     
     // Case 2: Use developer logging if configured

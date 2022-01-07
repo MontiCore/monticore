@@ -9,7 +9,7 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cli.MontiCoreStandardCLI;
+import de.monticore.cli.MontiCoreTool;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -690,7 +690,7 @@ public class MontiCoreScriptTest {
    * Initializes the available CLI options for the MontiCore tool.
    *
    * This method must always remain a copy of the initOptions
-   * method of {@link MontiCoreStandardCLI}
+   * method of {@link MontiCoreTool}
    *
    * @return The CLI options with arguments.
    */

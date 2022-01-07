@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore
 
-import com.google.common.hash.Hashing
-import com.google.common.io.Files
-import de.monticore.cli.MontiCoreStandardCLI
+
+import de.monticore.cli.MontiCoreTool
 import de.monticore.mcbasics.MCBasicsMill
 import de.monticore.dstlgen.util.DSTLPathUtil
 import de.se_rwth.commons.logging.Finding
@@ -355,7 +354,7 @@ abstract public class MCTask extends DefaultTask {
     })
     try {
       // execute Monticore with the given parameters
-      MontiCoreStandardCLI.main(p)
+      MontiCoreTool.main(p)
       MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
