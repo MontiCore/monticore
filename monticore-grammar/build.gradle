@@ -260,6 +260,7 @@ shadowJar {
     from sourceSets.grammars.resources
 }
 
+jar.dependsOn(shadowJar)
 jar.dependsOn(grammarsJar)
 
 if (findProperty('ci') == null) {
