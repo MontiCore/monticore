@@ -986,6 +986,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decoratedCDs.add(decoratedASTClassDiagramm);
     decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
         decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
+    decoratedCDs.add(decorateCLI(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
   }
