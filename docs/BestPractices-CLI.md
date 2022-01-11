@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Best Practices - Designing Command Line Interfaces
+# MontiCore Best Practices - Designing Tools for Command Line Interfaces
 
 [[_TOC_]]
 
