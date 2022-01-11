@@ -186,28 +186,28 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
           String typeOfMethod = method.getMCReturnType().printType(printer);
           message.append("return new " + typeOfMethod + "[0];\n}\n");
         } else if (method.getMCReturnType().getMCType() instanceof ASTMCGenericType) {
-          if (((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0).equals("Iterator")) {
+          if (("Iterator").equals(((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0))) {
             String typeOfList = method.getMCReturnType().printType(printer);
             message.append("return new ArrayList<" + typeOfList + ">().iterator();\n}\n");
-          } else if (((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0).equals("ListIterator")) {
+          } else if (("ListIterator").equals(((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0))) {
             String typeOfList = method.getMCReturnType().printType(printer);
             message.append("return new ArrayList<" + typeOfList + ">().listIterator();\n}\n");
-          } else if (((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0).equals("Spliterator")) {
+          } else if (("Spliterator").equals(((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0))) {
             String typeOfList = method.getMCReturnType().printType(printer);
             message.append("return new ArrayList<" + typeOfList + ">().spliterator();\n}\n");
-          } else if (((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0).equals("Stream")) {
+          } else if (("Stream").equals(((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0))) {
             String typeOfList = method.getMCReturnType().printType(printer);
             message.append("return new ArrayList<" + typeOfList + ">().stream();\n}\n");
           } else {
             message.append("}\n");
           }
-        } else if (method.getMCReturnType().printType(printer).equals("boolean")) {
+        } else if (("boolean").equals(method.getMCReturnType().printType(printer))) {
           message.append("return false;\n}\n");
-        } else if (method.getMCReturnType().printType(printer).equals("int")) {
+        } else if (("int").equals(method.getMCReturnType().printType(printer))) {
           message.append("return 0;\n}\n");
-        } else if (method.getMCReturnType().printType(printer).equals("String")) {
+        } else if (("String").equals(method.getMCReturnType().printType(printer))) {
           message.append("return \"\";\n}\n");
-        } else if (method.getMCReturnType().printType(printer).equals("de.monticore.types.check.SymTypeExpression")) {
+        } else if (("de.monticore.types.check.SymTypeExpression").equals(method.getMCReturnType().printType(printer))) {
           message.append("return new de.monticore.types.check.SymTypeOfNull();\n}\n");
         } else {
           message.append("}\n");
