@@ -119,7 +119,7 @@ To foster automated reuse, the template has already been configured to generate
 a suitable CLI-JAR for each language project without manual adjustments. 
 However, this requires adhering to the following conventions:
 * The name of the main class is equal to the language project name (usually defined 
-  in the `settings.gradle`) with the suffix *CLI*. 
+  in the `settings.gradle`) with the suffix *Tool*. 
   Furthermore, the first letter of the main class is always capitalized to adhere 
   to the Java code conventions
 * The package of the main class is `de.monticore`  
