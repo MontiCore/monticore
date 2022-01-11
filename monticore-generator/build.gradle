@@ -150,7 +150,7 @@ jar.dependsOn grammarsJar
 
 shadowJar { // all in one jar
   manifest {
-    attributes "Main-Class": "de.monticore.cli.MontiCoreStandardCLI"
+    attributes "Main-Class": "de.monticore.cli.MontiCoreTool"
   }
   archiveClassifier = "cli"
   zip64 true
