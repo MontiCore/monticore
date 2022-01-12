@@ -12,14 +12,6 @@ public class OOTypeSymbolSurrogate extends OOTypeSymbolSurrogateTOP {
     super(name);
   }
 
-  @Override
-  public List<SymTypeExpression> getSuperTypesList() {
-    if (!checkLazyLoadDelegate()) {
-      return Lists.newArrayList();
-    }
-    return super.getSuperTypesList();
-  }
-
   public IOOSymbolsScope getSpannedScope(){
     return lazyLoadDelegate().getSpannedScope();
   }

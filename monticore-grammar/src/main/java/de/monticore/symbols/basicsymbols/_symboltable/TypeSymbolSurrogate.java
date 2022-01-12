@@ -33,14 +33,6 @@ public class TypeSymbolSurrogate extends TypeSymbolSurrogateTOP {
   }
 
   @Override
-  public List<SymTypeExpression> getSuperTypesList() {
-    if (!checkLazyLoadDelegate()) {
-      return Lists.newArrayList();
-    }
-    return super.getSuperTypesList();
-  }
-
-  @Override
   public String getFullName() {
     if (checkLazyLoadDelegate()) {
       return lazyLoadDelegate().getFullName();
