@@ -680,6 +680,30 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
         .collect(Collectors.toList());
   }
 
+
+  /**
+   * returns types that get their symbol property from a symbol interface
+   * e.g. interface symbol Foo = Name; Bla implements Foo = Name
+   * -> than Bla has inherited symbol property
+   *
+   * @param types
+   * @return returns a Map of <the class that inherits the property, the symbol interface full name from which it inherits it>
+   */
+  public Map<ASTCDType, String> getInheritedSymbolPropertyTypes(List<ASTCDType> types) {
+    Map<ASTCDType, String> inheritedSymbolProds = new HashMap<>();
+    for (ASTCDType type : types) {
+      // classes with inherited symbol property
+      if (hasInheritedSymbolStereotype(type.getModifier())) {
+        List<String> stereotypeValues = getStereotypeValues(type.getModifier(), MC2CDStereotypes.INHERITED_SYMBOL);
+        // multiple inherited symbols possible
+        for (String stereotypeValue : stereotypeValues) {
+          inheritedSymbolProds.put(type, stereotypeValue);
+        }
+      }
+    }
+    return inheritedSymbolProds;
+  }
+
   /**
    * returns classes that get their symbol property from a symbol interface
    * e.g. interface symbol Foo = Name; Bla implements Foo = Name
