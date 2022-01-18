@@ -92,7 +92,7 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(18, handler.getCDMethodList().size());
+    assertEquals(20, handler.getCDMethodList().size());
   }
 
   @Test 

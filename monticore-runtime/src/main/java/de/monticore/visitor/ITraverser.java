@@ -7,6 +7,7 @@ package de.monticore.visitor;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.SymbolWithScopeOfUnknownKind;
 
@@ -49,6 +50,21 @@ public interface ITraverser {
   }
 
   default void endVisit(ISymbol symbol) {
+    getIVisitorList().forEach(v -> v.endVisit(symbol));
+  }
+
+  // IScopeSpanningSymbol
+  default void handle(IScopeSpanningSymbol symbol) {
+    visit(symbol);
+    // no traverse() for abstract classes, interfaces and enums, only concrete classes are traversed
+    endVisit(symbol);
+  }
+
+  default void visit(IScopeSpanningSymbol symbol) {
+    getIVisitorList().forEach(v -> v.visit(symbol));
+  }
+
+  default void endVisit(IScopeSpanningSymbol symbol) {
     getIVisitorList().forEach(v -> v.endVisit(symbol));
   }
 

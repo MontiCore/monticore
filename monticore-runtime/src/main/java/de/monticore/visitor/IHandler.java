@@ -8,6 +8,7 @@ package de.monticore.visitor;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.SymbolWithScopeOfUnknownKind;
 
@@ -21,6 +22,11 @@ public interface IHandler {
   }
 
   default void handle(ISymbol symbol) {
+    getTraverser().visit(symbol);
+    getTraverser().endVisit(symbol);
+  }
+
+  default void handle(IScopeSpanningSymbol symbol) {
     getTraverser().visit(symbol);
     getTraverser().endVisit(symbol);
   }
