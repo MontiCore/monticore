@@ -20,7 +20,6 @@ public class Automata5Tool extends Automata5ToolTOP {
    * @param args
    */
   public static void main(String[] args) {
-
     // use normal logging (no DEBUG, TRACE)
     Log.ensureInitalization();
 
@@ -40,7 +39,7 @@ public class Automata5Tool extends Automata5ToolTOP {
       CommandLine cmd = cliparser.parse(options, args);
 
       //help: when --help
-      if (cmd.hasOption("h")) {
+      if (cmd.hasOption("h") || !cmd.hasOption("i")) {
         printHelp(options);
         //do not continue, when help is printed.
         return;
@@ -57,7 +56,6 @@ public class Automata5Tool extends Automata5ToolTOP {
         final ASTAutomaton ast = parse(model);
         Log.info(model + " parsed successfully!", "Automata5Tool");
         prettyPrint(ast, "");
-
       }
 
     } catch (ParseException e) {

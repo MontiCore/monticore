@@ -19,7 +19,6 @@ public class GrammarForAST15Tool extends GrammarForAST15ToolTOP {
    * @param args
    */
   public static void main(String[] args) {
-
     // use normal logging (no DEBUG, TRACE)
     Log.ensureInitalization();
 
@@ -41,7 +40,7 @@ public class GrammarForAST15Tool extends GrammarForAST15ToolTOP {
       CommandLine cmd = cliparser.parse(options, args);
 
       //help: when --help
-      if (cmd.hasOption("h")) {
+      if (cmd.hasOption("h") || !cmd.hasOption("i")) {
         printHelp(options);
         //do not continue, when help is printed.
         return;

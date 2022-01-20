@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+package automata3;/* (c) https://github.com/MontiCore/monticore */
 import expression._ast.*;
 import expression._visitor.*;
 

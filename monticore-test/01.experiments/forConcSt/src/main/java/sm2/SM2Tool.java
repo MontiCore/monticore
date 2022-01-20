@@ -33,7 +33,6 @@ public class SM2Tool extends SM2ToolTOP{
    * @param args
    */
   public static void main(String[] args) {
-  
     // use normal logging (no DEBUG, TRACE)
     Log.ensureInitalization();
 
@@ -41,7 +40,6 @@ public class SM2Tool extends SM2ToolTOP{
     Log.info("------------------", "SM2Tool");
     SM2Tool sm2Tool = new SM2Tool();
     sm2Tool.run(args);
-
   }
 
   @Override
@@ -54,7 +52,7 @@ public class SM2Tool extends SM2ToolTOP{
       CommandLine cmd = cliparser.parse(options, args);
 
       //help: when --help
-      if (cmd.hasOption("h")) {
+      if (cmd.hasOption("h") || !cmd.hasOption("i")) {
         printHelp(options);
         //do not continue, when help is printed.
         return;
@@ -89,7 +87,6 @@ public class SM2Tool extends SM2ToolTOP{
         ast.accept(traverser);
         Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
         prettyPrint(ast,"");
-
       }
 
     } catch (ParseException e) {
@@ -127,7 +124,6 @@ public class SM2Tool extends SM2ToolTOP{
     ast.accept(traverser2);
     Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
     Log.println(pp.getResult());
-
   }
   
 }

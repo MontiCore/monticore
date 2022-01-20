@@ -1,4 +1,4 @@
-
+package questionnaire;
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.monticore.ast.ASTNode;

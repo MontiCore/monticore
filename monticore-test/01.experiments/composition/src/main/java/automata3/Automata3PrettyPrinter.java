@@ -1,12 +1,7 @@
-/* (c) https://github.com/MontiCore/monticore */
-import automata3.Automata3Mill;
-import automata3._ast.*;
+package automata3;/* (c) https://github.com/MontiCore/monticore */
 import automata3._visitor.*;
 import de.monticore.prettyprint.IndentPrinter;
 import invautomata._ast.*;
-import invautomata._visitor.*;
-import expression._ast.*;
-import expression._visitor.*;
 
 /**
  * 

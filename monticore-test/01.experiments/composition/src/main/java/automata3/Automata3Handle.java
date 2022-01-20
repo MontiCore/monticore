@@ -1,4 +1,4 @@
-
+package automata3;
 /* (c) https://github.com/MontiCore/monticore */
 import automata3._visitor.Automata3Handler;
 import automata3._visitor.Automata3Traverser;

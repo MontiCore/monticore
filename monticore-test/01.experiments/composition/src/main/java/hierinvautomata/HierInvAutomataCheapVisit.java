@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+package hierinvautomata;/* (c) https://github.com/MontiCore/monticore */
 import automata3._ast.ASTInvariant;
 import automata3._visitor.Automata3Visitor2;
 import de.monticore.ast.ASTNode;

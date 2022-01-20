@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+package invautomata;/* (c) https://github.com/MontiCore/monticore */
 import invautomata._ast.*;
 import invautomata._visitor.*;
 
