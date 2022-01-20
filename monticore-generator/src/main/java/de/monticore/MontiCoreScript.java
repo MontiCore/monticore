@@ -5,6 +5,7 @@ package de.monticore;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
@@ -598,6 +599,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       GeneratorSetup setup = new GeneratorSetup();
       setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
       setup.setGlex(glex);
+      CD4C.init(setup);
+      CD4C.getInstance().setEmptyBodyTemplate("core.EmptyBody");
 
       TemplateController tc = setup.getNewTemplateController(configTemplate);
       TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
@@ -983,6 +986,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decoratedCDs.add(decoratedASTClassDiagramm);
     decoratedCDs.add(decorateMill(glex, cdScope, cds.get(0), decoratedASTClassDiagramm,
         decoratedSymbolTableCd, decoratedTraverserCD, handCodedPath));
+    decoratedCDs.add(decorateCLI(glex, cdScope, cds.get(0), handCodedPath));
     decoratedCDs.add(decorateAuxiliary(glex, cdScope, cds.get(0), decoratedASTClassDiagramm, handCodedPath));
     return decoratedCDs;
   }
@@ -1064,6 +1068,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setModelName(diagramName);
     setup.setGlex(glex);
+
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
   }

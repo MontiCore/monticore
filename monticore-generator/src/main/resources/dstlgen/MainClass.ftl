@@ -86,7 +86,7 @@ public class ${className} {
       generate(odrule, Paths.get(cmd.getOptionValue("o", "out")).toFile());
     } catch ( ParseException e) {
         // an unexpected error from the Apache CLI parser:
-        Log.error("0xA6151${service.getGeneratedErrorCode(classname)} Could not process CLI parameters: " + e.getMessage());
+        Log.error("0xA6153${service.getGeneratedErrorCode(classname)} Could not process CLI parameters: " + e.getMessage());
       }
   }
   

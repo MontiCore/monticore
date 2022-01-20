@@ -65,10 +65,8 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
       }
     }
     catch (IOException e) {
-      Log.error("0x1A234 Error while parsing model", e);
+      Log.error("0x1A236 Error while parsing model", e);
     }
     return null;
   }
-
-
 }

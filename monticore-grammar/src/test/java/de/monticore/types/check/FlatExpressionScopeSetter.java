@@ -24,6 +24,8 @@ import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressio
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
+import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor2;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.monticore.types.mccollectiontypes._ast.*;
@@ -33,7 +35,7 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
 public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, BitExpressionsVisitor2,
-    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2 {
+    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2, MCArrayTypesVisitor2 {
 
   private IExpressionsBasisScope scope;
 
@@ -363,4 +365,9 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
   public void visit(ASTMCCustomTypeArgument node) {
     node.setEnclosingScope(scope);
   }
+  
+  /*************************************************MCARRAYTYPE****************************************************/
+  
+  @Override
+  public void visit(ASTMCArrayType type) {type.setEnclosingScope(scope);}
 }

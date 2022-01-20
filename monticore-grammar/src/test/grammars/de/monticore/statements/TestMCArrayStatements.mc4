@@ -3,8 +3,7 @@
 package de.monticore.statements;
 
 grammar TestMCArrayStatements extends de.monticore.statements.MCArrayStatements,
-                                      de.monticore.literals.MCCommonLiterals,
-                                      de.monticore.types.MCBasicTypes {
+                                      de.monticore.expressions.CombineExpressionsWithLiterals {
 
   TModifier implements MCModifier = "private";
 

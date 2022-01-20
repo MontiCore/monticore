@@ -83,7 +83,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     List<ASTMCObjectType> result = new ArrayList<>();
     for (DiagramSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
       if (!superGrammar.isPresentAstNode()) {
-        Log.error("0xA4323 Unable to load AST of '" + superGrammar.getFullName()
+        Log.error("0xA4324 Unable to load AST of '" + superGrammar.getFullName()
             + "' that is supergrammar of '" + symbolTableService.getCDName() + "'.");
         continue;
       }

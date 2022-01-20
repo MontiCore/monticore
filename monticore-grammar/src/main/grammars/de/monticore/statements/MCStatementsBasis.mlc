@@ -12,7 +12,6 @@ mlc MCStatementsBasis {
     include "de/monticore/statements/mcstatementsbasis/**.java";
   }
 
-  // promote using the JDK except for reflection
   promote {
     mlc "de.monticore.MCBasics";
   }

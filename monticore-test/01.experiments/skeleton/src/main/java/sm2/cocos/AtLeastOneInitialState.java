@@ -20,7 +20,7 @@ public class AtLeastOneInitialState implements SM2ASTAutomatonCoCo {
     
     if (!initialState) {
       // Issue error...
-      Log.error("0xA5114 An automaton must have at least one initial state.",
+      Log.error("0xA5115 An automaton must have at least one initial state.",
           automaton.get_SourcePositionStart());
     }
   }

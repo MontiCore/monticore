@@ -27,7 +27,7 @@ public class ${classname} implements ${ast.getName()}TRAST${grammarName}TFRuleCo
       List<String> varsInAssignments = Lists.newArrayList();
       for (ASTAssign a : assignments.getAssignList()) {
         if (state.getVarsOnLHS().contains(a.getVariable())) {
-          Log.error(String.format("0xF0C06${service.getGeneratedErrorCode(classname)} Schema variable %s is part of the pattern and must not be assigned.",
+          Log.error(String.format("0xF0C04${service.getGeneratedErrorCode(classname)} Schema variable %s is part of the pattern and must not be assigned.",
               a.getVariable()), a.get_SourcePositionStart());
         }
         if (!varsInAssignments.contains(a.getVariable())) {

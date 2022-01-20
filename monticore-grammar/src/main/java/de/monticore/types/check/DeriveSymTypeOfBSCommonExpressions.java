@@ -354,7 +354,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         }
         if (fieldSymbols.size() != 1) {
           typeCheckResult.reset();
-          logError("0xA0237", expr.get_SourcePositionStart());
+          logError("0xA1236", expr.get_SourcePositionStart());
         }
         if (!fieldSymbols.isEmpty()) {
           VariableSymbol var = fieldSymbols.get(0);
@@ -371,7 +371,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
           typeCheckResult.setCurrentResult(wholeResult);
         }else{
           typeCheckResult.reset();
-          logError("0xA0305", expr.get_SourcePositionStart());
+          logError("0xA1306", expr.get_SourcePositionStart());
         }
       } else if (typeSymbolOpt.isPresent()) {
         //no variable found, test type
@@ -382,11 +382,11 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
           typeCheckResult.setCurrentResult(wholeResult);
         } else {
           typeCheckResult.reset();
-          logError("0xA0303", expr.get_SourcePositionStart());
+          logError("0xA1303", expr.get_SourcePositionStart());
         }
       } else {
         typeCheckResult.reset();
-        logError("0xA0306", expr.get_SourcePositionStart());
+        logError("0xA1317", expr.get_SourcePositionStart());
       }
     } else {
       //inner type has no result --> try to resolve a type
@@ -466,7 +466,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         typeCheckResult.setCurrentResult(result);
       } else {
         typeCheckResult.reset();
-        logError("0xA0239", expr.get_SourcePositionStart());
+        logError("0xA2239", expr.get_SourcePositionStart());
       }
     } else {
       Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveFunctionMany(expr.getName());
@@ -480,7 +480,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         typeCheckResult.setCurrentResult(wholeResult.get());
       } else {
         typeCheckResult.reset();
-        logError("0xA0240", expr.get_SourcePositionStart());
+        logError("0xA1242", expr.get_SourcePositionStart());
       }
     }
   }
@@ -489,7 +489,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
     for (FunctionSymbol method : fittingMethods) {
       if (!returnType.deepEquals(method.getReturnType())) {
-        logError("0xA0238", expr.get_SourcePositionStart());
+        logError("0xA1239", expr.get_SourcePositionStart());
       }
     }
   }
@@ -535,8 +535,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * helper method for <=, >=, <, > -> calculates the result of these expressions
    */
   protected Optional<SymTypeExpression> calculateTypeCompare(ASTInfixExpression expr, ASTExpression right, ASTExpression left) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0241");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0242");
+    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA2241");
+    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA2244");
     return calculateTypeCompare(expr, rightResult, leftResult);
   }
 
@@ -557,8 +557,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * helper method for the calculation of the ASTEqualsExpression and the ASTNotEqualsExpression
    */
   protected Optional<SymTypeExpression> calculateTypeLogical(ASTInfixExpression expr, ASTExpression right, ASTExpression left) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0244");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0245");
+    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA2247");
+    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA2248");
     return calculateTypeLogical(expr, rightResult, leftResult);
   }
 

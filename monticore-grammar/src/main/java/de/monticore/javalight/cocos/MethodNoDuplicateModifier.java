@@ -29,9 +29,9 @@ public class MethodNoDuplicateModifier implements JavaLightASTMethodDeclarationC
     final Set<String> setToReturn = new HashSet<>();
     final Set<String> set1 = new HashSet<>();
 
-    for (String yourString : listContainingDuplicates) {
-      if (!set1.add(yourString)) {
-        setToReturn.add(yourString);
+    for (String modifierName : listContainingDuplicates) {
+      if (!set1.add(modifierName)) {
+        setToReturn.add(modifierName);
       }
     }
     return setToReturn;

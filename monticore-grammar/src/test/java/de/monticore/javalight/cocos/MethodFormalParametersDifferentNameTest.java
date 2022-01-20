@@ -27,6 +27,12 @@ public class MethodFormalParametersDifferentNameTest extends JavaLightCocoTest {
   }
 
   @Test
+  public void testInvalid2() {
+    testInvalid(fileName+"a", "meth1", MethodFormalParametersDifferentName.ERROR_CODE,
+        String.format(MethodFormalParametersDifferentName.ERROR_MSG_FORMAT, "i", "meth1"), checker);
+  }
+
+  @Test
   public void testCorrect() {
     testValid("de.monticore.javalight.cocos.valid.MethodDecl", "meth1", checker);
   }

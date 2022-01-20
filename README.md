@@ -5,7 +5,6 @@
 
 # MontiCore - Language Workbench and Development Tool Framework 
 
-
 [MontiCore](http://www.monticore.de) is a language workbench for the efficient 
 development of domain-specific languages (DSLs). It processes an extended 
 grammar format which defines the DSL and generates Java components for processing 
@@ -29,6 +28,7 @@ grammar languages are comfortable to use.
       MontiCore Language Workbench and Library Handbook: Edition 2021. <br>
       Shaker, 2021.
 </div><br>
+
 
 ## A Teaser for MontiCore
 
@@ -98,6 +98,7 @@ predefined typechecks, code generation, etc.
 They only need to be extended to the added variants.
 Please also note that `PlusExpr` is mutually left-recursive.
 -- Yes, that works in MontiCore 6.
+
 
 ## Quick Start
 

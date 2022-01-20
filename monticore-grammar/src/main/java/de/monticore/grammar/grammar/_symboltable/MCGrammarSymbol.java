@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 
 public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
-  public static final String DEFAULT_MODE = "";
+  public static final String DEFAULT_MODE = "DEFAULT_MODE";
 
   protected final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
 

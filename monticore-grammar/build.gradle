@@ -41,6 +41,7 @@ sourceSets {
         resources {
             srcDirs([grammarDir, grammarOutDir])
             include "**/*.mc4"
+            include "**/*.mlc"
         }
     }
 }
@@ -77,8 +78,9 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
           script = "de/monticore/monticore_noreports.groovy"
         }
         def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
-        def uptoDate = incCheck(grammarIncludingPackage)
-        outputs.upToDateWhen { uptoDate }
+        def trGrammarIncludingPackage = file(grammarOutDir).toURI().relativize(file(grammar).toURI()).toString()
+        outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
+        outputs.upToDateWhen { incCheck(trGrammarIncludingPackage) }
         dstlGen = false
         dependsOn(generate)
       }
@@ -98,7 +100,7 @@ fileTree("src/test/grammars").matching { include '**/*.mc4' }.each {
         grammar = file g
         outputDir = file testGrammarOutDir
         handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
-        modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+        modelPath "$projectDir/$grammarDir", "$projectDir/src/test/grammars", "$projectDir/src/main/examples"
         if (findProperty("ci") != null) {
             script = "de/monticore/monticore_noreports.groovy"
         }
@@ -133,36 +135,117 @@ processGrammarsResources.dependsOn(generateTR)
 /**
  * Integration with MLC language and tool
  */
+task showArtifacts {}
 task checkArtifacts {}
 configurations { MLC }
-dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: '7.2.0-SNAPSHOT') }
+dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version") }
 StringJoiner joiner = new StringJoiner(" ")
 configurations.compileClasspath.resolve().each{joiner.add(it.toString()) }
 joiner.add "$projectDir/target/symbols"
 String mp = joiner.toString()
 
 // two tasks per MLC file
-fileTree(".").matching { include '**/*.mlc' }.each {
+fileTree("src").matching { include '**/*.mlc' }.each {
     def f = it
     def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
 
     task "showArtifacts${mlcName}"(type: JavaExec) {
         classpath = configurations.MLC
         group = 'MLC'
-        mainClass = 'de.monticore.mlc.MLCCLI'
+        mainClass = 'de.monticore.mlc.MLCTool'
         args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
         dependsOn("generateGrammar${mlcName}")
+        showArtifacts.dependsOn("showArtifacts${mlcName}")
     }
 
     task "checkArtifacts${mlcName}"(type: JavaExec) {
         classpath = configurations.MLC
         group = 'MLC'
-        mainClass = 'de.monticore.mlc.MLCCLI'
+        mainClass = 'de.monticore.mlc.MLCTool'
         args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
         dependsOn("generateGrammar${mlcName}")
         checkArtifacts.dependsOn("checkArtifacts${mlcName}")
     }
 }
+
+///////////// dependencies between check artifacts tasks ///////////////////////
+
+checkArtifactsAssignmentExpressions.dependsOn(checkArtifactsExpressionsBasis)
+checkArtifactsBitExpressions.dependsOn(checkArtifactsExpressionsBasis)
+checkArtifactsCommonExpressions.dependsOn(checkArtifactsExpressionsBasis)
+checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCBasics)
+checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCLiteralsBasis)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsCommonExpressions)
+
+checkArtifactsAntlr.dependsOn(checkArtifactsMCBasics)
+checkArtifactsGrammar.dependsOn(checkArtifactsMCCommonLiterals)
+checkArtifactsGrammar.dependsOn(checkArtifactsMCSimpleGenericTypes)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsGrammar)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsMCCommonStatements)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsMCExceptionStatements)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsJavaClassExpressions)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsJavaLight)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsAntlr)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsCommonExpressions)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsBitExpressions)
+
+checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsMCLiteralsBasis)
+checkArtifactsMCLiteralsBasis.dependsOn(checkArtifactsMCBasics)
+checkArtifactsMCJavaLiterals.dependsOn(checkArtifactsMCCommonLiterals)
+
+checkArtifactsMCArrayStatements.dependsOn(checkArtifactsMCVarDeclarationStatements)
+checkArtifactsMCAssertStatements.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsMCAssertStatements.dependsOn(checkArtifactsExpressionsBasis)
+checkArtifactsMCCommonStatements.dependsOn(checkArtifactsMCVarDeclarationStatements)
+checkArtifactsMCExceptionStatements.dependsOn(checkArtifactsMCCommonStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCAssertStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCExceptionStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCLowLevelStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCSynchronizedStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCArrayStatements)
+checkArtifactsMCLowLevelStatements.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsMCReturnStatements.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsMCReturnStatements.dependsOn(checkArtifactsExpressionsBasis)
+checkArtifactsMCStatementsBasis.dependsOn(checkArtifactsMCBasics)
+checkArtifactsMCSynchronizedStatements.dependsOn(checkArtifactsMCCommonStatements)
+checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsMCBasicTypes)
+checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsExpressionsBasis)
+checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsOOSymbols)
+
+checkArtifactsBasicSymbols.dependsOn(checkArtifactsMCBasics)
+checkArtifactsOOSymbols.dependsOn(checkArtifactsBasicSymbols)
+
+checkArtifactsODRuleGeneration.dependsOn(checkArtifactsMCFullGenericTypes)
+checkArtifactsODRules.dependsOn(checkArtifactsMCFullGenericTypes)
+checkArtifactsODRules.dependsOn(checkArtifactsTFBasisExts)
+checkArtifactsODRules.dependsOn(checkArtifactsMCJavaLiterals)
+checkArtifactsODRules.dependsOn(checkArtifactsUMLStereotype)
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsMCSimpleGenericTypes)
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsMCCommonLiterals)
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsJavaLight)
+checkArtifactsTFCommons.dependsOn(checkArtifactsTFBasisExts)
+
+checkArtifactsMCArrayTypes.dependsOn(checkArtifactsMCBasicTypes)
+checkArtifactsMCBasicTypes.dependsOn(checkArtifactsMCBasics)
+checkArtifactsMCCollectionTypes.dependsOn(checkArtifactsMCBasicTypes)
+checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
+checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
+
+checkArtifactsCardinality.dependsOn(checkArtifactsMCBasics)
+checkArtifactsCardinality.dependsOn(checkArtifactsMCCommonLiterals)
+checkArtifactsJavaLight.dependsOn(checkArtifactsAssignmentExpressions)
+checkArtifactsJavaLight.dependsOn(checkArtifactsJavaClassExpressions)
+checkArtifactsJavaLight.dependsOn(checkArtifactsMCCommonStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsMCArrayStatements)
+checkArtifactsMCCommon.dependsOn(checkArtifactsCardinality)
+checkArtifactsMCCommon.dependsOn(checkArtifactsCompleteness)
+checkArtifactsMCCommon.dependsOn(checkArtifactsUMLModifier)
+checkArtifactsMCCommon.dependsOn(checkArtifactsUMLStereotype)
+checkArtifactsUMLModifier.dependsOn(checkArtifactsUMLStereotype)
+checkArtifactsUMLStereotype.dependsOn(checkArtifactsMCCommonLiterals)
 
 java {
     registerFeature('grammars') {

@@ -9,14 +9,21 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
@@ -155,12 +162,12 @@ public class TypeCheckTest {
     char1.accept(traverser);
 
 
-    assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
+    assertTrue(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(double1)));
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(bool1)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
     assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(long1)));
-    assertFalse(isSubtypeOf(tc.typeOf(char1), tc.typeOf(char1)));
+    assertTrue(isSubtypeOf(tc.typeOf(char1), tc.typeOf(char1)));
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(char1)));
     assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(double1)));
     assertFalse(isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
@@ -180,9 +187,71 @@ public class TypeCheckTest {
     assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(stud)));
     assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(fstud)));
     assertFalse(isSubtypeOf(tc.typeOf(stud), tc.typeOf(fstud)));
-    assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
+    assertTrue(isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
 
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
+  }
+
+
+  @Test
+  public void testCompatibilityForGenerics() {
+    // Given
+    // Building ootype List<T>; Instantiating List<Person>
+    OOTypeSymbol listSym = provideGeneric("List", "T");
+    OOSymbolsMill.globalScope().add(listSym);
+    OOSymbolsMill.globalScope().addSubScope(listSym.getSpannedScope());
+    SymTypeExpression personExpr = SymTypeExpressionFactory.createTypeObject(scope.resolveOOType("Person").get());
+    SymTypeExpression listOfPersonExpr = SymTypeExpressionFactory.createGenerics(listSym, personExpr);
+
+    // Building ootype PersonList extends List<Person>; Instantiating PersonList
+    OOTypeSymbol personListSym = provideOOType("PersonList");
+    personListSym.addSuperTypes(listOfPersonExpr);
+    OOSymbolsMill.globalScope().add(personListSym);
+    OOSymbolsMill.globalScope().addSubScope(personListSym.getSpannedScope());
+    SymTypeExpression personListExpr = SymTypeExpressionFactory.createTypeObject(personListSym);
+
+    // Building ootype LinkedList<U> extends List<U>; Instantiating LinkedList<Person>
+    OOTypeSymbol linkedListSym = provideGeneric("LinkedList", "U");
+    OOSymbolsMill.globalScope().add(linkedListSym);
+    OOSymbolsMill.globalScope().addSubScope(linkedListSym.getSpannedScope());
+    SymTypeVariable linkedlistTypeVar = SymTypeExpressionFactory.createTypeVariable(linkedListSym.getTypeParameterList().get(0));
+    SymTypeExpression linkedListParExpr = SymTypeExpressionFactory.createGenerics(listSym, linkedlistTypeVar);
+    linkedListSym.addSuperTypes(linkedListParExpr);
+    SymTypeExpression linkedlistOfPersonExpr = SymTypeExpressionFactory.createGenerics(linkedListSym, personExpr);
+
+    // When & Then
+    Assert.assertTrue(TypeCheck.compatible(listOfPersonExpr, listOfPersonExpr));
+    Assert.assertTrue(TypeCheck.compatible(listOfPersonExpr, personListExpr));
+    Assert.assertTrue(TypeCheck.compatible(listOfPersonExpr, linkedlistOfPersonExpr));
+  }
+
+  @Test
+  public void testIncompatibilityForGenerics() {
+    // Given
+    // Building ootype List<T>; Instantiating List<Person>, List<int>, List<boolean>
+    OOTypeSymbol listSym = provideGeneric("List", "T");
+    OOSymbolsMill.globalScope().add(listSym);
+    OOSymbolsMill.globalScope().addSubScope(listSym.getSpannedScope());
+    SymTypeExpression personExpr = SymTypeExpressionFactory.createTypeObject(scope.resolveOOType("Person").get());
+    SymTypeExpression listOfPersonExpr = SymTypeExpressionFactory.createGenerics(listSym, personExpr);
+    SymTypeExpression listOfIntExpr = SymTypeExpressionFactory.createGenerics(listSym, _intSymType);
+    SymTypeExpression listOfBoolExpr = SymTypeExpressionFactory.createGenerics(listSym, _booleanSymType);
+
+    // Building ootype PersonList extends List<Person>; Instantiating PersonList
+    OOTypeSymbol personListSym = provideOOType("PersonList");
+    personListSym.addSuperTypes(listOfPersonExpr);
+    OOSymbolsMill.globalScope().add(personListSym);
+    OOSymbolsMill.globalScope().addSubScope(personListSym.getSpannedScope());
+    SymTypeExpression personListExpr = SymTypeExpressionFactory.createTypeObject(personListSym);
+
+    // When & Then
+    Assert.assertFalse(TypeCheck.compatible(listOfIntExpr, _intSymType));
+    Assert.assertFalse(TypeCheck.compatible(listOfIntExpr, listOfBoolExpr));
+    Assert.assertFalse(TypeCheck.compatible(listOfBoolExpr, listOfIntExpr));
+    Assert.assertFalse(TypeCheck.compatible(listOfBoolExpr, listOfPersonExpr));
+    Assert.assertFalse(TypeCheck.compatible(listOfPersonExpr, listOfBoolExpr));
+    Assert.assertFalse(TypeCheck.compatible(listOfBoolExpr, personListExpr));
+    Assert.assertFalse(TypeCheck.compatible(personListExpr, listOfBoolExpr));
   }
 
   public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
@@ -194,5 +263,21 @@ public class TypeCheckTest {
     traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
     return traverser;
+  }
+
+
+  protected static OOTypeSymbol provideOOType(String name) {
+    return DefsTypeBasic.type(name);
+  }
+
+  protected static OOTypeSymbol provideGeneric(String rawName, String... typeVarNames) {
+    List<TypeVarSymbol> typeVars = Arrays.stream(typeVarNames)
+      .map(tVarName -> OOSymbolsMill.typeVarSymbolBuilder()
+        .setName(tVarName)
+        .setSpannedScope(OOSymbolsMill.scope())
+        .build()
+      ).collect(Collectors.toList());
+
+    return DefsTypeBasic.type(rawName, new ArrayList<>(), typeVars);
   }
 }

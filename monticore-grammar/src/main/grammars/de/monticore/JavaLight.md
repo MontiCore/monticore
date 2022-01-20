@@ -1,27 +1,31 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-<!-- Beta-version: This is intended to become a MontiCore stable explanation. -->
+<!-- This is a MontiCore stable explanation. -->
 
 # JavaLight
 The JavaLight language defines a subset of the Java
-programming language. The language introduces Java
-method declarations, constructor declarations,
-interface method declarations, attributes, a subset
-of statements and expressions, includes all basic types, and
-allows annotations. 
-The JavaLight language does not define
-classes and interfaces. 
+programming language. The JavaLight language is dedicated 
+for embedding Java language elementsin arbitrary DSLs.
+It is therfore defined in a compositional style,
+i.e. for black box reuse (without need for copy-paste).
 
-The JavaLight language allows to parse
-* all forms of **attribute and method declarations**.
-* all forms of **Java expressions**, (XXX bitte verifizieren: sind Nebeneffekte wie i++ mit dabei?)
-* and almost all **Java statements**, with the exception of 
-  statements for exception handling, continue- and break-statement
-  (XXX welche fehlen noch???), 
-  which are omitted because there are many DSLs, where these are of no use.
+The JavaLight language introduces
+* all forms of **attribute declarations**,
+* all forms of **method declarations** (including **constructors**),
+* all forms of **Java expressions** (including those with side effects, 
+  such as `i++`, but without anonymous classes),
+* almost all **Java statements**, with the exception of 
+  statements for exception handling, continue- and break-statement, and synchronization,
+  which are omitted because there are many DSLs, where these are of no use;
+* and it allows to import usable types, method, and attribute symbols,
+  which may be predefined or imported from of Java-like models.
 
 ## Example
 ```
+int age = 3+x; 
+List<Person> myParents;
+
+@Override
 public int print(String name, Set<Person> p) {
   int a = 2 + name.length();
   if(a < p.size()) {
@@ -30,33 +34,32 @@ public int print(String name, Set<Person> p) {
   return a;
 }
 ```
-The example shows a simple Java method with one parameter and three statements. 
-Expressions are supported completely and from the statements only the Java specific
-forms for exception handling, continue- and break-statements are omitted.
+The example shows a Java method with one parameter and three statements. 
+Expressions are supported in all their forms.
 
 ## Grammar
 
-- The grammar file is [`de.monticore.JavaLight`][JavaLight].
-  It mainly deals with the definition of the method and constructor signatures, 
-  and the annotations, while it reuses MontiCore's library components 
+- The main grammar file is [`de.monticore.JavaLight`][JavaLight].
+  It deals with the definition of the _method_ and _constructor signatures_, 
+  and the _annotations_, while it reuses MontiCore's library components 
   `AssignmentExpressions`, `JavaClassExpressions`, `MCCommonStatements`, 
   and `MCArrayStatements` for expressions and statements.
 
 ## Extension of JavaLight
 
-JavaLight is designed for _easy reuse_.  
+JavaLight is designed for **easy black-box reuse**.  
 It can be **extended** by domain specific constructs, such as 
-   1. special **statements** for message processing (`c?x; c!3+x`), or
-   2. **statements** for testing such as Hoare-like `asserts` or pre/postconditions 
+   1. special **statements** for message processing (`c?x; c!3+x`), 
+   2. **statements** for testing such as Hoare-like `asserts` or pre/postconditions, or
    3. additional logical or otherwise interesting **expression** operators 
-      (`forall x in Set:`) 
-   4. The omitted Java-special statements, such as eception handling can be addded
-      through a predefined language library component. 
+      (`forall x in Set:`). 
+   4. The omitted Java-special statements, such as eception handling, can also 
+      be addded through a predefined language library component. 
 
 JavaLight is fully compatible with various expression language components
-that [MontiCore's library](XXXurlToMD-File) provides. These extensions can 
+that [MontiCore's library](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md) provides. These extensions can 
 simply be added by MontiCore's language composition mechanism 
-(see [Handbook](http://monticore.de/handbook.pdf)).
+(see [Handbook](https://monticore.de/handbook.pdf)).
 
 ## Embedding of JavaLight `Expression` or `Statement`
 
@@ -69,42 +72,68 @@ StateCharts.
 JavaLight is a strict subset of the Java programming language and
 thus can be mapped directly to itself when generating code for Java.
 
+
 ## Parser
-- JavaLight is a component grammar. To gretrieve a parser it is to be embedded into a full grammar. 
+- JavaLight is a component grammar. To retrieve a parser it is to be 
+  embedded into a full grammar. 
 
-## Symboltable
-- JavaLight introduces the `JavaMethodSymbol` extending the provided `MethodSymbol`
- for general object-oriented types.
- The `JavaMethodSymbol` class carries the additional attributes:
-  - annotations
-  - exceptions
-  - and Booleans for isEllipsisParameterMethod, isFinal, isAbstract, isSynchronized, isNative, and isStrictfp
-  
- - A `Declarator` class is created for formal parameters and variable declarations.
- It is defined in `MCVarDeclarationStatements` and extends the `FieldSymbol` for
- object-oriented types.
-    (XXX Verstehe ich nicht: ASTDeclarator? Wer "created" die? Besser beschreiben)
 
-## Symbols
-- XXX to be described (see idea below)
-- Import: the following symbols can be used from outside, when the symbol table 
+## Symboltable and Symbol classes
+- JavaLight introduces the `JavaMethodSymbol` extending the existing `MethodSymbol`
+  for general object-oriented types.
+  The `JavaMethodSymbol` class carries the additional attributes:
+  - annotations,
+  - exceptions,
+  - and Booleans for `isEllipsisParameterMethod`, `isFinal`, `isAbstract`, 
+    `isSynchronized`, `isNative`, and `isStrictfp`.
+
+
+## Symbols (imported and exported)
+- Import: the following symbols can be imported from outside, when the symbol table 
   in the embedding language provides these symbols:
-  - `VariableSymbol` for attributes and otherwise accessible variables
-  - `MethodSymbol` for methods and constructors 
-  - `TypeSymbols` for classes, interfaces (used for example in constructor statements 
-     and type definitions), and enums.
-- Symbol definition and export: it is possible to define new symbols, namely attributes, 
-  methods and constructors. The provided symbol table will include them as
+  - `VariableSymbol` for attributes and otherwise accessible variables.
+  - `MethodSymbol` for method and constructor calls (this includes also `JavaMethodSymbol`).
+  - `TypeSymbols` for using types, e.g., defined via classes, interfaces, and enums.
+- Symbol definition and export: It is possible to define new symbols, for attributes, 
+  methods, and constructors. The provided symbol table will include them as
   - `VariableSymbol` for attributes
   - `MethodSymbol` for methods and constructors 
   and thus will make the accessibility of these symbols available outside the JavaLight 
   sub-models.
 
 ## Functionality
-### CoCos
-- XXX Update wäre hilfreich:
-- None provided as corresponding well-formedness checks are only applicable on
-languages that embed or extend JavaLight.
+
+As usual functionality is implemented in a compositional form, 
+which means that in a composed language these functions should be
+largely reusable as pre-compiled black-boxes.
+
+### Context Conditions
+JavaLight defines the following CoCos:
+* [```ConstructorFormalParametersDifferentName```](../../../java/de/monticore/javalight/cocos/ConstructorFormalParametersDifferentName.java)  
+checks if all input parameters of a constructor have distinct names.
+* [```ConstructorModifiersValid```](../../../java/de/monticore/javalight/cocos/ConstructorModifiersValid.java)  
+checks that a constructor is not marked as `abstract`, `final`, `static`, or `native`.
+* [```ConstructorNoAccessModifierPair```](../../../java/de/monticore/javalight/cocos/ConstructorNoAccessModifierPair.java)  
+checks that no duplicate visibility occurs for a constructor.
+* [```ConstructorNoDuplicateModifier```](../../../java/de/monticore/javalight/cocos/ConstructorNoDuplicateModifier.java)  
+checks that no duplicate modifier occurs for a constructor.
+* [```MethodAbstractAndOtherModifiers```](../../../java/de/monticore/javalight/cocos/MethodAbstractAndOtherModifiers.java)  
+checks that an `abstract` method is not marked as `private`, `static`, `final`, `native`, or `synchronized`.
+* [```MethodBodyAbsence```](../../../java/de/monticore/javalight/cocos/MethodBodyAbsence.java)  
+ensures that a method body may only be absent for `abstract` or `native` methods. 
+* [```MethodBodyPresence```](../../../java/de/monticore/javalight/cocos/MethodBodyPresence.java)  
+checks that a method with a present method body is neither `abstract` nor `native`. 
+* [```MethodExceptionThrows```](../../../java/de/monticore/javalight/cocos/MethodExceptionThrows.java)  
+ensures that thrown exceptions are of type `java.lang.Throwable`.
+* [```MethodFormalParametersDifferentName```](../../../java/de/monticore/javalight/cocos/MethodFormalParametersDifferentName.java)  
+checks if all input parameters of a method have distinct names.
+* [```MethodNoDuplicateModifier```](../../../java/de/monticore/javalight/cocos/MethodNoDuplicateModifier.java)  
+checks that no duplicate modifier occurs for a method.
+* [```MethodNoNativeAndStrictfp```](../../../java/de/monticore/javalight/cocos/MethodNoNativeAndStrictfp.java)  
+checks that method is not marked as `native` and `strictfp`.
+
+The CoCos of embedded languages, such as statements and expressions are defined there and reused as black-boxes.
+
 
 ### PrettyPrinter
 - The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter`][PrettyPrinter]

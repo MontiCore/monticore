@@ -68,7 +68,7 @@ For installing MontiCore, perform the following steps:
 http://www.monticore.de/download/monticore.tar.gz
 ```
 * Unzip the archive. The unzipped files include a directory called
-    `mc-workspace` containing the executable MontiCore CLI
+    `mc-workspace` containing the executable MontiCore tool
     `monticore-cli.jar` along with a directory `src` containing
     handwritten `Automata` DSL infrastructure, a directory `hwc`
     containing handwritten code that is incorporated into the generated

@@ -3,8 +3,7 @@
 package de.monticore.statements;
 
 grammar TestMCVarDeclarationStatements extends de.monticore.statements.MCVarDeclarationStatements,
-                                               de.monticore.literals.MCCommonLiterals,
-                                               de.monticore.types.MCBasicTypes {
+                                               de.monticore.expressions.CombineExpressionsWithLiterals {
 
   TModifier implements MCModifier = "private" | "static";
 

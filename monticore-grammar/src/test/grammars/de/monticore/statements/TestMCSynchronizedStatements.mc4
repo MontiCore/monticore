@@ -2,6 +2,7 @@
 
 package de.monticore.statements;
 
-grammar TestMCSynchronizedStatements extends de.monticore.statements.MCSynchronizedStatements, de.monticore.literals.MCCommonLiterals {
+grammar TestMCSynchronizedStatements extends de.monticore.statements.MCSynchronizedStatements,
+                                             de.monticore.expressions.CombineExpressionsWithLiterals {
 
 }

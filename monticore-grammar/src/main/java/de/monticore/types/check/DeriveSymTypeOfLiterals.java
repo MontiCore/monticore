@@ -18,7 +18,7 @@ public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor2 {
   public IOOSymbolsScope getScope (IMCLiteralsBasisScope mcLiteralsBasisScope){
     // is accepted only here, decided on 07.04.2020
     if(!(mcLiteralsBasisScope instanceof IOOSymbolsScope)){
-      Log.error("0xA0309 the enclosing scope of the literal does not implement the interface IOOSymbolsScope");
+      Log.error("0xA1309 the enclosing scope of the literal does not implement the interface IOOSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
     return (IOOSymbolsScope) mcLiteralsBasisScope;

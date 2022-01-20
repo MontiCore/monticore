@@ -1,1 +1,1 @@
-abstract void method(){}
+public void method();

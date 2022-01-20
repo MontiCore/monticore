@@ -1,0 +1,1 @@
+private abstract void method(){}

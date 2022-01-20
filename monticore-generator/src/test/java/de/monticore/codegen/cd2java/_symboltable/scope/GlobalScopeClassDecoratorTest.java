@@ -149,8 +149,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("name", method.getCDParameter(0).getName());
   }
 
-
-
   @Test
   public void testLoadSuperProdMethod() {
     ASTCDMethod method = getMethodBy("loadQualifiedName", scopeClass);
@@ -201,7 +199,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(28, scopeClass.getCDMethodList().size());
+    assertEquals(26, scopeClass.getCDMethodList().size());
   }
 
   @Test

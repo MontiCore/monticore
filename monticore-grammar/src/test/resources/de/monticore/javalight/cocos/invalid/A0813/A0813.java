@@ -1,1 +1,0 @@
-public void method(int [] ... x) {}

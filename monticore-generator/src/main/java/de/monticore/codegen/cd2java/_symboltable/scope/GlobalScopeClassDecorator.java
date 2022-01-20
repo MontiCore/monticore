@@ -1,14 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.serialization.AbstractDeSers;
@@ -17,6 +18,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
@@ -72,7 +74,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     String globalScopeName = symbolTableService.getGlobalScopeSimpleName();
     ASTMCQualifiedType scopeType = symbolTableService.getScopeType();
     ASTMCQualifiedType globalScopeInterface = symbolTableService.getGlobalScopeInterfaceType();
-    String scopeInterfaceFullName = symbolTableService.getScopeInterfaceFullName();
     String definitionName = input.getCDDefinition().getName();
     String scopeDeSerFullName = symbolTableService.getScopeDeSerFullName();
     String symbols2JsonName = symbolTableService.getSymbols2JsonSimpleName();
@@ -104,12 +105,12 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     Map<String, ASTCDAttribute> resolverAttributes = createResolverAttributes(symbolProds);
     resolverAttributes.putAll(createResolverSuperAttributes());
 
-    List<ASTCDType> symbolClasses = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
-    symbolClasses.addAll(symbolTableService.getSymbolDefiningSuperProds());
+    List<ASTCDType> allSymbolClasses = Lists.newArrayList(symbolProds);
+    allSymbolClasses.addAll(symbolTableService.getSymbolDefiningSuperProds());
 
     List<ASTCDMethod> resolverMethods = createResolverMethods(resolverAttributes.values());
 
-    List<String> symbolListString = symbolClasses.stream().map(symbolTableService::getSymbolSimpleName).collect(Collectors.toList());
+    List<String> symbolListString = allSymbolClasses.stream().map(symbolTableService::getSymbolSimpleName).collect(Collectors.toList());
 
     return CD4AnalysisMill.cDClassBuilder()
         .setName(globalScopeName)
@@ -132,10 +133,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMember(createAddLoadedFileMethod())
         .addCDMember(createClearLoadedFilesMethod())
         .addCDMember(createIsFileLoadedMethod())
-        .addCDMember(createInitMethod(scopeInterfaceFullName, scopeDeSerFullName, symbolProds))
+        .addCDMember(createInitMethod(scopeDeSerFullName, symbolProds))
         .addAllCDMembers(resolverAttributes.values())
         .addAllCDMembers(resolverMethods)
-        .addAllCDMembers(createLoadMethods(symbolClasses))
+        .addAllCDMembers(createLoadMethods(allSymbolClasses))
         .addCDMember(createLoadFileForModelNameMethod(definitionName))
         //
         .addCDMember(createGetRealThisMethod(globalScopeName))
@@ -176,20 +177,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected Collection<? extends ASTCDMethod> createDeSerMapMethods(ASTCDAttribute deSerMapAttribute) {
     List<ASTCDMethod> deSerMapMethods = accessorDecorator.decorate(deSerMapAttribute);
     deSerMapMethods.addAll(mutatorDecorator.decorate(deSerMapAttribute));
-
-    // Create simple putDeSer(String key, IDeSer value)
-    ASTCDParameter key = getCDParameterFacade().createParameter(String.class, "key");
-    ASTCDParameter value = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER), "value");
-    ASTCDMethod putMethod = getCDMethodFacade().createMethod(PUBLIC.build(), "putSymbolDeSer", key, value);
-    replaceTemplate(EMPTY_BODY, putMethod, new StringHookPoint(SYM_DESERS_VAR + ".put(key, value);"));
-    deSerMapMethods.add(putMethod);
-
-    // Create simple value getDeSer(String key)
-    key = getCDParameterFacade().createParameter(String.class, "key");
-    ASTMCQualifiedType returnType = getMCTypeFacade().createQualifiedType(I_SYMBOL_DE_SER);
-    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "getSymbolDeSer", key);
-    replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return " + SYM_DESERS_VAR + ".get(key);"));
-    deSerMapMethods.add(getMethod);
 
     return deSerMapMethods;
   }
@@ -285,28 +272,6 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return resolverMethods;
   }
 
-  protected List<ASTCDAttribute> createSymbolAlreadyResolvedAttributes(List<? extends ASTCDType> astcdTypeList) {
-
-    List<String> symbolAttributeNameList = astcdTypeList
-        .stream()
-        .map(symbolTableService::getDefiningSymbolSimpleName)
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(s -> s + "s")
-        .map(StringTransformations::uncapitalize)
-        .collect(Collectors.toList());
-
-    List<ASTCDAttribute> symbolAttributeList = new ArrayList<>();
-    for (String attributeName : symbolAttributeNameList) {
-      String attrName = attributeName + ALREADY_RESOLVED;
-      ASTMCType booleanType = getMCTypeFacade().createBooleanType();
-      ASTCDAttribute symbolAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), booleanType, attrName);
-      this.replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= false;"));
-      symbolAttributeList.add(symbolAttribute);
-    }
-    return symbolAttributeList;
-  }
-
   ///////////////////////////////////////////////////////////////////////////////////////////////
 
   protected ASTCDMethod createGetRealThisMethod(String globalScopeName) {
@@ -355,7 +320,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     return method;
   }
 
-  protected ASTCDMethod createInitMethod(String scopeFullName, String scopeDeSerFullName, List<ASTCDType> symbolDefiningProds){
+  protected ASTCDMethod createInitMethod(String scopeDeSerFullName, List<ASTCDType> symbolDefiningProds){
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "init");
     Map<String, String> map = Maps.newHashMap();
 

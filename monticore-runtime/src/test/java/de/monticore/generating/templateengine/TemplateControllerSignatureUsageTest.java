@@ -11,6 +11,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 
 import de.monticore.io.FileReaderWriter;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -34,6 +35,7 @@ public class TemplateControllerSignatureUsageTest {
 
   @Before
   public void setup() {
+    LogStub.init();
     glex = new GlobalExtensionManagement();
 
     GeneratorSetup config = new GeneratorSetup();

@@ -10,3 +10,8 @@ ${glex.replaceTemplate("core.EmptyBody", hpWarn)}
 <#assign sizeStateMethod = cd.getCDElementList()?first.getCDMemberList()[17]>
 <#assign hpSize = hpService.templateHP("SizeStateTen")>
 ${glex.replaceTemplate("core.EmptyBody", sizeStateMethod, hpSize)}
+
+<#--   Add method and attribute to automaton -->
+<#assign autClass = cd.getCDElementList()?first>
+${cd4c.addAttribute(autClass, "int counter = 0;")}
+${cd4c.addMethod(autClass, "Counter")}

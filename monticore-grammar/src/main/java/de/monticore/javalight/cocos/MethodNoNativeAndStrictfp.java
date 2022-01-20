@@ -10,7 +10,7 @@ public class MethodNoNativeAndStrictfp implements JavaLightASTMethodDeclarationC
 
   public static final String ERROR_CODE = "0xA0819";
 
-  public static final String ERROR_MESSAGE = "method %s must not be both 'native' and 'strictfp'.";
+  public static final String ERROR_MESSAGE = "Method %s must not be both 'native' and 'strictfp'.";
 
   @Override
   public void check(ASTMethodDeclaration node) {
