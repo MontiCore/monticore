@@ -103,7 +103,6 @@ public class AutomataTool extends AutomataToolTOP {
         if(cmd.hasOption("s")){
           String storeLocation = cmd.getOptionValue("s");
           storeSymbols(modelTopScope, storeLocation);
-          Log.info("Symbol table stored in " + storeLocation +".", "AutomataTool");
         }
 
         // analyze the model with a visitor
