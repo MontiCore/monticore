@@ -92,21 +92,21 @@ is needed. If the tool was called to decide that, too much time was already wast
 For a build script to decide whether or not to call the tool, a tool call should
 (and actually MontiCore does) provide among others a list of files it used for input. 
 
-## Automatically Generating a CLI-JAR
+## Automatically Generating a Tool-JAR
 
 Note to the tool development:
 To automatically derive an executable JAR from the Gradle build process for the 
 corresponding tool, the following template can be used.
 
 ```
-// all in one cli-jar
+// all in one tool-jar
 shadowJar {
     manifest {
         attributes "Main-Class": "de.monticore.${archiveBaseName.get().capitalize()}Tool"
     }
-    archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
+    archiveFileName = "MC${archiveBaseName.get()}.${archiveExtension.get()}"
     minimize()
-    archiveClassifier = "cli"
+    archiveClassifier = "mc-tool"
 }
 
 jar.dependsOn shadowJar
@@ -116,7 +116,7 @@ class and its provieded command line functionalities.
 The packed JAR already contains all necessary dependencies. 
 The template defines the main class and name of the JAR. 
 To foster automated reuse, the template has already been configured to generate 
-a suitable CLI-JAR for each language project without manual adjustments. 
+a suitable JAR for each language project without manual adjustments. 
 However, this requires adhering to the following conventions:
 * The name of the main class is equal to the language project name (usually defined 
   in the `settings.gradle`) with the suffix *Tool*. 
@@ -126,9 +126,9 @@ However, this requires adhering to the following conventions:
 * The generated JAR can be found in 'target/libs'
 
 **Example:**  
-For a language projekt `myLang` we have to implement the `MyLangTool.java` located 
+For a language projekt `MyLang` we have to implement the `MyLangTool.java` located 
 in the package `de.monticore`.
-This automatically generates the executable JAR `myLang-cli.jar`
+This automatically generates the executable JAR `MCMyLang.jar`
 
 In general, the template can be customized by specifying the corresponding main 
 class and JAR name definitions.
