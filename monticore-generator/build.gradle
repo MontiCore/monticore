@@ -152,7 +152,7 @@ shadowJar { // all in one jar
   manifest {
     attributes "Main-Class": "de.monticore.cli.MontiCoreStandardCLI"
   }
-  archiveClassifier = "cli"
+  archiveClassifier = "mc-tool"
   zip64 true
 }
 
