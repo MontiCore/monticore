@@ -2,8 +2,6 @@
 
 package de.monticore.cli;
 
-import de.monticore.cli.MontiCoreStandardCLI;
-import de.monticore.MontiCoreConfiguration;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.Log;
@@ -18,7 +16,7 @@ import static org.junit.Assert.assertTrue;
  * combinations and hence designed to not fail.
  *
  */
-public class MontiCoreStandardCLITest {
+public class MontiCoreToolTest {
   
   /**
    * Pretty default arguments.
@@ -105,49 +103,49 @@ public class MontiCoreStandardCLITest {
   
   @Test
   public void testMontiCoreCLI() {
-    new MontiCoreStandardCLI().run(simpleArgs);
+    new MontiCoreTool().run(simpleArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testMontiCoreDevLogCLI() {
-    new MontiCoreStandardCLI().run(devLogArgs);
+    new MontiCoreTool().run(devLogArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testMontiCoreCustomLogCLI() {
-    new MontiCoreStandardCLI().run(customLogArgs);
+    new MontiCoreTool().run(customLogArgs);
     
     assertTrue(!false);
   }
 
   @Test
   public void testMontiCoreCustomScriptCLI() {
-    new MontiCoreStandardCLI().run(customScriptArgs);
+    new MontiCoreTool().run(customScriptArgs);
     
     assertTrue(!false);
   }
 
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
-    new MontiCoreStandardCLI().run(customEmfScriptArgs);
+    new MontiCoreTool().run(customEmfScriptArgs);
     
     assertTrue(!false);
   }
   
   @Test
   public void testHelp() {
-    new MontiCoreStandardCLI().run(help);
+    new MontiCoreTool().run(help);
 
     assertTrue(!false);
 }
   @Ignore // It's not possible to switch off fail quick (Logger in CLI)
   @Test
   public void testArgsWithNoGrammars() {
-    new MontiCoreStandardCLI().run(argsWithNoGrammars);
+    new MontiCoreTool().run(argsWithNoGrammars);
     
     assertTrue(!false);
   }
