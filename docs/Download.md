@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-The following Command Line Interface (CLI) tools for MontiCore and its languages as well as related tooling are currently available for download:
+The following tools for MontiCore can be used from command line and thus e.g. well be embedded in scripting. Their languages as well as related tooling are currently available for download:
 
 * The [MontiCore tool](http://www.monticore.de/download/monticore.jar) for processing grammars
 * The [MontiCore runtime](http://www.monticore.de/download/monticore-rt.jar) library
@@ -17,4 +17,19 @@ The following Command Line Interface (CLI) tools for MontiCore and its languages
 * The [SD4Development tool](http://www.monticore.de/download/MCSD4Development.jar) for a [Sequence Diagram language](https://github.com/MontiCore/sequence-diagram)
 * The [Statecharts tool](http://www.monticore.de/download/MCStatecharts.jar) for a [Statechart language](https://github.com/MontiCore/statecharts)
 * The [XML tool](http://www.monticore.de/download/MCXML.jar) for an [XML language](https://github.com/MontiCore/xml)
+
+## Further Information
+
+* see also [**MontiCore handbook**](http://www.monticore.de/handbook.pdf)
+* [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
+* [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
+* [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
+* [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
+* [FAQ](00.org/Explanations/FAQ.md) - FAQ 
+* [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [**List of languages**](https://monticore.github.io/monticore/docs/Languages/)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 
