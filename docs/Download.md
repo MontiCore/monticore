@@ -11,7 +11,7 @@ The following tools for MontiCore can be used from command line and thus e.g. we
 * The [FeatureConfiguration tool](http://www.monticore.de/download/MCFeatureConfiguration.jar) for a [Feature Diagram language](https://github.com/MontiCore/feature-diagram)
 * The [FeatureConfigurationPartial tool](http://www.monticore.de/download/MCFeatureConfigurationPartial.jar) for a [Feature Diagram language](https://github.com/MontiCore/feature-diagram)
 * The [FeatureDiagram tool](http://www.monticore.de/download/MCFeatureDiagram.jar) for a [Feature Diagram language](https://github.com/MontiCore/feature-diagram)
-* The [MLC tool](http://www.monticore.de/download/MCMLC.jar) for the [Monticore Language Components language](https://git.rwth-aachen.de/monticore/languages/mlc)
+* The [MLC tool](http://www.monticore.de/download/MCMLC.jar) for grouping [Monticore Language Components](https://git.rwth-aachen.de/monticore/languages/mlc)
 * The [OCL tool](http://www.monticore.de/download/MCOCL.jar) for an [Object Constraint Language](https://github.com/MontiCore/ocl)
 * The [OD4Data tool](http://www.monticore.de/download/MCOD4Data.jar) for an [Object Diagram language](https://github.com/MontiCore/object-diagram)
 * The [OD4Report tool](http://www.monticore.de/download/MCOD4Report.jar) for an [Object Diagram language](https://github.com/MontiCore/object-diagram)
