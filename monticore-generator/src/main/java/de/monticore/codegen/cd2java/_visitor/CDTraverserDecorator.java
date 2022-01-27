@@ -20,7 +20,7 @@ import static de.monticore.codegen.cd2java.CoreTemplates.PACKAGE;
 import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
-import static de.monticore.utils.Names.constructQualifiedName;
+import static de.se_rwth.commons.Names.constructQualifiedName;
 
 public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
 

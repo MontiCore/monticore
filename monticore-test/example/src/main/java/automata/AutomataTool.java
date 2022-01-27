@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import automata._symboltable.*;
-import de.monticore.utils.Names;
 import org.antlr.v4.runtime.RecognitionException;
 
 import automata._ast.ASTAutomaton;

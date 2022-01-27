@@ -21,7 +21,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFI
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.utils.Names.getSimpleName;
+import static de.se_rwth.commons.Names.getSimpleName;
 
 public class SymbolTableService extends AbstractService<SymbolTableService> {
 
@@ -487,7 +487,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (!hasSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
-        return Names.getSimpleName(symbolTypeValue.get());
+        return getSimpleName(symbolTypeValue.get());
       }
     }
     return getNameWithSymbolSuffix(clazz);

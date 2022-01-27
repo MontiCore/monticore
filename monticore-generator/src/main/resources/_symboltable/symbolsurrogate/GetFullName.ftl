@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  if(!de.monticore.utils.Names.getQualifier(name).isEmpty()){
+  if(!de.se_rwth.commons.Names.getQualifier(name).isEmpty()){
     fullName = name;
   }
     if (fullName == null) {

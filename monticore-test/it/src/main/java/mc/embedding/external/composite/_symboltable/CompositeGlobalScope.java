@@ -3,7 +3,7 @@ package mc.embedding.external.composite._symboltable;
 
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.utils.Names;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import mc.embedding.external.composite.CompositeMill;
 import mc.embedding.external.composite._parser.CompositeParser;
