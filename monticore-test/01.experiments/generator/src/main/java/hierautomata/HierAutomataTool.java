@@ -1,4 +1,5 @@
-package hierautomata;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package hierautomata;
 import java.io.IOException;
 import java.util.Optional;
 

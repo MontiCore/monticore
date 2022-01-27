@@ -1,4 +1,5 @@
-package automata3;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package automata3;
 import automata3.Automata3Handle;
 import automata3.Automata3Mill;
 import automata3.Automata3Visit;

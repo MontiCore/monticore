@@ -1,4 +1,5 @@
-package questionnaire;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package questionnaire;
 import java.util.*;
 
 import org.apache.commons.cli.CommandLine;

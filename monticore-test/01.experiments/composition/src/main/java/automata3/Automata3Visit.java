@@ -1,4 +1,5 @@
-package automata3;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package automata3;
 import automata3._ast.ASTInvariant;
 import automata3._visitor.Automata3Visitor2;
 import expression._ast.ASTAnd;

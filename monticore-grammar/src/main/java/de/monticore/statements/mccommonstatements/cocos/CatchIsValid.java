@@ -1,4 +1,5 @@
-package de.monticore.statements.mccommonstatements.cocos;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.statements.mccommonstatements.cocos;
 
 import de.monticore.statements.mcexceptionstatements._ast.ASTCatchClause;
 import de.monticore.statements.mcexceptionstatements._cocos.MCExceptionStatementsASTCatchClauseCoCo;

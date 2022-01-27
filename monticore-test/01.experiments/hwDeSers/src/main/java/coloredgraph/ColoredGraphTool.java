@@ -1,4 +1,5 @@
-package coloredgraph;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package coloredgraph;
 
 import coloredgraph._ast.ASTGraph;
 import coloredgraph._symboltable.*;
