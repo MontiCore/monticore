@@ -1,4 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
 The following tools for MontiCore can be used from command line and thus e.g. well be embedded in scripting. Their languages as well as related tooling are currently available for download:
 
 * The [MontiCore tool](http://www.monticore.de/download/monticore.jar) for processing grammars
@@ -17,6 +18,8 @@ The following tools for MontiCore can be used from command line and thus e.g. we
 * The [SD4Development tool](http://www.monticore.de/download/MCSD4Development.jar) for a [Sequence Diagram language](https://github.com/MontiCore/sequence-diagram)
 * The [Statecharts tool](http://www.monticore.de/download/MCStatecharts.jar) for a [Statechart language](https://github.com/MontiCore/statecharts)
 * The [XML tool](http://www.monticore.de/download/MCXML.jar) for an [XML language](https://github.com/MontiCore/xml)
+
+Please note the [MontiCore 3-Level License](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) of these tools.
 
 ## Further Information
 
