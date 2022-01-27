@@ -28,6 +28,7 @@ public class Automata3Tool extends Automata3ToolTOP {
   @Override
   public void run(String[] args){
     // use normal logging (no DEBUG, TRACE)
+    Automata3Mill.reset();
     Automata3Mill.init();
     Log.ensureInitalization();
 

@@ -34,6 +34,7 @@ public class HierInvAutomataTool extends HierInvAutomataToolTOP {
   @Override
   public void run(String[] args){
     // use normal logging (no DEBUG, TRACE)
+    HierInvAutomataMill.reset();
     HierInvAutomataMill.init();
     Log.ensureInitalization();
 
