@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -216,7 +216,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     if (ast.isPresentName()) {
       symbolName = ast.getName();
     } else {
-      String typeName = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(ast.getMCType());
+      String typeName = MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter().prettyprint(ast.getMCType());
       symbolName = StringTransformations.uncapitalize(Names.getSimpleName(typeName));
     }
     return new AdditionalAttributeSymbolBuilder().setName(symbolName);
@@ -309,7 +309,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
    */
   protected void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute, boolean isAstAttr) {
     AdditionalAttributeSymbol symbol = createAdditionalAttribute(astAttribute).setIsAstAttr(isAstAttr).build();
-    symbol.setType(astAttribute.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
+    symbol.setType(astAttribute.getMCType().printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter()));
     mcProdSymbol.getSpannedScope().add(symbol);
     // symbol -> ast
     symbol.setAstNode(astAttribute);

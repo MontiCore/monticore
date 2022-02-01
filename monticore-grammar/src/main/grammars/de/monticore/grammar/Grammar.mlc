@@ -34,7 +34,7 @@ mlc Grammar {
   }
 
   // TODO: check the following in the code, are these illegal?
-   uses {
+/*   uses {
      // relations to the Grammar_WithConcepts language:
      include "$projectDir/src/main/java/de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
      include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/Grammar_WithConceptsMill.java";
@@ -45,4 +45,5 @@ mlc Grammar {
      // used by GrammarSTCompleteTypes and GrammarScopesGenitor
      include "$projectDir/src/main/java/de/monticore/types/mcfullgenerictypes/MCFullGenericTypesMill.java";
    }
+   */
 }

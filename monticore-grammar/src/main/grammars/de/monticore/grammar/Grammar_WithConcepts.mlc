@@ -35,9 +35,8 @@ mlc Grammar_WithConcepts {
   }
 
   // TODO: check the following in the code, are these illegal?
-   uses {
-     include "$projectDir/src/main/java/de/monticore/types/mcarraytypes/_ast/ASTMCArrayType.java";
+ /*  uses {
      include "$projectDir/src/main/java/de/monticore/types/mcfullgenerictypes/MCFullGenericTypesMill.java";
      include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/types/mcfullgenerictypes/_visitor/MCFullGenericTypesTraverser.java";
-   }
+   } */
 }

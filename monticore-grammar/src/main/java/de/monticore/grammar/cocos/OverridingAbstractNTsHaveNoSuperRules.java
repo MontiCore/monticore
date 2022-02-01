@@ -9,7 +9,7 @@ import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTAbstractProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTAbstractProdCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -36,7 +36,8 @@ public class OverridingAbstractNTsHaveNoSuperRules implements GrammarASTAbstract
         extendedType = a.getSuperRuleList().get(0).getName();
       }
       else{
-        extendedType = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(a.getASTSuperClassList().get(0));
+        extendedType = MCSimpleGenericTypesMill
+            .mcSimpleGenericTypesPrettyPrinter().prettyprint(a.getASTSuperClassList().get(0));
       }
       
       for (MCGrammarSymbol s : grammarSymbols) {

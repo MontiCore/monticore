@@ -26,9 +26,9 @@ mlc MCVarDeclarationStatements {
   }
 
   // TODO: check whether this is illegal !!!
-  uses {
+/*  uses {
     include "$projectDir/src/main/java/de/monticore/grammar/grammar_withconcepts/FullSynthesizeFromMCFGT4Grammar.java";
     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/statements/mccommonstatements/_ast/ASTJavaModifier.java";
-  }
+  } */
 
 }

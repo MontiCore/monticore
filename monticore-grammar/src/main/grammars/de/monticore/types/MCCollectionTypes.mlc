@@ -12,6 +12,9 @@ mlc MCCollectionTypes {
     include "de/monticore/types/mccollectiontypes/**.java";
     include "de/monticore/types/prettyprint/MCCollectionTypes**.java";
     include "de/monticore/types/MCCollectionTypes**.java";
+
+    include "de/monticore/types/check/FullSynthesizeFromMCCollectionTypes.java";
+    include "de/monticore/types/check/SynthesizeSymTypeFromMCCollectionTypes.java";
   }
 
   // export all Java files generated from the grammar
