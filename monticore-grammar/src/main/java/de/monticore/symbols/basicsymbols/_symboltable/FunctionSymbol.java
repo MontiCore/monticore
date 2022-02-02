@@ -27,13 +27,7 @@ public class FunctionSymbol extends FunctionSymbolTOP {
       clone.setAstNode(this.getAstNode());
     }
     clone.setAccessModifier(this.accessModifier);
-    if(spannedScope!=null){
-      clone.setSpannedScope(this.spannedScope);
-    }
-    for(VariableSymbol parameter: this.getParameterList()){
-      spannedScope.remove(parameter);
-      spannedScope.add(parameter.deepClone());
-    }
+    clone.setSpannedScope(this.spannedScope);
     return clone;
   }
 
