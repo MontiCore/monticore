@@ -6,7 +6,6 @@ import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTIf
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
-import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
 
 public class IfConditionHasBooleanType implements MCCommonStatementsASTIfStatementCoCo {
  

@@ -2,15 +2,11 @@
 package de.monticore.statements.mccommonstatements.cocos;
 
 import de.monticore.statements.mccommonstatements._ast.ASTEnhancedForControl;
-import de.monticore.statements.mccommonstatements._ast.ASTFormalParameter;
 import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTEnhancedForControlCoCo;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.ArrayList;
-import java.util.stream.IntStream;
 
 public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCoCo {
 
