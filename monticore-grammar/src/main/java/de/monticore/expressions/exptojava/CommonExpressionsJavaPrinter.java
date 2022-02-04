@@ -42,7 +42,7 @@ public class CommonExpressionsJavaPrinter extends CommonExpressionsPrettyPrinter
   @Override
   public void handle(ASTFieldAccessExpression node) {
     node.getExpression().accept(getTraverser());
-    String name = "get"+ (char)(node.getName().charAt(0)-32) + node.getName().substring(1);
+    String name = "get"+ (char)(node.getName().charAt(0)-32) + node.getName().substring(1)+"()";
     getPrinter().print("."+name);
   }
   
