@@ -4,13 +4,13 @@ package de.monticore.expressions.exptojava;/* (c) https://github.com/MontiCore/m
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
-public class ExpressionBasisJavaPrinter extends ExpressionsBasisPrettyPrinter {
+public class ExpressionsBasisJavaPrinter extends ExpressionsBasisPrettyPrinter {
   
-  public ExpressionBasisJavaPrinter(IndentPrinter printer) {
+  public ExpressionsBasisJavaPrinter(IndentPrinter printer) {
     super(printer);
   }
   
-  public ExpressionBasisJavaPrinter() {
+  public ExpressionsBasisJavaPrinter() {
     super(new IndentPrinter());
   }
   
