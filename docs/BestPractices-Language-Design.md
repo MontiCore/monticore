@@ -13,7 +13,7 @@ Some general questions on how to design a complete languages are adressed here.
 * When you know that the incoming model will be correct, because they are generated
   by algorithm, you can decide to pass a (slight) superset 
 * This may simplify the development process for two reasons: 
-  (a) you may derive a simpler grammar and (b) you may omit definition of 
+  (a) you may derive a simpler grammar and (b) you may omit definitions of 
   context conditions.
 * But beware: (a) situations may change and manually changed models might come in
   or (b) the is adapted by an ill-behaving pre-processor or (c) the model
@@ -67,8 +67,8 @@ Some general questions on how to design a complete languages are adressed here.
     3. Generator
     4. Generated code
     5. Runtime-Environment (RTE) including imported standard libraries
-    6. Software architecture (of the overal system), software stack
-* These dimensions are not orthogonal, but also not completely interelated.
+    6. Software architecture (of the overall system), software stack
+* These dimensions are not orthogonal, but also not completely interrelated.
   The actual organisation will depend on the form of project.
 * A weak form of modularity would be to organize things in
   well understood substructures such as packages. 
@@ -81,7 +81,7 @@ Some general questions on how to design a complete languages are adressed here.
   like a *framework* with explicit extension points.
   Extension points may be (empty) hook methods to be filled, Java interfaces
   to be implemented and their objects injected to the code e.g. via 
-  factories, builders od simply method parameters.
+  factories, builders or simply method parameters.
 * A principle for *modularity* for the the *generator*, 
   the *generated code*, and the *RTE* is to design parts of them as 
   independent library functions (or larger: components) that can be used if needed.
@@ -100,14 +100,14 @@ Some general questions on how to design a complete languages are adressed here.
     3. The generator provides (a) many Java classes and methods that can be overridden
        (b) Freemarker templates hook points to extend and replace templates, and (c)
        can be customized using a groovy script.
-       The generator iteself is often structured along the software architecture / stack,
+       The generator itself is often structured along the software architecture / stack,
        e.g. in frontend, application backend, data base, transport layer, etc.
     4. The generated code must be designed appropriately by the generator designer, 
        by generating builders, mills, etc. for each form of product - quite similar 
        to MontiCore itself.
        The generated code is usually structured along the components or sub-systems
        that the software architecture defines.
-    5. The RTE is probably well designed if it is usable a normal framework.
+    5. The RTE is probably well designed if it is usable in a normal framework.
 * Please note: it is not easy to design modularity and extensibility from beginning.
   Framework design has shown that this is an iterative optimizing process.
   It must be avoided to design too many extension elements into the system
@@ -123,7 +123,7 @@ A language `Host` defines an extension point through an interface nonterminal.
 grammar Host { A = I*; interface I; }
 ```
 
-Another language `Embedded` that has no connection to the `Host` language, 
+Another language `Embedded`, that has no connection to the `Host` language, 
 defines a class nonterminal `E`.
 
 ```
@@ -132,31 +132,31 @@ grammar Embedded { E = "something"; }
 
 MontiCore provides alternative solutions to embed the language `Embedded`
 into the language `Host` at the extension point `I`. All solutions presented here
-require to implement a new grammar `G` that extends the grammars `Embedded` and `Host`, 
-which reuses the start nonterminal of the `Host` grammar:
+require to implement a new grammar `G` that extends the grammars `Embedded` and `Host` 
+reuses the start nonterminal of the `Host` grammar:
 
 ```
 grammar G extends Host, Embedded { start A; }
 ```
 
 The connection between extension point and extension is performed by an additional
-grammar rule in the grammar `G`. This can be realized in one of the following ways, each 
+grammar rule in the grammar `G`. This can be realized in one of the following ways each one
 of which has its own advantages and disadvantages:
 
-1. Embedding through overriding of extension rule and implementing extension point rule:
+1. Embedding through overriding of extension rule and implementing extension point:
     * `E implements I;`
     * Advantage: simple embedding rule
     * Disadvantage: does not work in combination with inheritance of extension rule
-    * Should therefore only be used, it `E` is not used anywhere else (= in not other language that is potentially used in combination with this language) 
+    * Should therefore only be used, if `E` is not used anywhere else (= in not other language that is potentially used in combination with this language) 
 2. Embedding through extending extension rule and implementing extension point rule:
     * `IE extends E implements I = "something";`
     * Advantage: does work in combination with inheritance of extension rule
     * Disadvantage: cloning of RHS of the extension rule can produce inconsistencies if `E` is changed
-    * Can be used if it is assured that this rule is adjusted whenever `E` is changed, e.g., by assuming that `E` is not modified at all
+    * Can be used if it is assured that this rule is adjusted whenever `E` is changed, e.g. by assuming that `E` is not modified at all
 3. Embedding through implementing extension point rule and providing extension on right-hand side:
     * `IE implements I = E;`
     * Advantage: does work in combination with inheritance of extension rule
-    * Disadvantage: introduces new level of indirection in AST that invalidates check whether required abstract syntax (RHS of interface nonterminal) is present
+    * Disadvantage: introduces new level of indirection in the AST that invalidates the check whether the required abstract syntax (RHS of interface nonterminal) is present
     * Should therefore not be used, if the interface has a right-hand side
 * Defined by: AB
 
@@ -169,11 +169,11 @@ of which has its own advantages and disadvantages:
 * Many models depend on other models from which they receive symbols they can rely on.
   To define this kind of dependencies using import statements is convenient and well 
   known (e.g. from Java). We thus suggest to use the import statement in the spirit of Java.
-  * `import aName` at the first sight means, that a specific class with the qualified
+  * `import aName` at the first sight means that a specific class with the qualified
   name `aName` is used. In reality, however, Java has a very convenient convention
   that class `aName` is always defined in the artifact (i.e. file) with the same name 
   `aName.java` and the needed symbol table is part of `aName.class`. So an import 
-  stament actually locates an artifact.
+  statement actually locates an artifact.
 * As a consequence, we suggest:
     * `import aModelName` refers to an artifact with name `aModelName` -- regardless
       which kind of model is defined there.
@@ -193,13 +193,13 @@ of which has its own advantages and disadvantages:
   qualified name (although it is not per se forbidden to have more). 
   Java then also uses the first occurring class in its classpath only.
 * In a heterogeneous language setting, it may be necessary to map symbols
-  from a soure to a target form (e.g. state symbols to Java enum constants or state 
+  from a source to a target form (e.g. state symbols to Java enum constants or state 
   pattern classes). There are three main options for this task:
     1. Store in the desired target symbol form upon creating the symbol file.
        Has some problems: (1) increases dependencies between tools, 
        (2) potentially several files need to be stored.
     2. Adapt the imported symbols upon loading (recommended).
-    3. Use an explicit trasnformation tool between the two model processing tools
+    3. Use an explicit transformation tool between the two model processing tools
        to map the initially stored symbol file to the desired format.
 
 ### Version number in language variants

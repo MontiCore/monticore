@@ -29,9 +29,9 @@ to design, but powerful in their use.
   * symbol table infrastructure for resolving these in `E` scopes, and 
   * integration of `S` symbols with the AST of `A`.
 * However, `S` symbols are not automatically instantiated. 
-  This has to be described manually, e.g., by extending the symbol table 
+  This has to be described manually, e.g. by extending the symbol table 
   creator or via providing an adapter translating a foreign symbol into an `S` symbol.
-* This can be used, e.g., in these scenarios: 
+* This can be used, e.g. in these scenarios: 
   * A name of a certain kind is introduced automatically the first time it occurs 
     in a model. If it occurs more than once, all other occurrences of the name 
     do not introduce new symbols. (e.g. this happens with features in FDs,
@@ -103,8 +103,8 @@ Options would be
 
 ### Loading Symbols as Symbols of Another Kind
 
-Symbols of an unknown, source kind (e.g., `CDTypeSymbol`) may easily be loaded as 
-symbols of a known kind (e.g., `TypeSymbol`), when the source kind provides
+Symbols of an unknown source kind (e.g., `CDTypeSymbol`) may easily be loaded as 
+symbols of a known kind (e.g., `TypeSymbol`) when the source kind provides
 all mandatory attributes (i.e. those without defaults) of the symbol class.
 This is especially the case if the source kind is a subclass of the known 
 kind.
@@ -119,7 +119,7 @@ Because the global scope is a singleton, this configuration can be e.g. called i
 after constructing the global scope. However, this would still encode the name of the unknown
 symbol kind in the `L1`-tool, although it prevents any actual dependency to the imported tools.
 
-The method can also be called from a CLI for dynamically configuring the deserialization,
+The method can also be called from a CLI to dynamically configure the deserialization,
 e.g. the information be fed to the `L1`-tool via parameters, e.g. like
 ```
   java L2Tool --typeSymbol=de.monticore.cdbasis._symboltable.CDTypeSymbol
