@@ -80,7 +80,7 @@ Some general questions on how to design a complete languages are adressed here.
   the *generated code*, and the *RTE* is to design each of them
   like a *framework* with explicit extension points.
   Extension points may be (empty) hook methods to be filled, Java interfaces
-  to be implemented and their objects injected to the code e.g. via 
+  to be implemented and their objects injected to the code e.g., via 
   factories, builders or simply method parameters.
 * A principle for *modularity* for the the *generator*, 
   the *generated code*, and the *RTE* is to design parts of them as 
@@ -94,14 +94,14 @@ Some general questions on how to design a complete languages are adressed here.
        using the same principles as programming languages, namely allowing to keep 
        the models independent (and thus storable, versionable, reusable) artifacts,
        while they are semantically and through the generator technology well integrated. 
-       The appropriate approach is based on *using* foreign models, e.g. through 
+       The appropriate approach is based on *using* foreign models, e.g., through 
        `import` statements and sharing *symbol* infrastructures as described in the
        [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
     3. The generator provides (a) many Java classes and methods that can be overridden
        (b) Freemarker templates hook points to extend and replace templates, and (c)
        can be customized using a groovy script.
        The generator itself is often structured along the software architecture / stack,
-       e.g. in frontend, application backend, data base, transport layer, etc.
+       e.g., in frontend, application backend, data base, transport layer, etc.
     4. The generated code must be designed appropriately by the generator designer, 
        by generating builders, mills, etc. for each form of product - quite similar 
        to MontiCore itself.
@@ -152,7 +152,7 @@ of which has its own advantages and disadvantages:
     * `IE extends E implements I = "something";`
     * Advantage: does work in combination with inheritance of extension rule
     * Disadvantage: cloning of RHS of the extension rule can produce inconsistencies if `E` is changed
-    * Can be used if it is assured that this rule is adjusted whenever `E` is changed, e.g. by assuming that `E` is not modified at all
+    * Can be used if it is assured that this rule is adjusted whenever `E` is changed, e.g., by assuming that `E` is not modified at all
 3. Embedding through implementing extension point rule and providing extension on right-hand side:
     * `IE implements I = E;`
     * Advantage: does work in combination with inheritance of extension rule
@@ -168,7 +168,7 @@ of which has its own advantages and disadvantages:
 
 * Many models depend on other models from which they receive symbols they can rely on.
   To define this kind of dependencies using import statements is convenient and well 
-  known (e.g. from Java). We thus suggest to use the import statement in the spirit of Java.
+  known (e.g., from Java). We thus suggest to use the import statement in the spirit of Java.
   * `import aName` at the first sight means that a specific class with the qualified
   name `aName` is used. In reality, however, Java has a very convenient convention
   that class `aName` is always defined in the artifact (i.e. file) with the same name 
@@ -186,14 +186,14 @@ of which has its own advantages and disadvantages:
       should be possible, but currently no such show case has been made yet (beyond Java).
     * The import statement is only used to make symbols available in their simple form.
       It is usually 
-      not intended to explicate a single dependency, e.g. a configuraton model
+      not intended to explicate a single dependency, e.g., a configuraton model
       that depends on exactly one base model. Like in Java, where you import an 
       artifact and then still explicitely extend the contained class.
 * It is methodically of interest to store at most one artifact with the same
   qualified name (although it is not per se forbidden to have more). 
   Java then also uses the first occurring class in its classpath only.
 * In a heterogeneous language setting, it may be necessary to map symbols
-  from a source to a target form (e.g. state symbols to Java enum constants or state 
+  from a source to a target form (e.g., state symbols to Java enum constants or state 
   pattern classes). There are three main options for this task:
     1. Store in the desired target symbol form upon creating the symbol file.
        Has some problems: (1) increases dependencies between tools, 
