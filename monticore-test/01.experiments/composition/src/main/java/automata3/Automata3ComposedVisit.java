@@ -1,5 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
+package automata3;
+import automata3.Automata3Handle;
 import automata3.Automata3Mill;
+import automata3.Automata3Visit;
 import automata3._visitor.Automata3Traverser;
 import automata3._visitor.Automata3Visitor2;
 import invautomata._ast.ASTAutomaton;

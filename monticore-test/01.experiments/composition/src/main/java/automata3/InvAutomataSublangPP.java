@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+package automata3;
 import de.monticore.prettyprint.IndentPrinter;
 import invautomata._ast.*;
 import invautomata._visitor.*;

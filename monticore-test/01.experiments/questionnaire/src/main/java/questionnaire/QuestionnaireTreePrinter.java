@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+package questionnaire;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.literals.mccommonliterals._ast.ASTMCCommonLiteralsNode;

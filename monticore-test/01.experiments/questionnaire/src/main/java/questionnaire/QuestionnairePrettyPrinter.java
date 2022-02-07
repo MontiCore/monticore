@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+package questionnaire;
 
 import java.util.*;
 import questionnaire._ast.*;

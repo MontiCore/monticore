@@ -3,9 +3,8 @@ package automata;
 
 import automata._ast.ASTAutomaton;
 import automata._parser.AutomataParser;
+import automata._symboltable.*;
 import automata._visitor.AutomataTraverser;
-import automata.prettyprint.PrettyPrinter;
-import automata.visitors.CountStates;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 import org.apache.commons.cli.CommandLine;
@@ -14,6 +13,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -21,25 +22,22 @@ import java.util.Optional;
  *
  */
 public class AutomataTool extends AutomataToolTOP {
-  
+
   /**
    * Use the single argument for specifying the single input automaton file.
    *
    * @param args
    */
   public static void main(String[] args) {
-  
-    // use normal logging (no DEBUG, TRACE)
-    Log.ensureInitalization();
-    new AutomataTool().run(args);
+    AutomataTool tool = new AutomataTool();
+    tool.run(args);
   }
-  
-  /**
-   * Runs the tooling with given arguments
-   * @param args
-   */
-  public void run(String[] args) {
+
+  public void run(String[] args){
+    // use normal logging (no DEBUG, TRACE)
     AutomataMill.init();
+    Log.ensureInitalization();
+
     Options options = initOptions();
 
     try {
@@ -70,43 +68,21 @@ public class AutomataTool extends AutomataToolTOP {
         ASTAutomaton ast = parse(model);
         Log.info(model + " parsed successfully!", "AutomataTool");
 
-        // setup the symbol table: deliberately omitted here
-
-        // check the CoCos: deliberately omitted here
-
-        // analyze the model with a visitor
-        CountStates cs = new CountStates();
+        // execute a pretty printer
+        TextPrinter pp = new TextPrinter();
         AutomataTraverser traverser = AutomataMill.traverser();
-        traverser.add4Automata(cs);
+        traverser.add4Automata(pp);
+        traverser.setAutomataHandler(pp);
         ast.accept(traverser);
-        Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
-        prettyPrint(ast, "");
+        Log.info("Printing the parsed automaton into textual form:", "AutomataTool");
+        Log.println(pp.getResult());
       }else{
         printHelp(options);
       }
     } catch (ParseException e) {
       // e.getMessage displays the incorrect input-parameters
-      Log.error("0xEE751 Could not process AutomataTool parameters: " + e.getMessage());
+      Log.error("0xFE754 Could not process AutomataTool parameters: " + e.getMessage());
     }
-
-
-
-
-
-
   }
 
-  @Override
-  public void prettyPrint(ASTAutomaton ast, String file){
-    // execute a pretty printer
-    PrettyPrinter pp = new PrettyPrinter();
-    AutomataTraverser traverser2 = AutomataMill.traverser();
-    traverser2.add4Automata(pp);
-    traverser2.setAutomataHandler(pp);
-    ast.accept(traverser2);
-    Log.info("Pretty printing the parsed automaton into console:", "AutomataTool");
-    // print the result
-    Log.println(pp.getResult());
-  }
-  
 }
