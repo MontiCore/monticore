@@ -145,7 +145,7 @@ Applications
 **layout elements, widgets**, their **style definition** and **references to
 data sources**.
 * Language is mainly used to describe **GUI of Web Applications**. The models of
-the language represent graphical views or their parts, omitting smaller details
+the language represents graphical views or their parts, omitting smaller details
 of style definition and simplifying connection between graphical elements and
 data sources.
 * Currently new version of the `GUIDSL` is being developed:
@@ -156,7 +156,7 @@ statements and components for layout description.
 can be found in the same repository.
   * [Main grammar `GUIDSL`](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/GUIDSL.mc4)
 includes basic concepts and more specific implementation of component
-configuration .
+configuration.
 * In projects legacy version is currently used:
   * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation),
               Ford

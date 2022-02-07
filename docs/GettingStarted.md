@@ -4,7 +4,7 @@
 This page describes the technical installation and usage of MontiCore for
 language developers. This page further inspects a simple example grammar and the
 Java classes and other artifacts generated from this grammar. After installing
-MontiCore as described on this page, it can be used to develop new modeling
+MontiCore as described on this page, it can be used to develop new modelling
 languages and generators as described in subsequent chapters.
 
 MontiCore provides a command line interface (CLI) tool and can easily be used
@@ -29,7 +29,7 @@ Java Development Kit (JDK) and validate that the installation was successful:
 - Install a JDK with at least version 8 provided by Oracle or OpenJDK.
 - Make sure the environment variable `JAVA_HOME` points to the installed JDK, and
     *not* to the JRE, e.g., the following would be good:
-    - `/usr/lib/jvm/java-8-openjdk` on UNIX or
+    - `/user/lib/jvm/java-8-openjdk` on UNIX or
     - `C:\Program Files\Java\jdk1.8.*` on Windows.
     You will need this in order to run the Java compiler for compiling
     the generated Java source files.
@@ -96,9 +96,9 @@ example/PingPong.aut
 ### Inspect the Example Grammar
 
 MontiCore is a language workbench. It supports developers in developing
-modular modeling languages. The core of MontiCore is its grammar
-modeling language (cf. [Chapter 4 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)), 
-which is used by developers for modeling
+modular modelling languages. The core of MontiCore is its grammar
+modelling language (cf. [Chapter 4 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)), 
+which is used by developers for modelling
 context-free grammars. A MontiCore grammar defines (parts of) the
 abstract and concrete syntax of a language. Each grammar contains
 nonterminals, production rules, and may extend other grammars. At most

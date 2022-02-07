@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-The following tools for MontiCore can be used from command line and thus e.g. well be embedded in scripting. Their languages as well as related tooling are currently available for download:
+The following tools for MontiCore can be used from the command line and thus e.g. well be embedded in scripting. Their languages as well as related tooling are currently available for download:
 
 * The [MontiCore tool](http://www.monticore.de/download/monticore.jar) for processing grammars
 * The [MontiCore runtime](http://www.monticore.de/download/monticore-rt.jar) library

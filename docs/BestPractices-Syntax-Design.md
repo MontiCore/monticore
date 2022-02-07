@@ -33,7 +33,7 @@ of the reference manual.
 ### **Complex Token** clashing with other uses of sub-tokens
 * For example `<-` is supposed to be used as arrow, but in an expression
   `3<-10` is also syntactically allowed.
-* The problem: as soon as `"<-"` is defined as token in any part of the
+* The problem: as soon as `"<-"` is defined as a token in any part of the
   current or any extended grammars, the expression `3<-10` would not be
   parsed as `3 < -10` anymore.
 * Solutions: 
@@ -71,7 +71,7 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
   * Advantage: Multiple extensions are possible at the same time.
             An NT `Y` can also implement multiple interfaces (like in Java). 
   * Disadvantage: the designer of `A` explicitly has to design the *hole* 
-  (extension point) `X` and add it it into the production.
+  (extension point) `X` and add it into the production.
 2. Overriding (empty) nonterminal from the super-grammar
   * Use a normal nonterminal `X` and override it in a sub-grammar.
   ```
@@ -89,7 +89,7 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
     1. The designer of `A` explicitly has to design the *hole* (extension point) `X` 
       and inject it into other places. 
     2. Only one overriding alternative possible (i.e. multiple overriding in 
-       subgrammars are allowed, but only the most specific resides) .
+       subgrammars are allowed, but only the most specific resides).
 3. Extending nonterminal from the super-grammar.
   * Use an empty normal nonterminal `X` and extend it in a sub-grammar.
   ```
@@ -117,7 +117,7 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
     X = "your";
   }
   ```
-  * Advantage: Explctely marks a nonterminal as *hole* (extension point) in the grammar.
+  * Advantage: Explicitely marks a nonterminal as *hole* (extension point) in the grammar.
         Please observe that interface terminals may or not may be meant to be
         extended in sub-grammars. `external` is clearer here.
   * Disadvantage: 
@@ -186,7 +186,7 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
   (where we assume `Digits` is a given token).
 * As a workaround, we use the semantic predicate `{noSpace()}?` that ensures 
   that between the two last processed token there is no space inbetween. 
-  If one of the token is optional we have to split the alternatives:
+  If one of the tokens is optional we have to split the alternatives:
   ```
   SignedNatLiteral = 
           (negative:["-"]) Digits {noSpace()}? 
@@ -204,7 +204,7 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
 
 ### Avoid **complex tokens** (2)
 
-* Same general problem. In language composition conflicting token may lead to issues.  
+* Same general problem. In language composition conflicting tokens may lead to issues.  
 * For example Java allows `42.` as a literal of type float. 
   UML allows to define cardinalities like `[42..44]`. Composition clashes.
 * Solution: In a Java sublanguage we split the token:
@@ -224,8 +224,8 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
 
 ### How to define **keyword enumerations** 
 
-* A finite set of kewyword-based alternatives can be defined in several forms:  
-* Standard thre keywords act as alternative:
+* A finite set of keyword-based alternatives can be defined in several forms:  
+* Standard three keywords act as alternative:
   ```
   N = (["public"] | ["protected"] | ["private"]) ;
   ```
@@ -276,7 +276,7 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
 
 ### How and when to use Names for Nonterminals 
 
-* Normally names like `expr:Expr`can be avoided, which makes a grammar easier to read
+* Normally names like `expr:Expr`can be avoided which makes a grammar easier to read
   and more concise, i.e. `Expr` alone has the same effect.
 * There may be two reasons to use a name:
   1. Nonterminal `X` occurs several times and we want to distinguish: 
