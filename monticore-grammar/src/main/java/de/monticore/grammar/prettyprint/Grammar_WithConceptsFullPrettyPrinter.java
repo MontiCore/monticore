@@ -25,7 +25,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
-public class Grammar_WithConceptsFullPrettyPrinter {
+public class  Grammar_WithConceptsFullPrettyPrinter {
 
 
   protected IndentPrinter printer;
