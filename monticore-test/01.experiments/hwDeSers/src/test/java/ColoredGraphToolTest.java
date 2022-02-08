@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import coloredgraph.ColoredGraphTool;
 import coloredgraph._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class ColoredGraphToolTest {
   public void testTrafficLight() {
     LogStub.init();
     //    Log.enableFailQuick(false);
-    ColoredGraphTool.main(new String[] { "src/test/resources/TrafficLight.cg" });
+    ColoredGraphTool.main(new String[] { "-i", "src/test/resources/TrafficLight.cg" });
     File stFile = new File("target/src/test/resources/TrafficLight.cgsym");
     assertTrue(stFile.exists());
   }
@@ -32,7 +33,7 @@ public class ColoredGraphToolTest {
     //    Log.enableFailQuick(false);
 
     // store scope and check that file exists
-    ColoredGraphTool.main(new String[] { "src/test/resources/Blinker.cg" });
+    ColoredGraphTool.main(new String[] { "-i", "src/test/resources/Blinker.cg" });
     File stFile = new File("target/src/test/resources/Blinker.cgsym");
     assertTrue(stFile.exists());
 

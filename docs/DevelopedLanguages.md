@@ -1,8 +1,8 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Languages and Language Components Developed with MontiCore
 
-The MontiCore language workbench has been under development already 
-for a while and of course has been used by our group to develop 
+The MontiCore language workbench has been under development for a while 
+already and of course has been used by our group to develop 
 many languages. Not all of those languages are publicly 
 available and some of these languages are equipped with tools based 
 on MontiCore 5. 
@@ -53,20 +53,20 @@ development. See language definition and usage method in
         (an extension to the books)
 
 * **Delta-MontiArc** [[HRRS12,HKR+11,HRRS11]](http://mbse.se-rwth.de/) 
- is a DSL for expressing deltas on MontiArc component definitions, 
+ is a DSL for expressing deltas on MontiArc component definitions
  which allows to model software product lines in a bottom up way.
 
 * **MontiArcHV** [[HRR+11]](http://mbse.se-rwth.de/) 
  allows specifying component variability fully integrated within the 
- component hierarchy located at  variation points in component definitions.
+ component hierarchy located at variation points in component definitions.
 
 * **Java** as full language as well as source for Java expressions, 
  statements, attribute or method definitions.
 
 * **FeatureDSL** is a DSL for feature diagrams in software product line 
- approaches
+ approaches.
 
-* **DeltaCD** is a DSL for expressing deltas on class diagrams, 
+* **DeltaCD** is a DSL for expressing deltas on class diagrams
  which allows to model software product lines in a bottom up way
 
 * **Aerospace Constraint Specification Language** is a DSL used to 
@@ -89,7 +89,7 @@ development. See language definition and usage method in
         related black-box tests for architecture definition languages 
         like MontiArc.
 
-* **LightRocks**, a modeling language for robotic assembly processes.
+* **LightRocks**, a modelling language for robotic assembly processes.
 
 * **cdViews** is a DSL used to model partial views on class diagrams
 
@@ -123,7 +123,7 @@ development. See language definition and usage method in
     [[DRRS09]](https://www.se-rwth.de/publications/).
 
 * **C++** and its sublanguages for expressions, statements and 
-    definitions (but no generic types, no defines)
+    definitions (but no generic types, no defines).
 
 * **MontiCore** itself uses a family of DSLs for the definition of 
     DSLs, i.e., their grammars. [[HR17]](https://www.se-rwth.de/publications/)
@@ -131,13 +131,13 @@ development. See language definition and usage method in
 ## More Information about Languages and Language Components 
 
 * [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-   The reference Manual describes how to use MontiCore as a out-of-the-box 
-   *language workbench*), but also as grey box *tooling framework*.
+   The reference Manual describes how to use MontiCore as an out-of-the-box 
+   *language workbench*), but also as a grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
 
 * [**List of MontiCore core Language Components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
    MontiCore concentrates on reuse. It therefore offers a set of
-   predefined *language components*, where the main artifact is usually a
+   predefined *language components* where the main artifact is usually a
    *component grammar*. Reusing these language components allows 
    language developers to define their own language as a
    composition of reusable assets efficiently. Reusable assets describe among others 
@@ -147,7 +147,7 @@ development. See language definition and usage method in
 * [**List of languages**](Languages.md).
    This is a another list of newer MontiCore 6
    languages that can be used out of the box or also composed. 
-   Many of them already rather stable, but some of them also undergo a
+   Many of them already are rather stable, but some of them also undergo a
    lively development and enhancement. 
    These complete languages are usually composed of a number of language
    components.

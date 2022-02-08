@@ -4,7 +4,6 @@ import questionnaire.*;
 import questionnaire._ast.*;
 import questionnaire._parser.*;
 import questionnaire._visitor.*;
-import de.monticore.ast.ASTNode;
 
 import java.io.IOException;
 import org.antlr.v4.runtime.RecognitionException;

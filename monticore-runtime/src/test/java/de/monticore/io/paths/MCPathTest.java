@@ -159,6 +159,23 @@ public class MCPathTest {
     assertEquals("0xA1294 The following entries for the file `" + "src/test/resources" + "` are ambiguous:"
       + "\n" + "{" + resources.toString() + ",\n" + resources.toString() + "}", findings.get(0).getMsg());
   }
+  @Test
+  public void testShouldFind(){
+    String jdk = System.getenv("JAVA_HOME").replaceAll("\\\\", "/") + "/jre/lib/rt.jar";
+    MCPath mp = new MCPath(jdk);
+    assertTrue(mp.find("java/util/List.class").isPresent());
+  }
 
+  @Test
+  public void testShouldNotFind(){
+    MCPath mp = new MCPath("");
+    assertFalse(mp.find("java/util/List.class").isPresent());
+  }
 
+  @Test
+  public void testShouldNotFind2(){
+    MCPath mp = new MCPath("this/is/a/test");
+    assertFalse(mp.find("java/util/List.class").isPresent());
+  }
+  
 }

@@ -5,7 +5,6 @@ import de.monticore.statements.mcexceptionstatements._ast.ASTThrowStatement;
 import de.monticore.statements.mcexceptionstatements._cocos.MCExceptionStatementsASTThrowStatementCoCo;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 

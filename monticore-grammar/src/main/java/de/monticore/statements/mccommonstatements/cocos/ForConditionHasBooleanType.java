@@ -2,9 +2,7 @@
 package de.monticore.statements.mccommonstatements.cocos;
 
 import de.monticore.statements.mccommonstatements._ast.ASTCommonForControl;
-import de.monticore.statements.mccommonstatements._ast.ASTForControl;
 import de.monticore.statements.mccommonstatements._ast.ASTForStatement;
-import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTForControlCoCo;
 import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTForStatementCoCo;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;

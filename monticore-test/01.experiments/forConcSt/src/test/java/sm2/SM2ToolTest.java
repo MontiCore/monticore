@@ -32,8 +32,8 @@ public class SM2ToolTest {
   
   @Test
   public void test() {
-    String[] args = {"src/test/resources/example/PingPong.aut"};
-    SM2ExpTool.main(args);
+    String[] args = {"-i","src/test/resources/example/PingPong.aut"};
+    SM2Tool.main(args);
     assertTrue(Log.getFindings().isEmpty());
   
     List<String> p = LogStub.getPrints();
