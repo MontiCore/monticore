@@ -3,7 +3,7 @@
 package mc.embedding.embedded._symboltable;
 
 import de.monticore.io.paths.MCPath;
-import de.monticore.utils.Names;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import mc.embedding.embedded.EmbeddedMill;
 import mc.embedding.embedded._ast.ASTText;

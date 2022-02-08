@@ -3,7 +3,7 @@
 package mc.embedding.host._symboltable;
 
 import de.monticore.io.paths.MCPath;
-import de.monticore.utils.Names;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import mc.embedding.host.HostMill;
 import mc.embedding.host._parser.HostParser;

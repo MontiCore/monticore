@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
-import static de.monticore.utils.Names.constructQualifiedName;
+import static de.se_rwth.commons.Names.constructQualifiedName;
 
 /**
  * creates all classes and interfaces for the _symboltbale package

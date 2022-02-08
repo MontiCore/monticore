@@ -5,7 +5,7 @@ package de.monticore.io.paths;
 import de.monticore.AmbiguityException;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.MontiCoreClassLoader;
-import de.monticore.utils.Names;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
@@ -14,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.CharBuffer;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
