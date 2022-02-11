@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.symboltable.serialization.ISymbolDeSer;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -59,7 +60,9 @@ public class GlobalScopeInterfaceDecorator
   protected boolean isGlobalScopeInterfaceTop = false;
 
   protected static final String PUTSYMBOLDESER = "put%sSymbolDeSer";
-
+  
+  protected static final String GETSYMBOLDESER = "get%sSymbolDeSer";
+  
   public GlobalScopeInterfaceDecorator(final GlobalExtensionManagement glex,
                                        final SymbolTableService symbolTableService,
                                        final MethodDecorator methodDecorator) {
@@ -108,6 +111,7 @@ public class GlobalScopeInterfaceDecorator
         .addCDMember(creatCheckIfContinueAsSubScopeMethod())
         .addAllCDMembers(createDeSerMapMethods())
         .addAllCDMembers(createPutDeSerMethods(symbolProds))
+        .addAllCDMembers(createGetDeSerMethods(symbolProds))
         .addCDMember(createGetRealThisMethod(globalScopeInterfaceName))
         .build();
   }
@@ -431,6 +435,37 @@ public class GlobalScopeInterfaceDecorator
       });
     }
 
+    return deSerMethods;
+  }
+  
+  protected List<ASTCDMethod> createGetDeSerMethods(List <? extends ASTCDType> symbolProds) {
+    List<ASTCDMethod> deSerMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, KIND_VAR);
+    
+    for (ASTCDType symbolProd : symbolProds) {
+      String className = symbolTableService.removeASTPrefix(symbolProd);
+      String methodName = String.format(GETSYMBOLDESER, className);
+      
+      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName, nameParameter);
+      String hook = String.format("return getSymbolDeSer(kind);");
+      this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
+  
+      deSerMethods.add(method);
+    }
+    
+    for (DiagramSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
+      symbolTableService.getSymbolDefiningProds((ASTCDDefinition) cdSymbol.getAstNode()).forEach(s -> {
+        String className = symbolTableService.removeASTPrefix(s);
+        String methodName = String.format(GETSYMBOLDESER, className);
+      
+        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName, nameParameter);
+        String hook = String.format("return getSymbolDeSer(kind);");
+        this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
+      
+        deSerMethods.add(method);
+      });
+    }
+  
     return deSerMethods;
   }
 
