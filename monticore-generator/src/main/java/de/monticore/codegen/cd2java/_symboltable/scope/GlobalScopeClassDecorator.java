@@ -49,7 +49,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   protected static final String ADAPTED_RESOLVING_DELEGATE = "adapted%sResolver";
 
   protected static final String TEMPLATE_PATH = "_symboltable.globalscope.";
-
+  
+  protected static final String PUTSYMBOLDESER = "put%sSymbolDeSer";
+  
   /**
    * flag added to define if the GlobalScope interface was overwritten with the TOP mechanism
    * if top mechanism was used, must use setter to set flag true, before the decoration
@@ -141,6 +143,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         //
         .addCDMember(createGetRealThisMethod(globalScopeName))
         .addCDMember(createClearMethod(resolverMethods, symbolListString))
+        .addAllCDMembers(createPutDeSerMethods(symbolProds))
         .build();
   }
 
@@ -358,6 +361,40 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         TEMPLATE_PATH + "Init", scopeDeSerFullName, map));
     return method;
   }
+  
+  protected List<ASTCDMethod> createPutDeSerMethods(List<? extends ASTCDType> symbolProds) {
+    List<ASTCDMethod> deSerMethods = new ArrayList<>();
+    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, KIND_VAR);
+    
+    for (ASTCDType symbolProd : symbolProds) {
+      String className = symbolTableService.removeASTPrefix(symbolProd);
+      String methodName = String.format(PUTSYMBOLDESER, className);
+      String deSerName = symbolTableService.getSymbolDeSerFullName(symbolProd);
+      
+      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), methodName, nameParameter);
+      String hook = String.format("putSymbolDeSer(kind, new %s());", deSerName);
+      this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
+      
+      deSerMethods.add(method);
+    }
+    
+    for (DiagramSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
+      symbolTableService.getSymbolDefiningProds((ASTCDDefinition) cdSymbol.getAstNode()).forEach(s -> {
+        String className = symbolTableService.removeASTPrefix(s);
+        String methodName = String.format(PUTSYMBOLDESER, className);
+        String deSerName = symbolTableService.getSymbolDeSerFullName(s, cdSymbol);
+        
+        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), methodName, nameParameter);
+        String hook = String.format("putSymbolDeSer(kind, new %s());", deSerName);
+        this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
+        
+        deSerMethods.add(method);
+      });
+    }
+    
+    return deSerMethods;
+  }
+  
   public boolean isGlobalScopeTop() {
     return isGlobalScopeTop;
   }
