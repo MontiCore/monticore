@@ -292,5 +292,16 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   }
+  
+  @Test
+  public void testPutStateDeSer() {
+    ASTCDMethod method = getMethodBy("putStateSymbolDeSer", scopeClass);
+    
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("kind", method.getCDParameter(0).getName());
+  }
 
 }
