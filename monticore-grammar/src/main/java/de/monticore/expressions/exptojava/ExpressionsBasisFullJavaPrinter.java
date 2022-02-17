@@ -36,7 +36,7 @@ public class ExpressionsBasisFullJavaPrinter {
     this.printer = printer;
   }
   
-  public String prettyprint(ASTExpressionsBasisNode a) {
+  public String print(ASTExpressionsBasisNode a) {
     getPrinter().clearBuffer();
     a.accept(getTraverser());
     return getPrinter().getContent();

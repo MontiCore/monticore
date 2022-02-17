@@ -43,7 +43,7 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTMinusPrefixExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringMinusPrefixExpression(output);
     assertFalse(parser.hasErrors());
@@ -59,7 +59,7 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTPlusPrefixExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringPlusPrefixExpression(output);
     assertFalse(parser.hasErrors());
@@ -74,7 +74,7 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTBooleanNotExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringBooleanNotExpression(output);
     assertFalse(parser.hasErrors());
@@ -90,7 +90,7 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTLogicalNotExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringLogicalNotExpression(output);
     assertFalse(parser.hasErrors());
@@ -107,7 +107,7 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTBracketExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringBracketExpression(output);
     assertFalse(parser.hasErrors());
@@ -124,7 +124,7 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTArguments ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringArguments(output);
     assertFalse(parser.hasErrors());
@@ -146,7 +146,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setName("a")
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a(b,c)", output);
   }
@@ -161,7 +161,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setName("foo")
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a.getFoo()", output);
   }
@@ -179,7 +179,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a * b", output);
   }
@@ -197,7 +197,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a / b", output);
   }
@@ -215,7 +215,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a % b", output);
   }
@@ -233,7 +233,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a + b", output);
   }
@@ -251,7 +251,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a - b", output);
   }
@@ -269,7 +269,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a <= b", output);
   }
@@ -287,7 +287,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a >= b", output);
   }
@@ -305,7 +305,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a < b", output);
   }
@@ -323,7 +323,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a > b", output);
   }
@@ -341,7 +341,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a == b", output);
   }
@@ -359,7 +359,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a != b", output);
   }
@@ -377,7 +377,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a && b", output);
   }
@@ -395,7 +395,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setRight(b.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a || b", output);
   }
@@ -415,7 +415,7 @@ public class CommonExpressionsJavaPrinterTest {
       .setFalseExpression(c.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a ? b : c", output);
   }

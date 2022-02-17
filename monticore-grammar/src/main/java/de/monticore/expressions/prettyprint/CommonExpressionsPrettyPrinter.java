@@ -13,23 +13,22 @@ import de.monticore.prettyprint.IndentPrinter;
 public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
   protected CommonExpressionsTraverser traverser;
-
+  
+  protected IndentPrinter printer;
+  
   @Override
   public void setTraverser(CommonExpressionsTraverser traverser) {
     this.traverser = traverser;
   }
-
+  
   public void setPrinter(IndentPrinter printer) {
     this.printer = printer;
   }
-
+  
   @Override
   public CommonExpressionsTraverser getTraverser() {
     return traverser;
   }
-
-
-  protected IndentPrinter printer;
 
   public CommonExpressionsPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
@@ -209,9 +208,9 @@ public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor2
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("!");
     node.getExpression().accept(getTraverser());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
-
-
+  
   @Override
   public void handle(ASTCallExpression node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
