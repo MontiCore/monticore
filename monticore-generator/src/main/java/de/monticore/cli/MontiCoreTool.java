@@ -295,6 +295,22 @@ public class MontiCoreTool {
         .desc("Optional output directory for all generated artifacts.")
         .build());
     
+    // specify the tool jar's name
+    options.addOption(Option.builder(TOOL_JAR_NAME)
+        .longOpt(TOOL_JAR_NAME_LONG)
+        .argName("name")
+        .hasArg()
+        .desc("Optional tool jar name used in generated launch scripts.")
+        .build());
+
+    // specify launch script output directory
+    options.addOption(Option.builder(LAUNCH_SCRIPT_OUT)
+        .longOpt(LAUNCH_SCRIPT_OUT_LONG)
+        .argName("path")
+        .hasArg()
+        .desc("Optional output directory for generated launch scripts.")
+        .build());
+
     // specify model path
     options.addOption(Option.builder(MODELPATH)
         .longOpt(MODELPATH_LONG)

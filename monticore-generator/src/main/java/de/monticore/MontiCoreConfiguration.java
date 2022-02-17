@@ -52,6 +52,8 @@ public final class MontiCoreConfiguration implements Configuration {
    */
   public static final String GRAMMAR = "g";
   public static final String OUT = "o";
+  public static final String TOOL_JAR_NAME = "tn";
+  public static final String LAUNCH_SCRIPT_OUT = "so";
   public static final String MODELPATH = "mp";
   public static final String HANDCODEDPATH = "hcp";
   public static final String HANDCODEDMODELPATH = "hcg";
@@ -67,6 +69,8 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String GRAMMAR_LONG = "grammar";
   public static final String OUT_LONG = "out";
+  public static final String LAUNCH_SCRIPT_OUT_LONG = "scriptOutput";
+  public static final String TOOL_JAR_NAME_LONG = "toolName";
   public static final String MODELPATH_LONG = "modelPath";
   public static final String HANDCODEDPATH_LONG = "handcodedPath";
   public static final String HANDCODEDMODELPATH_LONG = "modelPathHC";
@@ -224,6 +228,24 @@ public final class MontiCoreConfiguration implements Configuration {
     }
     // fallback default is "out"
     return new File(DEFAULT_OUTPUT_PATH);
+  }
+
+  /**
+   * Getter for the launch script output directory stored in this configuration.
+   * 
+   * @return output directory file
+   */
+  public Optional<File> getLaunchScriptOutputDir() {
+    return getAsString(LAUNCH_SCRIPT_OUT).map(File::new);
+  }
+
+  /**
+   * Getter for the tool's name stored in this configuration.
+   * 
+   * @return  the tool's name
+   */
+  public Optional<String> getToolName() {
+    return getAsString(TOOL_JAR_NAME);
   }
 
   /**

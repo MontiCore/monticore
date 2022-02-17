@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -86,6 +87,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.cocos.GrammarCoCos;
@@ -113,9 +116,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -1113,6 +1116,43 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     generator.generate(decoratedCD);
   }
 
+  public void generateLaunchScripts(GlobalExtensionManagement glex, File outputDirectory, String toolName) {
+    freemarker.template.Configuration configuration = new freemarker.template.Configuration(freemarker.template.Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+
+    MontiCoreTemplateLoader templateLoader = new MontiCoreTemplateLoader(this.getClass().getClassLoader());
+    configuration.setTemplateLoader(templateLoader);
+
+    FreeMarkerTemplateEngine engine = new FreeMarkerTemplateEngine(configuration);
+    ImmutableMap<String, String> data = ImmutableMap.of("toolName", toolName);
+
+    generateLaunchScript(engine, "scripts.BatchLauncher", data, new File(outputDirectory, "run.bat"));
+    generateLaunchScript(engine, "scripts.ShellLauncher", data, new File(outputDirectory, "run"));
+  }
+
+  private void generateLaunchScript(
+      FreeMarkerTemplateEngine engine,
+      String templateName,
+      Object data,
+      File dest
+  ) {
+    StringBuilder stringBuilder = new StringBuilder();
+    engine.loadAndRun(templateName, stringBuilder, data);
+
+    String content = stringBuilder.toString();
+
+    try {
+      Files.createParentDirs(dest);
+    } catch (IOException e) {
+      Log.error("0xA1028 Failed to to create parent directories for output file: " + dest.getAbsolutePath(), e);
+    }
+
+    try (BufferedWriter writer = Files.newWriter(dest, StandardCharsets.UTF_8)) {
+      writer.write(content);
+    } catch (IOException e) {
+      Log.error("0xA1029 Writing to output file failed: " + dest.getAbsolutePath(), e);
+    }
+  }
+
   protected void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
                                                ICD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
@@ -1303,6 +1343,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(HANDCODEDMODELPATH_LONG, mcConfig.getHandcodedModelPath());
         builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
         builder.addVariable(OUT_LONG, mcConfig.getOut());
+        builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
+        builder.addVariable(LAUNCH_SCRIPT_OUT_LONG, mcConfig.getLaunchScriptOutputDir());
         builder.addVariable(REPORT_LONG, mcConfig.getReport());
         builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());
         builder.addVariable(TEMPLATEPATH_LONG, mcConfig.getTemplatePath());

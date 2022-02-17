@@ -60,6 +60,8 @@ abstract public class MCTask extends DefaultTask {
   
   final DirectoryProperty outputDir = project.objects.directoryProperty()
 
+  final DirectoryProperty launchScriptOutputDir = project.objects.directoryProperty()
+
   final RegularFileProperty buildInfoFile = project.objects.fileProperty()
 
   // this attributes enables to defines super grammars for a grammar build task
@@ -83,6 +85,8 @@ abstract public class MCTask extends DefaultTask {
   String configTemplate;
   
   String script
+
+  String toolName;
   
   String groovyHook1;
   
@@ -98,6 +102,12 @@ abstract public class MCTask extends DefaultTask {
   @OutputDirectory
   DirectoryProperty getOutputDir() {
     return outputDir
+  }
+
+  @Optional
+  @OutputDirectory
+  DirectoryProperty getLaunchScriptOutputDir() {
+    return launchScriptOutputDir;
   }
 
   @OutputFile
@@ -169,7 +179,13 @@ abstract public class MCTask extends DefaultTask {
   String getScript() {
     return script
   }
-  
+
+  @Input
+  @Optional
+  String getToolName() {
+    return toolName;
+  }
+
   @Input
   @Optional
   String getGroovyHook1() {
@@ -292,6 +308,14 @@ abstract public class MCTask extends DefaultTask {
     if (!mp.isEmpty()) {
       params.add("-mp")
       params.addAll(mp)
+    }
+    if (launchScriptOutputDir.isPresent()) {
+      params.add("-so")
+      params.addAll(launchScriptOutputDir.get().asFile.toString())
+    }
+    if (toolName != null) {
+      params.add("-tn")
+      params.add(toolName)
     }
     if (!handcodedPath.isEmpty()) {
       params.add("-hcp")

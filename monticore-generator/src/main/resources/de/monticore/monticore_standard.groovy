@@ -111,3 +111,7 @@ while (grammarIterator.hasNext()) {
     Reporting.flush(astGrammar)
   }
 }
+
+if (scriptOutput.isPresent() && toolName.isPresent()) {
+  generateLaunchScripts(glex, scriptOutput.get(), toolName.get())
+}
