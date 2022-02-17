@@ -5,64 +5,44 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.types.mcarraytypes.MCArrayTypesMill;
+import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
+import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
+import de.monticore.types.mcarraytypestest._parser.MCArrayTypesTestParser;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
-import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
-import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class SynthesizeSymTypeFromMCCollectionTypesTest {
-  
+public class SynthesizeSymTypeFromMCArrayTypesTest {
+
   /**
    * Focus: Interplay between TypeCheck and the assisting visitors on the
-   * extended configuration,
+   * Basic configuration, i.e.
    * i.e. for
-   *    types/MCCollectionTypes.mc4
+   *    expressions/ExpressionsBasis.mc4
+   *    literals/MCLiteralsBasis.mc4
+   *    types/MCBasicTypes.mc4
+   *    types/MCArrayTypes.mc4
    */
-  
-  @Before
-  public void setup() {
+
+  @BeforeClass
+  public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
-  }
-  
-  // Parer used for convenience:
-  MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
-  
-  // This is Visitor for Collection types under test:
-  FullSynthesizeFromMCCollectionTypes synt = new FullSynthesizeFromMCCollectionTypes();
-  
-  // other arguments not used (and therefore deliberately null)
-  
-  // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(synt,null);
-
-  FlatExpressionScopeSetter scopeSetter;
-  MCCollectionTypesTraverser traverser;
-
-  @Before
-  public void initScope(){
-    scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
-    traverser = MCCollectionTypesMill.traverser();
-    traverser.add4MCCollectionTypes(scopeSetter);
-    traverser.add4MCBasicTypes(scopeSetter);
     init();
   }
 
@@ -70,23 +50,30 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     gs.add(DefsTypeBasic.type("A"));
     gs.add(DefsTypeBasic.type("Person"));
-    gs.add(DefsTypeBasic.type("Auto"));
-    gs.add(DefsTypeBasic.type("Map"));
-    gs.add(DefsTypeBasic.type("List"));
-    gs.add(DefsTypeBasic.type("Set"));
 
     CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
     ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondex.cesym");
     as.setEnclosingScope(gs);
-
-    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("src/test/resources/de/monticore/types/check/Personaz.cesym");
-    as2.setEnclosingScope(gs);
   }
-  
+
+  // Parer used for convenience:
+  MCArrayTypesTestParser parser = new MCArrayTypesTestParser();
+  // This is the TypeChecker under Test:
+  TypeCheck tc = new TypeCheck(new FullSynthesizeFromMCArrayTypes(),null);
+
+  FlatExpressionScopeSetter scopeSetter;
+  MCArrayTypesTraverser traverser;
+
+  @Before
+  public void initScope(){
+    scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
+    traverser = MCArrayTypesMill.traverser();
+    traverser.add4MCBasicTypes(scopeSetter);
+    traverser.add4MCArrayTypes(scopeSetter);
+  }
+
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
 
-  // reuse some of the tests from MCBasicTypes (to check conformity)
-  
   @Test
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
@@ -94,7 +81,23 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
+  @Test
+  public void symTypeFromAST_Test2() throws IOException {
+    String s = "int";
+    ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+  }
+
+  @Test
+  public void symTypeFromAST_Test3() throws IOException {
+    String s = "A";
+    ASTMCType asttype = parser.parse_StringMCType(s).get();
+    asttype.accept(traverser);
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+  }
+
   @Test
   public void symTypeFromAST_Test4() throws IOException {
     String s = "Person";
@@ -102,7 +105,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   @Test
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
@@ -110,12 +113,24 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
+  @Test
+  public void symTypeFromAST_VoidTest() throws IOException {
+    ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
+    assertEquals("void", tc.symTypeFromAST(v).printFullName());
+  }
+
   @Test
   public void symTypeFromAST_ReturnTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
-    ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder()
-                                  .setMCVoidType(v).build();
+    ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(v).build();
+    assertEquals("void", tc.symTypeFromAST(r).printFullName());
+  }
+
+  @Test
+  public void symTypeFromAST_ReturnTest2() throws IOException {
+    // im Prinzip dassselbe via Parser:
+    ASTMCReturnType r = parser.parse_StringMCReturnType("void").get();
     assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
 
@@ -128,40 +143,20 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     assertEquals(s, tc.symTypeFromAST(r).printFullName());
   }
 
-  // new forms of Types coming from MCCollectionType
-  
   @Test
-  public void symTypeFromAST_TestListQual() throws IOException {
-    String s = "List<a.z.Person>";
-    ASTMCListType asttype = parser.parse_StringMCListType(s).get();
+  public void symTypeFrom_AST_ArrayTest() throws IOException {
+    ASTMCType prim = parser.parse_StringMCType("int").get();
+    ASTMCArrayType asttype = MCArrayTypesMill.mCArrayTypeBuilder().setMCType(prim).setDimensions(2).build();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals("int[][]", tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   @Test
-  public void symTypeFromAST_TestListQual2() throws IOException {
-    String s = "Set<Auto>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
+  public void symTypeFrom_AST_ArrayTest2() throws IOException {
+    ASTMCType person = parser.parse_StringMCType("Person").get();
+    ASTMCArrayType asttype = MCArrayTypesMill.mCArrayTypeBuilder().setMCType(person).setDimensions(1).build();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals("Person[]", tc.symTypeFromAST(asttype).printFullName());
   }
-  
-  @Test
-  public void symTypeFromAST_TestListQual3() throws IOException {
-    String s = "Map<int,Auto>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
-  }
-  
-  @Test
-  public void symTypeFromAST_TestListQual4() throws IOException {
-    String s = "Set<int>";
-    ASTMCType asttype = parser.parse_StringMCType(s).get();
-    asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
-  }
-  
-  
-  
+
 }

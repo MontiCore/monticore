@@ -1,21 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
+import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
-import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -25,15 +26,15 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
-  
+public class SynthesizeSymTypeFromMCFullGenericTypesTest {
+
   /**
    * Focus: Interplay between TypeCheck and the assisting visitors on the
    * extended configuration,
    * i.e. for
-   *    types/MCSimpleGenericTypes.mc4
+   *    types/MCFullGenericTypes.mc4
    */
-  
+
   @Before
   public void setup() {
     LogStub.init();
@@ -46,6 +47,9 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
 
   public static void init(){
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
+    OOTypeSymbol a2 = DefsTypeBasic.type("A2", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(DefsTypeBasic.typeVariable("T")), gs);
+    gs.add(a2);
+    a2.getSpannedScope().add(DefsTypeBasic.type("B", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), a2.getSpannedScope()));
     gs.add(DefsTypeBasic.type("A"));
     gs.add(DefsTypeBasic.type("Person"));
     gs.add(DefsTypeBasic.type("Auto"));
@@ -72,43 +76,44 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     ICombineExpressionsWithLiteralsArtifactScope as5 = symbols2Json.load("src/test/resources/de/monticore/types/check/Personjl.cesym");
     as5.setEnclosingScope(gs);
   }
-  
+
   // Parer used for convenience:
-  MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
-  
+  MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
+
   // This is Visitor for SimpleGeneric types under test:
-  ISynthesize synt = new FullSynthesizeFromMCSimpleGenericTypes();
-  
+  ISynthesize synt = new FullSynthesizeFromMCFullGenericTypes();
+
   // other arguments not used (and therefore deliberately null)
-  
+
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(synt,null);
 
   FlatExpressionScopeSetter scopeSetter;
-  MCSimpleGenericTypesTraverser traverser;
+  MCFullGenericTypesTraverser traverser;
 
   @Before
   public void initScope(){
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
-    traverser = MCSimpleGenericTypesMill.traverser();
+    traverser = MCFullGenericTypesMill.traverser();
+    traverser.add4MCFullGenericTypes(scopeSetter);
     traverser.add4MCSimpleGenericTypes(scopeSetter);
     traverser.add4MCCollectionTypes(scopeSetter);
     traverser.add4MCBasicTypes(scopeSetter);
   }
-  
+
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
 
   // reuse some of the tests from MCBasicTypes (to check conformity)
-  
+
   @Test
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
-    parser = new MCSimpleGenericTypesTestParser();
+    parser = new MCFullGenericTypesTestParser();
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   @Test
   public void symTypeFromAST_Test4() throws IOException {
     String s = "Person";
@@ -116,7 +121,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   @Test
   public void symTypeFromAST_Test5() throws IOException {
     String s = "de.x.Person";
@@ -124,12 +129,12 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   @Test
   public void symTypeFromAST_ReturnTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder()
-                                  .setMCVoidType(v).build();
+      .setMCVoidType(v).build();
     assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
 
@@ -143,7 +148,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   }
 
   // reuse some of the tests from MCCollectionType
-  
+
   @Test
   public void symTypeFromAST_TestListQual() throws IOException {
     String s = "List<a.z.Person>";
@@ -151,7 +156,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   @Test
   public void symTypeFromAST_TestListQual2() throws IOException {
     String s = "Set<Auto>";
@@ -159,7 +164,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   @Test
   public void symTypeFromAST_TestListQual3() throws IOException {
     String s = "Map<int,Auto>";
@@ -167,7 +172,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   @Test
   public void symTypeFromAST_TestListQual4() throws IOException {
     String s = "Set<int>";
@@ -175,7 +180,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
-  
+
   //new tests coming from MCSimpleGenericTypes
 
   @Test
@@ -233,5 +238,6 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
+
 
 }
