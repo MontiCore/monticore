@@ -4,7 +4,7 @@
 
 [[_TOC_]]
 
-Some DSLs require a tool to enable general accessibility via command line interface (CLI). 
+Some DSLs require a tool to enable general accessibility via the command line interface (CLI). 
 When designing a tool, we recommend some standard guide lines.
 
 ## Designing a Tool
@@ -36,7 +36,7 @@ However, we suggest some default arguments for standardized access.
                              that allows to adapt and extend the tool workflow (optional) 
                              (only some tools provide groovy scripting)
 -ct, --configtemplate        Advanced configuration 1: through a Freemarker template
-                             that allows to adapth the generation process (optional)
+                             that allows to adapt the generation process (optional)
                              (only some tools provide a template configuration call)
 ```
 
@@ -49,7 +49,7 @@ Some explanation to the arguments:
 * Typical results are 
   * (1) generated files (`-o`) that are used in the next step of 
     the build process (e.g. for compilation).
-  * (2) the symboltable (`-s`) that is then used by other tool's to import symbols
+  * (2) the symboltable (`-s`) that is then used by other tools to import symbols
   * (3) reports (`-r`) and internal information (`-so`), like the AST of the 
     parsed model usable for developers to understand what happened
   * (4) and potentially also internal information on used input and generated 
@@ -69,8 +69,8 @@ Some explanation to the arguments:
   the argument `-modelpath` for identifying paths containing models is typically not required.
 * Groovy-scripting (`-sc`, `--script`): A Groovy Script is meant to describe the tool internal 
   workflow. It controls parsing, symbol construction, reporting, code generation etc.
-  This kind of scripting should only become necessary, when various alternative
-  configurations are possible. Thus not very tool provides Groovy scripting.
+  This kind of scripting should only become necessary when various alternative
+  configurations are possible. Thus not every tool provides Groovy scripting.
 * Template-scripting (`-ct`, `--configtemplate`): 
   It is possible to add a custom template script right before
   the full generation process starts. This template is useful to customize the 
@@ -81,15 +81,15 @@ Some explanation to the arguments:
 ## Usage of the Tool-JAR
 
 A note to the tool usage: 
-tools do not organize the correct order of their calls. If embedded in a larger
-build process, an appropriate gradle (preferred) or make is useful for 
+Tools do not organize the correct order of their calls. If embedded in a larger
+build process, an appropriate gradle (preferred) or make it is useful for 
 incremental efficiency.
 
-This organisation is above the tool, because for efficiency the 
-(grade or make) buildscript itself must be able to decide, whether a redo
+This organisation is above the tool, due to the efficiency of the 
+(grade or make) buildscript itself, which must be able to decide, whether a redo
 is needed. If the tool was called to decide that, too much time was already wasted.
 
-For a build script to decide whether or not to call the tool, a tool call should
+For a build script to decide whether to call the tool or not, a tool call should
 (and actually MontiCore does) provide among others a list of files it used for input. 
 
 ## Automatically Generating a Tool-JAR
@@ -112,8 +112,8 @@ shadowJar {
 jar.dependsOn shadowJar
 ```
 This blueprint can be used in the `build.gradle` script to derive a JAR for the tool 
-class and its provieded command line functionalities. 
-The packed JAR already contains all necessary dependencies. 
+class and its provided command line functionalities. 
+The packed JAR already contains all the necessary dependencies. 
 The template defines the main class and name of the JAR. 
 To foster automated reuse, the template has already been configured to generate 
 a suitable JAR for each language project without manual adjustments. 

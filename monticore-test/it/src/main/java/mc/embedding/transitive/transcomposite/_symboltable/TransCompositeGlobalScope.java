@@ -3,7 +3,7 @@
 package mc.embedding.transitive.transcomposite._symboltable;
 
 import de.monticore.io.paths.MCPath;
-import de.monticore.utils.Names;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import mc.embedding.transitive.transcomposite.TransCompositeMill;
 import mc.embedding.transitive.transcomposite._parser.TransCompositeParser;

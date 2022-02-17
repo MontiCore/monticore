@@ -4,7 +4,8 @@ package de.monticore.io.paths;
 
 import de.monticore.AmbiguityException;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.utils.Names;
+import de.monticore.io.MontiCoreClassLoader;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
@@ -13,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.CharBuffer;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -39,7 +39,7 @@ public final class MCPath {
         // parent class loader MUST BE null here!
         // otherwise we would start to resolve from the system class path (or
         // worse) unknowingly
-        .forEach(url -> classloaderMap.put(new URLClassLoader(new URL[] { url }, null), url));
+        .forEach(url -> classloaderMap.put(new MontiCoreClassLoader(new URL[] { url }, null), url));
   }
 
   public MCPath(Path... entries) {
@@ -53,7 +53,7 @@ public final class MCPath {
   public void addEntry(Path entry) {
     Optional<URL> url = toURL(entry);
     if(url.isPresent() && !classloaderMap.containsValue(url.get())){
-      classloaderMap.put(new URLClassLoader(new URL[] { url.get() }, null), url.get());
+      classloaderMap.put(new MontiCoreClassLoader(new URL[] { url.get() }, null), url.get());
     }
   }
 

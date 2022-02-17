@@ -6,11 +6,11 @@
 
 Errors happen.
 Some happen because of faults in the code (we call that internal errors),
-some happen because we haven't well explained how to use MontiCore and 
+some happen because we haven't explained well how to use MontiCore and 
 how to use the generated code.
 
 Here we try to add infromation how to handle occuring errors.
-We use the eror code for an easier identification. Error code start with 
+We use the error code for an easier identification. Error codes start with 
 `0x`and use 5(!) hex characters and thus should be at the same time 
 memorizable (because not completely unknown, but still not so common that
 they could be taken for something else).
@@ -29,7 +29,7 @@ they could be taken for something else).
      context conditions.
   2. Think of allowing more general expressions?
   3. If especially the syntax of `if . then . else .` shall be reused, 
-     why not defining this in a new nonterminal and ignoring that the same
+     why not define this in a new nonterminal and ignore that the same
      syntactic constructs were already available in another production.
 * Defined by: CKi, BR.
   

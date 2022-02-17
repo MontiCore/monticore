@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcbasictypes._ast;
 
-import de.monticore.utils.Names;
+import de.se_rwth.commons.Names;
 
 public class ASTMCQualifiedName extends ASTMCQualifiedNameTOP {
 

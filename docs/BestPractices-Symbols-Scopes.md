@@ -34,7 +34,7 @@ to design, but powerful in their use.
 * This can be used, e.g., in these scenarios: 
   * A name of a certain kind is introduced automatically the first time it occurs 
     in a model. If it occurs more than once, all other occurrences of the name 
-    do not introduce new symbols. (e.g. this happens with features in FDs,
+    do not introduce new symbols. (e.g., this happens with features in FDs,
     and works because features do not have a body.)
   * A name in a language `E` refers to a named element of another language, 
     but the language shall be decoupled from `E`. 
@@ -84,10 +84,10 @@ to design, but powerful in their use.
 
 ## Loading (DeSerializing) Symbols of Unknown Symbol Kinds
 
-Specific languages (e.g. `CD`) may provide specific symbols, of specific kinds.
+Specific languages (e.g., `CD`) may provide specific symbols, of specific kinds.
 A symbol import of these symbols into another language `L1` has to cope with 
 potentially unknown kinds of symbols, even though the super kind could be known. 
-E.g. `TypeSymbol` is extended by `CDTypeSymbol` providing e.g. additional 
+E.g., `TypeSymbol` is extended by `CDTypeSymbol` providing e.g., additional 
 visibility information.
 Upon loading an `CD`-symboltable into an `L1`-tool
 it may be that neither AST-class `CDTypeSymbol` nor superclass information about 
@@ -103,8 +103,8 @@ Options would be
 
 ### Loading Symbols as Symbols of Another Kind
 
-Symbols of an unknown, source kind (e.g., `CDTypeSymbol`) may easily be loaded as 
-symbols of a known kind (e.g., `TypeSymbol`), when the source kind provides
+Symbols of an unknown source kind (e.g., `CDTypeSymbol`) may easily be loaded as 
+symbols of a known kind (e.g., `TypeSymbol`) when the source kind provides
 all mandatory attributes (i.e. those without defaults) of the symbol class.
 This is especially the case if the source kind is a subclass of the known 
 kind.
@@ -115,12 +115,12 @@ an appropriate DeSer (here for `TypeSymbol`).
 For instance the call would be 
 ```putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new TypeSymbolDeSer())```.
 
-Because the global scope is a singleton, this configuration can be e.g. called in or shortly 
+Because the global scope is a singleton, this configuration can be e.g., called in or shortly 
 after constructing the global scope. However, this would still encode the name of the unknown
 symbol kind in the `L1`-tool, although it prevents any actual dependency to the imported tools.
 
-The method can also be called from a CLI for dynamically configuring the deserialization,
-e.g. the information be fed to the `L1`-tool via parameters, e.g. like
+The method can also be called from a CLI to dynamically configure the deserialization,
+e.g., the information be fed to the `L1`-tool via parameters, e.g., like
 ```
   java L2Tool --typeSymbol=de.monticore.cdbasis._symboltable.CDTypeSymbol
               --functionSymbol=de.monticore.cdbasis._symboltable.CDMethodSymbol
