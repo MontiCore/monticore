@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
@@ -74,7 +75,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   }
   
   // Parer used for convenience:
-  MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
+  CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
   
   // This is Visitor for SimpleGeneric types under test:
   ISynthesize synt = new FullSynthesizeFromMCSimpleGenericTypes();
@@ -85,12 +86,12 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   TypeCheck tc = new TypeCheck(synt,null);
 
   FlatExpressionScopeSetter scopeSetter;
-  MCSimpleGenericTypesTraverser traverser;
+  CombineExpressionsWithLiteralsTraverser traverser;
 
   @Before
   public void initScope(){
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
-    traverser = MCSimpleGenericTypesMill.traverser();
+    traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCSimpleGenericTypes(scopeSetter);
     traverser.add4MCCollectionTypes(scopeSetter);
     traverser.add4MCBasicTypes(scopeSetter);
@@ -103,7 +104,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   @Test
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
-    parser = new MCSimpleGenericTypesTestParser();
+    parser = new CombineExpressionsWithLiteralsParser();
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());

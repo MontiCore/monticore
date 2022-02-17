@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
@@ -44,7 +45,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   }
   
   // Parer used for convenience:
-  MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
+  CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
   
   // This is Visitor for Collection types under test:
   FullSynthesizeFromMCCollectionTypes synt = new FullSynthesizeFromMCCollectionTypes();
@@ -55,12 +56,12 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   TypeCheck tc = new TypeCheck(synt,null);
 
   FlatExpressionScopeSetter scopeSetter;
-  MCCollectionTypesTraverser traverser;
+  CombineExpressionsWithLiteralsTraverser traverser;
 
   @Before
   public void initScope(){
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
-    traverser = MCCollectionTypesMill.traverser();
+    traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCCollectionTypes(scopeSetter);
     traverser.add4MCBasicTypes(scopeSetter);
     init();

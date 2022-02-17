@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.*;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -55,17 +56,17 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   }
   
   // Parer used for convenience:
-  MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
+  CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(new FullSynthesizeFromMCBasicTypes(),null);
 
   FlatExpressionScopeSetter scopeSetter;
-  MCBasicTypesTraverser traverser;
+  CombineExpressionsWithLiteralsTraverser traverser;
 
   @Before
   public void initScope(){
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
-    traverser = MCBasicTypesMill.traverser();
+    traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCBasicTypes(scopeSetter);
   }
   

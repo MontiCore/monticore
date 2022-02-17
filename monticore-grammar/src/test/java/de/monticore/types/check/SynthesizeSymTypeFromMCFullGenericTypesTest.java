@@ -3,9 +3,11 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
@@ -78,7 +80,7 @@ public class SynthesizeSymTypeFromMCFullGenericTypesTest {
   }
 
   // Parer used for convenience:
-  MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
+  CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
   // This is Visitor for SimpleGeneric types under test:
   ISynthesize synt = new FullSynthesizeFromMCFullGenericTypes();
@@ -89,12 +91,12 @@ public class SynthesizeSymTypeFromMCFullGenericTypesTest {
   TypeCheck tc = new TypeCheck(synt,null);
 
   FlatExpressionScopeSetter scopeSetter;
-  MCFullGenericTypesTraverser traverser;
+  CombineExpressionsWithLiteralsTraverser traverser;
 
   @Before
   public void initScope(){
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
-    traverser = MCFullGenericTypesMill.traverser();
+    traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCFullGenericTypes(scopeSetter);
     traverser.add4MCSimpleGenericTypes(scopeSetter);
     traverser.add4MCCollectionTypes(scopeSetter);
@@ -108,7 +110,7 @@ public class SynthesizeSymTypeFromMCFullGenericTypesTest {
   @Test
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
-    parser = new MCFullGenericTypesTestParser();
+    parser = new CombineExpressionsWithLiteralsParser();
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());

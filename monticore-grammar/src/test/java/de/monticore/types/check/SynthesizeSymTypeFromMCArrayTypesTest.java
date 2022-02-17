@@ -2,9 +2,11 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcarraytypes.MCArrayTypesMill;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
@@ -57,17 +59,17 @@ public class SynthesizeSymTypeFromMCArrayTypesTest {
   }
 
   // Parer used for convenience:
-  MCArrayTypesTestParser parser = new MCArrayTypesTestParser();
+  CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
   // This is the TypeChecker under Test:
   TypeCheck tc = new TypeCheck(new FullSynthesizeFromMCArrayTypes(),null);
 
   FlatExpressionScopeSetter scopeSetter;
-  MCArrayTypesTraverser traverser;
+  CombineExpressionsWithLiteralsTraverser traverser;
 
   @Before
   public void initScope(){
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
-    traverser = MCArrayTypesMill.traverser();
+    traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCBasicTypes(scopeSetter);
     traverser.add4MCArrayTypes(scopeSetter);
   }
