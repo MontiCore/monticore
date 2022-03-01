@@ -440,14 +440,14 @@ public class GlobalScopeInterfaceDecorator
   
   protected List<ASTCDMethod> createGetDeSerMethods(List <? extends ASTCDType> symbolProds) {
     List<ASTCDMethod> deSerMethods = new ArrayList<>();
-    ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, KIND_VAR);
     
     for (ASTCDType symbolProd : symbolProds) {
-      String className = symbolTableService.removeASTPrefix(symbolProd);
-      String methodName = String.format(GETSYMBOLDESER, className);
+      String simpleName = symbolTableService.removeASTPrefix(symbolProd);
+      String className = symbolTableService.getScopeClassFullName();
+      String methodName = String.format(GETSYMBOLDESER, simpleName);
       
-      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName, nameParameter);
-      String hook = String.format("return getSymbolDeSer(kind);");
+      ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName);
+      String hook = String.format("return getSymbolDeSer(\""+className+"\");");
       this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
   
       deSerMethods.add(method);
@@ -455,11 +455,12 @@ public class GlobalScopeInterfaceDecorator
     
     for (DiagramSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
       symbolTableService.getSymbolDefiningProds((ASTCDDefinition) cdSymbol.getAstNode()).forEach(s -> {
-        String className = symbolTableService.removeASTPrefix(s);
-        String methodName = String.format(GETSYMBOLDESER, className);
+        String simpleName = symbolTableService.removeASTPrefix(s);
+        String className = symbolTableService.getScopeClassFullName();
+        String methodName = String.format(GETSYMBOLDESER, simpleName);
       
-        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName, nameParameter);
-        String hook = String.format("return getSymbolDeSer(kind);");
+        ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName);
+        String hook = String.format("return getSymbolDeSer(\""+className+"\");");
         this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
       
         deSerMethods.add(method);
