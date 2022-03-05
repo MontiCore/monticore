@@ -54,7 +54,7 @@ GitHub are for the concretely granted purpose only and are
 not do be made public at all.
 
 
-## MontiCore 3-level License on Files 
+## MontiCore 3-Level License on Files 
 
 This repository for the MontiCore language workbench contains three 
 kinds of artifacts: 
