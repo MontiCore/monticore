@@ -65,10 +65,31 @@ LGPL licence.
 * Java-files that belong to the runtime environment (RTE) and are thus 
 copied to the generated code. They are under BSD 3 Clause license.
 
-* Templates executed during generation. They are also only under BSD 3 
-Clause license, because parts of them are copied to the generated code. 
+* Templates executed during generation of tool code. 
+They are also only under BSD 3 Clause license, 
+because parts of them are copied to the generated code. 
 
-As a result, a tool derivate (level 2) does not contain any LGPL code, 
+## MontiCore 3-Level License on Tool and Language Repositories 
+
+Other MontiCore repositories contain complete or incomplete tools as well as
+MontiCore language components. They contains again three 
+kinds of artifacts: 
+
+* Grammars that are used to define language components in the MontiCore LWB. 
+They are under LGPL licence, but these can be extended by own grammars freely.
+
+* Java-files that are executed in the tool (belonging to the tool RTE). 
+They are under BSD 3 Clause license.
+
+* Java-files that belong to the product runtime environment (RTE) are 
+completely free without restriction.
+
+* Templates executed by the tool during generation of product code. 
+They are also are completely free without restriction,
+because parts of them are copied to the generated code. 
+
+
+**As a result**, *a tool derivate (level 2) does not contain any LGPL code*, 
 but only BSD 3 Clause code. Executing the tool derivate then 
 produces completely free code (level 1).
 
