@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore 3-Level License model 
+# MontiCore 3-Level License Model 
 
 [MontiCore](http://www.monticore.de) is a language workbench for an efficient 
 development of domain-specific languages (DSLs). All the code available
@@ -12,7 +12,7 @@ projects, the finally generated code is, completely freely available,
 even though the main workbench itself has restrictions. 
 
 
-## License overview 
+## License Overview 
 
 The MontiCore Language Workbench deals with three levels of code:
 
