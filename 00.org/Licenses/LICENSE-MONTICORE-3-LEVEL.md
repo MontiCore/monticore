@@ -27,16 +27,16 @@ The MontiCore Language Workbench deals with three levels of code:
 
 Each level has its own and more relaxing license: 
 
-* (Level 1) Product code: when a MontiCore tool derivate is used to 
+* (Level 1) **Product code**: when a MontiCore tool derivate is used to 
 generate code, the generated code is absolutely free for each form of use 
 including commercial use without any license and thus without any restriction 
 from MontiCore itself. 
 
-* (Level 2) Tool derivate: when a tool is derived using the MontiCore 
+* (Level 2) **Tool derivate**: when a tool is derived using the MontiCore 
 language workbench, then the result falls under the BSD 3 Clause license 
 (see [BSD-3-Clause](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-BSD3CLAUSE.md)).
 
-* (Level 3) MontiCore: the main LWB components are published in GitHub under the 
+* (Level 3) **MontiCore**: the main LWB components are published in GitHub under the 
 LGPL license (see [LGPL V3.0](https://github.com/MontiCore/monticore/tree/master/00.org/Licenses/LICENSE-LGPL.md)).
 
 
