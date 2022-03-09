@@ -40,7 +40,7 @@ public class IncChecker {
           String checksum = line.substring(line.length() - 33);
           File inputModelFile = new File(inputModelString);
           if (!inputModelFile.exists()) { // deleted grammar -> generate
-            logger.info("Regenerating Code for " + modelName + " : Input Model " + inputModelString + " does so longer exist.");
+            logger.info("Regenerating Code for " + modelName + " : Input Model " + inputModelString + " does no longer exist.");
             return false;
           } else if (!Files.asByteSource(inputModelFile).hash(Hashing.md5()).toString().equals(checksum.trim())) {
             // changed grammar -> generate
