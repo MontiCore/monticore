@@ -2,9 +2,6 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 
 import java.util.ArrayList;
@@ -49,8 +46,8 @@ public class FunctionSymbol extends FunctionSymbolTOP {
     IBasicSymbolsScope scope = getSpannedScope();
     while(scope.getEnclosingScope()!=null){
       scope = scope.getEnclosingScope();
-      if(scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof OOTypeSymbol){
-        typeVarSymbolList.addAll(((OOTypeSymbol)(scope.getSpanningSymbol())).getTypeParameterList());
+      if(scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof TypeSymbol){
+        typeVarSymbolList.addAll(((TypeSymbol)(scope.getSpanningSymbol())).getTypeParameterList());
       }
     }
     return typeVarSymbolList;
@@ -58,11 +55,7 @@ public class FunctionSymbol extends FunctionSymbolTOP {
 
   public List<VariableSymbol> getParameterList(){
     //TODO: how to filter for parameters?
-    List<VariableSymbol> vars = Lists.newArrayList(getSpannedScope().getLocalVariableSymbols());
-    if(getSpannedScope() instanceof IOOSymbolsScope){
-      vars.addAll(((IOOSymbolsScope) getSpannedScope()).getLocalFieldSymbols());
-    }
-    return vars;
+    return Lists.newArrayList(getSpannedScope().getLocalVariableSymbols());
   }
 
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){

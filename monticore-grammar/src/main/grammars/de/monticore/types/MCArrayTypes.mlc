@@ -26,10 +26,4 @@ mlc MCArrayTypes {
     mlc "de.monticore.types.MCBasicTypes";
   }
 
-  // TODO: check the following in the code, are these illegal?
-  /* uses {
-     include "$projectDir/src/main/java/de/monticore/types/mcfullgenerictypes/MCFullGenericTypesMill.java";
-     include "$projectDir/src/main/java/de/monticore/types/prettyprint/MCFullGenericTypesFullPrettyPrinter.java";
-   } */
-
 }

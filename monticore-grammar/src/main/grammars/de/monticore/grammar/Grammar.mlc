@@ -37,13 +37,6 @@ mlc Grammar {
 /*   uses {
      // relations to the Grammar_WithConcepts language:
      include "$projectDir/src/main/java/de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
-     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/Grammar_WithConceptsMill.java";
-     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_symboltable/IGrammar_WithConceptsArtifactScope.java";
-     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_symboltable/IGrammar_WithConceptsGlobalScope.java";
-     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_visitor/Grammar_WithConceptsTraverser.java";
-
-     // used by GrammarSTCompleteTypes and GrammarScopesGenitor
-     include "$projectDir/src/main/java/de/monticore/types/mcfullgenerictypes/MCFullGenericTypesMill.java";
    }
    */
 }

@@ -1,14 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
-import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 
 import java.util.Optional;
 
 public class FullSynthesizeFromMCBasicTypes implements ISynthesize {
 
-  protected MCSimpleGenericTypesTraverser traverser;
+  protected MCBasicTypesTraverser traverser;
 
   protected TypeCheckResult typeCheckResult;
 
@@ -27,7 +27,7 @@ public class FullSynthesizeFromMCBasicTypes implements ISynthesize {
 
   @Override
   public void init() {
-    traverser = MCSimpleGenericTypesMill.traverser();
+    traverser = MCBasicTypesMill.traverser();
     typeCheckResult = new TypeCheckResult();
 
     SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeSymTypeFromMCBasicTypes();
@@ -37,11 +37,11 @@ public class FullSynthesizeFromMCBasicTypes implements ISynthesize {
     traverser.setMCBasicTypesHandler(synFromBasic);
   }
 
-  public MCSimpleGenericTypesTraverser getTraverser() {
+  public MCBasicTypesTraverser getTraverser() {
     return traverser;
   }
 
-  public void setTraverser(MCSimpleGenericTypesTraverser traverser) {
+  public void setTraverser(MCBasicTypesTraverser traverser) {
     this.traverser = traverser;
   }
 }

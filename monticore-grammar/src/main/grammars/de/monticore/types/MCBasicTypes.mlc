@@ -24,9 +24,9 @@ mlc MCBasicTypes {
 
   promote {
     mlc "de.monticore.MCBasics";
+    mlc "de.monticore.symbols.OOSymbols";
   }
 
-  // TBD: promote using the type check or consider it part of the language?
   promote {
     include "$projectDir/src/main/java/de/monticore/types/check/*.java";
   }

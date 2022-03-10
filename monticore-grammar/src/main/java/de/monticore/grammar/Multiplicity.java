@@ -3,11 +3,11 @@
 package de.monticore.grammar;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.IGrammarScope;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.symboltable.IGlobalScope;
 
 import java.util.ArrayList;
@@ -99,7 +99,7 @@ public enum Multiplicity {
 
   public static Multiplicity determineMultiplicity(ASTMCGrammar rootNode, ASTRuleComponent astNode) {
     MultiplicityVisitor mv = new MultiplicityVisitor(astNode);
-    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    GrammarTraverser traverser = GrammarMill.traverser();
     traverser.add4Grammar(mv);
     rootNode.accept(traverser);
     List<ASTGrammarNode> intermediates = mv.getComponents();

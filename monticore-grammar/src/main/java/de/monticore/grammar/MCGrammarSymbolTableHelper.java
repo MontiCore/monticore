@@ -2,7 +2,6 @@
 
 package de.monticore.grammar;
 
-import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -10,7 +9,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.*;
-import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.Util;
@@ -52,7 +50,7 @@ public class MCGrammarSymbolTableHelper {
       if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof MCGrammarSymbol) {
         return Optional.of((MCGrammarSymbol) scope.getSpanningSymbol());
       }
-      if (scope instanceof IGrammar_WithConceptsGlobalScope) {
+      if (scope instanceof IGrammarGlobalScope) {
         exist = false;
       } else {
         scope = scope.getEnclosingScope();
