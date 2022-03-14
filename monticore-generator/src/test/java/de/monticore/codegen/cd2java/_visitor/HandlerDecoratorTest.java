@@ -92,7 +92,7 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(17, handler.getCDMethodList().size());
+    assertEquals(20, handler.getCDMethodList().size());
   }
 
   @Test 
@@ -199,7 +199,10 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methods = list.stream()
         .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(AUTOMATONSCOPE))
         .collect(Collectors.toList());
-    assertEquals(0, methods.size());
+    assertEquals(1, methods.size());
+    ASTCDMethod method = methods.get(0);
+    assertEquals("node", method.getCDParameter(0).getName());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
@@ -220,7 +223,10 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methods = list.stream()
         .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(AUTOMATONARTIFACTSCOPE))
         .collect(Collectors.toList());
-    assertEquals(0, methods.size());
+    assertEquals(1, methods.size());
+    ASTCDMethod method = methods.get(0);
+    assertEquals("node", method.getCDParameter(0).getName());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
   }
 
   @Test
