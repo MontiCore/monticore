@@ -20,9 +20,4 @@ public class AutomataSymbols2Json
     super(traverser, printer);
   }
 
-  @Override public void traverse(IAutomataScope s) {
-    for (AutomatonSymbol aut : s.getLocalAutomatonSymbols()) {
-      aut.accept(getTraverser());
-    }
-  }
 }
