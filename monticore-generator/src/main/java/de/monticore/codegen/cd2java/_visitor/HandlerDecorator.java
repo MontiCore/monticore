@@ -266,9 +266,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     Set<String> symbolNames = symbolTableService.retrieveSymbolNamesFromCD(astcdDefinition.getSymbol());
     for (String symbolName : symbolNames) {
-      visitorMethods.addAll(createHandlerSymbolMethod(symbolName, simpleVisitorName, true));
+      visitorMethods.addAll(createHandlerSymbolMethod(symbolName, simpleVisitorName));
     }
-    visitorMethods.addAll(createHandlerSymbolMethod(symbolTableService.getCommonSymbolInterfaceFullName(), simpleVisitorName, false));
+    visitorMethods.addAll(createHandlerSymbolMethod(symbolTableService.getCommonSymbolInterfaceFullName(), simpleVisitorName));
     return visitorMethods;
   }
 
@@ -279,18 +279,16 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @param simpleVisitorName The name of the delegated visitor
    * @return The corresponding visitor methods for the given symbol
    */
-  protected List<ASTCDMethod> createHandlerSymbolMethod(String symbolName, String simpleVisitorName, boolean traverse) {
+  protected List<ASTCDMethod> createHandlerSymbolMethod(String symbolName, String simpleVisitorName) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     ASTMCQualifiedType symbolType = getMCTypeFacade().createQualifiedType(symbolName);
     
     // handle and traverser methods
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, symbolType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLER_HANDLE_TEMPLATE, traverse));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLER_HANDLE_TEMPLATE, true));
     visitorMethods.add(handleMethod);
-    if (traverse) {
-      visitorMethods.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
-    }
-
+    visitorMethods.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
+    
     return visitorMethods;
   }
   
@@ -332,11 +330,14 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   protected List<ASTCDMethod> createHandlerScopeMethod(ASTMCType scopeType, String simpleVisitorName, HookPoint traverseBody) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     
-    // handle method
+    // handle and traverser methods
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, scopeType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLER_HANDLE_TEMPLATE, false));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLER_HANDLE_TEMPLATE, true));
     visitorMethods.add(handleMethod);
-
+    ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeType);
+    visitorMethods.add(traverseMethod);
+    this.replaceTemplate(EMPTY_BODY, traverseMethod, traverseBody);
+    
     return visitorMethods;
   }
 
