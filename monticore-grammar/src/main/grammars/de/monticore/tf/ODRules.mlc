@@ -40,7 +40,6 @@ mlc ODRules {
     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTLinkCondition.java";
     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTMatchingObject.java";
     include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/tf/odrulegeneration/_ast/ASTObjectCondition.java";
-    include "$mp/de/monticore/tf/rule2od/Variable2AttributeMap.java";
   } */
 
 }

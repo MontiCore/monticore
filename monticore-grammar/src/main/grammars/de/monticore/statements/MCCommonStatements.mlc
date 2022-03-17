@@ -11,6 +11,8 @@ mlc MCCommonStatements {
   export "$projectDir/src/main/java" {
     include "de/monticore/statements/mccommonstatements/**.java";
     include "de/monticore/statements/prettyprint/MCCommonStatements*.java";
+    //TODO decide whether to include or exclude CoCos in MLCs
+    exclude "de/monticore/statements/mccommonstatements/cocos/*.java";
   }
 
   // export all Java files generated from the grammar
@@ -22,9 +24,4 @@ mlc MCCommonStatements {
     mlc "de.monticore.statements.MCVarDeclarationStatements";
   }
 
-  // TODO: check whether this is illegal !!!
- /* uses {
-    include "$projectDir/src/main/java/de/monticore/grammar/grammar_withconcepts/FullSynthesizeFromMCFGT4Grammar.java";
-  }
-*/
 }
