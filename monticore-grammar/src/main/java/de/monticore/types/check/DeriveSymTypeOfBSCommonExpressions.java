@@ -445,7 +445,12 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     traverser.add4ExpressionsBasis(visitor);
     expr.accept(traverser);
     SymTypeExpression innerResult;
-    expr.getExpression().accept(getTraverser());
+    ASTExpression lastExpression = visitor.getLastExpression();
+    if(lastExpression != null){
+      lastExpression.accept(getTraverser());
+    }else{
+      expr.getExpression().accept(getTraverser());
+    }
     if (typeCheckResult.isPresentCurrentResult()) {
       innerResult = typeCheckResult.getCurrentResult();
       //resolve methods with name of the inner expression

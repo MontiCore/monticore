@@ -36,11 +36,10 @@ public class NameToCallExpressionVisitorTest {
   public void fieldAccessTest() throws IOException{
     Optional<ASTExpression> astex = p.parse_StringExpression("a.b.test()");
     ASTExpression expr = ((ASTCallExpression)astex.get()).getExpression();
-    ASTExpression innerExpr = ((ASTFieldAccessExpression)expr).getExpression();
     CombineExpressionsWithLiteralsTraverser traverser = getTraverser();
     astex.get().accept(traverser);
     assertEquals("test",((ASTCallExpression)astex.get()).getName());
-    assertEquals(((ASTCallExpression)astex.get()).getExpression(),innerExpr);
+    assertEquals(((ASTCallExpression)astex.get()).getExpression(),expr);
   }
 
   private CombineExpressionsWithLiteralsTraverser getTraverser(){

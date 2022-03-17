@@ -55,9 +55,6 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
         expr.setName(lastName);
         lastName = null;
       }
-      if (lastExpression != null) {
-        expr.setExpression(lastExpression);
-      }
     }
   }
 
@@ -78,4 +75,11 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
     }
   }
 
+  public ASTExpression getLastExpression() {
+    return lastExpression;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
 }
