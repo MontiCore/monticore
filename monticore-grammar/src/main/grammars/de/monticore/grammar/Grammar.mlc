@@ -33,10 +33,9 @@ mlc Grammar {
     include "$mp/org/apache/commons/lang3/StringUtils.class";
   }
 
-  // TODO: check the following in the code, are these illegal?
-/*   uses {
-     // relations to the Grammar_WithConcepts language:
-     include "$projectDir/src/main/java/de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
-   }
-   */
+  uses {
+    // needs to be included because it is needed to build the symbol table -> cf. GrammarScopesGenitor
+    include "$projectDir/src/main/java/de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
+  }
+
 }

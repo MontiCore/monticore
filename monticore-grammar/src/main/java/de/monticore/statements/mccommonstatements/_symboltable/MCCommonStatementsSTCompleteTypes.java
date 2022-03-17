@@ -1,7 +1,7 @@
 /*(c) https://github.com/MontiCore/monticore*/
 package de.monticore.statements.mccommonstatements._symboltable;
 
-import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCFGT4Grammar;
+import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCSGT4Grammar;
 import de.monticore.statements.mccommonstatements._ast.ASTFormalParameter;
 import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsVisitor2;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -18,7 +18,7 @@ public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisi
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
-    FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
+    FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());

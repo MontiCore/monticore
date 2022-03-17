@@ -2,7 +2,7 @@
 package de.monticore.statements.mcvardeclarationstatements._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCFGT4Grammar;
+import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCSGT4Grammar;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
@@ -25,7 +25,7 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
-    FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
+    FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
     // Start visitor
     ast.accept(synFromFull.getTraverser());
     return synFromFull.getResult().orElse(new SymTypeOfNull());
