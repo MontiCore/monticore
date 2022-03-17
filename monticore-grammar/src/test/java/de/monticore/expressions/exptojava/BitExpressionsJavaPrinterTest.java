@@ -2,7 +2,6 @@
 package de.monticore.expressions.exptojava;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint.BitExpressionsFullPrettyPrinter;
 import de.monticore.expressions.testbitexpressions._parser.TestBitExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -39,11 +38,10 @@ public class BitExpressionsJavaPrinterTest {
     Optional<ASTExpression> result = parser.parse_StringExpression("a<<b");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    assertTrue(result.isPresent());
     
     ASTExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -57,11 +55,10 @@ public class BitExpressionsJavaPrinterTest {
     Optional<ASTExpression> result = parser.parse_StringExpression("a>>b");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    assertTrue(result.isPresent());
     
     ASTExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -75,11 +72,10 @@ public class BitExpressionsJavaPrinterTest {
     Optional<ASTExpression> result = parser.parse_StringExpression("a>>>b");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    assertTrue(result.isPresent());
     
     ASTExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -93,11 +89,10 @@ public class BitExpressionsJavaPrinterTest {
     Optional<ASTExpression> result = parser.parse_StringExpression("a|b");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    assertTrue(result.isPresent());
     
     ASTExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -111,11 +106,10 @@ public class BitExpressionsJavaPrinterTest {
     Optional<ASTExpression> result = parser.parse_StringExpression("a^b");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    assertTrue(result.isPresent());
     
     ASTExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -128,11 +122,10 @@ public class BitExpressionsJavaPrinterTest {
     Optional<ASTExpression> result = parser.parse_StringExpression("a&b");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    assertTrue(result.isPresent());
     
     ASTExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());

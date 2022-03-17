@@ -188,7 +188,7 @@ public class GeneratorSetup {
   /*******************************************************/
 
   /**
-   * Construtor
+   * Constructor
    */
   public GeneratorSetup() {
   }

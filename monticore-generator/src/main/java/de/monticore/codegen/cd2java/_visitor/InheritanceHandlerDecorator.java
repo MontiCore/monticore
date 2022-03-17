@@ -127,6 +127,8 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     for (DiagramSymbol cd : visitorService.getSuperCDsTransitive()) {
       superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
     }
+    // remove last element as it is covered by the handle call of the original handler
+    superScopesTransitive.remove(superScopesTransitive.size() - 1);
     superScopesTransitive.add(I_SCOPE);
     
     // handle language scope

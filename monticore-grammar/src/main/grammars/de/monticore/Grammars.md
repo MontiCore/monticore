@@ -6,7 +6,7 @@
 
 [[_TOC_]]
 
-[MontiCore](http://www.monticore.de) is a language workbench. It uses 
+[MontiCore](https://www.monticore.de) is a language workbench. It uses 
 grammars as primary mechanism to describe DSLs. The extended 
 grammar format allows to **compose language components** by
 (1) **inheriting**, (2) **extending**, (3) **embedding** 

@@ -40,11 +40,11 @@ public class IncChecker {
         // check whether local modals (such as super grammars) have changed
         if (line.startsWith(fileExtension + ":") && line.length() > 33 + fileExtensionLength) {
           // Since the path can also contain spaces, do not use tokenize
-          String inputModelString = line.substring(fileExtensionLength + 1, line.length() - 32);
+          String inputModelString = line.substring(fileExtensionLength + 1, line.length() - 33);
           String checksum = line.substring(line.length() - 33);
           File inputModelFile = new File(inputModelString);
           if (!inputModelFile.exists()) { // deleted model -> generate
-            logger.info("Regenerating Code for " + modelName + " : Input Model " + inputModelString + " does so longer exist.");
+            logger.info("Regenerating Code for " + modelName + " : Input Model " + inputModelString + " does no longer exist.");
             return false;
           } else if (!Files.asByteSource(inputModelFile).hash(Hashing.md5()).toString().equals(checksum.trim())) {
             // changed model -> generate

@@ -22,7 +22,7 @@ public class JavaClassExpressionsFullJavaPrinter extends CommonExpressionsFullJa
   public JavaClassExpressionsFullJavaPrinter(IndentPrinter printer) {
     super(printer);
     this.traverser = JavaClassExpressionsMill.traverser();
-  
+    
     CommonExpressionsJavaPrinter commonExpression = new CommonExpressionsJavaPrinter(printer);
     traverser.setCommonExpressionsHandler(commonExpression);
     traverser.add4CommonExpressions(commonExpression);
@@ -34,7 +34,7 @@ public class JavaClassExpressionsFullJavaPrinter extends CommonExpressionsFullJa
     traverser.add4JavaClassExpressions(javaClassExpression);
   }
   
-  public String prettyprint(ASTGenericInvocationSuffix node){
+  public String print(ASTGenericInvocationSuffix node){
     getPrinter().clearBuffer();
     node.accept(getTraverser());
     return getPrinter().getContent();

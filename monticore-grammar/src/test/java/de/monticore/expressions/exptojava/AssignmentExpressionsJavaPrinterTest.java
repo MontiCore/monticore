@@ -42,7 +42,7 @@ public class AssignmentExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTIncPrefixExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringIncPrefixExpression(output);
     assertFalse(parser.hasErrors());
@@ -58,7 +58,7 @@ public class AssignmentExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTDecPrefixExpression ast = result.get();
     
-    String output = javaPrinter.prettyprint(ast);
+    String output = javaPrinter.print(ast);
     
     result = parser.parse_StringDecPrefixExpression(output);
     assertFalse(parser.hasErrors());
@@ -76,7 +76,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setExpression(a.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a++", output);
   }
@@ -90,7 +90,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setExpression(a.get())
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a--", output);
   }
@@ -108,7 +108,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(EQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a=b", output);
   }
@@ -126,7 +126,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(PLUSEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a+=b", output);
   }
@@ -144,7 +144,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(MINUSEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a-=b", output);
   }
@@ -162,7 +162,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(PERCENTEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a%=b", output);
   }
@@ -180,7 +180,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(AND_EQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a&=b", output);
   }
@@ -198,7 +198,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(ROOFEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a^=b", output);
   }
@@ -216,7 +216,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(SLASHEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a/=b", output);
   }
@@ -234,7 +234,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(STAREQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a*=b", output);
   }
@@ -252,7 +252,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(PIPEEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a|=b", output);
   }
@@ -270,7 +270,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(LTLTEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a<<=b", output);
   }
@@ -288,7 +288,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(GTGTEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a>>=b", output);
   }
@@ -306,7 +306,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(GTGTGTEQUALS)
       .build();
     
-    String output = javaPrinter.prettyprint(result);
+    String output = javaPrinter.print(result);
     
     assertEquals("a>>>=b", output);
   }

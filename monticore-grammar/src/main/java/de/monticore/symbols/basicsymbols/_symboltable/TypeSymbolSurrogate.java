@@ -13,6 +13,9 @@ public class TypeSymbolSurrogate extends TypeSymbolSurrogateTOP {
   }
 
   public IBasicSymbolsScope getSpannedScope(){
+    if(!checkLazyLoadDelegate()) {
+      return spannedScope;
+    }
     return lazyLoadDelegate().getSpannedScope();
   }
 
