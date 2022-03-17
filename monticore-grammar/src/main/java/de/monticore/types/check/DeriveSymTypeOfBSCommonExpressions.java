@@ -454,7 +454,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if (typeCheckResult.isPresentCurrentResult()) {
       innerResult = typeCheckResult.getCurrentResult();
       //resolve methods with name of the inner expression
-      List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr);
+      List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr, visitor.getLastName());
       //count how many methods can be found with the correct arguments and return type
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
       //if the last result is static then filter for static methods
@@ -474,7 +474,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         logError("0xA2239", expr.get_SourcePositionStart());
       }
     } else {
-      Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveFunctionMany(expr.getName());
+      Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveFunctionMany(visitor.getLastName());
       List<FunctionSymbol> methodlist = new ArrayList<>(methodcollection);
       //count how many methods can be found with the correct arguments and return type
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
@@ -502,8 +502,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   /**
    * Hookpoint for object oriented languages to get the correct functions/methods from a type based on their modifiers
    */
-  protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr) {
-    return innerResult.getMethodList(expr.getName(), typeCheckResult.isType(), true);
+  protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
+    return innerResult.getMethodList(name, typeCheckResult.isType(), true);
   }
 
   protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr) {

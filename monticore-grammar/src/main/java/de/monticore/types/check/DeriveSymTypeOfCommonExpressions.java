@@ -40,8 +40,8 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExp
   }
 
   @Override
-  protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr) {
-    return innerResult.getMethodList(expr.getName(), typeCheckResult.isType(), false);
+  protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
+    return innerResult.getMethodList(name, typeCheckResult.isType(), false);
   }
 
   @Override
