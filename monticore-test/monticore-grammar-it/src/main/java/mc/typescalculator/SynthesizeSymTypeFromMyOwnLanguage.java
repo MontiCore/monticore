@@ -2,6 +2,9 @@
 package mc.typescalculator;
 
 import de.monticore.types.check.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageTraverser;
 
@@ -12,14 +15,13 @@ public class SynthesizeSymTypeFromMyOwnLanguage implements ISynthesize {
   protected SynthesizeSymTypeFromMCBasicTypes symTypeFromMCBasicTypes;
   protected SynthesizeSymTypeFromMCCollectionTypes symTypeFromMCCollectionTypes;
   protected SynthesizeSymTypeFromUnitTypes symTypeFromUnitTypes;
-  protected TypeCheckResult result = new TypeCheckResult();
+  protected TypeCheckResult typeCheckResult = new TypeCheckResult();
   private MyOwnLanguageTraverser traverser;
 
   public SynthesizeSymTypeFromMyOwnLanguage(){
     init();
   }
 
-  @Override
   public MyOwnLanguageTraverser getTraverser() {
     return traverser;
   }
@@ -29,27 +31,42 @@ public class SynthesizeSymTypeFromMyOwnLanguage implements ISynthesize {
   }
 
   @Override
-  public Optional<SymTypeExpression> getResult() {
-    return Optional.ofNullable(result.getCurrentResult());
+  public TypeCheckResult synthesizeType(ASTMCType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
   }
 
   @Override
+  public TypeCheckResult synthesizeType(ASTMCReturnType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCQualifiedName qName) {
+    init();
+    qName.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
   public void init() {
-    result = new TypeCheckResult();
+    typeCheckResult = new TypeCheckResult();
     traverser = MyOwnLanguageMill.traverser();
 
     symTypeFromUnitTypes = new SynthesizeSymTypeFromUnitTypes();
-    symTypeFromUnitTypes.setTypeCheckResult(result);
+    symTypeFromUnitTypes.setTypeCheckResult(typeCheckResult);
     traverser.add4UnitTypes(symTypeFromUnitTypes);
     traverser.setUnitTypesHandler(symTypeFromUnitTypes);
 
     symTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes();
-    symTypeFromMCCollectionTypes.setTypeCheckResult(result);
+    symTypeFromMCCollectionTypes.setTypeCheckResult(typeCheckResult);
     traverser.add4MCCollectionTypes(symTypeFromMCCollectionTypes);
     traverser.setMCCollectionTypesHandler(symTypeFromMCCollectionTypes);
 
     symTypeFromMCBasicTypes = new SynthesizeSymTypeFromMCBasicTypes();
-    symTypeFromMCBasicTypes.setTypeCheckResult(result);
+    symTypeFromMCBasicTypes.setTypeCheckResult(typeCheckResult);
     traverser.setMCBasicTypesHandler(symTypeFromMCBasicTypes);
     traverser.add4MCBasicTypes(symTypeFromMCBasicTypes);
   }

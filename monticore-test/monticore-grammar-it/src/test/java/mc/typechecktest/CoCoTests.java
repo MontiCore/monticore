@@ -6,6 +6,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.IDerive;
+import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -219,7 +220,7 @@ public class CoCoTests {
   protected TypeCheckTestCoCoChecker getOOChecker(){
     ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
     IDerive typesCalculator = new DeriveSymTypeFromTypeCheckTest();
-    TypeCheck tc = new TypeCheck(synthesize, typesCalculator);
+    TypeCalculator tc = new TypeCalculator(synthesize, typesCalculator);
     TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
     checker.addCoCo(new VariableDeclarationIsCorrect(tc));
     checker.addCoCo(new VariableAssignmentCorrectType(tc));
@@ -229,7 +230,7 @@ public class CoCoTests {
   protected TypeCheckTestCoCoChecker getAbstractChecker(){
     ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
     IDerive typesCalculator = new DeriveSymTypeFromTypeCheckTestAbstract();
-    TypeCheck tc = new TypeCheck(synthesize, typesCalculator);
+    TypeCalculator tc = new TypeCalculator(synthesize, typesCalculator);
     TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
     checker.addCoCo(new VariableDeclarationIsCorrect(tc));
     checker.addCoCo(new VariableAssignmentCorrectType(tc));

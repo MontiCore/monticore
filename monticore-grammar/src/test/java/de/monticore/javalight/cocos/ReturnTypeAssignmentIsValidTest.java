@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight.cocos;
 
-import de.monticore.grammar.cocos.CocoTest;
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
-import de.monticore.javalight.cocos.ReturnTypeAssignmentIsValid;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._ast.ASTBasicSymbolsNode;
 import de.monticore.symbols.oosymbols._ast.ASTMethod;
@@ -11,7 +9,7 @@ import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
 import de.monticore.types.check.SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator;
-import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -34,7 +32,7 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
     BasicSymbolsMill.initializePrimitives();
-    checker.addCoCo(new ReturnTypeAssignmentIsValid(new TypeCheck(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(), new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new ReturnTypeAssignmentIsValid(new TypeCalculator(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(), new DeriveSymTypeOfCombineExpressionsDelegator())));
     
   }
   

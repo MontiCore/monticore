@@ -11,6 +11,7 @@ import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfNull;
+import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -119,15 +120,21 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   protected SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
-    ast.accept(synFromFull.getTraverser());
-    return synFromFull.getResult().orElse(new SymTypeOfNull());
+    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
+    if(typeCheckResult.isPresentCurrentResult()){
+      return typeCheckResult.getCurrentResult();
+    }
+    return new SymTypeOfNull();
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
-    ast.accept(synFromFull.getTraverser());
-    return synFromFull.getResult().orElse(new SymTypeOfNull());
+    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
+    if(typeCheckResult.isPresentCurrentResult()){
+      return typeCheckResult.getCurrentResult();
+    }
+    return new SymTypeOfNull();
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCReturnType ast) {

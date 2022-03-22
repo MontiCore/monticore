@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
-import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsCoCoChecker;
 import de.monticore.statements.mccommonstatements.cocos.DoWhileConditionHasBooleanType;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
@@ -9,7 +8,7 @@ import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStateme
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
-import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -34,7 +33,7 @@ public class DoWhileConditionHasBooleanTypeTest {
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    checker.addCoCo(new DoWhileConditionHasBooleanType(new TypeCheck(null,new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new DoWhileConditionHasBooleanType(new TypeCalculator(null,new DeriveSymTypeOfCombineExpressionsDelegator())));
     
   }
   

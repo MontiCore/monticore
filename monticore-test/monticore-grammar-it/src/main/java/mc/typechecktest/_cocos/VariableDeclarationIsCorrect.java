@@ -1,15 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typechecktest._cocos;
 
+import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 import mc.typechecktest._ast.ASTTCVarDecl;
 
 public class VariableDeclarationIsCorrect implements TypeCheckTestASTTCVarDeclCoCo {
 
-  protected TypeCheck tc;
+  protected TypeCalculator tc;
 
-  public VariableDeclarationIsCorrect(TypeCheck tc){
+  public VariableDeclarationIsCorrect(TypeCalculator tc){
     this.tc = tc;
   }
 

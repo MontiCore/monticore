@@ -20,7 +20,7 @@ package de.monticore.expressions.cocos;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTExpressionCoCo;
-import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 
 import java.util.Optional;
 
@@ -31,9 +31,9 @@ public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
 
   protected Optional<ASTExpression> checkingNode = Optional.empty();
 
-  protected TypeCheck typeCheck;
+  protected TypeCalculator typeCheck;
 
-  public ExpressionValid(TypeCheck typeCheck) {
+  public ExpressionValid(TypeCalculator typeCheck) {
     this.typeCheck = typeCheck;
   }
 

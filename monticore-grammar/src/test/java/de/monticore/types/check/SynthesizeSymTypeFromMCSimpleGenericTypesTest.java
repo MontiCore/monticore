@@ -80,7 +80,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   // other arguments not used (and therefore deliberately null)
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(synt,null);
+  TypeCalculator tc = new TypeCalculator(synt,null);
 
   FlatExpressionScopeSetter scopeSetter;
   CombineExpressionsWithLiteralsTraverser traverser;

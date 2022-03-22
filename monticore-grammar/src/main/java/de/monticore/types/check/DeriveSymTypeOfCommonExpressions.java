@@ -32,9 +32,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExp
   protected boolean checkModifierType(TypeSymbol typeSymbol) {
     //if the last result is a type and the type is not static then it is not accessible
     if (typeCheckResult.isType()) {
-      if (!(typeSymbol instanceof OOTypeSymbol) || !(((OOTypeSymbol) typeSymbol).isIsStatic())) {
-        return false;
-      }
+      return typeSymbol instanceof OOTypeSymbol && ((OOTypeSymbol) typeSymbol).isIsStatic();
     }
     return true;
   }

@@ -6,17 +6,18 @@ import de.monticore.statements.mcexceptionstatements._cocos.MCExceptionStatement
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
 public class ThrowIsValid implements MCExceptionStatementsASTThrowStatementCoCo{
   
-  TypeCheck typeCheck;
+  TypeCalculator typeCheck;
   
   public static final String ERROR_CODE = "0xA0918";
   
   public static final String ERROR_MSG_FORMAT = " Exception in throw-statement must be Throwable or subtype of it.";
   
-  public ThrowIsValid(TypeCheck typeCheck){
+  public ThrowIsValid(TypeCalculator typeCheck){
     this.typeCheck = typeCheck;
   }
   

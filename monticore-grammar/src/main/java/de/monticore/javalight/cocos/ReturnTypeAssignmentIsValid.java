@@ -9,6 +9,7 @@ import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
 import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -28,9 +29,9 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
   
   public static final String ERROR_MSG_FORMAT_3 = "Return statement must be of the type of the method or a subtype of it.";
   
-  TypeCheck typeCheck;
+  TypeCalculator typeCheck;
   
-  public ReturnTypeAssignmentIsValid(TypeCheck typeCheck) {
+  public ReturnTypeAssignmentIsValid(TypeCalculator typeCheck) {
     this.typeCheck = typeCheck;
   }
   
