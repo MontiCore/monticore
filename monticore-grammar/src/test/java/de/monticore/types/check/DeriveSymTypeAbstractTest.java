@@ -44,9 +44,9 @@ public abstract class DeriveSymTypeAbstractTest {
     // Provide the Traverser for the used language
     protected abstract ExpressionsBasisTraverser getUsedLanguageTraverser();
 
-    private TypeCheck tc;
+    private TypeCalculator tc;
 
-    protected final void setTypeCheck(TypeCheck tc) {
+    protected final void setTypeCheck(TypeCalculator tc) {
         this.tc = tc;
     }
 

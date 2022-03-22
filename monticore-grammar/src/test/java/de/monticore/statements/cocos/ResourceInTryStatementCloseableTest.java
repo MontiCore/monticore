@@ -9,10 +9,7 @@ import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatemen
 import de.monticore.statements.testmcexceptionstatements._cocos.TestMCExceptionStatementsCoCoChecker;
 import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -37,7 +34,7 @@ public class ResourceInTryStatementCloseableTest {
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.io.Closeable", TestMCExceptionStatementsMill.globalScope());
     SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("A").addSuperTypes(sType).build());

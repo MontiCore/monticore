@@ -4,10 +4,7 @@ package de.monticore.types.check;
 import de.monticore.expressions.abstracttypechecktest.AbstractTypeCheckTestMill;
 import de.monticore.expressions.abstracttypechecktest._visitor.AbstractTypeCheckTestTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-
-import java.util.Optional;
 
 public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
 
@@ -28,16 +25,6 @@ public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
     init();
   }
 
-  @Override
-  public Optional<SymTypeExpression> getResult() {
-    if(typeCheckResult.isPresentCurrentResult()){
-      return Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }else{
-      return Optional.empty();
-    }
-  }
-
-  @Override
   public AbstractTypeCheckTestTraverser getTraverser(){
     return traverser;
   }
@@ -55,7 +42,6 @@ public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
   /**
    * initialize the typescalculator
    */
-  @Override
   public void init() {
     this.traverser = AbstractTypeCheckTestMill.traverser();
     this.typeCheckResult = new TypeCheckResult();
@@ -73,5 +59,17 @@ public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
     traverser.add4MCLiteralsBasis(deriveSymTypeOfLiterals);
   }
 
+  @Override
+  public TypeCheckResult deriveType(ASTLiteral lit) {
+    init();
+    lit.accept(traverser);
+    return typeCheckResult.copy();
+  }
 
+  @Override
+  public TypeCheckResult deriveType(ASTExpression expr){
+    init();
+    expr.accept(traverser);
+    return typeCheckResult.copy();
+  }
 }

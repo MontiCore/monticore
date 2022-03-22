@@ -6,17 +6,18 @@ import de.monticore.statements.mcexceptionstatements._cocos.MCExceptionStatement
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
 public class CatchIsValid implements MCExceptionStatementsASTCatchClauseCoCo {
   
-  TypeCheck typeCheck;
+  TypeCalculator typeCheck;
   
   public static final String ERROR_CODE = "0xA0903";
   
   public static final String ERROR_MSG_FORMAT = "Parameter in catch-statement has to be throwable or subtype of it.";
   
-  public CatchIsValid(TypeCheck typeCheck){
+  public CatchIsValid(TypeCalculator typeCheck){
     
     this.typeCheck = typeCheck;
     

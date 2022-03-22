@@ -8,7 +8,7 @@ import de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisCoCoChec
 import de.monticore.grammar.cocos.CocoTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
-import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -29,9 +29,9 @@ public class ExpressionValidTest extends CocoTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    TypeCheck typeCheck = new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator());
+    TypeCalculator typeCheck = new TypeCalculator(null, new DeriveSymTypeOfCombineExpressionsDelegator());
     checker.addCoCo(new ExpressionValid(typeCheck));
-    new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator());
+    new TypeCalculator(null, new DeriveSymTypeOfCombineExpressionsDelegator());
   }
 
   public void checkValid(String expressionString) throws IOException {

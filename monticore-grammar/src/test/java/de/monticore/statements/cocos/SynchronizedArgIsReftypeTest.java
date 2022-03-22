@@ -9,10 +9,7 @@ import de.monticore.statements.testmcsynchronizedstatements.TestMCSynchronizedSt
 import de.monticore.statements.testmcsynchronizedstatements._cocos.TestMCSynchronizedStatementsCoCoChecker;
 import de.monticore.statements.testmcsynchronizedstatements._parser.TestMCSynchronizedStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
@@ -36,7 +33,7 @@ public class SynchronizedArgIsReftypeTest {
     TestMCSynchronizedStatementsMill.reset();
     TestMCSynchronizedStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    checker.addCoCo(new SynchronizedArgIsReftype(new TypeCheck(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new SynchronizedArgIsReftype(new TypeCalculator(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
 
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("java.lang.Object").build());

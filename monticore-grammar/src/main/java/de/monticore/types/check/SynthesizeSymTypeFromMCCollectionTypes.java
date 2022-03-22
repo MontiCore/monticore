@@ -48,6 +48,8 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FD6 Internal Error: No SymType argument for List type. "
           + " Probably TypeCheck mis-configured.");
+      typeCheckResult.reset();
+      return;
     }
     typeCheckResult.setCurrentResult(tex);
   }
@@ -59,6 +61,8 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FD7 Internal Error: No SymType argument for Set type. "
           + " Probably TypeCheck mis-configured.");
+      typeCheckResult.reset();
+      return;
     }
     typeCheckResult.setCurrentResult(tex);
   }
@@ -70,6 +74,8 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FD8 Internal Error: No SymType argument for Optional type. "
           + " Probably TypeCheck mis-configured.");
+      typeCheckResult.reset();
+      return;
     }
     typeCheckResult.setCurrentResult(tex);
   }
@@ -86,6 +92,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FDA Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
+      typeCheckResult.reset();
     }
     SymTypeExpression argument1 = typeCheckResult.getCurrentResult();
 
@@ -96,8 +103,13 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9FDB Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
+      typeCheckResult.reset();
     }
     SymTypeExpression argument2 = typeCheckResult.getCurrentResult();
+    if(argument1 == null || argument2 == null){
+      typeCheckResult.reset();
+      return;
+    }
     // Construct new TypeExpression:
     SymTypeExpression tex =
         SymTypeExpressionFactory.createGenerics(

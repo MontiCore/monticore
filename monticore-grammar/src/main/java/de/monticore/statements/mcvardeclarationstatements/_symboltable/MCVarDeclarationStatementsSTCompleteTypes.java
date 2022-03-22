@@ -11,6 +11,7 @@ import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarat
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfNull;
+import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
@@ -66,8 +67,11 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
-    ast.accept(synFromFull.getTraverser());
-    return synFromFull.getResult().orElse(new SymTypeOfNull());
+    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
+    if(typeCheckResult.isPresentCurrentResult()){
+      return typeCheckResult.getCurrentResult();
+    }
+    return new SymTypeOfNull();
   }
 
 

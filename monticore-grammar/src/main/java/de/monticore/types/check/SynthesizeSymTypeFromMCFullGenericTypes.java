@@ -46,6 +46,8 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeF
       if (!typeCheckResult.isPresentCurrentResult()) {
         Log.error("0xE9CDD Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");
+        typeCheckResult.reset();
+        return;
       }
       tex = SymTypeExpressionFactory.createWildcard(false, typeCheckResult.getCurrentResult());
     } else if (wildcardType.isPresentUpperBound()) {
@@ -53,6 +55,8 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeF
       if (!typeCheckResult.isPresentCurrentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");
+        typeCheckResult.reset();
+        return;
       }
       tex = SymTypeExpressionFactory.createWildcard(true, typeCheckResult.getCurrentResult());
     } else {

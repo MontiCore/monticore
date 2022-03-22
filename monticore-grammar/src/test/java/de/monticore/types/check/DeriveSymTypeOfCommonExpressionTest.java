@@ -18,9 +18,6 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,7 +37,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     // other arguments not used (and therefore deliberately null)
     // This is the TypeChecker under Test:
-    setTypeCheck(new TypeCheck(null, derLit));
+    setTypeCheck(new TypeCalculator(null, derLit));
   }
 
   @Override

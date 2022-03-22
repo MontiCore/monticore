@@ -6,17 +6,18 @@ import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTEn
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
 public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCoCo {
 
-  TypeCheck typeCheck;
+  TypeCalculator typeCheck;
 
   public static final String ERROR_CODE = "0xA0907 ";
 
   public static final String ERROR_MSG_FORMAT = "For-each loop expression must be an array of subtype of list.";
 
-  public ForEachIsValid(TypeCheck typeCheck) {
+  public ForEachIsValid(TypeCalculator typeCheck) {
     this.typeCheck = typeCheck;
   }
 

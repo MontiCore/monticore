@@ -33,65 +33,69 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
 
   @Override
   public void traverse(ASTIncSuffixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    Optional<SymTypeExpression> wholeResult = calculateIncSuffixExpression(expr, innerResult);
+    Optional<SymTypeExpression> innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
+    Optional<SymTypeExpression> wholeResult = innerResult.isPresent() ?
+      calculateIncSuffixExpression(innerResult.get()) : Optional.empty();
     storeResultOrLogError(wholeResult, expr, "0xA0170");
   }
 
-  protected Optional<SymTypeExpression> calculateIncSuffixExpression(ASTIncSuffixExpression expr, SymTypeExpression innerResult) {
+  protected Optional<SymTypeExpression> calculateIncSuffixExpression(SymTypeExpression innerResult) {
     return getUnaryNumericPromotionType(innerResult);
   }
 
   @Override
   public void traverse(ASTDecSuffixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    Optional<SymTypeExpression> wholeResult = calculateDecSuffixExpression(expr, innerResult);
+    Optional<SymTypeExpression> innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
+    Optional<SymTypeExpression> wholeResult = innerResult.isPresent() ?
+      calculateDecSuffixExpression(innerResult.get()) : Optional.empty();
     storeResultOrLogError(wholeResult, expr, "0xA0171");
   }
 
-  protected Optional<SymTypeExpression> calculateDecSuffixExpression(ASTDecSuffixExpression expr, SymTypeExpression innerResult) {
+  protected Optional<SymTypeExpression> calculateDecSuffixExpression(SymTypeExpression innerResult) {
     return getUnaryNumericPromotionType(innerResult);
   }
 
   @Override
   public void traverse(ASTIncPrefixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    Optional<SymTypeExpression> wholeResult = calculateIncPrefixExpression(expr, innerResult);
+    Optional<SymTypeExpression> innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
+    Optional<SymTypeExpression> wholeResult = innerResult.isPresent() ?
+      calculateIncPrefixExpression(innerResult.get()) : Optional.empty();
     storeResultOrLogError(wholeResult, expr, "0xA0172");
   }
 
-  protected Optional<SymTypeExpression> calculateIncPrefixExpression(ASTIncPrefixExpression expr, SymTypeExpression innerResult) {
+  protected Optional<SymTypeExpression> calculateIncPrefixExpression(SymTypeExpression innerResult) {
     return getUnaryNumericPromotionType(innerResult);
   }
 
   @Override
   public void traverse(ASTDecPrefixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    Optional<SymTypeExpression> wholeResult = calculateDecPrefixExpression(expr, innerResult);
+    Optional<SymTypeExpression> innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
+    Optional<SymTypeExpression> wholeResult = innerResult.isPresent() ?
+      calculateDecPrefixExpression(innerResult.get()) : Optional.empty();
     storeResultOrLogError(wholeResult, expr, "0xA0173");
   }
 
-  protected Optional<SymTypeExpression> calculateDecPrefixExpression(ASTDecPrefixExpression expr, SymTypeExpression innerResult) {
+  protected Optional<SymTypeExpression> calculateDecPrefixExpression(SymTypeExpression innerResult) {
     return getUnaryNumericPromotionType(innerResult);
   }
 
   protected void calculatePlusAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0176");
   }
 
   protected void calculateMinusAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0177");
   }
 
   protected void calculateMultAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0178");
   }
 
   protected void calculateDivideAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0179");
   }
 
@@ -120,7 +124,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
     } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.SLASHEQUALS) {
       calculateDivideAssignment(expr);
     } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.AND_EQUALS) {
-      calculateAndAssigment(expr);
+      calculateAndAssignment(expr);
     } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.PIPEEQUALS) {
       calculateOrAssignment(expr);
     } else if (expr.getOperator() == ASTConstantsAssignmentExpressions.GTGTEQUALS) {
@@ -138,124 +142,146 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
     }
   }
 
-  protected void calculateAndAssigment(ASTAssignmentExpression expr) {
+  protected void calculateAndAssignment(ASTAssignmentExpression expr) {
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0183");
   }
 
   protected void calculateOrAssignment(ASTAssignmentExpression expr) {
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0184");
   }
 
   protected void calculateBinaryXorAssignment(ASTAssignmentExpression expr) {
     //definiert auf boolean - boolean und ganzzahl - ganzzahl
-    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeBinaryOperations(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0185");
   }
 
   protected void calculateDoubleRightAssignment(ASTAssignmentExpression expr) {
     //definiert auf Ganzzahl - Ganzzahl
-    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0186");
   }
 
   protected void calculateDoubleLeftAssignment(ASTAssignmentExpression expr) {
     //definiert auf Ganzzahl - Ganzzahl
-    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0187");
   }
 
   protected void calculateLogicalRightAssignment(ASTAssignmentExpression expr) {
     //definiert auf Ganzzahl - Ganzzahl
-    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeBitOperation(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0188");
   }
 
   protected void calculateModuloAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr, expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0189");
   }
 
   /**
    * helper method for the five basic arithmetic assignment operations (+=,-=,*=,/=,%=)
    */
-  protected Optional<SymTypeExpression> calculateTypeArithmetic(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0190");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0191");
-    return calculateTypeArithmetic(expr, leftResult, rightResult);
+  protected Optional<SymTypeExpression> calculateTypeArithmetic(ASTExpression left, ASTExpression right) {
+    Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0190");
+    Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0191");
+    if (leftResult.isPresent() && rightResult.isPresent()) {
+      return calculateTypeArithmetic(leftResult.get(), rightResult.get());
+    } else {
+      typeCheckResult.reset();
+      return Optional.empty();
+    }
   }
 
   /**
    * helper method for the five basic arithmetic assignment operations (+=,-=,*=,/=,%=)
    */
-  protected Optional<SymTypeExpression> calculateTypeArithmetic(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateTypeArithmetic(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //if the left and the right result are a numeric type then the type of the whole expression is the type of the left expression
     if (isNumericType(leftResult) && isNumericType(rightResult)) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(leftResult.print())));
     }
     //should not happen, not valid, will be handled in traverse
+    typeCheckResult.reset();
     return Optional.empty();
   }
 
   /**
    * helper method for += because in this case you can use Strings too
    */
-  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0192");
+  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right) {
+    Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0192");
     //make sure that there is a right result
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0193");
-    return calculateTypeArithmeticWithString(expr, leftResult, rightResult);
+    Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0193");
+    if (leftResult.isPresent() && rightResult.isPresent()) {
+      return calculateTypeArithmeticWithString(leftResult.get(), rightResult.get());
+    } else {
+      typeCheckResult.reset();
+      return Optional.empty();
+    }
   }
 
   /**
    * helper method for += because in this case you can use Strings too
    */
-  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //if the type of the left expression is a String then so is the type of the whole expression
     if (isString(leftResult)) {
       return Optional.of(SymTypeExpressionFactory.createTypeObject(leftResult.getTypeInfo()));
     }
     //else continue with the normal calculation of +=,-=,*=,/= and %=
-    return calculateTypeArithmetic(expr, leftResult, rightResult);
+    return calculateTypeArithmetic(leftResult, rightResult);
   }
 
   /**
    * helper method for the calculation of the type of the bitshift operations (<<=, >>=, >>>=)
    */
-  protected Optional<SymTypeExpression> calculateTypeBitOperation(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0194");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0195");
-    return calculateTypeBitOperation(expr, leftResult, rightResult);
+  protected Optional<SymTypeExpression> calculateTypeBitOperation(ASTExpression left, ASTExpression right) {
+    Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0194");
+    Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0195");
+    if (leftResult.isPresent() && rightResult.isPresent()) {
+      return calculateTypeBitOperation(leftResult.get(), rightResult.get());
+    } else {
+      typeCheckResult.reset();
+      return Optional.empty();
+    }
   }
 
   /**
    * helper method for the calculation of the type of the bitshift operations (<<=, >>=, >>>=)
    */
-  protected Optional<SymTypeExpression> calculateTypeBitOperation(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateTypeBitOperation(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //the bitshift operations are only defined for integers --> long, int, char, short, byte
     if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
     }
     //should not happen, not valid, will be handled in traverse
+    typeCheckResult.reset();
     return Optional.empty();
   }
 
   /**
    * helper method for the calculation of the type of the binary operations (&=,|=,^=)
    */
-  protected Optional<SymTypeExpression> calculateTypeBinaryOperations(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0196");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0197");
-    return calculateTypeBinaryOperations(expr, leftResult, rightResult);
+  protected Optional<SymTypeExpression> calculateTypeBinaryOperations(ASTExpression left, ASTExpression right) {
+    Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0196");
+    Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0197");
+    if (leftResult.isPresent() && rightResult.isPresent()) {
+      return calculateTypeBinaryOperations(leftResult.get(), rightResult.get());
+    } else {
+      typeCheckResult.reset();
+      return Optional.empty();
+    }
   }
 
   /**
    * helper method for the calculation of the type of the binary operations (&=,|=,^=)
    */
-  protected Optional<SymTypeExpression> calculateTypeBinaryOperations(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateTypeBinaryOperations(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
       //option 1: both are of integral type
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
@@ -264,6 +290,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     //should not happen, not valid, will be handled in traverse
+    typeCheckResult.reset();
     return Optional.empty();
   }
 
@@ -271,16 +298,17 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
    * helper method for the calculation of a regular assignment (=)
    */
   protected void calculateRegularAssignment(ASTAssignmentExpression expr) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(expr.getLeft(), "0xA0198");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(expr.getRight(), "0xA0199");
-    Optional<SymTypeExpression> wholeResult = calculateRegularAssignment(expr, leftResult, rightResult);
+    Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(expr.getLeft(), "0xA0198");
+    Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(expr.getRight(), "0xA0199");
+    Optional<SymTypeExpression> wholeResult = (leftResult.isPresent() && rightResult.isPresent()) ?
+      calculateRegularAssignment(leftResult.get(), rightResult.get()) : Optional.empty();
     storeResultOrLogError(wholeResult, expr, "0xA0182");
   }
 
   /**
    * helper method for the calculation of a regular assignment (=)
    */
-  protected Optional<SymTypeExpression> calculateRegularAssignment(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateRegularAssignment(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //option one: both are numeric types and are assignable
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isNumericType(leftResult) && isNumericType(rightResult) && compatible(leftResult, rightResult)) {
@@ -291,5 +319,4 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
     }
     return wholeResult;
   }
-
 }
