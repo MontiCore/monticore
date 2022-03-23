@@ -9,6 +9,7 @@ import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableD
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.TypeCheckResult;
@@ -19,6 +20,20 @@ import java.util.List;
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
 public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor2 {
+
+  protected ISynthesize typeSynthesizer;
+
+  public MCVarDeclarationStatementsSTCompleteTypes() {
+    this(new FullSynthesizeFromMCFGT4Grammar());
+  }
+
+  public MCVarDeclarationStatementsSTCompleteTypes(ISynthesize typeSynthesizer) {
+    this.typeSynthesizer = typeSynthesizer;
+  }
+
+  public ISynthesize getTypeSynthesizer() {
+    return this.typeSynthesizer;
+  }
 
   public void endVisit(ASTLocalVariableDeclaration ast) {
     List<FieldSymbol> symbols = Lists.newArrayList();
@@ -65,9 +80,8 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
-    FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
-    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
+    TypeCheckResult typeCheckResult = this.getTypeSynthesizer().synthesizeType(ast);
     if(typeCheckResult.isPresentCurrentResult()){
       return typeCheckResult.getCurrentResult();
     }
