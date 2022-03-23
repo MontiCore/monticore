@@ -43,27 +43,20 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
     this.traverser = (CommonExpressionsTraverser) traverser;
   }
 
-  protected String lastName = null;
+  protected String lastName = "";
   protected ASTExpression lastExpression = null;
 
   @Override
   public void traverse(ASTCallExpression expr){
     // avoid run if Name is already set
-    if (expr.getName()==null || expr.getName().isEmpty()) {
+    if (lastName.isEmpty()) {
       expr.getExpression().accept(getTraverser());
-      if (lastName != null) {
-        expr.setName(lastName);
-        lastName = null;
-      }
-      if (lastExpression != null) {
-        expr.setExpression(lastExpression);
-      }
     }
   }
 
   @Override
   public void traverse(ASTFieldAccessExpression expr){
-    if(lastName==null){
+    if(lastName.isEmpty()){
       lastName = expr.getName();
     }
     if(lastExpression == null){
@@ -73,9 +66,16 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
 
   @Override
   public void traverse(ASTNameExpression expr){
-    if(lastName==null){
+    if(lastName.isEmpty()){
       lastName = expr.getName();
     }
   }
 
+  public ASTExpression getLastExpression() {
+    return lastExpression;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
 }
