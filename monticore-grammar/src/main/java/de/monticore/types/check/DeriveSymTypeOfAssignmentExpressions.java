@@ -80,22 +80,22 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   }
 
   protected void calculatePlusAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmeticWithString(expr, expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0176");
   }
 
   protected void calculateMinusAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr, expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0177");
   }
 
   protected void calculateMultAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr, expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0178");
   }
 
   protected void calculateDivideAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr, expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0179");
   }
 
@@ -179,18 +179,18 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   }
 
   protected void calculateModuloAssignment(ASTAssignmentExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr.getLeft(), expr.getRight());
+    Optional<SymTypeExpression> wholeResult = calculateTypeArithmetic(expr, expr.getLeft(), expr.getRight());
     storeResultOrLogError(wholeResult, expr, "0xA0189");
   }
 
   /**
    * helper method for the five basic arithmetic assignment operations (+=,-=,*=,/=,%=)
    */
-  protected Optional<SymTypeExpression> calculateTypeArithmetic(ASTExpression left, ASTExpression right) {
+  protected Optional<SymTypeExpression> calculateTypeArithmetic(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
     Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0190");
     Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0191");
     if (leftResult.isPresent() && rightResult.isPresent()) {
-      return calculateTypeArithmetic(leftResult.get(), rightResult.get());
+      return calculateTypeArithmetic(expr, leftResult.get(), rightResult.get());
     } else {
       typeCheckResult.reset();
       return Optional.empty();
@@ -200,7 +200,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   /**
    * helper method for the five basic arithmetic assignment operations (+=,-=,*=,/=,%=)
    */
-  protected Optional<SymTypeExpression> calculateTypeArithmetic(SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateTypeArithmetic(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //if the left and the right result are a numeric type then the type of the whole expression is the type of the left expression
     if (isNumericType(leftResult) && isNumericType(rightResult)) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(leftResult.print())));
@@ -213,12 +213,12 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   /**
    * helper method for += because in this case you can use Strings too
    */
-  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTExpression left, ASTExpression right) {
+  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTAssignmentExpression expr, ASTExpression left, ASTExpression right) {
     Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0192");
     //make sure that there is a right result
     Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0193");
     if (leftResult.isPresent() && rightResult.isPresent()) {
-      return calculateTypeArithmeticWithString(leftResult.get(), rightResult.get());
+      return calculateTypeArithmeticWithString(expr, leftResult.get(), rightResult.get());
     } else {
       typeCheckResult.reset();
       return Optional.empty();
@@ -228,13 +228,13 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   /**
    * helper method for += because in this case you can use Strings too
    */
-  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateTypeArithmeticWithString(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //if the type of the left expression is a String then so is the type of the whole expression
     if (isString(leftResult)) {
       return Optional.of(SymTypeExpressionFactory.createTypeObject(leftResult.getTypeInfo()));
     }
     //else continue with the normal calculation of +=,-=,*=,/= and %=
-    return calculateTypeArithmetic(leftResult, rightResult);
+    return calculateTypeArithmetic(expr, leftResult, rightResult);
   }
 
   /**
@@ -301,14 +301,14 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
     Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(expr.getLeft(), "0xA0198");
     Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(expr.getRight(), "0xA0199");
     Optional<SymTypeExpression> wholeResult = (leftResult.isPresent() && rightResult.isPresent()) ?
-      calculateRegularAssignment(leftResult.get(), rightResult.get()) : Optional.empty();
+      calculateRegularAssignment(expr, leftResult.get(), rightResult.get()) : Optional.empty();
     storeResultOrLogError(wholeResult, expr, "0xA0182");
   }
 
   /**
    * helper method for the calculation of a regular assignment (=)
    */
-  protected Optional<SymTypeExpression> calculateRegularAssignment(SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateRegularAssignment(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //option one: both are numeric types and are assignable
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isNumericType(leftResult) && isNumericType(rightResult) && compatible(leftResult, rightResult)) {

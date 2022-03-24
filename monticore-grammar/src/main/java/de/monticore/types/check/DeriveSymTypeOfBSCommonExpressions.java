@@ -137,7 +137,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateLessEqualExpression(ASTLessEqualExpression expr) {
-    return calculateTypeCompare(expr.getRight(), expr.getLeft());
+    return calculateTypeCompare(expr, expr.getRight(), expr.getLeft());
   }
 
   /**
@@ -150,7 +150,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateGreaterEqualExpression(ASTGreaterEqualExpression expr) {
-    return calculateTypeCompare(expr.getRight(), expr.getLeft());
+    return calculateTypeCompare(expr, expr.getRight(), expr.getLeft());
   }
 
   /**
@@ -163,7 +163,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateLessThanExpression(ASTLessThanExpression expr) {
-    return calculateTypeCompare(expr.getRight(), expr.getLeft());
+    return calculateTypeCompare(expr, expr.getRight(), expr.getLeft());
   }
 
   /**
@@ -176,7 +176,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateGreaterThanExpression(ASTGreaterThanExpression expr) {
-    return calculateTypeCompare(expr.getRight(), expr.getLeft());
+    return calculateTypeCompare(expr, expr.getRight(), expr.getLeft());
   }
 
   /**
@@ -189,7 +189,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateEqualsExpression(ASTEqualsExpression expr) {
-    return calculateTypeLogical(expr.getRight(), expr.getLeft());
+    return calculateTypeLogical(expr, expr.getRight(), expr.getLeft());
   }
 
   /**
@@ -202,7 +202,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateNotEqualsExpression(ASTNotEqualsExpression expr) {
-    return calculateTypeLogical(expr.getRight(), expr.getLeft());
+    return calculateTypeLogical(expr, expr.getRight(), expr.getLeft());
   }
 
   /**
@@ -538,11 +538,11 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   /**
    * helper method for <=, >=, <, > -> calculates the result of these expressions
    */
-  protected Optional<SymTypeExpression> calculateTypeCompare(ASTExpression right, ASTExpression left) {
+  protected Optional<SymTypeExpression> calculateTypeCompare(ASTInfixExpression expr, ASTExpression right, ASTExpression left) {
     Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA2241");
     Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA2244");
     if (leftResult.isPresent() && rightResult.isPresent()) {
-      return calculateTypeCompare(rightResult.get(), leftResult.get());
+      return calculateTypeCompare(expr, rightResult.get(), leftResult.get());
     } else {
       typeCheckResult.reset();
       return Optional.empty();
@@ -552,7 +552,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   /**
    * helper method for <=, >=, <, > -> calculates the result of these expressions
    */
-  protected Optional<SymTypeExpression> calculateTypeCompare(SymTypeExpression rightResult, SymTypeExpression leftResult) {
+  protected Optional<SymTypeExpression> calculateTypeCompare(ASTInfixExpression expr, SymTypeExpression rightResult, SymTypeExpression leftResult) {
     // if the left and the right part of the expression are numerics,
     // then the whole expression is a boolean
     if (isNumericType(leftResult) && isNumericType(rightResult)) {
@@ -566,11 +566,11 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   /**
    * helper method for the calculation of the ASTEqualsExpression and the ASTNotEqualsExpression
    */
-  protected Optional<SymTypeExpression> calculateTypeLogical(ASTExpression right, ASTExpression left) {
+  protected Optional<SymTypeExpression> calculateTypeLogical(ASTInfixExpression expr, ASTExpression right, ASTExpression left) {
     Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA2247");
     Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA2248");
     if (leftResult.isPresent() && rightResult.isPresent()) {
-      return calculateTypeLogical(rightResult.get(), leftResult.get());
+      return calculateTypeLogical(expr, rightResult.get(), leftResult.get());
     } else {
       typeCheckResult.reset();
       return Optional.empty();
@@ -580,7 +580,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   /**
    * helper method for the calculation of the ASTEqualsExpression and the ASTNotEqualsExpression
    */
-  protected Optional<SymTypeExpression> calculateTypeLogical(SymTypeExpression rightResult, SymTypeExpression leftResult) {
+  protected Optional<SymTypeExpression> calculateTypeLogical(ASTInfixExpression expr, SymTypeExpression rightResult, SymTypeExpression leftResult) {
     //Option one: they are both numeric types
     if (isNumericType(leftResult) && isNumericType(rightResult)
         || isBoolean(leftResult) && isBoolean(rightResult)) {
