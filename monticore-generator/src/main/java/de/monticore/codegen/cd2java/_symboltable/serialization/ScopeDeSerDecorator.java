@@ -9,7 +9,6 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -127,7 +126,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDMember(createDeserializeArtifactScopeMethod(asInterfaceName, millName, scopeJsonParam,
             scopeRuleAttrList))
         .addCDMember(
-            createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName))
+            createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName, scopeDeSerName, scopeInterfaceName))
         .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, scopeJsonParam))
         .addAllCDMembers(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
@@ -140,7 +139,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return clazz;
   }
 
-  ////////////////////////////// SERIALIZATON //////////////////////////////////////////////////////
+  ////////////////////////////// SERIALIZATION /////////////////////////////////////////////////////
 
   protected ASTCDMethod createSerializeMethod(ASTCDParameter toSerialize, ASTCDParameter s2j,
       List<ASTCDAttribute> scopeRuleAttrList) {
@@ -185,7 +184,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return methodList;
   }
 
-  ////////////////////////////// DESERIALIZATON ////////////////////////////////////////////////////
+  ////////////////////////////// DESERIALIZATION ///////////////////////////////////////////////////
 
   protected ASTCDMethod createDeserializeScopeMethod(String scopeClassName,
       String symTabMill, ASTCDParameter jsonParam, List<ASTCDAttribute> scopeRuleAttributes) {
@@ -220,12 +219,13 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createDeserializeSymbolsMethods(ASTCDParameter scopeParam,
-      ASTCDParameter jsonParam, Map<String, Boolean> symbolMap, String millName) {
+      ASTCDParameter jsonParam, Map<String, Boolean> symbolMap, String millName,
+      String scopeDeSerName, String scopeInterfaceName) {
     ASTCDMethod method = getCDMethodFacade()
         .createMethod(PROTECTED.build(), "deserializeSymbols", scopeParam, jsonParam);
     String errorCode = symbolTableService.getGeneratedErrorCode("deserializeSymbols"+millName);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
-        DESERIALIZE_SYMBOLS_TEMPL, symbolMap, millName, errorCode));
+        DESERIALIZE_SYMBOLS_TEMPL, symbolMap, millName, errorCode, scopeDeSerName, scopeInterfaceName));
     return method;
   }
 

@@ -9,7 +9,6 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolKindHierarchies;
@@ -302,6 +301,22 @@ public class ScopeClassDecorator extends AbstractDecorator {
           cdDefinitionSymbol);
       symbolAttributes.ifPresent(attr -> symbolAttributeList.put(attr.getName(), attr));
     }
+
+    /*
+     * In addition to the symbols included in the grammar, capabilities to parse symbols (potentially with scopes) of
+     * unknown kinds is added here.
+     *
+     * See also: "de.monticore.symboltable.SymbolWithScopeOfUnknownKind" in monticore-runtime
+     */
+    ASTMCType symbolMultiMap = getMCTypeFacade()
+        .createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", "de.monticore.symboltable.SymbolWithScopeOfUnknownKind");
+    ASTCDAttribute unknownSymbolsAttribute = getCDAttributeFacade()
+        .createAttribute(PROTECTED.build(), symbolMultiMap, "unknownSymbols");
+    this.replaceTemplate(VALUE, unknownSymbolsAttribute,
+        new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
+
+    symbolAttributeList.put("unknownSymbols", unknownSymbolsAttribute);
+
     return symbolAttributeList;
   }
 

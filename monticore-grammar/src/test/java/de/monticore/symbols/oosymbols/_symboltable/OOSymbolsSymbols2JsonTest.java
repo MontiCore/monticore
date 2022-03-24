@@ -132,6 +132,12 @@ public class OOSymbolsSymbols2JsonTest {
     assertEquals("int", deserializedFunction.get().getReturnType().print());
   }
 
+  @Test
+  public void testSerializedUnknownKind() {
+    OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
+    symbols2Json.deserialize("{\"symbols\": [{\"kind\":\"unknown\", \"name\":\"test\"}]}");
+    assertTrue(Log.getFindings().isEmpty());
+  }
 
   @Test
   public void testInvalidJsonForSerializingReturnsError(){
@@ -141,13 +147,13 @@ public class OOSymbolsSymbols2JsonTest {
 
     OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
     symbols2Json.deserialize(invalidJsonForSerializing);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1238"));
 
     symbols2Json.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1233"));
+    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1233"));
 
     symbols2Json.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(3).getMsg().startsWith("0xA1234"));
+    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA0572"));
   }
 
 }

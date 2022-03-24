@@ -4,13 +4,11 @@ package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -144,6 +142,13 @@ public class BasicSymbolsSymbols2JsonTest {
   }
 
   @Test
+  public void testSerializedUnknownKind() {
+    BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
+    symbols2Json.deserialize("{\"symbols\": [{\"kind\":\"unknown\", \"name\":\"test\"}]}");
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testInvalidJsonForSerializingReturnsError(){
     String invalidJsonForSerializing = "{\n\t\"symbols\":[{\"noKind\":true}]}\n}";
     String invalidJsonForSerializing2 = "{\"symbols\": [\"SymbolIsNotAnObject\"]}";
@@ -151,13 +156,13 @@ public class BasicSymbolsSymbols2JsonTest {
 
     BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
     symbols2Json.deserialize(invalidJsonForSerializing);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1235"));
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1238"));
 
     symbols2Json.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA1233"));
+    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1233"));
 
     symbols2Json.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(3).getMsg().startsWith("0xA1234"));
+    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA0572"));
   }
 
 
