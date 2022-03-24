@@ -44,7 +44,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
   
   // This is Visitor for Collection types under test:
-  SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator synt = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
+  FullSynthesizeFromCombineExpressionsWithLiterals synt = new FullSynthesizeFromCombineExpressionsWithLiterals();
   
   // other arguments not used (and therefore deliberately null)
   

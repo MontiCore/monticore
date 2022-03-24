@@ -3,10 +3,7 @@ package de.monticore.statements.mcvardeclarationstatements._cocos;
 
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
-import de.monticore.types.check.IDerive;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCheck;
-import de.monticore.types.check.TypeCheckResult;
+import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -19,7 +16,7 @@ public class VarDeclarationInitializationHasCorrectType
   /**
    * Used to derive the {@link SymTypeExpression} to which initialization expressions evaluate to.
    */
-  protected final IDerive typeDeriver;
+  protected final AbstractDerive typeDeriver;
 
   /**
    * Indicates that the type of the initialization expression is not compatible with the type of the assigned variable.
@@ -42,7 +39,7 @@ public class VarDeclarationInitializationHasCorrectType
   /**
    * @param typeDeriver Used to derive the {@link SymTypeExpression} to which initialization expressions evaluate to.
    */
-  public VarDeclarationInitializationHasCorrectType(IDerive typeDeriver) {
+  public VarDeclarationInitializationHasCorrectType(AbstractDerive typeDeriver) {
     this.typeDeriver = typeDeriver;
   }
 
@@ -60,7 +57,7 @@ public class VarDeclarationInitializationHasCorrectType
       SymTypeExpression varType = node.getDeclarator().getSymbol().getType();
       TypeCheckResult initType = typeDeriver.deriveType(((ASTSimpleInit) node.getVariableInit()).getExpression());
 
-      if(!initType.isPresentCurrentResult()) {
+      if(!initType.isPresentResult()) {
         // The error is already printed by the IDerive visitors, thus we would spam the log if we would log an error
         // again. Therefore, we only leave a note in the debug log.
         Log.debug(String.format("As the initialization expression for variable '%s' at %s is invalid, coco '%s' " +
@@ -69,11 +66,11 @@ public class VarDeclarationInitializationHasCorrectType
 
       } else if(initType.isType()) {
         Log.error(TYPE_REF_ASSIGNMENT_ERROR_CODE + " " + String.format(TYPE_REF_ASSIGNMENT_ERROR_MSG_FORMAT,
-          node.getDeclarator().getName(), initType.getCurrentResult().print()));
+          node.getDeclarator().getName(), initType.getResult().print()));
 
-      } else if(!TypeCheck.compatible(varType, initType.getCurrentResult())) {
+      } else if(!TypeCheck.compatible(varType, initType.getResult())) {
         Log.error(ERROR_CODE + " " + String.format(ERROR_MSG_FORMAT,
-          initType.getCurrentResult().print(), node.getDeclarator().getName(), varType.print()));
+          initType.getResult().print(), node.getDeclarator().getName(), varType.print()));
       }
     }
   }

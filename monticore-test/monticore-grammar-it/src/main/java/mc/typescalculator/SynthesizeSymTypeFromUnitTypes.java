@@ -3,7 +3,6 @@ package mc.typescalculator;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.check.AbstractSynthesizeFromType;
-import de.monticore.types.check.ISynthesize;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
 import mc.typescalculator.unittypes._visitor.UnitTypesHandler;
 import mc.typescalculator.unittypes._visitor.UnitTypesTraverser;
@@ -31,6 +30,6 @@ public class SynthesizeSymTypeFromUnitTypes extends AbstractSynthesizeFromType i
   public void endVisit(ASTMinuteType type){
     TypeSymbolSurrogate surrogate = new TypeSymbolSurrogate(type.getUnit());
     surrogate.setEnclosingScope(getScope(type.getEnclosingScope()));
-    typeCheckResult.setCurrentResult(new SymTypeOfSIUnit(surrogate));
+    typeCheckResult.setResult(new SymTypeOfSIUnit(surrogate));
   }
 }

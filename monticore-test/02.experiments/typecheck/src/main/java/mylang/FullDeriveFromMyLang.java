@@ -1,26 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mylang;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mylang._visitor.MyLangTraverser;
 
-import java.util.Optional;
-
-public class DeriveFromMyLang implements IDerive {
+public class FullDeriveFromMyLang extends AbstractDerive {
   
-  protected MyLangTraverser traverser;
-  protected TypeCheckResult typeCheckResult;
+  public FullDeriveFromMyLang(){
+    this(MyLangMill.traverser());
+  }
 
-  public DeriveFromMyLang(){
-    init();
+  public FullDeriveFromMyLang(MyLangTraverser traverser){
+    super(traverser);
+    init(traverser);
   }
   
   
-  public void init() {
-    traverser = MyLangMill.traverser();
-    this.typeCheckResult = new TypeCheckResult();
+  public void init(MyLangTraverser traverser) {
     DeriveSymTypeOfExpression expBasis = new DeriveSymTypeOfExpression();
     expBasis.setTypeCheckResult(typeCheckResult);
     traverser.add4ExpressionsBasis(expBasis);
@@ -37,21 +33,4 @@ public class DeriveFromMyLang implements IDerive {
     traverser.add4MCCommonLiterals(commonliterals);
   }
 
-  @Override
-  public TypeCheckResult deriveType(ASTLiteral lit) {
-    init();
-    lit.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  @Override
-  public TypeCheckResult deriveType(ASTExpression expr) {
-    init();
-    expr.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  public MyLangTraverser getTraverser() {
-    return traverser;
-  }
 }

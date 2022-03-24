@@ -1,41 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typechecktest;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typechecktest._visitor.TypeCheckTestTraverser;
 
-import java.util.Optional;
+public class FullDeriveFromTypeCheckTest extends AbstractDerive {
 
-public class DeriveSymTypeFromTypeCheckTest implements IDerive {
-
-  protected TypeCheckTestTraverser traverser;
-
-  protected TypeCheckResult typeCheckResult;
-
-  public DeriveSymTypeFromTypeCheckTest(){
-    init();
+  public FullDeriveFromTypeCheckTest(){
+    this(TypeCheckTestMill.traverser());
   }
 
-  @Override
-  public TypeCheckResult deriveType(ASTExpression expr) {
-    init();
-    expr.accept(traverser);
-    return typeCheckResult.copy();
+  public FullDeriveFromTypeCheckTest(TypeCheckTestTraverser traverser){
+    super(traverser);
+    init(traverser);
   }
 
-  @Override
-  public TypeCheckResult deriveType(ASTLiteral lit) {
-    init();
-    lit.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  public void init() {
-    typeCheckResult = new TypeCheckResult();
-    traverser = TypeCheckTestMill.traverser();
-
+  public void init(TypeCheckTestTraverser traverser) {
     DeriveSymTypeOfAssignmentExpressions assignmentExpressions = new DeriveSymTypeOfAssignmentExpressions();
     DeriveSymTypeOfExpression expressionsBasis = new DeriveSymTypeOfExpression();
     DeriveSymTypeOfCommonExpressions commonExpressions = new DeriveSymTypeOfCommonExpressions();
@@ -65,10 +45,6 @@ public class DeriveSymTypeFromTypeCheckTest implements IDerive {
     traverser.add4MCLiteralsBasis(literalsBasis);
 
     traverser.add4MCCommonLiterals(commonLiterals);
-  }
-
-  public TypeCheckTestTraverser getTraverser() {
-    return traverser;
   }
 
 }

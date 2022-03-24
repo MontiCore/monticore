@@ -121,8 +121,8 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
-    if(typeCheckResult.isPresentCurrentResult()){
-      return typeCheckResult.getCurrentResult();
+    if(typeCheckResult.isPresentResult()){
+      return typeCheckResult.getResult();
     }
     return new SymTypeOfNull();
   }
@@ -131,8 +131,8 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
     FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
     // Start visitor
     TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
-    if(typeCheckResult.isPresentCurrentResult()){
-      return typeCheckResult.getCurrentResult();
+    if(typeCheckResult.isPresentResult()){
+      return typeCheckResult.getResult();
     }
     return new SymTypeOfNull();
   }

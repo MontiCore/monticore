@@ -7,7 +7,7 @@ import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
+import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -32,7 +32,7 @@ public class IfConditionHasBooleanTypeTest {
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    checker.addCoCo(new IfConditionHasBooleanType(new TypeCalculator(null,new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new IfConditionHasBooleanType(new TypeCalculator(null,new FullDeriveFromCombineExpressionsWithLiterals())));
     
   }
   

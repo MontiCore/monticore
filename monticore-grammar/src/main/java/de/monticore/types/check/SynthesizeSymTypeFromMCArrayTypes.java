@@ -41,17 +41,17 @@ public class SynthesizeSymTypeFromMCArrayTypes extends AbstractSynthesizeFromTyp
 
   public void traverse(ASTMCArrayType arrayType) {
     arrayType.getMCType().accept(getTraverser());
-    if (!typeCheckResult.isPresentCurrentResult()) {
+    if (!getTypeCheckResult().isPresentResult()) {
       Log.error("0xE9CDC Internal Error: SymType argument missing for generic type. "
               + " Probably TypeCheck mis-configured.");
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return;
     }
     SymTypeExpression tex = SymTypeExpressionFactory.createTypeArray(
             arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope()),
             arrayType.getDimensions(),
-            typeCheckResult.getCurrentResult());
-    typeCheckResult.setCurrentResult(tex);
+            getTypeCheckResult().getResult());
+    getTypeCheckResult().setResult(tex);
   }
 
 }

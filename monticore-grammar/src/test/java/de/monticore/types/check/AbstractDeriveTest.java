@@ -35,7 +35,7 @@ public class AbstractDeriveTest {
   AbstractTypeCheckTestParser p = new AbstractTypeCheckTestParser();
 
   // This is an auxiliary
-  DeriveSymTypeOfAbstractTypeCheckDelegator derLit = new DeriveSymTypeOfAbstractTypeCheckDelegator();
+  FullDeriveFromCombineExpressionsWithLiteralsAbstract derLit = new FullDeriveFromCombineExpressionsWithLiteralsAbstract();
 
   // other arguments not used (and therefore deliberately null)
 

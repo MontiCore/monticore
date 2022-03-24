@@ -54,7 +54,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   // Parer used for convenience:
   MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
   // This is the TypeChecker under Test:
-  TypeCalculator tc = new TypeCalculator(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(),null);
+  TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(),null);
 
   FlatExpressionScopeSetter scopeSetter;
   CombineExpressionsWithLiteralsTraverser traverser;

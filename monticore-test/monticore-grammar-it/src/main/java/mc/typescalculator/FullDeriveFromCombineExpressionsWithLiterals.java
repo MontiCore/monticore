@@ -1,15 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 
-public class CombineExpressionsWithLiteralsTypesCalculator implements IDerive {
-
-  private CombineExpressionsWithLiteralsTraverser traverser;
+public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive {
 
   private DeriveSymTypeOfAssignmentExpressions assignmentExpressionTypesCalculator;
 
@@ -23,31 +19,16 @@ public class CombineExpressionsWithLiteralsTypesCalculator implements IDerive {
 
   private DeriveSymTypeOfMCCommonLiterals commonLiteralsTypesCalculator;
 
-  private TypeCheckResult typeCheckResult = new TypeCheckResult();
-
-
-  public CombineExpressionsWithLiteralsTypesCalculator(){
-    init();
+  public FullDeriveFromCombineExpressionsWithLiterals(){
+    this(CombineExpressionsWithLiteralsMill.traverser());
   }
 
-  @Override
-  public TypeCheckResult deriveType(ASTExpression expr) {
-    init();
-    expr.accept(traverser);
-    return typeCheckResult.copy();
+  public FullDeriveFromCombineExpressionsWithLiterals(CombineExpressionsWithLiteralsTraverser traverser){
+    super(traverser);
+    init(traverser);
   }
 
-  @Override
-  public TypeCheckResult deriveType(ASTLiteral lit) {
-    init();
-    lit.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  public void init() {
-    this.typeCheckResult = new TypeCheckResult();
-    this.traverser = CombineExpressionsWithLiteralsMill.traverser();
-
+  public void init(CombineExpressionsWithLiteralsTraverser traverser) {
     commonExpressionTypesCalculator = new DeriveSymTypeOfCommonExpressions();
     commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     traverser.setCommonExpressionsHandler(commonExpressionTypesCalculator);
@@ -75,10 +56,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator implements IDerive {
     commonLiteralsTypesCalculator = new DeriveSymTypeOfMCCommonLiterals();
     commonExpressionTypesCalculator.setTypeCheckResult(typeCheckResult);
     traverser.add4MCCommonLiterals(commonLiteralsTypesCalculator);
-  }
-
-  public CombineExpressionsWithLiteralsTraverser getTraverser() {
-    return traverser;
   }
 
   public void setTraverser(CombineExpressionsWithLiteralsTraverser traverser) {

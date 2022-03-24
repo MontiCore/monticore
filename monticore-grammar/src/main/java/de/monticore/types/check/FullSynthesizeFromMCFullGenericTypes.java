@@ -1,36 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 
-import java.util.Optional;
-
-public class FullSynthesizeFromMCFullGenericTypes implements ISynthesize {
-
-  protected MCFullGenericTypesTraverser traverser;
-
-  protected TypeCheckResult typeCheckResult;
+public class FullSynthesizeFromMCFullGenericTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCFullGenericTypes(){
-    init();
+    this(MCFullGenericTypesMill.traverser());
   }
 
-  public void init() {
-    traverser = MCFullGenericTypesMill.traverser();
-    typeCheckResult = new TypeCheckResult();
+  public FullSynthesizeFromMCFullGenericTypes(MCFullGenericTypesTraverser traverser){
+    super(traverser);
+    init(traverser);
+  }
 
+  public void init(MCFullGenericTypesTraverser traverser) {
     SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
-    synFromFull.setTypeCheckResult(typeCheckResult);
+    synFromFull.setTypeCheckResult(getTypeCheckResult());
     SynthesizeSymTypeFromMCSimpleGenericTypes synFromSimple = new SynthesizeSymTypeFromMCSimpleGenericTypes();
-    synFromSimple.setTypeCheckResult(typeCheckResult);
+    synFromSimple.setTypeCheckResult(getTypeCheckResult());
     SynthesizeSymTypeFromMCCollectionTypes synFromCollection = new SynthesizeSymTypeFromMCCollectionTypes();
-    synFromCollection.setTypeCheckResult(typeCheckResult);
+    synFromCollection.setTypeCheckResult(getTypeCheckResult());
     SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeSymTypeFromMCBasicTypes();
-    synFromBasic.setTypeCheckResult(typeCheckResult);
+    synFromBasic.setTypeCheckResult(getTypeCheckResult());
 
     traverser.add4MCFullGenericTypes(synFromFull);
     traverser.setMCFullGenericTypesHandler(synFromFull);
@@ -42,32 +35,7 @@ public class FullSynthesizeFromMCFullGenericTypes implements ISynthesize {
     traverser.setMCBasicTypesHandler(synFromBasic);
   }
 
-  public MCFullGenericTypesTraverser getTraverser() {
-    return traverser;
-  }
-
   public void setTraverser(MCFullGenericTypesTraverser traverser) {
     this.traverser = traverser;
-  }
-
-  @Override
-  public TypeCheckResult synthesizeType(ASTMCType type) {
-    init();
-    type.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  @Override
-  public TypeCheckResult synthesizeType(ASTMCReturnType type) {
-    init();
-    type.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  @Override
-  public TypeCheckResult synthesizeType(ASTMCQualifiedName qName) {
-    init();
-    qName.accept(traverser);
-    return typeCheckResult.copy();
   }
 }

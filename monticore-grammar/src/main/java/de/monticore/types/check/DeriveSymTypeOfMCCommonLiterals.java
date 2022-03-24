@@ -5,8 +5,6 @@ import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 
 /**
  * Visitor for Derivation of SymType from Literals
@@ -22,65 +20,69 @@ public class DeriveSymTypeOfMCCommonLiterals implements MCCommonLiteralsVisitor2
     this.typeCheckResult = result;
   }
 
+  public TypeCheckResult getTypeCheckResult() {
+    return typeCheckResult;
+  }
+
   protected SymTypeConstant getSymType(String type) {
     return new SymTypeConstant(BasicSymbolsMill.globalScope().resolveType(type).get());
   }
 
   @Override
   public void visit(ASTNatLiteral lit){
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.INT));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.INT));
   }
 
   @Override
   public void visit(ASTCharLiteral lit){
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.CHAR));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.CHAR));
   }
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.BOOLEAN));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.BOOLEAN));
   }
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.DOUBLE));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.DOUBLE));
   }
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.FLOAT));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.FLOAT));
   }
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.LONG));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.LONG));
   }
 
   @Override
   public void visit(ASTStringLiteral lit){
     TypeSymbolSurrogate oo = new TypeSymbolSurrogate("String");
     oo.setEnclosingScope(BasicSymbolsMill.globalScope());
-    typeCheckResult.setCurrentResult(new SymTypeOfObject(oo));
+    getTypeCheckResult().setResult(new SymTypeOfObject(oo));
   }
 
   @Override
   public void visit(ASTSignedNatLiteral lit) {
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.INT));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.INT));
   }
 
   @Override
   public void visit(ASTSignedBasicDoubleLiteral lit) {
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.DOUBLE));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.DOUBLE));
   }
 
   @Override
   public void visit(ASTSignedBasicFloatLiteral lit) {
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.FLOAT));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.FLOAT));
   }
 
   @Override
   public void visit(ASTSignedBasicLongLiteral lit) {
-    typeCheckResult.setCurrentResult(getSymType(BasicSymbolsMill.LONG));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.LONG));
   }
 
   /**
@@ -88,7 +90,7 @@ public class DeriveSymTypeOfMCCommonLiterals implements MCCommonLiteralsVisitor2
    */
   @Override
   public void visit(ASTNullLiteral lit){
-    typeCheckResult.setCurrentResult(new SymTypeOfNull());
+    getTypeCheckResult().setResult(new SymTypeOfNull());
   }
   
 }
