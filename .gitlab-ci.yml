@@ -169,6 +169,7 @@ trigger-cd4a-dev:
   trigger:
     project: monticore/cd4analysis/cd4analysis
     branch: develop
+    strategy: depend
   only:
     - dev
 
@@ -206,10 +207,10 @@ trigger-json-dev:
 
 trigger-ma-dev:
   stage: trigger_languages
-  allow_failure: false
   trigger:
     project: monticore/montiarc/core
     branch: develop
+    strategy: depend
   only:
     - dev
 
@@ -255,10 +256,10 @@ trigger-od-dev:
 
 trigger-cd4a-master:
   stage: trigger_languages
-  allow_failure: false
   trigger:
     project: monticore/cd4analysis/cd4analysis
     branch: master
+    strategy: depend
   only:
     - master
 
