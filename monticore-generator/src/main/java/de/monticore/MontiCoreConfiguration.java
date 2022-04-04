@@ -37,7 +37,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String CONFIGURATION_PROPERTY = "_configuration";
 
   public static final String DEFAULT_OUTPUT_PATH = "out";
-  
+
   public static final String DEFAULT_HANDCODED_JAVA_PATH = "java";
 
   public static final String DEFAULT_REPORT_PATH = "reports";
@@ -46,6 +46,8 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String DEFAULT_GRAMMAR_PATH = "grammars";
 
+  public static final String LAUNCH_SCRIPT_OUTPUT_SUBPATH = "scripts";
+
   /**
    * Constants for the allowed CLI options in their long and short froms.
    * Stored in constants as they are used multiple times in MontiCore.
@@ -53,7 +55,6 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String GRAMMAR = "g";
   public static final String OUT = "o";
   public static final String TOOL_JAR_NAME = "tn";
-  public static final String LAUNCH_SCRIPT_OUT = "so";
   public static final String MODELPATH = "mp";
   public static final String HANDCODEDPATH = "hcp";
   public static final String HANDCODEDMODELPATH = "hcg";
@@ -235,8 +236,8 @@ public final class MontiCoreConfiguration implements Configuration {
    * 
    * @return output directory file
    */
-  public Optional<File> getLaunchScriptOutputDir() {
-    return getAsString(LAUNCH_SCRIPT_OUT).map(File::new);
+  public File getLaunchScriptOutputDir() {
+    return new File(getOut(), LAUNCH_SCRIPT_OUTPUT_SUBPATH);
   }
 
   /**

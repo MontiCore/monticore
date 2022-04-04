@@ -303,14 +303,6 @@ public class MontiCoreTool {
         .desc("Optional tool jar name used in generated launch scripts.")
         .build());
 
-    // specify launch script output directory
-    options.addOption(Option.builder(LAUNCH_SCRIPT_OUT)
-        .longOpt(LAUNCH_SCRIPT_OUT_LONG)
-        .argName("path")
-        .hasArg()
-        .desc("Optional output directory for generated launch scripts.")
-        .build());
-
     // specify model path
     options.addOption(Option.builder(MODELPATH)
         .longOpt(MODELPATH_LONG)
