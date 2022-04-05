@@ -65,7 +65,6 @@ public class GrammarFamilyPhasedSTC {
     // Complete symbol table
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
     CDSymbolTableHelper symbolTableHelper = new CDSymbolTableHelper(new DeriveSymType())
-            .setImports(node.getMCImportStatementList())
             .setPackageDeclaration(node.getMCPackageDeclaration().getMCQualifiedName());
     final CDBasisSymbolTableCompleter cDBasisVisitor = new CDBasisSymbolTableCompleter(symbolTableHelper);
     traverser.add4CDBasis(cDBasisVisitor);
