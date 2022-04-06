@@ -4,7 +4,6 @@ package de.monticore.types.check;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
@@ -37,7 +36,7 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
   // other arguments not used (and therefore deliberately null)
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null,derLit);
+  TypeCalculator tc = new TypeCalculator(null,derLit);
   
   // ------------------------------------------------------  Tests for Function 2b
 

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization.json;
 
+import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -68,7 +69,7 @@ public interface JsonElement {
    * @return this object as JsonArray if it is of this type and throws an error otherwise.
    */
   default public JsonArray getAsJsonArray() {
-    Log.error("0xA0606 "+ this + " is not a Json Array!");
+    Log.error("0xA1606 "+ this + " is not a Json Array!");
     return null;
   }
   
@@ -103,5 +104,7 @@ public interface JsonElement {
     Log.error("0xA0610 "+ this + " is not a Json Null!");
     return null;
   }
+  
+  String print(IndentPrinter p);
   
 }

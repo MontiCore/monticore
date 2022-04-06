@@ -25,7 +25,7 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
   public IBasicSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020
     if(!(expressionsBasisScope instanceof IBasicSymbolsScope)){
-      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface IBasicSymbolsScope");
+      Log.error("0xA2308 the enclosing scope of the expression does not implement the interface IBasicSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
     return (IBasicSymbolsScope) expressionsBasisScope;
@@ -51,8 +51,12 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
 
   protected Optional<SymTypeExpression> calculateLiteralExpression(ASTLiteralExpression expr){
     //get the type of the literal
-    SymTypeExpression wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
-    return Optional.of(wholeResult);
+    Optional<SymTypeExpression> wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
+    if(!wholeResult.isPresent()){
+      typeCheckResult.reset();
+      return Optional.empty();
+    }
+    return wholeResult;
   }
 
   @Override

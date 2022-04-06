@@ -341,6 +341,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     for (String symbolName : symbolNames) {
       visitorMethods.addAll(createVisitorDelegatorSymbolMethod(symbolName, simpleVisitorName));
     }
+    visitorMethods.addAll(createVisitorDelegatorSymbolMethod(symbolTableService.getCommonSymbolInterfaceFullName(), simpleVisitorName));
     return visitorMethods;
   }
 

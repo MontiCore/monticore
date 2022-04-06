@@ -14,6 +14,10 @@ import automata.visitors.CountStates;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,7 +27,7 @@ import java.util.Optional;
  * Main class for the Automata DSL tool.
  *
  */
-public class AutomataTool {
+public class AutomataTool extends AutomataToolTOP {
 
   /**
    * Main method of the Tool
@@ -49,40 +53,88 @@ public class AutomataTool {
    *
    * @param args
    */
+  @Override
   public void run(String[] args) {
     // use normal logging (no DEBUG, TRACE)
+    init();
     Log.ensureInitalization();
+    Options options = initOptions();
 
-    // Retrieve the model name
-    if (args.length != 2) {
-      Log.error("0xEE7400 Arguments are: (1) input "
-               +"model and (2) symbol store.");
-      return;
+    try {
+      //create CLI Parser and parse input options from commandline
+      CommandLineParser cliparser = new org.apache.commons.cli.DefaultParser();
+      CommandLine cmd = cliparser.parse(options, args);
+
+      //help: when --help
+      if (cmd.hasOption("h")) {
+        printHelp(options);
+        //do not continue, when help is printed.
+        return;
+      }
+      //version: when --version
+      else if (cmd.hasOption("v")) {
+        printVersion();
+        //do not continue when help is printed
+        return;
+      }
+
+      Log.info("Automata DSL Tool", "AutomataTool");
+
+      if (cmd.hasOption("i")) {
+        String model = cmd.getOptionValue("i");
+
+        // parse the model and create the AST representation
+        ASTAutomaton ast = parse(model);
+        Log.info(model + " parsed successfully!", "AutomataTool");
+
+        // setup the symbol table
+        IAutomataGlobalScope globalScope = AutomataMill.globalScope();
+        globalScope.setSymbolPath(new MCPath());
+        globalScope.setFileExt("aut");
+        IAutomataArtifactScope modelTopScope =
+          createSymbolTable(ast);
+
+        // can be used for resolving names in the model
+        Optional<StateSymbol> aSymbol =
+          modelTopScope.resolveState("Ping");
+
+        if (aSymbol.isPresent()) {
+          Log.info("Resolved state symbol \"Ping\"; FQN = "
+              + aSymbol.get().toString(),
+            "AutomataTool");
+        } else {
+          Log.info("This automaton does not contain a state "
+            +"called \"Ping\";", "AutomataTool");
+        }
+
+        runDefaultCoCos(ast);
+
+        // Now we know the model is well-formed and start backend
+
+        if(cmd.hasOption("s")){
+          String storeLocation = cmd.getOptionValue("s");
+          storeSymbols(modelTopScope, storeLocation);
+        }
+
+        // analyze the model with a visitor
+        CountStates cs = new CountStates();
+        AutomataTraverser traverser = AutomataMill.traverser();
+        traverser.add4Automata(cs);
+        ast.accept(traverser);
+        Log.info("Automaton has " + cs.getCount() + " states.",
+          "AutomataTool");
+        prettyPrint(ast, "");
+      }else{
+        printHelp(options);
+      }
+    } catch (ParseException e) {
+      // e.getMessage displays the incorrect input-parameters
+      Log.error("0xEE740 Could not process AutomataTool parameters: " + e.getMessage());
     }
-    Log.info("Automata DSL Tool", "AutomataTool");
-    String model = args[0];
+  }
 
-    // parse the model and create the AST representation
-    ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", "AutomataTool");
-
-    // setup the symbol table
-    IAutomataArtifactScope modelTopScope = 
-      createSymbolTable(ast);
-
-    // can be used for resolving names in the model
-    Optional<StateSymbol> aSymbol = 
-      modelTopScope.resolveState("Ping");
-    
-    if (aSymbol.isPresent()) {
-      Log.info("Resolved state symbol \"Ping\"; FQN = "
-               + aSymbol.get().toString(),
-               "AutomataTool");
-    } else {
-      Log.info("This automaton does not contain a state "
-        +"called \"Ping\";", "AutomataTool");
-    }
-
+  @Override
+  public void runDefaultCoCos(ASTAutomaton ast){
     // setup context condition infrastructure
     AutomataCoCoChecker checker = new AutomataCoCoChecker();
 
@@ -93,71 +145,19 @@ public class AutomataTool {
 
     // check the CoCos
     checker.checkAll(ast);
+  }
 
-    // Now we know the model is well-formed and start backend
-
-    // store artifact scope and its symbols
-    AutomataSymbols2Json deser = new AutomataSymbols2Json();
-    deser.store(modelTopScope, args[1]);
-
-    // analyze the model with a visitor
-    CountStates cs = new CountStates();
-    AutomataTraverser traverser = AutomataMill.traverser();
-    traverser.add4Automata(cs);
-    ast.accept(traverser);
-    Log.info("Automaton has " + cs.getCount() + " states.",
-      "AutomataTool");
-
+  @Override
+  public void prettyPrint(ASTAutomaton ast, String file){
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     AutomataTraverser traverser2 = AutomataMill.traverser();
     traverser2.setAutomataHandler(pp);
     ast.accept(traverser2);
     Log.info("Pretty printing automaton into console:",
-             "AutomataTool");
+      "AutomataTool");
     // print the result
-    Log.println(pp.getResult()); 
-}
-
-  /**
-   * Parse the model contained in the specified file.
-   *
-   * @param model - file to parse
-   * @return
-   */
-  public ASTAutomaton parse(String model) {
-    try {
-      AutomataParser parser = new AutomataParser() ;
-      Optional<ASTAutomaton> optAutomaton = parser.parse(model);
-
-      if (!parser.hasErrors() && optAutomaton.isPresent()) {
-        return optAutomaton.get();
-      }
-      Log.error("0xEE840 Model could not be parsed.");
-    }
-    catch (RecognitionException | IOException e) {
-      Log.error("0xEE640 Failed to parse " + model, e);
-    }
-    System.exit(1);
-    return null;
-  }
-
-  /**
-   * Create the symbol table from the parsed AST.
-   *
-   * @param ast
-   * @return
-   */
-  public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-
-    IAutomataGlobalScope globalScope = AutomataMill.globalScope();
-    globalScope.setSymbolPath(new MCPath());
-    globalScope.setFileExt("aut");
-
-    AutomataScopesGenitorDelegator symbolTable = AutomataMill
-        .scopesGenitorDelegator();
-
-    return symbolTable.createFromAST(ast);
+    Log.println(pp.getResult());
   }
 
 }

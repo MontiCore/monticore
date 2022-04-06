@@ -2,11 +2,15 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.check.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class FunctionSymbol extends FunctionSymbolTOP {
 
@@ -23,13 +27,7 @@ public class FunctionSymbol extends FunctionSymbolTOP {
       clone.setAstNode(this.getAstNode());
     }
     clone.setAccessModifier(this.accessModifier);
-    if(spannedScope!=null){
-      clone.setSpannedScope(this.spannedScope);
-    }
-    List<VariableSymbol> parameterClone = Lists.newArrayList();
-    for(VariableSymbol parameter: this.getParameterList()){
-      parameterClone.add(parameter.deepClone());
-    }
+    clone.setSpannedScope(this.spannedScope);
     return clone;
   }
 
@@ -65,6 +63,28 @@ public class FunctionSymbol extends FunctionSymbolTOP {
       vars.addAll(((IOOSymbolsScope) getSpannedScope()).getLocalFieldSymbols());
     }
     return vars;
+  }
+
+  public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
+    //return type
+    SymTypeExpression returnType = this.getReturnType();
+    TypeSymbol realTypeInfo;
+    TypeSymbol typeInfo = returnType.getTypeInfo();
+    if(typeInfo instanceof TypeSymbolSurrogate){
+      realTypeInfo = ((TypeSymbolSurrogate) returnType.getTypeInfo()).lazyLoadDelegate();
+    }else{
+      realTypeInfo = typeInfo;
+    }
+    if(returnType.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
+      Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
+      typeVar.ifPresent(typeVarSymbol -> this.setReturnType(replaceMap.get(typeVarSymbol)));
+    }else{
+      returnType.replaceTypeVariables(replaceMap);
+    }
+
+    for(VariableSymbol parameter: this.getParameterList()){
+      parameter.replaceTypeVariables(replaceMap);
+    }
   }
 
 }

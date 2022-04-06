@@ -7,7 +7,6 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.GEN_ERROR;
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.MISSING;
@@ -15,10 +14,21 @@ import static de.monticore.generating.templateengine.reporting.reporter.InputOut
 public class IncGenGradleReporter extends IncGenReporter {
 
   static final String SIMPLE_FILE_NAME = "IncGenGradleCheck";
+  protected final String fileExtension;
 
   public IncGenGradleReporter(String outputDir, String modelName) {
+    this(outputDir, modelName, "mc4");
+  }
+
+  public IncGenGradleReporter(String outputDir, String modelName, String fileExtension) {
     super(outputDir + File.separator + modelName.replaceAll("\\.", "/"), SIMPLE_FILE_NAME, "txt");
     this.outputDir = outputDir;
+    this.fileExtension = fileExtension;
+  }
+
+  @Override
+  protected boolean isModelFile(String fileName) {
+    return fileName.endsWith("." + fileExtension);
   }
 
   @Override
@@ -28,8 +38,8 @@ public class IncGenGradleReporter extends IncGenReporter {
     for (Path lateOne : filesThatMatterButAreNotThereInTime) {
       if (modelToArtifactMap.keySet().contains(lateOne)) {
         String toAdd = Paths.get(modelToArtifactMap.get(lateOne).toString(), lateOne.toString()).toString();
-        if (!grammarFiles.contains(toAdd)) {
-          grammarFiles.add(toAdd);
+        if (!modelFiles.contains(toAdd)) {
+          modelFiles.add(toAdd);
         }
       }
     }
@@ -42,8 +52,8 @@ public class IncGenGradleReporter extends IncGenReporter {
       } else {
         checkSum = GEN_ERROR;
       }
-      writeLine("mc4:"+ inputFile.replaceAll("\\\\","/" ) + " "+checkSum);
-      for (String s : grammarFiles) {
+      writeLine(fileExtension + ":" + inputFile.replaceAll("\\\\", "/") + " " + checkSum);
+      for (String s : modelFiles) {
         //only local files are important
         if (!s.contains(".jar")) {
           File inputFile = new File(s);
@@ -52,7 +62,7 @@ public class IncGenGradleReporter extends IncGenReporter {
           } else {
             checkSum = MISSING;
           }
-          writeLine("mc4:" + s.replaceAll("\\\\", "/") + " " + checkSum);
+          writeLine(fileExtension + ":" + s.replaceAll("\\\\", "/") + " " + checkSum);
         }
       }
     }

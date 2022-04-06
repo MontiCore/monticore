@@ -231,7 +231,7 @@ public class ParserGeneratorHelper {
     String ruleName = rule.getName();
 
     if (rule.isClass()) {
-      if (!grammarInfo.isProdLeftRecursive(rule.getName())) {
+      if (!rule.isIsIndirectLeftRecursive()) {
         generateParserForRule = true;
       }
     }

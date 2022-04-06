@@ -22,7 +22,7 @@ public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
    * @return the first scope that was created
    */
   public GrammarFamilyArtifactScope createFromAST(de.monticore.grammar.grammar._ast.ASTMCGrammar rootNode) {
-    Log.errorIfNull(rootNode, "0xA7FE4 Error by creating of the GrammarFamilyScopesGenitor symbol table: top ast node is null");
+    Log.errorIfNull(rootNode, "0xA7FE5 Error by creating of the GrammarFamilyScopesGenitor symbol table: top ast node is null");
     List<ImportStatement> imports = new ArrayList<>();
     rootNode.getImportStatementList().stream().forEach(i -> imports.add(new ImportStatement(i.getQName(), i.isStar())));
     GrammarFamilyArtifactScope artifactScope = new GrammarFamilyArtifactScope(Optional.empty(), Names.getQualifiedName(rootNode.getPackageList()), imports);

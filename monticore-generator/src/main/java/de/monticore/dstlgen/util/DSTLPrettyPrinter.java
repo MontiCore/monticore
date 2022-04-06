@@ -155,18 +155,17 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
     this.getPrinter().unindent();
     this.println();
   }
-  private void print(String o) {
+
+  protected void print(String o) {
     getPrinter().print(o);
   }
 
-  
-  private void println(String o) {
+  protected void println(String o) {
     this.getPrinter().println(o);
   }
-  
-  private void println() {
+
+  protected void println() {
     this.getPrinter().println();
   }
-
 
 }

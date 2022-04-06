@@ -1,14 +1,14 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-# MontiCore Best Practices - Designing Command Line Interfaces
+# MontiCore Best Practices - Designing Tools for Command Line Interfaces
 
 [[_TOC_]]
 
-Some DSL tools require a command line interface (CLI) to enable general accessibility. 
-When designing a CLI, we recommend some standard guide lines.
+Some DSLs require a tool to enable general accessibility via the command line interface (CLI). 
+When designing a tool, we recommend some standard guide lines.
 
-## Designing a CLI
-The CLI provides a general interface for the functionalities developed for a language. 
+## Designing a Tool
+The tool provides a general interface for the functionalities developed for a language. 
 This includes all features such as parsing of models, saving and loading of symbol 
 tables, pretty printing, reporting, or export as object diagram.
 
@@ -36,20 +36,20 @@ However, we suggest some default arguments for standardized access.
                              that allows to adapt and extend the tool workflow (optional) 
                              (only some tools provide groovy scripting)
 -ct, --configtemplate        Advanced configuration 1: through a Freemarker template
-                             that allows to adapth the generation process (optional)
+                             that allows to adapt the generation process (optional)
                              (only some tools provide a template configuration call)
 ```
 
-An example of a complete yet relatively small CLI example can be found in the 
+An example of a complete yet relatively small tool example can be found in the 
 [JSON project](https://github.com/MontiCore/json).
 
 Some explanation to the arguments:
-* The CLI is meant for handling one individual model (`-i`) and store the
+* The tool is meant for handling one individual model (`-i`) and store the
   results appropriately in files. 
 * Typical results are 
   * (1) generated files (`-o`) that are used in the next step of 
     the build process (e.g. for compilation).
-  * (2) the symboltable (`-s`) that is then used by other CLI's to import symbols
+  * (2) the symboltable (`-s`) that is then used by other tools to import symbols
   * (3) reports (`-r`) and internal information (`-so`), like the AST of the 
     parsed model usable for developers to understand what happened
   * (4) and potentially also internal information on used input and generated 
@@ -69,8 +69,8 @@ Some explanation to the arguments:
   the argument `-modelpath` for identifying paths containing models is typically not required.
 * Groovy-scripting (`-sc`, `--script`): A Groovy Script is meant to describe the tool internal 
   workflow. It controls parsing, symbol construction, reporting, code generation etc.
-  This kind of scripting should only become necessary, when various alternative
-  configurations are possible. Thus not very tool provides Groovy scripting.
+  This kind of scripting should only become necessary when various alternative
+  configurations are possible. Thus not every tool provides Groovy scripting.
 * Template-scripting (`-ct`, `--configtemplate`): 
   It is possible to add a custom template script right before
   the full generation process starts. This template is useful to customize the 
@@ -78,64 +78,65 @@ Some explanation to the arguments:
   or switching verbosity on/off.
 
 
-## Usage of the CLI-JAR
+## Usage of the Tool-JAR
 
-A note to the CLI usage: 
-CLIs do not organize the correct order of their calls. If embedded in a larger
-build process, an appropriate gradle (preferred) or make is useful for 
+A note to the tool usage: 
+Tools do not organize the correct order of their calls. If embedded in a larger
+build process, an appropriate gradle (preferred) or make it is useful for 
 incremental efficiency.
 
-This organisation is above the CLI, because for efficiency the 
-(grade or make) buildscript itself must be able to decide, whether a redo
-is needed. If the CLI was called to decide that, too much time was already wasted.
+This organisation is above the tool, due to the efficiency of the 
+(grade or make) buildscript itself, which must be able to decide, whether a redo
+is needed. If the tool was called to decide that, too much time was already wasted.
 
-For a build script to decide whether or not to call the CLI, a CLI call should
+For a build script to decide whether to call the tool or not, a tool call should
 (and actually MontiCore does) provide among others a list of files it used for input. 
 
-## Automatically Generating the CLI-JAR
+## Automatically Generating a Tool-JAR
 
-Note to the CLI development:
+Note to the tool development:
 To automatically derive an executable JAR from the Gradle build process for the 
-corresponding CLI, the following template can be used.
+corresponding tool, the following template can be used.
 
 ```
-// all in one cli-jar
+// all in one tool-jar
 shadowJar {
     manifest {
-        attributes "Main-Class": "de.monticore.${archiveBaseName.get().capitalize()}CLI"
+        attributes "Main-Class": "de.monticore.${archiveBaseName.get().capitalize()}Tool"
     }
-    archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
+    archiveFileName = "MC${archiveBaseName.get()}.${archiveExtension.get()}"
     minimize()
-    archiveClassifier = "cli"
+    archiveClassifier = "mc-tool"
 }
 
 jar.dependsOn shadowJar
 ```
-This blueprint can be used in the `build.gradle` script to derive a JAR for the CLI. 
-The packed JAR already contains all necessary dependencies. 
+This blueprint can be used in the `build.gradle` script to derive a JAR for the tool 
+class and its provided command line functionalities. 
+The packed JAR already contains all the necessary dependencies. 
 The template defines the main class and name of the JAR. 
 To foster automated reuse, the template has already been configured to generate 
-a suitable CLI-JAR for each language project without manual adjustments. 
+a suitable JAR for each language project without manual adjustments. 
 However, this requires adhering to the following conventions:
 * The name of the main class is equal to the language project name (usually defined 
-  in the `settings.gradle`) with the suffic *CLI*. 
+  in the `settings.gradle`) with the suffix *Tool*. 
   Furthermore, the first letter of the main class is always capitalized to adhere 
   to the Java code conventions
 * The package of the main class is `de.monticore`  
 * The generated JAR can be found in 'target/libs'
 
 **Example:**  
-For a language projekt `myLang` we have to implement the `MyLangCLI.java` located 
+For a language projekt `MyLang` we have to implement the `MyLangTool.java` located 
 in the package `de.monticore`.
-This automatically generates the executable JAR `myLang-cli.jar`
+This automatically generates the executable JAR `MCMyLang.jar`
 
 In general, the template can be customized by specifying the corresponding main 
 class and JAR name definitions.
 However, we recommend to use the predefined automatic approach.
 
 ## Functional Approach
-When implementing the CLI, we recommend a functional paradigm to provide the 
-desired functionalities, as the CLI-class is not about data structures but only 
+When implementing the tool, we recommend a functional paradigm to provide the 
+desired functionalities, as the too class is not about data structures but only 
 exists to make functions available. 
 In this case it would be counterproductive to store the arguments of the available 
 functions as attributes.

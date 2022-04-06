@@ -1,0 +1,25 @@
+package de.monticore.statements;
+
+mlc MCAssertStatements {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/statements/MCAssertStatements.mc4";
+  }
+
+  //export the pretty printer
+  export "$projectDir/src/main/java" {
+    include "de/monticore/statements/prettyprint/MCAssertStatements*.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/statements/mcassertstatements/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.statements.MCStatementsBasis";
+    mlc "de.monticore.expressions.ExpressionsBasis";
+  }
+
+}

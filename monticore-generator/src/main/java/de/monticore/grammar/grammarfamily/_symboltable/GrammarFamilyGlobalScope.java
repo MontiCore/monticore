@@ -71,7 +71,7 @@ public class GrammarFamilyGlobalScope extends GrammarFamilyGlobalScopeTOP {
       }
     }
     catch (IOException e) {
-      Log.error("0x1A234 Error while parsing model", e);
+      Log.error("0x1A235 Error while parsing model", e);
     }
     return null;
   }

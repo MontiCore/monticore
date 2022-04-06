@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package automata;
 
-import automata.AutomataMill;
 import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._cocos.AutomataCoCoChecker;

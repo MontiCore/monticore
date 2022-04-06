@@ -10,6 +10,7 @@ import java.util.Optional;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import mylang.DeriveFromMyLang;
@@ -34,7 +35,7 @@ public class MyLangTest {
     
     MyLangMill.scopesGenitorDelegator().createFromAST(varOpt.get());
   
-    TypeCheck tc = new TypeCheck(new SynthesizeFromMyLang(), 
+    TypeCalculator tc = new TypeCalculator(new SynthesizeFromMyLang(),
                                      new DeriveFromMyLang());
   
     ASTMyVar var = varOpt.get();

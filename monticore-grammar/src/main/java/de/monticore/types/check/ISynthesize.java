@@ -1,7 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 
 import java.util.Optional;
 
@@ -10,17 +14,10 @@ import java.util.Optional;
  */
 public interface ISynthesize {
 
-  /**
-   * Collects the synthesized SymTypeExpressions after
-   * using the traverser to traverse the MCType
-   */
-  Optional<SymTypeExpression> getResult();
+  TypeCheckResult synthesizeType(ASTMCType type);
 
-  /**
-   * Initializes the traverser with the correct visitors and handlers
-   */
-  void init();
+  TypeCheckResult synthesizeType(ASTMCReturnType type);
 
-  MCBasicTypesTraverser getTraverser();
+  TypeCheckResult synthesizeType(ASTMCQualifiedName qName);
 
 }

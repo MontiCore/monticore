@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._visitor.MyOwnLanguageTraverser;
@@ -18,7 +20,6 @@ public class DeriveSymTypeOfMyOwnLanguage
     init();
   }
 
-  @Override
   public MyOwnLanguageTraverser getTraverser() {
     return traverser;
   }
@@ -28,14 +29,19 @@ public class DeriveSymTypeOfMyOwnLanguage
   }
 
   @Override
-  public Optional<SymTypeExpression> getResult() {
-    if(typeCheckResult.isPresentCurrentResult()){
-      return Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    return Optional.empty();
+  public TypeCheckResult deriveType(ASTLiteral lit) {
+    init();
+    lit.accept(traverser);
+    return typeCheckResult.copy();
   }
 
   @Override
+  public TypeCheckResult deriveType(ASTExpression expr) {
+    init();
+    expr.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
   public void init() {
     traverser = MyOwnLanguageMill.traverser();
     typeCheckResult = new TypeCheckResult();

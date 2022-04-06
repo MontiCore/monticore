@@ -4,7 +4,7 @@
 This page describes the technical installation and usage of MontiCore for
 language developers. This page further inspects a simple example grammar and the
 Java classes and other artifacts generated from this grammar. After installing
-MontiCore as described on this page, it can be used to develop new modeling
+MontiCore as described on this page, it can be used to develop new modelling
 languages and generators as described in subsequent chapters.
 
 MontiCore provides a command line interface (CLI) tool and can easily be used
@@ -29,7 +29,7 @@ Java Development Kit (JDK) and validate that the installation was successful:
 - Install a JDK with at least version 8 provided by Oracle or OpenJDK.
 - Make sure the environment variable `JAVA_HOME` points to the installed JDK, and
     *not* to the JRE, e.g., the following would be good:
-    - `/usr/lib/jvm/java-8-openjdk` on UNIX or
+    - `/user/lib/jvm/java-8-openjdk` on UNIX or
     - `C:\Program Files\Java\jdk1.8.*` on Windows.
     You will need this in order to run the Java compiler for compiling
     the generated Java source files.
@@ -68,7 +68,7 @@ For installing MontiCore, perform the following steps:
 http://www.monticore.de/download/monticore.tar.gz
 ```
 * Unzip the archive. The unzipped files include a directory called
-    `mc-workspace` containing the executable MontiCore CLI
+    `mc-workspace` containing the executable MontiCore tool
     `monticore-cli.jar` along with a directory `src` containing
     handwritten `Automata` DSL infrastructure, a directory `hwc`
     containing handwritten code that is incorporated into the generated
@@ -96,9 +96,9 @@ example/PingPong.aut
 ### Inspect the Example Grammar
 
 MontiCore is a language workbench. It supports developers in developing
-modular modeling languages. The core of MontiCore is its grammar
-modeling language (cf. [Chapter 4 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)), 
-which is used by developers for modeling
+modular modelling languages. The core of MontiCore is its grammar
+modelling language (cf. [Chapter 4 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)), 
+which is used by developers for modelling
 context-free grammars. A MontiCore grammar defines (parts of) the
 abstract and concrete syntax of a language. Each grammar contains
 nonterminals, production rules, and may extend other grammars. At most
@@ -1285,6 +1285,39 @@ the example project and executing MontiCore</figcaption>
     <td>FreeMarker website. http://freemarker.org/, 2021.</td>
   </tr>
 </table>
+
+## Using MontiCore with GitPod
+
+Installing all the prerequisites and an IDE can take some time.
+Alternatively to this, you can use [Gitpod](https://www.gitpod.io), an open-source
+Kubernetes application for ready-to-code developer environments. It already
+has all the prerequisites and an operational Web IDE similar to Microsoft's
+Visual Studio Code installed. You need to login with an existing GitHub account
+to use it. 
+
+[This link](https://gitpod.io/#https://github.com/MontiCore/automaton) can be used
+to access the Gitpod project for the `Automata` language.
+First, an environment for the project with the proper Java and Gradle version
+will be prepared and initialized automatically.
+After that, you will be directed to the Web IDE. The project will be built
+with Gradle first, and after that it is ready-to-use. The Web IDE also has a 
+built-in terminal which can be used to build the project via `gradle build` 
+or execute other tasks. 
+
+The Web IDE can be used to change existing project files, such as the `Automata`
+grammar or the handwritten classes for the language. Simply navigate to the grammars
+or classes in the file explorer on the left-hand side of the IDE and edit the files. 
+This makes experimenting with MontiCore possible. The changes will be compiled by the
+IDE immediately and compilation errors will be marked with red color. To run the project,
+execute the command `gradle build` in the terminal.
+
+You will notice that the link to the Gitpod project is generated and always
+has the same pattern.
+An example for a link is https://indigo-ostrich-8psdfoer.ws-eu18.gitpod.io.
+After 30 minutes of non-use, Gitpod will "freeze" the environment.
+It can be reactivated by using the same link to access it. The environment is
+reactivated, and you do not even need to rebuild the project with Gradle to use
+the project again.
  	
 ## Further Information
 

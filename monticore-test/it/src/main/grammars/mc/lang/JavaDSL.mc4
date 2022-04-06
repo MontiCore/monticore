@@ -6,7 +6,7 @@ grammar JavaDSL extends mc.grammar.types.ItTestTypes {
 
 // starting point for parsing a java file
 CompilationUnit
-    =   PackageDeclaration? ImportDeclaration* TypeDeclaration* EOF
+    =   PackageDeclaration? ImportDeclaration* TypeDeclaration*
     ;
 
 PackageDeclaration

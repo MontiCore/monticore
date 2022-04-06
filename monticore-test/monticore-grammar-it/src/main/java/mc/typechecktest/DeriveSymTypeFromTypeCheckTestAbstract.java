@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typechecktest;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typechecktest._visitor.TypeCheckTestTraverser;
 
@@ -17,14 +19,19 @@ public class DeriveSymTypeFromTypeCheckTestAbstract implements IDerive {
   }
 
   @Override
-  public Optional<SymTypeExpression> getResult() {
-    if(typeCheckResult.isPresentCurrentResult()){
-      return Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    return Optional.empty();
+  public TypeCheckResult deriveType(ASTExpression expr) {
+    init();
+    expr.accept(traverser);
+    return typeCheckResult.copy();
   }
 
   @Override
+  public TypeCheckResult deriveType(ASTLiteral lit) {
+    init();
+    lit.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
   public void init() {
     typeCheckResult = new TypeCheckResult();
     traverser = TypeCheckTestMill.traverser();
@@ -60,7 +67,6 @@ public class DeriveSymTypeFromTypeCheckTestAbstract implements IDerive {
     traverser.add4MCCommonLiterals(commonLiterals);
   }
 
-  @Override
   public TypeCheckTestTraverser getTraverser() {
     return traverser;
   }

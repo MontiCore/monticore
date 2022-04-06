@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore
 
-import com.google.common.hash.Hashing
-import com.google.common.io.Files
-import de.monticore.cli.MontiCoreStandardCLI
+
+import de.monticore.cli.MontiCoreTool
 import de.monticore.mcbasics.MCBasicsMill
 import de.monticore.dstlgen.util.DSTLPathUtil
 import de.se_rwth.commons.logging.Finding
@@ -355,7 +354,7 @@ abstract public class MCTask extends DefaultTask {
     })
     try {
       // execute Monticore with the given parameters
-      MontiCoreStandardCLI.main(p)
+      MontiCoreTool.main(p)
       MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
@@ -382,58 +381,7 @@ abstract public class MCTask extends DefaultTask {
     String outAsString = outputDir.get().asFile.toString()
     String grammarWithoutExt = grammar.replace(".mc4", "").toLowerCase()
     def inout = new File(outAsString + "/" + grammarWithoutExt + "/IncGenGradleCheck.txt")
-    if (inout.exists()) { // check whether report exists
-      // check for new files to consider
-      def newfiles = new StringWriter()
-      inout.withReader {
-        it.filterLine(newfiles) {
-          line -> line.startsWith('gen:') && new File(line.toString().substring(4)).exists()
-        }
-      }
-      def added = newfiles.toString()
-      if (!added.isEmpty()) { // added files -> generate
-        logger.info('Added files:\n' + added)
-        return false
-      }
-      // check for considered but deleted files
-      def removedFiles = new StringWriter()
-      inout.withReader {
-        it.filterLine(removedFiles) {
-          line -> line.startsWith('hwc:') && !new File(line.toString().substring(4)).exists()
-        }
-      }
-      def removed = removedFiles.toString()
-      if (!removed.isEmpty()) { // deleted files -> generate
-        logger.info('Removed files:\n' + removed)
-        return false
-      }
-      // check whether local super grammars have changed
-      def grammarsUpToDate = true
-      inout.withReader {
-        it.eachLine {
-          line ->
-            if (line.startsWith('mc4:')) {
-              def (grammarString, checksum) = line.toString().substring(4).tokenize(' ')
-              def grammarFile = new File(grammarString)
-              if (!grammarFile.exists()) { // deleted grammar -> generate
-                logger.info("Regenerating Code for " + grammar + " : Grammar " + grammarString + " does so longer exist.")
-                grammarsUpToDate = false
-                return
-              } else if (!Files.asByteSource(grammarFile).hash(Hashing.md5()).toString().equals(checksum.trim())) {
-                // changed grammar -> generate
-                logger.info("Regenerating Code for " + grammar + " : Grammar " + grammarString + " has changed")
-                grammarsUpToDate = false
-                return
-              }
-            }
-        }
-      }
-      if(!grammarsUpToDate) {return false}
-    } else { // no report -> generate
-      logger.info("No previous generation report $inout found")
-      return false
-    }
-    return true
+    return IncChecker.incCheck(inout, grammar, logger, "mc4")
   }
 /**
    * Returns the path to the TR grammar.

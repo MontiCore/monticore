@@ -1,0 +1,21 @@
+package de.monticore.literals;
+
+mlc MCJavaLiterals {
+
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/literals/MCJavaLiterals.mc4";
+  }
+
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/literals/mcjavaliterals/**.java";
+  }
+
+  //handwritten sources
+  export "$projectDir/src/main/java" {
+    include "de/monticore/literals/prettyprint/MCJavaLiterals*.java";
+  }
+
+  promote {
+    mlc "de.monticore.literals.MCCommonLiterals";
+  }
+}

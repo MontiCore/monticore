@@ -1,0 +1,24 @@
+package de.monticore.statements;
+
+mlc MCExceptionStatements {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/statements/MCExceptionStatements.mc4";
+  }
+
+  //export the pretty printer
+  export "$projectDir/src/main/java" {
+    include "de/monticore/statements/prettyprint/MCExceptionStatements*.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/statements/mcexceptionstatements/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.statements.MCCommonStatements";
+  }
+
+}

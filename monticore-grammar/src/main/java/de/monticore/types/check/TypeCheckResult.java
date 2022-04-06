@@ -41,7 +41,7 @@ public class TypeCheckResult {
 
   public void reset(){
     setCurrentResultAbsent();
-    type = false;
+    field = false;
     method = false;
     type = false;
   }
@@ -78,5 +78,14 @@ public class TypeCheckResult {
 
   public boolean isType() {
     return type;
+  }
+
+  public TypeCheckResult copy(){
+    TypeCheckResult result = new TypeCheckResult();
+    result.currentResult = currentResult;
+    result.type = type;
+    result.field = field;
+    result.method = method;
+    return result;
   }
 }

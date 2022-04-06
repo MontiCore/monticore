@@ -15,8 +15,10 @@ import java.util.Optional;
  * Main class for the Automata DSL tool.
  *
  */
-public class AutomataTool {
+public class AutomataTool extends AutomataToolTOP {
 
+  @Override
+  public void run(String[] args){} //necessary for avoiding compile-error.
 
   /**
    * Parse the model contained in the specified file.
@@ -24,6 +26,7 @@ public class AutomataTool {
    * @param model - file to parse
    * @return
    */
+  @Override
   public ASTAutomaton parse(String model) {
     try {
       AutomataParser parser = new AutomataParser() ;
@@ -32,10 +35,10 @@ public class AutomataTool {
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
         return optAutomaton.get();
       }
-      Log.error("0xEE840 Model could not be parsed.");
+      Log.error("0xEE851 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("0xEE640 Failed to parse " + model, e);
+      Log.error("0xEE650 Failed to parse " + model, e);
     }
     System.exit(1);
     return null;

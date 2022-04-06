@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+mlc BasicSymbols {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/symbols/BasicSymbols.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/symbols/basicsymbols/**.java";
+  }
+
+  // export all handwritten TOP-mechanism extensions
+  export "$projectDir/src/main/java" {
+    include "de/monticore/symbols/basicsymbols/**.java";
+  }
+
+  promote mlc "de.monticore.MCBasics";
+
+  // locally allow using SymTypeExpressions
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionDeSer.java";
+  }
+
+  // TODO: !!! remove the following in the code, these are illegal !!!
+  uses {
+    include "$projectDir/src/main/java/de/monticore/symbols/oosymbols/_symboltable/OOTypeSymbol.java";
+    include "$projectDir/src/main/java/de/monticore/symbols/oosymbols/_symboltable/FieldSymbol.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/symbols/oosymbols/_symboltable/IOOSymbolsScope.java";
+  }
+
+}

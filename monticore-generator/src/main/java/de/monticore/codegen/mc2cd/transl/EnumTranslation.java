@@ -28,7 +28,7 @@ public class EnumTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
         } else {
            name = constant.getName();
         }
-        final String goodName = LexNamer.createGoodName(name);
+        final String goodName = LexNamer.createSimpleGoodName(name);
         ASTCDEnumConstant enumConstant = CD4AnalysisMill.cDEnumConstantBuilder().
                 setName(goodName).uncheckedBuild();
         boolean constantAlreadyExists = link.target().getCDEnumConstantList().stream()

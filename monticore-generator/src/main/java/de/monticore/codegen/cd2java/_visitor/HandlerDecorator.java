@@ -268,6 +268,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     for (String symbolName : symbolNames) {
       visitorMethods.addAll(createHandlerSymbolMethod(symbolName, simpleVisitorName));
     }
+    visitorMethods.addAll(createHandlerSymbolMethod(symbolTableService.getCommonSymbolInterfaceFullName(), simpleVisitorName));
     return visitorMethods;
   }
 

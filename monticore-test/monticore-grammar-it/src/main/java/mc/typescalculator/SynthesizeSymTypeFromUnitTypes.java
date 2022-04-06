@@ -9,7 +9,7 @@ import mc.typescalculator.unittypes._visitor.UnitTypesHandler;
 import mc.typescalculator.unittypes._visitor.UnitTypesTraverser;
 import mc.typescalculator.unittypes._visitor.UnitTypesVisitor2;
 
-public class SynthesizeSymTypeFromUnitTypes extends AbstractSynthesizeFromType implements UnitTypesVisitor2, UnitTypesHandler, ISynthesize {
+public class SynthesizeSymTypeFromUnitTypes extends AbstractSynthesizeFromType implements UnitTypesVisitor2, UnitTypesHandler {
 
   protected UnitTypesTraverser traverser;
 

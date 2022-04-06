@@ -225,20 +225,33 @@ public abstract class MCParser extends Parser {
    * Returns the string of the token (counting from the current token). If the token does
    * not exist, an empty string is returned
    */
+  /**
+   * @deprecated Use {@link #getToken(int)} instead.
+   */
+  @Deprecated
   public String token(int i) {
     if (!checkToken(i)) {
       return "";
     }
     org.antlr.v4.runtime.Token t1 = _input.LT(i);
-    if (t1==null) {
-      return "";
-    }
     return t1.getText();
   }
 
+  /*
+   * Returns the string of the token (counting from the current token). If the token does
+   * not exist, an empty string is returned
+   */
+  public String getToken(int i) {
+    if (!checkToken(i)) {
+      return "";
+    }
+    org.antlr.v4.runtime.Token t1 = _input.LT(i);
+    return t1.getText();
+  }
+  
   protected boolean checkToken(int i) {
     if (_input.LT(i) == null) {
-      Log.warn("0xA0610 The token at position + " + i + " is not defined!");
+      Log.warn("0xA1610 The token at position + " + i + " is not defined!");
       return false;
     }
     return true;

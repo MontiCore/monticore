@@ -59,8 +59,10 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
 
       if (!typeCheckResult.isPresentCurrentResult()) {
-        Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
+        Log.error("0xE9CDB Internal Error: SymType argument missing for generic type. "
             + " Probably TypeCheck mis-configured.");
+        typeCheckResult.reset();
+        return;
       }
       arguments.add(typeCheckResult.getCurrentResult());
     }

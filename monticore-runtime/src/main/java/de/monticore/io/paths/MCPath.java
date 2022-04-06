@@ -4,17 +4,18 @@ package de.monticore.io.paths;
 
 import de.monticore.AmbiguityException;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.utils.Names;
+import de.monticore.io.MontiCoreClassLoader;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -38,7 +39,7 @@ public final class MCPath {
         // parent class loader MUST BE null here!
         // otherwise we would start to resolve from the system class path (or
         // worse) unknowingly
-        .forEach(url -> classloaderMap.put(new URLClassLoader(new URL[] { url }, null), url));
+        .forEach(url -> classloaderMap.put(new MontiCoreClassLoader(new URL[] { url }, null), url));
   }
 
   public MCPath(Path... entries) {
@@ -52,7 +53,7 @@ public final class MCPath {
   public void addEntry(Path entry) {
     Optional<URL> url = toURL(entry);
     if(url.isPresent() && !classloaderMap.containsValue(url.get())){
-      classloaderMap.put(new URLClassLoader(new URL[] { url.get() }, null), url.get());
+      classloaderMap.put(new MontiCoreClassLoader(new URL[] { url.get() }, null), url.get());
     }
   }
 
@@ -102,6 +103,18 @@ public final class MCPath {
     List<URL> resolvedURLs = new ArrayList<>();
     // iterate MCPath entries and check whether folder path exists within these
     for (Path p : getEntries()) {
+      if(p.toString().endsWith(".jar")){
+        String path = "/" + folderPath.replaceAll("\\\\", "/") + "/" + fileNameRegEx;
+        GlobExpressionEvaluator evaluator = new GlobExpressionEvaluator(path, getJarFS(p.toFile()), true);
+        resolvedURLs.addAll(evaluator.evaluate(p.toFile()).stream().map(uri -> {
+          try {
+            return uri.toURL();
+          } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+          }
+        }).collect(Collectors.toList()));
+      }
       File folder = p.resolve(folderPath).toFile(); //e.g., "src/test/resources/foo/bar"
       if (folder.exists() && folder.isDirectory()) {
         // perform the actual file filter on the folder and collect result
@@ -200,9 +213,19 @@ public final class MCPath {
         c.close();
       }
       catch (IOException e) {
-        Log.error("0xA1035 An exception occured while trying to close a class loader!", e);
+        Log.error("0xA1035 An exception occurred while trying to close a class loader!", e);
       }
     });
+  }
+
+  public static FileSystem getJarFS(File jar) {
+    try {
+      return FileSystems.newFileSystem(jar.toPath(), MCPath.class.getClassLoader());
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    return FileSystems.getDefault();
   }
 
 }

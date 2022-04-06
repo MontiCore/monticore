@@ -1,0 +1,24 @@
+package de.monticore.expressions;
+
+mlc ExpressionsBasis {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/ExpressionsBasis.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/expressionsbasis/**.java";
+  }
+
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/expressions/prettyprint/ExpressionsBasis*.java";
+  }
+
+  promote {
+    mlc "de.monticore.MCBasics";
+    mlc "de.monticore.literals.MCLiteralsBasis";
+  }
+}

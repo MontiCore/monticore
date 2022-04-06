@@ -64,7 +64,7 @@ public class CLIDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassName() {
-    assertEquals("AutomatonCLI", cliClass.getName());
+    assertEquals("AutomatonTool", cliClass.getName());
   }
 
   @Test

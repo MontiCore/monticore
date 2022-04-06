@@ -1,5 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
+
 # MontiCore Best Practices - A Guide For Small Solutions
 
 [MontiCore](http://www.monticore.de) provides a number of options to design 
@@ -29,7 +30,7 @@ of the reference manual.
 
 * [**Designing Symbols, Scopes and SymbolTables**](BestPractices-Symbols-Scopes.md) 
 
-* [**Designing Command Line Interfaces**](BestPractices-CLI.md) 
+* [**Designing Tools for Command Line Interfaces**](BestPractices-CLI.md) 
 
 * **Generating Code with Templates** (no practice defined here yet) 
 

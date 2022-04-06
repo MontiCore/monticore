@@ -9,6 +9,7 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -80,7 +81,8 @@ public class SymTypeExpressionTest {
 
   @BeforeClass
   public static void setUpScope(){
-    LogStub.init();
+//    LogStub.init();
+    Log.enableFailQuick(false);
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -153,16 +155,16 @@ public class SymTypeExpressionTest {
     assertEquals("null", teNull.print());
     assertEquals("Human[]", teArr1.print());
     assertEquals("int[][][]", teArr3.print());
-    assertEquals("java.util.Set<de.x.Person>", teSet.print());
-    assertEquals("java.util.Set<A>", teSetA.print());
-    assertEquals("Map<int,de.x.Person>", teMap.print());
-    assertEquals("x.Foo<de.x.Person,double,int,Human>", teFoo.print());
-    assertEquals("java.util.Set<Map<int,de.x.Person>>", teDeep1.print());
-    assertEquals("java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>", teDeep2.print());
+    assertEquals("java.util.Set<de.x.Person>", teSet.printFullName());
+    assertEquals("java.util.Set<A>", teSetA.printFullName());
+    assertEquals("Map<int,de.x.Person>", teMap.printFullName());
+    assertEquals("x.Foo<de.x.Person,double,int,Human>", teFoo.printFullName());
+    assertEquals("java.util.Set<Map<int,de.x.Person>>", teDeep1.printFullName());
+    assertEquals("java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>", teDeep2.printFullName());
     assertEquals("? super int", teUpperBound.print());
     assertEquals("? extends Human", teLowerBound.print());
     assertEquals("?",teWildcard.print());
-    assertEquals("java.util.Map<? super int,?>", teMap3.print());
+    assertEquals("java.util.Map<? super int,?>", teMap3.printFullName());
   }
 
   @Test
@@ -412,23 +414,23 @@ public class SymTypeExpressionTest {
     assertTrue(tA.isEmptyArguments());
 
     SymTypeOfGenerics tB = SymTypeExpressionFactory.createGenerics("B",scope,Lists.newArrayList(teArr1,teIntA));
-    assertEquals("B<Human[],java.lang.Integer>",tB.print());
+    assertEquals("B<Human[],java.lang.Integer>",tB.printFullName());
     assertEquals(2,tB.sizeArguments());
 
     SymTypeOfGenerics tC = SymTypeExpressionFactory.createGenerics("C",scope,teDeep1,teDeep2);
-    assertEquals("C<java.util.Set<Map<int,de.x.Person>>,java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>>",tC.print());
+    assertEquals("C<java.util.Set<Map<int,de.x.Person>>,java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>>",tC.printFullName());
     assertEquals(2,tC.sizeArguments());
 
     SymTypeOfGenerics tD = SymTypeExpressionFactory.createGenerics("D",scope);
-    assertEquals("D<>",tD.print());
+    assertEquals("D<>",tD.printFullName());
     assertTrue(tD.isEmptyArguments());
 
     SymTypeOfGenerics tE = SymTypeExpressionFactory.createGenerics("E",scope,Lists.newArrayList(teDouble,teMap));
-    assertEquals("E<double,Map<int,de.x.Person>>",tE.print());
+    assertEquals("E<double,Map<int,de.x.Person>>",tE.printFullName());
     assertEquals(2,tE.sizeArguments());
 
     SymTypeOfGenerics tF = SymTypeExpressionFactory.createGenerics("F",scope,teH,teP);
-    assertEquals("F<Human,de.x.Person>",tF.print());
+    assertEquals("F<Human,de.x.Person>",tF.printFullName());
     assertEquals(2,tF.sizeArguments());
 
     SymTypeArray tHuman = SymTypeExpressionFactory.createTypeArray("Human",scope,1,teH);

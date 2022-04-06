@@ -25,6 +25,9 @@ ${tc.include("parser.ParserHeader")}
   </#list>
 </#list>
 
+// parse EOF
+mc_eof : EOF ;
+
 <#list genHelper.getNoKeyordsWithInherited() as noKeyword>
   ${noKeyword}
 </#list>

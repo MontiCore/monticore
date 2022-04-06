@@ -4,10 +4,7 @@ package de.monticore.types.check;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-
-import java.util.Optional;
 
 /**
  * Delegator Visitor to test the combination of the grammars
@@ -42,16 +39,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
     init();
   }
 
-
-  @Override
-  public Optional<SymTypeExpression> getResult() {
-    if(typeCheckResult.isPresentCurrentResult()){
-      return Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    return Optional.empty();
-  }
-
-  @Override
   public CombineExpressionsWithLiteralsTraverser getTraverser(){
     return traverser;
   }
@@ -73,7 +60,6 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
   /**
    * initialize the typescalculator
    */
-  @Override
   public void init() {
     this.traverser = CombineExpressionsWithLiteralsMill.traverser();
     this.typeCheckResult = new TypeCheckResult();
@@ -102,6 +88,20 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
     traverser.setJavaClassExpressionsHandler(deriveSymTypeOfJavaClassExpressions);
     traverser.add4CombineExpressionsWithLiterals(deriveSymTypeOfCombineExpressions);
     traverser.setCombineExpressionsWithLiteralsHandler(deriveSymTypeOfCombineExpressions);
+  }
+
+  @Override
+  public TypeCheckResult deriveType(ASTLiteral lit) {
+    typeCheckResult.reset();
+    lit.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult deriveType(ASTExpression expr){
+    typeCheckResult.reset();
+    expr.accept(traverser);
+    return typeCheckResult.copy();
   }
 
 }

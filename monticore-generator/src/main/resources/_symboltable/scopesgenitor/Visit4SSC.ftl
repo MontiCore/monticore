@@ -33,6 +33,7 @@ ${tc.signature("symbolName", "simpleSymbolName", "simpleName", "scopeInterface",
 
   // ast -> scope
   node.setSpannedScope(scope);
+  initScopeHP1(scope);
 </#if>
   init${simpleSymbolName}HP1(node.getSymbol());
 <#if hasOptionalName>

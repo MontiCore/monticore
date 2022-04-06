@@ -1,0 +1,1 @@
+public strictfp method(){}

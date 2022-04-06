@@ -6,6 +6,7 @@ import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,23 +43,21 @@ public class DirectLeftRecursionDetectorTest {
 
   @Test
   public void testRecursiveRule() {
-    // firs
     final List<ASTClassProd> productions = astMCGrammarOptional.get().getClassProdList();
 
-    // TODO: add ASTAlt parameter to isAlternativeLeftRecursive-method
     final ASTClassProd exprProduction = productions.get(0);
-    /*
-    boolean isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(exprProduction);
+
+    boolean isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(exprProduction.getAlt(0), exprProduction.getName());
     Assert.assertTrue(isLeftRecursive);
 
     final ASTClassProd nonRecursiveProudction1 = productions.get(1);
-    isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction1);
+    isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction1.getAlt(0), nonRecursiveProudction1.getName());
     Assert.assertFalse(isLeftRecursive);
 
     final ASTClassProd nonRecursiveProudction2 = productions.get(2);
-    isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction2);
+    isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction2.getAlt(0), nonRecursiveProudction2.getName());
     Assert.assertFalse(isLeftRecursive);
-    */
+
   }
 
 }

@@ -1,0 +1,23 @@
+package de.monticore.expressions;
+
+mlc AssignmentExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/AssignmentExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/assignmentexpressions/**.java";
+  }
+
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/expressions/prettyprint/AssignmentExpressions*.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.ExpressionsBasis";
+  }
+}

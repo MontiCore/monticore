@@ -53,14 +53,12 @@ public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor2, 
   public void handle(ASTArguments node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
-    int count = 0;
+    String divider = "";
     if (!node.isEmptyExpressions()) {
       for (ASTExpression ast : node.getExpressionList()) {
-        if (count > 0) {
-          getPrinter().print(",");
-        }
+        getPrinter().print(divider);
         ast.accept(getTraverser());
-        count++;
+        divider = ",";
       }
     }
     getPrinter().print(")");

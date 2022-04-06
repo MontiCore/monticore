@@ -1,30 +1,31 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import com.google.common.collect.Lists;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.CoreTemplates.*;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -126,6 +127,8 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     for (DiagramSymbol cd : visitorService.getSuperCDsTransitive()) {
       superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
     }
+    // remove last element as it is covered by the handle call of the original handler
+    superScopesTransitive.remove(superScopesTransitive.size() - 1);
     superScopesTransitive.add(I_SCOPE);
     
     // handle language scope
@@ -158,11 +161,25 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
   protected List<ASTCDMethod> getSymbolHandleMethods(ASTCDDefinition cdDefinition, String handlerSimpleTypeName) {
     List<ASTCDMethod> handleMethods = new ArrayList<ASTCDMethod>();
     for (ASTCDType symbol : symbolTableService.getSymbolDefiningProds(cdDefinition)) {
-      ASTCDMethod handleSybolMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getSymbolTypeFromAstType(symbol));
-      handleMethods.add(handleSybolMethod);
-      replaceTemplate(EMPTY_BODY, handleSybolMethod, 
+      List<String> superList = new ArrayList<>();
+      boolean hasScope = symbolTableService.hasScopeStereotype(symbol.getModifier());
+      boolean hasInheritedSymbol = symbolTableService.hasInheritedSymbolStereotype(symbol.getModifier());
+      boolean hasInheritedScope = symbolTableService.hasInheritedScopeStereotype(symbol.getModifier());
+      ASTCDMethod handleSymbolMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getSymbolTypeFromAstType(symbol));
+      handleMethods.add(handleSymbolMethod);
+      if (hasInheritedSymbol) {
+        for (String superSymbol: symbolTableService.getInheritedSymbolPropertyTypes(Lists.newArrayList(symbol)).values()) {
+          superList.add(superSymbol);
+        }
+      }
+      superList.add(symbolTableService.getCommonSymbolInterfaceFullName());
+      if (hasScope || hasInheritedScope) {
+        superList.add(I_SCOPE_SPANNING_SYMBOL);
+      }
+      superList.add(I_SYMBOL);
+      replaceTemplate(EMPTY_BODY, handleSymbolMethod,
           new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE, 
-              handlerSimpleTypeName, Arrays.asList(new String[] {I_SYMBOL})));
+              handlerSimpleTypeName, superList));
     }
     return handleMethods;
   }

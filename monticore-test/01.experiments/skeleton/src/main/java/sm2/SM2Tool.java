@@ -4,15 +4,19 @@ package sm2;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import sm2._ast.ASTAutomaton;
 import sm2._cocos.SM2CoCoChecker;
 import sm2._parser.SM2Parser;
 import sm2._symboltable.*;
+import sm2._visitor.SM2Traverser;
 import sm2.cocos.AtLeastOneInitialState;
 import sm2.cocos.SM2CoCos;
 import sm2.cocos.StateNameStartsWithCapitalLetter;
 import sm2.cocos.TransitionSourceExists;
-import sm2._visitor.SM2Traverser;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,103 +25,77 @@ import java.util.Optional;
  * Main class for the SM2 DSL tool.
  *
  */
-public class SM2Tool {
-  
+public class SM2Tool extends SM2ToolTOP {
+
   /**
    * Use the single argument for specifying the single input sm2 file.
    *
    * @param args
    */
   public static void main(String[] args) {
-  
     // use normal logging (no DEBUG, TRACE)
     Log.ensureInitalization();
-    
-    if (args.length != 1) {
-      Log.error("0xEE744 Please specify only one single path to the input model.");
-      return;
-    }
-    Log.info("SM2 DSL Tool", SM2Tool.class.getName());
-    Log.info("------------------", SM2Tool.class.getName());
-    String model = args[0];
-    
-    // parse the model and create the AST representation
-    final ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", SM2Tool.class.getName());
-    
-    // setup the symbol table
-    ISM2ArtifactScope modelTopScope = createSymbolTable(ast);
-    // can be used for resolving things in the model
-    Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
-    if (aSymbol.isPresent()) {
-      Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
-          SM2Tool.class.getName());
-    }
-    
-    // execute default context conditions
-    runDefaultCoCos(ast);
-   
-    // execute a custom set of context conditions
-    SM2CoCoChecker customCoCos = new SM2CoCoChecker();
-    customCoCos.addCoCo(new StateNameStartsWithCapitalLetter());
-    customCoCos.checkAll(ast);
 
-    // analyze the model with a visitor
-    SM2Traverser t1 = SM2Mill.traverser();
-    CountStates cs = new CountStates();
-    t1.add4SM2(cs);
-    t1.handle(ast);
-    Log.info("The model contains " + cs.getCount() + " states.", SM2Tool.class.getName());
-    
-    // execute a pretty printer
-    SM2Traverser t2 = SM2Mill.traverser();
-    PrettyPrinter pp = new PrettyPrinter();
-    t2.add4SM2(pp);
-    t2.setSM2Handler(pp);
-    t2.handle(ast);
-    Log.info("Pretty printing the parsed sm2 into console:", SM2Tool.class.getName());
-    Log.println(pp.getResult());
+    Log.info("SM2 DSL Tool", "SM2Tool");
+    Log.info("------------------", "SM2Tool");
+    SM2Tool sm2Tool = new SM2Tool();
+    sm2Tool.run(args);
   }
-  
-  /**
-   * Parse the model contained in the specified file.
-   *
-   * @param model - file to parse
-   * @return
-   */
-  public static ASTAutomaton parse(String model) {
+
+  @Override
+  public void run(String[] args) {
+    SM2Mill.init();
+    Options options = initOptions();
     try {
-      SM2Parser parser = new SM2Parser() ;
-      Optional<ASTAutomaton> optAutomaton = parser.parse(model);
-      
-      if (!parser.hasErrors() && optAutomaton.isPresent()) {
-        return optAutomaton.get();
+      //create CLI Parser and parse input options from commandline
+      CommandLineParser cliparser = new org.apache.commons.cli.DefaultParser();
+      CommandLine cmd = cliparser.parse(options, args);
+
+      //help: when --help
+      if (cmd.hasOption("h") || !cmd.hasOption("i")) {
+        printHelp(options);
+        //do not continue, when help is printed.
+        return;
       }
-      Log.error("0xEE844 Model could not be parsed.");
-    }
-    catch (RecognitionException | IOException e) {
-      Log.error("0xEE644 Failed to parse " + model, e);
-    }
-    return null;
-  }
-  
-  /**
-   * Create the symbol table from the parsed AST.
-   *
-   * @param ast
-   * @return
-   */
-  public static ISM2ArtifactScope createSymbolTable(ASTAutomaton ast) {
-    ISM2GlobalScope globalScope = SM2Mill.globalScope();
-    globalScope.setSymbolPath(new MCPath());
-    globalScope.setFileExt("aut");
+      //version: when --version
+      else if (cmd.hasOption("v")) {
+        printVersion();
+        //do not continue when help is printed
+        return;
+      }
 
-    SM2ScopesGenitorDelegator symbolTable = SM2Mill
-        .scopesGenitorDelegator();
+      if (cmd.hasOption("i")) {
+        String model = cmd.getOptionValue("i");
+        final ASTAutomaton ast = parse(model);
+        Log.info(model + " parsed successfully!", "SM2Tool");
+        ISM2GlobalScope globalScope = SM2Mill.globalScope();
+        globalScope.setFileExt("aut");
+        globalScope.setSymbolPath(new MCPath());
+        ISM2ArtifactScope symbolTable = createSymbolTable(ast);
+        // can be used for resolving things in the model
+        Optional<StateSymbol> aSymbol = symbolTable.resolveState("Ping");
+        if (aSymbol.isPresent()) {
+          Log.info("Resolved state symbol \"Ping\"; FQN = " + aSymbol.get().toString(),
+            "SM2Tool");
+        }
+        runDefaultCoCos(ast);
+        runAdditionalCoCos(ast);
+        // analyze the model with a visitor
+        CountStates cs = new CountStates();
+        SM2Traverser traverser = SM2Mill.traverser();
+        traverser.add4SM2(cs);
+        ast.accept(traverser);
+        Log.info("The model contains " + cs.getCount() + " states.", "SM2Tool");
+        prettyPrint(ast,"");
+      }
 
-    return symbolTable.createFromAST(ast);
+    } catch (ParseException e) {
+      // e.getMessage displays the incorrect input-parameters
+      Log.error("0xEE744 Could not process SM2Tool parameters: " + e.getMessage());
+    }
   }
-  
+
+
   /**
    * Run the default context conditions {@link AtLeastOneInitialState},
    * {@link TransitionSourceExists}, and
@@ -125,8 +103,27 @@ public class SM2Tool {
    *
    * @param ast
    */
-  public static void runDefaultCoCos(ASTAutomaton ast) {
+  @Override
+  public  void runDefaultCoCos(ASTAutomaton ast) {
     new SM2CoCos().getCheckerForAllCoCos().checkAll(ast);
   }
-  
+
+  @Override
+  public void runAdditionalCoCos(ASTAutomaton ast){
+    SM2CoCoChecker customCoCos = new SM2CoCoChecker();
+    customCoCos.addCoCo(new StateNameStartsWithCapitalLetter());
+    customCoCos.checkAll(ast);
+  }
+
+  @Override
+  public void prettyPrint(ASTAutomaton ast, String file){
+    PrettyPrinter pp = new PrettyPrinter();
+    SM2Traverser traverser2 = SM2Mill.traverser();
+    traverser2.add4SM2(pp);
+    traverser2.setSM2Handler(pp);
+    ast.accept(traverser2);
+    Log.info("Pretty printing the parsed sm2 into console:", "SM2Tool");
+    Log.println(pp.getResult());
+  }
+
 }

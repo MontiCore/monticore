@@ -1,0 +1,23 @@
+package de.monticore.expressions;
+
+mlc BitExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/BitExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/bitexpressions/**.java";
+  }
+
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/expressions/prettyprint/BitExpressions*.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.ExpressionsBasis";
+  }
+}

@@ -35,7 +35,7 @@ Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 Reporting.init(out.getAbsolutePath(),
         report.getAbsolutePath(), reportManagerFactory)
 
-// M 1.3: Initialize glex
+// M1.3: Initialize glex
 glex = initGlex(_configuration)
 
 // groovy script hook point
@@ -98,7 +98,7 @@ while (grammarIterator.hasNext()) {
     // M9.1: Inform about successful completion for grammar
     Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 
-    // M9.2: Flush reporting
+    // M10: Flush reporting
     Reporting.reportModelEnd(astGrammar.getName(), "")
     Reporting.flush(astGrammar)
   }

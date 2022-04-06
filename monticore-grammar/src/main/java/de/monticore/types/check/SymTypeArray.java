@@ -19,7 +19,6 @@ public class SymTypeArray extends SymTypeExpression {
   /**
    * An Array has an argument Type
    */
-  //todo NP what is the argument for?
   protected SymTypeExpression argument;
 
   /**
@@ -29,6 +28,7 @@ public class SymTypeArray extends SymTypeExpression {
    * @param argument Argument Type
    * @param typeSymbol loader for the Type-Symbol that defines this type
    */
+  //todo: TypeSymbul UND Expression: da ist was doppelt?
   public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
     this.typeSymbol = typeSymbol;
     this.dim = dim;

@@ -8,6 +8,10 @@ import automata.prettyprint.PrettyPrinter;
 import automata.visitors.CountStates;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -16,7 +20,7 @@ import java.util.Optional;
  * Main class for the Automaton DSL tool.
  *
  */
-public class AutomataTool {
+public class AutomataTool extends AutomataToolTOP {
   
   /**
    * Use the single argument for specifying the single input automaton file.
@@ -35,32 +39,65 @@ public class AutomataTool {
    * @param args
    */
   public void run(String[] args) {
-    
-    // Retrieve the model name
-    // (this is only a very reduced CLI)
-    if (args.length != 1) {
-      Log.error("0xEE7400 Please specify 1. the path to the input model");
-      return;
+    AutomataMill.init();
+    Options options = initOptions();
+
+    try {
+      //create CLI Parser and parse input options from commandline
+      CommandLineParser cliparser = new org.apache.commons.cli.DefaultParser();
+      CommandLine cmd = cliparser.parse(options, args);
+
+      //help: when --help
+      if (cmd.hasOption("h")) {
+        printHelp(options);
+        //do not continue, when help is printed.
+        return;
+      }
+      //version: when --version
+      else if (cmd.hasOption("v")) {
+        printVersion();
+        //do not continue when help is printed
+        return;
+      }
+
+      Log.info("Automata DSL Tool", "AutomataTool");
+      Log.info("------------------", "AutomataTool");
+
+      if (cmd.hasOption("i")) {
+        String model = cmd.getOptionValue("i");
+
+        // parse the model and create the AST representation
+        ASTAutomaton ast = parse(model);
+        Log.info(model + " parsed successfully!", "AutomataTool");
+
+        // setup the symbol table: deliberately omitted here
+
+        // check the CoCos: deliberately omitted here
+
+        // analyze the model with a visitor
+        CountStates cs = new CountStates();
+        AutomataTraverser traverser = AutomataMill.traverser();
+        traverser.add4Automata(cs);
+        ast.accept(traverser);
+        Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
+        prettyPrint(ast, "");
+      }else{
+        printHelp(options);
+      }
+    } catch (ParseException e) {
+      // e.getMessage displays the incorrect input-parameters
+      Log.error("0xEE751 Could not process AutomataTool parameters: " + e.getMessage());
     }
-    Log.info("Automaton DSL Tool", "AutomataTool");
-    Log.info("------------------", "AutomataTool");
-    String model = args[0];
 
-    // parse the model and create the AST representation
-    ASTAutomaton ast = parse(model);
-    Log.info(model + " parsed successfully!", "AutomataTool");
 
-    // setup the symbol table: deliberately omitted here
-    
-    // check the CoCos: deliberately omitted here
-    
-    // analyze the model with a visitor
-    CountStates cs = new CountStates();
-    AutomataTraverser traverser = AutomataMill.traverser();
-    traverser.add4Automata(cs);
-    ast.accept(traverser);
-    Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
 
+
+
+
+  }
+
+  @Override
+  public void prettyPrint(ASTAutomaton ast, String file){
     // execute a pretty printer
     PrettyPrinter pp = new PrettyPrinter();
     AutomataTraverser traverser2 = AutomataMill.traverser();
@@ -70,29 +107,6 @@ public class AutomataTool {
     Log.info("Pretty printing the parsed automaton into console:", "AutomataTool");
     // print the result
     Log.println(pp.getResult());
-  }
-
-  /**
-   * Parse the model contained in the specified file.
-   *
-   * @param model - file to parse
-   * @return
-   */
-  public static ASTAutomaton parse(String model) {
-    try {
-      AutomataParser parser = new AutomataParser() ;
-      Optional<ASTAutomaton> optAutomaton = parser.parse(model);
-
-      if (!parser.hasErrors() && optAutomaton.isPresent()) {
-        return optAutomaton.get();
-      }
-      Log.error("0xEE840 Model could not be parsed.");
-    }
-    catch (RecognitionException | IOException e) {
-      Log.error("0xEE640 Failed to parse " + model, e);
-    }
-    System.exit(1);
-    return null;
   }
   
 }

@@ -132,8 +132,8 @@ public class LexNamer {
     }
     
     String goodName = createGoodName(sym);
-    if (goodName.isEmpty() && grammarSymbol.getProd(goodName).isPresent()) {
-      goodName = "_LEXNAME" + lexCounter++;
+    if (goodName.isEmpty() || grammarSymbol.getProd(goodName).isPresent()) {
+      goodName = "LEXNAME" + lexCounter++;
     }
     usedLex.put(sym, goodName);
     Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");

@@ -240,8 +240,30 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testLoadFileForModelNameMethod(){
+    ASTCDMethod method = getMethodBy("loadFileForModelName", scopeInterface);
+
+    assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("modelName", method.getCDParameter(0).getName());
+  }
+
+  @Test
   public void testMethodCount() {
-    assertEquals(85, scopeInterface.getCDMethodList().size());
+    assertEquals(95, scopeInterface.getCDMethodList().size());
+  }
+
+  @Test
+  public void testPutStateDeSer() {
+    ASTCDMethod method = getMethodBy("putStateSymbolDeSer", scopeInterface);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+    assertEquals("kind", method.getCDParameter(0).getName());
   }
 
 }

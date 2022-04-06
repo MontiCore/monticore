@@ -7,7 +7,9 @@ package de.monticore.visitor;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.SymbolWithScopeOfUnknownKind;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,21 @@ public interface ITraverser {
     getIVisitorList().forEach(v -> v.endVisit(symbol));
   }
 
+  // IScopeSpanningSymbol
+  default void handle(IScopeSpanningSymbol symbol) {
+    visit(symbol);
+    // no traverse() for abstract classes, interfaces and enums, only concrete classes are traversed
+    endVisit(symbol);
+  }
+
+  default void visit(IScopeSpanningSymbol symbol) {
+    getIVisitorList().forEach(v -> v.visit(symbol));
+  }
+
+  default void endVisit(IScopeSpanningSymbol symbol) {
+    getIVisitorList().forEach(v -> v.endVisit(symbol));
+  }
+
   // IScope
   default void handle(IScope scope) {
     visit(scope);
@@ -65,4 +82,27 @@ public interface ITraverser {
   default void endVisit(IScope scope) {
     getIVisitorList().forEach(v -> v.endVisit(scope));
   }
+
+  default void traverse(IScope scope) {
+    for (SymbolWithScopeOfUnknownKind s : scope.getLocalUnknownSymbols()) {
+      s.accept(this);
+    }
+  }
+
+  default void handle(SymbolWithScopeOfUnknownKind symbol) {
+    visit(symbol);
+    traverse(symbol);
+    endVisit(symbol);
+  }
+
+  default void visit(SymbolWithScopeOfUnknownKind symbol) {
+    getIVisitorList().forEach(v -> v.visit(symbol));
+  }
+
+  default void endVisit(SymbolWithScopeOfUnknownKind symbol) {
+    getIVisitorList().forEach(v -> v.endVisit(symbol));
+  }
+
+  default void traverse(SymbolWithScopeOfUnknownKind symbol) {}
+
 }

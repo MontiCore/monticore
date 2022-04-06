@@ -22,5 +22,5 @@ try{
 
 }catch (org.apache.commons.cli.ParseException e) {
    // e.getMessage displays the incorrect input-parameters
-   Log.error("0xA5C01${generatedError} Could not process ${cliName} parameters: " + e.getMessage());
+   Log.error("0xA5C06${generatedError} Could not process ${cliName} parameters: " + e.getMessage());
  }

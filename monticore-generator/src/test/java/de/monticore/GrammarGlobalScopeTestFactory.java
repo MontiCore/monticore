@@ -15,8 +15,8 @@ public class GrammarGlobalScopeTestFactory {
     IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
-    scope.getModelPath().addEntry(Paths.get("src/test/resources"));
+    scope.getSymbolPath().addEntry(Paths.get("src/test/resources"));
     return (GrammarFamilyGlobalScope) scope;
   }
-
+  
 }

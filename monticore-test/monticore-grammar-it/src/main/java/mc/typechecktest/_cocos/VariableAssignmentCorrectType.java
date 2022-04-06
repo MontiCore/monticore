@@ -3,14 +3,15 @@ package mc.typechecktest._cocos;
 
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTAssignmentExpressionCoCo;
+import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 
 public class VariableAssignmentCorrectType implements AssignmentExpressionsASTAssignmentExpressionCoCo {
 
-  protected TypeCheck tc;
+  protected TypeCalculator tc;
 
-  public VariableAssignmentCorrectType(TypeCheck tc){
+  public VariableAssignmentCorrectType(TypeCalculator tc){
     this.tc = tc;
   }
 

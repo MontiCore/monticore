@@ -12,7 +12,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeConstant.unbox;
-import static de.monticore.types.check.TypeCheck.*;
 import static de.monticore.types.check.TypeCheck.isFloat;
 
 public abstract class AbstractDeriveFromExpression {
@@ -22,7 +21,7 @@ public abstract class AbstractDeriveFromExpression {
   public IBasicSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){
     // is accepted only here, decided on 07.04.2020
     if(!(expressionsBasisScope instanceof IBasicSymbolsScope)){
-      Log.error("0xA0307 the enclosing scope of the expression does not implement the interface IBasicSymbolsScope");
+      Log.error("0xA2307 the enclosing scope of the expression does not implement the interface IBasicSymbolsScope");
     }
     // is accepted only here, decided on 07.04.2020
     return (IBasicSymbolsScope) expressionsBasisScope;
@@ -62,11 +61,11 @@ public abstract class AbstractDeriveFromExpression {
    * @param expression the expression the SymTypeExpressions is calculated for
    * @return the SymTypeExpression of the expression
    */
-  protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTExpression expression){
-    SymTypeExpression result = null;
+  protected Optional<SymTypeExpression> acceptThisAndReturnSymTypeExpression(ASTExpression expression){
+    Optional<SymTypeExpression> result = Optional.empty();
     expression.accept(getTraverser());
     if(typeCheckResult.isPresentCurrentResult()){
-      result = typeCheckResult.getCurrentResult();
+      result = Optional.of(typeCheckResult.getCurrentResult());
     }
     return result;
   }
@@ -76,11 +75,11 @@ public abstract class AbstractDeriveFromExpression {
    * @param literal the literal the SymTypeExpressions is calculated for
    * @return the SymTypeExpression of the literal
    */
-  protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTLiteral literal){
-    SymTypeExpression result = null;
+  protected Optional<SymTypeExpression> acceptThisAndReturnSymTypeExpression(ASTLiteral literal){
+    Optional<SymTypeExpression> result = Optional.empty();
     literal.accept(getTraverser());
     if(typeCheckResult.isPresentCurrentResult()){
-      result = typeCheckResult.getCurrentResult();
+      result = Optional.of(typeCheckResult.getCurrentResult());
     }
     return result;
   }
@@ -92,12 +91,12 @@ public abstract class AbstractDeriveFromExpression {
    * @param errorCode the code which is logged in case of an error
    * @return the SymTypeExpression of the expression
    */
-  protected SymTypeExpression acceptThisAndReturnSymTypeExpressionOrLogError(ASTExpression expression, String errorCode) {
-    SymTypeExpression result = null;
+  protected Optional<SymTypeExpression> acceptThisAndReturnSymTypeExpressionOrLogError(ASTExpression expression, String errorCode) {
+    Optional<SymTypeExpression> result = Optional.empty();
     if (expression != null) {
       result = acceptThisAndReturnSymTypeExpression(expression);
     }
-    if (result == null) {
+    if (!result.isPresent()) {
       logError(errorCode, expression.get_SourcePositionStart());
     }
     return result;
@@ -107,7 +106,7 @@ public abstract class AbstractDeriveFromExpression {
    * test if the expression is of numeric type (double, float, long, int, char, short, byte)
    */
   public boolean isNumericType(SymTypeExpression type) {
-    return (isDouble(type) || isFloat(type) ||
+    return (TypeCheck.isDouble(type) || isFloat(type) ||
         isIntegralType(type));
   }
 
@@ -115,19 +114,19 @@ public abstract class AbstractDeriveFromExpression {
    * test if the expression is of integral type (long, int, char, short, byte)
    */
   public boolean isIntegralType(SymTypeExpression type) {
-    return (isLong(type) || isInt(type) ||
-        isChar(type) || isShort(type) ||
-        isByte(type));
+    return (TypeCheck.isLong(type) || TypeCheck.isInt(type) ||
+        TypeCheck.isChar(type) || TypeCheck.isShort(type) ||
+        TypeCheck.isByte(type));
   }
 
   /**
    * helper method for the calculation of the ASTBooleanNotExpression
    */
   protected Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
-    if (isByte(type) || isShort(type) || isChar(type) || isInt(type)) {
+    if (TypeCheck.isByte(type) || TypeCheck.isShort(type) || TypeCheck.isChar(type) || TypeCheck.isInt(type)) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
     }
-    if (isLong(type) || isDouble(type) || isFloat(type)) {
+    if (TypeCheck.isLong(type) || TypeCheck.isDouble(type) || isFloat(type)) {
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(type.print())));
     }
     return Optional.empty();
