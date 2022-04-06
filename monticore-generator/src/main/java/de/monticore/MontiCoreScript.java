@@ -5,6 +5,7 @@ package de.monticore;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
@@ -1187,7 +1188,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
-    BasicSymbolsMill.initializePrimitives();
+    BuiltInTypes.addBuiltInTypes(scope);
 
     // Set ModelPath
     scope.setSymbolPath(modelPath);
