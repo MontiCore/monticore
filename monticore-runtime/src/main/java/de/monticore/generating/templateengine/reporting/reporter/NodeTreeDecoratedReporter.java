@@ -62,6 +62,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
     serializedTreeResult = Lists.newArrayList();
     this.traverser = traverser;
     this.tpv = new TreePrintVisitor();
+    tpv.setRepo(repository);
     traverser.add4IVisitor(tpv);
   }
   
