@@ -14,7 +14,7 @@ ${tc.signature("symbolMap", "mill", "errorCode", "scopeDeserName", "scopeInterfa
 
     if (null == deSer) {
       Log.debug(
-        "No DeSer found to deserialize symbol of kind `" + kind
+        "0xA1234xx81662 No DeSer found to deserialize symbol of kind `" + kind
         + "`. Falling back to default for symbols of unknown kinds.",
         ${scopeDeserName}.class.getName()
       );
