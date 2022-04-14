@@ -141,6 +141,7 @@ checkMLCs:
   script:
     - "gradle checkArtifacts"
   artifacts:
+    when: always
     paths:
       - "*/target/**/generated-sources/**/reports/"
     expire_in: 1 week
