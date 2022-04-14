@@ -140,6 +140,10 @@ checkMLCs:
     - build
   script:
     - "gradle checkArtifacts"
+  artifacts:
+    paths:
+      - "*/target/**/generated-sources/**/reports/"
+    expire_in: 1 week
   allow_failure: true
 
 sonar:

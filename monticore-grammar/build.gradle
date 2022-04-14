@@ -153,7 +153,7 @@ fileTree("src").matching { include '**/*.mlc' }.each {
         classpath = configurations.MLC
         group = 'MLC'
         mainClass = 'de.monticore.mlc.MLCTool'
-        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
+        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${grammarOutDir}/reports", "-all"
         dependsOn("generateGrammar${mlcName}")
         showArtifacts.dependsOn("showArtifacts${mlcName}")
     }
@@ -162,7 +162,7 @@ fileTree("src").matching { include '**/*.mlc' }.each {
         classpath = configurations.MLC
         group = 'MLC'
         mainClass = 'de.monticore.mlc.MLCTool'
-        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
+        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${grammarOutDir}/reports"
         dependsOn("generateGrammar${mlcName}")
         checkArtifacts.dependsOn("checkArtifacts${mlcName}")
     }
