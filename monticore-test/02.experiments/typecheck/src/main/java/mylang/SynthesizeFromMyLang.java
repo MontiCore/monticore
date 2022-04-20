@@ -2,25 +2,42 @@
 package mylang;
 
 import de.monticore.types.check.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import mylang._visitor.MyLangTraverser;
-
-import java.util.Optional;
 
 public class SynthesizeFromMyLang implements ISynthesize {
   
   protected MyLangTraverser traverser;
   protected TypeCheckResult typeCheckResult;
-  
-  @Override 
-  public Optional<SymTypeExpression> getResult() {
-    if(typeCheckResult.isPresentCurrentResult()){
-      return Optional.of(typeCheckResult.getCurrentResult());
-    }
-    return Optional.empty();
+
+  public SynthesizeFromMyLang(){
+    init();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCQualifiedName qName) {
+    init();
+    qName.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCReturnType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
   }
   
-  @Override 
   public void init() {
     // use new result wrapper and traverser
     traverser = MyLangMill.traverser();
@@ -41,7 +58,6 @@ public class SynthesizeFromMyLang implements ISynthesize {
     traverser.setMCArrayTypesHandler(at);
   }
   
-  @Override 
   public MCBasicTypesTraverser getTraverser() {
     return traverser;
   }

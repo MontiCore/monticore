@@ -5,6 +5,7 @@ import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
 import de.monticore.statements.mcassertstatements._cocos.MCAssertStatementsASTAssertStatementCoCo;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
 public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
@@ -17,9 +18,9 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
   
   public static final String ERROR_MSG_FORMAT_2 = "Assert-statement must not be of void type.";
   
-  TypeCheck typeCheck;
+  TypeCalculator typeCheck;
   
-  public AssertIsValid(TypeCheck typeCheck){
+  public AssertIsValid(TypeCalculator typeCheck){
     
     this.typeCheck = typeCheck;
     

@@ -9,8 +9,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 
 import java.util.Optional;
 
-import static de.monticore.types.check.TypeCheck.*;
-
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in BitExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
@@ -36,7 +34,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   }
 
   protected Optional<SymTypeExpression> calculateLeftShiftExpression(ASTLeftShiftExpression expr) {
-    return calculateTypeShift(expr, expr.getRight(), expr.getLeft());
+    return calculateTypeShift(expr.getRight(), expr.getLeft());
   }
 
   @Override
@@ -46,7 +44,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   }
 
   protected Optional<SymTypeExpression> calculateRightShiftExpression(ASTRightShiftExpression expr) {
-    return calculateTypeShift(expr, expr.getRight(), expr.getLeft());
+    return calculateTypeShift(expr.getRight(), expr.getLeft());
   }
 
   @Override
@@ -56,7 +54,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   }
 
   protected Optional<SymTypeExpression> calculateLogicalRightShiftExpression(ASTLogicalRightShiftExpression expr) {
-    return calculateTypeShift(expr, expr.getRight(), expr.getLeft());
+    return calculateTypeShift(expr.getRight(), expr.getLeft());
   }
 
   @Override
@@ -92,23 +90,29 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   /**
    * helper method for the calculation of the type of the ShiftExpressions
    */
-  protected Optional<SymTypeExpression> calculateTypeShift(ASTShiftExpression expr, ASTExpression right, ASTExpression left) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0206");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0207");
-    return calculateTypeShift(expr, leftResult, rightResult);
+  protected Optional<SymTypeExpression> calculateTypeShift(ASTExpression right, ASTExpression left) {
+    Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0206");
+    Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0207");
+    if (leftResult.isPresent() && rightResult.isPresent()) {
+      return calculateTypeShift(leftResult.get(), rightResult.get());
+    } else {
+      typeCheckResult.reset();
+      return Optional.empty();
+    }
   }
 
-  protected Optional<SymTypeExpression> calculateTypeShift(ASTShiftExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
+  protected Optional<SymTypeExpression> calculateTypeShift(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     if (leftResult.isTypeConstant() && rightResult.isTypeConstant()) {
       SymTypeConstant leftEx = (SymTypeConstant) leftResult;
       SymTypeConstant rightEx = (SymTypeConstant) rightResult;
 
       //only defined on integral type - integral type
       if (isIntegralType(leftEx) && isIntegralType(rightEx)) {
-        return shiftCalculator(expr, leftResult, rightResult);
+        return shiftCalculator(leftResult, rightResult);
       }
     }
     //should not happen, will be handled in traverse
+    typeCheckResult.reset();
     return Optional.empty();
   }
 
@@ -116,9 +120,14 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
    * helper method for the calculation of the type of the BinaryExpressions
    */
   protected Optional<SymTypeExpression> calculateTypeBinary(ASTExpression left, ASTExpression right) {
-    SymTypeExpression leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0208");
-    SymTypeExpression rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0209");
-    return calculateTypeBinary(leftResult, rightResult);
+    Optional<SymTypeExpression> leftResult = acceptThisAndReturnSymTypeExpressionOrLogError(left, "0xA0208");
+    Optional<SymTypeExpression> rightResult = acceptThisAndReturnSymTypeExpressionOrLogError(right, "0xA0209");
+    if (leftResult.isPresent() && rightResult.isPresent()) {
+      return calculateTypeBinary(leftResult.get(), rightResult.get());
+    } else {
+      typeCheckResult.reset();
+      return Optional.empty();
+    }
   }
 
   protected Optional<SymTypeExpression> calculateTypeBinary(SymTypeExpression leftResult, SymTypeExpression rightResult) {
@@ -127,13 +136,14 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
       SymTypeConstant rightEx = (SymTypeConstant) rightResult;
 
       //only defined on boolean - boolean and integral type - integral type
-      if (isBoolean(leftResult) && isBoolean(rightResult)) {
+      if (TypeCheck.isBoolean(leftResult) && TypeCheck.isBoolean(rightResult)) {
         return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
       } else if (isIntegralType(leftEx) && isIntegralType(rightEx)) {
         return getBinaryNumericPromotion(leftResult, rightResult);
       }
     }
     //should not happen, no valid result, error will be handled in traverse
+    typeCheckResult.reset();
     return Optional.empty();
   }
 
@@ -141,8 +151,9 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
    * helper method to calculate the type of the ShiftExpressions
    * cannot be linked with the BinaryExpressions because they are not calculated the same way
    */
-  protected Optional<SymTypeExpression> shiftCalculator(ASTShiftExpression expr, SymTypeExpression left, SymTypeExpression right) {
+  protected Optional<SymTypeExpression> shiftCalculator(SymTypeExpression left, SymTypeExpression right) {
     if (!left.isTypeConstant() || !right.isTypeConstant()){
+      typeCheckResult.reset();
       return Optional.empty();
     }
     SymTypeConstant leftResult = (SymTypeConstant) left;
@@ -150,8 +161,8 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
 
     //only defined on integral type - integral type
     if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
-      if (isLong(rightResult)) {
-        if (isLong(leftResult)) {
+      if (TypeCheck.isLong(rightResult)) {
+        if (TypeCheck.isLong(leftResult)) {
           return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
         } else {
           return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
@@ -161,6 +172,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
       }
     }
     //should never happen
+    typeCheckResult.reset();
     return Optional.empty();
   }
 
@@ -172,8 +184,8 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
     if(left.isTypeConstant() && right.isTypeConstant()) {
       SymTypeConstant leftResult = (SymTypeConstant) left;
       SymTypeConstant rightResult = (SymTypeConstant) right;
-      if ((isLong(leftResult) && rightResult.isIntegralType()) ||
-          (isLong(rightResult) && leftResult.isIntegralType())) {
+      if ((TypeCheck.isLong(leftResult) && rightResult.isIntegralType()) ||
+          (TypeCheck.isLong(rightResult) && leftResult.isIntegralType())) {
         return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
         //no part of the expression is a long -> if both parts are integral types then the result is a int
       }else{
@@ -183,6 +195,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
       }
     }
     //should not happen, no valid result, error will be handled in traverse
+    typeCheckResult.reset();
     return Optional.empty();
   }
 }

@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.grammar.cocos;
+package de.monticore.grammar;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
@@ -13,12 +13,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class NoExtensionOfSymbolThatOnlySpansScope implements GrammarASTMCGrammarCoCo {
+// TODO Delete after release 7.4.0
+@Deprecated
+public class NoExtensionOfSymbolThatOnlySpansScopeFix implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA0810";
 
   public static final String ERROR_MSG_FORMAT = " The production %s extends the symbol production %s and spans a scope " +
-          "without being a symbol itself.";
+    "without being a symbol itself.";
 
   protected boolean hasSymbol;
   protected boolean hasScope;

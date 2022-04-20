@@ -5,6 +5,7 @@ package de.monticore;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
@@ -87,8 +88,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.grammar.GrammarCoCosFix;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
@@ -390,7 +391,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void runGrammarCoCos(ASTMCGrammar ast, IGrammar_WithConceptsGlobalScope scope) {
     // Run context conditions
     GrammarFamilyCoCoChecker checker = new GrammarFamilyCoCoChecker();
-    checker.addChecker((new GrammarCoCos()).getCoCoChecker());
+    checker.addChecker((new GrammarCoCosFix()).getCoCoChecker());
     checker.checkAll(ast);
     return;
   }
@@ -1187,7 +1188,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
     // reset global scope
     scope.clear();
-    BasicSymbolsMill.initializePrimitives();
+    BuiltInTypes.addBuiltInTypes(scope);
 
     // Set ModelPath
     scope.setSymbolPath(modelPath);

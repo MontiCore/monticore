@@ -5,7 +5,6 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
@@ -15,12 +14,8 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -98,11 +93,23 @@ public class MCType2SymTypeExpressionTest {
   List<String> primitiveTypes = Arrays
       .asList("boolean", "byte", "char", "short", "int", "long", "float", "double");
 
-  private SymTypeExpression mcType2TypeExpression(ASTMCBasicTypesNode type) {
+  private SymTypeExpression mcType2TypeExpression(ASTMCType type) {
     type.accept(traverser);
     SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator visitor = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
-    type.accept(visitor.getTraverser());
-    return visitor.getResult().get();
+    return visitor.synthesizeType(type).getCurrentResult();
+  }
+
+  private SymTypeExpression mcType2TypeExpression(ASTMCVoidType type){
+    type.accept(traverser);
+    SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator visitor = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
+    TypeCalculator tc = new TypeCalculator(visitor, null);
+    return tc.symTypeFromAST(type);
+  }
+
+  private SymTypeExpression mcType2TypeExpression(ASTMCQualifiedName qName){
+    qName.accept(traverser);
+    SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator visitor = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
+    return visitor.synthesizeType(qName).getCurrentResult();
   }
 
   @Test

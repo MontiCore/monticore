@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.typescalculator;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
-
-import java.util.Optional;
 
 public class CombineExpressionsWithLiteralsTypesCalculator implements IDerive {
 
@@ -31,14 +31,19 @@ public class CombineExpressionsWithLiteralsTypesCalculator implements IDerive {
   }
 
   @Override
-  public Optional<SymTypeExpression> getResult() {
-    if(typeCheckResult.isPresentCurrentResult()){
-      return Optional.ofNullable(typeCheckResult.getCurrentResult());
-    }
-    return Optional.empty();
+  public TypeCheckResult deriveType(ASTExpression expr) {
+    init();
+    expr.accept(traverser);
+    return typeCheckResult.copy();
   }
 
   @Override
+  public TypeCheckResult deriveType(ASTLiteral lit) {
+    init();
+    lit.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
   public void init() {
     this.typeCheckResult = new TypeCheckResult();
     this.traverser = CombineExpressionsWithLiteralsMill.traverser();
@@ -72,7 +77,6 @@ public class CombineExpressionsWithLiteralsTypesCalculator implements IDerive {
     traverser.add4MCCommonLiterals(commonLiteralsTypesCalculator);
   }
 
-  @Override
   public CombineExpressionsWithLiteralsTraverser getTraverser() {
     return traverser;
   }

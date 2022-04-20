@@ -6,7 +6,6 @@ import de.monticore.expressions.abstracttypechecktest.AbstractTypeCheckTestMill;
 import de.monticore.expressions.abstracttypechecktest._parser.AbstractTypeCheckTestParser;
 import de.monticore.expressions.abstracttypechecktest._symboltable.IAbstractTypeCheckTestScope;
 import de.monticore.expressions.abstracttypechecktest._visitor.AbstractTypeCheckTestTraverser;
-import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
@@ -41,7 +40,7 @@ public class AbstractDeriveTest {
   // other arguments not used (and therefore deliberately null)
 
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(null, derLit);
+  TypeCalculator tc = new TypeCalculator(null, derLit);
 
 
   @BeforeClass
@@ -97,7 +96,7 @@ public class AbstractDeriveTest {
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.
         createTypeObject("FirstSemesterStudent", scope)));
-    tc = new TypeCheck(null, derLit);
+    tc = new TypeCalculator(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
     traverser = getTraverser(flatExpressionScopeSetter);
   }

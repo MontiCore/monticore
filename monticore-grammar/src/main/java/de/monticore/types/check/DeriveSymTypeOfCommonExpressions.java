@@ -32,16 +32,14 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExp
   protected boolean checkModifierType(TypeSymbol typeSymbol) {
     //if the last result is a type and the type is not static then it is not accessible
     if (typeCheckResult.isType()) {
-      if (!(typeSymbol instanceof OOTypeSymbol) || !(((OOTypeSymbol) typeSymbol).isIsStatic())) {
-        return false;
-      }
+      return typeSymbol instanceof OOTypeSymbol && ((OOTypeSymbol) typeSymbol).isIsStatic();
     }
     return true;
   }
 
   @Override
-  protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr) {
-    return innerResult.getMethodList(expr.getName(), typeCheckResult.isType(), false);
+  protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
+    return innerResult.getMethodList(name, typeCheckResult.isType(), false);
   }
 
   @Override

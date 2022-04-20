@@ -7,17 +7,18 @@ import de.monticore.statements.mcexceptionstatements._cocos.MCExceptionStatement
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
 public class ResourceInTryStatementCloseable implements MCExceptionStatementsASTTryStatement3CoCo {
   
-  TypeCheck typeCheck;
+  TypeCalculator typeCheck;
   
   public static final String ERROR_CODE = "0xA0920";
   
   public static final String ERROR_MSG_FORMAT = " Resource in try-statement must be closeable or subtype of it.";
   
-  public ResourceInTryStatementCloseable(TypeCheck typeCheck){
+  public ResourceInTryStatementCloseable(TypeCalculator typeCheck){
     this.typeCheck = typeCheck;
   }
   

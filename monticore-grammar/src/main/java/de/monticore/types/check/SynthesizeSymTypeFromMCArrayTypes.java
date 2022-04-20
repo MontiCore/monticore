@@ -44,6 +44,8 @@ public class SynthesizeSymTypeFromMCArrayTypes extends AbstractSynthesizeFromTyp
     if (!typeCheckResult.isPresentCurrentResult()) {
       Log.error("0xE9CDC Internal Error: SymType argument missing for generic type. "
               + " Probably TypeCheck mis-configured.");
+      typeCheckResult.reset();
+      return;
     }
     SymTypeExpression tex = SymTypeExpressionFactory.createTypeArray(
             arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope()),

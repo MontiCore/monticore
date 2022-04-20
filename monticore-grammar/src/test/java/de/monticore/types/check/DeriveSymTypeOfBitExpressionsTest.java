@@ -5,12 +5,10 @@ import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -83,7 +81,7 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
 
     // other arguments not used (and therefore deliberately null)
     // This is the TypeChecker under Test:
-    setTypeCheck(new TypeCheck(null, derLit));
+    setTypeCheck(new TypeCalculator(null, derLit));
   }
 
   // Parser used for convenience:

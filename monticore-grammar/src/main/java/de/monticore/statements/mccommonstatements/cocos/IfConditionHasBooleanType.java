@@ -5,17 +5,18 @@ import de.monticore.statements.mccommonstatements._ast.ASTIfStatement;
 import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTIfStatementCoCo;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
 public class IfConditionHasBooleanType implements MCCommonStatementsASTIfStatementCoCo {
  
-  TypeCheck typeCheck;
+  TypeCalculator typeCheck;
   
   public static final String ERROR_CODE = "0xA0909";
   
   public static final String ERROR_MSG_FORMAT = "Condition in if-statement must be a boolean expression.";
   
-  public IfConditionHasBooleanType(TypeCheck typeCheck){
+  public IfConditionHasBooleanType(TypeCalculator typeCheck){
     this.typeCheck = typeCheck;
   }
   

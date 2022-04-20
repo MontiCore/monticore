@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.se_rwth.commons.logging.Log;
 import mc.typechecktest._ast.ASTTCArtifact;
@@ -16,9 +17,9 @@ import java.util.Optional;
 
 public class TypeCheckTestSTCompleteTypes implements TypeCheckTestVisitor2 {
 
-  protected TypeCheck tc;
+  protected TypeCalculator tc;
 
-  public TypeCheckTestSTCompleteTypes(TypeCheck tc){
+  public TypeCheckTestSTCompleteTypes(TypeCalculator tc){
     this.tc = tc;
   }
 

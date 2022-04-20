@@ -7,6 +7,7 @@ import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsVis
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfNull;
+import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisitor2 {
@@ -20,8 +21,11 @@ public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisi
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
     FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
     // Start visitor
-    ast.accept(synFromFull.getTraverser());
-    return synFromFull.getResult().orElse(new SymTypeOfNull());
+    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
+    if(typeCheckResult.isPresentCurrentResult()){
+      return typeCheckResult.getCurrentResult();
+    }
+    return new SymTypeOfNull();
   }
 
 }

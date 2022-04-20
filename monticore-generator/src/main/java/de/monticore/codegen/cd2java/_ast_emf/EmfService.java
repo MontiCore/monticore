@@ -2,29 +2,19 @@
 package de.monticore.codegen.cd2java._ast_emf;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
-import de.monticore.ast.ASTNode;
-import de.monticore.cd4analysis._ast.*;
 import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
-import de.monticore.cd4code._symboltable.ICD4CodeScope;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -188,8 +178,9 @@ public class EmfService extends AbstractService<EmfService> {
   public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
     List<CDTypeSymbol> superTypes = Lists.newArrayList();
     c.getSymbol().getSuperTypesList().stream()
-        .map(ste -> ste.getTypeInfo())
-        .map(ts -> ts.getFullName()).forEach(s -> CD4CodeMill.globalScope().resolveCDType(s).ifPresent(t -> superTypes.add(t)));
+            .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
+            .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
+            .forEach(t -> {if(t instanceof CDTypeSymbol && ((CDTypeSymbol)t).isIsInterface()) superTypes.add((CDTypeSymbol) t);});
     return superTypes;
   }
 

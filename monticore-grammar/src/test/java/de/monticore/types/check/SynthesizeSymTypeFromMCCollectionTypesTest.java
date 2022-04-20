@@ -6,7 +6,6 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
@@ -53,7 +52,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   // other arguments not used (and therefore deliberately null)
   
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(synt,null);
+  TypeCalculator tc = new TypeCalculator(synt,null);
 
   FlatExpressionScopeSetter scopeSetter;
   CombineExpressionsWithLiteralsTraverser traverser;

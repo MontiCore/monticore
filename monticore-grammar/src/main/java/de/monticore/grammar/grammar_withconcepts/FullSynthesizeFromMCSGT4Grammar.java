@@ -2,10 +2,11 @@
 package de.monticore.grammar.grammar_withconcepts;
 
 import de.monticore.types.check.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
-
-import java.util.Optional;
 
 public class FullSynthesizeFromMCSGT4Grammar implements ISynthesize {
 
@@ -18,15 +19,26 @@ public class FullSynthesizeFromMCSGT4Grammar implements ISynthesize {
   }
 
   @Override
-  public Optional<SymTypeExpression> getResult() {
-    if(typeCheckResult.isPresentCurrentResult()){
-      return Optional.of(typeCheckResult.getCurrentResult());
-    }else{
-      return Optional.empty();
-    }
+  public TypeCheckResult synthesizeType(ASTMCType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
   }
 
   @Override
+  public TypeCheckResult synthesizeType(ASTMCReturnType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCQualifiedName qName) {
+    init();
+    qName.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
   public void init() {
     traverser = MCSimpleGenericTypesMill.traverser();
     typeCheckResult = new TypeCheckResult();

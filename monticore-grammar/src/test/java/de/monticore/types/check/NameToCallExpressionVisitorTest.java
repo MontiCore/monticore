@@ -23,10 +23,15 @@ public class NameToCallExpressionVisitorTest {
    */
   @Test
   public void nameTest() throws IOException {
+    CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+    NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
+    traverser.setCommonExpressionsHandler(visitor);
+    traverser.add4CommonExpressions(visitor);
+    traverser.setExpressionsBasisHandler(visitor);
+    traverser.add4ExpressionsBasis(visitor);
     Optional<ASTExpression> astex = p.parse_StringExpression("test()");
-    CombineExpressionsWithLiteralsTraverser traverser = getTraverser();
     astex.get().accept(traverser);
-    assertEquals("test",((ASTCallExpression)astex.get()).getName());
+    assertEquals("test",visitor.getLastName());
   }
 
   /**
@@ -34,23 +39,17 @@ public class NameToCallExpressionVisitorTest {
    */
   @Test
   public void fieldAccessTest() throws IOException{
-    Optional<ASTExpression> astex = p.parse_StringExpression("a.b.test()");
-    ASTExpression expr = ((ASTCallExpression)astex.get()).getExpression();
-    ASTExpression innerExpr = ((ASTFieldAccessExpression)expr).getExpression();
-    CombineExpressionsWithLiteralsTraverser traverser = getTraverser();
-    astex.get().accept(traverser);
-    assertEquals("test",((ASTCallExpression)astex.get()).getName());
-    assertEquals(((ASTCallExpression)astex.get()).getExpression(),innerExpr);
-  }
-
-  private CombineExpressionsWithLiteralsTraverser getTraverser(){
     CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
     NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
     traverser.setCommonExpressionsHandler(visitor);
     traverser.add4CommonExpressions(visitor);
     traverser.setExpressionsBasisHandler(visitor);
     traverser.add4ExpressionsBasis(visitor);
-    return traverser;
+    Optional<ASTExpression> astex = p.parse_StringExpression("a.b.test()");
+    ASTExpression expr = ((ASTCallExpression)astex.get()).getExpression();
+    astex.get().accept(traverser);
+    assertEquals("test",visitor.getLastName());
+    assertEquals(((ASTFieldAccessExpression) expr).getExpression(),visitor.getLastExpression());
   }
 
 }

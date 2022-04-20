@@ -27,6 +27,8 @@ public abstract class IncGenReporter extends AReporter {
 
   protected Set<String> userTemplates = new OrderedHashSet<>();
 
+  protected Set<String> outputFiles = new OrderedHashSet<>();
+
   protected static Map<Path, Path> modelToArtifactMap = new HashMap<>();
 
   protected String inputFile;
@@ -77,6 +79,8 @@ public abstract class IncGenReporter extends AReporter {
     modelFiles.clear();
     userTemplates.clear();
     filesThatMatterButAreNotThereInTime.clear();
+    outputFiles.clear();
+
     inputFile = inputFilePath.toString();
 
     qualifiedInputFile = Paths.get(lowerCaseName + "."
@@ -87,6 +91,11 @@ public abstract class IncGenReporter extends AReporter {
     parent = inputFilePath.getRoot().resolve(parent);
 
     modelToArtifactMap.put(qualifiedInputFile, parent);
+  }
+
+  @Override
+  public void reportFileCreation(String fileName) {
+    outputFiles.add(fileName);
   }
 
   @Override

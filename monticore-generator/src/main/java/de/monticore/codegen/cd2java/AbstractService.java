@@ -7,7 +7,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDPackageSymbol;
@@ -20,6 +19,8 @@ import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
@@ -151,12 +152,16 @@ public class AbstractService<T extends AbstractService> {
   protected List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
     List<CDTypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
-      String superName = cdTypeSymbol.getSuperClass().getTypeInfo().getFullName();
-      Optional<CDTypeSymbol> superSymbol = CD4CodeMill.globalScope().resolveCDType(superName);
-      if (superSymbol.isPresent()) {
-        superSymbolList.add(superSymbol.get());
-        superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol.get()));
+      TypeSymbol superSymbol = cdTypeSymbol.getSuperClass().getTypeInfo();
+      if (superSymbol instanceof TypeSymbolSurrogate) {
+        if (!((TypeSymbolSurrogate) superSymbol).checkLazyLoadDelegate()) {
+          return superSymbolList;
+        }
+        superSymbol = ((TypeSymbolSurrogate) superSymbol).lazyLoadDelegate();
       }
+
+      superSymbolList.add((CDTypeSymbol) superSymbol);
+      superSymbolList.addAll(getAllSuperClassesTransitive((CDTypeSymbol) superSymbol));
     }
     return superSymbolList;
   }
@@ -165,8 +170,9 @@ public class AbstractService<T extends AbstractService> {
     List<String> superSymbolList = new ArrayList<>();
         List<CDTypeSymbol> localSuperInterfaces = Lists.newArrayList();
         cdTypeSymbol.getSuperTypesList().stream()
-            .map(s -> s.getTypeInfo().getFullName())
-            .forEach(s -> CD4CodeMill.globalScope().resolveCDType(s).ifPresent(t -> {if(t.isIsInterface()) localSuperInterfaces.add(t);}));
+            .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
+                    .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
+            .forEach(t -> {if(t instanceof CDTypeSymbol && ((CDTypeSymbol)t).isIsInterface()) localSuperInterfaces.add((CDTypeSymbol) t);});
     for (CDTypeSymbol superInterface : localSuperInterfaces) {
       superSymbolList.add(createASTFullName(superInterface));
       superSymbolList.addAll(getAllSuperInterfacesTransitive(superInterface));

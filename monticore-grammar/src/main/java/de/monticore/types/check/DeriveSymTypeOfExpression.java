@@ -51,8 +51,12 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
 
   protected Optional<SymTypeExpression> calculateLiteralExpression(ASTLiteralExpression expr){
     //get the type of the literal
-    SymTypeExpression wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
-    return Optional.of(wholeResult);
+    Optional<SymTypeExpression> wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
+    if(!wholeResult.isPresent()){
+      typeCheckResult.reset();
+      return Optional.empty();
+    }
+    return wholeResult;
   }
 
   @Override
