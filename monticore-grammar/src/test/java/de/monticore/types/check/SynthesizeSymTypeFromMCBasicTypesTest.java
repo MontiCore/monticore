@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.*;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -9,6 +10,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -52,9 +54,9 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   }
   
   // Parer used for convenience:
-  MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
+  CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
   // This is the TypeChecker under Test:
-  TypeCalculator tc = new TypeCalculator(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(),null);
+  TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromMCBasicTypes(),null);
 
   FlatExpressionScopeSetter scopeSetter;
   CombineExpressionsWithLiteralsTraverser traverser;
@@ -63,8 +65,6 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   public void initScope(){
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     traverser = CombineExpressionsWithLiteralsMill.traverser();
-    traverser.add4MCSimpleGenericTypes(scopeSetter);
-    traverser.add4MCCollectionTypes(scopeSetter);
     traverser.add4MCBasicTypes(scopeSetter);
   }
   

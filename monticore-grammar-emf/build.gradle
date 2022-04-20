@@ -116,6 +116,8 @@ test {
   exclude '**/SynthesizeSymTypeFromMCBasicTypesTest.class'
   exclude '**/SynthesizeSymTypeFromMCCollectionTypesTest.class'
   exclude '**/SynthesizeSymTypeFromMCSimpleGenericTypesTest.class'
+  exclude '**/SynthesizeSymTypeFromMCFullGenericTypesTest.class'
+  exclude '**/SynthesizeSymTypeFromMCArrayTypesTest.class'
   exclude '**/MCType2SymTypeExpressionTest.class'
 }
 

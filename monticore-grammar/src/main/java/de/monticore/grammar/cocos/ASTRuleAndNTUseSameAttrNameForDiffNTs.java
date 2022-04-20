@@ -10,7 +10,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
       if (!rcs.isEmpty()) {
         RuleComponentSymbol rc = rcs.get(0);
         if (rc.isIsNonterminal()) {
-          String typeName = attr.getAstNode().getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+          String typeName = attr.getAstNode().getMCType().printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter());
           if (!typeName
                   .endsWith(rc.getReferencedProd().get().getName())) {
             Optional<ProdSymbol> attrType = a.getEnclosingScope()

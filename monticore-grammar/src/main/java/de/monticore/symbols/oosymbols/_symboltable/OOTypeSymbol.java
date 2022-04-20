@@ -9,6 +9,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OOTypeSymbol extends OOTypeSymbolTOP {
 
@@ -92,5 +93,23 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
     throw new IllegalStateException();
   }
 
+  @Override
+  public List<SymTypeExpression> getSuperClassesOnly() {
+    List<SymTypeExpression> normalSuperTypes = super.getSuperClassesOnly().stream()
+      .filter(type -> !(type.getTypeInfo() instanceof OOTypeSymbol)).collect(Collectors.toList());
+    List<SymTypeExpression> oOSuperTypes = superTypes.stream()
+      .filter(type -> type.getTypeInfo() instanceof OOTypeSymbol)
+      .filter(type -> ((OOTypeSymbol) type.getTypeInfo()).isIsClass())
+      .collect(Collectors.toList());
+    normalSuperTypes.addAll(oOSuperTypes);
+    return normalSuperTypes;
+  }
 
+  @Override
+  public List<SymTypeExpression> getInterfaceList() {
+    return superTypes.stream()
+      .filter(type -> type.getTypeInfo() instanceof OOTypeSymbol)
+      .filter(type -> ((OOTypeSymbol) type.getTypeInfo()).isIsInterface())
+      .collect(Collectors.toList());
+  }
 }

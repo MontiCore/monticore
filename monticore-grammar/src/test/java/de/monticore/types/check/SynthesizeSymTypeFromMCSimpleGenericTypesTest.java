@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsSymbols2Json;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
@@ -12,7 +13,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -72,10 +75,10 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   }
   
   // Parer used for convenience:
-  MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
+  CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
   
   // This is Visitor for SimpleGeneric types under test:
-  SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator synt = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
+  ISynthesize synt = new FullSynthesizeFromMCSimpleGenericTypes();
   
   // other arguments not used (and therefore deliberately null)
   
@@ -101,7 +104,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   @Test
   public void symTypeFromAST_Test1() throws IOException {
     String s = "double";
-    parser = new MCSimpleGenericTypesTestParser();
+    parser = new CombineExpressionsWithLiteralsParser();
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());

@@ -5,18 +5,16 @@ import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 
-import java.util.Optional;
+public class FullSynthesizeFromMCSGT4Grammar implements ISynthesize {
 
-public class FullSynthesizeFromMCFGT4Grammar implements ISynthesize {
-
-  protected MCFullGenericTypesTraverser traverser;
+  protected MCSimpleGenericTypesTraverser traverser;
 
   protected TypeCheckResult typeCheckResult;
 
-  public FullSynthesizeFromMCFGT4Grammar(){
+  public FullSynthesizeFromMCSGT4Grammar(){
     init();
   }
 
@@ -42,7 +40,7 @@ public class FullSynthesizeFromMCFGT4Grammar implements ISynthesize {
   }
 
   public void init() {
-    traverser = MCFullGenericTypesMill.traverser();
+    traverser = MCSimpleGenericTypesMill.traverser();
     typeCheckResult = new TypeCheckResult();
 
     SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
@@ -54,8 +52,6 @@ public class FullSynthesizeFromMCFGT4Grammar implements ISynthesize {
     SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeFromMCBT4Grammar();
     synFromBasic.setTypeCheckResult(typeCheckResult);
 
-    traverser.add4MCFullGenericTypes(synFromFull);
-    traverser.setMCFullGenericTypesHandler(synFromFull);
     traverser.add4MCSimpleGenericTypes(synFromSimple);
     traverser.setMCSimpleGenericTypesHandler(synFromSimple);
     traverser.add4MCCollectionTypes(synFromCollection);
@@ -64,11 +60,11 @@ public class FullSynthesizeFromMCFGT4Grammar implements ISynthesize {
     traverser.setMCBasicTypesHandler(synFromBasic);
   }
 
-  public MCFullGenericTypesTraverser getTraverser() {
+  public MCSimpleGenericTypesTraverser getTraverser() {
     return traverser;
   }
 
-  public void setTraverser(MCFullGenericTypesTraverser traverser) {
+  public void setTraverser(MCSimpleGenericTypesTraverser traverser) {
     this.traverser = traverser;
   }
 

@@ -5,15 +5,12 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 
 import static de.monticore.grammar.grammar._ast.ASTConstantsGrammar.*;
-import static de.monticore.grammar.grammar._ast.ASTConstantsGrammar.PLUS;
-import static de.monticore.grammar.grammar._ast.ASTConstantsGrammar.QUESTION;
-import static de.monticore.grammar.grammar._ast.ASTConstantsGrammar.STAR;
 
 /**
  * CoCo that checks if in a additional attribute of a astrule, symbolrule or scoperule a generic type does not contain a MCCustomTypeArgument
@@ -107,7 +104,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
     if (astAdditionalAttribute.isPresentName()) {
       attribute += astAdditionalAttribute.getName() + ":";
     }
-    attribute += MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astAdditionalAttribute.getMCType());
+    attribute += MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter().prettyprint(astAdditionalAttribute.getMCType());
     if (astAdditionalAttribute.isPresentCard()) {
       ASTCard card = astAdditionalAttribute.getCard();
       if (card.getIteration() == STAR) {

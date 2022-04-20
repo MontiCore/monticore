@@ -12,6 +12,9 @@ mlc MCFullGenericTypes {
     include "de/monticore/types/mcfullgenerictypes/**.java";
     include "de/monticore/types/prettyprint/MCFullGenericTypes**.java";
     include "de/monticore/types/MCFullGenericTypes**.java";
+
+    include "de/monticore/types/check/FullSynthesizeFromMCFullGenericTypes.java";
+    include "de/monticore/types/check/SynthesizeSymTypeFromMCFullGenericTypes.java";
   }
 
   // export all Java files generated from the grammar

@@ -5,10 +5,9 @@ package de.monticore.grammar.grammar_withconcepts._parser;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
-import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -82,10 +81,8 @@ public class GrammarTransformer {
     String name;
     if (type instanceof ASTMCGenericType) {
       name = ((ASTMCGenericType) type).printWithoutTypeArguments();
-    } else if (type instanceof ASTMCArrayType) {
-      name = ((ASTMCArrayType) type).printTypeWithoutBrackets();
     } else {
-      name = type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+      name = type.printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter());
     }
     return Names.getSimpleName(name);
   }

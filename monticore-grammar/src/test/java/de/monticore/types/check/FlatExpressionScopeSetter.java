@@ -30,12 +30,16 @@ import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCInnerType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor2;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
 public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, BitExpressionsVisitor2,
-    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2, MCArrayTypesVisitor2 {
+    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2, MCArrayTypesVisitor2, MCFullGenericTypesVisitor2 {
 
   private IExpressionsBasisScope scope;
 
@@ -365,7 +369,25 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
   public void visit(ASTMCCustomTypeArgument node) {
     node.setEnclosingScope(scope);
   }
-  
+
+
+  /*************************************************MCFULLGENERICTYPES****************************************************/
+
+  @Override
+  public void visit(ASTMCMultipleGenericType type){
+    type.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCWildcardTypeArgument node){
+    node.setEnclosingScope(scope);
+  }
+
+  @Override
+  public void visit(ASTMCInnerType node) {
+    node.setEnclosingScope(scope);
+  }
+
   /*************************************************MCARRAYTYPE****************************************************/
   
   @Override

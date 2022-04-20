@@ -2,10 +2,10 @@
 package de.monticore.grammar;
 
 import com.google.common.collect.Lists;
+import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class ComponentCollector {
 
   public static List<ASTRuleComponent> getAllComponents(ASTGrammarNode node) {
     CollectRuleComponents cv = new CollectRuleComponents();
-    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+    GrammarTraverser traverser = GrammarMill.traverser();
     traverser.add4Grammar(cv);
     node.accept(traverser);
     return cv.getRuleComponents();
