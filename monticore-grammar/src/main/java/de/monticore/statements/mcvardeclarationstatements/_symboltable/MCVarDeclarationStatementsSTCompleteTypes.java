@@ -20,7 +20,7 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
   protected ISynthesize typeSynthesizer;
 
   public MCVarDeclarationStatementsSTCompleteTypes() {
-    this(new FullSynthesizeFromMCFGT4Grammar());
+    this(new FullSynthesizeFromMCSGT4Grammar());
   }
 
   public MCVarDeclarationStatementsSTCompleteTypes(ISynthesize typeSynthesizer) {

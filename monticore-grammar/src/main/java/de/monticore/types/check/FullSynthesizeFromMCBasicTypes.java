@@ -2,6 +2,9 @@
 package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 
 import java.util.Optional;
@@ -16,16 +19,6 @@ public class FullSynthesizeFromMCBasicTypes implements ISynthesize {
     init();
   }
 
-  @Override
-  public Optional<SymTypeExpression> getResult() {
-    if(typeCheckResult.isPresentCurrentResult()){
-      return Optional.of(typeCheckResult.getCurrentResult());
-    }else{
-      return Optional.empty();
-    }
-  }
-
-  @Override
   public void init() {
     traverser = MCBasicTypesMill.traverser();
     typeCheckResult = new TypeCheckResult();
@@ -43,5 +36,26 @@ public class FullSynthesizeFromMCBasicTypes implements ISynthesize {
 
   public void setTraverser(MCBasicTypesTraverser traverser) {
     this.traverser = traverser;
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCReturnType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCQualifiedName qName) {
+    init();
+    qName.accept(traverser);
+    return typeCheckResult.copy();
   }
 }

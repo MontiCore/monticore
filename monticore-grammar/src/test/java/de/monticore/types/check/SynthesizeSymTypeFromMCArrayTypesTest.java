@@ -61,7 +61,7 @@ public class SynthesizeSymTypeFromMCArrayTypesTest {
   // Parer used for convenience:
   CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
   // This is the TypeChecker under Test:
-  TypeCheck tc = new TypeCheck(new FullSynthesizeFromMCArrayTypes(),null);
+  TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromMCArrayTypes(),null);
 
   FlatExpressionScopeSetter scopeSetter;
   CombineExpressionsWithLiteralsTraverser traverser;
