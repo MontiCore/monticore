@@ -3,7 +3,6 @@
 ${signature("className", "package")}
 package ${package}.translation;
 
-import com.google.common.collect.Lists;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.statements.mcarraystatements._ast.*;
@@ -28,6 +27,8 @@ import de.monticore.tf.ruletranslation.Rule2ODState;
 import static de.se_rwth.commons.StringTransformations.capitalize;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import ${package}.${ast.getName()?lower_case}tr._visitor.*;
 

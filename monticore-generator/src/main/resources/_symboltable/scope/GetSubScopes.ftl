@@ -1,2 +1,2 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  return com.google.common.collect.ImmutableList.copyOf(subScopes);
+  return java.util.Collections.unmodifiableList(new ArrayList(subScopes));

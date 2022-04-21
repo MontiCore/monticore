@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symbolReferenceName", "symbolName", "simpelName", "scopeName", "generatedError1", "generatedError2")}
   if(!delegate.isPresent()){
-    com.google.common.base.Preconditions.checkArgument(!com.google.common.base.Strings.isNullOrEmpty(name), " 0xA4070${generatedError1} Symbol name may not be null or empty.");
+    if (name == null || name.isEmpty()) throw new IllegalArgumentException("0xA4070${generatedError1} Symbol name may not be null or empty.");
 
     Log.debug("Load full information of '" + name + "' (Kind " + "${symbolName}" + ").", ${symbolReferenceName}.class.getSimpleName());
     if(!(this.enclosingScope instanceof ${scopeName})){

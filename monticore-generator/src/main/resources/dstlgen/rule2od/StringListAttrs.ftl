@@ -50,7 +50,7 @@
             String o_attr_${name} = state.getVariable2Attributes().getAttributeName(attr_${name}_lhs_variable_name);
             // check whether this is a different object
             if (o != node || !(o_attr_${name}.equals("${name}") || o_attr_${name}.startsWith("${nameList}.get("))) {
-              List<String> attr_${name}_value_string = Lists.newArrayList(o_name, o_attr_${name});
+              List<String> attr_${name}_value_string = Arrays.asList(o_name, o_attr_${name});
               ASTVariableInit expression = ODRulesMill.simpleInitBuilder()
                                     .setExpression(createQualifiedNameExpression(attr_${name}_value_string)).build();
               attr_${name}_lhs_value .getVariableInitList().add(expression);
@@ -111,7 +111,7 @@
             String o_attr_${name} = state.getVariable2Attributes().getAttributeName(attr_${name}_rhs_variable_name);
             // check whether this is a different object
             if (o != node || !o_attr_${name}.equals("${name}")) {
-              List<String> attr_${name}_value_string = Lists.newArrayList(o_name, o_attr_${name});
+              List<String> attr_${name}_value_string = Arrays.asList(o_name, o_attr_${name});
               ASTVariableInit expression = ODRulesMill.simpleInitBuilder()
                                     .setExpression(createQualifiedNameExpression(attr_${name}_value_string)).build();
               attr_${name}_rhs_value .getVariableInitList().add(expression);
@@ -122,7 +122,7 @@
             cardinality.setMany(${isAttributeOptional?string("true", "false")});
             cardinality.setOneToMany(!${isAttributeOptional?string("true", "false")});
             attr_${name}.setAttributeCardinality(cardinality);
-            List<String> attr_${name}_value_string = Lists.newArrayList(attr_${name}_rhs_variable_name);
+            List<String> attr_${name}_value_string = Arrays.asList(attr_${name}_rhs_variable_name);
             ASTStringLiteral value = ODRulesMill.stringLiteralBuilder().uncheckedBuild();
             value.setSource(Names.getQualifiedName(attr_${name}_value_string));
             ASTLiteralExpression literalExpression = ODRulesMill.literalExpressionBuilder().setLiteral(value).build();
