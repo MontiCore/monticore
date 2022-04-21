@@ -259,6 +259,15 @@ trigger-od-dev:
   only:
     - dev
 
+trigger-umlp-dev:
+  stage: trigger_languages
+  trigger:
+    project: monticore/umlp
+    branch: dev
+  only:
+    - dev
+
+
 trigger-cd4a-master:
   stage: trigger_languages
   trigger:
