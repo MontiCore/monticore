@@ -12,8 +12,8 @@ import de.monticore.MontiCoreScript;
 import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.se_rwth.commons.cli.CLIArguments;
 import de.se_rwth.commons.logging.Log;
+
 import de.se_rwth.commons.logging.Slf4jLog;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
@@ -110,7 +110,7 @@ public class MontiCoreTool {
       initLogging(cmd);
       
       // put arguments into configuration
-      CLIArguments arguments = CLIArguments.forArguments(args);
+
       MontiCoreConfiguration configuration = MontiCoreConfiguration.withCLI(cmd);
       
       // load custom or default script
