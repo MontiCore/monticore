@@ -23,8 +23,8 @@ import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.PRIMITIVE_LIST;
  * This factory therefore should be the only source to create SymTypeExpressions.
  * No other source is needed.
  * (That is ok, as the set of SymTypeExpressions is rather fixed and we do not expect
- * many modular extensions that would be needed. Saying this, we know that function types and
- * potentially also union types (A|B) might still be added in the future.)
+ * many modular extensions that would be needed. Saying this, we know that
+ * potentially union types (A|B) might still be added in the future.)
  */
 public class SymTypeExpressionFactory {
 
@@ -264,5 +264,19 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeOfWildcard createWildcard() {
     return new SymTypeOfWildcard();
+  }
+
+  public static SymTypeOfFunction createFunction(SymTypeExpression returnType) {
+    return createFunction(returnType, Lists.newArrayList());
+  }
+
+  public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
+      List<SymTypeExpression> argumentTypes) {
+    return new SymTypeOfFunction(returnType, argumentTypes);
+  }
+
+  public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
+      SymTypeExpression... argumentTypes) {
+    return createFunction(returnType, Arrays.asList(argumentTypes));
   }
 }

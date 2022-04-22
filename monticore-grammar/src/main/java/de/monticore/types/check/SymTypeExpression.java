@@ -87,6 +87,12 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  /**
+   * Am I a function type (e.g. "String -> Integer")
+   */
+  public boolean isFunctionType(){
+    return false;
+  }
 
 
   public abstract SymTypeExpression deepClone();
