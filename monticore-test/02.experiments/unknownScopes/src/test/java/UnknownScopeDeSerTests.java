@@ -7,7 +7,6 @@ import bar.BarMill;
 import bar._symboltable.BarArtifactScope;
 import bar._symboltable.IBarGlobalScope;
 import bar._symboltable.IBarScope;
-import de.monticore.symboltable.SymbolWithScopeOfUnknownKindDeSer;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.LogStub;
@@ -51,9 +50,6 @@ public class UnknownScopeDeSerTests {
     JsonObject jsonFoo = JsonParser.parseJsonObject(serializedFoo);
 
     IBarGlobalScope barGlobalScope = BarMill.globalScope();
-    barGlobalScope.putSymbolDeSer("foo._symboltable.NestSymbol", new SymbolWithScopeOfUnknownKindDeSer(barGlobalScope.getDeSer(), BarMill::scope));
-    barGlobalScope.putSymbolDeSer("foo._symboltable.FunctionDeclarationSymbol", new SymbolWithScopeOfUnknownKindDeSer(barGlobalScope.getDeSer(), BarMill::scope));
-
     BarArtifactScope scope = (BarArtifactScope) barGlobalScope.getDeSer().deserializeArtifactScope(jsonFoo);
 
     assertTrue(scope.getUnknownSymbols().containsKey("TestNest"));

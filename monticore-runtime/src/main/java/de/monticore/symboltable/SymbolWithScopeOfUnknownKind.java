@@ -9,11 +9,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.ast.ASTNode;
 
-/**
- * Represents a symbol of a kind unknown to a language. Such a symbol is typically obtained during deserialization by
- * registering a {@link SymbolWithScopeOfUnknownKindDeSer}. (Note that currently additional modifications via TOP
- * mechanism are required to make this work. This is likely to change in future versions.)
- */
+/** Represents a symbol of a kind unknown to a language. */
 public class SymbolWithScopeOfUnknownKind implements IScopeSpanningSymbol {
 
   protected String name;

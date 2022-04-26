@@ -8,6 +8,7 @@ import de.se_rwth.commons.logging.Log;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Collection of (static) methods and constants that support using DeSers in combination with Json.
@@ -58,11 +59,18 @@ public class JsonDeSers {
   }
 
   public static String getKind(JsonObject symbol) {
-    if(!symbol.hasStringMember(KIND)){
+    Optional<String> kind = getKindOpt(symbol);
+
+    if (!kind.isPresent()) {
       Log.error("0xA1235 Serialized object does not have a kind attribute: '" + symbol + "'.");
       return "error";
     }
-    return symbol.getStringMember(KIND);
+
+    return kind.get();
+  }
+
+  public static Optional<String> getKindOpt(JsonObject symbol) {
+    return symbol.getStringMemberOpt(KIND);
   }
 
     /**
