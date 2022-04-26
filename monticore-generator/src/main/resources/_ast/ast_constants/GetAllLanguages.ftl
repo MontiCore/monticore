@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("superGrammars")}
 
-  Collection<String> allLanguages = com.google.common.collect.Sets.newLinkedHashSet();
+  Collection<String> allLanguages = new LinkedHashSet<>();
   <#list superGrammars as superGrammar>
     allLanguages.addAll(${superGrammar.getFullName()?lower_case}._ast.ASTConstants${superGrammar.getName()}.getAllLanguages());
    </#list>
