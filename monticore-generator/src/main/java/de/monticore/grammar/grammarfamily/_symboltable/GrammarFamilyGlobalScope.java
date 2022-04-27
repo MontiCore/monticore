@@ -76,4 +76,11 @@ public class GrammarFamilyGlobalScope extends GrammarFamilyGlobalScopeTOP {
     return null;
   }
 
+  @Override
+  public void addLoadedFile(String name) {
+    if(System.getProperty("os.name").contains("win")){
+      name = name.toLowerCase();
+    }
+    super.addLoadedFile(name);
+  }
 }
