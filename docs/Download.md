@@ -19,7 +19,7 @@ The following tools for MontiCore can be used from the command line and thus e.g
 * The [Statecharts tool](http://www.monticore.de/download/MCStatecharts.jar) for a [Statechart language](https://github.com/MontiCore/statecharts)
 * The [XML tool](http://www.monticore.de/download/MCXML.jar) for an [XML language](https://github.com/MontiCore/xml)
 
-Please note the [MontiCore 3-Level License](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) of these tools.
+Please note the [MontiCore 3-Level License](../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) of these tools.
 
 ## Further Information
 
@@ -27,12 +27,11 @@ Please note the [MontiCore 3-Level License](00.org/Licenses/LICENSE-MONTICORE-3-
 * [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
 * [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
 * [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
-* [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
-* [FAQ](00.org/Explanations/FAQ.md) - FAQ 
-* [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
+* [Changelog](../00.org/Explanations/CHANGELOG.md) - Release Notes
+* [FAQ](../00.org/Explanations/FAQ.md) - FAQ 
+* [Licenses](../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [**List of languages**](https://monticore.github.io/monticore/docs/Languages/)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
