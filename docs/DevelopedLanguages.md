@@ -40,7 +40,7 @@ information on many of the languages.
 
 * **UML/P** is a derivation from UML, especially suited for agile 
 development. See language definition and usage method in 
-[[Rum17,Rum16,Sch12]](http://mbse.se-rwth.de/). 
+[[Rum17,Rum16,Sch12]](https://mbse.se-rwth.de/). 
 
     * **UML/P Class Diagrams** for data structures
     * **UML/P Object Diagrams** for exemplaric situations: usable for
@@ -52,11 +52,11 @@ development. See language definition and usage method in
     * **Activity Diagrams** for workflows and requirements 
         (an extension to the books)
 
-* **Delta-MontiArc** [[HRRS12,HKR+11,HRRS11]](http://mbse.se-rwth.de/) 
+* **Delta-MontiArc** [[HRRS12,HKR+11,HRRS11]](https://mbse.se-rwth.de/) 
  is a DSL for expressing deltas on MontiArc component definitions
  which allows to model software product lines in a bottom up way.
 
-* **MontiArcHV** [[HRR+11]](http://mbse.se-rwth.de/) 
+* **MontiArcHV** [[HRR+11]](https://mbse.se-rwth.de/) 
  allows specifying component variability fully integrated within the 
  component hierarchy located at variation points in component definitions.
 
@@ -71,9 +71,9 @@ development. See language definition and usage method in
 
 * **Aerospace Constraint Specification Language** is a DSL used to 
  specify critical situations in an airspace including airplanes, 
- weather, flight conditions and much more. [[ZPK+11]](http://mbse.se-rwth.de/)
+ weather, flight conditions and much more. [[ZPK+11]](https://mbse.se-rwth.de/)
 
-* **clArc DSL Family:** [[PR13]](http://mbse.se-rwth.de/)
+* **clArc DSL Family:** [[PR13]](https://mbse.se-rwth.de/)
 
     * **Cloud Architecture Description Language:** used to model of 
             architectures of cloud-based systems; based on MontiArc.
@@ -130,7 +130,7 @@ development. See language definition and usage method in
 
 ## More Information about Languages and Language Components 
 
-* [**MontiCore Reference Manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+* [**MontiCore Reference Manual**](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
    The reference Manual describes how to use MontiCore as an out-of-the-box 
    *language workbench*), but also as a grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
@@ -159,7 +159,7 @@ development. See language definition and usage method in
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [MontiCore documentation](http://www.monticore.de/)
+* [MontiCore documentation](https://www.monticore.de/)
 * [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)

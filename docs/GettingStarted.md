@@ -17,9 +17,9 @@ some key features of MontiCore.
 
 Detailed information about all configuration options that can be used in
 the MontiCore CLI tool and in MontiCore Gradle projects are explained in
-[Chapter 16 of the handbook](http://www.monticore.de/handbook.pdf). More
+[Chapter 16 of the handbook](https://www.monticore.de/handbook.pdf). More
 information about the example `Automata` language are available in 
-[Chapter 21 of the handbook](http://www.monticore.de/handbook.pdf).
+[Chapter 21 of the handbook](https://www.monticore.de/handbook.pdf).
 
 ## Prerequisites: Installing the Java Development Kit
 
@@ -65,7 +65,7 @@ For installing MontiCore, perform the following steps:
 * Download the example `Automata` MontiCore project:
 ```
 // MontiCore zip distribution source
-http://www.monticore.de/download/monticore.tar.gz
+https://www.monticore.de/download/monticore.tar.gz
 ```
 * Unzip the archive. The unzipped files include a directory called
     `mc-workspace` containing the executable MontiCore tool
@@ -97,7 +97,7 @@ example/PingPong.aut
 
 MontiCore is a language workbench. It supports developers in developing
 modular modelling languages. The core of MontiCore is its grammar
-modelling language (cf. [Chapter 4 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)), 
+modelling language (cf. [Chapter 4 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)), 
 which is used by developers for modelling
 context-free grammars. A MontiCore grammar defines (parts of) the
 abstract and concrete syntax of a language. Each grammar contains
@@ -116,7 +116,7 @@ form of extension allows to achieve several effects:
     alternatives inside a language.
 
 Component grammars and grammar extensions are detailedly discussed in 
-[Chapter 4 of the MontiCore handbook](http://www.monticore.de/handbook.pdf).
+[Chapter 4 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 
 ```
 grammar Automata extends de.monticore.MCBasics {
@@ -190,7 +190,7 @@ becomes the starting symbol by default. In the `Automata` grammar, the
 The other possible annotations for nonterminals influence the generated
 classes for the abstract syntax tree as well as the generated symbol
 table infrastructure. Details can be found in 
-[Chapter 4 and Chapter 9 of the MontiCore handbook](http://www.monticore.de/handbook.pdf). 
+[Chapter 4 and Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf). 
 For example, the
 `Automaton` nonterminal is annotated with `symbol` and `scope`. The
 annotation `symbol` makes the MontiCore generator generate a symbol
@@ -206,7 +206,7 @@ The right-hand sides of grammar productions consist of nonterminals,
 terminals, and semantic predicates, may use cardinalities (`*`, `+`,
 `?`), and introduce alternatives via the terminal `|` as known from
 regular expressions. Details can be found in 
-[Chapter 4 of the MontiCore handbook](http://www.monticore.de/handbook.pdf). 
+[Chapter 4 of the MontiCore handbook](https://www.monticore.de/handbook.pdf). 
 The right-hand side of
 the production defining the nonterminal `Automaton`, for example, uses
 the terminal `automaton` and the nonterminals `Name`, `State`, and
@@ -219,7 +219,7 @@ right-hand side of the production defining the nonterminal `Transition`
 uses the `Name` nonterminal twice. The first usage is named `input` and
 the second usage is named `to`. MontiCore also supports `interface` and
 `external` nonterminals for introducing extension points as detailedly
-described in [Chapter 4 of the MontiCore handbook](http://www.monticore.de/handbook.pdf). 
+described in [Chapter 4 of the MontiCore handbook](https://www.monticore.de/handbook.pdf). 
 However, the example grammar does not use these concepts.
 
 ```
@@ -311,14 +311,14 @@ in the directory `hwc/`. Providing handwritten code enables to
 easily incorporate additional functionality into the generated code.
 For example, this enables developers to extend generated abstract
 syntax classes as detailedly described in 
-(cf. [Section 5.10 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)).
+(cf. [Section 5.10 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
 Passing the argument `-mp` enables specifying the paths to directories 
 containing paths to grammars and Java classes that are imported by the 
 processed grammar and the related tooling. In this case, the archive 
 `monticore-rt.jar` contains the grammars and handwritten extensions
 of the [monticore standard library](https://git.rwth-aachen.de/monticore/monticore/-/tree/dev/monticore-grammar/src/main).
 More information about the standard library can be found in 
-[Chapters 17- 20 of the handbook](http://www.monticore.de/handbook.pdf).
+[Chapters 17- 20 of the handbook](https://www.monticore.de/handbook.pdf).
 
 Executing the command launches MontiCore, which results in the
 executing of the following steps:
@@ -329,21 +329,21 @@ executing of the following steps:
     infrastructure consists of the directories
     -   `out/automata/` containing the mill (cf. Section 5.9, Section 5.10.2, Section 11.5).
     -   `out/automata/_ast` containing the abstract syntax tree data
-        structure (cf. [Chapter 5 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)).
+        structure (cf. [Chapter 5 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out/automata/_auxiliary` containing adapted mills of sublanguages,
         which are required for configuring the mills of sublanguages
-        (cf. [Chapter 11 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)).
+        (cf. [Chapter 11 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out/automata/_cocos` containing the infrastructure for context
-        conditions (cf. [Chapter 10 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)).
+        conditions (cf. [Chapter 10 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out/automata/_od` containing the infrastructure for printing
         object diagrams for reports produced during processing the
         models.
     -   `out/automata/_parser` containing the generated parsers, which are
-        based on ANTLR (cf. [Chapter 6 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)).
+        based on ANTLR (cf. [Chapter 6 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out/automata/_symboltable` containing the infrastructure for the symbol
-        table (cf. [Chapter 6 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)).
+        table (cf. [Chapter 6 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out/automata/_visitor` containing the infrastructure for visitors
-        (cf. [Chapter 9 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)).
+        (cf. [Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out//automata` containing reports created during the
         processing of the grammar.
 3.  The output directory also contains a log file of the executed
@@ -359,7 +359,7 @@ used by language engineers.
 
 The tree data structure is generated into the directory `out/automata/_ast`.
 Details about the generation of AST classes can be found in 
-(cf. [Chapter 5 of the MontiCore handbook](http://www.monticore.de/handbook.pdf)). For
+(cf. [Chapter 5 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)). For
 each nonterminal contained in the grammar, the MontiCore generator
 produces AST and corresponding builder classes. The AST classes
 implement the abstract syntax tree data structure.
@@ -397,7 +397,7 @@ The `ASTAutomaton` class further contains the attributes `symbol`,
 `spannedScope`, and `enclosingScope`. These attributes are specific to
 the symbol table of `Automata` models and are used for linking the
 symbol table of a model with its abstract syntax tree. Details can be
-found in [Chapter 9 of the MontiCore handbook](http://www.monticore.de/handbook.pdf).
+found in [Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 
 <div class="tip">
 <div class="tip-header">
@@ -408,7 +408,7 @@ Tip 2.7 Generated Symbols and Scopes in the AST
 
 <p>When a production contains the keyword <code>symbol</code>, the generated AST class
 contains the attribute <code>symbol</code> 
-(see <a href="http://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>).</p>
+(see <a href="https://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>).</p>
 
 <p>Keyword <code>scope</code> indicates that a nonterminal also defines a new local
 scope, stored in attribute <code>spannedScope</code>.</p>
@@ -463,7 +463,7 @@ representation for internal processing.
 
 The infrastructure is generated into the directory `out/automata/_parser`.
 Details about the generated parsers and their uses are described in 
-[Chapter 6 of the MontiCore handbook](http://www.monticore.de/handbook.pdf).
+[Chapter 6 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 
 Parts of the class `AutomataParser` generated from the `Automata`
 grammar.
@@ -503,7 +503,7 @@ for parsing a sub-model described by this nonterminal.</p>
 
 The infrastructure is generated into the directory `out/automata/_symboltable`.
 Details about the generated symbol table infrastructure and its use are
-described in [Chapter 9 of the MontiCore handbook](http://www.monticore.de/handbook.pdf). 
+described in [Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf). 
 The symbol table infrastructure is used for resolving
 cross-references concerning information defined in different model
 elements that are potentially defined in different models stored in
@@ -556,7 +556,7 @@ Tip 2.14 Extending Symbol Classes
 
 <ul>
   <li>adding a <em>symbol rule</em> in the grammar 
-  (described in <a href="http://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>) or</li>
+  (described in <a href="https://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>) or</li>
   <li>using the <em>TOP mechanism</em> applied to the generated symbols.</li>
 </ul>
 </div>
@@ -606,7 +606,7 @@ resolved from scopes via calling the `resolve` methods.
 MontiCore also supports the serialization and deserialization of symbol tables. The
 (de)serialization is crucial for incremental code generation and
 efficient language composition via aggregation. Details about this are
-explained in [Chapter 7 and Chapter 9 of the MontiCore handbook](http://www.monticore.de/handbook.pdf).
+explained in [Chapter 7 and Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 
 For the (de)serialization, the generator produces the class
 `AutomataSymbol2Json`. It provides the public methods `store` and
@@ -624,7 +624,7 @@ to call for the (de)serialization.
 
 The infrastructure is generated into the directory `out/automata/_visitor`.
 Details about the generated visitor infrastructure are described in 
-[Chapter 8 of the MontiCore handbook](http://www.monticore.de/handbook.pdf).
+[Chapter 8 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 For each grammar, the generator systematically produces several classes
 and interfaces implementing the visitor infrastructure. For the
 `Automata` grammar, for example, the generator produces the interfaces
@@ -641,7 +641,7 @@ corresponding visitor implementation. If a special traversal is to be
 implemented that differs from the default, it is possible to add
 handlers to the traverser that realize the alternative traversal. For a
 more detailed explanation consider reading 
-[Chapter 8 of the MontiCore handbook](http://www.monticore.de/handbook.pdf).
+[Chapter 8 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 
 <div class="tip">
 <div class="tip-header">
@@ -695,7 +695,7 @@ handlers and adding those to the traverser.
 
 The infrastructure is generated into the directory `out/automata/_cocos`.
 Details about the generated context condition infrastructure are
-described in [Chapter 10 of the MontiCore handbook](http://www.monticore.de/handbook.pdf).
+described in [Chapter 10 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 
 For each nonterminal of a grammar, the generator produces a context
 condition interface for implementing context conditions for this
@@ -846,7 +846,7 @@ directories (Java packages):
 -   `hwc/automata/_symboltable` contains handwritten extensions of the
     generated symbol table infrastructure. Details about implementing
     handwritten symbol table infrastructure extensions are described in 
-    [Chapter 9 of the MontiCore handbook](http://www.monticore.de/handbook.pdf).
+    [Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 
 Please, also do not mix the code for the `Automata` tool vs. the code
 for the final product, generated from that tool, although both have a
@@ -1136,7 +1136,7 @@ sources and rerunning MontiCore as described above.
 
 It is possible to execute MontiCore via the MontiCore plugin. A detailed
 description about using the MontiCore Gradle plugin is given in 
-[Chapter 16 of the MontiCore handbook](http://www.monticore.de/handbook.pdf). This
+[Chapter 16 of the MontiCore handbook](https://www.monticore.de/handbook.pdf). This
 section describes the execution of MontiCore via a Gradle plugin from
 the command line shell by example. Before you start, 
 [install gradle](https://gradle.org/install/)
@@ -1146,7 +1146,7 @@ The shipped example `Automata` DSL can be used as a starting point and
 can be downloaded here:
 
 ```
-http://www.monticore.de/download/Automaton.zip
+https://www.monticore.de/download/Automaton.zip
 ```
 
 The build script (file `build.gradle`) can easily be adapted for creating build
@@ -1282,7 +1282,7 @@ the example project and executing MontiCore</figcaption>
 <table>
   <tr id="Fre21">
     <td>Fre21</td>
-    <td>FreeMarker website. http://freemarker.org/, 2021.</td>
+    <td>FreeMarker website. https://freemarker.org/, 2021.</td>
   </tr>
 </table>
 
@@ -1322,7 +1322,7 @@ the project again.
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [MontiCore documentation](http://www.monticore.de/)
+* [MontiCore documentation](https://www.monticore.de/)
 * [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)

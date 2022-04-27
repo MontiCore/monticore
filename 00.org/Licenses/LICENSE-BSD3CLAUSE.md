@@ -27,4 +27,4 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 
-\* belongs to [RWTH](http://se-rwth.de) and [RIDT](http://www.rumpe.eu/)
+\* belongs to [RWTH](https://se-rwth.de) and [RIDT](http://www.rumpe.eu/)

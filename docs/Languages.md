@@ -5,12 +5,12 @@
 
 [[_TOC_]]
 
-[MontiCore](http://www.monticore.de) is a language workbench
+[MontiCore](https://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
 grammars to describe textual DSLs. 
 MontiCore uses an extended grammar format that allows to compose 
 language components via inheritance, embedding and aggregation (see the 
-[**reference manual**](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
+[**reference manual**](https://monticore.de/MontiCore_Reference-Manual.2017.pdf)
 for details).
 
 A **language component** is mainly represented through 
@@ -42,7 +42,7 @@ Publicly available MontiCore projects are hosted at
 
 ### [Class Diagram For Analysis (CD4A)](https://github.com/MontiCore/cd4analysis) (MontiCore stable)
 * CD4A is the textual representation to describe **UML class diagrams** 
-  (it uses the [UML/P](http://mbse.se-rwth.de/) variant).
+  (it uses the [UML/P](https://mbse.se-rwth.de/) variant).
 * CD4A covers **classes, interfaces, inheritance, attributes with types,
   visibilities**,
   and all kinds of **associations** and **composition**, including **qualified**
@@ -199,7 +199,7 @@ and
   defines the language with some open parameters and
   [`de.monticore.grammar.Grammar_WithConcepts`](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
   binds the external, imported expressions, method bodies, etc.
-* [*Detailed description*](http://monticore.de/MontiCore_Reference-Manual.2017.pdf)
+* [*Detailed description*](https://monticore.de/MontiCore_Reference-Manual.2017.pdf)
   in the MontiCore Reference Manual.
   
 
@@ -327,7 +327,7 @@ ocl Bookshop {
 ### [Object Diagrams](https://github.com/MontiCore/object-diagram) (MontiCore Stable)
 * OD is a language for textual denotation of object diagrams. The OD language
   has several purposes (when combined with appropriate language extensions):
-  1. specification language for object structures (as part of the [UML/P](http://mbse.se-rwth.de/))
+  1. specification language for object structures (as part of the [UML/P](https://mbse.se-rwth.de/))
   1. store and transport of data sets (e.g. the artifact analysis toolchain), and
   1. report format for the MontiCore tool infrastructure. 
 * OD covers **named and anonymous objects, object types, links, attributes, attribute values, 
@@ -631,7 +631,7 @@ public void print(String name) {
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [MontiCore documentation](http://www.monticore.de/)
+* [MontiCore documentation](https://www.monticore.de/)
 * [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)

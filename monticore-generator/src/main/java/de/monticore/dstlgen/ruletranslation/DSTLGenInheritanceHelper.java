@@ -1,8 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-/*
- *
- * http://www.se-rwth.de/
- */
 package de.monticore.dstlgen.ruletranslation;
 
 import com.google.common.collect.Lists;
