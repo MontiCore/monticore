@@ -35,12 +35,12 @@ public class TypeCheckResult {
     this.result = Optional.ofNullable(result);
   }
   
-  public void setCurrentResultAbsent() {
+  public void setResultAbsent() {
     this.result = Optional.empty();
   }
 
   public void reset(){
-    setCurrentResultAbsent();
+    setResultAbsent();
     field = false;
     method = false;
     type = false;
