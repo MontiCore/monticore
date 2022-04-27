@@ -105,7 +105,7 @@ nonterminals, production rules, and may extend other grammars. At most
 one rule is marked as the start rule.
 
 It is a *key feature of MontiCore* that it allows a grammar to *reuse and extend other grammars*. 
-In an extension all of the nonterminals
+In an extension all the nonterminals
 defined in the extended grammars can be reused or even overridden. This
 form of extension allows to achieve several effects:
 
@@ -248,7 +248,7 @@ directory.
 
 The MontiCore generator takes a MontiCore grammar as input and generates
 an infrastructure for processing models conforming to the grammar. When
-a grammar `E` extends another grammar `G`, then all of the
+a grammar `E` extends another grammar `G`, then all the
 infrastructure generated for the grammar `G` is reused and only the
 extending part from `E` is generated.
 
@@ -751,7 +751,7 @@ developed for sublanguages.</p>
 <p>Only one mill instance exists, even though in composed languages it is
 available under several static signatures. Let language <code>G2</code> extend
 another language <code>G1</code>. Then <code>G2Mill</code> initializes the <code>G1Mill</code>
-appropriately, such that all of the code of the sublanguage <code>G1</code> can be
+appropriately, such that all the code of the sublanguage <code>G1</code> can be
 reused in the tools developed for the language <code>G2</code>, even when creating
 new AST nodes, symbols, etc.</p>
 

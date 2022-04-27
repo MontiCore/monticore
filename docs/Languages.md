@@ -67,7 +67,7 @@ classdiagram MyLife {
   association phonebook Person [String] -> PhoneNumber ;
 }
 ```
-* CD4A focusses on the analysis phase in typical data-driven development 
+* CD4A focuses on the analysis phase in typical data-driven development 
   projects and is therefore mainly for data modelling.
   Consequently, it omits method signatures and complex generics.
   The primary use of the CD4A language is therefore **data modelling**. The
@@ -148,7 +148,7 @@ data sources**.
 the language represents graphical views or their parts, omitting smaller details
 of style definition and simplifying connection between graphical elements and
 data sources.
-* Currently new version of the `GUIDSL` is being developed:
+* Currently, new version of the `GUIDSL` is being developed:
   * [Basis grammar `GUIBasis`](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/GUIBasis.mc4)
 includes constructs for general visualization component definitions, control
 statements and components for layout description.
@@ -234,7 +234,7 @@ and
 
 ### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable) 
 * MontiArc is an architecture and behavior modeling language and framework 
-    that provides an platform independent structure and behavior 
+    that provides a platform independent structure and behavior 
     modeling language with an extensible code generation framework.
 * MontiArc covers **components** their **ports**, **connectors** between 
   components and  
@@ -282,9 +282,9 @@ component InteriorLight {                           // MontiArc language
 ### [OCL/P](https://github.com/monticore/OCL) (MontiCore Stable)
 * OCL/P is the textual representation of the UML OCL standard, adapted 
   with Java-like syntax.
-  It's main goal is the usage in combination with other languages like 
+  Its main goal is the usage in combination with other languages like 
   CD4A or Object Diagrams as an integrated part of that languages.
-* OCL/P allows to define **invariants** and **pre/post conditions** in 
+* OCL/P allows to define **invariants** and **pre-/post-conditions** in 
   the known OCL style plus some extensions, such as 
   a generalized `let` construction. 
   Furthermore, it offers a large set **expressions**
@@ -293,7 +293,7 @@ component InteriorLight {                           // MontiArc language
   OCL standard concepts, but extend it e.g. by **set comprehensions** 
   known from Haskell, a **typesafe cast** or a 
   **transitive closure operator**.
-  An example shows several of the above mentioned syntactic features:
+  An example shows several of the above-mentioned syntactic features:
 ```
 ocl Bookshop {
   context Shop s inv CustomerPaysBeforeNewOrder:      // invariant
@@ -356,7 +356,7 @@ objectdiagram MyFamily {
   link married alice <-> bob;
 }
 ```
-* If ODs are used as specification techniqe, e.g. for tests or forbidden 
+* If ODs are used as specification technique, e.g. for tests or forbidden 
   situations,
   a more expressive version of expressions can be used for values 
   (e.g. by composing ODs with JavaExpressions). Furthermore, only 
@@ -364,7 +364,7 @@ objectdiagram MyFamily {
   to a CD4A model can be checked.
 * The ODs differ from JSON structures, e.g., in 
   the possibility to give the object a name as it is the case for `tiger`, or `alice` 
-  enabaling the definition real graph structures.
+  enabling the definition real graph structures.
 * Main grammars (directly usable):
     * [OD4Data](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/OD4Data.mc4)
     * [OD4Development](https://github.com/MontiCore/object-diagram/blob/master/src/main/grammars/de/monticore/OD4Development.mc4)
@@ -388,7 +388,7 @@ objectdiagram MyFamily {
   UML/P SDs.
 * SD4Development supports modeling *objects*, *method calls*, *returns*, exception 
   throws, *dynamic object instantiation*, various *match modifiers* for objects 
-  (free, initial, visible, complete), *life lines* with *activation regions*,
+  (free, initial, visible, complete), *lifelines* with *activation regions*,
   static method calls, intermediate 
   variable declarations by using OCL, and conditions by using OCL.
 * The grammars can easily be extended by further interactions and object modifiers.
@@ -461,7 +461,7 @@ statechart Door {
 * This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
   A transition is triggered e.g. by function/method call `close()` that changes a from a state `Opened` to state `Closed`. 
 * Transitions can have actions, such as `{ringDoorBell();}` containing in this case 
-  Java statements, or preconditions, such  as `[ ... ]` containg a Boolean expression.
+  Java statements, or preconditions, such  as `[ ... ]` containing a Boolean expression.
 * *State invariants* and *transition preconditions* are defined using `Expressions`
   and *entry/exit/transition actions* are defined using `Statements`.
 * A Statechart may also have hierarchically decomposed states and other forms of 
@@ -470,7 +470,7 @@ statechart Door {
 
 
 ### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
-* MontiCore languages for parsing artifacts of the SysML 2 language famlily. 
+* MontiCore languages for parsing artifacts of the SysML 2 language family. 
   Examples:
 ```
 package 'Vehicles' {                      // a SysML block diagram
@@ -498,7 +498,7 @@ package 'Coffee' {                      // a SysML activity diagram
   standard. It is intended for parsing SysML 2-compliant models. 
   Well-formedness checks are kept to a minimum, because we assume to parse
   correctly produced SysML 2 models only.
-* MontiCore's SysML 2 is a language familiy that comes with a textual 
+* MontiCore's SysML 2 is a language family that comes with a textual 
   representation to describe SysML 2 diagrams with respect to the standard. 
 * SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
   **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
@@ -512,7 +512,7 @@ package 'Coffee' {                      // a SysML activity diagram
 * **Tags** are known e.g. from the UML and SysML and mainly used to add
   extra information to a model element. 
   Normally tags (and **stereotypes**) are inserted within the models,
-  which over time polutes the models, especially when different sets of
+  which over time pollutes the models, especially when different sets of
   tags are needed for different technical platforms.
 * MontiCore offers a solution that **separates a model and its tags into
   distinct artifacts**. Several independent tagging artifacts
@@ -525,7 +525,7 @@ package 'Coffee' {                      // a SysML activity diagram
   * Second, the set of allowed tags can be constrained, by an explicit
     definition of allowed **tag types** and **tag values** and an explicit 
     declaration on which **kinds of symbols** a tag may be attached to.
-  * Consequently tagging is not a single language, but a method to 
+  * Consequently, tagging is not a single language, but a method to 
   **automatically and schematically derive** languages:
     * A tagging schema language TSL (dependent on the available symbol types
       of the base grammar)

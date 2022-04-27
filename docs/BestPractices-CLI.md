@@ -5,7 +5,7 @@
 [[_TOC_]]
 
 Some DSLs require a tool to enable general accessibility via the command line interface (CLI). 
-When designing a tool, we recommend some standard guide lines.
+When designing a tool, we recommend some standard guidelines.
 
 ## Designing a Tool
 The tool provides a general interface for the functionalities developed for a language. 
@@ -70,7 +70,7 @@ Some explanation to the arguments:
 * Groovy-scripting (`-sc`, `--script`): A Groovy Script is meant to describe the tool internal 
   workflow. It controls parsing, symbol construction, reporting, code generation etc.
   This kind of scripting should only become necessary when various alternative
-  configurations are possible. Thus not every tool provides Groovy scripting.
+  configurations are possible. Thus, not every tool provides Groovy scripting.
 * Template-scripting (`-ct`, `--configtemplate`): 
   It is possible to add a custom template script right before
   the full generation process starts. This template is useful to customize the 
@@ -126,7 +126,7 @@ However, this requires adhering to the following conventions:
 * The generated JAR can be found in 'target/libs'
 
 **Example:**  
-For a language projekt `MyLang` we have to implement the `MyLangTool.java` located 
+For a language project `MyLang` we have to implement the `MyLangTool.java` located 
 in the package `de.monticore`.
 This automatically generates the executable JAR `MCMyLang.jar`
 

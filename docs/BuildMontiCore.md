@@ -7,7 +7,7 @@
 
 ## General disclaimer
 
-(Repeated from the the BSD 3 Clause license): 
+(Repeated from the BSD 3 Clause license): 
 
 This software is provided by the copyright holders and contributors
 "as is" and any expressed or implied warranties, including, but not limited

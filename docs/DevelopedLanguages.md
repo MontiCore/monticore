@@ -7,10 +7,10 @@ many languages. Not all of those languages are publicly
 available and some of these languages are equipped with tools based 
 on MontiCore 5. 
 
-Many of these languages are composed from sublanguages and 
+Many of these languages are composed of sublanguages and 
 thus potentially build on each
 other. The available languages can be used as is, but 
-also be adaptated, extended and further composed. 
+also be adapted, extended and further composed. 
 
 Please also have a look at our literature references for further 
 information on many of the languages. 
@@ -119,7 +119,7 @@ development. See language definition and usage method in
     [[BGR09]](https://www.se-rwth.de/publications/).
 
 * **MontiWeb** a modular development approach for 
-    Web Information Systems (which was later succeded by MontiWIS)
+    Web Information Systems (which was later succeeded by MontiWIS)
     [[DRRS09]](https://www.se-rwth.de/publications/).
 
 * **C++** and its sublanguages for expressions, statements and 

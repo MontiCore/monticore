@@ -8,7 +8,7 @@
 languages, access and modify the abstract syntax tree, and produce output files.
 
 This (currently unsorted and evolving) list of practices discusses solutions 
-that we identified and applied as well as alternatives and their specfic 
+that we identified and applied as well as alternatives and their specific 
 advantages and drawbacks. The list also mentions where the solutions have been
 found and where they have been applied first.
 
@@ -38,7 +38,7 @@ of the reference manual.
   parsed as `3 < -10` anymore.
 * Solutions: 
   1. We might decompose the token to `"<" "-"` which in its consequence 
-     means that we put more burden to the contextfree parser and less to the 
+     means that we put more burden to the context-free parser and less to the 
      regular scanner. ("scannerless parsing")
      * Drawback: spaces would now be allowed inbetween.
   2. Decompose the token to `{noSpace(2)}? "<" "-"`. This (slightly
@@ -141,8 +141,8 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
   * Disadvantage: 
     1. The entire production is overriden (some redundancy). 
     2. Only one overriding alternative possible. 
-* Combinations are possible. Dependend on the anticipated forms of 
-  adaptatations option 1, 2, 3 and 5 are in use.
+* Combinations are possible. Dependent on the anticipated forms of 
+  adaptations option 1, 2, 3 and 5 are in use.
 * Defined by: BR
 
 
@@ -249,7 +249,7 @@ A component grammar is meant for extension. MontiCore therefore provides five(!)
   ```
   * Effects: 
     1. very extensible in various ways (even beyond mere keywords) 
-    2. visitor can easily adress the keywords (i.e. by `visit(P1)` ...)
+    2. visitor can easily address the keywords (i.e. by `visit(P1)` ...)
     3. Disadvantage: Clumsy notation and visitors are always needed.
 * Defined by: SVa, BR.
 

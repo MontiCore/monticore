@@ -7,7 +7,7 @@
 languages, access and modify the abstract syntax tree, and produce output files.
 
 This (currently unsorted and evolving) list of practices discusses solutions 
-that we identified and applied as well as alternatives and their specfic 
+that we identified and applied as well as alternatives and their specific 
 advantages and drawbacks. The list also mentions where the solutions have been
 found and where they have been applied first.
 
