@@ -4,6 +4,7 @@ package de.monticore.io.paths;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
@@ -160,6 +161,8 @@ public class MCPathTest {
       + "\n" + "{" + resources.toString() + ",\n" + resources.toString() + "}", findings.get(0).getMsg());
   }
   @Test
+  @Ignore("$JAVA_HOME must be set & might be an arbitrary version (e.g. intelliJ can use its own JDK)." +
+      "Path to <rt.jar> might differ between java version")
   public void testShouldFind(){
     String jdk = System.getenv("JAVA_HOME").replaceAll("\\\\", "/") + "/jre/lib/rt.jar";
     MCPath mp = new MCPath(jdk);
