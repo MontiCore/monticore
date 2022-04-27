@@ -401,8 +401,6 @@ public class ParserGeneratorHelper {
         for (Entry<String, Collection<String>> e : grammarSymbol.getTokenModesWithInherited().entrySet()) {
           if (!e.getKey().equals("")) {
             if (e.getValue().contains(tokenName)) {
-              System.out.println("Override " + tokenName);
-
               isOverriden = true;
             }
           }
