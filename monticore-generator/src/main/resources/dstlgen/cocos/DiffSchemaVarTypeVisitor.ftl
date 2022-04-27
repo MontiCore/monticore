@@ -6,10 +6,10 @@ import de.se_rwth.commons.logging.Log;
 import ${package}.${grammarNameLower}tr._ast.*;
 import ${package}.${grammarNameLower}tr._visitor.*;
 import ${package}.${grammarNameLower}tr.${ast.getName()}TRMill;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import de.monticore.tf.tfcommons._ast.ASTITFPart;
 
 <#assign service = glex.getGlobalVar("service")>
@@ -18,10 +18,10 @@ import de.monticore.tf.tfcommons._ast.ASTITFPart;
  */
 public class ${className} implements ${ast.getName()}TRVisitor2, ${ast.getName()}TRHandler {
 
-  List<String> variables = Lists.newArrayList();
+  List<String> variables = new ArrayList<>();
 
 <#list productions as prod>
-  Map<String, AST${prod.getName()}_Pat> vars${prod.getName()}_Pat = Maps.newHashMap();
+  Map<String, AST${prod.getName()}_Pat> vars${prod.getName()}_Pat = new HashMap<>();
 </#list>
 
   public final ${ast.getName()}TRTraverser traverser;

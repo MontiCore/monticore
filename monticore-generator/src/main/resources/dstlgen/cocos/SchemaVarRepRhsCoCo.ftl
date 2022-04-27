@@ -3,7 +3,6 @@ ${signature("classname", "package")}
 
 package ${package}.${grammarNameLower}tr._cocos;
 
-import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.tf.tfcommons._ast.ASTAssign;
 import de.monticore.tf.tfcommons._ast.ASTTFAssignments;
@@ -11,6 +10,7 @@ import ${package}.${grammarNameLower}tr._ast.*;
 import ${package}.${grammarNameLower}tr._visitor.*;
 import de.monticore.tf.grammartransformation.CollectCoCoInformationState;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class ${classname} implements ${ast.getName()}TRAST${grammarName}TFRuleCo
       ${grammarName}TRTraverser traverser = new ${grammarName}CollectRHSVariablesVisitorBuilder().build(state);
       node.accept(traverser);
       ASTTFAssignments assignments = node.getTFRule().getTFAssignments();
-      List<String> varsInAssignments = Lists.newArrayList();
+      List<String> varsInAssignments = new ArrayList<>();
       for (ASTAssign a : assignments.getAssignList()) {
         if (state.getVarsOnLHS().contains(a.getVariable())) {
           Log.error(String.format("0xF0C04${service.getGeneratedErrorCode(classname)} Schema variable %s is part of the pattern and must not be assigned.",

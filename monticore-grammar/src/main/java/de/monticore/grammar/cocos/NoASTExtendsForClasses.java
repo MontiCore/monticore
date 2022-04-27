@@ -8,10 +8,9 @@ import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
-import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -65,10 +64,8 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
     String name;
     if (type instanceof ASTMCGenericType) {
       name = ((ASTMCGenericType) type).printWithoutTypeArguments();
-    } else if (type instanceof ASTMCArrayType) {
-      name = ((ASTMCArrayType) type).printTypeWithoutBrackets();
     } else {
-      name = type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+      name = type.printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter());
     }
     return Names.getSimpleName(name);
   }

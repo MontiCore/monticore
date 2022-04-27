@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight._symboltable;
 
-import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCFGT4Grammar;
+import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCSGT4Grammar;
 import de.monticore.javalight._ast.*;
 import de.monticore.javalight._visitor.JavaLightVisitor2;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
@@ -118,7 +118,7 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
-    FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
+    FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
     // Start visitor
     TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
     if(typeCheckResult.isPresentResult()){
@@ -128,7 +128,7 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
-    FullSynthesizeFromMCFGT4Grammar synFromFull = new FullSynthesizeFromMCFGT4Grammar();
+    FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
     // Start visitor
     TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
     if(typeCheckResult.isPresentResult()){

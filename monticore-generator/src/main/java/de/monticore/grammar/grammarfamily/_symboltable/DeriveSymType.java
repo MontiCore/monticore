@@ -13,6 +13,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.grammar.grammar_withconcepts.SynthesizeFromMCBT4Grammar;
 import de.monticore.grammar.grammar_withconcepts.SynthesizeFromMCSGT4Grammar;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.*;
@@ -25,10 +26,8 @@ import java.util.Optional;
 public class DeriveSymType extends DeriveSymTypeOfCD4Code {
 
   @Override
-  public void init() {
-    super.init();
-
-    traverser = GrammarFamilyMill.traverser();
+  protected void init(CD4CodeTraverser traverser) {
+    this.typeCheckResult = new TypeCheckResult();
 
     final DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     deriveSymTypeOfLiterals.setTypeCheckResult(getTypeCheckResult());
@@ -79,7 +78,5 @@ public class DeriveSymType extends DeriveSymTypeOfCD4Code {
     deriveSymTypeOfBitExpressions.setTypeCheckResult(getTypeCheckResult());
     traverser.add4BitExpressions(deriveSymTypeOfBitExpressions);
     traverser.setBitExpressionsHandler(deriveSymTypeOfBitExpressions);
-
-    setTraverser(traverser);
   }
 }

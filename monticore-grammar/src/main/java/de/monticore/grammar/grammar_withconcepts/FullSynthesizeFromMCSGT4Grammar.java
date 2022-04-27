@@ -5,23 +5,46 @@ import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 
-import java.util.Optional;
+public class FullSynthesizeFromMCSGT4Grammar implements AbstractSynthesize {
 
-public class FullSynthesizeFromMCFGT4Grammar extends AbstractSynthesize {
+  protected MCSimpleGenericTypesTraverser traverser;
+
+  protected TypeCheckResult typeCheckResult;
 
   public FullSynthesizeFromMCFGT4Grammar(){
     this(MCFullGenericTypesMill.traverser());
   }
 
-  public FullSynthesizeFromMCFGT4Grammar(MCFullGenericTypesTraverser traverser){
+  public FullSynthesizeFromMCSGT4Grammar(MCFullGenericTypesTraverser traverser){
     super(traverser);
     init(traverser);
   }
 
-  public void init(MCFullGenericTypesTraverser traverser) {
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCReturnType type) {
+    init();
+    type.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  @Override
+  public TypeCheckResult synthesizeType(ASTMCQualifiedName qName) {
+    init();
+    qName.accept(traverser);
+    return typeCheckResult.copy();
+  }
+
+  public void init(MCSimpleGenericTypesTraverser traverser) {
     SynthesizeSymTypeFromMCFullGenericTypes synFromFull = new SynthesizeSymTypeFromMCFullGenericTypes();
     synFromFull.setTypeCheckResult(typeCheckResult);
     SynthesizeSymTypeFromMCSimpleGenericTypes synFromSimple = new SynthesizeFromMCSGT4Grammar();
@@ -31,8 +54,6 @@ public class FullSynthesizeFromMCFGT4Grammar extends AbstractSynthesize {
     SynthesizeSymTypeFromMCBasicTypes synFromBasic = new SynthesizeFromMCBT4Grammar();
     synFromBasic.setTypeCheckResult(typeCheckResult);
 
-    traverser.add4MCFullGenericTypes(synFromFull);
-    traverser.setMCFullGenericTypesHandler(synFromFull);
     traverser.add4MCSimpleGenericTypes(synFromSimple);
     traverser.setMCSimpleGenericTypesHandler(synFromSimple);
     traverser.add4MCCollectionTypes(synFromCollection);
@@ -41,7 +62,11 @@ public class FullSynthesizeFromMCFGT4Grammar extends AbstractSynthesize {
     traverser.setMCBasicTypesHandler(synFromBasic);
   }
 
-  public void setTraverser(MCFullGenericTypesTraverser traverser) {
+  public MCSimpleGenericTypesTraverser getTraverser() {
+    return traverser;
+  }
+
+  public void setTraverser(MCSimpleGenericTypesTraverser traverser) {
     this.traverser = traverser;
   }
 

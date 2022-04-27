@@ -1,6 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.oosymbols._symboltable;
 
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+
+import java.util.List;
+
 public class MethodSymbol extends MethodSymbolTOP {
 
   public MethodSymbol(String name) {
@@ -31,5 +35,12 @@ public class MethodSymbol extends MethodSymbolTOP {
       clone.setSpannedScope(this.spannedScope);
     }
     return clone;
+  }
+
+  @Override
+  public List<VariableSymbol> getParameterList() {
+    List<VariableSymbol> params = super.getParameterList();
+    params.addAll(getSpannedScope().getLocalFieldSymbols());
+    return params;
   }
 }

@@ -10,7 +10,6 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -79,6 +78,12 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teMap3;
 
+  static SymTypeExpression teFunc1;
+
+  static SymTypeExpression teFunc2;
+
+  static SymTypeExpression teFunc3;
+
   @BeforeClass
   public static void setUpScope(){
 //    LogStub.init();
@@ -143,6 +148,12 @@ public class SymTypeExpressionTest {
 
     teMap3 = createGenerics("java.util.Map", scope, Lists.newArrayList(teUpperBound, teWildcard));
 
+    teFunc1 = createFunction(teVoid);
+
+    teFunc2 = createFunction(teInt, Lists.newArrayList(teDouble, teInt));
+
+    teFunc3 = createFunction(teFunc1, Lists.newArrayList(teFunc2));
+
   }
 
   @Test
@@ -165,6 +176,9 @@ public class SymTypeExpressionTest {
     assertEquals("? extends Human", teLowerBound.print());
     assertEquals("?",teWildcard.print());
     assertEquals("java.util.Map<? super int,?>", teMap3.printFullName());
+    assertEquals("(void)", teFunc1.print());
+    assertEquals("(double -> int -> int)", teFunc2.print());
+    assertEquals("((double -> int -> int) -> (void))", teFunc3.print());
   }
 
   @Test
@@ -324,6 +338,20 @@ public class SymTypeExpressionTest {
     JsonObject bound = teUpperBound2Json.getObjectMember("bound");
     assertEquals("de.monticore.types.check.SymTypeConstant",bound.getStringMember("kind"));
     assertEquals("int",bound.getStringMember("constName"));
+
+    result = JsonParser.parse(teFunc2.printAsJson());
+    assertTrue(result.isJsonObject());
+    JsonObject teFunc2Json = result.getAsJsonObject();
+    assertEquals("de.monticore.types.check.SymTypeOfFunction",teFunc2Json.getStringMember("kind"));
+    JsonObject func2returnValue = teFunc2Json.getObjectMember("returnValue");
+    assertEquals("de.monticore.types.check.SymTypeConstant", func2returnValue.getStringMember( "kind"));
+    assertEquals("int", func2returnValue.getStringMember( "constName"));
+    List<JsonElement> func2Arguments = teFunc2Json.getArrayMember("argumentTypes");
+    assertEquals(2, func2Arguments.size());
+    assertEquals("de.monticore.types.check.SymTypeConstant", func2Arguments.get(0).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("double", func2Arguments.get(0).getAsJsonObject().getStringMember( "constName"));
+    assertEquals("de.monticore.types.check.SymTypeConstant", func2Arguments.get(1).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("int", func2Arguments.get(1).getAsJsonObject().getStringMember( "constName"));
   }
 
   @Test
@@ -395,6 +423,11 @@ public class SymTypeExpressionTest {
     assertTrue(teUpperBound.deepClone() instanceof SymTypeOfWildcard);
     assertEquals(((SymTypeOfWildcard) teUpperBound).getBound().print(), ((SymTypeOfWildcard) teUpperBound.deepClone()).getBound().print());
     assertEquals(teUpperBound.print(), teUpperBound.deepClone().print());
+
+    //SymTypeOfFunction
+    assertTrue(teFunc3.deepClone() instanceof SymTypeOfFunction);
+    assertTrue(teFunc3.deepClone().isFunctionType());
+    assertEquals(teFunc3.print(), teFunc3.deepClone().print());
   }
 
   @Test
@@ -458,6 +491,15 @@ public class SymTypeExpressionTest {
     SymTypeExpression tExpr = SymTypeExpressionFactory.createTypeExpression("void",scope);
     assertTrue(tExpr instanceof SymTypeVoid);
     assertEquals("void",tExpr.print());
+
+    SymTypeOfFunction tFunc1 = SymTypeExpressionFactory.createFunction(tVoid);
+    assertEquals("(void)", tFunc1.print());
+
+    SymTypeOfFunction tFunc2 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(tFunc1, tFunc1));
+    assertEquals("((void) -> (void) -> void)", tFunc2.print());
+
+    SymTypeOfFunction tFunc3 = SymTypeExpressionFactory.createFunction(tVoid, tFunc1, tFunc1);
+    assertEquals("((void) -> (void) -> void)", tFunc3.print());
   }
 
   @Test
@@ -669,6 +711,189 @@ public class SymTypeExpressionTest {
     assertEquals("? super int", upperBoundInt.print());
     assertEquals("int", upperBoundInt.getBound().print());
     assertTrue(upperBoundInt.isUpper());
+  }
+
+  @Test
+  public void testFunctionArguments() {
+    SymTypeExpression teFunExp = createFunction(teVoid,
+        Lists.newArrayList(teP, teDouble, teInt, teH));
+    assertTrue(teFunExp.isFunctionType());
+    SymTypeOfFunction teFun = (SymTypeOfFunction) teFunExp;
+
+    //getArgumentTypeList & getArgumentType
+    assertEquals(4, teFun.getArgumentTypeList().size());
+    assertEquals(teP, teFun.getArgumentType(0));
+    assertEquals(teDouble, teFun.getArgumentType(1));
+    assertEquals(teInt, teFun.getArgumentType(2));
+    assertEquals(teH, teFun.getArgumentType(3));
+    List<SymTypeExpression> arguments = teFun.getArgumentTypeList();
+
+    //toArrayArguments
+    Object[] args = teFun.toArrayArgumentTypes();
+    assertEquals(teP, args[0]);
+    assertEquals(teDouble, args[1]);
+    assertEquals(teInt, args[2]);
+    assertEquals(teH, args[3]);
+
+    //toArrayArguments2
+    SymTypeExpression[] symArgs = teFun.toArrayArgumentTypes(new SymTypeExpression[4]);
+    assertEquals(teP, symArgs[0]);
+    assertEquals(teDouble, symArgs[1]);
+    assertEquals(teInt, symArgs[2]);
+    assertEquals(teH, symArgs[3]);
+
+    //subListArguments
+    List<SymTypeExpression> subList = teFun.subListArgumentTypes(1, 3);
+    assertEquals(2, subList.size());
+    assertEquals(teDouble, subList.get(0));
+    assertEquals(teInt, subList.get(1));
+
+    //containsArgument
+    assertTrue(teFun.containsArgumentType(teDouble));
+    assertFalse(teFun.containsArgumentType(teDeep1));
+
+    //containsAllArgumentTypes
+    assertTrue(teFun.containsAllArgumentTypes(subList));
+
+    //indexOfArgument
+    assertEquals(0, teFun.indexOfArgumentType(teP));
+
+    //lastIndexOfArgument
+    assertEquals(0, teFun.lastIndexOfArgumentType(teP));
+
+    //equalsArgumentTypes
+    assertTrue(teFun.equalsArgumentTypeTypes(teFun.getArgumentTypeList()));
+    assertFalse(teFun.equalsArgumentTypeTypes(subList));
+
+    //listIteratorArgumentTypes
+    Iterator<SymTypeExpression> it = teFun.listIteratorArgumentTypes();
+    int i = 0;
+    while (it.hasNext()) {
+      assertEquals(symArgs[i], it.next());
+      ++i;
+    }
+    assertEquals(4, i);
+
+    //listIteratorArgumentTypes
+    Iterator<SymTypeExpression> it3 = teFun.listIteratorArgumentTypes(1);
+    i = 0;
+    while (it3.hasNext()) {
+      assertEquals(symArgs[i + 1], it3.next());
+      ++i;
+    }
+    assertEquals(3, i);
+
+    //iteratorArgumentTypes
+    Iterator<SymTypeExpression> it2 = teFun.iteratorArgumentTypes();
+    i = 0;
+    while (it2.hasNext()) {
+      assertEquals(symArgs[i], it2.next());
+      ++i;
+    }
+    assertEquals(4, i);
+
+    //spliteratorArgumentTypes
+    Spliterator<SymTypeExpression> split = teFun.spliteratorArgumentTypes();
+    assertEquals(4, split.getExactSizeIfKnown());
+    split.forEachRemaining(SymTypeExpression::print);
+
+    //sizeArgumentTypes
+    assertEquals(4, teFun.sizeArgumentTypes());
+
+    //streamArgumentTypes
+    Stream<SymTypeExpression> stream = teFun.streamArgumentTypes();
+    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isTypeConstant)
+        .collect(Collectors.toList());
+    assertEquals(2, list.size());
+    assertEquals(teDouble, list.get(0));
+    assertEquals(teInt, list.get(1));
+
+    //parallelStreamArgumentTypes
+    Stream<SymTypeExpression> parStream = teFun.parallelStreamArgumentTypes();
+    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isTypeConstant)
+        .collect(Collectors.toList());
+    assertEquals(2, parList.size());
+    assertEquals(teDouble, parList.get(0));
+    assertEquals(teInt, parList.get(1));
+
+    //hashCodeArgumentTypes
+    assertEquals(teFun.getArgumentTypeList().hashCode(), teFun.hashCodeArgumentTypes());
+
+    //forEachArgumentTypes
+    teFun.forEachArgumentTypes(SymTypeExpression::deepClone);
+    assertEquals(teP, teFun.getArgumentType(0));
+
+    //setArgument
+    teFun.setArgumentType(2, teDeep2);
+    assertEquals(teDeep2, teFun.getArgumentType(2));
+
+    //addArgument
+    teFun.addArgumentType(teSetA);
+    assertEquals(5, teFun.sizeArgumentTypes());
+    assertEquals(teSetA, teFun.getArgumentType(4));
+    teFun.addArgumentType(3, teArr3);
+    assertEquals(6, teFun.sizeArgumentTypes());
+    assertEquals(teArr3, teFun.getArgumentType(3));
+
+    //removeArgument
+    teFun.removeArgumentType(teArr3);
+    assertFalse(teFun.containsArgumentType(teArr3));
+    assertEquals(5, teFun.sizeArgumentTypes());
+    teFun.removeArgumentType(4);
+    assertFalse(teFun.containsArgumentType(teSetA));
+    assertEquals(4, teFun.sizeArgumentTypes());
+
+    //clearArgumentTypes, isEmptyArgumentTypes
+    assertFalse(teFun.isEmptyArgumentTypes());
+    teFun.clearArgumentTypes();
+    assertEquals(0, teFun.sizeArgumentTypes());
+    assertTrue(teFun.isEmptyArgumentTypes());
+
+    //setArgumentList
+    arguments = Lists.newArrayList(teP, teDouble, teInt, teH);
+    teFun.setArgumentTypeList(arguments);
+    assertEquals(4, teFun.sizeArgumentTypes());
+    assertEquals(teP, teFun.getArgumentType(0));
+    assertEquals(teDouble, teFun.getArgumentType(1));
+    assertEquals(teInt, teFun.getArgumentType(2));
+    assertEquals(teH, teFun.getArgumentType(3));
+
+    //sortArgumentTypes
+    teFun.sortArgumentTypes((arg1, arg2) -> arg1.hashCode() + arg2.hashCode());
+    assertEquals(4, teFun.sizeArgumentTypes());
+
+    //addAllArgumentTypes
+    teFun.setArgumentTypeList(Lists.newArrayList());
+    assertTrue(teFun.isEmptyArgumentTypes());
+    arguments = Lists.newArrayList(teP, teDouble, teInt, teH);
+    teFun.addAllArgumentTypes(arguments);
+    assertEquals(4, teFun.getArgumentTypeList().size());
+    assertEquals(teP, teFun.getArgumentType(0));
+    assertEquals(teDouble, teFun.getArgumentType(1));
+    assertEquals(teInt, teFun.getArgumentType(2));
+    assertEquals(teH, teFun.getArgumentType(3));
+
+    //retainAllArgumentTypes
+    subList = Lists.newArrayList(teP, teH);
+    teFun.retainAllArgumentTypes(subList);
+    assertEquals(2, teFun.sizeArgumentTypes());
+    assertEquals(teP, teFun.getArgumentType(0));
+    assertEquals(teH, teFun.getArgumentType(1));
+
+    //removeAllArgumentTypes
+    teFun.removeAllArgumentTypes(subList);
+    assertTrue(teFun.isEmptyArgumentTypes());
+
+    //replaceAllArgumentTypes
+    arguments = Lists.newArrayList(teP, teDouble, teInt, teH);
+    teFun.setArgumentTypeList(arguments);
+    teFun.replaceAllArgumentTypes(SymTypeExpression::deepClone);
+    assertEquals(4, teFun.sizeArgumentTypes());
+    assertTrue(teFun.equalsArgumentTypeTypes(arguments));
+
+    //removeIfArgument
+    teFun.removeIfArgumentType(SymTypeExpression::isTypeConstant);
+    assertEquals(2, teFun.sizeArgumentTypes());
   }
 
 }

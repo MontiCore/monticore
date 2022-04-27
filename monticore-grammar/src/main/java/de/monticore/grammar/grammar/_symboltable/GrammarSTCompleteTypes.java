@@ -8,7 +8,7 @@ import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 
 import java.util.Collection;
 import java.util.List;
@@ -216,7 +216,8 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
 
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
-      ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astSuperClass));
+      ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(
+          MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter().prettyprint(astSuperClass));
       superClass.setEnclosingScope(enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
@@ -230,7 +231,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astInterface));
+      ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter().prettyprint(astInterface));
       superClass.setEnclosingScope(enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }

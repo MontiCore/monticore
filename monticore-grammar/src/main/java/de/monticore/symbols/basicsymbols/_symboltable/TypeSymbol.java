@@ -2,12 +2,10 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TypeSymbol extends TypeSymbolTOP {
 
@@ -22,20 +20,11 @@ public class TypeSymbol extends TypeSymbolTOP {
   }
 
   public List<SymTypeExpression> getSuperClassesOnly(){
-    List<SymTypeExpression> normalSuperTypes = superTypes.stream().filter(type -> !(type.getTypeInfo() instanceof OOTypeSymbol)).collect(Collectors.toList());
-    List<SymTypeExpression> oOSuperTypes = superTypes.stream()
-        .filter(type -> type.getTypeInfo() instanceof OOTypeSymbol)
-        .filter(type -> ((OOTypeSymbol) type.getTypeInfo()).isIsClass())
-        .collect(Collectors.toList());
-    normalSuperTypes.addAll(oOSuperTypes);
-    return normalSuperTypes;
+    return superTypes;
   }
 
   public List<SymTypeExpression> getInterfaceList(){
-    return superTypes.stream()
-        .filter(type -> type.getTypeInfo() instanceof OOTypeSymbol)
-        .filter(type -> ((OOTypeSymbol) type.getTypeInfo()).isIsInterface())
-        .collect(Collectors.toList());
+    return superTypes;
   }
 
   /**

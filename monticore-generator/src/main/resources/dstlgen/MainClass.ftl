@@ -2,8 +2,6 @@
 ${signature("className", "fileExtension", "dstlName", "package", "grammarName", "grammarPackage")}
 package ${package};
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -124,7 +122,7 @@ public class ${className} {
     ast.accept(mt.getTraverser());
     Log.debug("Starting rule2odstate ", LOG_ID);
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), mt.getParents());
-    state.getGenRule().setGrammarPackageList(Splitter.on('.').splitToList("${grammarPackage}"));
+    state.getGenRule().setGrammarPackageList(Arrays.asList("${grammarPackage}".split("\\.")));
     state.getGenRule().setGrammarName("${grammarName}");
     ${grammarName}RuleCollectVariables variables = new ${grammarName}RuleCollectVariables(state);
     ${grammarName}Rule2OD rule2OD = new ${grammarName}Rule2OD(state);
@@ -148,7 +146,7 @@ public class ${className} {
     if(!ast.getTFRule().getPackageList().isEmpty()) {
       astod.setPackageList(new ArrayList<>(ast.getTFRule().getPackageList()));
     }
-    astod.setMCImportStatementList(Lists.newArrayList(ast.getTFRule().getMCImportStatementList()));
+    astod.setMCImportStatementList(new ArrayList<>(ast.getTFRule().getMCImportStatementList()));
     if(ast.getTFRule().isPresentName()){
       astod.setName(ast.getTFRule().getName());
     }

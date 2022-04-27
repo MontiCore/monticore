@@ -3,6 +3,7 @@ package de.monticore.types;
 
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.*;
 
 import java.util.Arrays;
@@ -24,6 +25,14 @@ public class MCCollectionTypesNodeIdentHelper extends MCBasicTypesNodeIdentHelpe
       }
     }
     return format(name.toString(), Layouter.nodeName(a));
+  }
+
+  public String getIdent(ASTMCType a) {
+    if (a instanceof ASTMCGenericType) {
+      return format(((ASTMCGenericType) a).printWithoutTypeArguments(), Layouter.nodeName(a));
+    } else {
+      return format(a.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), Layouter.nodeName(a));
+    }
   }
 
   public String getIdent(ASTMCListType a){

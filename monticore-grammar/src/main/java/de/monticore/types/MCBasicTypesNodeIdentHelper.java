@@ -5,7 +5,6 @@ import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelp
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 
 /**
  * NodeIdentHelper for MCBasicTypes, mainly used for Reporting
@@ -17,31 +16,28 @@ public class MCBasicTypesNodeIdentHelper extends ASTNodeIdentHelper {
   }
 
   public String getIdent(ASTMCType a) {
-    if (a instanceof ASTMCGenericType) {
-      return format(((ASTMCGenericType) a).printWithoutTypeArguments(), Layouter.nodeName(a));
-    } else {
-      return format(a.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), Layouter.nodeName(a));
-    }
+    return format(a.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), Layouter.nodeName(a));
   }
 
   public String getIdent(ASTMCQualifiedName a) {
     return format(a.getQName(), Layouter.nodeName(a));
   }
 
-  public String getIdent(ASTMCQualifiedType a){
+  public String getIdent(ASTMCQualifiedType a) {
     return format(a.getMCQualifiedName().getQName(), Layouter.nodeName(a));
   }
 
-  public String getIdent(ASTMCReturnType a){
-    if(a.isPresentMCType()){
+  public String getIdent(ASTMCReturnType a) {
+    if (a.isPresentMCType()) {
       return getIdent(a.getMCType());
-    } else if (a.isPresentMCVoidType()) {
+    }
+    else if (a.isPresentMCVoidType()) {
       return getIdent(a.getMCVoidType());
     }
     return "";
   }
 
-  public String getIdent(ASTMCVoidType a){
+  public String getIdent(ASTMCVoidType a) {
     return format("void", Layouter.nodeName(a));
   }
 }

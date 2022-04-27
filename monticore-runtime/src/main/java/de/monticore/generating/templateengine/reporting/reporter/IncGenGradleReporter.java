@@ -91,6 +91,9 @@ public class IncGenGradleReporter extends IncGenReporter {
       writeLine("gen:" + p);
     }
 
+    for (String p : outputFiles) {
+      writeLine("out:" + p);
+    }
     super.flush(node);
   }
 }

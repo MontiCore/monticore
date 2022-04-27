@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -19,11 +18,11 @@ public class BasicSymbolsScope extends BasicSymbolsScopeTOP {
     super(isShadowingScope);
   }
 
-  public BasicSymbolsScope(IOOSymbolsScope enclosingScope) {
+  public BasicSymbolsScope(BasicSymbolsScope enclosingScope) {
     this(enclosingScope, false);
   }
 
-  public BasicSymbolsScope(IOOSymbolsScope enclosingScope, boolean isShadowingScope) {
+  public BasicSymbolsScope(BasicSymbolsScope enclosingScope, boolean isShadowingScope) {
     super(enclosingScope,isShadowingScope);
   }
 
