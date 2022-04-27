@@ -171,8 +171,12 @@ public class ParserGeneratorHelper {
    * @return Keys of all lex symbols
    */
   public Set<String> getLexSymbolsWithInherited() {
-    Set<String> retSet = Sets.newHashSet(grammarInfo.getLexNamer().getLexnames());
-    grammarInfo.getKeywords().stream().filter(f -> !grammarSymbol.getKeywordRulesWithInherited().contains(f)).forEach(f -> retSet.add(f));
+    Set<String> retSet = Sets.newLinkedHashSet(grammarInfo.getLexNamer().getLexnames());
+    retSet.addAll(
+        grammarInfo.getKeywords().stream()
+            .filter(f -> !grammarSymbol.getKeywordRulesWithInherited().contains(f))
+            .collect(Collectors.toList())
+    );
     return retSet;
  }
 

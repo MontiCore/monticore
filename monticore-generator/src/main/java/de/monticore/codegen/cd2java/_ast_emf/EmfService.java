@@ -15,7 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -100,7 +100,7 @@ public class EmfService extends AbstractService<EmfService> {
    * finds all attributes in all classes that are valid Emf attributes
    */
   public Set<String> getEDataTypes(ASTCDDefinition astcdDefinition) {
-    Set<String> eDataTypeMap = new HashSet<>();
+    Set<String> eDataTypeMap = new LinkedHashSet<>();
     for (ASTCDClass astcdClass : astcdDefinition.getCDClassesList()) {
       eDataTypeMap.addAll(getEDataTypes(astcdClass));
     }
@@ -111,7 +111,7 @@ public class EmfService extends AbstractService<EmfService> {
   }
 
   public Set<String> getEDataTypes(ASTCDType astcdType) {
-    Set<String> eDataTypeMap = new HashSet<>();
+    Set<String> eDataTypeMap = new LinkedHashSet<>();
     for (ASTCDAttribute astcdAttribute : astcdType.getCDAttributeList()) {
       if (isEDataType(astcdAttribute) && !isInheritedAttribute(astcdAttribute)) {
         eDataTypeMap.add(getDecorationHelper().getNativeTypeName(astcdAttribute.getMCType()));
