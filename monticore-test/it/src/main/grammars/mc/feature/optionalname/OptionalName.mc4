@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.optionalname;
+
+grammar OptionalName extends mc.common.Basics {
+
+  symbol B = "Optional" Name?;
+
+}
