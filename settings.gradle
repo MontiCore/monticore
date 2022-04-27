@@ -17,6 +17,21 @@ pluginManagement {
   }
 }
 
+if(hasProperty('buildCacheURL')) {
+  System.out.println("RUNNING WITH BUILD CACHE")
+  buildCache {
+    remote(HttpBuildCache) {
+      url = buildCacheURL
+      allowInsecureProtocol = true  // TODO: https certificate for server!
+      push = true
+      credentials {
+        username = buildCacheUser
+        password = buildCachePassword
+      }
+    }
+  }
+}
+
 rootProject.name = 'monticore'
 
 boolean inComposite = gradle.parent != null
