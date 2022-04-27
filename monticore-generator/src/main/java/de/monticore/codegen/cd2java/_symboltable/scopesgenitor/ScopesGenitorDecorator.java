@@ -207,12 +207,12 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     String astFullName = symbolTableService.getASTPackage() + "." + symbolClass.getName();
     String simpleName = symbolTableService.removeASTPrefix(symbolClass);
     Optional<ASTCDAttribute> attr = symbolClass.getCDAttributeList().stream().filter(a -> NAME_VAR.equals(a.getName())).findFirst();
-    boolean hasOptionalName = attr.isPresent()? DecorationHelper.getInstance().isOptional(attr.get().getMCType()):false;
+    boolean hasOptionalName = attr.isPresent() && DecorationHelper.getInstance().isOptional(attr.get().getMCType());
     // visit method
     methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName, hasOptionalName, symbolClass.getModifier()));
 
     // endVisit method
-    methodList.add(createSymbolEndVisitMethod(astFullName, symbolClass, simpleName, symbolFullName));
+    methodList.add(createSymbolEndVisitMethod(astFullName, symbolClass, simpleName, symbolFullName, hasOptionalName));
 
     return methodList;
   }
@@ -235,12 +235,12 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     return visitMethod;
   }
 
-  protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass, String simpleName, String symbolFullName) {
+  protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass, String simpleName, String symbolFullName, boolean hasOptionalName) {
     ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(astFullName));
     boolean removeScope = (symbolTableService.hasScopeStereotype(symbolClass.getModifier())
         || symbolTableService.hasInheritedScopeStereotype(symbolClass.getModifier()));
     String symbolName = symbolTableService.removeSymbolSuffix(Names.getSimpleName(symbolFullName));
-    this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH + "EndVisitSymbol",  simpleName, symbolName, removeScope));
+    this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH + "EndVisitSymbol",  simpleName, symbolName, removeScope, hasOptionalName));
     return endVisitMethod;
   }
 
