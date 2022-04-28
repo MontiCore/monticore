@@ -20,8 +20,8 @@ public class JavaMethodSymbolDeSer extends JavaMethodSymbolDeSerTOP {
   }
 
   @Override
-  protected void serializeType(SymTypeExpression returnType, JavaLightSymbols2Json s2j) {
-    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "returnType", returnType);
+  protected void serializeType(SymTypeExpression type, JavaLightSymbols2Json s2j) {
+    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "type", returnType);
   }
 
   @Override
@@ -36,7 +36,7 @@ public class JavaMethodSymbolDeSer extends JavaMethodSymbolDeSerTOP {
 
   @Override
   protected SymTypeExpression deserializeType(JsonObject symbolJson) {
-    return SymTypeExpressionDeSer.deserializeMember("returnType", symbolJson);
+    return SymTypeExpressionDeSer.deserializeMember("type", symbolJson);
   }
 
 }
