@@ -566,7 +566,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected Set<String> getSuperSymbolAttributesNames() {
-    Set<String> symbolAttributes = new HashSet<>();
+    Set<String> symbolAttributes = new LinkedHashSet<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
@@ -579,7 +579,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected Set<String> createSymbolAttributesNames(List<? extends ASTCDType> symbolClassList, DiagramSymbol cdDefinitionSymbol) {
-    Set<String> symbolAttributeList = new HashSet<>();
+    Set<String> symbolAttributeList = new LinkedHashSet<>();
     for (ASTCDType astcdClass : symbolClassList) {
       Optional<String> attributeNames = createSymbolAttributeName(astcdClass);
       attributeNames.ifPresent(attrName -> symbolAttributeList.add(attrName));

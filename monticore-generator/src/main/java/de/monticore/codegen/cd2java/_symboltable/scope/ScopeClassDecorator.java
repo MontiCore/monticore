@@ -280,7 +280,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   protected Map<String, ASTCDAttribute> getSuperSymbolAttributes() {
-    Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
+    Map<String, ASTCDAttribute> symbolAttributes = new LinkedHashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
@@ -295,7 +295,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
   protected Map<String, ASTCDAttribute> createSymbolAttributes(
       List<? extends ASTCDType> symbolClassList, DiagramSymbol cdDefinitionSymbol) {
-    Map<String, ASTCDAttribute> symbolAttributeList = new HashMap<>();
+    Map<String, ASTCDAttribute> symbolAttributeList = new LinkedHashMap<>();
     for (ASTCDType astcdClass : symbolClassList) {
       Optional<ASTCDAttribute> symbolAttributes = createSymbolAttribute(astcdClass,
           cdDefinitionSymbol);

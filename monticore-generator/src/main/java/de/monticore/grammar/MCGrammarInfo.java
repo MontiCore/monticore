@@ -43,7 +43,7 @@ public class MCGrammarInfo {
   /**
    * Lexer patterns
    */
-  protected Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
+  protected Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new LinkedHashMap<>();
 
   /**
    * Additional java code for parser defined in antlr concepts of the processed
@@ -67,7 +67,7 @@ public class MCGrammarInfo {
    */
   protected LexNamer lexNamer = new LexNamer();
 
-  protected Map<String, String> splitRules = Maps.newHashMap();
+  protected Map<String, String> splitRules = Maps.newLinkedHashMap();
 
   protected List<String> keywordRules = Lists.newArrayList();
 

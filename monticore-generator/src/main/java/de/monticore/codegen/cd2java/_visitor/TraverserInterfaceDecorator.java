@@ -465,7 +465,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @return The set of all qualified symbol names
    */
   protected Set<String> getSymbolsTransitive() {
-    Set<String> superSymbolNames = new HashSet<String>();
+    Set<String> superSymbolNames = new LinkedHashSet<>();
     // add local symbols
     superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
