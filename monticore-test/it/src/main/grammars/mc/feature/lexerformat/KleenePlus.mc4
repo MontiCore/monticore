@@ -28,7 +28,4 @@ grammar KleenePlus {
       | simplePlus:SIMPLEPLUS
       | simplePlusString:SIMPLEPLUSSTRING;
 
-  // TODO MB: Remove this (check ParserGenerator)
-  Bla = "bla";
-
 }
