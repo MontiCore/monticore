@@ -180,19 +180,11 @@ public class MontiCoreToolTest {
         "-" + HANDCODEDPATH, "src/test/java",
         "-" + DSTLGEN_LONG, "true"};
 
-    String[] reproducableArgs2 = {
-        "-" + GRAMMAR,
-        "src/test/resources/de/monticore/Automaton.mc4",
-        "-" + MODELPATH, "src/test/resources",
-        "-" + OUT, reproOutDir2.toString(),
-        "-" + HANDCODEDPATH, "src/test/java",
-        "-" + DSTLGEN_LONG, "true"};
+    new MontiCoreTool().run(reproducableArgs1);
+    FileUtils.deleteDirectory(reproOutDir2);
+    FileUtils.moveDirectory(reproOutDir1, reproOutDir2);
 
     new MontiCoreTool().run(reproducableArgs1);
-    // FileUtils.deleteDirectory(reproOutDir2);
-    // FileUtils.moveDirectory(reproOutDir1, reproOutDir2);
-
-    new MontiCoreTool().run(reproducableArgs2);
 
 
     List<String> diff = new ArrayList<>();
