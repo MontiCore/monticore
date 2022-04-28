@@ -490,9 +490,9 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected void checkForReturnType(ASTCallExpression expr, List<FunctionSymbol> fittingMethods){
-    SymTypeExpression returnType = fittingMethods.get(0).getType();
+    SymTypeExpression type = fittingMethods.get(0).getType();
     for (FunctionSymbol method : fittingMethods) {
-      if (!returnType.deepEquals(method.getType())) {
+      if (!type.deepEquals(method.getType())) {
         logError("0xA1239", expr.get_SourcePositionStart());
       }
     }
