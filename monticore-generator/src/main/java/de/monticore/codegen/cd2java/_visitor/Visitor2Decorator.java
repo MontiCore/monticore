@@ -16,10 +16,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
@@ -254,7 +251,7 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
    * @return The set of all qualified symbol names
    */
   protected Set<String> getSymbolsTransitive() {
-    Set<String> superSymbolNames = new HashSet<String>();
+    Set<String> superSymbolNames = new LinkedHashSet<>();
     // add local symbols
     superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
 

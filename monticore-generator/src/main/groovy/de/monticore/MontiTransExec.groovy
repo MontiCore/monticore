@@ -40,7 +40,7 @@ abstract class MontiTransExec extends DefaultTask {
   abstract Property<Boolean> getUseCache();
 
   // We use static by design here to cache the TFGenTools main method
-  protected static Map<Integer, Method> tfgenMethodCache = new HashMap<>()
+  protected static Map<Integer, Method> tfgenMethodCache = new LinkedHashMap<>()
 
   MontiTransExec() {
     group = 'MontiTrans'

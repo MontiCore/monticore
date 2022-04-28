@@ -197,7 +197,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected Map<String, ASTCDAttribute> createResolverAttributes(List<? extends ASTCDType> symbolProds) {
-    Map<String, ASTCDAttribute> attributeList = new HashMap<>();
+    Map<String, ASTCDAttribute> attributeList = new LinkedHashMap<>();
     for (ASTCDType symbolProd : symbolProds) {
       Optional<ASTCDAttribute> symbolAttribute = createResolverAttribute(symbolProd, symbolTableService.getCDSymbol());
       symbolAttribute.ifPresent(attr -> attributeList.put(attr.getName(), attr));
@@ -206,7 +206,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
   }
 
   protected Map<String, ASTCDAttribute> createResolverSuperAttributes() {
-    Map<String, ASTCDAttribute> symbolAttributes = new HashMap<>();
+    Map<String, ASTCDAttribute> symbolAttributes = new LinkedHashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode())) {
@@ -325,7 +325,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   protected ASTCDMethod createInitMethod(String scopeDeSerFullName, List<ASTCDType> symbolDefiningProds){
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "init");
-    Map<String, String> map = Maps.newHashMap();
+    Map<String, String> map = Maps.newLinkedHashMap();
 
     // add DeSers for locally defined symbols
     for(ASTCDType s :symbolDefiningProds) {

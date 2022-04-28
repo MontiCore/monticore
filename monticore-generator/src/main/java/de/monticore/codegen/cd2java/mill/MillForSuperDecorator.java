@@ -69,7 +69,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     Collection<DiagramSymbol> superSymbolList = service.getSuperCDsTransitive();
     List<ASTCDClass> superMills = new ArrayList<>();
 
-    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+    Map<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newLinkedHashMap();
     Collection<CDTypeSymbol> firstClasses = Lists.newArrayList();
     calculateOverriddenCds(service.getCDSymbol(), astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
 
@@ -105,7 +105,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
 
   protected List<ASTCDMethod> addBuilderMethodsForSuper(List<ASTCDClass> astcdClassList,
                                                         DiagramSymbol superSymbol,
-                                                        HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden,
+                                                        Map<DiagramSymbol, Collection<CDTypeSymbol>> overridden,
                                                         Collection<CDTypeSymbol> firstClasses) {
     List<ASTCDMethod> builderMethodsList = new ArrayList<>();
 
@@ -160,9 +160,9 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
             }
           });
 
-  protected void calculateOverriddenCds(DiagramSymbol cd, final Collection<String> nativeClasses, HashMap<DiagramSymbol,
+  protected void calculateOverriddenCds(DiagramSymbol cd, final Collection<String> nativeClasses, Map<DiagramSymbol,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
-    HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
+    Map<String, CDTypeSymbol> l = Maps.newLinkedHashMap();
     Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
         .map(i -> i.getStatement())
         .map(service::resolveCD)
