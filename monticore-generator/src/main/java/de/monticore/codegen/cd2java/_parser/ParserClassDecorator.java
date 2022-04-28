@@ -146,7 +146,7 @@ public class ParserClassDecorator extends AbstractDecorator {
   }
 
   protected Map<ASTCDType, ASTCDDefinition> getSuperProds(ASTCDDefinition definition, List<String> nameList){
-    Map<ASTCDType, ASTCDDefinition> superProds = Maps.newHashMap();
+    Map<ASTCDType, ASTCDDefinition> superProds = Maps.newLinkedHashMap();
     List<ASTCDType> prods = Lists.newArrayList();
     prods.addAll(definition.getCDClassesList());
     prods.removeIf(prod -> service.hasLeftRecursiveStereotype(prod.getModifier()));
