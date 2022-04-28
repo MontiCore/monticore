@@ -21,7 +21,7 @@ public class JavaMethodSymbolDeSer extends JavaMethodSymbolDeSerTOP {
 
   @Override
   protected void serializeType(SymTypeExpression type, JavaLightSymbols2Json s2j) {
-    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "type", returnType);
+    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "type", type);
   }
 
   @Override
