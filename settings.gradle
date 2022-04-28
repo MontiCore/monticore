@@ -17,16 +17,16 @@ pluginManagement {
   }
 }
 
-if(hasProperty('buildCacheURL')) {
-  System.out.println("RUNNING WITH BUILD CACHE")
-  def isCi = "true".equals(System.getenv("CI"))
-  if(isCi){
-    System.out.println("I am a CI")
+def isCi = "true".equals(System.getenv("CI"))
+if(isCi){
+  System.out.println("I am a CI")
+}
+buildCache {
+  local {
+    // TODO: Enable local buildCache for every developer?
+    push = !isCi && hasProperty('buildCacheURL')
   }
-  buildCache {
-    local {
-      push = !isCi
-    }
+  if(hasProperty('buildCacheURL')) {
     remote(HttpBuildCache) {
       url = buildCacheURL
       allowInsecureProtocol = true  // TODO: https certificate for server!
@@ -38,6 +38,7 @@ if(hasProperty('buildCacheURL')) {
     }
   }
 }
+
 
 rootProject.name = 'monticore'
 
