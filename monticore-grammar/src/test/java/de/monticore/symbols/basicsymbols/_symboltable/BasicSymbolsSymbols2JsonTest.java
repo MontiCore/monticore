@@ -76,7 +76,7 @@ public class BasicSymbolsSymbols2JsonTest {
         .setName("function")
         .setEnclosingScope(type.getSpannedScope())
         .setSpannedScope(BasicSymbolsMill.scope())
-        .setReturnType(SymTypeExpressionFactory.createTypeConstant("int"))
+        .setType(SymTypeExpressionFactory.createTypeConstant("int"))
         .build();
 
     function.setSpannedScope(BasicSymbolsMill.scope());
@@ -137,8 +137,8 @@ public class BasicSymbolsSymbols2JsonTest {
     Optional<FunctionSymbol> deserializedFunction = deserTypeSpanned.resolveFunction("function");
     assertTrue(function.isPresent());
     assertTrue(deserializedFunction.isPresent());
-    assertEquals("int", function.get().getReturnType().print());
-    assertEquals("int", deserializedFunction.get().getReturnType().print());
+    assertEquals("int", function.get().getType().print());
+    assertEquals("int", deserializedFunction.get().getType().print());
   }
 
   @Test

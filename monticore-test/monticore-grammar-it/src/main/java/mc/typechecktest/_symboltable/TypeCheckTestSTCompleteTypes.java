@@ -33,7 +33,7 @@ public class TypeCheckTestSTCompleteTypes implements TypeCheckTestVisitor2 {
     }else{
       type = replaceSurrogate(symType.getTypeInfo());
     }
-    symbol.setReturnType(SymTypeExpressionFactory.createTypeExpression(type));
+    symbol.setType(SymTypeExpressionFactory.createTypeExpression(type));
     symbol.setIsStatic(node.isStatic());
   }
 

@@ -554,12 +554,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           }
         }
       }
-      if (method.getReturnType().isTypeVariable()) {
-        if (transformMap.containsKey(method.getReturnType().print())) {
-          return Optional.of(transformMap.get(method.getReturnType().print()));
+      if (method.getType().isTypeVariable()) {
+        if (transformMap.containsKey(method.getType().print())) {
+          return Optional.of(transformMap.get(method.getType().print()));
         }
       } else {
-        return Optional.ofNullable(method.getReturnType());
+        return Optional.ofNullable(method.getType());
       }
     }
     //there cannot be found a fitting method

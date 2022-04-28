@@ -70,7 +70,7 @@ public class OOSymbolsSymbols2JsonTest {
         .setName("function")
         .setEnclosingScope(type.getSpannedScope())
         .setSpannedScope(OOSymbolsMill.scope())
-        .setReturnType(SymTypeExpressionFactory.createTypeConstant("int"))
+        .setType(SymTypeExpressionFactory.createTypeConstant("int"))
         .build();
 
     function.setSpannedScope(OOSymbolsMill.scope());
@@ -128,8 +128,8 @@ public class OOSymbolsSymbols2JsonTest {
     Optional<MethodSymbol> deserializedFunction = deserializedTypeSpanned.resolveMethod("function");
     assertTrue(function.isPresent());
     assertTrue(deserializedFunction.isPresent());
-    assertEquals("int", function.get().getReturnType().print());
-    assertEquals("int", deserializedFunction.get().getReturnType().print());
+    assertEquals("int", function.get().getType().print());
+    assertEquals("int", deserializedFunction.get().getType().print());
   }
 
   @Test

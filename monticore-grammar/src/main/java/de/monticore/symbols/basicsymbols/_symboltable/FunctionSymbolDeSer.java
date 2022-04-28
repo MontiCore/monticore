@@ -8,12 +8,12 @@ import de.monticore.types.check.SymTypeExpressionDeSer;
 public class FunctionSymbolDeSer extends FunctionSymbolDeSerTOP {
 
   @Override
-  protected void serializeReturnType(SymTypeExpression returnType, BasicSymbolsSymbols2Json s2j) {
+  protected void serializeType(SymTypeExpression returnType, BasicSymbolsSymbols2Json s2j) {
     SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "returnType", returnType);
   }
 
   @Override
-  public SymTypeExpression deserializeReturnType(JsonObject symbolJson) {
+  public SymTypeExpression deserializeType(JsonObject symbolJson) {
     return SymTypeExpressionDeSer.deserializeMember("returnType", symbolJson);
   }
 

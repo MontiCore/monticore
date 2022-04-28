@@ -7,12 +7,12 @@ import de.monticore.types.check.SymTypeExpressionDeSer;
 
 public class TCMethodSymbolDeSer extends TCMethodSymbolDeSerTOP {
   @Override
-  protected void serializeReturnType(SymTypeExpression returnType, TypeCheckTestSymbols2Json s2j) {
-    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "returnType", returnType);
+  protected void serializeType(SymTypeExpression type, TypeCheckTestSymbols2Json s2j) {
+    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "returnType", type);
   }
 
   @Override
-  protected SymTypeExpression deserializeReturnType(JsonObject symbolJson) {
+  protected SymTypeExpression deserializeType(JsonObject symbolJson) {
     return SymTypeExpressionDeSer.deserializeMember("returnType", symbolJson);
   }
 }

@@ -7,10 +7,10 @@ import de.monticore.types.check.SymTypeExpression;
 public class FunctionDeclarationSymbolDeSer extends FunctionDeclarationSymbolDeSerTOP {
 
   @Override
-  protected void serializeReturnType(SymTypeExpression returnType, FooSymbols2Json s2j) {}
+  protected void serializeType(SymTypeExpression type, FooSymbols2Json s2j) {}
 
   @Override
-  protected SymTypeExpression deserializeReturnType(JsonObject symbolJson) {
+  protected SymTypeExpression deserializeType(JsonObject symbolJson) {
     return null;
   }
 

@@ -93,7 +93,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     jp.member(JsonDeSers.KIND, JSON_KIND);
-    jp.memberJson(JSON_RETURNTYPE, getReturnType().printAsJson());
+    jp.memberJson(JSON_RETURNTYPE, getType().printAsJson());
     jp.beginArray(JSON_ARGUMENTTYPES);
     for (SymTypeExpression exp : getArgumentTypeList()) {
       jp.valueJson(exp.printAsJson());
@@ -144,7 +144,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
     return this.print().equals(symFun.print());
   }
 
-  public SymTypeExpression getReturnType() {
+  public SymTypeExpression getType() {
     return returnType;
   }
 

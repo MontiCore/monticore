@@ -151,7 +151,7 @@ public class DefsTypeBasic {
             .setName(name)
             .setFullName(name)  // can later be adapted, when fullname of Type is known
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setReturnType(returnType)
+            .setType(returnType)
             .build();
     m.setSpannedScope(OOSymbolsMill.scope());
     return m;

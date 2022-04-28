@@ -465,7 +465,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         if (fittingMethods.size() > 1) {
           checkForReturnType(expr, fittingMethods);
         }
-        SymTypeExpression result = fittingMethods.get(0).getReturnType();
+        SymTypeExpression result = fittingMethods.get(0).getType();
         typeCheckResult.setMethod();
         typeCheckResult.setCurrentResult(result);
       } else {
@@ -479,7 +479,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
       //there can only be one method with the correct arguments and return type
       if (fittingMethods.size() == 1) {
-        Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getReturnType());
+        Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getType());
         typeCheckResult.setMethod();
         typeCheckResult.setCurrentResult(wholeResult.get());
       } else {
@@ -490,9 +490,9 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected void checkForReturnType(ASTCallExpression expr, List<FunctionSymbol> fittingMethods){
-    SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
+    SymTypeExpression returnType = fittingMethods.get(0).getType();
     for (FunctionSymbol method : fittingMethods) {
-      if (!returnType.deepEquals(method.getReturnType())) {
+      if (!returnType.deepEquals(method.getType())) {
         logError("0xA1239", expr.get_SourcePositionStart());
       }
     }
