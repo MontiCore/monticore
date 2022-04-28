@@ -19,11 +19,18 @@ pluginManagement {
 
 if(hasProperty('buildCacheURL')) {
   System.out.println("RUNNING WITH BUILD CACHE")
+  def isCi = "true".equals(System.getenv("CI"))
+  if(isCi){
+    System.out.println("I am a CI")
+  }
   buildCache {
+    local {
+      push = !isCi
+    }
     remote(HttpBuildCache) {
       url = buildCacheURL
       allowInsecureProtocol = true  // TODO: https certificate for server!
-      push = true
+      push = true // isCi
       credentials {
         username = buildCacheUser
         password = buildCachePassword
