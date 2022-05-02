@@ -1344,7 +1344,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
         builder.addVariable(OUT_LONG, mcConfig.getOut());
         builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
-        builder.addVariable(LAUNCH_SCRIPT_OUT_LONG, mcConfig.getLaunchScriptOutputDir());
+        builder.addVariable("scriptOutput", mcConfig.getLaunchScriptOutputDir());
         builder.addVariable(REPORT_LONG, mcConfig.getReport());
         builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());
         builder.addVariable(TEMPLATEPATH_LONG, mcConfig.getTemplatePath());

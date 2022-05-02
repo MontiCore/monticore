@@ -70,7 +70,6 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String GRAMMAR_LONG = "grammar";
   public static final String OUT_LONG = "out";
-  public static final String LAUNCH_SCRIPT_OUT_LONG = "scriptOutput";
   public static final String TOOL_JAR_NAME_LONG = "toolName";
   public static final String MODELPATH_LONG = "modelPath";
   public static final String HANDCODEDPATH_LONG = "handcodedPath";
