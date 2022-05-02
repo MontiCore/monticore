@@ -17,24 +17,19 @@ pluginManagement {
   }
 }
 
-def isCi = "true".equals(System.getenv("CI"))
-if(isCi){
-  System.out.println("I am a CI")
-}
+boolean isCi = System.getenv().containsKey("CI")
+
 buildCache {
   local {
-    // TODO: Enable local buildCache for every developer?
-    push = !isCi && hasProperty('buildCacheURL')
+    enabled = !isCi
   }
-  if(hasProperty('buildCacheURL')) {
-    remote(HttpBuildCache) {
-      url = buildCacheURL
-      allowInsecureProtocol = true  // TODO: https certificate for server!
-      push = true // isCi
-      credentials {
-        username = buildCacheUser
-        password = buildCachePassword
-      }
+  remote(HttpBuildCache) {
+    url = buildCacheURL
+    allowInsecureProtocol = true  // TODO: https certificate for server!
+    push = isCi
+    credentials {
+      username = buildCacheUser
+      password = buildCachePassword
     }
   }
 }
