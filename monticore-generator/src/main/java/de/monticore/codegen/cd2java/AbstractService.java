@@ -184,7 +184,7 @@ public class AbstractService<T extends AbstractService> {
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */
   public DiagramSymbol resolveCD(String qualifiedName) {
-    List<DiagramSymbol> symbols = getCDSymbol().getEnclosingScope().resolveDiagramMany(qualifiedName);
+    Set<DiagramSymbol> symbols = Sets.newHashSet(getCDSymbol().getEnclosingScope().resolveDiagramMany(qualifiedName));
     if (symbols.size() == 1) {
       return symbols.iterator().next();
     } else {
