@@ -17,6 +17,7 @@ pluginManagement {
   }
 }
 
+/*  # Output of MCTask contains absolute paths, so caching is disabled
 boolean isCi = System.getenv().containsKey("CI")
 
 buildCache {
@@ -26,13 +27,14 @@ buildCache {
   remote(HttpBuildCache) {
     url = buildCacheURL
     allowInsecureProtocol = true  // TODO: https certificate for server!
-    push = isCi
+    push = true // isCi
     credentials {
       username = buildCacheUser
       password = buildCachePassword
     }
   }
 }
+*/
 
 
 rootProject.name = 'monticore'
