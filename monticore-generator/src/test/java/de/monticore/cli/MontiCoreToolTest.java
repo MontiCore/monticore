@@ -5,7 +5,15 @@ package de.monticore.cli;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
 import org.junit.*;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 import static de.monticore.MontiCoreConfiguration.*;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +25,7 @@ import static org.junit.Assert.assertTrue;
  *
  */
 public class MontiCoreToolTest {
-  
+
   /**
    * Pretty default arguments.
    */
@@ -84,11 +92,14 @@ public class MontiCoreToolTest {
       "-" + MODELPATH, "src/test/resources",
       "-" + OUT, "target/test-run",
       "-" + HANDCODEDPATH, "src/test/java" };
-  
+
   static String[] help = {
       "-" + HELP
   };
-  
+
+  public MontiCoreToolTest() throws IOException {
+  }
+
   @BeforeClass
   public static void deactivateFailQuick() {
     Log.init();
@@ -148,6 +159,54 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(argsWithNoGrammars);
     
     assertTrue(!false);
+  }
+
+  /**
+   * Test that there is no randomness / non-determinism in the generator.
+   * Running twice on the same input (with only different output directories) must lead to
+   * *exactly* the same output.
+   * This is used for Gradle-Caching!
+   */
+  @Test
+  public void testReproducibility() throws IOException {
+    File reproOutDir1 = Paths.get("target/test-run-repo/repo1/").toFile();
+    File reproOutDir2 = Paths.get("target/test-run-repo/repo2/").toFile();
+
+    String[] reproducableArgs1 = {
+        "-" + GRAMMAR,
+        "src/test/resources/de/monticore/Automaton.mc4",
+        "-" + MODELPATH, "src/test/resources",
+        "-" + OUT, reproOutDir1.toString(),
+        "-" + HANDCODEDPATH, "src/test/java",
+        "-" + DSTLGEN_LONG, "true"};
+
+    new MontiCoreTool().run(reproducableArgs1);
+    FileUtils.deleteDirectory(reproOutDir2);
+    FileUtils.moveDirectory(reproOutDir1, reproOutDir2);
+
+    new MontiCoreTool().run(reproducableArgs1);
+
+
+    List<String> diff = new ArrayList<>();
+    for(File f1: FileUtils.listFiles(reproOutDir1, null, true)) {
+      if (f1.isFile()) {
+        String relPath1 = reproOutDir1.toPath().relativize(f1.toPath()).toString();
+        File f2 = Paths.get(reproOutDir2.toString(), relPath1).toFile();
+
+        if(!FileUtils.contentEquals(f1, f2)) {
+          diff.add(relPath1);
+        }
+
+        assertTrue("File does not exist \n\t" + f2.getAbsolutePath(), f2.isFile());
+        /*assertTrue("Different output generating twice! \n" +
+              "\t" + f1.getAbsolutePath() + "\n" +
+              "\t" + f2.getAbsolutePath() + "\n",
+            FileUtils.contentEquals(f1, f2));
+         */
+      }
+    }
+    diff.forEach(s -> System.out.println("\t " + s));
+    assertTrue(diff.isEmpty());
   }
   
   @After

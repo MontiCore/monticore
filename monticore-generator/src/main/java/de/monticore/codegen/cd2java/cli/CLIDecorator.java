@@ -267,12 +267,11 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
    * @return the decorated printVersion method
    */
   protected ASTCDMethod createPrintVersionMethod() {
-    String buildDate = LocalDate.now().toString();
     String toolName = symbolTableService.getCDName() + "Tool";
     String mcVersion =  new UpdateCheckerRunnable().getLocalVersion();
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "printVersion");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", toolName, mcVersion, buildDate));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrintVersion", toolName, mcVersion));
     return method;
   }
 

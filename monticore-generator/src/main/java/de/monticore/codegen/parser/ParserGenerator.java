@@ -146,8 +146,9 @@ public class ParserGenerator {
     Log.debug("Start Antlr generation for the antlr file " + astGrammar.getName(), LOG);
     // construct parser, lexer, ... (antlr),
     String outputLang = "-Dlanguage=" + lang.getLanguage();
-    String gParser = Paths.get(targetDir.getAbsolutePath(), parserPath.toString()).toString();
-    String gLexer = Paths.get(targetDir.getAbsolutePath(), lexerPath.toString()).toString();
+    String gParser = Paths.get(targetDir.getPath(), parserPath.toString()).toString();
+    String gLexer = Paths.get(targetDir.getPath(), lexerPath.toString()).toString();
+
 
     AntlrTool antlrTool = new AntlrTool(new String[] { outputLang, "-o", antlrPath.toString(), "-Xexact-output-dir", "-no-listener", gLexer, gParser }, grammarSymbol);
     antlrTool.processGrammarsOnCommandLine();

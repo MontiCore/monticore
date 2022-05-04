@@ -90,8 +90,10 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     }
 
     List<ASTCDAttribute> buildAttributes = Lists.newArrayList(decoratedSymbolClass.getCDAttributeList());
+
     // builder has all attributes
-    defaultAttrs.forEach(a -> buildAttributes.add(a));
+    buildAttributes.addAll(defaultAttrs);
+
     // new build method template
     Optional<ASTCDMethod> buildMethod = symbolBuilder.getCDMethodList()
         .stream()

@@ -55,7 +55,7 @@ public class ParserGeneratorHelper {
 
   protected MCGrammarInfo grammarInfo;
 
-  protected Map<ASTNode, String> tmpVariables = new HashMap<>();
+  protected Map<ASTNode, String> tmpVariables = new LinkedHashMap<>();
 
   protected int tmp_counter = 0;
 
@@ -171,8 +171,12 @@ public class ParserGeneratorHelper {
    * @return Keys of all lex symbols
    */
   public Set<String> getLexSymbolsWithInherited() {
-    Set<String> retSet = Sets.newHashSet(grammarInfo.getLexNamer().getLexnames());
-    grammarInfo.getKeywords().stream().filter(f -> !grammarSymbol.getKeywordRulesWithInherited().contains(f)).forEach(f -> retSet.add(f));
+    Set<String> retSet = Sets.newLinkedHashSet(grammarInfo.getLexNamer().getLexnames());
+    retSet.addAll(
+        grammarInfo.getKeywords().stream()
+            .filter(f -> !grammarSymbol.getKeywordRulesWithInherited().contains(f))
+            .collect(Collectors.toList())
+    );
     return retSet;
  }
 
@@ -418,8 +422,8 @@ public class ParserGeneratorHelper {
     return prodList;
   }
 
-  public HashMap<String, List<ASTProd>> getLexerRulesForMode() {
-    HashMap<String, List<ASTProd>> retMap = Maps.newHashMap();
+  public Map<String, List<ASTProd>> getLexerRulesForMode() {
+    Map<String, List<ASTProd>> retMap = Maps.newLinkedHashMap();
     Map<String, Collection<String>> modeMap = grammarSymbol.getTokenModesWithInherited();
     for (Entry<String, Collection<String>> e: modeMap.entrySet()) {
       ArrayList<ASTProd> prodList = Lists.newArrayList();

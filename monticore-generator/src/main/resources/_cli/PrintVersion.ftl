@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("toolName", "mcVersion", "buildDate")}
+${tc.signature("toolName", "mcVersion")}
 
 // Get version string from Metadata and print
 
-final String buildDate = "${buildDate}";
 final String toolName = "${toolName}";
 final String mcVersion = "${mcVersion}";
 
@@ -22,5 +21,4 @@ if (toolVersion == null) toolVersion = mcVersion;
 
 System.out.println(toolName +
     ", version " + toolVersion +
-    ", build date " + buildDate +
     ", based on MontiCore version " + mcVersion);

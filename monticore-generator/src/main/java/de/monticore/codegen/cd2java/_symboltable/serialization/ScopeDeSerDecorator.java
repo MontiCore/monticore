@@ -261,7 +261,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
    * @return
    */
   protected Map<String, Boolean> createSymbolMap(ASTCDDefinition symbolInput) {
-    Map<String, Boolean> symbolMap = new HashMap<>();
+    Map<String, Boolean> symbolMap = new LinkedHashMap<>();
 
     //add local symbols
     for (ASTCDType prod : symbolTableService.getSymbolDefiningProds(symbolInput)) {

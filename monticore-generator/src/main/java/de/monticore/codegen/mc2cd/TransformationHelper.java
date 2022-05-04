@@ -236,15 +236,13 @@ public final class TransformationHelper {
   }
 
   public static Set<String> getAllGrammarConstants(ASTMCGrammar grammar) {
-    Set<String> constants = new HashSet<>();
+    Set<String> constants = new LinkedHashSet<>();
     MCGrammarSymbol grammarSymbol = grammar.getSymbol();
     Preconditions.checkState(grammarSymbol != null);
     for (RuleComponentSymbol component : grammarSymbol.getProds().stream()
-        .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toSet())) {
+        .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toList())) {
       if (component.isIsConstantGroup()) {
-        for (String subComponent : component.getSubProdsList()) {
-          constants.add(subComponent);
-        }
+        constants.addAll(component.getSubProdsList());
       }
     }
     for (ProdSymbol type : grammarSymbol.getProds()) {

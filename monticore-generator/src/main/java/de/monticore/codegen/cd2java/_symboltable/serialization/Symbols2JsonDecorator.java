@@ -152,7 +152,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     String globalScope = symbolTableService.getGlobalScopeInterfaceFullName();
     String millName = symbolTableService.getMillFullName();
 
-    Map<String, String> deSerMap = Maps.newHashMap();
+    Map<String, String> deSerMap = Maps.newLinkedHashMap();
     for (ASTCDType prod : prods) {
       deSerMap.put(symbolTableService.getSymbolDeSerSimpleName(prod), symbolTableService.getSymbolFullName(prod));
     }

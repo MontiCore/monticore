@@ -2,10 +2,7 @@
 
 package de.monticore.grammar;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
@@ -43,7 +40,7 @@ public class MCGrammarInfo {
   /**
    * Lexer patterns
    */
-  protected Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new HashMap<>();
+  protected Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new LinkedHashMap<>();
 
   /**
    * Additional java code for parser defined in antlr concepts of the processed
@@ -60,14 +57,14 @@ public class MCGrammarInfo {
   /**
    * Predicates
    */
-  protected ArrayListMultimap<String, PredicatePair> predicats = ArrayListMultimap.create();
+  protected ListMultimap<String, PredicatePair> predicats = LinkedListMultimap.create();
   
   /**
    * Internal: LexNamer for naming lexer symbols in the antlr source code
    */
   protected LexNamer lexNamer = new LexNamer();
 
-  protected Map<String, String> splitRules = Maps.newHashMap();
+  protected Map<String, String> splitRules = Maps.newLinkedHashMap();
 
   protected List<String> keywordRules = Lists.newArrayList();
 
