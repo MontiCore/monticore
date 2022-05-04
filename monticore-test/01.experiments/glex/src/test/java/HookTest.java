@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class HookTest {
   
@@ -43,13 +43,10 @@ public class HookTest {
     	throw new IOException();
     }
     ast = optStateMachine.get();
-    if(ast == null) {
-    	throw new IOException();
-    }
   }
   
   @Before
-  public void setUp() throws RecognitionException, IOException {
+  public void setUp() throws RecognitionException {
     Log.getFindings().clear();
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -478,6 +475,37 @@ public class HookTest {
 		 + " // Developed by SE RWTH ", res.toString().replaceAll(REGEXP, REPLACE));
   }
 
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testDefine5() {
+    // Hookpoint with unknown signature
+    try {
+      ge.generate("tpl4/Define5.ftl", ast);
+      fail("Expected exception was not thrown");
+    } catch (Exception e) {
+      assertNotNull(e);
+    }
+  }
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testDefine6() {
+    // Hooks with overloaded signature
+    StringHookPoint chp1 = new StringHookPoint("HookPoint1 filled");
+    TemplateHookPoint chp2 = new TemplateHookPoint("tpl4/Hook2a.ftl");
+    TemplateHookPoint chp3 = new TemplateHookPoint("tpl4/Hook3.ftl");
+
+    // Bind hooks
+    glex.bindHookPoint("HP1", chp1);
+    glex.bindHookPoint("HP2", chp2);
+    glex.bindHookPoint("HP3", chp3);
+
+    String res = ge.generate("tpl4/Define6.ftl", ast).toString();
+    assertTrue(res.contains("HookPoint1 filled"));
+    assertTrue(res.contains("HookPoint2 filled:p2a, p2a"));
+    assertTrue(res.contains("HookPoint3 filled:p3"));
+  }
 
 }
 

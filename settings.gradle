@@ -17,6 +17,26 @@ pluginManagement {
   }
 }
 
+/*  # Output of MCTask contains absolute paths, so caching is disabled
+boolean isCi = System.getenv().containsKey("CI")
+
+buildCache {
+  local {
+    enabled = !isCi
+  }
+  remote(HttpBuildCache) {
+    url = buildCacheURL
+    allowInsecureProtocol = true  // TODO: https certificate for server!
+    push = true // isCi
+    credentials {
+      username = buildCacheUser
+      password = buildCachePassword
+    }
+  }
+}
+*/
+
+
 rootProject.name = 'monticore'
 
 boolean inComposite = gradle.parent != null

@@ -77,12 +77,12 @@ public class ParserForSuperDecorator extends AbstractDecorator {
   protected List<ASTCDMethod> createParseMethods(List<ASTCDClass> astcdClassList, DiagramSymbol symbol){
     List<ASTCDMethod> methods = Lists.newArrayList();
 
-    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = getOverridden(astcdClassList, symbol);
+    Map<DiagramSymbol, Collection<CDTypeSymbol>> overridden = getOverridden(astcdClassList, symbol);
     Collection<CDTypeSymbol> firstClasses = getFirstClasses(astcdClassList);
 
     //get the other (not overridden) super prods whose parse methods needs to be overridden
-    Map<DiagramSymbol, Collection<CDTypeSymbol>> superProds = calculateNonOverriddenCds(Maps.newHashMap(), symbol, overridden, Lists.newArrayList());
-    Map<DiagramSymbol, Collection<CDTypeSymbol>> superProdsFromThis = calculateNonOverriddenCds(Maps.newHashMap(), service.getCDSymbol(), overridden, Lists.newArrayList());
+    Map<DiagramSymbol, Collection<CDTypeSymbol>> superProds = calculateNonOverriddenCds(Maps.newLinkedHashMap(), symbol, overridden, Lists.newArrayList());
+    Map<DiagramSymbol, Collection<CDTypeSymbol>> superProdsFromThis = calculateNonOverriddenCds(Maps.newLinkedHashMap(), service.getCDSymbol(), overridden, Lists.newArrayList());
 
     //necessary if a nt is overridden in a grammar between the super grammar and this grammar
     List<CDTypeSymbol> allSuperProdsFromThis = superProdsFromThis.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
@@ -134,14 +134,14 @@ public class ParserForSuperDecorator extends AbstractDecorator {
   }
 
   public List<CDTypeSymbol> getFirstClasses(List<ASTCDClass> astcdClassList){
-    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+    Map<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newLinkedHashMap();
     List<CDTypeSymbol> firstClasses = Lists.newArrayList();
     calculateOverriddenCds(service.getCDSymbol(), astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
     return firstClasses;
   }
 
-  public HashMap<DiagramSymbol, Collection<CDTypeSymbol>> getOverridden(List<ASTCDClass> astcdClassList, DiagramSymbol symbol){
-    HashMap<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newHashMap();
+  public Map<DiagramSymbol, Collection<CDTypeSymbol>> getOverridden(List<ASTCDClass> astcdClassList, DiagramSymbol symbol){
+    Map<DiagramSymbol, Collection<CDTypeSymbol>> overridden = Maps.newLinkedHashMap();
     List<CDTypeSymbol> firstClasses = Lists.newArrayList();
     calculateOverriddenCds(symbol, astcdClassList.stream().map(ASTCDClass::getName).collect(Collectors.toList()), overridden, firstClasses);
     return overridden;
@@ -189,9 +189,9 @@ public class ParserForSuperDecorator extends AbstractDecorator {
    * @param overridden a container in which the overridden prods are stored in
    * @param firstClasses a container to check whether a parse method can be generated normally or an error code must be logged upon its execution
    */
-  protected void calculateOverriddenCds(DiagramSymbol cd, Collection<String> nativeClasses, HashMap<DiagramSymbol,
+  protected void calculateOverriddenCds(DiagramSymbol cd, Collection<String> nativeClasses, Map<DiagramSymbol,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
-    HashMap<String, CDTypeSymbol> l = Maps.newHashMap();
+    HashMap<String, CDTypeSymbol> l = Maps.newLinkedHashMap();
     //get all super cds / imports of the original cd
     Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
         .map(i -> i.getStatement())

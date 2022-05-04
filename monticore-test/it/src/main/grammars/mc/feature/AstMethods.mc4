@@ -8,10 +8,7 @@ grammar AstMethods extends mc.grammar.lexicals.ItTestLexicals {
 
    B = Name* C;
 
-   C = Name;
-
-   // TODO MB: Remove this (check ParserGenerator)
-   Bla = "bla";
+   C =  Name;
 
    astrule A = method public mc.feature.astmethods._ast.ASTC getC() { return c; }
    method public Optional<mc.feature.astmethods._ast.ASTB> getOptB() { return Optional.empty(); }

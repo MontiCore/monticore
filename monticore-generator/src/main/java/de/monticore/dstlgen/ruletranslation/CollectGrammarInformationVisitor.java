@@ -47,9 +47,9 @@ public class CollectGrammarInformationVisitor implements
   
   private List<RuleComponentSymbol> knownAttributes = Lists.newArrayList();
   
-  private Set<ASTParserProd> collectedParserProds = Sets.newHashSet();
+  private Set<ASTParserProd> collectedParserProds = Sets.newLinkedHashSet();
   
-  private Set<ASTExternalProd> collectedExternalProds = Sets.newHashSet();
+  private Set<ASTExternalProd> collectedExternalProds = Sets.newLinkedHashSet();
   
   private Stack<ASTBlock> blockStack = new Stack<>();
   

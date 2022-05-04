@@ -17,10 +17,7 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
@@ -78,8 +75,8 @@ public class ScopesGenitorDelegatorDecorator extends AbstractCreator<ASTCDCompil
                                                String cdName) {
     String symTabMillFullName = symbolTableService.getMillFullName();
     List<DiagramSymbol> superCDsTransitive = symbolTableService.getSuperCDsTransitive();
-    Map<String, String> superSymTabCreator = new HashMap<>();
-    Map<String, String> millNames = new HashMap<>();
+    Map<String, String> superSymTabCreator = new LinkedHashMap<>();
+    Map<String, String> millNames = new LinkedHashMap<>();
     for (DiagramSymbol cdDefinitionSymbol : superCDsTransitive) {
       if (cdDefinitionSymbol.isPresentAstNode() && symbolTableService.hasStartProd((ASTCDDefinition) cdDefinitionSymbol.getAstNode())) {
         superSymTabCreator.put(cdDefinitionSymbol.getName(), symbolTableService.getScopesGenitorFullName(cdDefinitionSymbol));

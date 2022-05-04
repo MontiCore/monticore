@@ -4,7 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import de.monticore.generating.templateengine.HookPoint;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public class BITSer {
 
-  protected Map<String, BITSerStrategy> bitsers = new HashMap<>();
+  protected Map<String, BITSerStrategy> bitsers = new LinkedHashMap<>();
 
   public BITSer() {
     init();

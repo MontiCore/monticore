@@ -75,7 +75,7 @@ public class DSTLGenInheritanceHelper {
   }
   
   public List<MCGrammarSymbol> getSuperGrammars(MCGrammarSymbol ast){
-    Set<MCGrammarSymbol> supers = Sets.newHashSet();
+    Set<MCGrammarSymbol> supers = Sets.newLinkedHashSet();
     for(MCGrammarSymbol s : ast.getSuperGrammarSymbols()){
       if(!isCommonSuperGrammar(s.getName())) {
         supers.add(s);
