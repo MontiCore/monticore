@@ -231,11 +231,11 @@ $(InitTarget):
 # (alternatively it is possible to use wget for a download
 #  of the jars from nexus, see e.g. reference manual)
 $(MCJAR): $(InitTarget)
-	wget http://monticore.de/download/monticore-cli.jar
+	wget https://monticore.de/download/monticore-cli.jar
 	mv monticore-cli.jar target
 
 $(MCRTE): $(InitTarget)
-	wget http://monticore.de/download/monticore-rt.jar
+	wget https://monticore.de/download/monticore-rt.jar
 	mv monticore-rt.jar target
 
 # get the testing libraries

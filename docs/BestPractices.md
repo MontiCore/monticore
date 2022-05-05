@@ -3,11 +3,11 @@
 
 # MontiCore Best Practices - A Guide For Small Solutions
 
-[MontiCore](http://www.monticore.de) provides a number of options to design 
+[MontiCore](https://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 
 This (currently unsorted and evolving) list of practices discusses solutions 
-that we identified and applied as well as alternatives and their specfic 
+that we identified and applied as well as alternatives and their specific 
 advantages and drawbacks. The list also mentions where the solutions have been
 found and where they have been applied first.
 
@@ -15,7 +15,7 @@ The list is subdivided into several MD files tackling various language design ar
 
 The list is partially temporary and also contains compact (incomplete) solutions.
 More detailed descriptions of best practices can be found in the 
-[MontiCore reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+[MontiCore reference manual](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
 Some of the best practices here will also be incorporated in the next version
 of the reference manual.
 
@@ -38,7 +38,7 @@ of the reference manual.
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [MontiCore documentation](http://www.monticore.de/)
+* [MontiCore documentation](https://www.monticore.de/)
 * [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)

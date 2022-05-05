@@ -2,7 +2,7 @@
 
 # MontiCore Grammar Status Plans - an Overview
 
-[MontiCore](http://www.monticore.de) uses grammars as primary mechanism 
+[MontiCore](https://www.monticore.de) uses grammars as primary mechanism 
 to describe DSLs and DSL components. The extended 
 grammar format allows to **compose language components** by
 (1) inheriting, (2) extending, (3) embedding 
@@ -62,7 +62,7 @@ A comment of the following form within the grammar defines this status:
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [MontiCore documentation](http://www.monticore.de/)
+* [MontiCore documentation](https://www.monticore.de/)
 * [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)

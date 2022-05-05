@@ -2,7 +2,7 @@
 
 # MontiCore Best Practices - Symbols, Scopes, Symboltables
 
-[MontiCore](http://www.monticore.de) provides a number of options to design 
+[MontiCore](https://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 
 The newest MontiCore release gives powerful capabilities to define and 
@@ -137,7 +137,7 @@ intermediate step between the tools providing and reading the symbol tables.
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [MontiCore documentation](http://www.monticore.de/)
+* [MontiCore documentation](https://www.monticore.de/)
 * [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)

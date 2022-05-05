@@ -5,7 +5,7 @@
 
 # MontiCore - Language Workbench and Development Tool Framework 
 
-[MontiCore](http://www.monticore.de) is a language workbench for the efficient 
+[MontiCore](https://www.monticore.de) is a language workbench for the efficient 
 development of domain-specific languages (DSLs). It processes an extended 
 grammar format which defines the DSL and generates Java components for processing 
 the DSL documents. Examples for these components are parsers, 
@@ -15,13 +15,13 @@ with the MontiCore-framework to build domain specific tools.
 
 Some MontiCore advantages are the reusability of predefined language 
 components, conservative extension and composition mechanisms, and an 
-optimal integration of hand-written code into the generated tools. Its 
+optimal integration of handwritten code into the generated tools. Its 
 grammar languages are comfortable to use. 
 
 [**Start here for developing with MontiCore.**](docs/GettingStarted.md)
 
 <div align="center">
-  <a href="http://monticore.de/handbook.pdf" target="_blank">
+  <a href="https://monticore.de/handbook.pdf" target="_blank">
   <img src="https://se-rwth.de/books/handbook2021.cover.gif" width="250">
   </a>
   <br>[HKR21] Katrin Hölldobler, Oliver Kautz, Bernhard Rumpe: <br>
@@ -132,9 +132,9 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 
 ## More Information about MontiCore
 
-* [**MontiCore handbook**](http://www.monticore.de/handbook.pdf).
-   The handbook describes how to use MontiCore as a out-of-the-box 
-   *language workbench*), but also as grey box *tooling framework*.
+* [**MontiCore handbook**](https://www.monticore.de/handbook.pdf).
+   The handbook describes how to use MontiCore as an out-of-the-box 
+   *language workbench*, but also as grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
 
 * [**List of core grammars**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
@@ -148,7 +148,7 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 * [**List of languages**](docs/Languages.md).
    This is a list of languages that can be used out of the box. Some of them
    are in development, others rather stable. Several of these languages
-   are inspired by the UML/P (see [*[Rum16,Rum17]*](http://mbse.se-rwth.de/).
+   are inspired by the UML/P (see [*[Rum16,Rum17]*](https://mbse.se-rwth.de/)).
    These complete languages are usually composed of a number of language
    components.
 
@@ -161,7 +161,7 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
     
 ## Further Information
 
-* see also [**MontiCore handbook**](http://www.monticore.de/handbook.pdf)
+* see also [**MontiCore handbook**](https://www.monticore.de/handbook.pdf)
 * [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
 * [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
 * [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
