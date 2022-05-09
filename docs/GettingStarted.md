@@ -298,7 +298,7 @@ the following steps:
 2.  Execute the following command in order to generate the language
     infrastructure of the `Automata` DSL:
 ```
-java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-rt.jar
+java -jar monticore.jar -g Automata.mc4 -hcp hwc/ src/ -mp monticore-rt.jar
 ```
 The only required argument `Automata.mc4` denotes the input grammar
 that shall be processed by MontiCore. The processing includes the
@@ -804,7 +804,7 @@ from a MontiCore grammar. For these Java classes, generated for the
 `Automata` DSL, execute the following command:
 
 ```bash
-javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" \
+javac -cp monticore.jar -sourcepath "src/;out/;hwc/" \
                                   src/automata/AutomataTool.java
 ```
 
@@ -1101,9 +1101,9 @@ including the `Automata` tool class `AutomataTool`. For running the
 `Automata` DSL tool, execute the following command:
 
 ```bash
-java -cp "src/;out/;hwc/;monticore-cli.jar" \
-                    automata.AutomataTool example/PingPong.aut \
-                    st/PingPong.autsym
+java -cp "src/;out/;hwc/;monticore-rt.jar" \
+                    -i automata.AutomataTool example/PingPong.aut \
+                    -s st/PingPong.autsym
 ```
 
 Please note again, on Unix systems paths are separated using ":"
