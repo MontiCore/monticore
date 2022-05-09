@@ -12,6 +12,25 @@ public enum Languages {
   SWIFT("Swift")
   ;
 
+  public static String getFileEnding(Languages l){
+      switch (l){
+        case JAVA:
+          return "java";
+        case PYTHON_2:
+        case PYTHON_3:
+          return "py";
+        case JAVASCRIPT:
+          return "js";
+        case GO:
+          return "go";
+        case CPP:
+          return "cpp";
+        case SWIFT:
+          return "swift";
+      }
+    return null;
+  }
+
   protected String language;
 
   Languages(String language) {

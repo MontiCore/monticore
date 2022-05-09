@@ -27,10 +27,17 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTr
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class ParserGenerator {
@@ -146,12 +153,18 @@ public class ParserGenerator {
     Log.debug("Start Antlr generation for the antlr file " + astGrammar.getName(), LOG);
     // construct parser, lexer, ... (antlr),
     String outputLang = "-Dlanguage=" + lang.getLanguage();
-    String gParser = Paths.get(targetDir.getPath(), parserPath.toString()).toString();
-    String gLexer = Paths.get(targetDir.getPath(), lexerPath.toString()).toString();
+    Path gParser = Paths.get(targetDir.getPath(), parserPath.toString());
+    Path gLexer = Paths.get(targetDir.getPath(), lexerPath.toString());
 
 
-    AntlrTool antlrTool = new AntlrTool(new String[] { outputLang, "-o", antlrPath.toString(), "-Xexact-output-dir", "-no-listener", gLexer, gParser }, grammarSymbol);
+    AntlrTool antlrTool = new AntlrTool(
+        new String[] { outputLang, "-o", antlrPath.toString(), "-Xexact-output-dir", "-no-listener", gLexer.toString(), gParser.toString() },
+        grammarSymbol);
     antlrTool.processGrammarsOnCommandLine();
+
+    removeGeneratedFromComment(gLexer.toFile(), lang);
+    removeGeneratedFromComment(gParser.toFile(), lang);
+
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
   }
 
@@ -192,5 +205,47 @@ public class ParserGenerator {
   }
   private ParserGenerator() {
     // noninstantiable
+  }
+
+  /**
+   * ANTLR is storing the absolut path of the input file as a comment in the generated code.
+   * This breaks caching and has to be removed
+   * @param antlrGrammar generated ANTLR file
+   */
+  protected static void removeGeneratedFromComment(File antlrGrammar, Languages lang){
+    assert antlrGrammar.isFile();
+    assert antlrGrammar.getName().endsWith(".g4");
+
+    File javaFile = Paths.get(StringUtils.removeEnd(antlrGrammar.getAbsolutePath(), ".g4")
+        + "."
+        + Languages.getFileEnding(lang)
+      ).toFile();
+    assert javaFile.isFile();
+
+    try {
+      // Read File
+      Scanner fileScanner = new Scanner(javaFile);
+      List<String> lines = new ArrayList<>();
+      while (fileScanner.hasNextLine()) {
+        lines.add(fileScanner.nextLine());
+      }
+      fileScanner.close();
+
+
+      // Replace Comment
+      assert lines.get(0).startsWith("// Generated from");
+      lines.set(0, "// Generated with ANTLR");
+
+
+      // Overwrite File
+      FileWriter fileStream = new FileWriter(javaFile);
+      BufferedWriter out = new BufferedWriter(fileStream);
+      for (String line : lines) {
+        out.write(line + "\n");
+      }
+      out.close();
+    }catch (IOException e){
+      Log.error("0xE2001 Error removing absolute path from ANTLR-output.", e);
+    }
   }
 }
