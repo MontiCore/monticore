@@ -39,7 +39,7 @@ Expressions are supported in all their forms.
 
 ## Grammar
 
-- The main grammar file is [`de.monticore.JavaLight`][JavaLight].
+- The main grammar file is [`de.monticore.JavaLight` (not yet publicly available)][JavaLight].
   It deals with the definition of the _method_ and _constructor signatures_, 
   and the _annotations_, while it reuses MontiCore's library components 
   `AssignmentExpressions`, `JavaClassExpressions`, `MCCommonStatements`, 
@@ -136,7 +136,7 @@ The CoCos of embedded languages, such as statements and expressions are defined 
 
 
 ### PrettyPrinter
-- The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter`][PrettyPrinter]
+- The basic pretty printer for JavaLight is [`de.monticore.prettyprint.JavaLightPrettyPrinter` (not yet publicly available)][PrettyPrinter]
 
 - When the expression language is used as high-level language, it might make sense to map attribute
   access to get-functions respectively also use set-functions for modification.
@@ -155,4 +155,3 @@ The CoCos of embedded languages, such as statements and expressions are defined 
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-

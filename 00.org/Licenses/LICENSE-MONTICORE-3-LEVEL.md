@@ -121,5 +121,3 @@ compatible with MontiCores licenses:
 * see also [**MontiCore Reference Manual**](https://www.monticore.de/)
 
 * [MontiCore project](../../README.md) - MontiCore
-
-

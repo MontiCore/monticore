@@ -316,7 +316,7 @@ Passing the argument `-mp` enables specifying the paths to directories
 containing paths to grammars and Java classes that are imported by the 
 processed grammar and the related tooling. In this case, the archive 
 `monticore-rt.jar` contains the grammars and handwritten extensions
-of the [monticore standard library](https://git.rwth-aachen.de/monticore/monticore/-/tree/dev/monticore-grammar/src/main).
+of the [monticore standard library (not yet publicly available)](https://git.rwth-aachen.de/monticore/monticore/-/tree/dev/monticore-grammar/src/main).
 More information about the standard library can be found in 
 [Chapters 17- 20 of the handbook](https://www.monticore.de/handbook.pdf).
 
@@ -1328,4 +1328,3 @@ the project again.
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-

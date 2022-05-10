@@ -3,7 +3,7 @@
 
 # MontiCore Languages of Level II - an Overview
 
-[[_TOC_]]
+
 
 [MontiCore](https://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
@@ -138,7 +138,7 @@ featurediagram MyPhones {
 
 
 
-### [GUI DSL](https://git.rwth-aachen.de/monticore/languages/gui-dsl) (Alpha: Intention to become stable)
+### [GUI DSL (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl) (Alpha: Intention to become stable)
 * Language for textual definition of Graphical User Interfaces of Web
 Applications
 * GUI DSL covers GUI elements and relevant configuration, which include
@@ -149,24 +149,24 @@ the language represents graphical views or their parts, omitting smaller details
 of style definition and simplifying connection between graphical elements and
 data sources.
 * Currently, new version of the `GUIDSL` is being developed:
-  * [Basis grammar `GUIBasis`](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/GUIBasis.mc4)
+  * [Basis grammar `GUIBasis` (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/GUIBasis.mc4)
 includes constructs for general visualization component definitions, control
 statements and components for layout description.
-  * [Example models](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/tree/dev/src/test/resources/pages/room)
+  * [Example models (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/tree/dev/src/test/resources/pages/room)
 can be found in the same repository.
-  * [Main grammar `GUIDSL`](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/GUIDSL.mc4)
+  * [Main grammar `GUIDSL` (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/dev/src/main/grammars/de/monticore/GUIDSL.mc4)
 includes basic concepts and more specific implementation of component
 configuration.
 * In projects legacy version is currently used:
-  * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation),
+  * Examples: [**MaCoCo** (not yet publicly available)](https://git.rwth-aachen.de/macoco/implementation),
               Ford
-  * [Main grammar `GUIDSL`](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4)
+  * [Main grammar `GUIDSL` (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4)
 includes definitions of MontiGem visualisation components, which are based on
 abstract concepts, described in
-[core grammar `GUIDSLCore`](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSLCore.mc4).
-[*Detailed description*](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.md)
+[core grammar `GUIDSLCore` (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSLCore.mc4).
+[*Detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.md)
 and
-[*documentation*](https://git.rwth-aachen.de/monticore/languages/gui-dsl/wikis/home).
+[*documentation* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/gui-dsl/wikis/home).
 
 
 ### [MontiCore Grammar](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar) (MontiCore Stable)
@@ -232,7 +232,7 @@ and
   [*detailed description*](https://github.com/MontiCore/json/blob/develop/src/main/grammars/de/monticore/lang/json.md)
 
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable) 
+### [MontiArc (not yet publicly available)](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable) 
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides a platform independent structure and behavior 
     modeling language with an extensible code generation framework.
@@ -274,9 +274,9 @@ component InteriorLight {                           // MontiArc language
   language a concrete timing, such as formally grounded by Focus, 
   should be added.
 * Main grammar 
-  [`MontiArc.mc4`](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
+  [`MontiArc.mc4` (not yet publicly available)](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.md)
+  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.md)
 
 
 ### [OCL/P](https://github.com/monticore/OCL) (MontiCore Stable)
@@ -469,7 +469,7 @@ statechart Door {
 * [*Detailed description*](https://github.com/MontiCore/statecharts/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
 
 
-### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
+### [SysML_2 (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
 * MontiCore languages for parsing artifacts of the SysML 2 language family. 
   Examples:
 ```
@@ -503,12 +503,12 @@ package 'Coffee' {                      // a SysML activity diagram
 * SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
   **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
   **UseCaseDiagrams**, and general **SysMLBasics**
-* [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml)
+* [Main grammars (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/src/main/grammars/de/monticore/lang/sysml/sysml2.md)
+  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/src/main/grammars/de/monticore/lang/sysml/sysml2.md)
 
 
-### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
+### [Tagging (not yet publicly available)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
 * **Tags** are known e.g. from the UML and SysML and mainly used to add
   extra information to a model element. 
   Normally tags (and **stereotypes**) are inserted within the models,
@@ -532,12 +532,12 @@ package 'Coffee' {                      // a SysML activity diagram
     * a tagging language TL (dependent on the tag schema models written in TSL)
 * Because tagging models can e.g. be used as configuration techniques 
   in a code generator, appropriate infrastructure is generated as well.
-* Some [**tagging language examples**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
+* Some [**tagging language examples** (not yet publicly available)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging-Examples)
 * Although concrete languages (and their grammars) are themselves generated,
   there is a 
-  [main grammar `ocl.monticore.lang.Tagging`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.mc4),
+  [main grammar `ocl.monticore.lang.Tagging` (not yet publicly available)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.mc4),
   where the tagging language is derived from.
-  See also [*detailed description*](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.md)
+  See also [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging/-/blob/master/src/main/grammars/de/monticore/lang/Tagging.md)
 
 ### [Use Case Diagrams](https://github.com/MontiCore/ucd)  (MontiCore stable) 
 * A textual use case diagram (UCD) language.
@@ -621,11 +621,11 @@ public void print(String name) {
 
 
 
-### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) 
+### [Java (not yet publicly available)](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) 
 * This is the full Java' Language (as Opposed to JavaLight).
-* Main Grammar [`JavaDSL`](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
+* Main Grammar [`JavaDSL` (not yet publicly available)](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
   and
-  [*detailed description*](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.md).
+  [*detailed description* (not yet publicly available)](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.md).
 
 
 ## Further Information
@@ -637,4 +637,3 @@ public void print(String name) {
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-
