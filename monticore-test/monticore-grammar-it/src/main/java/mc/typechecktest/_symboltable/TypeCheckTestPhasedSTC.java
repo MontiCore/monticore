@@ -3,9 +3,8 @@ package mc.typechecktest._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.check.TypeCalculator;
-import de.monticore.types.check.TypeCheck;
-import mc.typechecktest.DeriveSymTypeFromTypeCheckTest;
-import mc.typechecktest.SynthesizeSymTypeFromTypeCheckTest;
+import mc.typechecktest.FullDeriveFromTypeCheckTest;
+import mc.typechecktest.FullSynthesizeFromTypeCheckTest;
 import mc.typechecktest.TypeCheckTestMill;
 import mc.typechecktest._ast.ASTTCCompilationUnit;
 import mc.typechecktest._visitor.TypeCheckTestTraverser;
@@ -26,7 +25,7 @@ public class TypeCheckTestPhasedSTC {
     this.scopesGenitorDelegator = TypeCheckTestMill.scopesGenitorDelegator();
     this.priorityList = Lists.newArrayList();
 
-    TypeCalculator tc = new TypeCalculator(new SynthesizeSymTypeFromTypeCheckTest(), new DeriveSymTypeFromTypeCheckTest());
+    TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromTypeCheckTest(), new FullDeriveFromTypeCheckTest());
     TypeCheckTestTraverser traverser = TypeCheckTestMill.traverser();
     traverser.add4TypeCheckTest(new TypeCheckTestSTCompleteTypes(tc));
     priorityList.add(traverser);

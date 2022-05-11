@@ -10,8 +10,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
-
 import static de.monticore.types.check.TypeCheck.compatible;
 
 public class TypeCalculator {
@@ -21,14 +19,14 @@ public class TypeCalculator {
    * Synthesizing the SymTypeExpression from an AST Type.
    * May also be of a subclass;
    */
-  protected ISynthesize iSynthesize;
+  protected AbstractSynthesize iSynthesize;
 
   /**
    * Configuration: Visitor for Function 2b:
    * Deriving the SymTypeExpression from an AST Value - Literal.
    * May also be of a subclass;
    */
-  protected IDerive iDerive;
+  protected AbstractDerive iDerive;
 
 
   /**
@@ -37,8 +35,8 @@ public class TypeCalculator {
    * @param  iDerive defines, which AST Literals are handled
    *                               through the Expression type recognition
    */
-  public TypeCalculator(ISynthesize synthesizeSymType,
-                        IDerive iDerive) {
+  public TypeCalculator(AbstractSynthesize synthesizeSymType,
+                        AbstractDerive iDerive) {
     this.iSynthesize = synthesizeSymType;
     this.iDerive = iDerive;
   }
@@ -56,11 +54,11 @@ public class TypeCalculator {
   public SymTypeExpression symTypeFromAST(ASTMCType ast)
   {
     TypeCheckResult result = iSynthesize.synthesizeType(ast);
-    if(!result.isPresentCurrentResult()) {
+    if(!result.isPresentResult()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
         + ast.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ". Probably TypeCheck mis-configured.");
     }
-    return result.getCurrentResult();
+    return result.getResult();
   }
 
 
@@ -84,12 +82,12 @@ public class TypeCalculator {
   public SymTypeExpression symTypeFromAST(ASTMCReturnType ast)
   {
     TypeCheckResult result = iSynthesize.synthesizeType(ast);
-    if(!result.isPresentCurrentResult()) {
+    if(!result.isPresentResult()) {
       Log.error("0xE9FD9 Internal Error: No SymType for return type: "
         + ast.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
         + ". Probably TypeCheck mis-configured.");
     }
-    return result.getCurrentResult();
+    return result.getResult();
   }
 
 
@@ -102,12 +100,12 @@ public class TypeCalculator {
   public SymTypeExpression symTypeFromAST(ASTMCQualifiedName ast)
   {
     TypeCheckResult result = iSynthesize.synthesizeType(ast);
-    if(!result.isPresentCurrentResult()) {
+    if(!result.isPresentResult()) {
       Log.error("0xE9FD5 Internal Error: No SymType for MCQualifiedName: "
         + ast.getBaseName()
         + ". Probably TypeCheck mis-configured.");
     }
-    return result.getCurrentResult();
+    return result.getResult();
   }
 
 
@@ -124,11 +122,11 @@ public class TypeCalculator {
   public SymTypeExpression typeOf(ASTExpression expr)
   {
     TypeCheckResult result = iDerive.deriveType(expr);
-    if(!result.isPresentCurrentResult()) {
+    if(!result.isPresentResult()) {
       Log.error("0xED680 Internal Error: No Type for Expression " + expr
         + " Probably TypeCheck mis-configured.");
     }
-    return result.getCurrentResult();
+    return result.getResult();
   }
 
 
@@ -143,11 +141,11 @@ public class TypeCalculator {
   public SymTypeExpression typeOf(ASTLiteral lit)
   {
     TypeCheckResult result = iDerive.deriveType(lit);
-    if(!result.isPresentCurrentResult()) {
+    if(!result.isPresentResult()) {
       Log.error("0xED670 Internal Error: No Type for Literal " + lit
         + " Probably TypeCheck mis-configured.");
     }
-    return result.getCurrentResult();
+    return result.getResult();
   }
 
   /*************************************************************************/

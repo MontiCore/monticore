@@ -15,24 +15,28 @@ public class DeriveSymTypeOfMCJavaLiterals implements MCJavaLiteralsVisitor2 {
     this.typeCheckResult = typeCheckResult;
   }
 
+  public TypeCheckResult getTypeCheckResult() {
+    return typeCheckResult;
+  }
+
   @Override
   public void visit(ASTIntLiteral lit){
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeConstant("int"));
+    getTypeCheckResult().setResult(SymTypeExpressionFactory.createTypeConstant("int"));
   }
 
   @Override
   public void visit(ASTLongLiteral lit){
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeConstant("long"));
+    getTypeCheckResult().setResult(SymTypeExpressionFactory.createTypeConstant("long"));
   }
 
   @Override
   public void visit(ASTFloatLiteral lit){
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeConstant("float"));
+    getTypeCheckResult().setResult(SymTypeExpressionFactory.createTypeConstant("float"));
   }
 
   @Override
   public void visit(ASTDoubleLiteral lit){
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeConstant("double"));
+    getTypeCheckResult().setResult(SymTypeExpressionFactory.createTypeConstant("double"));
   }
 
 }

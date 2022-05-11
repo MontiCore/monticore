@@ -28,7 +28,7 @@ public abstract class AbstractSynthesizeFromType {
   public TypeCheckResult typeCheckResult = new TypeCheckResult();
 
   public Optional<SymTypeExpression> getResult() {
-    return Optional.of(typeCheckResult.getCurrentResult());
+    return Optional.of(getTypeCheckResult().getResult());
   }
 
   public void init() {
@@ -39,5 +39,7 @@ public abstract class AbstractSynthesizeFromType {
     this.typeCheckResult = typeCheckResult;
   }
 
-
+  public TypeCheckResult getTypeCheckResult() {
+    return typeCheckResult;
+  }
 }

@@ -31,8 +31,8 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar extends AbstractDeriveFromExp
     SymTypeExpression result = null;
 
     expr.getExpression().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      inner = typeCheckResult.getCurrentResult();
+    if(typeCheckResult.isPresentResult()){
+      inner = typeCheckResult.getResult();
     }else{
       Log.error("0xB0001 the inner result " +
           "cannot be calculated");
@@ -44,7 +44,7 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar extends AbstractDeriveFromExp
     }
 
     if(result!=null){
-      typeCheckResult.setCurrentResult(result);
+      typeCheckResult.setResult(result);
     }else{
       typeCheckResult.reset();
       Log.error("0xB0003 the result" +

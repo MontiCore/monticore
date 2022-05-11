@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 public class TypeCheckTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
-  private TypeCalculator tc = new TypeCalculator(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(), new DeriveSymTypeOfCombineExpressionsDelegator());
+  private TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals());
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 

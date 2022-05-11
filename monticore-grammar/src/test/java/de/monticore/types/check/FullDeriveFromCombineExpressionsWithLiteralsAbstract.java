@@ -3,12 +3,8 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.abstracttypechecktest.AbstractTypeCheckTestMill;
 import de.monticore.expressions.abstracttypechecktest._visitor.AbstractTypeCheckTestTraverser;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 
-public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
-
-  private AbstractTypeCheckTestTraverser traverser;
+public class FullDeriveFromCombineExpressionsWithLiteralsAbstract extends AbstractDerive {
 
   private DeriveSymTypeOfBSCommonExpressions deriveSymTypeOfCommonExpressions;
 
@@ -18,15 +14,13 @@ public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
 
   private DeriveSymTypeOfMCCommonLiterals deriveSymTypeOfMCCommonLiterals;
 
-  private TypeCheckResult typeCheckResult = new TypeCheckResult();
-
-
-  public DeriveSymTypeOfAbstractTypeCheckDelegator(){
-    init();
+  public FullDeriveFromCombineExpressionsWithLiteralsAbstract(){
+    this(AbstractTypeCheckTestMill.traverser());
   }
 
-  public AbstractTypeCheckTestTraverser getTraverser(){
-    return traverser;
+  public FullDeriveFromCombineExpressionsWithLiteralsAbstract(AbstractTypeCheckTestTraverser traverser){
+    super(traverser);
+    init(traverser);
   }
 
   /**
@@ -42,14 +36,12 @@ public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
   /**
    * initialize the typescalculator
    */
-  public void init() {
-    this.traverser = AbstractTypeCheckTestMill.traverser();
-    this.typeCheckResult = new TypeCheckResult();
+  public void init(AbstractTypeCheckTestTraverser traverser) {
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfBSCommonExpressions();
     deriveSymTypeOfMCCommonLiterals = new DeriveSymTypeOfMCCommonLiterals();
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
-    setTypeCheckResult(typeCheckResult);
+    setTypeCheckResult(getTypeCheckResult());
 
     traverser.add4CommonExpressions(deriveSymTypeOfCommonExpressions);
     traverser.setCommonExpressionsHandler(deriveSymTypeOfCommonExpressions);
@@ -57,19 +49,5 @@ public class DeriveSymTypeOfAbstractTypeCheckDelegator implements IDerive {
     traverser.add4ExpressionsBasis(deriveSymTypeOfExpression);
     traverser.setExpressionsBasisHandler(deriveSymTypeOfExpression);
     traverser.add4MCLiteralsBasis(deriveSymTypeOfLiterals);
-  }
-
-  @Override
-  public TypeCheckResult deriveType(ASTLiteral lit) {
-    init();
-    lit.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  @Override
-  public TypeCheckResult deriveType(ASTExpression expr){
-    init();
-    expr.accept(traverser);
-    return typeCheckResult.copy();
   }
 }

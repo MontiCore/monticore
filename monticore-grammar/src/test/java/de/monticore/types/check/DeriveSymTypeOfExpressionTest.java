@@ -101,7 +101,7 @@ public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
   @Override
   protected void setupTypeCheck() {
     // This is an auxiliary
-    DeriveSymTypeOfCombineExpressionsDelegator derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
+    FullDeriveFromCombineExpressionsWithLiterals derLit = new FullDeriveFromCombineExpressionsWithLiterals();
 
     // other arguments not used (and therefore deliberately null)
     // This is the TypeChecker under Test:

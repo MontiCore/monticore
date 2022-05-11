@@ -33,7 +33,7 @@ public class ThrowIsValidTest {
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new ThrowIsValid(new TypeCalculator(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new ThrowIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
     SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("A").addSuperTypes(sType).build());
