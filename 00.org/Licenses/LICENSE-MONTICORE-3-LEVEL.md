@@ -113,7 +113,7 @@ This product includes the following software, both having their own licenses,
 compatible with MontiCores licenses:
 
 * [AntLR](https://www.antlr.org/)
-* [FreeMarker](https://freemarker.org/)
+* [FreeMarker](https://freemarker.apache.org/)
 
 
 ## Further Information
