@@ -25,7 +25,7 @@ software, even if advised of the possibility of such damage.
 
 This product includes the following software:
 * [AntLR](https://www.antlr.org/)
-* [FreeMarker](https://freemarker.org/)
+* [FreeMarker](https://freemarker.apache.org/)
 
 ## Contribution 
 
