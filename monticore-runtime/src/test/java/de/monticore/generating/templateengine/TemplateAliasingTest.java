@@ -3,10 +3,13 @@
 package de.monticore.generating.templateengine;
 
 import com.google.common.base.Joiner;
+import de.monticore.ast.ASTCNode;
+import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.freemarker.alias.Alias;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
-import de.se_rwth.commons.logging.Finding;
+import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import freemarker.core.Macro;
@@ -25,7 +28,7 @@ import static org.junit.Assert.*;
 public class TemplateAliasingTest {
 
   private static final File TARGET_DIR = new File("target");
-  private static final int NUMBER_ALIASES = 21;
+  private static final int NUMBER_ALIASES = 20;
   public static final String ALIASES_PACKAGE = "de.monticore.generating.templateengine.templates.aliases.";
 
 
@@ -67,6 +70,19 @@ public class TemplateAliasingTest {
   }
 
   @Test
+  public void testInclude2Alias() {
+    String content = "Content of ast";
+    StringBuilder templateOutput =
+        tc.include(ALIASES_PACKAGE + "Include2Alias", new AliasTestASTNodeMock(content));
+    assertEquals(content, templateOutput.toString());
+  }
+
+  @Test
+  public void testIncludeArgs(){
+   // TODO: Test all aliases
+  }
+
+  @Test
   public void testLogAliases() {
     assertTrue(config.getAliases().isEmpty());
     tc.include(ALIASES_PACKAGE + "LogAliases");
@@ -101,13 +117,31 @@ public class TemplateAliasingTest {
   }
 
   private void assertAliases(TemplateController tc, int expectedNumberAliases) {
-    List<Macro> aliases = config.getAliases();
+    List<Alias> aliases = config.getAliases();
     assertNotNull(aliases);
     assertEquals(expectedNumberAliases, aliases.size());
-    
-    for (Macro macro : aliases) {
-      assertTrue(macro.isFunction());
+  }
+
+  public static class AliasTestASTNodeMock extends ASTCNode {
+    private final String content;
+
+    public AliasTestASTNodeMock(String content) {
+      this.content = content;
+    }
+
+    public String getContent(){
+      return content;
+    }
+
+    @Override
+    public IScope getEnclosingScope() {
+      return null;
+    }
+
+    @Override
+    public ASTNode deepClone() {
+      return null;
     }
   }
-  
+
 }

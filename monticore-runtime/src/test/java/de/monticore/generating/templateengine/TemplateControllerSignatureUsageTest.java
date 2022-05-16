@@ -116,6 +116,7 @@ public class TemplateControllerSignatureUsageTest {
         "Name is Charly\n" +
         "Name is Charly, age is 30, city is Aachen\n" +
         "Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends"
-        , templateOutput.toString());
+        , templateOutput.toString() // TODO AHe: why does this result contain different eol?
+    );
   }
 }
