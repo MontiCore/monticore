@@ -62,6 +62,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected boolean embeddedJavaCode;
 
+  protected Map<ASTProd, Map<ASTNode, String>> tmpNameDict = new LinkedHashMap<>();
+
   public Grammar2Antlr(
           ParserGeneratorHelper parserGeneratorHelper,
           MCGrammarInfo grammarInfo) {
@@ -797,6 +799,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     clearAntlrCode();
     parserHelper.resetTmpVarNames();
     ast.accept(getTraverser());
+    tmpNameDict.put(ast, new LinkedHashMap<>(parserHelper.getTmpVariables()));
     return getAntlrCode();
   }
 
@@ -975,6 +978,10 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   public List<String> getHWLexerJavaCode() {
     return grammarInfo.getAdditionalLexerJavaCode();
+  }
+
+  public Map<ASTProd, Map<ASTNode, String>> getTmpNameDict() {
+    return tmpNameDict;
   }
 
   // ----------------------------------------------------------------------------------------------

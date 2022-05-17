@@ -470,6 +470,10 @@ public class ParserGeneratorHelper {
     tmp_counter = 0;
   }
 
+  public Map<ASTNode, String> getTmpVariables() {
+    return tmpVariables;
+  }
+
   // ----------------------------------------------------
 
   /**

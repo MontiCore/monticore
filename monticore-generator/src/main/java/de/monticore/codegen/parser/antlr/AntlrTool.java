@@ -1,16 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.codegen.parser.antlr;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.Tool;
-import org.antlr.v4.tool.ANTLRMessage;
+import org.antlr.v4.tool.*;
 import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.misc.MultiMap;
 
-import java.util.Optional;
+import java.util.*;
 
 /**
  * ANTLR parser generator
@@ -19,12 +24,19 @@ import java.util.Optional;
 public class AntlrTool extends Tool {
   
   protected MCGrammarSymbol grammarSymbol;
-  
-  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol) {
+  protected Map<ASTProd, Map<ASTNode, String>> tmpNameDict;
+  protected Map<ASTNonTerminal, Set<Integer>> nonTerminalToParserStates = new LinkedHashMap<>();
+
+  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Map<ASTProd, Map<ASTNode, String>> tmpNameDict) {
     super(args);
     this.grammarSymbol = grammarSymbol;
+    this.tmpNameDict = tmpNameDict;
   }
-  
+
+  public Map<ASTNonTerminal, Set<Integer>> getNonTerminalToParserStates() {
+    return nonTerminalToParserStates;
+  }
+
   @Override
   public void error(ANTLRMessage message) {
     createMessage(message, true);
@@ -89,5 +101,60 @@ public class AntlrTool extends Tool {
       }
     }
   }
-  
+
+  @Override
+  public void processNonCombinedGrammar(Grammar g, boolean gencode) {
+    super.processNonCombinedGrammar(g, gencode);
+    calculateStatesForNonTerminals(g);
+  }
+
+  /**
+   * Calculates all Antlr parser states for each NonTerminal of the passed grammar.
+   * @param g the current Antlr Grammar
+   */
+  private void calculateStatesForNonTerminals(Grammar g) {
+    if(g.isParser() || g.isCombined()){
+      for (Map.Entry<ASTProd, Map<ASTNode, String>> outer : tmpNameDict.entrySet()) {
+        if(!outer.getValue().isEmpty()) {
+          for (Map.Entry<ASTNode, String> inner : outer.getValue().entrySet()) {
+            ASTNode key = inner.getKey();
+            if(key instanceof ASTNonTerminal){
+              ASTNonTerminal nonTerminal = (ASTNonTerminal) key;
+              String ruleName = outer.getKey().getName();
+              ruleName = ruleName.substring(0, 1).toLowerCase() + ruleName.substring(1);
+              nonTerminalToParserStates.put(
+                      nonTerminal,
+                      calculateStateForTmpName(g, ruleName, inner.getValue())
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Calculates all Antlr parser states for the NonTerminal with the passed temporary name, within the current rule and grammar
+   * @param g the current Grammar
+   * @param ruleName the name of the current Rule
+   * @param tmpName the temporary name of the NonTerminal
+   * @return all Antlr parser states that correspond to the NonTerminal
+   */
+  private Set<Integer> calculateStateForTmpName(Grammar g, String ruleName, String tmpName){
+    Rule r = g.getRule(ruleName);
+    if(r == null){ return Collections.emptySet(); }
+
+    MultiMap<String, LabelElementPair> elementLabelDefs = r.getElementLabelDefs();
+    if(!elementLabelDefs.containsKey(tmpName)) { return Collections.emptySet(); }
+
+    Set<Integer> res = new LinkedHashSet<>();
+
+    for (LabelElementPair pair : elementLabelDefs.get(tmpName)) {
+      if(pair.type == LabelType.TOKEN_LABEL || pair.type == LabelType.TOKEN_LIST_LABEL){
+        res.add(pair.element.atnState.stateNumber);
+      }
+    }
+
+    return res;
+  }
 }
