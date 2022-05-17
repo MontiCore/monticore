@@ -7,6 +7,7 @@ plugins {
   id "org.sonarqube" version "3.0"
   id "jacoco"
   id 'org.barfuin.gradle.jacocolog' version '1.2.3'
+  id "monticore"
 }
 
 sonarqube {
@@ -50,8 +51,9 @@ allprojects {
 
 subprojects {
   apply plugin: 'java-library'
-  apply plugin : 'de.set.ecj'
-  
+  apply plugin: 'de.set.ecj'
+
+
   tasks.withType(Test) {
     useJUnit()
     testLogging {

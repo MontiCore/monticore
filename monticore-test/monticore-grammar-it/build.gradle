@@ -2,7 +2,7 @@
 import de.monticore.MCTask
 
 plugins{
-  id "monticore" version "$version" //Monticore Plugin
+  id "monticore"  //Monticore Plugin
   id "jacoco"
 }
 

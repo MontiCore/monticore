@@ -19,9 +19,6 @@ public class MCPlugin implements Plugin<Project> {
     project.ext.MontiTransExec = de.monticore.MontiTransExec
     project.configurations.create("grammar")
 
-    if(!project.getPlugins().hasPlugin(this.getClass())){
-      StatisticListener.registerOnce(project);
-    }
-
+    StatisticListener.registerOnce(project);
   }
 }
