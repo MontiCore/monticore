@@ -7,7 +7,7 @@ plugins{
 }
 
 description = 'MontiCore Grammars Main Integration Test'
-sourceCompatibility = '1.8'
+sourceCompatibility = '1.11'
 
 ext.grammarDir = 'src/main/grammars'
 
