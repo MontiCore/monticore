@@ -89,6 +89,9 @@ public class StatisticData {
     protected boolean cacheEnabled;
     protected boolean isUpToDate;
     protected boolean isCached;
+    protected boolean skipped;
+    protected boolean didWork;
+    protected boolean hasError;
     protected Duration executionTime;
 
     public TaskData(Task task, TaskState taskState, Duration executionTime) {
@@ -98,9 +101,11 @@ public class StatisticData {
 
       this.executionTime = executionTime;
 
+      this.skipped = taskState.getSkipped();
+      this.didWork = taskState.getDidWork();
+      this.hasError = taskState.getFailure() != null;
       this.isUpToDate = taskState.getUpToDate();
       this.isCached = Objects.equals(taskState.getSkipMessage(), "FROM CACHE");
-
     }
 
     public String toString() {
@@ -112,6 +117,10 @@ public class StatisticData {
       result.put("Duration", this.executionTime.toMillis());
       result.put("UpToDate", this.isUpToDate);
       result.put("Cached", this.isCached);
+      result.put("Skipped", this.skipped);
+      result.put("DidWork", this.didWork);
+      result.put("hasError", this.hasError);
+
       return "\n-" +
           result.entrySet().stream()
           .map(e -> e.getKey() + ": " + e.getValue())

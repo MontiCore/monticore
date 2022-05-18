@@ -1,5 +1,6 @@
 package de.monticore.gradle;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -7,8 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 public class NetworkHandler {
 
-  private static void sendRequest(URL url, String data){
-    try {
+  private static void sendRequest(URL url, String data) throws IOException {
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("POST");
       connection.setRequestProperty("STAT_TYPE", "MC_GRADLE");
@@ -22,20 +22,17 @@ public class NetworkHandler {
 
       connection.connect();
 
-      System.out.println(connection.getResponseCode());
-
-    } catch(Exception e) {
-      System.err.println("Error sending Gradle Statistics to Server. \n"
-          + e.getMessage());
-    }
+      if(connection.getResponseCode() != 200){
+        throw new IOException("Server responded with code " + connection.getResponseCode());
+      }
   }
+
   public static void sendReport(String report){
     try {
-      System.out.println("Begin Sending Report to Server");
       sendRequest(new URL("https://build.se.rwth-aachen.de:8844"), report);
-      System.out.println("Finished Sending Report to Server");
-    } catch (MalformedURLException e) {
-      System.err.println("Malformed URL. \n"
+      System.out.println("Performance Statistic Successful");
+    } catch (Exception e) {
+      System.err.println("Failure Sending Performance Statistic. \n"
           + e.getMessage());    }
   }
 

@@ -5,8 +5,6 @@ import de.monticore.gradle.StatisticListener
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-import java.util.concurrent.atomic.AtomicBoolean
-
 /**
  * This class realizes the plugin itself.
  * The plugin is only used to provide task types

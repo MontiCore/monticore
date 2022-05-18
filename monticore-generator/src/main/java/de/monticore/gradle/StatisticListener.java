@@ -41,24 +41,27 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
 
   @Override
   public void buildStarted(Gradle gradle) {
-    System.out.println("buildStarted");
+
   }
 
   @Override
   public void settingsEvaluated(Settings settings) {
-    System.out.println("settingsEvaluated");
+
   }
 
   @Override
   public void projectsLoaded(Gradle gradle) {
-    System.out.println("projectsLoaded");
+
   }
 
   @Override
   public void projectsEvaluated(Gradle gradle) {
     Log.debug("projectsEvaluated", this.getClass().getName());
     System.out.println("Performance statistic of this build are tracked by the Software-Engineering Chair at RWTH Aachen. \n" +
-        "The data will help to improve the monticore plugin. \n "
+        "The data will help to improve Monticore. \n\n" +
+        "You can Opt-Out by setting \n" +
+        "\t de.monticore.gradle.performance_statistic=false\n" +
+        "in <gradle.properties>"
     );
 
     this.data = new StatisticData();
@@ -72,13 +75,12 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
   public void buildFinished(BuildResult buildResult) {
     Log.debug("buildFinished", this.getClass().getName());
     data.setExecutionTime(Duration.between(projectStartTime, Instant.now()));
+    alreadyRegistered.set(false);   // Reset is necessary, otherwise Listener is not used in next build
 
     if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
       System.out.println(data.toString());
-      NetworkHandler.sendReport(data.toString());
     }
-
-    alreadyRegistered.set(false);   // Reset is necessary, otherwise Listener is not used in next build
+    NetworkHandler.sendReport(data.toString());
   }
 
   @Override
