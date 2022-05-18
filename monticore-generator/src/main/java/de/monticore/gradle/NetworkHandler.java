@@ -32,7 +32,7 @@ public class NetworkHandler {
   public static void sendReport(String report){
     try {
       System.out.println("Begin Sending Report to Server");
-      sendRequest(new URL("http://build.se.rwth-aachen.de:8844"), report);  // TODO: https
+      sendRequest(new URL("https://build.se.rwth-aachen.de:8844"), report);
       System.out.println("Finished Sending Report to Server");
     } catch (MalformedURLException e) {
       System.err.println("Malformed URL. \n"
