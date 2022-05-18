@@ -72,6 +72,7 @@ public class StatisticData {
 
     result.put("GradleParallel", getGradleProperty("org.gradle.parallel", "false"));
     result.put("GradleCache", getGradleProperty("org.gradle.caching", "false"));
+    result.put("HasBuildCacheURL", gradle.getRootProject().getProperties().containsKey("buildCacheURL"));
     result.put("IsCi", System.getenv().containsKey("CI"));
 
     result.put("Tags", '"' + getGradleProperty("de.monticore.gradle.tags", "") + '"');
