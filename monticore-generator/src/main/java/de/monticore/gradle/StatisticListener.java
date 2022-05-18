@@ -22,9 +22,10 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
 
   private static final AtomicBoolean alreadyRegistered = new AtomicBoolean(false);
   private static final StatisticListener singleton = new StatisticListener();
+
   protected Map<Task, Instant> startTime = new HashMap<>();
   protected Instant projectStartTime;
-  protected StatisticData data = new StatisticData();
+  protected StatisticData data;
 
   private static synchronized StatisticListener getSingleton() {
     return singleton;
@@ -60,18 +61,21 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
         "The data will help to improve the monticore plugin. \n "
     );
 
-    projectStartTime = Instant.now();
+    this.data = new StatisticData();
     this.data.setProject(gradle.getRootProject());
     this.data.setGradle(gradle);
+
+    projectStartTime = Instant.now();
   }
 
   @Override
   public void buildFinished(BuildResult buildResult) {
     Log.debug("buildFinished", this.getClass().getName());
+    data.setExecutionTime(Duration.between(projectStartTime, Instant.now()));
 
     if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
-      data.setExecutionTime(Duration.between(projectStartTime, Instant.now()));
       System.out.println(data.toString());
+      NetworkHandler.sendReport(data.toString());
     }
 
     alreadyRegistered.set(false);   // Reset is necessary, otherwise Listener is not used in next build

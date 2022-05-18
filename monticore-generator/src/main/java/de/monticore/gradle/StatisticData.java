@@ -5,6 +5,7 @@ import org.gradle.api.Task;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.tasks.TaskState;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,8 +33,17 @@ public class StatisticData {
     this.project = project;
   }
 
+  private String getGradleProperty(String key, String pDefault){
+    String value = (String) gradle.getRootProject().getProperties().get(key);
+    if(value == null) {
+      value = pDefault;
+    }
+    return value;
+  }
+
   public String toString() {
     Map<String, Object> result = new LinkedHashMap<>();
+
 
     result.put("Tasks", this.tasks.stream()
         .map(TaskData::toString)
@@ -42,8 +52,29 @@ public class StatisticData {
 
     result.put("ProjectName", '"' + this.project.getName() + '"');
     result.put("Duration", this.executionTime.toMillis());
+
     result.put("GradleVersion", '"' + this.gradle.getGradleVersion() + '"');
     result.put("JavaVersion", '"' + System.getProperty("java.version") + '"');
+
+    try {
+      Properties localProperties = new Properties();
+      localProperties.load(this.getClass().getResourceAsStream("/buildInfo.properties"));
+
+      result.put("MCVersion", '"' + localProperties.getProperty("version") + '"');
+    }catch(IOException ignored){}
+
+
+    result.put("TotalMemory", Runtime.getRuntime().totalMemory());
+    result.put("FreeMemory", Runtime.getRuntime().freeMemory());
+    result.put("MaxMemory", Runtime.getRuntime().maxMemory());
+    result.put("AvailableProcessors", Runtime.getRuntime().availableProcessors());
+
+
+    result.put("GradleParallel", getGradleProperty("org.gradle.parallel", "false"));
+    result.put("GradleCache", getGradleProperty("org.gradle.caching", "false"));
+    result.put("IsCi", System.getenv().containsKey("CI"));
+
+    result.put("Tags", '"' + getGradleProperty("de.monticore.gradle.tags", "") + '"');
 
     return result.entrySet().stream()
         .map(e -> e.getKey() + ": " + e.getValue())
