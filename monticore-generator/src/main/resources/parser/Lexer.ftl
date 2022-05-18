@@ -21,8 +21,11 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarS
   </#list>
 </#list>
 
-<#list genHelper.getLexerRulesForMode() as modeName, lexProdList>
+<#assign modeMap=genHelper.getLexerRulesForMode()>
+<#list modeMap as modeName, lexProdList>
+  <#if modeMap?size != 1 || modeName != "DEFAULT_MODE">
   mode ${modeName};
+  </#if>
   <#list lexProdList as lexProd>
     <#list antlrGenerator.createAntlrCode(lexProd) as lexerRule>
       ${lexerRule}

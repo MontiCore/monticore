@@ -47,9 +47,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       calculateThisExpression(node, innerResult.get()) : Optional.empty();
 
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0252",node.get_SourcePositionStart());
     }
   }
@@ -63,7 +63,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     //check recursively until there is no enclosing scope or the spanningsymbol of the scope is a type
     //while the enclosing scope is not null, it is possible that the expression can be calculated
     int count = 0;
-    if(typeCheckResult.isType() && getScope(expr.getEnclosingScope()).getEnclosingScope()!=null) {
+    if(getTypeCheckResult().isType() && getScope(expr.getEnclosingScope()).getEnclosingScope()!=null) {
       IBasicSymbolsScope testScope = getScope(expr.getEnclosingScope());
       while (testScope!=null) {
         if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
@@ -87,30 +87,30 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
 
     //cannot be a type and has to be a integer value
     node.getIndexExpression().accept(getTraverser());
-    if (typeCheckResult.isPresentCurrentResult()) {
-      if (!typeCheckResult.isType()) {
-        indexResult = typeCheckResult.getCurrentResult();
+    if (getTypeCheckResult().isPresentResult()) {
+      if (!getTypeCheckResult().isType()) {
+        indexResult = getTypeCheckResult().getResult();
       }else{
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         Log.error("0xA0253 the expression at source position"+node.getIndexExpression().get_SourcePositionStart()+" cannot be a type");
         return;
       }
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0254",node.get_SourcePositionStart());
       return;
     }
 
     node.getExpression().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      if(typeCheckResult.isType()){
-        typeCheckResult.reset();
+    if(getTypeCheckResult().isPresentResult()){
+      if(getTypeCheckResult().isType()){
+        getTypeCheckResult().reset();
         Log.error("0xA0255 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
         return;
       }
-      arrayTypeResult = typeCheckResult.getCurrentResult();
+      arrayTypeResult = getTypeCheckResult().getResult();
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0256",node.get_SourcePositionStart());
       return;
     }
@@ -119,9 +119,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
 
     //if nothing found -> fail
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0257",node.get_SourcePositionStart());
     }
   }
@@ -193,14 +193,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     SymTypeExpression innerResult;
 
     node.getExtReturnType().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      innerResult = typeCheckResult.getCurrentResult();
+    if(getTypeCheckResult().isPresentResult()){
+      innerResult = getTypeCheckResult().getResult();
       wholeResult = Optional.of(SymTypeExpressionFactory.createGenerics("Class", getScope(node.getEnclosingScope()), innerResult));
     }
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0258",node.get_SourcePositionStart());
     }
   }
@@ -212,16 +212,16 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     SymTypeExpression beforeSuperType;
 
     node.getExpression().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()) {
-      if (typeCheckResult.isType()){
-        beforeSuperType = typeCheckResult.getCurrentResult();
+    if(getTypeCheckResult().isPresentResult()) {
+      if (getTypeCheckResult().isType()){
+        beforeSuperType = getTypeCheckResult().getResult();
       }else {
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         Log.error("0xA0259 the expression at source position "+node.getExpression().get_SourcePositionStart()+" has to be a type");
         return;
       }
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0260",node.getExpression().get_SourcePositionStart());
       return;
     }
@@ -229,9 +229,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     Optional<SymTypeExpression> wholeResult = calculateSuperExpression(node, beforeSuperType);
 
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0261",node.get_SourcePositionStart());
     }
   }
@@ -283,7 +283,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       if (fields.size()==1) {
         return Optional.ofNullable(fields.get(0).getType());
       }else{
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         Log.error("0xA1305 there cannot be more than one field with the same name");
         return Optional.empty();
       }
@@ -299,25 +299,25 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     SymTypeExpression castResult;
 
     node.getExpression().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      innerResult = typeCheckResult.getCurrentResult();
-      if(typeCheckResult.isType()){
-        typeCheckResult.reset();
+    if(getTypeCheckResult().isPresentResult()){
+      innerResult = getTypeCheckResult().getResult();
+      if(getTypeCheckResult().isType()){
+        getTypeCheckResult().reset();
         Log.error("0xA0262 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
         return;
       }
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0263",node.getExpression().get_SourcePositionStart());
       return;
     }
 
     //castResult is the type in the brackets -> (ArrayList) list
     node.getExtType().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      castResult = typeCheckResult.getCurrentResult();
+    if(getTypeCheckResult().isPresentResult()){
+      castResult = getTypeCheckResult().getResult();
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       Log.error("0xA0265 the type at source position "+node.getExtType().get_SourcePositionStart()+" cannot be calculated");
       return;
     }
@@ -326,9 +326,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     Optional<SymTypeExpression> wholeResult = calculateTypeCastExpression(node, castResult, innerResult);
 
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0266",node.get_SourcePositionStart());
     }
   }
@@ -348,32 +348,32 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
 
     //calculate left type: expression that is to be checked for a specific type
     node.getExpression().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      if(typeCheckResult.isType()){
-        typeCheckResult.reset();
+    if(getTypeCheckResult().isPresentResult()){
+      if(getTypeCheckResult().isType()){
+        getTypeCheckResult().reset();
         Log.error("0xA0267 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
         return;
       }else{
-        expressionResult = typeCheckResult.getCurrentResult();
+        expressionResult = getTypeCheckResult().getResult();
       }
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0268",node.getExpression().get_SourcePositionStart());
       return;
     }
 
     //calculate right type: type that the expression should be an instance of
     node.getExtType().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      if(!typeCheckResult.isType()) {
-        typeCheckResult.reset();
+    if(getTypeCheckResult().isPresentResult()){
+      if(!getTypeCheckResult().isType()) {
+        getTypeCheckResult().reset();
         Log.error("0xA0269 the expression at source position "+node.getExtType().get_SourcePositionStart()+" must be a type");
         return;
       }else{
-        typeResult = typeCheckResult.getCurrentResult();
+        typeResult = getTypeCheckResult().getResult();
       }
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0270",node.getExpression().get_SourcePositionStart());
       return;
     }
@@ -381,7 +381,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     //the method was not finished yet (either with Log.error or return) -> both types are present and thus the result is boolean
     wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
 
-    typeCheckResult.setCurrentResult(wholeResult.get());
+    getTypeCheckResult().setResult(wholeResult.get());
   }
 
   @Override
@@ -393,9 +393,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       wholeResult = Optional.of(getResultOfPrimaryThisExpression(getScope(node.getEnclosingScope()), typeSymbol.get()));
     }
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0272",node.get_SourcePositionStart());
     }
   }
@@ -432,15 +432,15 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         wholeResult = Optional.of(superClasses.get(0));
       }
       else {
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         Log.error("0xA0273 for super to work there has to be exactly one superclass");
         return;
       }
     }
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0280",node.get_SourcePositionStart());
     }
   }
@@ -452,13 +452,13 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     boolean isType = false;
 
     node.getExpression().accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      if(typeCheckResult.isType()){
+    if(getTypeCheckResult().isPresentResult()){
+      if(getTypeCheckResult().isType()){
        isType = true;
       }
-      expressionResult = typeCheckResult.getCurrentResult();
+      expressionResult = getTypeCheckResult().getResult();
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0281",node.getExpression().get_SourcePositionStart());
       return;
     }
@@ -466,9 +466,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     Optional<SymTypeExpression> wholeResult = calculateGenericInvocationExpression(node, expressionResult, isType);
 
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0282",node.get_SourcePositionStart());
     }
   }
@@ -505,8 +505,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     List<SymTypeExpression> typeArgsList = Lists.newArrayList();
     for (ASTExtTypeArgumentExt astExtTypeArgumentExt : extTypeArgumentList) {
       astExtTypeArgumentExt.accept(getTraverser());
-      if (typeCheckResult.isPresentCurrentResult()) {
-        typeArgsList.add(typeCheckResult.getCurrentResult());
+      if (getTypeCheckResult().isPresentResult()) {
+        typeArgsList.add(getTypeCheckResult().getResult());
       } else {
         Log.error("0xA0283 the type argument at source position " + astExtTypeArgumentExt.get_SourcePositionStart() + " cannot be calculated");
       }
@@ -570,12 +570,12 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     List<SymTypeExpression> argList = Lists.newArrayList();
     for(int i = 0;i<args.getExpressionList().size();i++){
       args.getExpression(i).accept(getTraverser());
-      if(typeCheckResult.isPresentCurrentResult()){
-        if(!typeCheckResult.isType()){
-          argList.add(typeCheckResult.getCurrentResult());
+      if(getTypeCheckResult().isPresentResult()){
+        if(!getTypeCheckResult().isType()){
+          argList.add(getTypeCheckResult().getResult());
         }
       }else{
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         logError("0xA0284",args.getExpressionList().get(i).get_SourcePositionStart());
       }
     }
@@ -592,8 +592,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         //case 1: <TypeVariable>method(Args) -> similar to GenericInvocationExpression
         //can be accessed solely or after another expression -> check if lastResult is present
         IBasicSymbolsScope testScope;
-        if(typeCheckResult.isPresentCurrentResult()){
-          testScope = typeCheckResult.getCurrentResult().getTypeInfo().getSpannedScope();
+        if(getTypeCheckResult().isPresentResult()){
+          testScope = getTypeCheckResult().getResult().getTypeInfo().getSpannedScope();
         }else{
           testScope = getScope(node.getEnclosingScope());
         }
@@ -604,7 +604,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           ASTArguments args = node.getGenericInvocationSuffix().getArguments();
           List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
           if(!typeArgsList.isEmpty()){
-            typeCheckResult.unsetType();
+            getTypeCheckResult().unsetType();
           }
           wholeResult = checkMethodsAndReplaceTypeVariables(methods,args,typeArgsList);
         }
@@ -645,9 +645,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     }
 
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError("0xA0285",node.get_SourcePositionStart());
     }
   }
@@ -668,13 +668,13 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     @Override
     public void traverse(ASTCreatorExpression expr){
       expr.getCreator().accept(getTraverser());
-      if(typeCheckResult.isPresentCurrentResult()){
-        if(!typeCheckResult.isType()){
-          typeCheckResult.reset();
+      if(getTypeCheckResult().isPresentResult()){
+        if(!getTypeCheckResult().isType()){
+          getTypeCheckResult().reset();
           logError("0xA0322",expr.getCreator().get_SourcePositionStart());
         }
       }else{
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         logError("0xA0310",expr.get_SourcePositionStart());
       }
     }
@@ -684,10 +684,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       SymTypeExpression extType;
       Optional<SymTypeExpression> wholeResult = Optional.empty();
       creator.getExtType().accept(getTraverser());
-      if(typeCheckResult.isPresentCurrentResult()){
-        extType = typeCheckResult.getCurrentResult();
+      if(getTypeCheckResult().isPresentResult()){
+        extType = getTypeCheckResult().getResult();
       }else{
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         logError("0xA1311",creator.getExtType().get_SourcePositionStart());
         return;
       }
@@ -706,9 +706,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       }
 
       if(wholeResult.isPresent()){
-        typeCheckResult.setCurrentResult(wholeResult.get());
+        getTypeCheckResult().setResult(wholeResult.get());
       }else{
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         logError("0xA1312",creator.get_SourcePositionStart());
       }
     }
@@ -719,10 +719,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       Optional<SymTypeExpression> wholeResult = Optional.empty();
 
       creator.getExtType().accept(getTraverser());
-      if(typeCheckResult.isPresentCurrentResult()){
-        extTypeResult = typeCheckResult.getCurrentResult();
+      if(getTypeCheckResult().isPresentResult()){
+        extTypeResult = getTypeCheckResult().getResult();
       }else{
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         logError("0xA0314", creator.getExtType().get_SourcePositionStart());
         return;
       }
@@ -735,21 +735,21 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           //teste dass alle Expressions integer-zahl sind
           for (ASTExpression expr : arrayInitializer.getExpressionList()) {
             expr.accept(getTraverser());
-            if (typeCheckResult.isPresentCurrentResult()) {
-              SymTypeExpression result = typeCheckResult.getCurrentResult();
+            if (getTypeCheckResult().isPresentResult()) {
+              SymTypeExpression result = getTypeCheckResult().getResult();
               if (result.isTypeConstant()) {
                 if (!((SymTypeConstant) result).isIntegralType()) {
-                  typeCheckResult.reset();
+                  getTypeCheckResult().reset();
                   logError("0xA0315", expr.get_SourcePositionStart());
                   return;
                 }
               } else {
-                typeCheckResult.reset();
+                getTypeCheckResult().reset();
                 logError("0xA0316", expr.get_SourcePositionStart());
                 return;
               }
             } else {
-              typeCheckResult.reset();
+              getTypeCheckResult().reset();
               logError("0xA0317", expr.get_SourcePositionStart());
               return;
             }
@@ -759,8 +759,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       }
 
       if(wholeResult.isPresent()){
-        typeCheckResult.setCurrentResult(wholeResult.get());
-        typeCheckResult.setType();
+        getTypeCheckResult().setResult(wholeResult.get());
+        getTypeCheckResult().setType();
       }else{
         logError("0xA0318", creator.get_SourcePositionStart());
       }
@@ -770,10 +770,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       List<SymTypeExpression> argList = Lists.newArrayList();
       for(int i = 0;i<args.getExpressionList().size();i++){
         args.getExpression(i).accept(getTraverser());
-        if(typeCheckResult.isPresentCurrentResult()){
-          argList.add(typeCheckResult.getCurrentResult());
+        if(getTypeCheckResult().isPresentResult()){
+          argList.add(getTypeCheckResult().getResult());
         }else{
-          typeCheckResult.reset();
+          getTypeCheckResult().reset();
           logError("0xA0313",args.getExpressionList().get(i).get_SourcePositionStart());
         }
       }

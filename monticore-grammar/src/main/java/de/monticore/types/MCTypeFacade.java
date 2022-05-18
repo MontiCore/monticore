@@ -39,6 +39,10 @@ public class MCTypeFacade {
    * qualified type creation methods
    */
 
+  public ASTMCQualifiedName createQualifiedName(final String name) {
+    return MCBasicTypesMill.mCQualifiedNameBuilder().setPartsList(Arrays.asList(name.split(PACKAGE_SEPARATOR))).build();
+  }
+
   public ASTMCQualifiedType createQualifiedType(final Class<?> clazz) {
     return createQualifiedType(clazz.getSimpleName());
   }

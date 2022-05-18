@@ -34,7 +34,7 @@ public class ResourceInTryStatementCloseableTest {
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.io.Closeable", TestMCExceptionStatementsMill.globalScope());
     SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("A").addSuperTypes(sType).build());

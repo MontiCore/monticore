@@ -32,7 +32,7 @@ public class CatchIsValidTest {
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new CatchIsValid(new TypeCalculator(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new CatchIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
     
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
     SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());

@@ -94,7 +94,7 @@ subprojects {
     options.fork = true
     options.headerOutputDirectory.convention(null)
     options.forkOptions.with {
-      executable = 'java'
+      // executable = 'java'
       jvmArgs = ['-classpath', project.configurations.ecj.asPath, 'org.eclipse.jdt.internal.compiler.batch.Main', '-nowarn', "-Xmx2048m"]
     }
   }

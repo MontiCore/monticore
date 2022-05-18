@@ -4,10 +4,7 @@ package mc.typechecktest;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.types.check.ISynthesize;
-import de.monticore.types.check.IDerive;
-import de.monticore.types.check.TypeCalculator;
-import de.monticore.types.check.TypeCheck;
+import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.typechecktest._ast.ASTTCCompilationUnit;
@@ -218,8 +215,8 @@ public class CoCoTests {
   }
 
   protected TypeCheckTestCoCoChecker getOOChecker(){
-    ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
-    IDerive typesCalculator = new DeriveSymTypeFromTypeCheckTest();
+    AbstractSynthesize synthesize = new FullSynthesizeFromTypeCheckTest();
+    AbstractDerive typesCalculator = new FullDeriveFromTypeCheckTest();
     TypeCalculator tc = new TypeCalculator(synthesize, typesCalculator);
     TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
     checker.addCoCo(new VariableDeclarationIsCorrect(tc));
@@ -228,8 +225,8 @@ public class CoCoTests {
   }
 
   protected TypeCheckTestCoCoChecker getAbstractChecker(){
-    ISynthesize synthesize = new SynthesizeSymTypeFromTypeCheckTest();
-    IDerive typesCalculator = new DeriveSymTypeFromTypeCheckTestAbstract();
+    AbstractSynthesize synthesize = new FullSynthesizeFromTypeCheckTest();
+    AbstractDerive typesCalculator = new FullDeriveFromTypeCheckTestAbstract();
     TypeCalculator tc = new TypeCalculator(synthesize, typesCalculator);
     TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
     checker.addCoCo(new VariableDeclarationIsCorrect(tc));

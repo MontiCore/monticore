@@ -32,7 +32,7 @@ public class DSL2TransformationLanguageVisitor implements
   private final ASTRuleFactory astRuleFactory;
 
 
-  private final Set<String> productions = new HashSet<>();
+  private final Set<String> productions = new LinkedHashSet<>();
 
   private MCGrammarSymbol grammarSymbol;
 
@@ -52,7 +52,7 @@ public class DSL2TransformationLanguageVisitor implements
   /**
    * the mapping from
    */
-  private final Map<ASTNode, LinkedList<ASTNode>> src2target = new HashMap<>();
+  private final Map<ASTNode, LinkedList<ASTNode>> src2target = new LinkedHashMap<>();
 
   private void map(ASTNode src, ASTNode target) {
     if (!src2target.containsKey(src)) {

@@ -53,7 +53,7 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
     //get the type of the literal
     Optional<SymTypeExpression> wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
     if(!wholeResult.isPresent()){
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
     return wholeResult;
@@ -63,10 +63,10 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
   public void traverse(ASTNameExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateNameExpression(expr);
     if(wholeResult.isPresent()){
-      typeCheckResult.setCurrentResult(wholeResult.get());
+      getTypeCheckResult().setResult(wholeResult.get());
     }else{
      //name not found --> package or nothing
-     typeCheckResult.reset();
+     getTypeCheckResult().reset();
      Log.info("package expected", "DeriveSymTypeOfExpression");
     }
   }
@@ -83,18 +83,18 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
       VariableSymbol var = optVar.get();
       SymTypeExpression res = var.getType().deepClone();
-      typeCheckResult.setField();
+      getTypeCheckResult().setField();
       return Optional.of(res);
     } else if(optTypeVar.isPresent()) {
       TypeVarSymbol typeVar = optTypeVar.get();
       SymTypeExpression res = createTypeVariable(typeVar);
-      typeCheckResult.setType();
+      getTypeCheckResult().setType();
       return Optional.of(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
       SymTypeExpression res = createTypeExpression(type);
-      typeCheckResult.setType();
+      getTypeCheckResult().setType();
       return Optional.of(res);
     }
     return Optional.empty();

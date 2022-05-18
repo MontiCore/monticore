@@ -31,7 +31,7 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExp
   @Override
   protected boolean checkModifierType(TypeSymbol typeSymbol) {
     //if the last result is a type and the type is not static then it is not accessible
-    if (typeCheckResult.isType()) {
+    if (getTypeCheckResult().isType()) {
       return typeSymbol instanceof OOTypeSymbol && ((OOTypeSymbol) typeSymbol).isIsStatic();
     }
     return true;
@@ -39,11 +39,11 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExp
 
   @Override
   protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
-    return innerResult.getMethodList(name, typeCheckResult.isType(), false);
+    return innerResult.getMethodList(name, getTypeCheckResult().isType(), false);
   }
 
   @Override
   protected List<VariableSymbol> getCorrectFieldsFromInnerType(SymTypeExpression innerResult, ASTFieldAccessExpression expr) {
-    return innerResult.getFieldList(expr.getName(), typeCheckResult.isType(), false);
+    return innerResult.getFieldList(expr.getName(), getTypeCheckResult().isType(), false);
   }
 }

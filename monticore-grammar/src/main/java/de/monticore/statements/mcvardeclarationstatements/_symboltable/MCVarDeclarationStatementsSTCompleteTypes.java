@@ -7,27 +7,24 @@ import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableD
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.types.check.ISynthesize;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfNull;
-import de.monticore.types.check.TypeCheckResult;
+import de.monticore.types.check.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
 
 public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor2 {
 
-  protected ISynthesize typeSynthesizer;
+  protected AbstractSynthesize typeSynthesizer;
 
   public MCVarDeclarationStatementsSTCompleteTypes() {
     this(new FullSynthesizeFromMCSGT4Grammar());
   }
 
-  public MCVarDeclarationStatementsSTCompleteTypes(ISynthesize typeSynthesizer) {
+  public MCVarDeclarationStatementsSTCompleteTypes(AbstractSynthesize typeSynthesizer) {
     this.typeSynthesizer = typeSynthesizer;
   }
 
-  public ISynthesize getTypeSynthesizer() {
+  public AbstractSynthesize getTypeSynthesizer() {
     return this.typeSynthesizer;
   }
 
@@ -43,8 +40,8 @@ public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarati
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
     // Start visitor
     TypeCheckResult typeCheckResult = this.getTypeSynthesizer().synthesizeType(ast);
-    if(typeCheckResult.isPresentCurrentResult()){
-      return typeCheckResult.getCurrentResult();
+    if(typeCheckResult.isPresentResult()){
+      return typeCheckResult.getResult();
     }
     return new SymTypeOfNull();
   }

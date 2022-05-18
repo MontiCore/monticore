@@ -32,11 +32,11 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     SymTypeConstant typeConstant =
             SymTypeExpressionFactory.createTypeConstant(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
-    typeCheckResult.setCurrentResult(typeConstant);
+    getTypeCheckResult().setResult(typeConstant);
   }
   
   public void endVisit(ASTMCVoidType voidType) {
-    typeCheckResult.setCurrentResult(SymTypeExpressionFactory.createTypeVoid());
+    getTypeCheckResult().setResult(SymTypeExpressionFactory.createTypeVoid());
   }
   
   public void endVisit(ASTMCReturnType rType) {
@@ -71,7 +71,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
         }
       }
     }
-    typeCheckResult.setCurrentResult(symType);
+    getTypeCheckResult().setResult(symType);
   }
 
   /**

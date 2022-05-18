@@ -1,10 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package de.monticore.emf.util.compare;
-/*
- *
- * http://www.se-rwth.de/
- */
 
 import java.util.Collections;
 import java.util.Iterator;

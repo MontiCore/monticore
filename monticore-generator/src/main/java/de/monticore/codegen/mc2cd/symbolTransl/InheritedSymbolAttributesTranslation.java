@@ -18,11 +18,8 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.utils.Link;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,7 +71,9 @@ public class InheritedSymbolAttributesTranslation extends InheritedAttributesTra
     return TransformationHelper.getAllSuperProds(astNode).stream()
             .distinct()
             .collect(Collectors.toMap(Function.identity(), prod -> prod.isPresentSymbol() ?
-                    prod.getSymbol().getSpannedScope().getSymbolAttributeList() : Collections.emptyList()));
+                    prod.getSymbol().getSpannedScope().getSymbolAttributeList() : Collections.emptyList(),
+                (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u)); },
+                LinkedHashMap::new));
   }
 
 }

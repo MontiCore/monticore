@@ -2,7 +2,7 @@
 
 # MontiCore 3-Level License Model 
 
-[MontiCore](http://www.monticore.de) is a language workbench for an efficient 
+[MontiCore](https://www.monticore.de) is a language workbench for an efficient 
 development of domain-specific languages (DSLs). All the code available
 in these GitHub MontiCore projects  
 is published under three levels of licenses as discussed below.
@@ -112,13 +112,13 @@ liability, etc.
 This product includes the following software, both having their own licenses,
 compatible with MontiCores licenses:
 
-* [AntLR](http://www.antlr.org/)
-* [FreeMarker](http://freemarker.org/)
+* [AntLR](https://www.antlr.org/)
+* [FreeMarker](https://freemarker.org/)
 
 
 ## Further Information
 
-* see also [**MontiCore Reference Manual**](http://www.monticore.de/)
+* see also [**MontiCore Reference Manual**](https://www.monticore.de/)
 
 * [MontiCore project](../../README.md) - MontiCore
 

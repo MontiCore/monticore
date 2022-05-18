@@ -11,7 +11,7 @@ import de.monticore.statements.testmcvardeclarationstatements._parser.TestMCVarD
 import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVarDeclarationStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
+import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -41,7 +41,7 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     TestMCVarDeclarationStatementsMill.init();
     checker.setTraverser(TestMCVarDeclarationStatementsMill.traverser());
 
-    checker.addCoCo(new VarDeclarationInitializationHasCorrectType(new DeriveSymTypeOfCombineExpressionsDelegator()));
+    checker.addCoCo(new VarDeclarationInitializationHasCorrectType(new FullDeriveFromCombineExpressionsWithLiterals()));
   }
 
   @Before

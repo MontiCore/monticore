@@ -430,5 +430,5 @@ githubmirror:
     - git remote add github git@github.com:MontiCore/monticore.git
     - git push github $CI_COMMIT_BRANCH --force
   only:
-    - dev
+    - opendev
     - master

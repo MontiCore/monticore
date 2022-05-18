@@ -12,7 +12,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.se_rwth.commons.Names;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -536,7 +535,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSimpleNameFromSymbolName(String referencedSymbol) {
-    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL_SUFFIX));
+    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).lastIndexOf(SYMBOL_SUFFIX));
   }
 
   /**
@@ -547,7 +546,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * @return The set of symbol names within the class diagram
    */
   public Set<String> retrieveSymbolNamesFromCD(DiagramSymbol cdSymbol) {
-    Set<String> symbolNames = new HashSet<String>();
+    Set<String> symbolNames = new LinkedHashSet<>();
     // get AST for symbol
     ASTCDDefinition astcdDefinition = (ASTCDDefinition) cdSymbol.getAstNode();
     // add symbol definitions from interfaces
@@ -690,7 +689,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * @return returns a Map of <the class that inherits the property, the symbol interface full name from which it inherits it>
    */
   public Map<ASTCDType, String> getInheritedSymbolPropertyTypes(List<ASTCDType> types) {
-    Map<ASTCDType, String> inheritedSymbolProds = new HashMap<>();
+    Map<ASTCDType, String> inheritedSymbolProds = new LinkedHashMap<>();
     for (ASTCDType type : types) {
       // classes with inherited symbol property
       if (hasInheritedSymbolStereotype(type.getModifier())) {
@@ -713,7 +712,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
    * @return returns a Map of <the class that inherits the property, the symbol interface full name from which it inherits it>
    */
   public Map<ASTCDClass, String> getInheritedSymbolPropertyClasses(List<ASTCDClass> astcdClasses) {
-    Map<ASTCDClass, String> inheritedSymbolProds = new HashMap<>();
+    Map<ASTCDClass, String> inheritedSymbolProds = new LinkedHashMap<>();
     for (ASTCDClass astcdClass : astcdClasses) {
       // classes with inherited symbol property
       if (hasInheritedSymbolStereotype(astcdClass.getModifier())) {

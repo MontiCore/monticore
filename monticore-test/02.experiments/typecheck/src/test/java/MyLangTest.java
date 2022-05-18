@@ -13,9 +13,9 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import mylang.DeriveFromMyLang;
+import mylang.FullDeriveFromMyLang;
 import mylang.MyLangMill;
-import mylang.SynthesizeFromMyLang;
+import mylang.FullSynthesizeFromMyLang;
 import mylang._ast.ASTMyVar;
 import mylang._parser.MyLangParser;
 import org.junit.Test;
@@ -35,8 +35,8 @@ public class MyLangTest {
     
     MyLangMill.scopesGenitorDelegator().createFromAST(varOpt.get());
   
-    TypeCalculator tc = new TypeCalculator(new SynthesizeFromMyLang(),
-                                     new DeriveFromMyLang());
+    TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromMyLang(),
+                                     new FullDeriveFromMyLang());
   
     ASTMyVar var = varOpt.get();
     ASTMCType type = var.getType();

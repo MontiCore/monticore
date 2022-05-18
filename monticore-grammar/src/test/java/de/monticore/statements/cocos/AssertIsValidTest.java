@@ -7,7 +7,7 @@ import de.monticore.statements.testmcassertstatements.TestMCAssertStatementsMill
 import de.monticore.statements.testmcassertstatements._cocos.TestMCAssertStatementsCoCoChecker;
 import de.monticore.statements.testmcassertstatements._parser.TestMCAssertStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.DeriveSymTypeOfCombineExpressionsDelegator;
+import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -33,7 +33,7 @@ public class AssertIsValidTest {
     TestMCAssertStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
     checker.setTraverser(TestMCAssertStatementsMill.traverser());
-    checker.addCoCo(new AssertIsValid(new TypeCalculator(null, new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new AssertIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
     
   }
   

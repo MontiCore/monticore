@@ -9,20 +9,18 @@ import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTrav
 
 import java.util.Optional;
 
-public class FullSynthesizeFromMCSimpleGenericTypes implements ISynthesize {
-
-  protected MCSimpleGenericTypesTraverser traverser;
-
-  protected TypeCheckResult typeCheckResult;
+public class FullSynthesizeFromMCSimpleGenericTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCSimpleGenericTypes(){
-    init();
+    this(MCSimpleGenericTypesMill.traverser());
   }
 
-  public void init() {
-    traverser = MCSimpleGenericTypesMill.traverser();
-    typeCheckResult = new TypeCheckResult();
+  public FullSynthesizeFromMCSimpleGenericTypes(MCSimpleGenericTypesTraverser traverser){
+    super(traverser);
+    init(traverser);
+  }
 
+  public void init(MCSimpleGenericTypesTraverser traverser) {
     SynthesizeSymTypeFromMCSimpleGenericTypes synFromSimple = new SynthesizeSymTypeFromMCSimpleGenericTypes();
     synFromSimple.setTypeCheckResult(typeCheckResult);
     SynthesizeSymTypeFromMCCollectionTypes synFromCollection = new SynthesizeSymTypeFromMCCollectionTypes();
@@ -36,34 +34,5 @@ public class FullSynthesizeFromMCSimpleGenericTypes implements ISynthesize {
     traverser.setMCCollectionTypesHandler(synFromCollection);
     traverser.add4MCBasicTypes(synFromBasic);
     traverser.setMCBasicTypesHandler(synFromBasic);
-  }
-
-  public MCSimpleGenericTypesTraverser getTraverser() {
-    return traverser;
-  }
-
-  public void setTraverser(MCSimpleGenericTypesTraverser traverser) {
-    this.traverser = traverser;
-  }
-
-  @Override
-  public TypeCheckResult synthesizeType(ASTMCType type) {
-    init();
-    type.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  @Override
-  public TypeCheckResult synthesizeType(ASTMCReturnType type) {
-    init();
-    type.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  @Override
-  public TypeCheckResult synthesizeType(ASTMCQualifiedName qName) {
-    init();
-    qName.accept(traverser);
-    return typeCheckResult.copy();
   }
 }

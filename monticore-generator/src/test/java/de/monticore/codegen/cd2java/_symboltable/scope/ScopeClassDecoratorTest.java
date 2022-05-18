@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
@@ -21,7 +22,9 @@ import de.se_rwth.commons.logging.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -324,93 +327,84 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testRemoveSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("remove", scopeClass);
 
+    Map<String, ASTCDMethod> methods = new HashMap<>();
+    CD4CodeFullPrettyPrinter p = new CD4CodeFullPrettyPrinter();
+    methodList.forEach(l -> methods.put(
+        p.prettyprint(l.getCDParameter(0).getMCType()), l)
+    );
+
     assertEquals(5, methodList.size());
 
-    ASTCDMethod automatonRemove = methodList.get(0);
+    ASTCDMethod automatonRemove = methods.get(AUTOMATON_SYMBOL);
     assertDeepEquals(PUBLIC, automatonRemove.getModifier());
     assertTrue(automatonRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, automatonRemove.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
-        automatonRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", automatonRemove.getCDParameter(0).getName());
 
-    ASTCDMethod stateRemove = methodList.get(1);
+    ASTCDMethod stateRemove = methods.get(STATE_SYMBOL);
     assertDeepEquals(PUBLIC, stateRemove.getModifier());
     assertTrue(stateRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, stateRemove.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(STATE_SYMBOL),
-        stateRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", stateRemove.getCDParameter(0).getName());
 
-    ASTCDMethod qualifiedNameRemove = methodList.get(2);
+    ASTCDMethod qualifiedNameRemove = methods.get(QUALIFIED_NAME_SYMBOL);
     assertDeepEquals(PUBLIC, qualifiedNameRemove.getModifier());
     assertTrue(qualifiedNameRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, qualifiedNameRemove.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL),
-        qualifiedNameRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", qualifiedNameRemove.getCDParameter(0).getName());
 
-    ASTCDMethod unknownRemove = methodList.get(3);
+    ASTCDMethod unknownRemove = methods.get(UNKNOWN_SYMBOL);
     assertDeepEquals(PUBLIC, unknownRemove.getModifier());
     assertTrue(unknownRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, unknownRemove.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(UNKNOWN_SYMBOL),
-        unknownRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", unknownRemove.getCDParameter(0).getName());
 
-    ASTCDMethod fooRemove = methodList.get(4);
+    ASTCDMethod fooRemove = methods.get(FOO_SYMBOL);
     assertDeepEquals(PUBLIC, fooRemove.getModifier());
     assertTrue(fooRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, fooRemove.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(FOO_SYMBOL),
-        fooRemove.getCDParameter(0).getMCType());
     assertEquals("symbol", fooRemove.getCDParameter(0).getName());
   }
 
   @Test
   public void testAddSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("add", scopeClass);
+    Map<String, ASTCDMethod> methods = new HashMap<>();
+    CD4CodeFullPrettyPrinter p = new CD4CodeFullPrettyPrinter();
+    methodList.forEach(l -> methods.put(
+        p.prettyprint(l.getCDParameter(0).getMCType()), l)
+    );
 
     assertEquals(5, methodList.size());
 
-    ASTCDMethod automatonAdd = methodList.get(0);
+    ASTCDMethod automatonAdd = methods.get(AUTOMATON_SYMBOL);
     assertDeepEquals(PUBLIC, automatonAdd.getModifier());
     assertTrue(automatonAdd.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, automatonAdd.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_SYMBOL),
-        automatonAdd.getCDParameter(0).getMCType());
     assertEquals("symbol", automatonAdd.getCDParameter(0).getName());
 
-    ASTCDMethod stateAdd = methodList.get(1);
+    ASTCDMethod stateAdd = methods.get(STATE_SYMBOL);
     assertDeepEquals(PUBLIC, stateAdd.getModifier());
     assertTrue(stateAdd.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, stateAdd.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(STATE_SYMBOL),
-        stateAdd.getCDParameter(0).getMCType());
     assertEquals("symbol", stateAdd.getCDParameter(0).getName());
 
-    ASTCDMethod qualifiedNameAdd = methodList.get(2);
+    ASTCDMethod qualifiedNameAdd = methods.get(QUALIFIED_NAME_SYMBOL);
     assertDeepEquals(PUBLIC, qualifiedNameAdd.getModifier());
     assertTrue(qualifiedNameAdd.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, qualifiedNameAdd.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(QUALIFIED_NAME_SYMBOL),
-        qualifiedNameAdd.getCDParameter(0).getMCType());
     assertEquals("symbol", qualifiedNameAdd.getCDParameter(0).getName());
 
-    ASTCDMethod unknownAdd = methodList.get(3);
+    ASTCDMethod unknownAdd = methods.get(UNKNOWN_SYMBOL);
     assertDeepEquals(PUBLIC, unknownAdd.getModifier());
     assertTrue(unknownAdd.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, unknownAdd.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(UNKNOWN_SYMBOL),
-        unknownAdd.getCDParameter(0).getMCType());
     assertEquals("symbol", unknownAdd.getCDParameter(0).getName());
 
-    ASTCDMethod fooAdd = methodList.get(4);
+    ASTCDMethod fooAdd = methods.get(FOO_SYMBOL);
     assertDeepEquals(PUBLIC, fooAdd.getModifier());
     assertTrue(fooAdd.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, fooAdd.sizeCDParameters());
-    assertDeepEquals(mcTypeFacade.createQualifiedType(FOO_SYMBOL),
-        fooAdd.getCDParameter(0).getMCType());
     assertEquals("symbol", fooAdd.getCDParameter(0).getName());
   }
 

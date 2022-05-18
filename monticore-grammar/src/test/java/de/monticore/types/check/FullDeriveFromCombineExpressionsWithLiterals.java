@@ -3,15 +3,11 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 
 /**
  * Delegator Visitor to test the combination of the grammars
  */
-public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
-
-  private CombineExpressionsWithLiteralsTraverser traverser;
+public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive {
 
   private DeriveSymTypeOfAssignmentExpressions deriveSymTypeOfAssignmentExpressions;
 
@@ -29,18 +25,15 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
 
   private DeriveSymTypeOfCombineExpressions deriveSymTypeOfCombineExpressions;
 
-  private SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator synthesizer;
+  private FullSynthesizeFromCombineExpressionsWithLiterals synthesizer;
 
-
-  private TypeCheckResult typeCheckResult = new TypeCheckResult();
-
-
-  public DeriveSymTypeOfCombineExpressionsDelegator(){
-    init();
+  public FullDeriveFromCombineExpressionsWithLiterals(){
+    this(CombineExpressionsWithLiteralsMill.traverser());
   }
 
-  public CombineExpressionsWithLiteralsTraverser getTraverser(){
-    return traverser;
+  public FullDeriveFromCombineExpressionsWithLiterals(CombineExpressionsWithLiteralsTraverser traverser){
+    super(traverser);
+    init(traverser);
   }
 
   /**
@@ -60,9 +53,7 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
   /**
    * initialize the typescalculator
    */
-  public void init() {
-    this.traverser = CombineExpressionsWithLiteralsMill.traverser();
-    this.typeCheckResult = new TypeCheckResult();
+  public void init(CombineExpressionsWithLiteralsTraverser traverser) {
     deriveSymTypeOfCommonExpressions = new DeriveSymTypeOfCommonExpressions();
     deriveSymTypeOfAssignmentExpressions = new DeriveSymTypeOfAssignmentExpressions();
     deriveSymTypeOfMCCommonLiterals = new DeriveSymTypeOfMCCommonLiterals();
@@ -70,9 +61,9 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
-    synthesizer = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
+    synthesizer = new FullSynthesizeFromCombineExpressionsWithLiterals();
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(synthesizer);
-    setTypeCheckResult(typeCheckResult);
+    setTypeCheckResult(getTypeCheckResult());
 
     traverser.add4CommonExpressions(deriveSymTypeOfCommonExpressions);
     traverser.setCommonExpressionsHandler(deriveSymTypeOfCommonExpressions);
@@ -89,19 +80,4 @@ public class DeriveSymTypeOfCombineExpressionsDelegator implements IDerive {
     traverser.add4CombineExpressionsWithLiterals(deriveSymTypeOfCombineExpressions);
     traverser.setCombineExpressionsWithLiteralsHandler(deriveSymTypeOfCombineExpressions);
   }
-
-  @Override
-  public TypeCheckResult deriveType(ASTLiteral lit) {
-    typeCheckResult.reset();
-    lit.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
-  @Override
-  public TypeCheckResult deriveType(ASTExpression expr){
-    typeCheckResult.reset();
-    expr.accept(traverser);
-    return typeCheckResult.copy();
-  }
-
 }

@@ -319,7 +319,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     //the inner result has to be an integral type
     if (isIntegralType(innerResult)) {
-      wholeResult = getUnaryIntegralPromotionType(typeCheckResult.getCurrentResult());
+      wholeResult = getUnaryIntegralPromotionType(getTypeCheckResult().getResult());
     }
     return wholeResult;
   }
@@ -332,9 +332,9 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     CommonExpressionsFullPrettyPrinter printer = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
     SymTypeExpression innerResult;
     expr.getExpression().accept(getTraverser());
-    if (typeCheckResult.isPresentCurrentResult()) {
+    if (getTypeCheckResult().isPresentResult()) {
       //store the type of the inner expression in a variable
-      innerResult = typeCheckResult.getCurrentResult();
+      innerResult = getTypeCheckResult().getResult();
       //look for this type in our scope
       TypeSymbol innerResultType = innerResult.getTypeInfo();
       if (innerResultType instanceof TypeVarSymbol) {
@@ -348,28 +348,28 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         //cannot be a method, test variable first
         //durch AST-Umbau kann ASTFieldAccessExpression keine Methode sein
         //if the last result is a type then filter for static field symbols
-        if (typeCheckResult.isType()) {
+        if (getTypeCheckResult().isType()) {
           fieldSymbols = filterModifiersVariables(fieldSymbols);
         }
         if (fieldSymbols.size() != 1) {
-          typeCheckResult.reset();
+          getTypeCheckResult().reset();
           logError("0xA1236", expr.get_SourcePositionStart());
         }
         if (!fieldSymbols.isEmpty()) {
           VariableSymbol var = fieldSymbols.get(0);
           SymTypeExpression type = var.getType();
-          typeCheckResult.setField();
-          typeCheckResult.setCurrentResult(type);
+          getTypeCheckResult().setField();
+          getTypeCheckResult().setResult(type);
         }
       } else if (typeVarOpt.isPresent()) {
         //test for type var first
         TypeVarSymbol typeVar = typeVarOpt.get();
         if(checkModifierType(typeVar)){
           SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVariable(typeVar);
-          typeCheckResult.setType();
-          typeCheckResult.setCurrentResult(wholeResult);
+          getTypeCheckResult().setType();
+          getTypeCheckResult().setResult(wholeResult);
         }else{
-          typeCheckResult.reset();
+          getTypeCheckResult().reset();
           logError("0xA1306", expr.get_SourcePositionStart());
         }
       } else if (typeSymbolOpt.isPresent()) {
@@ -377,14 +377,14 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         if (checkModifierType(typeSymbol)) {
           SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
-          typeCheckResult.setType();
-          typeCheckResult.setCurrentResult(wholeResult);
+          getTypeCheckResult().setType();
+          getTypeCheckResult().setResult(wholeResult);
         } else {
-          typeCheckResult.reset();
+          getTypeCheckResult().reset();
           logError("0xA1303", expr.get_SourcePositionStart());
         }
       } else {
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         logError("0xA1317", expr.get_SourcePositionStart());
       }
     } else {
@@ -395,16 +395,16 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if (typeVarOpt.isPresent()) {
         TypeVarSymbol typeVar = typeVarOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeVariable(typeVar);
-        typeCheckResult.setType();
-        typeCheckResult.setCurrentResult(type);
+        getTypeCheckResult().setType();
+        getTypeCheckResult().setResult(type);
       } else if (typeSymbolOpt.isPresent()) {
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
-        typeCheckResult.setType();
-        typeCheckResult.setCurrentResult(type);
+        getTypeCheckResult().setType();
+        getTypeCheckResult().setResult(type);
       } else {
         //the inner type has no result and there is no type found
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         Log.info("package expected", "DeriveSymTypeOfCommonExpressions");
       }
     }
@@ -414,7 +414,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * Hookpoint for object oriented languages to get the correct variables/fields from a type based on their modifiers
    */
   protected List<VariableSymbol> getCorrectFieldsFromInnerType(SymTypeExpression innerResult, ASTFieldAccessExpression expr) {
-    return innerResult.getFieldList(expr.getName(), typeCheckResult.isType(), true);
+    return innerResult.getFieldList(expr.getName(), getTypeCheckResult().isType(), true);
   }
 
   /**
@@ -450,14 +450,14 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     }else{
       expr.getExpression().accept(getTraverser());
     }
-    if (typeCheckResult.isPresentCurrentResult()) {
-      innerResult = typeCheckResult.getCurrentResult();
+    if (getTypeCheckResult().isPresentResult()) {
+      innerResult = getTypeCheckResult().getResult();
       //resolve methods with name of the inner expression
       List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr, visitor.getLastName());
       //count how many methods can be found with the correct arguments and return type
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
       //if the last result is static then filter for static methods
-      if (typeCheckResult.isType()) {
+      if (getTypeCheckResult().isType()) {
         fittingMethods = filterModifiersFunctions(fittingMethods);
       }
       //there can only be one method with the correct arguments and return type
@@ -465,11 +465,11 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         if (fittingMethods.size() > 1) {
           checkForReturnType(expr, fittingMethods);
         }
-        SymTypeExpression result = fittingMethods.get(0).getType();
-        typeCheckResult.setMethod();
-        typeCheckResult.setCurrentResult(result);
+        SymTypeExpression result = fittingMethods.get(0).getReturnType();
+        getTypeCheckResult().setMethod();
+        getTypeCheckResult().setResult(result);
       } else {
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         logError("0xA2239", expr.get_SourcePositionStart());
       }
     } else {
@@ -479,20 +479,20 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
       //there can only be one method with the correct arguments and return type
       if (fittingMethods.size() == 1) {
-        Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getType());
-        typeCheckResult.setMethod();
-        typeCheckResult.setCurrentResult(wholeResult.get());
+        Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getReturnType());
+        getTypeCheckResult().setMethod();
+        getTypeCheckResult().setResult(wholeResult.get());
       } else {
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         logError("0xA1242", expr.get_SourcePositionStart());
       }
     }
   }
 
   protected void checkForReturnType(ASTCallExpression expr, List<FunctionSymbol> fittingMethods){
-    SymTypeExpression type = fittingMethods.get(0).getType();
+    SymTypeExpression returnType = fittingMethods.get(0).getReturnType();
     for (FunctionSymbol method : fittingMethods) {
-      if (!type.deepEquals(method.getType())) {
+      if (!returnType.deepEquals(method.getReturnType())) {
         logError("0xA1239", expr.get_SourcePositionStart());
       }
     }
@@ -502,7 +502,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * Hookpoint for object oriented languages to get the correct functions/methods from a type based on their modifiers
    */
   protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
-    return innerResult.getMethodList(name, typeCheckResult.isType(), true);
+    return innerResult.getMethodList(name, getTypeCheckResult().isType(), true);
   }
 
   protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr) {
@@ -514,8 +514,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         for (int i = 0; i < method.getParameterList().size(); i++) {
           expr.getArguments().getExpression(i).accept(getTraverser());
           //test if every single argument is correct
-          if (!method.getParameterList().get(i).getType().deepEquals(typeCheckResult.getCurrentResult()) &&
-              !compatible(method.getParameterList().get(i).getType(), typeCheckResult.getCurrentResult())) {
+          if (!method.getParameterList().get(i).getType().deepEquals(getTypeCheckResult().getResult()) &&
+              !compatible(method.getParameterList().get(i).getType(), getTypeCheckResult().getResult())) {
             success = false;
           }
         }
@@ -544,7 +544,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return calculateTypeCompare(expr, rightResult.get(), leftResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -559,7 +559,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
     }
     //should never happen, no valid result, error will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 
@@ -572,7 +572,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return calculateTypeLogical(expr, rightResult.get(), leftResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -593,7 +593,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
     }
     //should never happen, no valid result, error will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 
@@ -607,7 +607,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return getBinaryNumericPromotion(leftResult.get(), rightResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -635,7 +635,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
     }
     //should never happen, no valid result, error will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 
@@ -648,7 +648,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return getBinaryNumericPromotionWithString(rightResult.get(), leftResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }

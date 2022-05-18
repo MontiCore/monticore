@@ -2,10 +2,10 @@
 
 # MontiCore Best Practices - Designing Languages
 
-[MontiCore](http://www.monticore.de) provides a number of options to design 
+[MontiCore](https://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
 
-Some general questions on how to design a complete languages are adressed here. 
+Some general questions on how to design a complete languages are addressed here. 
 
 ## **Designing A Language**
 
@@ -22,10 +22,10 @@ Some general questions on how to design a complete languages are adressed here.
 * Defined by: BR
 
 
-### Versioning an evolving langauge?
+### Versioning an evolving language?
 * When languages evolve, models may become invalid, because 
   certain (now obligatory) parts are missing, or old keywords are used.
-* We generally believe that a language that is made for long lasting 
+* We generally believe that a language that is made for long-lasting 
   models should not embody its version in the models (i.e. like Java, C++ and 
   other GPLs and unlike XML dialects).
 * When evolving a language, you should only evolve it in conservative form, i.e.
@@ -33,7 +33,7 @@ Some general questions on how to design a complete languages are adressed here.
   * Old elements or keywords are not simply removed, but 
     forbidden by coco warnings, marking them as deprecated for a while. 
 * Downward compatibility of newer models, however, is not useful. 
-  We can savely enforce developers should normally use the newest 
+  We can safely enforce developers should normally use the newest 
   versions of their tools.
 * Defined by: BR
 
@@ -43,7 +43,7 @@ Some general questions on how to design a complete languages are adressed here.
 
 
 ### Making Transitively Inherited Grammars Explicit?
-* When the grammar inclusion hierachy becomes larger, there will be redundancy.
+* When the grammar inclusion hierarchy becomes larger, there will be redundancy.
   In:
   ```
     grammar A { .. } ;
@@ -82,32 +82,32 @@ Some general questions on how to design a complete languages are adressed here.
   Extension points may be (empty) hook methods to be filled, Java interfaces
   to be implemented and their objects injected to the code e.g., via 
   factories, builders or simply method parameters.
-* A principle for *modularity* for the the *generator*, 
+* A principle for *modularity* for the *generator*, 
   the *generated code*, and the *RTE* is to design parts of them as 
   independent library functions (or larger: components) that can be used if needed.
 * We recommend to modularize whenever complexity overwhelms or extensibility and
   adaptability are important:
     1. MontiCore has powerful techniques for adaptation, extension and 
        composition of *modelling languages* (through their grammars). See the
-       [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+       [reference manual](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
     2. MontiCore has powerful techniques for the *aggregation of models* --
        using the same principles as programming languages, namely allowing to keep 
        the models independent (and thus storable, versionable, reusable) artifacts,
        while they are semantically and through the generator technology well integrated. 
        The appropriate approach is based on *using* foreign models, e.g., through 
        `import` statements and sharing *symbol* infrastructures as described in the
-       [reference manual](http://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+       [reference manual](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
     3. The generator provides (a) many Java classes and methods that can be overridden
        (b) Freemarker templates hook points to extend and replace templates, and (c)
        can be customized using a groovy script.
        The generator itself is often structured along the software architecture / stack,
-       e.g., in frontend, application backend, data base, transport layer, etc.
+       e.g., in frontend, application backend, database, transport layer, etc.
     4. The generated code must be designed appropriately by the generator designer, 
        by generating builders, mills, etc. for each form of product - quite similar 
        to MontiCore itself.
        The generated code is usually structured along the components or sub-systems
        that the software architecture defines.
-    5. The RTE is probably well designed if it is usable in a normal framework.
+    5. The RTE is probably well-designed if it is usable in a normal framework.
 * Please note: it is not easy to design modularity and extensibility from beginning.
   Framework design has shown that this is an iterative optimizing process.
   It must be avoided to design too many extension elements into the system
@@ -183,12 +183,12 @@ of which has its own advantages and disadvantages:
       an earlier tool execution in a symbol file `aModelName.sym`.
     * The symbol file may have specific extensions, such as `autsym`or `cdsym`.
     * Selective import (known from Java), such as `import aName.innerClass` 
-      should be possible, but currently no such show case has been made yet (beyond Java).
+      should be possible, but currently no such showcase has been made yet (beyond Java).
     * The import statement is only used to make symbols available in their simple form.
       It is usually 
-      not intended to explicate a single dependency, e.g., a configuraton model
+      not intended to explicate a single dependency, e.g., a configuration model
       that depends on exactly one base model. Like in Java, where you import an 
-      artifact and then still explicitely extend the contained class.
+      artifact and then still explicitly extend the contained class.
 * It is methodically of interest to store at most one artifact with the same
   qualified name (although it is not per se forbidden to have more). 
   Java then also uses the first occurring class in its classpath only.
@@ -216,7 +216,7 @@ of which has its own advantages and disadvantages:
 * It is a burden to manage version numbers and downward compatibility through 
   all the versioning, especially if language components evolve with their own 
   versioning.
-* MontiCore provives a theory of *conservative extension* to avoid
+* MontiCore provides a theory of *conservative extension* to avoid
   explicit version controlling within the language.
 * And if needed: MontiCore and their tools provide extensive checks of 
   wellformedness (i.e.
@@ -229,10 +229,10 @@ of which has its own advantages and disadvantages:
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [MontiCore documentation](http://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
+* [MontiCore documentation](https://www.monticore.de/)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

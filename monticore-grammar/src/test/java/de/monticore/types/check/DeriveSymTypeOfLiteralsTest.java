@@ -28,7 +28,7 @@ public class DeriveSymTypeOfLiteralsTest {
   }
 
   // This is the core Visitor under Test (but rather empty)
-  IDerive derLit = new DeriveSymTypeOfCombineExpressionsDelegator();
+  AbstractDerive derLit = new FullDeriveFromCombineExpressionsWithLiterals();
   
   // other arguments not used (and therefore deliberately null)
   
