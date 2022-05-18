@@ -123,7 +123,7 @@ public class CD2EHelper {
       parameters.forEach(symbol -> methodSymbol.getSpannedScope().add(symbol));
       parameters.forEach(symbol -> methodSymbol.getSpannedScope().add((VariableSymbol) symbol));
 
-      methodSymbol.setReturnType(returnType);
+      methodSymbol.setType(returnType);
       return methodSymbol;
     }
   }

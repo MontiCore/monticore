@@ -202,7 +202,7 @@ public abstract class SymTypeExpression {
       // in the list because it is a method from a super type and is overridden by the first method
       for(int i = 0;i<matchingMethods.size()-1;i++){
         for(int j = i+1;j<matchingMethods.size();j++){
-          if(matchingMethods.get(i).getReturnType().print().equals(matchingMethods.get(j).getReturnType().print())&&
+          if(matchingMethods.get(i).getType().print().equals(matchingMethods.get(j).getType().print())&&
               matchingMethods.get(i).getParameterList().size()==matchingMethods.get(j).getParameterList().size()){
             boolean equal = true;
             for(int k = 0;k<matchingMethods.get(i).getParameterList().size();k++){

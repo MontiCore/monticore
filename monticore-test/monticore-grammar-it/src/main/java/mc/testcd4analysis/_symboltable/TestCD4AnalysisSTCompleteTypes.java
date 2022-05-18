@@ -64,13 +64,13 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
   public void endVisit(ASTCDMethod astMethod){
     CDMethOrConstrSymbol methodSymbol = astMethod.getSymbol();
     methodSymbol.setIsStatic(astMethod.getModifier().isStatic());
-    setReturnTypeOfMethod(methodSymbol, astMethod);
+    setTypeOfMethod(methodSymbol, astMethod);
     if (!astMethod.getCDParameterList().isEmpty() && astMethod.getCDParameter(astMethod.getCDParameterList().size() - 1).isEllipsis()) {
       methodSymbol.setIsEllipsis(true);
     }
   }
 
-  public void setReturnTypeOfMethod(final CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
+  public void setTypeOfMethod(final CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
     String typeName = astMethod.getMCReturnType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
     final CDTypeSymbolSurrogate typeReference;
     Optional<CDTypeSymbol> typeSymbol = astMethod.getEnclosingScope().resolveCDType(typeName);
