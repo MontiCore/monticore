@@ -12,7 +12,6 @@ import de.monticore.io.FileReaderWriterMock;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import freemarker.core.Macro;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -67,6 +66,21 @@ public class TemplateAliasingTest {
     StringBuilder templateOutput =
         tc.include(ALIASES_PACKAGE + "IncludeAlias");
     assertEquals("Plain is included.", templateOutput.toString());
+  }
+
+  @Test
+  public void testIncludeDispatching(){
+    StringBuilder templateOutput =
+        tc.include(ALIASES_PACKAGE + "IncludeDispatching");
+
+    assertEquals(
+        "String argument\n" +
+        "Plain is included.\n" +
+        "Plain is included.\n" +
+        "\n" +
+        "List argument\n" +
+        "Plain is included.Plain is included.\n" +
+        "Plain is included.Plain is included.", templateOutput.toString());
   }
 
   @Test
