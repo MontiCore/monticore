@@ -83,6 +83,8 @@ abstract public class MCTask extends DefaultTask {
   String configTemplate;
   
   String script
+
+  String toolName;
   
   String groovyHook1;
   
@@ -169,7 +171,13 @@ abstract public class MCTask extends DefaultTask {
   String getScript() {
     return script
   }
-  
+
+  @Input
+  @Optional
+  String getToolName() {
+    return toolName;
+  }
+
   @Input
   @Optional
   String getGroovyHook1() {
@@ -292,6 +300,10 @@ abstract public class MCTask extends DefaultTask {
     if (!mp.isEmpty()) {
       params.add("-mp")
       params.addAll(mp)
+    }
+    if (toolName != null) {
+      params.add("-tn")
+      params.add(toolName)
     }
     if (!handcodedPath.isEmpty()) {
       params.add("-hcp")

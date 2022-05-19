@@ -37,7 +37,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String CONFIGURATION_PROPERTY = "_configuration";
 
   public static final String DEFAULT_OUTPUT_PATH = "out";
-  
+
   public static final String DEFAULT_HANDCODED_JAVA_PATH = "java";
 
   public static final String DEFAULT_REPORT_PATH = "reports";
@@ -52,6 +52,7 @@ public final class MontiCoreConfiguration implements Configuration {
    */
   public static final String GRAMMAR = "g";
   public static final String OUT = "o";
+  public static final String TOOL_JAR_NAME = "tn";
   public static final String MODELPATH = "mp";
   public static final String HANDCODEDPATH = "hcp";
   public static final String HANDCODEDMODELPATH = "hcg";
@@ -67,6 +68,7 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String GRAMMAR_LONG = "grammar";
   public static final String OUT_LONG = "out";
+  public static final String TOOL_JAR_NAME_LONG = "toolName";
   public static final String MODELPATH_LONG = "modelPath";
   public static final String HANDCODEDPATH_LONG = "handcodedPath";
   public static final String HANDCODEDMODELPATH_LONG = "modelPathHC";
@@ -224,6 +226,15 @@ public final class MontiCoreConfiguration implements Configuration {
     }
     // fallback default is "out"
     return new File(DEFAULT_OUTPUT_PATH);
+  }
+
+  /**
+   * Getter for the tool's name stored in this configuration.
+   * 
+   * @return  the tool's name
+   */
+  public Optional<String> getToolName() {
+    return getAsString(TOOL_JAR_NAME);
   }
 
   /**

@@ -15,7 +15,7 @@ dependencies {
 
   implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
   implementation 'org.reflections:reflections:0.9.9'
-  implementation 'org.freemarker:freemarker:2.3.28'
+  implementation "org.freemarker:freemarker:$freemarker_version"
   testImplementation "junit:junit:$junit_version"
 }
 
