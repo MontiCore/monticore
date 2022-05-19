@@ -1282,7 +1282,7 @@ the example project and executing MontiCore</figcaption>
 <table>
   <tr id="Fre21">
     <td>Fre21</td>
-    <td>FreeMarker website. https://freemarker.org/, 2021.</td>
+    <td>FreeMarker website. https://freemarker.apache.org/, 2021.</td>
   </tr>
 </table>
 
