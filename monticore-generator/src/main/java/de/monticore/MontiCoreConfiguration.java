@@ -46,8 +46,6 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String DEFAULT_GRAMMAR_PATH = "grammars";
 
-  public static final String LAUNCH_SCRIPT_OUTPUT_SUBPATH = "scripts";
-
   /**
    * Constants for the allowed CLI options in their long and short froms.
    * Stored in constants as they are used multiple times in MontiCore.
@@ -228,15 +226,6 @@ public final class MontiCoreConfiguration implements Configuration {
     }
     // fallback default is "out"
     return new File(DEFAULT_OUTPUT_PATH);
-  }
-
-  /**
-   * Getter for the launch script output directory stored in this configuration.
-   * 
-   * @return output directory file
-   */
-  public File getLaunchScriptOutputDir() {
-    return new File(getOut(), LAUNCH_SCRIPT_OUTPUT_SUBPATH);
   }
 
   /**

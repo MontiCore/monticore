@@ -105,5 +105,5 @@ while (grammarIterator.hasNext()) {
 }
 
 if (toolName.isPresent()) {
-  generateLaunchScripts(glex, scriptOutput.get(), toolName.get())
+  generateLaunchScripts(glex, out, toolName.get())
 }

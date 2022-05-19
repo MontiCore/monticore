@@ -1125,8 +1125,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     FreeMarkerTemplateEngine engine = new FreeMarkerTemplateEngine(configuration);
     ImmutableMap<String, String> data = ImmutableMap.of("toolName", toolName);
 
-    generateLaunchScript(engine, "scripts.BatchLauncher", data, new File(outputDirectory, "run.bat"));
-    generateLaunchScript(engine, "scripts.ShellLauncher", data, new File(outputDirectory, "run"));
+    File scriptOut = new File(outputDirectory, "scripts");
+
+    generateLaunchScript(engine, "scripts.BatchLauncher", data, new File(scriptOut, "run.bat"));
+    generateLaunchScript(engine, "scripts.ShellLauncher", data, new File(scriptOut, "run"));
   }
 
   private void generateLaunchScript(
@@ -1344,7 +1346,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
         builder.addVariable(OUT_LONG, mcConfig.getOut());
         builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
-        builder.addVariable("scriptOutput", mcConfig.getLaunchScriptOutputDir());
         builder.addVariable(REPORT_LONG, mcConfig.getReport());
         builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());
         builder.addVariable(TEMPLATEPATH_LONG, mcConfig.getTemplatePath());
