@@ -1,39 +1,68 @@
 package de.monticore.generating.templateengine.freemarker.alias;
 
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.TemplateController;
 import freemarker.core.Environment;
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.CollectionModel;
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Alias implements TemplateMethodModelEx {
   private final String name;
+  private final String methodName;
 
-  protected Alias(String name) {
+  protected Alias(String name, String method) {
     this.name = name;
+    this.methodName = method;
   }
 
   public String getName(){
     return name;
   }
 
-  public TemplateController getTc() {
-    try {
-      TemplateModel tcTM = Environment.getCurrentEnvironment().getVariable("tc");
-      return (TemplateController) ((WrapperTemplateModel) tcTM).getWrappedObject();
-    } catch (TemplateModelException e) {
-      throw new IllegalStateException("Can not find TemplateController tc", e);
+  public String getMethodName() {
+    return methodName;
+  }
+
+  public abstract TemplateMethodModelEx getMethod() throws TemplateModelException;
+
+  @Override
+  public Object exec(List arguments) throws TemplateModelException {
+    return getMethod().exec(arguments);
+  }
+
+  private List convertVarargsToList(List arguments, int startIndex) throws TemplateModelException {
+    // Conversion of ... syntax
+    List l = new ArrayList();
+    for (Object o : arguments.subList(startIndex, arguments.size())) {
+      if(o instanceof WrapperTemplateModel || o == null){
+        l.add(((WrapperTemplateModel) o).getWrappedObject());
+      }else{
+        l.add(o);
+      }
+    }
+    return l;
+  }
+
+  protected CollectionModel convertVarargsToCollectionModel(List arguments, int startIndex) throws TemplateModelException{
+    return new CollectionModel(
+        convertVarargsToList(arguments, startIndex),
+        (BeansWrapper) Environment.getCurrentEnvironment().getObjectWrapper()
+    );
+  }
+
+  protected void exactArguments(List arguments, int count) throws TemplateModelException {
+    if(arguments.size() != count){
+      throw new TemplateModelException("Expected " + count + " arguments but got " + arguments.size());
     }
   }
 
-  public GlobalExtensionManagement getGlex() {
-    try {
-      TemplateModel glexTM = Environment.getCurrentEnvironment().getVariable("glex");
-      return (GlobalExtensionManagement) ((WrapperTemplateModel)glexTM).getWrappedObject();
-    } catch (TemplateModelException e) {
-      throw new IllegalStateException("Can not find TemplateController tc", e);
+  protected void atLeastArguments(List arguments, int count) throws TemplateModelException {
+    if(arguments.size() < count){
+      throw new TemplateModelException("Expected at least " + count + " arguments but got " + arguments.size());
     }
   }
 }

@@ -2,16 +2,21 @@ package de.monticore.generating.templateengine.freemarker.alias;
 
 import freemarker.template.TemplateModelException;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class IncludeArgsAlias extends Alias {
+public class IncludeArgsAlias extends TcAlias {
   public IncludeArgsAlias() {
-    super("includeArgs");
+    super("includeArgs", "includeArgs");
   }
 
   @Override
   public Object exec(List arguments) throws TemplateModelException {
-    assert arguments.size() == 2;
-    return getTc().include(arguments.get(0).toString(), arguments.subList(1, arguments.size()));
+    atLeastArguments(arguments, 1);
+
+    return super.exec(Arrays.asList(
+        arguments.get(0),
+        convertVarargsToCollectionModel(arguments, 1)
+    ));
   }
 }

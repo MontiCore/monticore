@@ -1,19 +1,22 @@
 package de.monticore.generating.templateengine.freemarker.alias;
 
-import de.monticore.ast.ASTNode;
-import freemarker.ext.util.WrapperTemplateModel;
-import freemarker.template.TemplateModel;
+import freemarker.core.Environment;
 import freemarker.template.TemplateModelException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class DefineHookPointWithDefault3Alias extends Alias {
+public class DefineHookPointWithDefault3Alias extends GlexAlias {
   public DefineHookPointWithDefault3Alias() {
-    super("defineHookPointWithDefault3");
+    super("defineHookPointWithDefault3", "defineHookPointWithDefault");
   }
 
   @Override
   public Object exec(List arguments) throws TemplateModelException {
-    return getGlex().defineHookPointWithDefault(getTc(), arguments.get(0).toString(), (ASTNode) ((WrapperTemplateModel)arguments.get(1)).getWrappedObject(), arguments.get(2).toString());
+    exactArguments(arguments, 3);
+
+    ArrayList args = new ArrayList(arguments);
+    args.add(0, Environment.getCurrentEnvironment().getVariable("tc"));
+    return super.exec(args);
   }
 }

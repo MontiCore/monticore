@@ -1,20 +1,17 @@
 package de.monticore.generating.templateengine.freemarker.alias;
 
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class SignatureAlias extends Alias{
+public class SignatureAlias extends TcAlias{
   public SignatureAlias() {
-    super("signature");
+    super("signature", "signature");
   }
 
   @Override
   public Object exec(List arguments) throws TemplateModelException {
-    List<String> paramNames = (List<String>) arguments.stream().map(Object::toString).collect(Collectors.<String>toList());
-    getTc().signature(paramNames);
-    return TemplateModel.NOTHING;
+    return super.exec(Collections.singletonList(convertVarargsToCollectionModel(arguments, 0)));
   }
 }

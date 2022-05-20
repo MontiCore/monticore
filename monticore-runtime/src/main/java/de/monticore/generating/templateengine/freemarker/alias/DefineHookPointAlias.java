@@ -1,26 +1,26 @@
 package de.monticore.generating.templateengine.freemarker.alias;
 
-import de.monticore.ast.ASTNode;
-import freemarker.ext.util.WrapperTemplateModel;
-import freemarker.template.TemplateModel;
+import freemarker.core.Environment;
 import freemarker.template.TemplateModelException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class DefineHookPointAlias extends Alias {
+public class DefineHookPointAlias extends GlexAlias {
   public DefineHookPointAlias() {
-    super("defineHookPoint");
+    super("defineHookPoint", "defineHookPoint");
   }
 
   @Override
   public Object exec(List arguments) throws TemplateModelException {
-    if(arguments.size() == 2){
-      return getGlex().defineHookPoint(getTc(), arguments.get(0).toString(), (ASTNode) ((WrapperTemplateModel)arguments.get(1)).getWrappedObject());
-    }else if(arguments.size() == 1){
-      return getGlex().defineHookPoint(getTc(), arguments.get(0).toString());
-    } else {
-      throw new TemplateModelException("Expecting 1 or 2 arguments but got " + arguments.size());
+    // 1 or 2 arguments: name, ast?
+    atLeastArguments(arguments, 1);
+    if(arguments.size() > 1){
+      exactArguments(arguments, 2);
     }
-    // TODO AHe: Check that all aliases have the correct number of arguments
+    // First argument of defineHookPoint is always tc
+    ArrayList args = new ArrayList(arguments);
+    args.add(0, Environment.getCurrentEnvironment().getVariable("tc"));
+    return super.exec(args);
   }
 }

@@ -1,20 +1,17 @@
 package de.monticore.generating.templateengine.freemarker.alias;
 
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class RequiredGlobalVarsAlias extends Alias {
+public class RequiredGlobalVarsAlias extends GlexAlias {
   public RequiredGlobalVarsAlias() {
-    super("requiredGlobalVars");
+    super("requiredGlobalVars", "requiredGlobalVars");
   }
 
   @Override
   public Object exec(List arguments) throws TemplateModelException {
-    List<String> names = (List<String>) arguments.stream().map(Object::toString).collect(Collectors.toList());
-    getGlex().requiredGlobalVars(names.toArray(new String[0]));
-    return TemplateModel.NOTHING;
+    return super.exec(Collections.singletonList(convertVarargsToCollectionModel(arguments, 0)));
   }
 }
