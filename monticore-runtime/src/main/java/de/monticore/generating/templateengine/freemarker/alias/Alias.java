@@ -38,7 +38,7 @@ public abstract class Alias implements TemplateMethodModelEx {
     // Conversion of ... syntax
     List l = new ArrayList();
     for (Object o : arguments.subList(startIndex, arguments.size())) {
-      if(o instanceof WrapperTemplateModel || o == null){
+      if(o instanceof WrapperTemplateModel){
         l.add(((WrapperTemplateModel) o).getWrappedObject());
       }else{
         l.add(o);
