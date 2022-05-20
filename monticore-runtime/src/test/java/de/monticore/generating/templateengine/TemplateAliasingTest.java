@@ -92,8 +92,45 @@ public class TemplateAliasingTest {
   }
 
   @Test
-  public void testIncludeArgs(){
-   // TODO: Test all aliases
+  public void testIncludeArgsAndSignatureAlias(){
+    StringBuilder templateOut =
+        tc.include(ALIASES_PACKAGE + "IncludeArgsAndSignatureAlias");
+
+    assertEquals("Name is Charly, age is 30, city is Aachen", templateOut.toString());
+  }
+
+  @Test
+  public void testSignature(){
+    StringBuilder templateOut =
+        tc.includeArgs(ALIASES_PACKAGE + "SignatureAliasWithThreeParameters", "Max Mustermann", "45", "Berlin");
+
+    assertEquals("Name is Max Mustermann, age is 45, city is Berlin", templateOut.toString());
+  }
+
+  @Test
+  public void testRequireGlobalVarsValid() {
+    GlobalExtensionManagement glex = tc.getGeneratorSetup().getGlex();
+    try {
+      glex.setGlobalValue("a", "a");
+      glex.setGlobalValue("b", "b");
+      glex.setGlobalValue("c", "c");
+      StringBuilder templateOut =
+          tc.include(ALIASES_PACKAGE + "RequireGlobalVarsAlias");
+    }finally {
+      glex.getGlobalData().remove("a");
+      glex.getGlobalData().remove("b");
+      glex.getGlobalData().remove("c");
+    }
+
+    assertTrue("Log not empty!\n" + LogStub.getPrints(), LogStub.getPrints().isEmpty());
+  }
+
+  @Test
+  public void testRequireGlobalVarsInvalid() {
+    StringBuilder templateOut =
+        tc.include(ALIASES_PACKAGE + "RequireGlobalVarsAlias");
+
+    assertFalse("Log empty, expected error", LogStub.getPrints().isEmpty());
   }
 
   @Test

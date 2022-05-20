@@ -3,8 +3,9 @@ package de.monticore.generating.templateengine.freemarker.alias;
 import freemarker.core.Environment;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.CollectionModel;
-import freemarker.ext.util.WrapperTemplateModel;
+import freemarker.template.ObjectWrapperAndUnwrapper;
 import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 import java.util.ArrayList;
@@ -37,11 +38,10 @@ public abstract class Alias implements TemplateMethodModelEx {
   private List convertVarargsToList(List arguments, int startIndex) throws TemplateModelException {
     // Conversion of ... syntax
     List l = new ArrayList();
-    for (Object o : arguments.subList(startIndex, arguments.size())) {
-      if(o instanceof WrapperTemplateModel){
-        l.add(((WrapperTemplateModel) o).getWrappedObject());
-      }else{
-        l.add(o);
+    if(!arguments.isEmpty()) {
+      ObjectWrapperAndUnwrapper wrapper = (ObjectWrapperAndUnwrapper) Environment.getCurrentEnvironment().getObjectWrapper();
+      for (Object o : arguments.subList(startIndex, arguments.size())) {
+        l.add(wrapper.unwrap((TemplateModel) o));
       }
     }
     return l;

@@ -1,0 +1,1 @@
+${requiredGlobalVars("a", "b", "c")}
