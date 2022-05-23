@@ -18,8 +18,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -105,6 +107,97 @@ public class TemplateAliasingTest {
         tc.includeArgs(ALIASES_PACKAGE + "SignatureAliasWithThreeParameters", "Max Mustermann", "45", "Berlin");
 
     assertEquals("Name is Max Mustermann, age is 45, city is Berlin", templateOut.toString());
+  }
+
+  @Test
+  public void testSimpleDefineHookPoint() throws IOException {
+    AliasTestASTNodeMock ast = new AliasTestASTNodeMock("c1");
+    AliasTestASTNodeMock alternativeAst = new AliasTestASTNodeMock("c2");
+
+    String templateName = ALIASES_PACKAGE + "DefineHookPointAlias";
+    StringBuilder templateOut =
+        tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
+
+    assertEquals("/* Hookpoint: WithoutAst */\n" +
+        "/* Hookpoint: WithAst */\n" +
+        "/* Hookpoint: WithAlternativeAst */", templateOut.toString());
+
+    GlobalExtensionManagement glex = tc.getGeneratorSetup().getGlex();
+
+    glex.bindHookPoint("WithoutAst", new StringHookPoint("a1"));
+    templateOut =
+        tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
+    assertEquals("a1\n" +
+        "/* Hookpoint: WithAst */\n" +
+        "/* Hookpoint: WithAlternativeAst */", templateOut.toString());
+
+
+    glex.bindHookPoint("WithAst", new TemplateStringHookPoint("${ast.content}"));
+    templateOut =
+        tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
+    assertEquals("a1\n" +
+        "c1\n" +
+        "/* Hookpoint: WithAlternativeAst */", templateOut.toString());
+
+    glex.bindHookPoint("WithAlternativeAst", new TemplateStringHookPoint("${ast.content}"));
+    templateOut =
+        tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
+    assertEquals("a1\n" +
+        "c1\n" +
+        "c2", templateOut.toString());
+  }
+
+  @Test
+  public void testDefineHookPointWithDefaultAlias() throws IOException {
+    AliasTestASTNodeMock ast = new AliasTestASTNodeMock("c1");
+    AliasTestASTNodeMock alternativeAst = new AliasTestASTNodeMock("c2");
+
+    String templateName = ALIASES_PACKAGE + "DefineHookPointWithDefaultAlias";
+    StringBuilder templateOut =
+        tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
+
+    assertEquals("default text 1\n" +
+        "default text 2\n" +
+        "default text 3", templateOut.toString());
+
+    GlobalExtensionManagement glex = tc.getGeneratorSetup().getGlex();
+
+    glex.bindHookPoint("WithoutAst", new StringHookPoint("a1"));
+    templateOut =
+        tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
+    assertEquals("a1\n" +
+        "default text 2\n" +
+        "default text 3", templateOut.toString());
+
+
+    glex.bindHookPoint("WithAst", new TemplateStringHookPoint("${ast.content}"));
+    templateOut =
+        tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
+    assertEquals("a1\n" +
+        "c1\n" +
+        "default text 3", templateOut.toString());
+
+    glex.bindHookPoint("WithAlternativeAst", new TemplateStringHookPoint("${ast.content}"));
+    templateOut =
+        tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
+    assertEquals("a1\n" +
+        "c1\n" +
+        "c2", templateOut.toString());
+  }
+
+  @Test
+  public void testBindHookPointAlias(){
+    AliasTestASTNodeMock ast = new AliasTestASTNodeMock("c1");
+    AliasTestASTNodeMock alternativeAst = new AliasTestASTNodeMock("c2");
+
+    String templateName = ALIASES_PACKAGE + "BindHookPointAlias";
+
+    StringBuilder templateOut =
+        tc.includeArgs(templateName, ast, Arrays.asList(alternativeAst));
+
+    assertEquals("bound\n" +
+        "/* Hookpoint: WithAst */\n" +
+        "/* Hookpoint: WithAlternativeAst */", templateOut.toString());
   }
 
   @Test
