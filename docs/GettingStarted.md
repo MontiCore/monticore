@@ -26,11 +26,11 @@ information about the example `Automata` language are available in
 We start with the JDK: Please perform the following steps to install the
 Java Development Kit (JDK) and validate that the installation was successful:
 
-- Install a JDK with at least version 8 provided by Oracle or OpenJDK.
+- Install a JDK with at least version 11 provided by Oracle or OpenJDK.
 - Make sure the environment variable `JAVA_HOME` points to the installed JDK, and
     *not* to the JRE, e.g., the following would be good:
-    - `/user/lib/jvm/java-8-openjdk` on UNIX or
-    - `C:\Program Files\Java\jdk1.8.*` on Windows.
+    - `/user/lib/jvm/java-11-openjdk` on UNIX or
+    - `C:\Program Files\Java\jdk-11.*` on Windows.
     You will need this in order to run the Java compiler for compiling
     the generated Java source files.
 - Also make sure that the system variable is set such that the Java
@@ -41,7 +41,7 @@ Java Development Kit (JDK) and validate that the installation was successful:
 - Test whether the setup was successful. Open a command line shell in
     any directory. Execute the command `javac -version`. If this command
     is recognized and the shell displays the version of the installed
-    JDK (e.g., `javac 1.8.0_192`), then the setup was successful.
+    JDK (e.g., `javac 11.0.5`), then the setup was successful.
 
 Now we have the prerequisites to run MontiCore from the command line.
 The JDK installation is also required for using MontiCore with Gradle.
