@@ -13,7 +13,10 @@ import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.ext.beans.BeansWrapper;
-import freemarker.template.*;
+import freemarker.template.SimpleHash;
+import freemarker.template.Template;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -516,7 +519,6 @@ public class TemplateController {
       
       // Global vars
       config.addAlias(new DefineGlobalVarAlias());
-      //config.addAlias(new DefineGlobalVarsAlias(config.getGlex())); // TODO: glex has no method defineGlobalVars
       config.addAlias(new ChangeGlobalVarAlias());
       config.addAlias(new AddToGlobalVarAlias());
       config.addAlias(new GetGlobalVarAlias());
@@ -529,7 +531,6 @@ public class TemplateController {
       config.addAlias(new DefineHookPointWithDefaultAlias());
       config.addAlias(new DefineHookPointWithDefault3Alias());
       config.addAlias(new ExistsHookPointAlias());
-      
     }
   }
 

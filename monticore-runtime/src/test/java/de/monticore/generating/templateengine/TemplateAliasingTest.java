@@ -242,7 +242,24 @@ public class TemplateAliasingTest {
     assertErrors(expectedLogs, LogStub.getPrints());
   }
 
-  
+
+  @Test
+  public void testExistsHookPoint(){
+    StringBuilder templateOut =
+        tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");
+    assertEquals("false\nfalse", templateOut.toString());
+
+    tc.config.getGlex().bindHookPoint("hp1", new StringHookPoint("a"));
+    templateOut =
+        tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");
+    assertEquals("true\nfalse", templateOut.toString());
+
+    tc.config.getGlex().bindHookPoint("hp2", new StringHookPoint("a"));
+    templateOut =
+        tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");
+    assertEquals("true\ntrue", templateOut.toString());
+  }
+
   /**
    * Asserts that each of the expectedErrors is found at least once in the
    * actualErrors.
