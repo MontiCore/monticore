@@ -118,7 +118,6 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -159,7 +158,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
       String script = Resources.asCharSource(l.getResource("de/monticore/monticore_standard.groovy"),
-              Charset.forName("UTF-8")).read();
+              StandardCharsets.UTF_8).read();
       run(script, configuration);
     } catch (IOException e) {
       Log.error("0xA1015 Failed to default MontiCore script.", e);
@@ -178,7 +177,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
       String script = Resources.asCharSource(l.getResource("de/monticore/monticore_emf.groovy"),
-              Charset.forName("UTF-8")).read();
+              StandardCharsets.UTF_8).read();
       run(script, configuration);
     } catch (IOException e) {
       Log.error("0xA1012 Failed to default EMF MontiCore script.", e);
@@ -624,11 +623,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     try {
       File f = new File(file);
       if (f.exists() && f.isFile()) {
-        script = Files.asCharSource(f, Charset.forName("UTF-8")).read();
+        script = Files.asCharSource(f, StandardCharsets.UTF_8).read();
       } else {
         ClassLoader l = MontiCoreScript.class.getClassLoader();
         if (l.getResource(file) != null) {
-          script = Resources.asCharSource(l.getResource(file), Charset.forName("UTF-8")).read();
+          script = Resources.asCharSource(l.getResource(file), StandardCharsets.UTF_8).read();
         } else {
           Log.error("0xA1059 Custom script \"" + f.getAbsolutePath() + "\" not found!");
         }

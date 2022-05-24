@@ -21,7 +21,7 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static de.monticore.MontiCoreConfiguration.*;
 
@@ -244,12 +244,12 @@ public class MontiCoreTool {
             f.toPath().toAbsolutePath());
 
         if (f.exists() && f.isFile()) {
-          script = Files.asCharSource(f, Charset.forName("UTF-8")).read();
+          script = Files.asCharSource(f, StandardCharsets.UTF_8).read();
         } else {
           ClassLoader l = MontiCoreScript.class.getClassLoader();
           if (l.getResource(cmd.getOptionValue("sc", StringUtils.EMPTY)) != null) {
             script = Resources.asCharSource(l.getResource(cmd.getOptionValue("sc", StringUtils.EMPTY)),
-                    Charset.forName("UTF-8")).read();
+                    StandardCharsets.UTF_8).read();
           } else {
             Log.error("0xA1056 Custom script \"" + f.getAbsolutePath() + "\" not found!");
           }
@@ -258,7 +258,7 @@ public class MontiCoreTool {
         // otherwise, we load the default script
         ClassLoader l = MontiCoreScript.class.getClassLoader();
         script = Resources.asCharSource(l.getResource("de/monticore/monticore_standard.groovy"),
-            Charset.forName("UTF-8")).read();
+            StandardCharsets.UTF_8).read();
       }
     }
     catch (IOException e) {
