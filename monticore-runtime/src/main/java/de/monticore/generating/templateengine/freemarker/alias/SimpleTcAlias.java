@@ -5,7 +5,7 @@ import freemarker.template.TemplateModelException;
 import java.util.List;
 
 public class SimpleTcAlias extends TcAlias{
-  private final int params;
+  protected final int params;
 
   public SimpleTcAlias(String name, String method, int params) {
     super(name, method);

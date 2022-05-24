@@ -5,7 +5,7 @@ import freemarker.template.TemplateModelException;
 import java.util.List;
 
 public class SimpleGlexAlias extends GlexAlias{
-  private final int params;
+  protected final int params;
 
   public SimpleGlexAlias(String name, String method, int params) {
     super(name, method);

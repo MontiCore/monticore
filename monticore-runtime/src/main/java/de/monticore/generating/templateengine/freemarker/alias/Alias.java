@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Alias implements TemplateMethodModelEx {
-  private final String name;
-  private final String methodName;
+  protected final String name;
+  protected final String methodName;
 
   protected Alias(String name, String method) {
     this.name = name;
@@ -35,7 +35,7 @@ public abstract class Alias implements TemplateMethodModelEx {
     return getMethod().exec(arguments);
   }
 
-  private List convertVarargsToList(List arguments, int startIndex) throws TemplateModelException {
+  protected List convertVarargsToList(List arguments, int startIndex) throws TemplateModelException {
     // Conversion of ... syntax
     List l = new ArrayList();
     if(!arguments.isEmpty()) {
