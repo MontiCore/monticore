@@ -2,21 +2,26 @@
 
 package de.monticore.generating.templateengine;
 
-import com.google.common.collect.Lists;
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
+import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.File;
+
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.FileReaderWriterMock;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.File;
+import com.google.common.collect.Lists;
 
-import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.*;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
+import de.monticore.io.FileReaderWriterMock;
 
 /**
  * Tests for parameterized calls of the {@link TemplateController} 
@@ -111,7 +116,6 @@ public class TemplateControllerSignatureUsageTest {
         "Name is Charly\n" +
         "Name is Charly, age is 30, city is Aachen\n" +
         "Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends"
-        , templateOutput.toString()
-    );
+        , templateOutput.toString());
   }
 }
