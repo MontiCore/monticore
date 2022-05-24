@@ -1,0 +1,1 @@
+${getGlobalVar("a")!"unset"}
