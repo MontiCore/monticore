@@ -1,5 +1,5 @@
 plugins {
-  id "monticore" version "$version"
+  id "monticore" 
   id "jacoco"
 }
 

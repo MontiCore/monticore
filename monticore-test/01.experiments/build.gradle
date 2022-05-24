@@ -3,7 +3,7 @@ import de.monticore.MCTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
-  id "monticore" version "$version" // MontiCore Plugin
+  id "monticore" // MontiCore Plugin
   id "jacoco"
 }
 
