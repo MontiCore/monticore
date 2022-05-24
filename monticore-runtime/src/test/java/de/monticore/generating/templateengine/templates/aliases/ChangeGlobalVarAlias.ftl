@@ -1,0 +1,1 @@
+${changeGlobalVar("a", "changed")}

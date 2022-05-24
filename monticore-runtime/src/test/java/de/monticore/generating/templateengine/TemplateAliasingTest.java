@@ -19,10 +19,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -201,14 +198,35 @@ public class TemplateAliasingTest {
   }
 
   @Test
-  public void testRequireGlobalVarsValid() {
+  public void testRequiredGlobalVarValid() {
+    GlobalExtensionManagement glex = tc.getGeneratorSetup().getGlex();
+    try {
+      glex.setGlobalValue("a", "a");
+      StringBuilder templateOut =
+          tc.include(ALIASES_PACKAGE + "RequiredGlobalVarAlias");
+    }finally {
+      glex.getGlobalData().remove("a");
+    }
+
+    assertTrue("Log not empty!\n" + LogStub.getPrints(), LogStub.getPrints().isEmpty());
+  }
+
+  @Test
+  public void testRequiredGlobalVarInvalid() {
+    tc.include(ALIASES_PACKAGE + "RequiredGlobalVarAlias");
+    assertFalse("Log is empty but error was expected!", LogStub.getPrints().isEmpty());
+  }
+
+
+  @Test
+  public void testRequiredGlobalVarsValid() {
     GlobalExtensionManagement glex = tc.getGeneratorSetup().getGlex();
     try {
       glex.setGlobalValue("a", "a");
       glex.setGlobalValue("b", "b");
       glex.setGlobalValue("c", "c");
       StringBuilder templateOut =
-          tc.include(ALIASES_PACKAGE + "RequireGlobalVarsAlias");
+          tc.include(ALIASES_PACKAGE + "RequiredGlobalVarsAlias");
     }finally {
       glex.getGlobalData().remove("a");
       glex.getGlobalData().remove("b");
@@ -219,9 +237,9 @@ public class TemplateAliasingTest {
   }
 
   @Test
-  public void testRequireGlobalVarsInvalid() {
+  public void testRequiredGlobalVarsInvalid() {
     StringBuilder templateOut =
-        tc.include(ALIASES_PACKAGE + "RequireGlobalVarsAlias");
+        tc.include(ALIASES_PACKAGE + "RequiredGlobalVarsAlias");
 
     assertFalse("Log empty, expected error", LogStub.getPrints().isEmpty());
   }
@@ -249,16 +267,95 @@ public class TemplateAliasingTest {
         tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");
     assertEquals("false\nfalse", templateOut.toString());
 
-    tc.config.getGlex().bindHookPoint("hp1", new StringHookPoint("a"));
+    config.getGlex().bindHookPoint("hp1", new StringHookPoint("a"));
     templateOut =
         tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");
     assertEquals("true\nfalse", templateOut.toString());
 
-    tc.config.getGlex().bindHookPoint("hp2", new StringHookPoint("a"));
+    config.getGlex().bindHookPoint("hp2", new StringHookPoint("a"));
     templateOut =
         tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");
     assertEquals("true\ntrue", templateOut.toString());
   }
+
+  @Test
+  public void testAddToGlobalVarsAliasUndefinedVariable(){
+    tc.include(ALIASES_PACKAGE + "AddToGlobalVarAlias");
+    assertTrue(LogStub.getPrints().stream().anyMatch(s -> s.contains("0xA8124")));
+  }
+
+  @Test
+  public void testAddToGlobalVarsAliasValid(){
+    GlobalExtensionManagement glex = config.getGlex();
+    glex.defineGlobalVar("a", new ArrayList<String>());
+    glex.defineGlobalVar("b", new ArrayList<String>());
+
+    tc.include(ALIASES_PACKAGE + "AddToGlobalVarAlias");
+
+    assertTrue(LogStub.getPrints().isEmpty());
+
+    List<String> aList = (List<String>) glex.getGlobalVar("a");
+    List<String> bList = (List<String>) glex.getGlobalVar("b");
+
+    assertEquals(2, aList.size());
+    assertEquals(1, bList.size());
+
+    assertEquals("item 1", aList.get(0));
+    assertEquals("item 2", aList.get(1));
+    assertEquals("item 3", bList.get(0));
+  }
+
+  @Test
+  public void testChangeGlobalVarAlias(){
+    GlobalExtensionManagement glex = config.getGlex();
+    glex.defineGlobalVar("a", "unchanged");
+
+    tc.include(ALIASES_PACKAGE + "ChangeGlobalVarAlias");
+
+    assertEquals("changed", glex.getGlobalVar("a"));
+  }
+
+  @Test
+  public void testDefineGlobalVarAliasValid(){
+    LogStub.getPrints().clear();
+    GlobalExtensionManagement glex = config.getGlex();
+    tc.include(ALIASES_PACKAGE + "DefineGlobalVarAlias");
+
+    glex.requiredGlobalVar("a");
+
+    assertTrue("Log is not empty, messages: "  + LogStub.getPrints(), LogStub.getPrints().isEmpty());
+  }
+
+
+  @Test
+  public void testDefineGlobalVarAliasExistsAlready(){
+    GlobalExtensionManagement glex = config.getGlex();
+    glex.defineGlobalVar("a", "?");
+    tc.include(ALIASES_PACKAGE + "DefineGlobalVarAlias");
+
+    assertFalse(LogStub.getPrints().isEmpty());
+  }
+
+  @Test
+  public void testGetGlobalVarAliasValid(){
+    GlobalExtensionManagement glex = config.getGlex();
+    glex.defineGlobalVar("a", "value");
+    StringBuilder templateOut =
+        tc.include(ALIASES_PACKAGE + "GetGlobalVarAlias");
+
+    assertEquals("value", templateOut.toString());
+    assertTrue(LogStub.getPrints().isEmpty());
+  }
+
+  @Test
+  public void testGetGlobalVarAliasInvalid(){
+    StringBuilder templateOut =
+        tc.include(ALIASES_PACKAGE + "GetGlobalVarAlias");
+
+    assertEquals("unset", templateOut.toString());
+  }
+
+
 
   /**
    * Asserts that each of the expectedErrors is found at least once in the
