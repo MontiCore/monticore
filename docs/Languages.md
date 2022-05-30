@@ -97,11 +97,11 @@ classdiagram MyLife2 {
   map any kind of source models to a class/attribute/method/association based
   intermediate structure, before it is printed e.g. as Java code. 
   For example a transformation sequence could be: 
-  * [MontiCoreCLI](https://github.com/MontiCore/monticore/blob/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java): 
+  * [MontiCoreCLI](https://github.com/MontiCore/monticore/blob/opendev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java): 
     Grammar -> 
-    [Grammar AST encoded in CD4Code](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
-    [Decoration for custom behavior](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
-    [Java code](https://github.com/MontiCore/monticore/tree/dev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
+    [Grammar AST encoded in CD4Code](https://github.com/MontiCore/monticore/tree/opendev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
+    [Decoration for custom behavior](https://github.com/MontiCore/monticore/tree/opendev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
+    [Java code](https://github.com/MontiCore/monticore/tree/opendev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
   * Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
 * Main grammar [`de.monticore.cd.CD4Code`](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Code.mc4)
@@ -169,7 +169,7 @@ and
 [*documentation*](https://git.rwth-aachen.de/monticore/languages/gui-dsl/wikis/home).
 
 
-### [MontiCore Grammar](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar) (MontiCore Stable)
+### [MontiCore Grammar](https://github.com/MontiCore/monticore/tree/opendev/monticore-grammar/src/main/grammars/de/monticore/grammar) (MontiCore Stable)
 * Language for MontiCore Grammars itself. It can be understood as 
   *meta language*, but also used as ordinary language.
 * Its main use currently: A MontiCore grammar defines the 
@@ -195,9 +195,9 @@ and
   * Additional elements, such as **enum productions** and comfortable 
     operations for grammar definitions exist.
 * Main grammars 
-  [`de.monticore.grammar.Grammar`](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar.mc4)
+  [`de.monticore.grammar.Grammar`](https://github.com/MontiCore/monticore/tree/opendev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar.mc4)
   defines the language with some open parameters and
-  [`de.monticore.grammar.Grammar_WithConcepts`](https://github.com/MontiCore/monticore/tree/dev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
+  [`de.monticore.grammar.Grammar_WithConcepts`](https://github.com/MontiCore/monticore/tree/opendev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
   binds the external, imported expressions, method bodies, etc.
 * [*Detailed description*](https://monticore.de/MontiCore_Reference-Manual.2017.pdf)
   in the MontiCore Reference Manual.
@@ -600,7 +600,7 @@ usecasediagram Example {
   [*detailed description*](https://github.com/MontiCore/xml/blob/master/src/main/grammars/de/monticore/lang/xml.md)
 
 
-### [JavaLight](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md) (MontiCore Stable)
+### [JavaLight](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md) (MontiCore Stable)
 * This is a reduced version of the **Java language**.
   JavaLight is meant to be used to integrate simplified Java-like parts 
   in modeling languages but not to parse complete Java implementations.
@@ -615,9 +615,9 @@ public void print(String name) {
   System.out.println("Hello " + name);
 }
 ```
-* [Main grammar `de.monticore.JavaLight`](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
+* [Main grammar `de.monticore.JavaLight`](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.mc4)
   and 
-  [*detailed description*](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
+  [*detailed description*](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/JavaLight.md).
 
 
 
@@ -632,9 +632,9 @@ public void print(String name) {
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

@@ -58,13 +58,13 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
         arg.accept(getTraverser());
       }
 
-      if (!typeCheckResult.isPresentCurrentResult()) {
+      if (!getTypeCheckResult().isPresentResult()) {
         Log.error("0xE9CDB Internal Error: SymType argument missing for generic type. "
             + " Probably TypeCheck mis-configured.");
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         return;
       }
-      arguments.add(typeCheckResult.getCurrentResult());
+      arguments.add(getTypeCheckResult().getResult());
     }
     Optional<TypeVarSymbol> typeVar = getScope(genericType.getEnclosingScope()).resolveTypeVar(genericType.printWithoutTypeArguments());
     if(typeVar.isPresent()){
@@ -83,7 +83,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
     }
 
-    typeCheckResult.setCurrentResult(symType);
+    getTypeCheckResult().setResult(symType);
   }
 
   /**

@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "monticore" version "$version"
+  id "monticore" 
   id "jacoco"
 }
 
 description = 'MontiCore Generator Main Integration Test'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 ext.grammarDir = 'src/main/grammars'
 ext.junit_version = '4.13.1'

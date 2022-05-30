@@ -95,21 +95,21 @@ public class MCType2SymTypeExpressionTest {
 
   private SymTypeExpression mcType2TypeExpression(ASTMCType type) {
     type.accept(traverser);
-    SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator visitor = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
-    return visitor.synthesizeType(type).getCurrentResult();
+    FullSynthesizeFromCombineExpressionsWithLiterals visitor = new FullSynthesizeFromCombineExpressionsWithLiterals();
+    return visitor.synthesizeType(type).getResult();
   }
 
   private SymTypeExpression mcType2TypeExpression(ASTMCVoidType type){
     type.accept(traverser);
-    SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator visitor = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
+    FullSynthesizeFromCombineExpressionsWithLiterals visitor = new FullSynthesizeFromCombineExpressionsWithLiterals();
     TypeCalculator tc = new TypeCalculator(visitor, null);
     return tc.symTypeFromAST(type);
   }
 
   private SymTypeExpression mcType2TypeExpression(ASTMCQualifiedName qName){
     qName.accept(traverser);
-    SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator visitor = new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator();
-    return visitor.synthesizeType(qName).getCurrentResult();
+    FullSynthesizeFromCombineExpressionsWithLiterals visitor = new FullSynthesizeFromCombineExpressionsWithLiterals();
+    return visitor.synthesizeType(qName).getResult();
   }
 
   @Test

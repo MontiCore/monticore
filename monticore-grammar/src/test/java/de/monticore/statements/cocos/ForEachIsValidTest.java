@@ -33,7 +33,7 @@ public class ForEachIsValidTest {
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    checker.addCoCo(new ForEachIsValid(new TypeCalculator(new SynthesizeSymTypeFromCombineExpressionsWithLiteralsDelegator(), new DeriveSymTypeOfCombineExpressionsDelegator())));
+    checker.addCoCo(new ForEachIsValid(new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals())));
   
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Iterable", TestMCCommonStatementsMill.globalScope());
     SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCCommonStatementsMill.globalScope());

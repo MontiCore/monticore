@@ -30,7 +30,7 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   public void endVisit(ASTMethodDeclaration ast){
     JavaMethodSymbol symbol = ast.getSymbol();
     addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
-    symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
+    symbol.setType(createTypeLoader(ast.getMCReturnType()));
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
     }
@@ -44,7 +44,7 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   public void endVisit(ASTInterfaceMethodDeclaration ast){
     JavaMethodSymbol symbol = ast.getSymbol();
     addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
-    symbol.setReturnType(createTypeLoader(ast.getMCReturnType()));
+    symbol.setType(createTypeLoader(ast.getMCReturnType()));
     if (ast.isPresentThrows()) {
       addThrowsToMethod(symbol, ast.getThrows());
     }
@@ -121,8 +121,8 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
     FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
     // Start visitor
     TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
-    if(typeCheckResult.isPresentCurrentResult()){
-      return typeCheckResult.getCurrentResult();
+    if(typeCheckResult.isPresentResult()){
+      return typeCheckResult.getResult();
     }
     return new SymTypeOfNull();
   }
@@ -131,8 +131,8 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
     FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
     // Start visitor
     TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
-    if(typeCheckResult.isPresentCurrentResult()){
-      return typeCheckResult.getCurrentResult();
+    if(typeCheckResult.isPresentResult()){
+      return typeCheckResult.getResult();
     }
     return new SymTypeOfNull();
   }

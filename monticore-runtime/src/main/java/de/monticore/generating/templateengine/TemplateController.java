@@ -7,11 +7,11 @@ import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
+import de.monticore.generating.templateengine.freemarker.alias.*;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import freemarker.core.Macro;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.SimpleHash;
 import freemarker.template.Template;
@@ -22,9 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -492,8 +490,8 @@ public class TemplateController {
     Template template = config.getFreeMarkerTemplateEngine().loadTemplate(templateName);
 
     // add static functions to template
-    for (Macro macro : config.getAliases()) {
-      template.addMacro(macro);
+    for (Alias alias : config.getAliases()) {
+      template.getConfiguration().setSharedVariable(alias.getName(), alias);
     }
 
     return runInEngine(passedArguments, template, ast);
@@ -506,15 +504,33 @@ public class TemplateController {
   @SuppressWarnings("rawtypes")
   protected void initAliases() {
     if (config.getAliases().isEmpty()) {
-      Template aliasesTemplate = config.getFreeMarkerTemplateEngine().loadTemplate(
-          GeneratorSetup.ALIASES_TEMPLATE);
-
-      Set macros = aliasesTemplate.getMacros().entrySet();
-      for (Object o : macros) {
-        Entry e = (Entry) o;
-        Macro macro = (Macro) e.getValue();
-        config.addAlias(macro);
-      }
+      // Template util
+      config.addAlias(new IncludeAlias());
+      config.addAlias(new Include2Alias());
+      config.addAlias(new IncludeArgsAlias());
+      config.addAlias(new SignatureAlias());
+      
+      // Logging
+      config.addAlias(new TraceAlias());
+      config.addAlias(new DebugAlias());
+      config.addAlias(new InfoAlias());
+      config.addAlias(new WarnAlias());
+      config.addAlias(new ErrorAlias());
+      
+      // Global vars
+      config.addAlias(new DefineGlobalVarAlias());
+      config.addAlias(new ChangeGlobalVarAlias());
+      config.addAlias(new AddToGlobalVarAlias());
+      config.addAlias(new GetGlobalVarAlias());
+      config.addAlias(new RequiredGlobalVarAlias());
+      config.addAlias(new RequiredGlobalVarsAlias());
+      
+      // Hookpoints
+      config.addAlias(new BindHookPointAlias());
+      config.addAlias(new DefineHookPointAlias());
+      config.addAlias(new DefineHookPointWithDefaultAlias());
+      config.addAlias(new DefineHookPointWithDefault3Alias());
+      config.addAlias(new ExistsHookPointAlias());
     }
   }
 

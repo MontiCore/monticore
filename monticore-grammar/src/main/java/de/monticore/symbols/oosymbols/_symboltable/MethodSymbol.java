@@ -16,7 +16,7 @@ public class MethodSymbol extends MethodSymbolTOP {
    */
   public MethodSymbol deepClone() {
     MethodSymbol clone = new MethodSymbol(name);
-    clone.setReturnType(this.returnType.deepClone());
+    clone.setType(this.type.deepClone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
     clone.setIsConstructor(this.isConstructor);

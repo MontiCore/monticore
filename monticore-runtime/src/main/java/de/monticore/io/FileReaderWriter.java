@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class FileReaderWriter {
    * Uses the default encoding UTF_8;
    */
   protected FileReaderWriter() {
-    this.charset = Charsets.UTF_8;
+    this.charset = StandardCharsets.UTF_8;
   }
 
   /**

@@ -43,25 +43,25 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeF
     SymTypeOfWildcard tex;
     if (wildcardType.isPresentLowerBound()) {
       wildcardType.getLowerBound().accept(getTraverser());
-      if (!typeCheckResult.isPresentCurrentResult()) {
+      if (!getTypeCheckResult().isPresentResult()) {
         Log.error("0xE9CDD Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         return;
       }
-      tex = SymTypeExpressionFactory.createWildcard(false, typeCheckResult.getCurrentResult());
+      tex = SymTypeExpressionFactory.createWildcard(false, getTypeCheckResult().getResult());
     } else if (wildcardType.isPresentUpperBound()) {
       wildcardType.getUpperBound().accept(getTraverser());
-      if (!typeCheckResult.isPresentCurrentResult()) {
+      if (!getTypeCheckResult().isPresentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
                 + " Probably TypeCheck mis-configured.");
-        typeCheckResult.reset();
+        getTypeCheckResult().reset();
         return;
       }
-      tex = SymTypeExpressionFactory.createWildcard(true, typeCheckResult.getCurrentResult());
+      tex = SymTypeExpressionFactory.createWildcard(true, getTypeCheckResult().getResult());
     } else {
       tex = SymTypeExpressionFactory.createWildcard();
     }
-    typeCheckResult.setCurrentResult(tex);
+    getTypeCheckResult().setResult(tex);
   }
 }

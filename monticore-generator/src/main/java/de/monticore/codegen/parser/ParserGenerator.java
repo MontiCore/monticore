@@ -28,6 +28,7 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
+import java.util.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,9 +36,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class ParserGenerator {
@@ -106,17 +104,12 @@ public class ParserGenerator {
       MCPath templatePath,
       File targetDir,
       boolean embeddedJavaCode,
-      Languages lang) {
-    if (astGrammar.isComponent()) {
-      Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
-      return;
-    }
-    Log.debug("Start parser generation for the grammar " + astGrammar.getName(), LOG);
+      Languages lang
+  ) {
     final GeneratorSetup setup = new GeneratorSetup();
     setup.setHandcodedPath(handcodedPath);
     setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setOutputDirectory(targetDir);
-
 
     String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
         ? astGrammar.getName()
@@ -128,12 +121,19 @@ public class ParserGenerator {
         + " can't be resolved in the scope " + symbolTable);
 
     MCGrammarInfo grammarInfo = new MCGrammarInfo(grammarSymbol);
-
     ParserGeneratorHelper genHelper = new ParserGeneratorHelper(astGrammar, grammarInfo, embeddedJavaCode, lang);
+
     glex.setGlobalValue("parserHelper", genHelper);
     glex.setGlobalValue("nameHelper", new Names());
     setup.setGlex(glex);
 
+    if (astGrammar.isComponent()) {
+      ParserInfoGenerator.generateParserInfoForComponent(astGrammar, setup, genHelper.getParserPackage(), lang);
+      Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
+      return;
+    }
+
+    Log.debug("Start parser generation for the grammar " + astGrammar.getName(), LOG);
     Path antlrPath = Paths.get(targetDir.getAbsolutePath(),
             Names.getPathFromPackage(genHelper.getParserPackage()));
     Grammar2Antlr grammar2Antlr = new Grammar2Antlr(genHelper, grammarInfo, true);
@@ -156,16 +156,19 @@ public class ParserGenerator {
     Path gParser = Paths.get(targetDir.getPath(), parserPath.toString());
     Path gLexer = Paths.get(targetDir.getPath(), lexerPath.toString());
 
-
     AntlrTool antlrTool = new AntlrTool(
-        new String[] { outputLang, "-o", antlrPath.toString(), "-Xexact-output-dir", "-no-listener", gLexer.toString(), gParser.toString() },
-        grammarSymbol);
+            new String[] { outputLang, "-o", antlrPath.toString(), "-Xexact-output-dir", "-no-listener", gLexer.toString(), gParser.toString() },
+            grammarSymbol,
+            grammar2Antlr.getTmpNameDict()
+    );
     antlrTool.processGrammarsOnCommandLine();
 
     removeGeneratedFromComment(gLexer.toFile(), lang);
     removeGeneratedFromComment(gParser.toFile(), lang);
 
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
+
+    ParserInfoGenerator.generateParserInfo(astGrammar, setup, antlrTool.getNonTerminalToParserStates(), genHelper.getParserPackage(), lang);
   }
 
   /**

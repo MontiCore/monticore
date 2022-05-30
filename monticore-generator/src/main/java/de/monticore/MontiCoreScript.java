@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -87,6 +88,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.GrammarCoCosFix;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
@@ -114,9 +117,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -156,7 +158,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
       String script = Resources.asCharSource(l.getResource("de/monticore/monticore_standard.groovy"),
-              Charset.forName("UTF-8")).read();
+              StandardCharsets.UTF_8).read();
       run(script, configuration);
     } catch (IOException e) {
       Log.error("0xA1015 Failed to default MontiCore script.", e);
@@ -175,7 +177,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     try {
       ClassLoader l = MontiCoreScript.class.getClassLoader();
       String script = Resources.asCharSource(l.getResource("de/monticore/monticore_emf.groovy"),
-              Charset.forName("UTF-8")).read();
+              StandardCharsets.UTF_8).read();
       run(script, configuration);
     } catch (IOException e) {
       Log.error("0xA1012 Failed to default EMF MontiCore script.", e);
@@ -621,11 +623,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     try {
       File f = new File(file);
       if (f.exists() && f.isFile()) {
-        script = Files.asCharSource(f, Charset.forName("UTF-8")).read();
+        script = Files.asCharSource(f, StandardCharsets.UTF_8).read();
       } else {
         ClassLoader l = MontiCoreScript.class.getClassLoader();
         if (l.getResource(file) != null) {
-          script = Resources.asCharSource(l.getResource(file), Charset.forName("UTF-8")).read();
+          script = Resources.asCharSource(l.getResource(file), StandardCharsets.UTF_8).read();
         } else {
           Log.error("0xA1059 Custom script \"" + f.getAbsolutePath() + "\" not found!");
         }
@@ -1114,6 +1116,45 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     generator.generate(decoratedCD);
   }
 
+  public void generateLaunchScripts(GlobalExtensionManagement glex, File outputDirectory, String toolName) {
+    freemarker.template.Configuration configuration = new freemarker.template.Configuration(freemarker.template.Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+
+    MontiCoreTemplateLoader templateLoader = new MontiCoreTemplateLoader(this.getClass().getClassLoader());
+    configuration.setTemplateLoader(templateLoader);
+
+    FreeMarkerTemplateEngine engine = new FreeMarkerTemplateEngine(configuration);
+    ImmutableMap<String, String> data = ImmutableMap.of("toolName", toolName);
+
+    File scriptOut = new File(outputDirectory, "scripts");
+
+    generateLaunchScript(engine, "scripts.BatchLauncher", data, new File(scriptOut, "run.bat"));
+    generateLaunchScript(engine, "scripts.ShellLauncher", data, new File(scriptOut, "run"));
+  }
+
+  private void generateLaunchScript(
+      FreeMarkerTemplateEngine engine,
+      String templateName,
+      Object data,
+      File dest
+  ) {
+    StringBuilder stringBuilder = new StringBuilder();
+    engine.loadAndRun(templateName, stringBuilder, data);
+
+    String content = stringBuilder.toString();
+
+    try {
+      Files.createParentDirs(dest);
+    } catch (IOException e) {
+      Log.error("0xA1028 Failed to to create parent directories for output file: " + dest.getAbsolutePath(), e);
+    }
+
+    try (BufferedWriter writer = Files.newWriter(dest, StandardCharsets.UTF_8)) {
+      writer.write(content);
+    } catch (IOException e) {
+      Log.error("0xA1029 Writing to output file failed: " + dest.getAbsolutePath(), e);
+    }
+  }
+
   protected void createCDSymbolsForSuperGrammars(GlobalExtensionManagement glex, ASTMCGrammar astGrammar,
                                                ICD4AnalysisGlobalScope cdScope) {
     if (astGrammar.isPresentSymbol()) {
@@ -1304,6 +1345,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(HANDCODEDMODELPATH_LONG, mcConfig.getHandcodedModelPath());
         builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
         builder.addVariable(OUT_LONG, mcConfig.getOut());
+        builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
         builder.addVariable(REPORT_LONG, mcConfig.getReport());
         builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());
         builder.addVariable(TEMPLATEPATH_LONG, mcConfig.getTemplatePath());

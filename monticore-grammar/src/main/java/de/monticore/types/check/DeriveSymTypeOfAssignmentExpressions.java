@@ -103,9 +103,9 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   public void traverse(ASTAssignmentExpression expr) {
     //there has to be a variable on the left side of an assignmentexpression
     acceptThisAndReturnSymTypeExpressionOrLogError(expr.getLeft(), "0xA0181");
-    if (typeCheckResult.isPresentCurrentResult()) {
-      if (!typeCheckResult.isField()) {
-        typeCheckResult.reset();
+    if (getTypeCheckResult().isPresentResult()) {
+      if (!getTypeCheckResult().isField()) {
+        getTypeCheckResult().reset();
         Log.error("0xA0180 The expression at Source position "+ expr.getLeft().get_SourcePositionStart()+" must be a field");
       } else {
         calculateAssignmentExpression(expr);
@@ -192,7 +192,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return calculateTypeArithmetic(expr, leftResult.get(), rightResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -206,7 +206,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(leftResult.print())));
     }
     //should not happen, not valid, will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 
@@ -220,7 +220,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return calculateTypeArithmeticWithString(expr, leftResult.get(), rightResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -246,7 +246,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return calculateTypeBitOperation(leftResult.get(), rightResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -260,7 +260,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
       return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
     }
     //should not happen, not valid, will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 
@@ -273,7 +273,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return calculateTypeBinaryOperations(leftResult.get(), rightResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -290,7 +290,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
       return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
     }
     //should not happen, not valid, will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 

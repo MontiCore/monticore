@@ -3,7 +3,6 @@ package mc.typescalculator;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.TypeCalculator;
-import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
@@ -21,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 public class SynthesizeSymTypeFromMyOwnLanguageTest {
 
   protected MyOwnLanguageParser parser = new MyOwnLanguageParser();
-  protected TypeCalculator tc = new TypeCalculator(new SynthesizeSymTypeFromMyOwnLanguage(),null);
+  protected TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromMyOwnLanguage(),null);
 
   @Before
   public void setup() {

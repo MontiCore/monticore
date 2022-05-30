@@ -96,7 +96,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return calculateTypeShift(leftResult.get(), rightResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -112,7 +112,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
       }
     }
     //should not happen, will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 
@@ -125,7 +125,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
     if (leftResult.isPresent() && rightResult.isPresent()) {
       return calculateTypeBinary(leftResult.get(), rightResult.get());
     } else {
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
   }
@@ -143,7 +143,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
       }
     }
     //should not happen, no valid result, error will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 
@@ -153,7 +153,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
    */
   protected Optional<SymTypeExpression> shiftCalculator(SymTypeExpression left, SymTypeExpression right) {
     if (!left.isTypeConstant() || !right.isTypeConstant()){
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       return Optional.empty();
     }
     SymTypeConstant leftResult = (SymTypeConstant) left;
@@ -172,7 +172,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
       }
     }
     //should never happen
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 
@@ -195,7 +195,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
       }
     }
     //should not happen, no valid result, error will be handled in traverse
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     return Optional.empty();
   }
 }

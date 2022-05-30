@@ -16,7 +16,7 @@ public class SynthesizeFromMCBT4Grammar extends SynthesizeSymTypeFromMCBasicType
     surrogate.setEnclosingScope(getScope(qName.getEnclosingScope()));
     SymTypeExpression symType = SymTypeExpressionFactory.createTypeObject(surrogate);
 
-    typeCheckResult.setCurrentResult(symType);
+    typeCheckResult.setResult(symType);
   }
 
 }

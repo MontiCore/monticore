@@ -83,7 +83,7 @@ public class SynthesizeSymTypeFromMCFullGenericTypesTest {
   CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
   // This is Visitor for SimpleGeneric types under test:
-  ISynthesize synt = new FullSynthesizeFromMCFullGenericTypes();
+  AbstractSynthesize synt = new FullSynthesizeFromMCFullGenericTypes();
 
   // other arguments not used (and therefore deliberately null)
 

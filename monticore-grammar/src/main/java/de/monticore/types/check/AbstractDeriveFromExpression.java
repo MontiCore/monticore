@@ -35,8 +35,12 @@ public abstract class AbstractDeriveFromExpression {
     this.typeCheckResult = typeCheckResult;
   }
 
+  public TypeCheckResult getTypeCheckResult() {
+    return typeCheckResult;
+  }
+
   protected void logError(String errorCode, SourcePosition start){
-    typeCheckResult.reset();
+    getTypeCheckResult().reset();
     Log.error(errorCode+String.format(ERROR_MSG, start));
   }
 
@@ -49,9 +53,9 @@ public abstract class AbstractDeriveFromExpression {
   protected void storeResultOrLogError(Optional<SymTypeExpression> result, ASTExpression expression, String errorCode){
     if(result.isPresent()){
       //store the result of the expression in the last result
-      typeCheckResult.setCurrentResult(result.get());
+      getTypeCheckResult().setResult(result.get());
     }else{
-      typeCheckResult.reset();
+      getTypeCheckResult().reset();
       logError(errorCode, expression.get_SourcePositionStart());
     }
   }
@@ -64,8 +68,8 @@ public abstract class AbstractDeriveFromExpression {
   protected Optional<SymTypeExpression> acceptThisAndReturnSymTypeExpression(ASTExpression expression){
     Optional<SymTypeExpression> result = Optional.empty();
     expression.accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      result = Optional.of(typeCheckResult.getCurrentResult());
+    if(getTypeCheckResult().isPresentResult()){
+      result = Optional.of(getTypeCheckResult().getResult());
     }
     return result;
   }
@@ -78,8 +82,8 @@ public abstract class AbstractDeriveFromExpression {
   protected Optional<SymTypeExpression> acceptThisAndReturnSymTypeExpression(ASTLiteral literal){
     Optional<SymTypeExpression> result = Optional.empty();
     literal.accept(getTraverser());
-    if(typeCheckResult.isPresentCurrentResult()){
-      result = Optional.of(typeCheckResult.getCurrentResult());
+    if(getTypeCheckResult().isPresentResult()){
+      result = Optional.of(getTypeCheckResult().getResult());
     }
     return result;
   }

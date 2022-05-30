@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.parserinfo;
+
+grammar ParserInfoTest extends de.monticore.MCBasics {
+  CompilationUnit = Element+ Reference+;
+  interface Reference;
+  interface Element;
+
+  symbol ElementA implements Element = "A" Name ";";
+  symbol ElementB implements Element = "B" Name second:Name ";";
+  NoSymbolUsingName implements Element = "notASymbol" Name";" ;
+
+  ElementC extends ElementA = "AA" Name ";";
+
+  abstract symbol AbstractElement implements Element = Name;
+  ElementD extends AbstractElement = "D" Name ";";
+
+  NoRef implements Reference = "noRef" usageName1:Name ";";
+
+  SimpleReference implements Reference = "simpleRef" usageName2:Name@ElementA ";";
+
+  MultipleReferences implements Reference = "multiRef" refA:Name@ElementA "," refB:Name@ElementB ";";
+
+  SimpleListRef implements Reference = "simpleListRef" usageNameForList1:(Name@ElementA || ",")+ ";";
+
+  AltSimpleListRef implements Reference = "altSimpleListRef" usageNameForList2:Name@ElementA ("," usageNameForList2:Name@ElementA)* ";";
+}

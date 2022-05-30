@@ -17,7 +17,7 @@ public class FunctionSymbol extends FunctionSymbolTOP {
 
   public FunctionSymbol deepClone(){
     FunctionSymbol clone = new FunctionSymbol(name);
-    clone.setReturnType(this.getReturnType().deepClone());
+    clone.setType(this.getType().deepClone());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
     if(isPresentAstNode()) {
@@ -60,19 +60,19 @@ public class FunctionSymbol extends FunctionSymbolTOP {
 
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
     //return type
-    SymTypeExpression returnType = this.getReturnType();
+    SymTypeExpression type = this.getType();
     TypeSymbol realTypeInfo;
-    TypeSymbol typeInfo = returnType.getTypeInfo();
+    TypeSymbol typeInfo = type.getTypeInfo();
     if(typeInfo instanceof TypeSymbolSurrogate){
-      realTypeInfo = ((TypeSymbolSurrogate) returnType.getTypeInfo()).lazyLoadDelegate();
+      realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
     }else{
       realTypeInfo = typeInfo;
     }
-    if(returnType.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
+    if(type.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
       Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
-      typeVar.ifPresent(typeVarSymbol -> this.setReturnType(replaceMap.get(typeVarSymbol)));
+      typeVar.ifPresent(typeVarSymbol -> this.setType(replaceMap.get(typeVarSymbol)));
     }else{
-      returnType.replaceTypeVariables(replaceMap);
+      type.replaceTypeVariables(replaceMap);
     }
 
     for(VariableSymbol parameter: this.getParameterList()){

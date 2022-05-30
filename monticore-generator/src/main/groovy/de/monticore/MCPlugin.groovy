@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore
 
+import de.monticore.gradle.StatisticListener
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -10,10 +11,12 @@ import org.gradle.api.Project
  * MCTask and GroovyTask but no predefined task instances
  */
 public class MCPlugin implements Plugin<Project> {
-  
+
   public void apply(Project project) {
     project.ext.MCTask = de.monticore.MCTask
     project.ext.MontiTransExec = de.monticore.MontiTransExec
     project.configurations.create("grammar")
+
+    StatisticListener.registerOnce(project);
   }
 }

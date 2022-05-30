@@ -12,7 +12,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.se_rwth.commons.Names;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -536,7 +535,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getSimpleNameFromSymbolName(String referencedSymbol) {
-    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).indexOf(SYMBOL_SUFFIX));
+    return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).lastIndexOf(SYMBOL_SUFFIX));
   }
 
   /**
