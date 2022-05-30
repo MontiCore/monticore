@@ -46,6 +46,14 @@ if(!hasProperty('bootstrap')) {
   }
 }
 
+if(!gradle.getGradleVersion().startsWith("6.")) {
+  logger.error("Gradle " + gradle.getGradleVersion() + " used.\n" +
+  "Gradle 6.X is required for this build. \n" +
+  "You can download a different gradle version here: https://gradle.org/releases/\n" +
+  "Aborting")
+  System.exit(-1);
+}
+
 include(':monticore-runtime')
 include(':monticore-grammar')
 include(':monticore-runtime-emf')
