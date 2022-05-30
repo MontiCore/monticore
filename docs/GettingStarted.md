@@ -803,8 +803,19 @@ Section 2.2.3 describes how to generate the desired Java code
 from a MontiCore grammar. For these Java classes, generated for the
 `Automata` DSL, execute the following command:
 
+**With Powershell on Windows**
+```powershell
+javac -cp monticore.jar -sourcepath "src/;out/;hwc/" `
+                                  src/automata/AutomataTool.java
+```
+**With Bash on Unix**
 ```bash
-javac -cp monticore.jar -sourcepath "src/;out/;hwc/" \
+javac -cp monticore.jar -sourcepath "src/:out/:hwc/" \
+                                  src/automata/AutomataTool.java
+```
+**With cmd on Windows**
+```batch
+javac -cp monticore.jar -sourcepath "src/;out/;hwc/" ^
                                   src/automata/AutomataTool.java
 ```
 
@@ -1100,9 +1111,22 @@ The previous command compiles the handwritten and generated code
 including the `Automata` tool class `AutomataTool`. For running the
 `Automata` DSL tool, execute the following command:
 
+**With Powershell on Windows**
+```powershell
+java -cp "src/;out/;hwc/;monticore-rt.jar" `
+                    -i automata.AutomataTool example/PingPong.aut `
+                    -s st/PingPong.autsym
+```
+**With Bash on Unix**
 ```bash
-java -cp "src/;out/;hwc/;monticore-rt.jar" \
+java -cp "src/:out/:hwc/:monticore-rt.jar" \
                     -i automata.AutomataTool example/PingPong.aut \
+                    -s st/PingPong.autsym
+```
+**With cmd on Windows**
+```batch
+java -cp "src/;out/;hwc/;monticore-rt.jar" ^
+                    -i automata.AutomataTool example/PingPong.aut ^
                     -s st/PingPong.autsym
 ```
 
