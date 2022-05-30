@@ -33,8 +33,8 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
 
   public synchronized static void registerOnce(Project project) {
     if (alreadyRegistered.compareAndSet(false, true)
-        && project.hasProperty(StatisticListener.enable_tracking)
-        && "true".equals(project.getProperties().get(StatisticListener.enable_tracking))) {
+        && (!project.hasProperty(StatisticListener.enable_tracking)
+            || "true".equals(project.getProperties().get(StatisticListener.enable_tracking)))) {
       project.getGradle().addListener(getSingleton());
     }
   }
