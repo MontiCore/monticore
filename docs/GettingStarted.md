@@ -1102,7 +1102,7 @@ including the `Automata` tool class `AutomataTool`. For running the
 
 ```bash
 java -cp "src/;out/;hwc/;monticore-rt.jar" \
-                    -i automata.AutomataTool example/PingPong.aut \
+                    automata.AutomataTool -i example/PingPong.aut \
                     -s st/PingPong.autsym
 ```
 
