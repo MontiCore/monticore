@@ -35,7 +35,7 @@ grammar ScoperuleTest extends de.monticore.MCBasics, de.monticore.symbols.BasicS
       symType:de.monticore.types.check.SymTypeExpression?
       method public void createSymType(){
         if(!symType.isPresent()){
-          symType = Optional.of(de.monticore.types.check.SymTypeExpressionFactory.createTypeConstant("double"));
+          symType = Optional.of(de.monticore.types.check.SymTypeExpressionFactory.createPrimitive("double"));
         }
       };
 
