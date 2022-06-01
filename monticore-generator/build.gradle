@@ -62,7 +62,7 @@ dependencies {
   implementation ("com.google.guava:guava:$guava_version"){
     force(true)
   }
-  implementation 'org.codehaus.groovy:groovy:3.0.7'
+  implementation 'org.apache.groovy:groovy:4.0.2'
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
   implementation "commons-cli:commons-cli:$commons_cli_version"
   testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.14.11'
