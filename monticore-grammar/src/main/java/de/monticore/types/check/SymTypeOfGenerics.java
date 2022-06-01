@@ -64,7 +64,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       if(arguments.get(i).isGenericType()){
         r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
       }else{
-        r.append(SymTypeConstant.unbox(arguments.get(i).print()));
+        r.append(SymTypePrimitive.unbox(arguments.get(i).print()));
       }
       if(i<arguments.size()-1) {
         r.append(',');
@@ -94,7 +94,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       if(arguments.get(i).isGenericType()){
         r.append(box((SymTypeOfGenerics) arguments.get(i)));
       }else{
-        r.append(SymTypeConstant.box(arguments.get(i).print()));
+        r.append(SymTypePrimitive.box(arguments.get(i).print()));
       }
       if(i<arguments.size()-1) {
         r.append(',');

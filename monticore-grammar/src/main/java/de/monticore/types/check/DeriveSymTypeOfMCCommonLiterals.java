@@ -24,8 +24,8 @@ public class DeriveSymTypeOfMCCommonLiterals implements MCCommonLiteralsVisitor2
     return typeCheckResult;
   }
 
-  protected SymTypeConstant getSymType(String type) {
-    return new SymTypeConstant(BasicSymbolsMill.globalScope().resolveType(type).get());
+  protected SymTypePrimitive getSymType(String type) {
+    return new SymTypePrimitive(BasicSymbolsMill.globalScope().resolveType(type).get());
   }
 
   @Override

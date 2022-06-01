@@ -350,48 +350,48 @@ public class DefsTypeBasic {
    * This is the predefined Symbol for all Primitives, such as "int"
    * which has empty Fields and Methods
    */
-  public static SymTypeConstant _intSymType;
-  public static SymTypeConstant _charSymType;
-  public static SymTypeConstant _booleanSymType;
-  public static SymTypeConstant _doubleSymType;
-  public static SymTypeConstant _floatSymType;
-  public static SymTypeConstant _longSymType;
-  public static SymTypeConstant _byteSymType;
-  public static SymTypeConstant _shortSymType;
+  public static SymTypePrimitive _intSymType;
+  public static SymTypePrimitive _charSymType;
+  public static SymTypePrimitive _booleanSymType;
+  public static SymTypePrimitive _doubleSymType;
+  public static SymTypePrimitive _floatSymType;
+  public static SymTypePrimitive _longSymType;
+  public static SymTypePrimitive _byteSymType;
+  public static SymTypePrimitive _shortSymType;
 
   public static void set_thePrimitives() {
     IBasicSymbolsGlobalScope typeSymbolsScope = BasicSymbolsMill.globalScope();
     OOTypeSymbol loader = new OOTypeSymbolSurrogate("int");
     loader.setEnclosingScope(typeSymbolsScope);
-    _intSymType = new SymTypeConstant(loader);
+    _intSymType = new SymTypePrimitive(loader);
 
     loader = new OOTypeSymbolSurrogate("boolean");
     loader.setEnclosingScope(typeSymbolsScope);
-    _booleanSymType = new SymTypeConstant(loader);
+    _booleanSymType = new SymTypePrimitive(loader);
 
     loader = new OOTypeSymbolSurrogate("char");
     loader.setEnclosingScope(typeSymbolsScope);
-    _charSymType = new SymTypeConstant(loader);
+    _charSymType = new SymTypePrimitive(loader);
 
     loader = new OOTypeSymbolSurrogate("double");
     loader.setEnclosingScope(typeSymbolsScope);
-    _doubleSymType = new SymTypeConstant(loader);
+    _doubleSymType = new SymTypePrimitive(loader);
 
     loader = new OOTypeSymbolSurrogate("float");
     loader.setEnclosingScope(typeSymbolsScope);
-    _floatSymType = new SymTypeConstant(loader);
+    _floatSymType = new SymTypePrimitive(loader);
 
     loader = new OOTypeSymbolSurrogate("long");
     loader.setEnclosingScope(typeSymbolsScope);
-    _longSymType = new SymTypeConstant(loader);
+    _longSymType = new SymTypePrimitive(loader);
 
     loader = new OOTypeSymbolSurrogate("short");
     loader.setEnclosingScope(typeSymbolsScope);
-    _shortSymType = new SymTypeConstant(loader);
+    _shortSymType = new SymTypePrimitive(loader);
 
     loader = new OOTypeSymbolSurrogate("byte");
     loader.setEnclosingScope(typeSymbolsScope);
-    _byteSymType = new SymTypeConstant(loader);
+    _byteSymType = new SymTypePrimitive(loader);
 
 
   }

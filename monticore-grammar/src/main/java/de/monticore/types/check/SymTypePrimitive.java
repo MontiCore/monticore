@@ -10,17 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SymTypeConstant extends SymTypeExpression {
+public class SymTypePrimitive extends SymTypeExpression {
 
-  public SymTypeConstant(TypeSymbol typeSymbol) {
+  public SymTypePrimitive(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
   }
 
-  public String getConstName() {
+  public String getPrimitiveName() {
     return typeSymbol.getName();
   }
 
-  public String getBoxedConstName() {
+  public String getBoxedPrimitiveName() {
     return box(typeSymbol.getName());
   }
 
@@ -29,7 +29,7 @@ public class SymTypeConstant extends SymTypeExpression {
     return parts[parts.length - 1];
   }
 
-  public void setConstName(String constName){
+  public void setPrimitiveName(String constName){
     typeSymbol.setName(constName);
   }
 
@@ -38,7 +38,7 @@ public class SymTypeConstant extends SymTypeExpression {
    */
   @Override
   public String print() {
-    return getConstName();
+    return getPrimitiveName();
   }
 
   @Override
@@ -53,8 +53,8 @@ public class SymTypeConstant extends SymTypeExpression {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeConstant");
-    jp.member("constName", getConstName());
+    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypePrimitive");
+    jp.member("primitiveName", getPrimitiveName());
     jp.endObject();
     return jp.getContent();
   }
@@ -151,11 +151,11 @@ public class SymTypeConstant extends SymTypeExpression {
    * @return true if the given type is an integral type
    */
   public boolean isIntegralType() {
-    return "int".equals(getConstName()) ||
-        "byte".equals(getConstName()) ||
-        "short".equals(getConstName()) ||
-        "long".equals(getConstName()) ||
-        "char".equals(getConstName());
+    return "int".equals(getPrimitiveName()) ||
+        "byte".equals(getPrimitiveName()) ||
+        "short".equals(getPrimitiveName()) ||
+        "long".equals(getPrimitiveName()) ||
+        "char".equals(getPrimitiveName());
   }
 
   /**
@@ -164,37 +164,37 @@ public class SymTypeConstant extends SymTypeExpression {
    * @return true if the given type is an integral type
    */
   public boolean isNumericType() {
-    return "float".equals(getConstName()) ||
-        "double".equals(getConstName()) ||
+    return "float".equals(getPrimitiveName()) ||
+        "double".equals(getPrimitiveName()) ||
         isIntegralType();
   }
 
   /**
    * Am I primitive? (such as "int")
    */
-  public boolean isTypeConstant() {
+  public boolean isPrimitive() {
     return true;
   }
 
   @Override
-  public SymTypeConstant deepClone() {
-    return new SymTypeConstant(this.typeSymbol);
+  public SymTypePrimitive deepClone() {
+    return new SymTypePrimitive(this.typeSymbol);
   }
 
 
   @Override
   public boolean deepEquals(SymTypeExpression sym){
-    if(!(sym instanceof SymTypeConstant)){
+    if(!(sym instanceof SymTypePrimitive)){
       return false;
     }
-    SymTypeConstant symCon = (SymTypeConstant) sym;
-    if(this.typeSymbol == null ||symCon.typeSymbol ==null){
+    SymTypePrimitive symPrim = (SymTypePrimitive) sym;
+    if(this.typeSymbol == null ||symPrim.typeSymbol ==null){
       return false;
     }
-    if(!this.typeSymbol.getName().equals(symCon.typeSymbol.getName())){
+    if(!this.typeSymbol.getName().equals(symPrim.typeSymbol.getName())){
       return false;
     }
-    return this.print().equals(symCon.print());
+    return this.print().equals(symPrim.print());
   }
 
 

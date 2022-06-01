@@ -27,7 +27,7 @@ public class SymTypeExpressionDeSer {
 
   protected SymTypeArrayDeSer symTypeArrayDeSer;
 
-  protected SymTypeConstantDeSer symTypeConstantDeSer;
+  protected SymTypePrimitiveDeSer symTypePrimitiveDeSer;
 
   protected SymTypeOfGenericsDeSer symTypeOfGenericsDeSer;
 
@@ -40,7 +40,7 @@ public class SymTypeExpressionDeSer {
   protected SymTypeExpressionDeSer() {
     //this is a singleton, do not use constructor
     this.symTypeArrayDeSer = new SymTypeArrayDeSer();
-    this.symTypeConstantDeSer = new SymTypeConstantDeSer();
+    this.symTypePrimitiveDeSer = new SymTypePrimitiveDeSer();
     this.symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
     this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
@@ -150,8 +150,8 @@ public class SymTypeExpressionDeSer {
       switch (JsonDeSers.getKind(o)) {
         case SymTypeArrayDeSer.SERIALIZED_KIND:
           return symTypeArrayDeSer.deserialize(o);
-        case SymTypeConstantDeSer.SERIALIZED_KIND:
-          return symTypeConstantDeSer.deserialize(o);
+        case SymTypePrimitiveDeSer.SERIALIZED_KIND:
+          return symTypePrimitiveDeSer.deserialize(o);
         case SymTypeOfGenericsDeSer.SERIALIZED_KIND:
           return symTypeOfGenericsDeSer.deserialize(o);
         case SymTypeOfObjectDeSer.SERIALIZED_KIND:

@@ -7,7 +7,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import mc.feature.symbolrules.symbolrulelisttest.SymbolruleListTestMill;
 import mc.feature.symbolrules.symbolrulelisttest._parser.SymbolruleListTestParser;
 import mc.feature.symbolrules.symbolrulelisttest._symboltable.ISymbolruleListTestArtifactScope;
-import mc.feature.symbolrules.symbolrulelisttest._symboltable.SymbolruleListTestDeSer;
 import mc.feature.symbolrules.symbolrulelisttest._symboltable.SymbolruleListTestScopesGenitorDelegator;
 import mc.feature.symbolrules.symbolrulelisttest._symboltable.SymbolruleListTestSymbols2Json;
 import mc.feature.symbolrules.symbolruletest.SymbolruleTestMill;
@@ -45,17 +44,17 @@ public class SymbolruleTest {
     
     
     ITestSymbol itest = SymbolruleTestMill.iTestSymbolBuilder().setName("itest").build();
-    itest.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeConstant("int")));
+    itest.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createPrimitive("int")));
     ITestSymbolDeSer iTestSymbolDeSer = new ITestSymbolDeSer();
     String serializedITest = iTestSymbolDeSer.serialize(itest, new SymbolruleTestSymbols2Json());
     ITestSymbol deserializedITest = iTestSymbolDeSer.deserialize(serializedITest);
     assertEquals(itest.getName(), deserializedITest.getName());
     assertEquals(1, deserializedITest.sizeSuperTypes());
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(deserializedITest.getSuperTypes(0)));
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(deserializedITest.getByName("int")));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(deserializedITest.getSuperTypes(0)));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(deserializedITest.getByName("int")));
     
     Test1Symbol test1 = SymbolruleTestMill.test1SymbolBuilder().setName("test11").build();
-    test1.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeConstant("int")));
+    test1.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createPrimitive("int")));
     test1.setIsPrivate(true);
     Test1SymbolDeSer test1SymbolDeSer = new Test1SymbolDeSer();
     String serializedTest1 = test1SymbolDeSer.serialize(test1, new SymbolruleTestSymbols2Json());
@@ -64,11 +63,11 @@ public class SymbolruleTest {
     assertEquals(1, deserializedTest1.sizeSuperTypes());
     assertTrue(deserializedTest1.isIsPrivate());
     assertEquals(deserializedTest1, deserializedTest1.getIfPrivate());
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(deserializedTest1.getSuperTypes(0)));
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(deserializedTest1.getByName("int")));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(deserializedTest1.getSuperTypes(0)));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(deserializedTest1.getByName("int")));
 
     Test2Symbol test2 = SymbolruleTestMill.test2SymbolBuilder().setName("test22").build();
-    test2.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeConstant("int")));
+    test2.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createPrimitive("int")));
     test2.setIsPublic(true);
     Test2SymbolDeSer test2SymbolDeSer = new Test2SymbolDeSer();
     String serializedTest2 = test2SymbolDeSer.serialize(test2, new SymbolruleTestSymbols2Json());
@@ -77,8 +76,8 @@ public class SymbolruleTest {
     assertEquals(1, deserializedTest2.sizeSuperTypes());
     assertTrue(deserializedTest2.isIsPublic());
     assertEquals(deserializedTest2, deserializedTest2.getIfPublic());
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(deserializedTest2.getSuperTypes(0)));
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(deserializedTest2.getByName("int")));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(deserializedTest2.getSuperTypes(0)));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(deserializedTest2.getByName("int")));
   }
 
   @Test
@@ -93,7 +92,7 @@ public class SymbolruleTest {
     as.setBar(true);
     as.setNumber(17);
     as.setModifiedNameList(Lists.newArrayList("foo", "bar", "test"));
-    as.setSymType(SymTypeExpressionFactory.createTypeConstant("int"));
+    as.setSymType(SymTypeExpressionFactory.createPrimitive("int"));
 
     SymbolruleTestSymbols2Json symbols2Json = new SymbolruleTestSymbols2Json();
     as.accept(symbols2Json.getTraverser());
@@ -108,7 +107,7 @@ public class SymbolruleTest {
     assertEquals("foo", as.getModifiedName(0));
     assertEquals("bar", as.getModifiedName(1));
     assertEquals("test", as.getModifiedName(2));
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as2.getSymType()));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(as2.getSymType()));
     assertEquals(1, as2.getLocalFooSymbols().size());
     ISymbolruleTestScope fooSpannedScope = as2.getLocalFooSymbols().get(0).getSpannedScope();
     assertEquals(2, fooSpannedScope.getLocalBarSymbols().size());
@@ -147,7 +146,7 @@ public class SymbolruleTest {
     as.setName("SymbolruleTest");
     as.setNumbersList(Lists.newArrayList(3,4,5));
     as.setNamesList(Lists.newArrayList("A", "B", "C"));
-    as.setSymTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeConstant("int"), SymTypeExpressionFactory.createTypeConstant("double")));
+    as.setSymTypesList(Lists.newArrayList(SymTypeExpressionFactory.createPrimitive("int"), SymTypeExpressionFactory.createPrimitive("double")));
     as.setArePresentList(Lists.newArrayList(false, true, true, false));
     as.setBigNumbersList(Lists.newArrayList(3l));
     as.setDoubleFloatingPointsList(Lists.newArrayList(3.4,6.3,5.5));

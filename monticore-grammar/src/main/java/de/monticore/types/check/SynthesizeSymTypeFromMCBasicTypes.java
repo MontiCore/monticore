@@ -30,8 +30,8 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
    */
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
-    SymTypeConstant typeConstant =
-            SymTypeExpressionFactory.createTypeConstant(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+    SymTypePrimitive typeConstant =
+            SymTypeExpressionFactory.createPrimitive(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
     getTypeCheckResult().setResult(typeConstant);
   }
   
