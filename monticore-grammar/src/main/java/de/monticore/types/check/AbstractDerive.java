@@ -5,7 +5,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.visitor.ITraverser;
 
-public abstract class AbstractDerive {
+public abstract class AbstractDerive implements IDerive {
 
   protected ITraverser traverser;
   protected TypeCheckResult typeCheckResult;
@@ -23,12 +23,14 @@ public abstract class AbstractDerive {
     this.traverser = traverser;
   }
 
+  @Override
   public TypeCheckResult deriveType(ASTExpression expr) {
     this.getTypeCheckResult().reset();
     expr.accept(this.getTraverser());
     return this.getTypeCheckResult().copy();
   }
 
+  @Override
   public TypeCheckResult deriveType(ASTLiteral lit) {
     this.getTypeCheckResult().reset();
     lit.accept(this.getTraverser());
