@@ -6,7 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.visitor.ITraverser;
 
-public abstract class AbstractSynthesize {
+public abstract class AbstractSynthesize implements ISynthesize {
 
   protected ITraverser traverser;
   protected TypeCheckResult typeCheckResult;
@@ -24,18 +24,21 @@ public abstract class AbstractSynthesize {
     this.traverser = traverser;
   }
 
+  @Override
   public TypeCheckResult synthesizeType(ASTMCType type) {
     this.getTypeCheckResult().reset();
     type.accept(this.getTraverser());
     return this.getTypeCheckResult().copy();
   }
 
+  @Override
   public TypeCheckResult synthesizeType(ASTMCReturnType type) {
     this.getTypeCheckResult().reset();
     type.accept(this.getTraverser());
     return this.getTypeCheckResult().copy();
   }
 
+  @Override
   public TypeCheckResult synthesizeType(ASTMCQualifiedName qName) {
     this.getTypeCheckResult().reset();
     qName.accept(this.getTraverser());
