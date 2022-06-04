@@ -12,13 +12,18 @@ import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressio
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -89,12 +94,50 @@ public abstract class DeriveSymTypeAbstractTest {
         fail();
     }
 
+    protected final void checkErrors(String expression, List<String> expectedErrors) throws IOException {
+        setupTypeCheck();
+        ASTExpression astex = parseExpression(expression);
+        if (flatExpressionScopeSetterTraverser != null)
+            astex.accept(flatExpressionScopeSetterTraverser);
+
+        Log.getFindings().clear();
+        try {
+            tc.typeOf(astex);
+        } catch (RuntimeException e) {
+            assertEquals(expectedErrors, getFirstErrorCodes(expectedErrors.size()));
+            return;
+        }
+        fail();
+    }
+
+    protected final void checkErrors(String expression, String... expectedErrors) throws IOException {
+        checkErrors(expression, Arrays.asList(expectedErrors));
+    }
+
     private String getFirstErrorCode() {
         if (Log.getFindings().size() > 0) {
             String firstFinding = Log.getFindings().get(0).getMsg();
             return firstFinding.split(" ")[0];
         }
         return "";
+    }
+
+    private List<String> getFirstErrorCodes(int n) {
+        List<String> errorsInLog = Log.getFindings().stream()
+          .filter(Finding::isError)
+          .map(err -> err.getMsg().split(" ")[0])
+          .collect(Collectors.toList());
+        List<String> errorsToReturn;
+
+        if(errorsInLog.size() < n) {
+            errorsToReturn = errorsInLog;
+            for(int i = 0; i < n - errorsInLog.size(); i++) {
+                errorsToReturn.add("");
+            }
+        } else {
+            errorsToReturn = errorsInLog.subList(0, n);
+        }
+        return errorsToReturn;
     }
 
 
