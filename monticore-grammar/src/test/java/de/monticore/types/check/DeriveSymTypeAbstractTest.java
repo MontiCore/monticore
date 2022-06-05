@@ -153,10 +153,11 @@ public abstract class DeriveSymTypeAbstractTest {
         return "";
     }
 
-    private List<String> getFirstErrorCodes(int n) {
+    private List<String> getFirstErrorCodes(long n) {
         List<String> errorsInLog = Log.getFindings().stream()
           .filter(Finding::isError)
           .map(err -> err.getMsg().split(" ")[0])
+          .limit(n)
           .collect(Collectors.toList());
         List<String> errorsToReturn;
 
@@ -172,11 +173,7 @@ public abstract class DeriveSymTypeAbstractTest {
     }
 
     private List<String> getAllErrorCodes() {
-        if(Log.getErrorCount() > Integer.MAX_VALUE) {
-            fail(String.format("Test cant handle the amount of errors (is is more than %s)", Integer.MAX_VALUE));
-        }
-
-        return getFirstErrorCodes((int) Log.getErrorCount());
+        return getFirstErrorCodes(Log.getErrorCount());
     }
 
 
