@@ -105,7 +105,7 @@ public abstract class DeriveSymTypeAbstractTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            assertEquals(expectedErrors, getFirstErrorCodes(expectedErrors.size()));
+            assertEquals(expectedErrors, getAllErrorCodes());
             return;
         }
         fail();
@@ -131,7 +131,7 @@ public abstract class DeriveSymTypeAbstractTest {
                 assertEquals("Found errors even though there should be none", 0, Log.getErrorCount());
                 assertTrue("Missing type check result (in the form of a SymTypeExpression)", result.isPresentResult());
             } else {
-                assertEquals(expectedErrors, getFirstErrorCodes(expectedErrors.size()));
+                assertEquals(expectedErrors, getAllErrorCodes());
             }
 
         } catch (Exception e) {
@@ -169,6 +169,14 @@ public abstract class DeriveSymTypeAbstractTest {
             errorsToReturn = errorsInLog.subList(0, n);
         }
         return errorsToReturn;
+    }
+
+    private List<String> getAllErrorCodes() {
+        if(Log.getErrorCount() > Integer.MAX_VALUE) {
+            fail(String.format("Test cant handle the amount of errors (is is more than %s)", Integer.MAX_VALUE));
+        }
+
+        return getFirstErrorCodes((int) Log.getErrorCount());
     }
 
 
