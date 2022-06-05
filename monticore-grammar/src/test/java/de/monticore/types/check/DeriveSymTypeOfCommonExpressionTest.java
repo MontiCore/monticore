@@ -639,7 +639,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     String noMethodError = "0xA1242";
 
     init_advanced();
-    checkErrors("isInt(\"foo\" / 2)", divideError, noMethodError);
+    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, noMethodError);
   }
 
   /**

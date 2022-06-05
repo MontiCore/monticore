@@ -97,8 +97,9 @@ public abstract class DeriveSymTypeAbstractTest {
     protected final void checkErrors(String expression, List<String> expectedErrors) throws IOException {
         setupTypeCheck();
         ASTExpression astex = parseExpression(expression);
-        if (flatExpressionScopeSetterTraverser != null)
+        if (flatExpressionScopeSetterTraverser != null) {
             astex.accept(flatExpressionScopeSetterTraverser);
+        }
 
         Log.getFindings().clear();
         try {
@@ -112,6 +113,36 @@ public abstract class DeriveSymTypeAbstractTest {
 
     protected final void checkErrors(String expression, String... expectedErrors) throws IOException {
         checkErrors(expression, Arrays.asList(expectedErrors));
+    }
+
+    protected final void checkErrorsAndFailOnException(String expression, List<String> expectedErrors)
+      throws IOException {
+        setupTypeCheck();
+        ASTExpression astex = parseExpression(expression);
+        if (flatExpressionScopeSetterTraverser != null) {
+            astex.accept(flatExpressionScopeSetterTraverser);
+        }
+
+        Log.getFindings().clear();
+        try {
+            TypeCheckResult result = tc.iDerive.deriveType(astex);
+
+            if(expectedErrors.isEmpty()) {
+                assertEquals("Found errors even though there should be none", 0, Log.getErrorCount());
+                assertTrue("Missing type check result (in the form of a SymTypeExpression)", result.isPresentResult());
+            } else {
+                assertEquals(expectedErrors, getFirstErrorCodes(expectedErrors.size()));
+            }
+
+        } catch (Exception e) {
+            fail("An unexpected Exception was thrown during running the typecheck on " + expression + ":\n"
+              + e.getClass().getName() + e.getMessage()
+            );
+        }
+    }
+
+    protected final void checkErrorsAndFailOnException(String expression, String... expectedErrors) throws IOException {
+        checkErrorsAndFailOnException(expression, Arrays.asList(expectedErrors));
     }
 
     private String getFirstErrorCode() {
