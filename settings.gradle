@@ -50,6 +50,9 @@ if(!gradle.getGradleVersion().startsWith("6.")) {
   logger.error("Gradle " + gradle.getGradleVersion() + " used.\n" +
   "Gradle 6.X is required for this build. \n" +
   "You can download a different gradle version here: https://gradle.org/releases/\n" +
+  "\n" +
+  "The standard java compiler in gradle 7 takes >3h to build monticore. " +
+  "In gradle 6.X it is possible to use the 'Eclipse Compiler for Java' (ecj). This dramatically reduces the compile time.\n"+
   "Aborting")
   System.exit(-1);
 }
