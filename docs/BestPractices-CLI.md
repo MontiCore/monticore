@@ -2,7 +2,7 @@
 
 # MontiCore Best Practices - Designing Tools for Command Line Interfaces
 
-[[_TOC_]]
+
 
 Some DSLs require a tool to enable general accessibility via the command line interface (CLI). 
 When designing a tool, we recommend some standard guidelines.
@@ -166,4 +166,3 @@ might a good argument to do it differently.
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-

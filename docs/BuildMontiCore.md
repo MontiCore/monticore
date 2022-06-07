@@ -74,4 +74,3 @@ lasting tasks.
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-

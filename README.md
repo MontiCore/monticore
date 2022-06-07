@@ -173,4 +173,3 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
