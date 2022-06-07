@@ -20,7 +20,7 @@ dependencies {
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.common:2.15.0'
     testImplementation "junit:junit:$junit_version"
-    testImplementation 'org.codehaus.groovy:groovy:3.0.7'
+    testImplementation 'org.apache.groovy:groovy:4.0.2'
 }
 
 def srcDir = "$buildDir/main/java"

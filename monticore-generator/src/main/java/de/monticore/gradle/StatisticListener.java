@@ -39,7 +39,6 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
     }
   }
 
-  @Override
   public void buildStarted(Gradle gradle) {
 
   }
