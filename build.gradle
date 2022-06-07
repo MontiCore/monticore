@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-  id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+  id "io.github.themrmilchmann.ecj" version "0.1.0" // Eclipse compiler as it's much faster than javac
   id "org.sonarqube" version "3.0"
   id "jacoco"
   id 'org.barfuin.gradle.jacocolog' version '1.2.3'
@@ -51,7 +51,7 @@ allprojects {
 
 subprojects {
   apply plugin: 'java-library'
-  apply plugin: 'de.set.ecj'
+  apply plugin: 'io.github.themrmilchmann.ecj'
 
 
   tasks.withType(Test) {
@@ -85,24 +85,20 @@ subprojects {
       html.enabled = false
     }
   }
-  
-  
-  sourceCompatibility = '11'
-  
+
   tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.deprecation false
     options.warnings = false
-    options.fork = true
-    options.headerOutputDirectory.convention(null)
-    options.forkOptions.with {
-      // executable = 'java'
-      jvmArgs = ['-classpath', project.configurations.ecj.asPath, 'org.eclipse.jdt.internal.compiler.batch.Main', '-nowarn', "-Xmx2048m"]
-    }
+    options.forkOptions.jvmArgs += ["-Xmx4G"]
+    // TODO: reevaluate with new ecj plugin
     outputs.cacheIf {false} // ECJ has problem with caching
   }
   java {
     withSourcesJar()
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(11)
+    }
   }
   
   
