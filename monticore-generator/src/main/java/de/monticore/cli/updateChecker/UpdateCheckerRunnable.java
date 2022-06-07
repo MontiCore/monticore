@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class UpdateCheckerRunnable implements Runnable {
 
-  final protected static String REMOTE_PROPERTIES_PATH = "https://raw.githubusercontent.com/MontiCore/monticore/opendev/gradle.properties";
+  final protected static String REMOTE_PROPERTIES_PATH = "https://raw.githubusercontent.com/MontiCore/monticore/HEAD/gradle.properties";
   final protected static String LOCAL_PROPERTIES_PATH = "/buildInfo.properties";
 
   protected String newVersion;
