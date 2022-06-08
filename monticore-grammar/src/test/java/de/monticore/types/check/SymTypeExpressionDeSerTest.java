@@ -25,9 +25,9 @@ import static org.junit.Assert.*;
 public class SymTypeExpressionDeSerTest {
   // setup of objects (unchanged during tests)
   // these should be the same as those of SymTypeExpressionText
-  SymTypeConstant teDouble;
+  SymTypePrimitive teDouble;
 
-  SymTypeConstant teInt;
+  SymTypePrimitive teInt;
 
   SymTypeVariable teVarA;
 
@@ -77,9 +77,9 @@ public class SymTypeExpressionDeSerTest {
 
     // setup of objects (unchanged during tests)
     // these should be the same as those of SymTypeExpressionText
-    teDouble = createTypeConstant("double");
+    teDouble = createPrimitive("double");
 
-    teInt = createTypeConstant("int");
+    teInt = createPrimitive("int");
 
     teVarA = createTypeVariable("A", scope);
 
@@ -162,8 +162,8 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerialization(teWildcard);
     performRoundTripSerialization(teMap2);
 
-    performRoundTripSerializationSymTypeConstant(teDouble);
-    performRoundTripSerializationSymTypeConstant(teInt);
+    performRoundTripSerializationSymTypePrimitive(teDouble);
+    performRoundTripSerializationSymTypePrimitive(teInt);
     performRoundTripSerializationSymTypeVariable(teVarA);
     performRoundTripSerializationSymTypeVariable(teVarB);
     performRoundTripSerializationSymTypeOfObject(teP);
@@ -256,8 +256,8 @@ public class SymTypeExpressionDeSerTest {
     assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
-  protected void performRoundTripSerializationSymTypeConstant(SymTypeConstant expr) {
-    SymTypeConstantDeSer deser = new SymTypeConstantDeSer();
+  protected void performRoundTripSerializationSymTypePrimitive(SymTypePrimitive expr) {
+    SymTypePrimitiveDeSer deser = new SymTypePrimitiveDeSer();
 
     String serialized = deser.serialize(expr);
 
@@ -401,8 +401,8 @@ public class SymTypeExpressionDeSerTest {
     symTypeVariableDeSer.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F5"));
 
-    SymTypeConstantDeSer symTypeConstantDeser = new SymTypeConstantDeSer();
-    symTypeConstantDeser.deserialize(invalidJsonForSerializing2);
+    SymTypePrimitiveDeSer symTypePrimitiveDeser = new SymTypePrimitiveDeSer();
+    symTypePrimitiveDeser.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F1"));
 
   }

@@ -9,7 +9,6 @@ import mc.feature.scoperules.scoperuletest._parser.ScoperuleTestParser;
 import mc.feature.scoperules.scoperuletest._symboltable.*;
 import mc.feature.scoperules.scoperuletest._ast.ASTFoo;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class ScoperuleTest {
     scope.setBar(true);
     scope.setNumber(17);
     scope.setModifiedNameList(Lists.newArrayList("foo", "bar", "test"));
-    scope.setSymType(SymTypeExpressionFactory.createTypeConstant("int"));
+    scope.setSymType(SymTypeExpressionFactory.createPrimitive("int"));
     ScoperuleTestSymbols2Json symbols2Json = new ScoperuleTestSymbols2Json();
     scope.accept(symbols2Json.getTraverser());
     String serialized = symbols2Json.getSerializedString();
@@ -50,7 +49,7 @@ public class ScoperuleTest {
     assertEquals("foo", as.getModifiedName(0));
     assertEquals("bar", as.getModifiedName(1));
     assertEquals("test", as.getModifiedName(2));
-    assertTrue(SymTypeExpressionFactory.createTypeConstant("int").deepEquals(as.getSymType()));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(as.getSymType()));
   }
 
   @Test

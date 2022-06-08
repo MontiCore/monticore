@@ -2,7 +2,7 @@
 package mc.typescalculator;
 
 import de.monticore.types.check.AbstractDeriveFromExpression;
-import de.monticore.types.check.SymTypeConstant;
+import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types.check.SymTypeExpression;
 import mc.typescalculator.myownexpressiongrammar._visitor.MyOwnExpressionGrammarHandler;
 import mc.typescalculator.myownexpressiongrammar._visitor.MyOwnExpressionGrammarTraverser;
@@ -38,8 +38,8 @@ public class DeriveSymTypeOfMyOwnExpressionGrammar extends AbstractDeriveFromExp
           "cannot be calculated");
     }
 
-   if(inner.isTypeConstant()
-       &&((SymTypeConstant)inner).isNumericType()){
+   if(inner.isPrimitive()
+       &&((SymTypePrimitive)inner).isNumericType()){
       result = inner.deepClone();
     }
 

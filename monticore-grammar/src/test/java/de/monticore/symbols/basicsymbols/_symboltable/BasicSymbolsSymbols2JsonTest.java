@@ -66,7 +66,7 @@ public class BasicSymbolsSymbols2JsonTest {
     VariableSymbol variable = BasicSymbolsMill.variableSymbolBuilder()
         .setName("variable")
         .setEnclosingScope(type.getSpannedScope())
-        .setType(SymTypeExpressionFactory.createTypeConstant("double"))
+        .setType(SymTypeExpressionFactory.createPrimitive("double"))
         .build();
 
     typeSpannedScope.add(variable);
@@ -76,7 +76,7 @@ public class BasicSymbolsSymbols2JsonTest {
         .setName("function")
         .setEnclosingScope(type.getSpannedScope())
         .setSpannedScope(BasicSymbolsMill.scope())
-        .setType(SymTypeExpressionFactory.createTypeConstant("int"))
+        .setType(SymTypeExpressionFactory.createPrimitive("int"))
         .build();
 
     function.setSpannedScope(BasicSymbolsMill.scope());

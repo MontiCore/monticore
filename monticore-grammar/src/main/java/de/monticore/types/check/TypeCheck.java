@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import static de.monticore.types.check.SymTypeConstant.unbox;
+import static de.monticore.types.check.SymTypePrimitive.unbox;
 
 /**
  * This class is intended to provide typeChecking functionality.
@@ -49,9 +49,9 @@ public class TypeCheck {
   public static boolean compatible(SymTypeExpression left,
                                    SymTypeExpression right)
   {
-    if(left.isTypeConstant()&&right.isTypeConstant()){
-      SymTypeConstant leftType = (SymTypeConstant) left;
-      SymTypeConstant rightType = (SymTypeConstant) right;
+    if(left.isPrimitive()&&right.isPrimitive()){
+      SymTypePrimitive leftType = (SymTypePrimitive) left;
+      SymTypePrimitive rightType = (SymTypePrimitive) right;
       if(isBoolean(leftType)&& isBoolean(rightType)){
         return true;
       }
@@ -77,7 +77,7 @@ public class TypeCheck {
         return true;
       }
       return false;
-    } else if (!left.isTypeConstant() && right.isNullType()){
+    } else if (!left.isPrimitive() && right.isNullType()){
       return true;
     } else if(unbox(left.printFullName()).equals(unbox(right.printFullName()))) {
       return true;
@@ -101,9 +101,9 @@ public class TypeCheck {
     if(unbox(subType.printFullName()).equals(unbox(superType.printFullName()))){
       return true;
     }
-    if(subType.isTypeConstant()&&superType.isTypeConstant()) {
-      SymTypeConstant sub = (SymTypeConstant) subType;
-      SymTypeConstant supert = (SymTypeConstant) superType;
+    if(subType.isPrimitive()&&superType.isPrimitive()) {
+      SymTypePrimitive sub = (SymTypePrimitive) subType;
+      SymTypePrimitive supert = (SymTypePrimitive) superType;
       if (isDouble(supert) && sub.isNumericType() &&!isDouble(sub)) {
         return true;
       }
@@ -117,8 +117,8 @@ public class TypeCheck {
         return true;
       }
       return false;
-    }else if((subType.isTypeConstant() && !superType.isTypeConstant()) ||
-        (superType.isTypeConstant() && !subType.isTypeConstant())){
+    }else if((subType.isPrimitive() && !superType.isPrimitive()) ||
+        (superType.isPrimitive() && !subType.isPrimitive())){
       return false;
     }
     return isSubtypeOfRec(subType,superType);

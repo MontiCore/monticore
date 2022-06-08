@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static de.monticore.types.check.SymTypeConstant.unbox;
+import static de.monticore.types.check.SymTypePrimitive.unbox;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

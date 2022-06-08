@@ -10,7 +10,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-import static de.monticore.types.check.SymTypeConstant.unbox;
+import static de.monticore.types.check.SymTypePrimitive.unbox;
 import static de.monticore.types.check.TypeCheck.*;
 
 /**
@@ -203,7 +203,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   protected Optional<SymTypeExpression> calculateTypeArithmetic(ASTAssignmentExpression expr, SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //if the left and the right result are a numeric type then the type of the whole expression is the type of the left expression
     if (isNumericType(leftResult) && isNumericType(rightResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(leftResult.print())));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive(unbox(leftResult.print())));
     }
     //should not happen, not valid, will be handled in traverse
     getTypeCheckResult().reset();
@@ -257,7 +257,7 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   protected Optional<SymTypeExpression> calculateTypeBitOperation(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     //the bitshift operations are only defined for integers --> long, int, char, short, byte
     if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive(leftResult.print()));
     }
     //should not happen, not valid, will be handled in traverse
     getTypeCheckResult().reset();
@@ -284,10 +284,10 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
   protected Optional<SymTypeExpression> calculateTypeBinaryOperations(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
       //option 1: both are of integral type
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(leftResult.print()));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive(leftResult.print()));
     } else if (isBoolean(leftResult) && isBoolean(rightResult)) {
       //option 2: both are booleans
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive("boolean"));
     }
     //should not happen, not valid, will be handled in traverse
     getTypeCheckResult().reset();

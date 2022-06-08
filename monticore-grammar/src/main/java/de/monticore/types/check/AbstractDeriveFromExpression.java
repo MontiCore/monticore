@@ -11,7 +11,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-import static de.monticore.types.check.SymTypeConstant.unbox;
+import static de.monticore.types.check.SymTypePrimitive.unbox;
 import static de.monticore.types.check.TypeCheck.isFloat;
 
 public abstract class AbstractDeriveFromExpression {
@@ -128,10 +128,10 @@ public abstract class AbstractDeriveFromExpression {
    */
   protected Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
     if (TypeCheck.isByte(type) || TypeCheck.isShort(type) || TypeCheck.isChar(type) || TypeCheck.isInt(type)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive("int"));
     }
     if (TypeCheck.isLong(type) || TypeCheck.isDouble(type) || isFloat(type)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(unbox(type.print())));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive(unbox(type.print())));
     }
     return Optional.empty();
   }
