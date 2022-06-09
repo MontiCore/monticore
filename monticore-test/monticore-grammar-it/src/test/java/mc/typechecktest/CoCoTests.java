@@ -215,8 +215,8 @@ public class CoCoTests {
   }
 
   protected TypeCheckTestCoCoChecker getOOChecker(){
-    AbstractSynthesize synthesize = new FullSynthesizeFromTypeCheckTest();
-    AbstractDerive typesCalculator = new FullDeriveFromTypeCheckTest();
+    ISynthesize synthesize = new FullSynthesizeFromTypeCheckTest();
+    IDerive typesCalculator = new FullDeriveFromTypeCheckTest();
     TypeCalculator tc = new TypeCalculator(synthesize, typesCalculator);
     TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
     checker.addCoCo(new VariableDeclarationIsCorrect(tc));
@@ -225,8 +225,8 @@ public class CoCoTests {
   }
 
   protected TypeCheckTestCoCoChecker getAbstractChecker(){
-    AbstractSynthesize synthesize = new FullSynthesizeFromTypeCheckTest();
-    AbstractDerive typesCalculator = new FullDeriveFromTypeCheckTestAbstract();
+    ISynthesize synthesize = new FullSynthesizeFromTypeCheckTest();
+    IDerive typesCalculator = new FullDeriveFromTypeCheckTestAbstract();
     TypeCalculator tc = new TypeCalculator(synthesize, typesCalculator);
     TypeCheckTestCoCoChecker checker = new TypeCheckTestCoCoChecker();
     checker.addCoCo(new VariableDeclarationIsCorrect(tc));

@@ -19,14 +19,14 @@ public class TypeCalculator {
    * Synthesizing the SymTypeExpression from an AST Type.
    * May also be of a subclass;
    */
-  protected AbstractSynthesize iSynthesize;
+  protected ISynthesize iSynthesize;
 
   /**
    * Configuration: Visitor for Function 2b:
    * Deriving the SymTypeExpression from an AST Value - Literal.
    * May also be of a subclass;
    */
-  protected AbstractDerive iDerive;
+  protected IDerive iDerive;
 
 
   /**
@@ -35,8 +35,8 @@ public class TypeCalculator {
    * @param  iDerive defines, which AST Literals are handled
    *                               through the Expression type recognition
    */
-  public TypeCalculator(AbstractSynthesize synthesizeSymType,
-                        AbstractDerive iDerive) {
+  public TypeCalculator(ISynthesize synthesizeSymType,
+                        IDerive iDerive) {
     this.iSynthesize = synthesizeSymType;
     this.iDerive = iDerive;
   }
