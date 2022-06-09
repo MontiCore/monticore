@@ -16,7 +16,7 @@ public class VarDeclarationInitializationHasCorrectType
   /**
    * Used to derive the {@link SymTypeExpression} to which initialization expressions evaluate to.
    */
-  protected final AbstractDerive typeDeriver;
+  protected final IDerive typeDeriver;
 
   /**
    * Indicates that the type of the initialization expression is not compatible with the type of the assigned variable.
@@ -39,7 +39,7 @@ public class VarDeclarationInitializationHasCorrectType
   /**
    * @param typeDeriver Used to derive the {@link SymTypeExpression} to which initialization expressions evaluate to.
    */
-  public VarDeclarationInitializationHasCorrectType(AbstractDerive typeDeriver) {
+  public VarDeclarationInitializationHasCorrectType(IDerive typeDeriver) {
     this.typeDeriver = typeDeriver;
   }
 

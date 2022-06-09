@@ -14,17 +14,17 @@ import java.util.List;
 
 public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor2 {
 
-  protected AbstractSynthesize typeSynthesizer;
+  protected ISynthesize typeSynthesizer;
 
   public MCVarDeclarationStatementsSTCompleteTypes() {
     this(new FullSynthesizeFromMCSGT4Grammar());
   }
 
-  public MCVarDeclarationStatementsSTCompleteTypes(AbstractSynthesize typeSynthesizer) {
+  public MCVarDeclarationStatementsSTCompleteTypes(ISynthesize typeSynthesizer) {
     this.typeSynthesizer = typeSynthesizer;
   }
 
-  public AbstractSynthesize getTypeSynthesizer() {
+  public ISynthesize getTypeSynthesizer() {
     return this.typeSynthesizer;
   }
 
