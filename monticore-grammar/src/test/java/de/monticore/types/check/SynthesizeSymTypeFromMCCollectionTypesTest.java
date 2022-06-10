@@ -8,22 +8,27 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
-import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class SynthesizeSymTypeFromMCCollectionTypesTest {
   
@@ -71,9 +76,10 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     gs.add(DefsTypeBasic.type("A"));
     gs.add(DefsTypeBasic.type("Person"));
     gs.add(DefsTypeBasic.type("Auto"));
-    gs.add(DefsTypeBasic.type("Map"));
-    gs.add(DefsTypeBasic.type("List"));
-    gs.add(DefsTypeBasic.type("Set"));
+    gs.add(buildGeneric("Map", "K", "V"));
+    gs.add(buildGeneric("List", "T"));
+    gs.add(buildGeneric("Set", "T"));
+    gs.add(buildGeneric("Optional", "T"));
 
     CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
     ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondex.cesym");
@@ -81,6 +87,14 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
 
     ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("src/test/resources/de/monticore/types/check/Personaz.cesym");
     as2.setEnclosingScope(gs);
+  }
+
+  protected static TypeSymbol buildGeneric(String rawName, String... typeParamNames) {
+    List<TypeVarSymbol> typeParams = Arrays.stream(typeParamNames)
+      .map(DefsTypeBasic::typeVariable)
+      .collect(Collectors.toList());
+
+    return DefsTypeBasic.type(rawName, new ArrayList<>(), typeParams);
   }
   
   // ------------------------------------------------------  Tests for Function 1, 1b, 1c
@@ -132,36 +146,100 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   
   @Test
   public void symTypeFromAST_TestListQual() throws IOException {
+    // Given
     String s = "List<a.z.Person>";
     ASTMCListType asttype = parser.parse_StringMCListType(s).get();
+
+    // When
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    SymTypeExpression result = tc.symTypeFromAST(asttype);
+
+    // Then
+    assertEquals(s, result.printFullName());
+    assertTrue(result instanceof SymTypeOfGenerics);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+
   }
   
   @Test
   public void symTypeFromAST_TestListQual2() throws IOException {
+    // Given
     String s = "Set<Auto>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+
+    // When
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    SymTypeExpression result = tc.symTypeFromAST(asttype);
+
+    // Then
+    assertEquals(s, result.printFullName());
+    assertTrue(result instanceof SymTypeOfGenerics);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
   
   @Test
   public void symTypeFromAST_TestListQual3() throws IOException {
+    // Given
     String s = "Map<int,Auto>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+
+    // When
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    SymTypeExpression result = tc.symTypeFromAST(asttype);
+
+    // Then
+    assertEquals(s, result.printFullName());
+    assertTrue(result instanceof SymTypeOfGenerics);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(1).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(1).getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
   
   @Test
   public void symTypeFromAST_TestListQual4() throws IOException {
+    // Given
     String s = "Set<int>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
+
+    // When
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    SymTypeExpression result = tc.symTypeFromAST(asttype);
+
+    // Then
+    assertEquals(s, result.printFullName());
+    assertTrue(result instanceof SymTypeOfGenerics);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
-  
-  
+
+  @Test
+  public void symTypeFromAST_TestListQual5() throws IOException {
+    // Given
+    String s = "Optional<int>";
+    ASTMCType asttype = parser.parse_StringMCType(s).get();
+
+    // When
+    asttype.accept(traverser);
+    SymTypeExpression result = tc.symTypeFromAST(asttype);
+
+    // Then
+    assertEquals(s, result.printFullName());
+    assertTrue(result instanceof SymTypeOfGenerics);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+  }
   
 }

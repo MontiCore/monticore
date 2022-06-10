@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
@@ -9,6 +10,8 @@ import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesHandler;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.List;
 
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
@@ -42,42 +45,69 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
    */
 
   public void endVisit(ASTMCListType t) {
-    // argument Type has been processed and stored in result:
-    SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics("List", getScope(t.getEnclosingScope()), getTypeCheckResult().getResult());
-    if (!getTypeCheckResult().isPresentResult()) {
-      Log.error("0xE9FD6 Internal Error: No SymType argument for List type. "
+    List<TypeSymbol> listSyms = getScope(t.getEnclosingScope()).resolveTypeMany("List");
+
+    // Argument type has been processed and stored in result
+    if (getTypeCheckResult().isPresentResult() && listSyms.size() == 1) {
+      SymTypeExpression typeArg = getTypeCheckResult().getResult();
+      SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(listSyms.get(0), typeArg);
+      getTypeCheckResult().setResult(typeExpression);
+
+    } else {
+      if (listSyms.size() != 1) {
+        Log.error(String.format("0xE9FD0 Internal Error: %s matching types were found for 'List'. However, exactly one " +
+          "should match.", listSyms.size()), t.get_SourcePositionStart(), t.get_SourcePositionEnd());
+      }
+      if (!getTypeCheckResult().isPresentResult()) {
+        Log.error("0xE9FD1 Internal Error: No SymType argument for List type. "
           + " Probably TypeCheck mis-configured.");
+      }
       getTypeCheckResult().reset();
-      return;
     }
-    getTypeCheckResult().setResult(tex);
   }
 
   public void endVisit(ASTMCSetType t) {
-    // argument Type has been processed and stored in result:
-    SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics("Set", getScope(t.getEnclosingScope()), getTypeCheckResult().getResult());
-    if (!getTypeCheckResult().isPresentResult()) {
-      Log.error("0xE9FD7 Internal Error: No SymType argument for Set type. "
+    List<TypeSymbol> setSyms = getScope(t.getEnclosingScope()).resolveTypeMany("Set");
+
+    // Argument type has been processed and stored in result
+    if (getTypeCheckResult().isPresentResult() && setSyms.size() == 1) {
+      SymTypeExpression typeArg = getTypeCheckResult().getResult();
+      SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(setSyms.get(0), typeArg);
+      getTypeCheckResult().setResult(typeExpression);
+
+    } else {
+      if (setSyms.size() != 1) {
+        Log.error(String.format("0xE9FD2 Internal Error: %s matching types were found for 'Set'. However, exactly one " +
+          "should match.", setSyms.size()), t.get_SourcePositionStart(), t.get_SourcePositionEnd());
+      }
+      if (!getTypeCheckResult().isPresentResult()) {
+        Log.error("0xE9FD3 Internal Error: No SymType argument for Set type. "
           + " Probably TypeCheck mis-configured.");
+      }
       getTypeCheckResult().reset();
-      return;
     }
-    getTypeCheckResult().setResult(tex);
   }
 
   public void endVisit(ASTMCOptionalType t) {
-    // argument Type has been processed and stored in result:
-    SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics("Optional", getScope(t.getEnclosingScope()), getTypeCheckResult().getResult());
-    if (!getTypeCheckResult().isPresentResult()) {
-      Log.error("0xE9FD8 Internal Error: No SymType argument for Optional type. "
+    List<TypeSymbol> symsOfOptional = getScope(t.getEnclosingScope()).resolveTypeMany("Optional");
+
+    // Argument type has been processed and stored in result
+    if (getTypeCheckResult().isPresentResult() && symsOfOptional.size() == 1) {
+      SymTypeExpression typeArg = getTypeCheckResult().getResult();
+      SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(symsOfOptional.get(0), typeArg);
+      getTypeCheckResult().setResult(typeExpression);
+
+    } else {
+      if (symsOfOptional.size() != 1) {
+        Log.error(String.format("0xE9FDF Internal Error: %s matching types were found for 'Optional'. However, exactly " +
+          "one should match.", symsOfOptional.size()), t.get_SourcePositionStart(), t.get_SourcePositionEnd());
+      }
+      if (!getTypeCheckResult().isPresentResult()) {
+        Log.error("0xE9FE0 Internal Error: No SymType argument for Optional type. "
           + " Probably TypeCheck mis-configured.");
+      }
       getTypeCheckResult().reset();
-      return;
     }
-    getTypeCheckResult().setResult(tex);
   }
 
   /**
@@ -85,36 +115,42 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
    * is adapted (looking deeper into the visitor), instead of the endVisit method:
    */
   public void traverse(ASTMCMapType node) {
+    List<TypeSymbol> mapSyms = getScope(node.getEnclosingScope()).resolveTypeMany("Map");
+
     // Argument 1:
     if (null != node.getKey()) {
       node.getKey().accept(getTraverser());
     }
-    if (!getTypeCheckResult().isPresentResult()) {
-      Log.error("0xE9FDA Internal Error: Missing SymType argument 1 for Map type. "
-          + " Probably TypeCheck mis-configured.");
-      getTypeCheckResult().reset();
-    }
-    SymTypeExpression argument1 = getTypeCheckResult().getResult();
+    TypeCheckResult keyTypeResult = getTypeCheckResult().copy();
 
     // Argument 2:
     if (null != node.getValue()) {
       node.getValue().accept(getTraverser());
     }
-    if (!getTypeCheckResult().isPresentResult()) {
-      Log.error("0xE9FDB Internal Error: Missing SymType argument 1 for Map type. "
+    TypeCheckResult valueTypeResult = getTypeCheckResult().copy();
+
+    if(mapSyms.size() == 1 && keyTypeResult.isPresentResult() && valueTypeResult.isPresentResult()) {
+      SymTypeExpression keyTypeExpr = keyTypeResult.getResult();
+      SymTypeExpression valueTypeExpr = valueTypeResult.getResult();
+      SymTypeExpression typeExpression =
+        SymTypeExpressionFactory.createGenerics(mapSyms.get(0), keyTypeExpr, valueTypeExpr);
+      getTypeCheckResult().setResult(typeExpression);
+
+    } else {
+      if (mapSyms.size() != 1) {
+        Log.error(String.format("0xE9FDC Internal Error: %s matching types were found for 'Map'. However, exactly " +
+          "one should match.", mapSyms.size()), node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+      }
+      if (!keyTypeResult.isPresentResult()) {
+        Log.error("0xE9FDD Internal Error: Missing SymType argument 1 for Map type. "
           + " Probably TypeCheck mis-configured.");
+      }
+      if (!valueTypeResult.isPresentResult()) {
+        Log.error("0xE9FDE Internal Error: Missing SymType argument 2 for Map type. "
+          + " Probably TypeCheck mis-configured.");
+      }
       getTypeCheckResult().reset();
     }
-    SymTypeExpression argument2 = getTypeCheckResult().getResult();
-    if(argument1 == null || argument2 == null){
-      getTypeCheckResult().reset();
-      return;
-    }
-    // Construct new TypeExpression:
-    SymTypeExpression tex =
-        SymTypeExpressionFactory.createGenerics(
-            "Map", getScope(node.getEnclosingScope()), argument1, argument2);
-    getTypeCheckResult().setResult(tex);
   }
 
   // ASTMCTypeArgument, ASTMCBasicTypeArgument and  MCPrimitiveTypeArgument:

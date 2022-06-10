@@ -2,16 +2,21 @@
 package mc.typescalculator;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
+import mc.typescalculator.myownlanguage._symboltable.IMyOwnLanguageGlobalScope;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -29,6 +34,39 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
     MyOwnLanguageMill.reset();
     MyOwnLanguageMill.init();
     BasicSymbolsMill.initializePrimitives();
+    initilizeGenerics();
+  }
+
+  protected void initilizeGenerics() {
+    IMyOwnLanguageGlobalScope gs = MyOwnLanguageMill.globalScope();
+    gs.add(buildGeneric("Map", "K", "V"));
+    gs.add(buildGeneric("List", "T"));
+    gs.add(buildGeneric("Set", "T"));
+    gs.add(buildGeneric("Optional", "T"));
+  }
+
+  protected static TypeSymbol buildGeneric(String rawName, String... typeParamNames) {
+    // Raw type without type parameters
+    OOTypeSymbol genericType = MyOwnLanguageMill.oOTypeSymbolBuilder()
+      .setSpannedScope(MyOwnLanguageMill.scope())
+      .setName(rawName)
+      .setFullName(rawName)
+      .build();
+
+    // Add type parameters
+    Arrays.stream(typeParamNames)
+      .map(SynthesizeSymTypeFromMyOwnLanguageTest::buildTypeParam)
+      .forEach(genericType::addTypeVarSymbol);
+
+    return genericType;
+  }
+
+  protected static TypeVarSymbol buildTypeParam(String typeParamName) {
+    return MyOwnLanguageMill.typeVarSymbolBuilder()
+      .setName(typeParamName)
+      .setFullName(typeParamName)
+      .setSpannedScope(MyOwnLanguageMill.scope())
+      .build();
   }
 
   @Test
