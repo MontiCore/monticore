@@ -3,13 +3,24 @@
 package de.monticore.types.mcfullgenerictypes._ast;
 
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
 
-  protected ASTMCMultipleGenericType() {
+  protected ISymbol definingSymbol;
+
+  @Override
+  public Optional<ISymbol> getDefiningSymbol() {
+    return Optional.ofNullable(this.definingSymbol);
+  }
+
+  @Override
+  public void setDefiningSymbol(ISymbol symbol) {
+    this.definingSymbol = symbol;
   }
 
   public String printWithoutTypeArguments() {
@@ -31,5 +42,4 @@ public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
   public List<String> getNameList() {
     return Lists.newArrayList(printWithoutTypeArguments().split("."));
   }
-
 }

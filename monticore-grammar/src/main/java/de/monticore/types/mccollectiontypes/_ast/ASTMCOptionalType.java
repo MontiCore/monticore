@@ -2,10 +2,22 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.ISymbol;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
+
+  protected ISymbol definingSymbol;
+
+  public Optional<ISymbol> getDefiningSymbol() {
+    return Optional.ofNullable(this.definingSymbol);
+  }
+
+  public void setDefiningSymbol(ISymbol symbol) {
+    this.definingSymbol = symbol;
+  }
 
   protected List<String> names = Lists.newArrayList("Optional");
 
@@ -26,5 +38,4 @@ public class ASTMCOptionalType extends ASTMCOptionalTypeTOP {
   public List<String> getNameList() {
     return Lists.newArrayList(names);
   }
-
 }
