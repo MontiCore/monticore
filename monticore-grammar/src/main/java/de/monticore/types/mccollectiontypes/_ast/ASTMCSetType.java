@@ -2,14 +2,29 @@
 package de.monticore.types.mccollectiontypes._ast;
 
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.ISymbol;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ASTMCSetType extends ASTMCSetTypeTOP {
+
+  protected ISymbol definingSymbol;
+
+  @Override
+  public Optional<ISymbol> getDefiningSymbol() {
+    return Optional.ofNullable(this.definingSymbol);
+  }
+
+  @Override
+  public void setDefiningSymbol(ISymbol symbol) {
+    this.definingSymbol = symbol;
+  }
 
   protected List<String> names = Lists.newArrayList("Set");
 
   protected List<ASTMCTypeArgument> typeArguments = Lists.newArrayList();
+
 
   @Override
   public void setMCTypeArgument(ASTMCTypeArgument mCTypeArgument) {
@@ -26,5 +41,4 @@ public class ASTMCSetType extends ASTMCSetTypeTOP {
   public List<String> getNameList() {
     return Lists.newArrayList(names);
   }
-
 }

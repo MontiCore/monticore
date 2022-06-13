@@ -357,6 +357,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         }
         if (!fieldSymbols.isEmpty()) {
           VariableSymbol var = fieldSymbols.get(0);
+          expr.setDefiningSymbol(var);
           SymTypeExpression type = var.getType();
           getTypeCheckResult().setField();
           getTypeCheckResult().setResult(type);
@@ -366,6 +367,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         TypeVarSymbol typeVar = typeVarOpt.get();
         if(checkModifierType(typeVar)){
           SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVariable(typeVar);
+          expr.setDefiningSymbol(typeVar);
           getTypeCheckResult().setType();
           getTypeCheckResult().setResult(wholeResult);
         }else{
@@ -377,6 +379,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         if (checkModifierType(typeSymbol)) {
           SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+          expr.setDefiningSymbol(typeSymbol);
           getTypeCheckResult().setType();
           getTypeCheckResult().setResult(wholeResult);
         } else {
@@ -395,11 +398,13 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if (typeVarOpt.isPresent()) {
         TypeVarSymbol typeVar = typeVarOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeVariable(typeVar);
+        expr.setDefiningSymbol(typeVar);
         getTypeCheckResult().setType();
         getTypeCheckResult().setResult(type);
       } else if (typeSymbolOpt.isPresent()) {
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+        expr.setDefiningSymbol(typeSymbol);
         getTypeCheckResult().setType();
         getTypeCheckResult().setResult(type);
       } else {
@@ -465,6 +470,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         if (fittingMethods.size() > 1) {
           checkForReturnType(expr, fittingMethods);
         }
+        expr.setDefiningSymbol(fittingMethods.get(0));
         SymTypeExpression result = fittingMethods.get(0).getType();
         getTypeCheckResult().setMethod();
         getTypeCheckResult().setResult(result);
@@ -479,6 +485,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
       //there can only be one method with the correct arguments and return type
       if (fittingMethods.size() == 1) {
+        expr.setDefiningSymbol(fittingMethods.get(0));
         Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getType());
         getTypeCheckResult().setMethod();
         getTypeCheckResult().setResult(wholeResult.get());

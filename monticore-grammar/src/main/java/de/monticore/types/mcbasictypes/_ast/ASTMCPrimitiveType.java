@@ -3,24 +3,29 @@
 package de.monticore.types.mcbasictypes._ast;
 
 
+import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+
+import java.util.Optional;
 
 public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
 
-  public ASTMCPrimitiveType() {
+  protected ISymbol definingSymbol;
+
+  @Override
+  public Optional<ISymbol> getDefiningSymbol() {
+    return Optional.ofNullable(this.definingSymbol);
   }
 
-  /**
-   * toString delivers a short name like "int" for the primitive Types
-   * @return
-   */
-  public String toString(){
-    return printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
+  @Override
+  public void setDefiningSymbol(ISymbol symbol) {
+    this.definingSymbol = symbol;
   }
-  
+
   public boolean isBoolean(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.BOOLEAN;
   }
+
   public boolean isByte(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.BYTE;
   }
@@ -41,5 +46,13 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
   }
   public boolean isDouble(){
     return this.getPrimitive()==ASTConstantsMCBasicTypes.DOUBLE;
+  }
+
+  /**
+   * toString delivers a short name like "int" for the primitive Types
+   * @return
+   */
+  public String toString(){
+    return printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
   }
 }

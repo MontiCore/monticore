@@ -1,14 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcarraytypes._ast;
 
+import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcarraytypes.MCArrayTypesMill;
 
+import java.util.Optional;
+
 public class ASTMCArrayType extends ASTMCArrayTypeTOP {
-  public ASTMCArrayType() {
+
+  protected ISymbol definingSymbol;
+
+  @Override
+  public Optional<ISymbol> getDefiningSymbol() {
+    return Optional.ofNullable(this.definingSymbol);
+  }
+
+  @Override
+  public void setDefiningSymbol(ISymbol symbol) {
+    this.definingSymbol = symbol;
   }
 
   public String printTypeWithoutBrackets() {
     return this.getMCType().printType(MCArrayTypesMill.mcArrayTypesPrettyPrinter());
   }
-
 }

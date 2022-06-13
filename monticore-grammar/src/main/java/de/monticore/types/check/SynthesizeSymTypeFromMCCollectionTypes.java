@@ -52,7 +52,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
       SymTypeExpression typeArg = getTypeCheckResult().getResult();
       SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(listSyms.get(0), typeArg);
       getTypeCheckResult().setResult(typeExpression);
-
+      t.setDefiningSymbol(typeExpression.getTypeInfo());
     } else {
       if (listSyms.size() != 1) {
         Log.error(String.format("0xE9FD0 Internal Error: %s matching types were found for 'List'. However, exactly one " +
@@ -74,7 +74,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
       SymTypeExpression typeArg = getTypeCheckResult().getResult();
       SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(setSyms.get(0), typeArg);
       getTypeCheckResult().setResult(typeExpression);
-
+      t.setDefiningSymbol(typeExpression.getTypeInfo());
     } else {
       if (setSyms.size() != 1) {
         Log.error(String.format("0xE9FD2 Internal Error: %s matching types were found for 'Set'. However, exactly one " +
@@ -96,11 +96,11 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
       SymTypeExpression typeArg = getTypeCheckResult().getResult();
       SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(symsOfOptional.get(0), typeArg);
       getTypeCheckResult().setResult(typeExpression);
-
+      t.setDefiningSymbol(typeExpression.getTypeInfo());
     } else {
       if (symsOfOptional.size() != 1) {
-        Log.error(String.format("0xE9FDF Internal Error: %s matching types were found for 'Optional'. However, exactly " +
-          "one should match.", symsOfOptional.size()), t.get_SourcePositionStart(), t.get_SourcePositionEnd());
+        Log.error(String.format("0xE9FDF Internal Error: %s matching types were found for 'Optional'. However, exactly " 
+          + "one should match.", symsOfOptional.size()), t.get_SourcePositionStart(), t.get_SourcePositionEnd());
       }
       if (!getTypeCheckResult().isPresentResult()) {
         Log.error("0xE9FE0 Internal Error: No SymType argument for Optional type. "
@@ -135,19 +135,19 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
       SymTypeExpression typeExpression =
         SymTypeExpressionFactory.createGenerics(mapSyms.get(0), keyTypeExpr, valueTypeExpr);
       getTypeCheckResult().setResult(typeExpression);
-
+      node.setDefiningSymbol(typeExpression.getTypeInfo());
     } else {
       if (mapSyms.size() != 1) {
         Log.error(String.format("0xE9FDC Internal Error: %s matching types were found for 'Map'. However, exactly " +
-          "one should match.", mapSyms.size()), node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+            "one should match.", mapSyms.size()), node.get_SourcePositionStart(), node.get_SourcePositionEnd());
       }
       if (!keyTypeResult.isPresentResult()) {
         Log.error("0xE9FDD Internal Error: Missing SymType argument 1 for Map type. "
-          + " Probably TypeCheck mis-configured.");
+            + " Probably TypeCheck mis-configured.");
       }
       if (!valueTypeResult.isPresentResult()) {
         Log.error("0xE9FDE Internal Error: Missing SymType argument 2 for Map type. "
-          + " Probably TypeCheck mis-configured.");
+            + " Probably TypeCheck mis-configured.");
       }
       getTypeCheckResult().reset();
     }
