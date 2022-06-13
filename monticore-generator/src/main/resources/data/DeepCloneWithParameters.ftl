@@ -1,8 +1,20 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attributeList")}
+${tc.signature("attributeList", "hasSuperClass")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
 <#assign service = glex.getGlobalVar("service")>
-    super.deepClone(result);
+
+<#if hasSuperClass>
+  super.deepClone(result);
+<#else>
+  result.set_SourcePositionStart(get_SourcePositionStart().clone());
+  result.set_SourcePositionEnd(get_SourcePositionEnd().clone());
+  for (de.monticore.ast.Comment x : get_PreCommentList()) {
+    result.get_PreCommentList().add(new de.monticore.ast.Comment(x.getText()));
+  }
+  for (de.monticore.ast.Comment x : get_PostCommentList()) {
+    result.get_PostCommentList().add(new de.monticore.ast.Comment(x.getText()));
+  }
+</#if>
 
 <#list attributeList as attribute>
 <#if !service.isReferencedSymbolAttribute(attribute) && !service.isInheritedAttribute(attribute)>
