@@ -376,23 +376,6 @@ pages:
   only:
     - schedules
 
-# Checks whether all links in the markdown files of this repo are reachable
-checkMDLinks:
-  stage: check
-  needs: []
-  allow_failure: true
-  script:
-# Download the current version of the MDLinkCheckerCLI tool
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
-    - "url=https://git.rwth-aachen.de/monticore/monticore/-/tree/dev"
-# Call the tool with the url of the repo containing the files to check
-    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken)"
-    - "echo \"$linkCheckRes\""
-# If the cehck detected an error, exit to make this job produce an error
-    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
-  only:
-    - dev
-
 # Mirrors this repository's `dev` and `master` branches to GitHub.
 #
 # The mirror will always be at either HEAD or HEAD+1 (depending on whether cleanup is necessary).
@@ -405,8 +388,6 @@ githubmirror:
     #
     # See https://docs.gitlab.com/ee/ci/runners/configure_runners.html#git-strategy
     GIT_STRATEGY: clone
-  dependencies:
-    - checkMDLinks
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
@@ -418,10 +399,8 @@ githubmirror:
     - mkdir -p ~/.ssh
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   script:
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkChangerCLI.jar?job=build\" --output MDLinkChangerCLI.jar"
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fgithub-mirror-tools/repository/files/mirror.sh/raw\" --output mirror.sh"
     - sh mirror.sh
-    - rm MDLinkChangerCLI.jar
     - rm mirror.sh
     - git add --all
     # We'll simply ignore failures during commit because there is a chance that no files were changed. In this case the
