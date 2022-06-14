@@ -1,5 +1,9 @@
 quickcomms
 .gradle
+gradle/
+monticore-generator/gradle/
+**/gradlew.bat
+**/gradlew
 target/
 .project
 .settings/
@@ -11,7 +15,6 @@ target/
 build
 .mvn/extensions.xml
 .profiler/
-.gradle
 *.bak
 out
 target-emf/
