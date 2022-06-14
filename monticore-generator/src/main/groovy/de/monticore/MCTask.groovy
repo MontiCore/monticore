@@ -54,6 +54,8 @@ abstract public class MCTask extends DefaultTask {
     dependsOn(project.configurations.getByName("grammar"))
 
     buildInfoFile.set(project.layout.buildDirectory.get().dir("resources").dir("main").file("buildInfo.properties"))
+
+    getReportDir().convention(getProject().getLayout().getBuildDirectory().dir("reports"))
   }
   
   final RegularFileProperty grammar = project.objects.fileProperty()
@@ -102,7 +104,11 @@ abstract public class MCTask extends DefaultTask {
     return outputDir
   }
 
-  @OutputFile
+  @OutputDirectory
+  abstract DirectoryProperty getReportDir();
+
+
+    @OutputFile
   RegularFileProperty getBuildInfoFile() {
     return buildInfoFile
   }
@@ -297,6 +303,10 @@ abstract public class MCTask extends DefaultTask {
     // construct string array from configuration to pass it to MontiCore
     List<String> params = ["-g", grammar.get().asFile.toString(),
                            "-o", outputDir.get().asFile.toString()]
+    if(getReportDir().isPresent()){
+      params.add("-r")
+      params.add(getReportDir().get().asFile.toString())
+    }
     if (!mp.isEmpty()) {
       params.add("-mp")
       params.addAll(mp)
@@ -390,9 +400,15 @@ abstract public class MCTask extends DefaultTask {
    *                  no generation necessary
    */
   boolean incCheck(String grammar) {
-    String outAsString = outputDir.get().asFile.toString()
-    String grammarWithoutExt = grammar.replace(".mc4", "").toLowerCase()
-    def inout = new File(outAsString + "/" + grammarWithoutExt + "/IncGenGradleCheck.txt")
+    String outAsString = getReportDir().get().asFile.toString()
+    String grammarWithoutExt = grammar
+        .replace(".mc4", "")
+        .replace(File.separator, ".")
+        .replace('/', ".")
+        .toLowerCase()
+    println(grammarWithoutExt)
+    def inout = new File(outAsString + File.separator +
+          grammarWithoutExt + File.separator +  "/IncGenGradleCheck.txt")
     return IncChecker.incCheck(inout, grammar, logger, "mc4")
   }
 /**
