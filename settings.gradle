@@ -18,17 +18,9 @@ pluginManagement {
 }
 
 boolean isCi = System.getenv().containsKey("CI")
-println("isCI " + isCi)
-println("not isCI " + !isCi)
 
-println("buildCacheURL set: " +  getProperties().containsKey("buildCacheURL"))
-println(getProperties().get("buildCacheURL"))
-
-println("\"\" + getProperties().get(\"buildCacheURL\")")
-println("" + getProperties().get("buildCacheURL"))
-
-String getBuildCacheURL(){
-  return getProperties().get("buildCacheURL")
+String myGetProperty(String key){
+  return getProperties().get(key)
 }
 
 buildCache {
@@ -36,13 +28,13 @@ buildCache {
     enabled = !isCi // CI has no (persistent) local storage
   }
   remote(HttpBuildCache) {
-    enabled = getBuildCacheURL() != null
-    url = getBuildCacheURL()
+    enabled = myGetProperty("buildCacheURL") != null
+    url = myGetProperty("buildCacheURL")
     allowInsecureProtocol = false
     push = isCi   // Only CI is allowed to push
     credentials {
-      username = getProperties().get("buildCacheUser")
-      password = getProperties().get("buildCachePassword")
+      username = myGetProperty("buildCacheUser")
+      password = myGetProperty("buildCachePassword")
     }
   }
 }
