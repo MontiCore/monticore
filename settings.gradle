@@ -21,21 +21,21 @@ boolean isCi = System.getenv().containsKey("CI")
 println("isCI " + isCi)
 println("not isCI " + !isCi)
 
-println("buildCacheURL set: " + gradle.hasProperty("buildCacheURL"))
-println(gradle.getProperties().get("buildCacheURL"))
+println("buildCacheURL set: " +  getProperties().containsKey("buildCacheURL"))
+println(getProperties().get("buildCacheURL"))
 
 buildCache {
   local {
     enabled = !isCi // CI has no (persistent) local storage
   }
   remote(HttpBuildCache) {
-    enabled = gradle.hasProperty("buildCacheURL")
-    url = "" + gradle.getProperties().get("buildCacheURL")
+    enabled = getProperties().containsKey("buildCacheURL")
+    url = "" + getProperties().get("buildCacheURL")
     allowInsecureProtocol = false
     push = isCi   // Only CI is allowed to push
     credentials {
-      username = gradle.getProperties().get("buildCacheUser")
-      password = gradle.getProperties().get("buildCachePassword")
+      username = getProperties().get("buildCacheUser")
+      password = getProperties().get("buildCachePassword")
     }
   }
 }
