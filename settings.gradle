@@ -24,13 +24,20 @@ println("not isCI " + !isCi)
 println("buildCacheURL set: " +  getProperties().containsKey("buildCacheURL"))
 println(getProperties().get("buildCacheURL"))
 
+println("\"\" + getProperties().get(\"buildCacheURL\")")
+println("" + getProperties().get("buildCacheURL"))
+
+String getBuildCacheURL(){
+  return getProperties().get("buildCacheURL")
+}
+
 buildCache {
   local {
     enabled = !isCi // CI has no (persistent) local storage
   }
   remote(HttpBuildCache) {
-    enabled = getProperties().containsKey("buildCacheURL")
-    url = "" + getProperties().get("buildCacheURL")
+    enabled = getBuildCacheURL() != null
+    url = getBuildCacheURL()
     allowInsecureProtocol = false
     push = isCi   // Only CI is allowed to push
     credentials {
