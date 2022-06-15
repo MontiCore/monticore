@@ -21,7 +21,7 @@ public class IncGenGradleReporter extends IncGenReporter {
   }
 
   public IncGenGradleReporter(String outputDir, String modelName, String fileExtension) {
-    super(outputDir + File.separator + modelName.replaceAll("\\.", "/"), SIMPLE_FILE_NAME, "txt");
+    super(outputDir + File.separator + modelName, SIMPLE_FILE_NAME, "txt");
     this.outputDir = outputDir;
     this.fileExtension = fileExtension;
   }

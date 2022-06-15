@@ -406,7 +406,6 @@ abstract public class MCTask extends DefaultTask {
         .replace(File.separator, ".")
         .replace('/', ".")
         .toLowerCase()
-    println(grammarWithoutExt)
     def inout = new File(outAsString + File.separator +
           grammarWithoutExt + File.separator +  "/IncGenGradleCheck.txt")
     return IncChecker.incCheck(inout, grammar, logger, "mc4")

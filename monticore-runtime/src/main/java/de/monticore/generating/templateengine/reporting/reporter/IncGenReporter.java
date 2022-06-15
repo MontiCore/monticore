@@ -72,7 +72,7 @@ public abstract class IncGenReporter extends AReporter {
     // this entirely resets the gathered information, hence the corresponding
     // event reportParseInputFile must only be called once for each actual input
     // file, i.e., the things that are parsed
-    String lowerCaseName = modelName.replaceAll("\\.", "/").toLowerCase();
+    String lowerCaseName = modelName.toLowerCase();
     this.reportingHelper = new ReportCreator(outputDir + File.separator + lowerCaseName);
     notExistentHWCFiles.clear();
     usedHWCFiles.clear();
