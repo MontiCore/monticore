@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.generating.templateengine.reporting.reporter;
+package de.monticore.gradle;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
@@ -10,18 +10,20 @@ import java.nio.file.Paths;
 
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.GEN_ERROR;
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.MISSING;
-
-public class IncGenGradleReporter extends IncGenReporter {
+// TODO Delete after release 7.4.0
+@Deprecated
+public class IncGenGradleReporterFix extends IncGenReporterFix {
 
   static final String SIMPLE_FILE_NAME = "IncGenGradleCheck";
   protected final String fileExtension;
 
-  public IncGenGradleReporter(String outputDir, String modelName) {
+  public IncGenGradleReporterFix(String outputDir, String modelName) {
     this(outputDir, modelName, "mc4");
   }
 
-  public IncGenGradleReporter(String outputDir, String modelName, String fileExtension) {
+  public IncGenGradleReporterFix(String outputDir, String modelName, String fileExtension) {
     super(outputDir + File.separator + modelName, SIMPLE_FILE_NAME, "txt");
+
     this.outputDir = outputDir;
     this.fileExtension = fileExtension;
   }

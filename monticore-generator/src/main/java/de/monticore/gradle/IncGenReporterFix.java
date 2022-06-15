@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.generating.templateengine.reporting.reporter;
+package de.monticore.gradle;
 
 import com.google.common.io.Files;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
@@ -14,8 +14,9 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
-public abstract class IncGenReporter extends AReporter {
+// TODO Delete after release 7.4.0
+@Deprecated
+public abstract class IncGenReporterFix extends AReporter {
 
   protected Set<String> modelFiles = new OrderedHashSet<>();
 
@@ -37,7 +38,7 @@ public abstract class IncGenReporter extends AReporter {
 
   protected Path qualifiedInputFile;
 
-  protected IncGenReporter(String path, String qualifiedFileName, String fileextension) {
+  protected IncGenReporterFix(String path, String qualifiedFileName, String fileextension) {
     super(path, qualifiedFileName, fileextension);
   }
 

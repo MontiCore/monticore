@@ -5,9 +5,7 @@ package de.monticore;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.generating.templateengine.reporting.reporter.IncGenCheckReporter;
-import de.monticore.generating.templateengine.reporting.reporter.IncGenGradleReporter;
-import de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter;
+import de.monticore.gradle.IncGenGradleReporterFix;
 import de.monticore.io.paths.MCPath;
 
 /**
@@ -19,6 +17,8 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
   protected String outputDirectory;
 
+  protected String reportDirectory;
+
   protected MCPath handwrittenPath;
 
   protected MCPath templatePath;
@@ -28,12 +28,13 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
    */
   protected MontiCoreReportsLight(
           String outputDirectory,
-          String reportDiretory,
+          String reportDirectory,
           MCPath handwrittenPath,
           MCPath templatePath) {
     this.outputDirectory = outputDirectory;
     this.handwrittenPath = handwrittenPath;
     this.templatePath = templatePath;
+    this.reportDirectory = reportDirectory;
   }
 
   /**
@@ -47,12 +48,10 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
     ReportManager reports = new ReportManager(this.outputDirectory);
     
-    InputOutputFilesReporter inputOutput = new InputOutputFilesReporter(this.outputDirectory);
-    IncGenCheckReporter incGenCheck = new IncGenCheckReporter(this.outputDirectory, modelName);
-    IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.outputDirectory, modelName);
+    IncGenGradleReporterFix gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, modelName);
 
-    reports.addReportEventHandler(inputOutput); // 17_InputOutputFiles
-    reports.addReportEventHandler(incGenCheck); // IncGenCheck
+    //reports.addReportEventHandler(inputOutput); // 17_InputOutputFiles
+    //reports.addReportEventHandler(incGenCheck); // IncGenCheck
     reports.addReportEventHandler(gradleReporter);
 
     return reports;
