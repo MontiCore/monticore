@@ -17,24 +17,24 @@ pluginManagement {
   }
 }
 
-/*  # Output of MCTask contains absolute paths, so caching is disabled
 boolean isCi = System.getenv().containsKey("CI")
 
 buildCache {
   local {
-    enabled = !isCi
+    enabled = !isCi // CI has no (persistent) local storage
   }
   remote(HttpBuildCache) {
+    enabled = gradle.hasProperty("buildCacheURL")
     url = buildCacheURL
-    allowInsecureProtocol = true  // TODO: https certificate for server!
-    push = true // isCi
+    allowInsecureProtocol = false
+    push = isCi   // Only CI is allowed to push
     credentials {
       username = buildCacheUser
       password = buildCachePassword
     }
   }
 }
-*/
+
 
 
 rootProject.name = 'monticore'
