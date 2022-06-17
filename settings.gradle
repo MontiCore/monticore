@@ -29,7 +29,7 @@ buildCache {
   }
   remote(HttpBuildCache) {
     enabled = myGetProperty("buildCacheURL") != null
-    url = myGetProperty("buildCacheURL")
+    url = ""+myGetProperty("buildCacheURL")
     allowInsecureProtocol = false
     push = isCi   // Only CI is allowed to push
     credentials {
