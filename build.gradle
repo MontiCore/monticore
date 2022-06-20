@@ -99,6 +99,7 @@ subprojects {
       // executable = 'java'
       jvmArgs = ['-classpath', project.configurations.ecj.asPath, 'org.eclipse.jdt.internal.compiler.batch.Main', '-nowarn', "-Xmx2048m"]
     }
+    outputs.cacheIf {false} // ECJ has problem with caching
   }
   java {
     withSourcesJar()

@@ -11,6 +11,9 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.io.paths.MCPath;
 
+import java.nio.file.Path;
+import java.util.function.Function;
+
 /**
  * Initializes and provides the set of reports desired for MontiCore to the
  * reporting framework.
@@ -25,20 +28,23 @@ public class MontiCoreReports implements ReportManagerFactory {
   protected MCPath handwrittenPath;
   
   protected MCPath templatePath;
+
+  protected Function<Path, Path> reportPathOutput;
   
 
   /**
    * Constructor for de.monticore.MontiCoreReports
    */
   protected MontiCoreReports(
-          String outputDirectory,
-          String reportDiretory,
-          MCPath handwrittenPath,
-          MCPath templatePath) {
+      String outputDirectory,
+      String reportDiretory,
+      Function<Path, Path> reportPathOutput, MCPath handwrittenPath,
+      MCPath templatePath) {
     this.outputDirectory = outputDirectory;
     this.reportDirectory = reportDiretory;
     this.handwrittenPath = handwrittenPath;
     this.templatePath = templatePath;
+    this.reportPathOutput = reportPathOutput;
   }
 
   /**
@@ -81,7 +87,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, lowerCaseName);
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
-    IncGenGradleReporterFix gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, lowerCaseName);
+    IncGenGradleReporterFix gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, reportPathOutput, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles

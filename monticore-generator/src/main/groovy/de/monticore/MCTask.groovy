@@ -44,6 +44,7 @@ import java.util.stream.Collectors
  *   - includeConfigs   - list of names of configurations that should be added to the model path
  *                        defaults to empty list
  */
+@CacheableTask
 abstract public class MCTask extends DefaultTask {
   
   MCTask() {
@@ -115,29 +116,34 @@ abstract public class MCTask extends DefaultTask {
 
   @Incremental
   @InputFile
+  @PathSensitive(PathSensitivity.RELATIVE)
   RegularFileProperty getGrammar() {
     return grammar
   }
   
   @InputFile
   @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
   File customLog
   
   @InputFiles
   @Incremental
   @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
   ConfigurableFileCollection getSuperGrammars() {
     return superGrammars
   }
   
   @Input
   @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
   List<String> getHandcodedPath() {
     return handcodedPath
   }
   
   @Input
   @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
   List<String> getModelPath() {
     return modelPath
   }
@@ -156,12 +162,14 @@ abstract public class MCTask extends DefaultTask {
   
   @InputFiles
   @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
   List<String> getIncludeConfigs() {
     return includeConfigs
   }
   
   @InputFiles
   @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
   ConfigurableFileCollection getGrammarConfigFiles() {
     return grammarConfigFiles
   }
@@ -306,6 +314,10 @@ abstract public class MCTask extends DefaultTask {
     if(getReportDir().isPresent()){
       params.add("-r")
       params.add(getReportDir().get().asFile.toString())
+    }
+    if(getReportDir().isPresent()){
+      params.add("-rb")
+      params.add(this.getProject().projectDir.toPath().toAbsolutePath().toString())
     }
     if (!mp.isEmpty()) {
       params.add("-mp")
