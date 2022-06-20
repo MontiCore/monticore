@@ -636,8 +636,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         (isLong(rightResult) && isNumericType(leftResult))) {
       return Optional.of(SymTypeExpressionFactory.createPrimitive("long"));
       //no part of the expression is a long -> if both parts are numeric types then the result is a int
-    } else if (leftResult.isPrimitive() && isIntegralType(leftResult)
-        && rightResult.isPrimitive() && isIntegralType(rightResult)
+    } else if (isIntegralType(leftResult) && isIntegralType(rightResult)
     ) {
       return Optional.of(SymTypeExpressionFactory.createPrimitive("int"));
     }

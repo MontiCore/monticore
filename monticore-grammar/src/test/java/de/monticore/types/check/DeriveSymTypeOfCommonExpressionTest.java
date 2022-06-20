@@ -76,11 +76,16 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
    */
   @Test
   public void deriveFromPlusExpression() throws IOException {
+    init_basic();
+
     // example with two ints
     check("3+4", "int");
 
     // example with double and int
     check("4.9+12", "double");
+
+    // example with Integer
+    check("foo2+foo2", "int");
 
     // example with String
     check("3 + \"Hallo\"", "String");
@@ -252,6 +257,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         .build();
     add2scope(scope, firstsemesterstudent);
     add2scope(scope, field("foo", _intSymType));
+    add2scope(scope, field("foo2", _IntegerSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
