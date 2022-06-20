@@ -34,6 +34,7 @@ public class DefsTypeBasic {
     set_Void();  // only A
     set_Null();  // only A
     set_thePrimitives();   // only A
+    set_BoxedPrimitives();
     set_array();
     set_String();
     set_Object();
@@ -394,6 +395,20 @@ public class DefsTypeBasic {
     _byteSymType = new SymTypePrimitive(loader);
 
 
+  }
+
+  /*********************************************************************/
+
+  /**
+   * This is the predefined Symbol for boxed Primitives, such as "Integer"
+   */
+  public static SymTypeOfObject _IntegerSymType;
+
+  public static void set_BoxedPrimitives() {
+    IBasicSymbolsGlobalScope typeSymbolsScope = BasicSymbolsMill.globalScope();
+    OOTypeSymbol loader = new OOTypeSymbolSurrogate("Integer");
+    loader.setEnclosingScope(typeSymbolsScope);
+    _IntegerSymType = new SymTypeOfObject(loader);
   }
 
   

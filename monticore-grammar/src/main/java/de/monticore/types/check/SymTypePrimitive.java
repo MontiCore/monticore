@@ -159,9 +159,9 @@ public class SymTypePrimitive extends SymTypeExpression {
   }
 
   /**
-   * Checks whether it is an integer type (incl. byte, long, char)
+   * Checks whether it is a numeric type (incl. byte, long, char, float)
    *
-   * @return true if the given type is an integral type
+   * @return true if the given type is a numeric type
    */
   public boolean isNumericType() {
     return "float".equals(getPrimitiveName()) ||
