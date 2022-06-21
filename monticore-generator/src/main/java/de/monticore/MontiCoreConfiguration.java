@@ -83,8 +83,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String DEV_LONG = "dev";
   public static final String CUSTOMLOG_LONG = "customLog";
   public static final String REPORT_LONG = "report";
-
-  public static final String REPORT_BASE_LONG = "report";
+  public static final String REPORT_BASE_LONG = "report_base";
   public static final String DSTLGEN_LONG = "dstlGen";
   public static final String HELP_LONG = "help";
 
