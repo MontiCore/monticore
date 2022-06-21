@@ -32,7 +32,7 @@ Log.debug("Handcoded argument  : " + _configuration.getHandcodedPathAsStrings(),
 Log.debug("Handcoded files     : " + handcodedPath, LOG_ID)
 
 // Output only those reports that are required for incremental generation
-reportManagerFactory = new MontiCoreReportsLight(out.getAbsolutePath(), report.getAbsolutePath(), handcodedPath, templatePath)
+reportManagerFactory = new MontiCoreReportsLight(out.getAbsolutePath(), report.getAbsolutePath(), _configuration.getReportPathOutput(), handcodedPath, templatePath)
 
 // M1.2: Initialize reporting (output)
 Reporting.init(out.getAbsolutePath(),
