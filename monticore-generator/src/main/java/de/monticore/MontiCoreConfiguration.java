@@ -258,10 +258,10 @@ public final class MontiCoreConfiguration implements Configuration {
   }
 
   /**
-   * Getter for the output directory stored in this configuration. A fallback
-   * default is "monticore/sourcecode".
+   * Returns a function, which confirms a path into a printable path.
+   * If a base-path is present, a relative path is returned. Otherwise, the absolute path is used
    *
-   * @return output directory file
+   * @return printable path path
    */
   public Function<Path,Path> getReportPathOutput() {
     Optional<String> report_base = getAsString(REPORT_BASE);

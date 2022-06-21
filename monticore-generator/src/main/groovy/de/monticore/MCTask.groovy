@@ -136,14 +136,12 @@ abstract public class MCTask extends DefaultTask {
   
   @Input
   @Optional
-  @PathSensitive(PathSensitivity.RELATIVE)
   List<String> getHandcodedPath() {
     return handcodedPath
   }
   
   @Input
   @Optional
-  @PathSensitive(PathSensitivity.RELATIVE)
   List<String> getModelPath() {
     return modelPath
   }
