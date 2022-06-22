@@ -516,13 +516,17 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     List<FunctionSymbol> fittingMethods = new ArrayList<>();
     for (FunctionSymbol method : methodlist) {
       //for every method found check if the arguments are correct
-      if (expr.getArguments().getExpressionList().size() == method.getParameterList().size()) {
+      if ((!method.isIsElliptic() &&
+          expr.getArguments().getExpressionList().size() == method.getParameterList().size())
+          || (method.isIsElliptic() &&
+          expr.getArguments().getExpressionList().size() >= method.getParameterList().size() - 1)) {
         boolean success = true;
-        for (int i = 0; i < method.getParameterList().size(); i++) {
+        for (int i = 0; i < expr.getArguments().sizeExpressions(); i++) {
           expr.getArguments().getExpression(i).accept(getTraverser());
           if(typeCheckResult.isPresentResult()){
             //test if every single argument is correct
-            if (!method.getParameterList().get(i).getType().deepEquals(getTypeCheckResult().getResult()) &&
+            if (!method.getParameterList().get(Math.min(i, method.getParameterList().size() - 1))
+              .getType().deepEquals(getTypeCheckResult().getResult()) &&
               !compatible(method.getParameterList().get(i).getType(), getTypeCheckResult().getResult())) {
               success = false;
             }
