@@ -18,6 +18,7 @@ public class FunctionSymbol extends FunctionSymbolTOP {
   public FunctionSymbol deepClone(){
     FunctionSymbol clone = new FunctionSymbol(name);
     clone.setType(this.getType().deepClone());
+    clone.setIsElliptic(this.isIsElliptic());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
     if(isPresentAstNode()) {

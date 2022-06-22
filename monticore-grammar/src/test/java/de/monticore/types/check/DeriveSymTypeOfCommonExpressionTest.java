@@ -528,6 +528,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     );
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
+    MethodSymbol ms0 = add(method("areInt", _booleanSymType), field("values", _intSymType));
+    ms0.setIsElliptic(true);
+    add2scope(scope, ms0);
     FieldSymbol fs = field("variable", _intSymType);
     fs.setIsStatic(true);
     MethodSymbol ms = method("store", _doubleSymType);
@@ -618,6 +621,15 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     //test for method with unqualified name with parameters
     check("isInt(4)", "boolean");
+
+    //test for method with varargs with no optional value
+    check("areInt()", "boolean");
+
+    //test for method with varargs with one optional value
+    check("areInt(1)", "boolean");
+
+    //test for method with varargs with multiple optional values
+    check("areInt(1, 2, 3)", "boolean");
 
     //test for method with qualified name without parameters
     check("types.Test.store()", "double");
