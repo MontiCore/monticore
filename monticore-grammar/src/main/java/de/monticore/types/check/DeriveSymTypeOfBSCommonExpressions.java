@@ -520,9 +520,13 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         boolean success = true;
         for (int i = 0; i < method.getParameterList().size(); i++) {
           expr.getArguments().getExpression(i).accept(getTraverser());
-          //test if every single argument is correct
-          if (!method.getParameterList().get(i).getType().deepEquals(getTypeCheckResult().getResult()) &&
+          if(typeCheckResult.isPresentResult()){
+            //test if every single argument is correct
+            if (!method.getParameterList().get(i).getType().deepEquals(getTypeCheckResult().getResult()) &&
               !compatible(method.getParameterList().get(i).getType(), getTypeCheckResult().getResult())) {
+              success = false;
+            }
+          }else{
             success = false;
           }
         }

@@ -167,7 +167,7 @@ public abstract class DeriveSymTypeAbstractTest {
                 errorsToReturn.add("");
             }
         } else {
-            errorsToReturn = errorsInLog.subList(0, n);
+            errorsToReturn = errorsInLog.subList(0, (int) n);
         }
         return errorsToReturn;
     }
