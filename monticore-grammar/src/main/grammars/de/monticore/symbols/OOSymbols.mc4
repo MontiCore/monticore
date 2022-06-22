@@ -98,7 +98,6 @@ component grammar OOSymbols extends BasicSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic: boolean
-    isFinal: boolean
-    isElliptic: boolean ;
+    isFinal: boolean ;
 
 }
