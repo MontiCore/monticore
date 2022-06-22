@@ -651,6 +651,15 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     checkError("isNot()", "0xA1242");
   }
 
+  @Test
+  public void testInvalidCallExpressionWithInvalidArgument() throws IOException {
+    String divideError = "0xA0212";
+    String noMethodError = "0xA1242";
+
+    init_advanced();
+    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, noMethodError);
+  }
+
   /**
    * initialize the symbol table for a basic inheritance example
    * we only have one scope and the symbols are all in this scope or in subscopes
