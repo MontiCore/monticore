@@ -115,3 +115,6 @@ while (grammarIterator.hasNext()) {
 if (toolName.isPresent()) {
   generateLaunchScripts(glex, out, toolName.get())
 }
+
+// Close opened jar files
+de.monticore.io.paths.MCPath.closeAllJarFileSystems()
