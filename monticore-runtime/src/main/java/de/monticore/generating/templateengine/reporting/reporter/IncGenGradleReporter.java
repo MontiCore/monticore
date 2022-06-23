@@ -12,16 +12,18 @@ import java.util.function.Function;
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.GEN_ERROR;
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.MISSING;
 
-public class IncGenGradleReporter extends IncGenReporterFix {
+public class IncGenGradleReporter extends IncGenReporter {
 
   static final String SIMPLE_FILE_NAME = "IncGenGradleCheck";
   protected final String fileExtension;
   protected Function<Path, Path> reportPathOutput;
 
   public IncGenGradleReporter(String outputDir, String modelName) {
+    this(outputDir, modelName, "mc4");
+  }
+  public IncGenGradleReporter(String outputDir, String modelName, String fileExtension) {
     this(outputDir, p->p, modelName, "mc4");
   }
-
   public IncGenGradleReporter(String outputDir, Function<Path, Path> reportPathOutput, String modelName) {
     this(outputDir, reportPathOutput, modelName, "mc4");
   }
