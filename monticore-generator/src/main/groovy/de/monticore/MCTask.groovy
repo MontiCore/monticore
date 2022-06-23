@@ -418,7 +418,8 @@ abstract public class MCTask extends DefaultTask {
         .toLowerCase()
     def inout = new File(outAsString + File.separator +
           grammarWithoutExt + File.separator +  "/IncGenGradleCheck.txt")
-    return IncChecker.incCheck(inout, grammar, logger, "mc4")
+    String base = this.getProject().projectDir.toPath().toAbsolutePath().toString();
+    return IncChecker.incCheck(inout, grammar, logger, "mc4", base)
   }
 /**
    * Returns the path to the TR grammar.
