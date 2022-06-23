@@ -87,27 +87,27 @@ public class IncCheckerTest {
 
     // Next, actually test the IncCheck
     // First without any changes
-    Assert.assertTrue("IncCheck without changes failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding));
+    Assert.assertTrue("IncCheck without changes failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
 
     // Check when a HW file has been added
     missingHWFile.createNewFile();
-    Assert.assertFalse("IncCheck with added HW file did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding));
+    Assert.assertFalse("IncCheck with added HW file did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
     missingHWFile.delete();
 
     // Test with no changes again (after deleting the added HW file)
-    Assert.assertTrue("IncCheck without changes (after deleting) failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding));
+    Assert.assertTrue("IncCheck without changes (after deleting) failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
 
     // Delete the existing HW file and test
     existingHWFile.delete();
-    Assert.assertFalse("IncCheck with deleted HW file did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding));
+    Assert.assertFalse("IncCheck with deleted HW file did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
     existingHWFile.createNewFile();
 
     // Test with no changes again (after re-adding the deleted HW file)
-    Assert.assertTrue("IncCheck without changes (after re-adding) failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding));
+    Assert.assertTrue("IncCheck without changes (after re-adding) failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
 
     // Change input model/content
     Files.writeToFile(CharSource.wrap("new file content").asByteSource(StandardCharsets.UTF_8).openStream(), inputFile);
-    Assert.assertFalse("IncCheck with changed input model did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding));
+    Assert.assertFalse("IncCheck with changed input model did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
   }
 
   private String calcChacheEntry(File file) throws IOException {

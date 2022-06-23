@@ -7,6 +7,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Function;
 
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.GEN_ERROR;
 import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.MISSING;
@@ -15,20 +16,35 @@ public class IncGenGradleReporter extends IncGenReporter {
 
   static final String SIMPLE_FILE_NAME = "IncGenGradleCheck";
   protected final String fileExtension;
+  protected Function<Path, Path> reportPathOutput;
 
   public IncGenGradleReporter(String outputDir, String modelName) {
     this(outputDir, modelName, "mc4");
   }
-
   public IncGenGradleReporter(String outputDir, String modelName, String fileExtension) {
+    this(outputDir, p->p, modelName, "mc4");
+  }
+  public IncGenGradleReporter(String outputDir, Function<Path, Path> reportPathOutput, String modelName) {
+    this(outputDir, reportPathOutput, modelName, "mc4");
+  }
+
+  public IncGenGradleReporter(String outputDir, Function<Path, Path> reportPathOutput, String modelName, String fileExtension) {
     super(outputDir + File.separator + modelName, SIMPLE_FILE_NAME, "txt");
-    this.outputDir = outputDir;
+
+    this.outputDir = Paths.get(outputDir);
     this.fileExtension = fileExtension;
+    this.reportPathOutput = reportPathOutput;
   }
 
   @Override
   protected boolean isModelFile(String fileName) {
     return fileName.endsWith("." + fileExtension);
+  }
+
+  protected String printPath(Path p){
+    return reportPathOutput.apply(p)
+        .toString()
+        .replaceAll("\\\\", "/");
   }
 
   @Override
@@ -37,7 +53,7 @@ public class IncGenGradleReporter extends IncGenReporter {
 
     for (Path lateOne : filesThatMatterButAreNotThereInTime) {
       if (modelToArtifactMap.keySet().contains(lateOne)) {
-        String toAdd = Paths.get(modelToArtifactMap.get(lateOne).toString(), lateOne.toString()).toString();
+        Path toAdd = Paths.get(modelToArtifactMap.get(lateOne).toString(), lateOne.toString());
         if (!modelFiles.contains(toAdd)) {
           modelFiles.add(toAdd);
         }
@@ -45,54 +61,54 @@ public class IncGenGradleReporter extends IncGenReporter {
     }
 
 
-    if (inputFile != null && !inputFile.isEmpty()) {
+    if (inputFile != null && !inputFile.toString().isEmpty()) {
       String checkSum;
       if (node != null) {
-        checkSum = ReportingHelper.getChecksum(inputFile);
+        checkSum = ReportingHelper.getChecksum(inputFile.toFile().getAbsolutePath());
       } else {
         checkSum = GEN_ERROR;
       }
-      writeLine(fileExtension + ":" + inputFile.replaceAll("\\\\", "/") + " " + checkSum);
-      for (String s : modelFiles) {
+      writeLine(fileExtension + ":" + printPath(inputFile) + " " + checkSum);
+      for (Path s : modelFiles) {
         //only local files are important
-        if (!s.contains(".jar")) {
-          File inputFile = new File(s);
+        if (!s.endsWith(".jar")) {
+          File inputFile = s.toFile();
           if (inputFile.exists()) {
             checkSum = ReportingHelper.getChecksum(inputFile.toString());
           } else {
             checkSum = MISSING;
           }
-          writeLine(fileExtension + ":" + s.replaceAll("\\\\", "/") + " " + checkSum);
+          writeLine(fileExtension + ":" + printPath(s) + " " + checkSum);
         }
       }
     }
     //create check: user templates changed or deleted?
-    for (String s : userTemplates) {
+    for (Path s : userTemplates) {
       //only local files are important
-      if (!s.contains(".jar")) {
-        File inputFile = new File(s);
+      if (!s.endsWith(".jar")) {
+        File inputFile = s.toFile();
         String checkSum;
         if (inputFile.exists()) {
           checkSum = ReportingHelper.getChecksum(inputFile.toString());
         }else{
           checkSum = MISSING;
         }
-        writeLine("ftl:" + s.replaceAll("\\\\", "/") + " " + checkSum);
+        writeLine("ftl:" + printPath(s) + " " + checkSum);
       }
     }
     // create check: used file deleted?
-    for (String p : usedHWCFiles) {
+    for (Path p : usedHWCFiles) {
 //      writeLine("if (-not (Test-Path " + p + ")) { echo \"" + p + " removed!\"; exit}");
-      writeLine("hwc:" + p);
+      writeLine("hwc:" + printPath(p));
     }
     // create check: relevant file added?
-    for (String p : notExistentHWCFiles) {
+    for (Path p : notExistentHWCFiles) {
 //        writeLine("if (Test-Path " + p + ") { echo \"" + p + " added!\"; exit}");
-      writeLine("gen:" + p);
+      writeLine("gen:" + printPath(p));
     }
 
-    for (String p : outputFiles) {
-      writeLine("out:" + p);
+    for (Path p : outputFiles) {
+      writeLine("out:" + printPath(p));
     }
     super.flush(node);
   }

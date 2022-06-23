@@ -8,6 +8,9 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingReposit
 import de.monticore.gradle.IncGenGradleReporterFix;
 import de.monticore.io.paths.MCPath;
 
+import java.nio.file.Path;
+import java.util.function.Function;
+
 /**
  * Initializes and provides the set of reports desired for MontiCore to the
  * reporting framework.
@@ -23,18 +26,23 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
   protected MCPath templatePath;
 
+  protected Function<Path, Path> reportPathOutput;
+
+
   /**
    * Constructor for de.monticore.MontiCoreReports
    */
   protected MontiCoreReportsLight(
           String outputDirectory,
           String reportDirectory,
+          Function<Path, Path> reportPathOutput,
           MCPath handwrittenPath,
           MCPath templatePath) {
     this.outputDirectory = outputDirectory;
     this.handwrittenPath = handwrittenPath;
     this.templatePath = templatePath;
     this.reportDirectory = reportDirectory;
+    this.reportPathOutput = reportPathOutput;
   }
 
   /**
@@ -48,7 +56,7 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
     ReportManager reports = new ReportManager(this.outputDirectory);
     
-    IncGenGradleReporterFix gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, modelName);
+    IncGenGradleReporterFix gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, reportPathOutput, modelName);
 
     //reports.addReportEventHandler(inputOutput); // 17_InputOutputFiles
     //reports.addReportEventHandler(incGenCheck); // IncGenCheck

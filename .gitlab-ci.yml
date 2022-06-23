@@ -34,7 +34,7 @@ build:
   stage: build
   script:
     - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
-    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci"
+    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -i"
   tags:
     - gradle
   artifacts:

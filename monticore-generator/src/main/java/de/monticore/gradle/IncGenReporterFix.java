@@ -18,23 +18,23 @@ import java.util.*;
 @Deprecated
 public abstract class IncGenReporterFix extends AReporter {
 
-  protected Set<String> modelFiles = new OrderedHashSet<>();
+  protected Set<Path> modelFiles = new OrderedHashSet<>();
 
-  protected Set<String> usedHWCFiles = new OrderedHashSet<>();
+  protected Set<Path> usedHWCFiles = new OrderedHashSet<>();
 
-  protected Set<String> notExistentHWCFiles = new OrderedHashSet<>();
+  protected Set<Path> notExistentHWCFiles = new OrderedHashSet<>();
 
   protected Set<Path> filesThatMatterButAreNotThereInTime = new LinkedHashSet<>();
 
-  protected Set<String> userTemplates = new OrderedHashSet<>();
+  protected Set<Path> userTemplates = new OrderedHashSet<>();
 
-  protected Set<String> outputFiles = new OrderedHashSet<>();
+  protected Set<Path> outputFiles = new OrderedHashSet<>();
 
   protected static Map<Path, Path> modelToArtifactMap = new HashMap<>();
 
-  protected String inputFile;
+  protected Path inputFile;
 
-  protected String outputDir;
+  protected Path outputDir;
 
   protected Path qualifiedInputFile;
 
@@ -48,8 +48,7 @@ public abstract class IncGenReporterFix extends AReporter {
     if (result.isPresent()) {
       String usedHWCFile = null;
       try {
-        usedHWCFile = toUnixPath(new File(result.get().toURI()).toString());
-        usedHWCFiles.add(usedHWCFile);
+        usedHWCFiles.add(Paths.get(result.get().toURI()));
       } catch (URISyntaxException e) {
         Log.warn("0xA0136 Cannot report hwc file", e);
 
@@ -57,8 +56,7 @@ public abstract class IncGenReporterFix extends AReporter {
     }
     else {
       for (Path p : mcp.getEntries()) {
-        String notExistentHWCFile = toUnixPath(p.resolve(fileName).toString());
-        notExistentHWCFiles.add(notExistentHWCFile);
+        notExistentHWCFiles.add(p.resolve(fileName));
       }
     }
   }
@@ -82,7 +80,7 @@ public abstract class IncGenReporterFix extends AReporter {
     filesThatMatterButAreNotThereInTime.clear();
     outputFiles.clear();
 
-    inputFile = inputFilePath.toString();
+    inputFile = inputFilePath;
 
     qualifiedInputFile = Paths.get(lowerCaseName + "."
         + Files.getFileExtension(inputFilePath.getFileName().toString()));
@@ -96,7 +94,7 @@ public abstract class IncGenReporterFix extends AReporter {
 
   @Override
   public void reportFileCreation(String fileName) {
-    outputFiles.add(fileName);
+    outputFiles.add(Paths.get(fileName));
   }
 
   @Override
@@ -104,21 +102,21 @@ public abstract class IncGenReporterFix extends AReporter {
     if(file.compareTo(qualifiedInputFile) == 0){
       return;
     }
-    String toAdd = "";
+    Path toAdd = null;
     if(parentPath.isPresent()){
-      toAdd = Paths.get(parentPath.get().toString(), file.toString()).toString();
+      toAdd = Paths.get(parentPath.get().toString(), file.toString());
       modelToArtifactMap.put(file, parentPath.get());
     }
     else {
       if (modelToArtifactMap.keySet().contains(file)) {
         toAdd = Paths.get(modelToArtifactMap.get(file).toString(),
-            file.toString()).toString();
+            file.toString());
       }
       else {
         filesThatMatterButAreNotThereInTime.add(file);
       }
     }
-    if (!toAdd.isEmpty() && isModelFile(toAdd)) {
+    if (toAdd != null && isModelFile(toAdd.toString())) {
       modelFiles.add(toAdd);
     }
   }
@@ -134,8 +132,8 @@ public abstract class IncGenReporterFix extends AReporter {
   @Override
   public void reportUserSpecificTemplate(Path parentDir, Path fileName) {
     if (parentDir != null) {
-      String toAdd = Paths.get(parentDir.toString(), fileName.toString()).toString();
-      if(!toAdd.isEmpty() && toAdd.endsWith(".ftl")) {
+      Path toAdd = Paths.get(parentDir.toString(), fileName.toString());
+      if(!toAdd.toString().isEmpty() && toAdd.endsWith(".ftl")) {
         userTemplates.add(toAdd);
       }
     }

@@ -389,6 +389,14 @@ public class MontiCoreTool {
         .desc("Specifies the directory for printing reports based on the given MontiCore grammars.")
         .build());
 
+    // Base Path for Relative Reporter Output
+    options.addOption(Option.builder(REPORT_BASE)
+        .longOpt(REPORT_BASE_LONG)
+        .argName("path")
+        .hasArg(true)
+        .desc("Base path for paths printed in the Reports.")
+        .build());
+
     // toggle dstl generation
     options.addOption(Option.builder(DSTLGEN_LONG)
             .argName("boolean")

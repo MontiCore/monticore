@@ -51,7 +51,9 @@ public class ParserInfoGenerator {
    * @param lang the language used for the generated parser
    */
   public static void generateParserInfoForComponent(ASTMCGrammar astGrammar, GeneratorSetup setup, String parserPackage, Languages lang) {
-    Map<ASTNonTerminal, Set<Integer>> nonTerminalToEmptyParserStates = collectNonTerminals(astGrammar).stream().collect(Collectors.toMap(nt -> nt, nt -> Collections.emptySet()));
+    Map<ASTNonTerminal, Set<Integer>> nonTerminalToEmptyParserStates = collectNonTerminals(astGrammar)
+        .stream()
+        .collect(Collectors.toMap(nt -> nt, nt -> new LinkedHashSet<>(), (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u));}, LinkedHashMap::new));
     generateParserInfo(astGrammar, setup, nonTerminalToEmptyParserStates, parserPackage, lang);
   }
 
@@ -132,7 +134,7 @@ public class ParserInfoGenerator {
             })
             // don't fail if the nonTerminal is not found in Map, since it might be overridden and therefore have no parser state associated with it
             .flatMap(nonTerminal -> nonTerminalToParserStates.getOrDefault(nonTerminal, Collections.emptySet()).stream())
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection( LinkedHashSet::new ) );
 
 
     // Generate XParserInfo for this language

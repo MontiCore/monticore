@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +65,8 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String DEV = "d";
   public static final String CUSTOMLOG = "cl";
   public static final String REPORT = "r";
+
+  public static final String REPORT_BASE = "rb";
   public static final String HELP = "h";
 
   public static final String GRAMMAR_LONG = "grammar";
@@ -80,6 +83,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String DEV_LONG = "dev";
   public static final String CUSTOMLOG_LONG = "customLog";
   public static final String REPORT_LONG = "report";
+  public static final String REPORT_BASE_LONG = "report_base";
   public static final String DSTLGEN_LONG = "dstlGen";
   public static final String HELP_LONG = "help";
 
@@ -250,6 +254,22 @@ public final class MontiCoreConfiguration implements Configuration {
     }
     // fallback default is "out/report"
     return new File(getOut(), DEFAULT_REPORT_PATH);
+  }
+
+  /**
+   * Returns a function, which confirms a path into a printable path.
+   * If a base-path is present, a relative path is returned. Otherwise, the absolute path is used
+   *
+   * @return printable path path
+   */
+  public Function<Path,Path> getReportPathOutput() {
+    Optional<String> report_base = getAsString(REPORT_BASE);
+    if (report_base.isPresent()) {
+      Path base_dir = Paths.get(report_base.get()).toAbsolutePath();
+      return p->base_dir.relativize(p.toAbsolutePath());
+    } else {
+      return Path::toAbsolutePath;
+    }
   }
 
   /**
