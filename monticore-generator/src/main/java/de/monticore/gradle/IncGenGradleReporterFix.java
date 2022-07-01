@@ -66,7 +66,7 @@ public class IncGenGradleReporterFix extends IncGenReporterFix {
       writeLine(fileExtension + ":" + printPath(inputFile) + " " + checkSum);
       for (Path s : modelFiles) {
         //only local files are important
-        if (!s.endsWith(".jar")) {
+        if (!s.toAbsolutePath().toString().contains(".jar" + File.separator)) {
           File inputFile = s.toFile();
           if (inputFile.exists()) {
             checkSum = ReportingHelper.getChecksum(inputFile.toString());
