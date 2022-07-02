@@ -1,9 +1,14 @@
 package mc.feature.parserinfo;
 
+import mc.feature.parserinfo.parserinfosimpleinheritancetest._parser._auxiliary.ParserInfoSimpleInheritanceTestParserInfoForParserInfoTest;
 import mc.feature.parserinfo.parserinfotest._parser.ParserInfoTestParserInfo;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -14,14 +19,30 @@ import static org.junit.Assert.*;
  * Test the generated ParserInfo classes.
  * Since the concrete antlr state numbers are not stable, we must always check a range of state numbers.
  */
+@RunWith(Parameterized.class)
 public class ParserInfoTest {
+    private boolean useSimpleInheritance;
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data(){
+        return Arrays.asList(new Boolean[]{false}, new Boolean[]{true});
+    }
+
+    public ParserInfoTest(boolean useSimpleInheritance){
+        this.useSimpleInheritance = useSimpleInheritance;
+    }
+
     // The generated parser has around 125 states
     // => add some safety margin
     private final int MAX_STATE_NUMBER = 250;
 
     @Before
     public void init(){
-        ParserInfoTestParserInfo.init();
+        if(useSimpleInheritance){
+            ParserInfoTestParserInfo.initMe(new ParserInfoSimpleInheritanceTestParserInfoForParserInfoTest());
+        }else{
+            ParserInfoTestParserInfo.init();
+        }
     }
 
     @Test
