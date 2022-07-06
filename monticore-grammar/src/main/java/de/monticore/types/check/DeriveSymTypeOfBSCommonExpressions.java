@@ -542,9 +542,9 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         for (int i = 0; i < args.size(); i++) {
           //test if every single argument is correct
           //if an argument is void type then it could not be calculated correctly -> see calculateArguments
-          if (!method.getParameterList().get(Math.min(i, method.getParameterList().size() - 1))
-            .getType().deepEquals(args.get(i)) &&
-            !compatible(method.getParameterList().get(i).getType(), args.get(i)) || args.get(i).isVoidType()) {
+          SymTypeExpression paramType = method.getParameterList().get(Math.min(i, method.getParameterList().size() - 1)).getType();
+          if (!paramType.deepEquals(args.get(i)) &&
+            !compatible(paramType, args.get(i)) || args.get(i).isVoidType()) {
             success = false;
           }
         }
