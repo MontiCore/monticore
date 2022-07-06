@@ -219,11 +219,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateBooleanAndOpExpression(SymTypeExpression leftResult, SymTypeExpression rightResult) {
-    Optional<SymTypeExpression> wholeResult = Optional.empty();
-    if (isBoolean(leftResult) && isBoolean(rightResult)) {
-      wholeResult = Optional.of(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN));
-    }
-    return wholeResult;
+    return calculateLogicalOrOpAndOp(leftResult, rightResult);
   }
 
   @Override
@@ -237,6 +233,10 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateBooleanOrOpExpression(SymTypeExpression leftResult, SymTypeExpression rightResult) {
+    return calculateLogicalOrOpAndOp(leftResult, rightResult);
+  }
+
+  protected Optional<SymTypeExpression> calculateLogicalOrOpAndOp(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isBoolean(leftResult) && isBoolean(rightResult)) {
       wholeResult = Optional.of(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN));
@@ -449,6 +449,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     traverser.add4ExpressionsBasis(visitor);
     expr.accept(traverser);
     SymTypeExpression innerResult;
+    List<SymTypeExpression> args = calculateArguments(expr, visitor.getLastName());
     ASTExpression lastExpression = visitor.getLastExpression();
     if(lastExpression != null){
       lastExpression.accept(getTraverser());
@@ -460,7 +461,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       //resolve methods with name of the inner expression
       List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr, visitor.getLastName());
       //count how many methods can be found with the correct arguments and return type
-      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
+      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
       //if the last result is static then filter for static methods
       if (getTypeCheckResult().isType()) {
         fittingMethods = filterModifiersFunctions(fittingMethods);
@@ -482,7 +483,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveFunctionMany(visitor.getLastName());
       List<FunctionSymbol> methodlist = new ArrayList<>(methodcollection);
       //count how many methods can be found with the correct arguments and return type
-      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
+      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
       //there can only be one method with the correct arguments and return type
       if (fittingMethods.size() == 1) {
         expr.setDefiningSymbol(fittingMethods.get(0));
@@ -494,6 +495,23 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         logError("0xA1242", expr.get_SourcePositionStart());
       }
     }
+  }
+
+  protected List<SymTypeExpression> calculateArguments(ASTCallExpression expr, String methodName){
+    List<SymTypeExpression> returnList = new ArrayList<>();
+    for(int i = 0; i < expr.getArguments().sizeExpressions(); i++){
+      expr.getArguments().getExpression(i).accept(getTraverser());
+      if(typeCheckResult.isPresentResult() && !typeCheckResult.isType()){
+        returnList.add(typeCheckResult.getResult());
+      }else{
+        //Placeholder as no function can have a parameter of type void and so that the correct number of
+        //SymTypeExpressions is in the list
+        returnList.add(SymTypeExpressionFactory.createTypeVoid());
+        Log.error("0xA0237 The argument of the function " + methodName + " could not be calculated",
+          expr.getArguments().getExpression(i).get_SourcePositionStart());
+      }
+    }
+    return returnList;
   }
 
   protected void checkForReturnType(ASTCallExpression expr, List<FunctionSymbol> fittingMethods){
@@ -512,25 +530,21 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     return innerResult.getMethodList(name, getTypeCheckResult().isType(), true);
   }
 
-  protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr) {
+  protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr, List<SymTypeExpression> args) {
     List<FunctionSymbol> fittingMethods = new ArrayList<>();
     for (FunctionSymbol method : methodlist) {
       //for every method found check if the arguments are correct
       if ((!method.isIsElliptic() &&
-          expr.getArguments().getExpressionList().size() == method.getParameterList().size())
+          args.size() == method.getParameterList().size())
           || (method.isIsElliptic() &&
-          expr.getArguments().getExpressionList().size() >= method.getParameterList().size() - 1)) {
+          args.size() >= method.getParameterList().size() - 1)) {
         boolean success = true;
-        for (int i = 0; i < expr.getArguments().sizeExpressions(); i++) {
-          expr.getArguments().getExpression(i).accept(getTraverser());
-          if(typeCheckResult.isPresentResult()){
-            //test if every single argument is correct
-            if (!method.getParameterList().get(Math.min(i, method.getParameterList().size() - 1))
-              .getType().deepEquals(getTypeCheckResult().getResult()) &&
-              !compatible(method.getParameterList().get(i).getType(), getTypeCheckResult().getResult())) {
-              success = false;
-            }
-          }else{
+        for (int i = 0; i < args.size(); i++) {
+          //test if every single argument is correct
+          //if an argument is void type then it could not be calculated correctly -> see calculateArguments
+          if (!method.getParameterList().get(Math.min(i, method.getParameterList().size() - 1))
+            .getType().deepEquals(args.get(i)) &&
+            !compatible(method.getParameterList().get(i).getType(), args.get(i)) || args.get(i).isVoidType()) {
             success = false;
           }
         }
