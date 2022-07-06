@@ -10,6 +10,7 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import java.io.*;
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -218,9 +219,14 @@ public final class MCPath {
     });
   }
 
+  // A List of all file systems opened for jars.
+  private static List<FileSystem> openedJarFileSystems = new ArrayList<>();
+
   public static FileSystem getJarFS(File jar) {
     try {
-      return FileSystems.newFileSystem(jar.toPath(), MCPath.class.getClassLoader());
+      FileSystem fileSystem = FileSystems.newFileSystem(jar.toPath(), MCPath.class.getClassLoader());
+      openedJarFileSystems.add(fileSystem);
+      return fileSystem;
     }
     catch (IOException e) {
       e.printStackTrace();
@@ -228,4 +234,19 @@ public final class MCPath {
     return FileSystems.getDefault();
   }
 
+  /**
+   * Closes all still opened file systems created with {@link MCPath#getJarFS(File)}.
+   */
+  public static void closeAllJarFileSystems(){
+    for (FileSystem fs : openedJarFileSystems) {
+      if (fs.isOpen()) {
+        try {
+          fs.close();
+        } catch (IOException e){
+          e.printStackTrace();
+        }
+      }
+    }
+    openedJarFileSystems.clear();
+  }
 }
