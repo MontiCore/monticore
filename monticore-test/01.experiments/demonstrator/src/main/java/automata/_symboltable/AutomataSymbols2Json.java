@@ -12,6 +12,7 @@ public class AutomataSymbols2Json
 
   public AutomataSymbols2Json(){
     super();
+    setRealThis(this);
     getTraverser().setAutomataHandler(this);
   }
 

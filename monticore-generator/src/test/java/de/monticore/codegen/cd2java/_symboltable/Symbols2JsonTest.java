@@ -13,6 +13,7 @@ import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecor
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.LogStub;
@@ -61,7 +62,8 @@ public class Symbols2JsonTest extends DecoratorTestCase {
     Symbols2JsonDecorator decorator = new Symbols2JsonDecorator(this.glex,
             new SymbolTableService(decoratedASTCompilationUnit),
             new VisitorService(decoratedASTCompilationUnit),
-            new MethodDecorator(glex, new SymbolTableService(decoratedSymbolCompilationUnit)));
+            new MethodDecorator(glex, new SymbolTableService(decoratedSymbolCompilationUnit)),
+            new MCPath());
 
     this.symTabPrinterClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
   }
