@@ -1,0 +1,135 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+import de.monticore.literals.MCCommonLiterals;
+
+/**
+ * This grammar is highly experimental
+ */
+component grammar StreamExpressions
+    extends ExpressionsBasis, MCCommonLiterals {
+
+  /* -------------------- Functions on Untimed Streams -------------------- */
+
+  /* Empty Stream */
+  SEmpty implements Expression =
+    "<>" ;
+
+  /* Append first element */
+  SCons implements Expression =
+    head:Expression ":" tail:Expression ;
+
+  /* Concatenation of streams */
+  SConc implements Expression =
+    left:Expression "^" right:Expression ;
+
+  /* Prefix relation */
+  SPref implements Expression =
+    left:Expression "[" right:Expression ;
+
+  /* Length of stream */
+  SLen implements Expression =
+    "#" Expression ;
+
+  /* n-th element of stream */
+  SNth implements Expression =
+    stream:Expression "." n:NatLiteral ;
+
+  /* Prefix of length n */
+  STake implements Expression =
+    stream:Expression "|" n:NatLiteral ;
+
+  /* Remove first n elements of stream */
+  SDrop implements Expression =
+    stream:Expression "-|" n:NatLiteral ;
+
+  /* Message iterated n times */
+  SNTimesM implements Expression =
+    message:Expression "x" n:NatLiteral ;
+
+  // TODO Das parst alles oben, wollen wir das wirklich durch den TypeCheck aufdröseln und im AST umbauen?
+  /* Steam iterated n times */
+  SNTimes implements Expression =
+    stream:Expression "x" n:NatLiteral ;
+
+  /* Mark "x" as no keyword as it is a common variable name */
+  nokeyword "x" ;
+
+  /* Elementwise function application */
+  SMap implements Expression =
+    stream:Expression "*" f:Expression ;
+
+  /* Filtering function */
+  SFilter implements Expression =
+    stream:Expression "(s)" predicate:Expression ;
+
+  // TODO Hier aucht nicht eindeutig gegenüber STake
+  /* Prefix where predicate holds */
+  STakewhile implements Expression =
+    stream:Expression "|" predicate:Expression ;
+
+  // TODO SDrop
+  /* Drop prefix while predicate holds */
+  SDropWhile implements Expression =
+    stream:Expression "-|" predicate:Expression ;
+
+  /* Remove duplicates */
+  SRcDups implements Expression =
+    "=." stream:Expression ;
+
+
+  /* -------------------- Functions on Timed Streams -------------------- */
+
+  /* TODO Was soll das hier machen? Prefix first time interval */
+  TSCons implements Expression =
+    left:Expression "[~" right:Expression;
+
+  /* Number of time intervals in stream */
+  TSLen implements Expression =
+    "#t" stream:Expression ;
+
+  /* n-th time intervals */
+  TSNth implements Expression =
+    stream:Expression ".t" n:NatLiteral ;
+
+  /* first n time intervals */
+  TSTake implements Expression =
+    stream:Expression "|t" n:NatLiteral ;
+
+  /* Drop first n time intervals */
+  TSDrop implements Expression =
+    stream:Expression "-|t" n:NatLiteral ;
+
+  /* Abstraction to untimed stream */
+  TSAbs implements Expression =
+    "°" stream:Expression ;
+
+  /* Number of data messages in stream (not Tick) */
+  TLen implements Expression =
+    "#~" stream:Expression ;
+
+  /* n-th data message */
+  TNth implements Expression =
+    stream:Expression ".~" n:NatLiteral ;
+
+  /* First n non-empty time intervals */
+  TTake implements Expression =
+    stream:Expression "|~" n:NatLiteral ;
+
+  /* Stream after n non-empty time intervals */
+  TDrop implements Expression =
+    stream:Expression "-|~" n:NatLiteral ;
+
+  /* Message wise function application */
+  TMap implements Expression =
+    stream:Expression "*~" f:Expression ;
+
+  /* Message wise filtering function */
+  TFilter implements Expression =
+    stream:Expression "(s)~" predicate:Expression ;
+
+  /* Remove duplicate data messages */
+  TRcDups implements Expression =
+    "=~." stream:Expression ;
+
+}
