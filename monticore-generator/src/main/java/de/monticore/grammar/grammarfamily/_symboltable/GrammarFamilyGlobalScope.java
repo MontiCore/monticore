@@ -63,10 +63,9 @@ public class GrammarFamilyGlobalScope extends GrammarFamilyGlobalScopeTOP {
   }
 
   protected ASTMCGrammar parse(URL url){
-    try {
-      Reader reader = FileReaderWriter.getReader(url);
+    try(Reader reader = FileReaderWriter.getReader(url)) {
       Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(reader);
-      if(optAST.isPresent()){
+      if (optAST.isPresent()) {
         return optAST.get();
       }
     }
