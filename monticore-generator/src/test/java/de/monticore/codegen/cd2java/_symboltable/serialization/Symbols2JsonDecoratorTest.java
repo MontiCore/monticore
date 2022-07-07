@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.ast.CompilationUnit;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.cd2java.CdUtilsPrinter;
@@ -18,6 +19,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.prettyprint.IndentPrinter;
@@ -53,6 +55,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonArtifactScope";
 
+  private static final String SYMBOLS2JSON_SIMPLE = "AutomatonSymbols2Json";
+
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol";
 
   private static final String STATE_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol";
@@ -74,7 +78,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
     Symbols2JsonDecorator decorator = new Symbols2JsonDecorator(glex, new SymbolTableService(astcdCompilationUnit),
             new VisitorService(decoratedSymbolCompilationUnit),
-            new MethodDecorator(glex, new SymbolTableService(decoratedSymbolCompilationUnit)));
+            new MethodDecorator(glex, new SymbolTableService(decoratedSymbolCompilationUnit)),
+            new MCPath());
     this.symbolTablePrinterClass = decorator.decorate(decoratedScopeCompilationUnit, decoratedSymbolCompilationUnit);
   }
 
@@ -112,7 +117,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCountAttributes(){
-    assertEquals(6, symbolTablePrinterClass.getCDAttributeList().size());
+    assertEquals(7, symbolTablePrinterClass.getCDAttributeList().size());
   }
 
   @Test
@@ -120,6 +125,13 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("printer", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
     assertDeepEquals(JSON_PRINTER, attribute.getMCType());
+  }
+
+  @Test
+  public void testRealThisAttribute(){
+    ASTCDAttribute attribute = getAttributeBy("realThis", symbolTablePrinterClass);
+    assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
+    assertDeepEquals(SYMBOLS2JSON_SIMPLE, attribute.getMCType());
   }
 
   @Test
@@ -131,7 +143,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(20, symbolTablePrinterClass.getCDMethodList().size());
+    assertEquals(22, symbolTablePrinterClass.getCDMethodList().size());
   }
 
   @Test
@@ -306,15 +318,18 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGeneratedCode(){
+  public void testGeneratedCode() {
+    // Given
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolTablePrinterClass, symbolTablePrinterClass);
-    // test parsing
-    ParserConfiguration configuration = new ParserConfiguration();
-    JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
-    assertTrue(parseResult.isSuccessful());
+
+    // When
+    StringBuilder generate = generatorEngine.generate(CoreTemplates.CLASS, symbolTablePrinterClass, symbolTablePrinterClass);
+
+    // Then
+    ParseResult<CompilationUnit> parseResult = new JavaParser(new ParserConfiguration()).parse(generate.toString());
+    assertTrue("Parsing of the generated code failed. The generated code is: \n"
+        + generate, parseResult.isSuccessful());
   }
 }
