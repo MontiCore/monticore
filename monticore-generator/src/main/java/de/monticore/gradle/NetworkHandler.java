@@ -18,7 +18,7 @@ public class NetworkHandler {
       // connection.setDoInput(false);
       connection.setRequestProperty("Content-Length", Integer.toString(data.length()));
       connection.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
-      connection.setConnectTimeout(1000);
+      connection.setConnectTimeout(200);
 
       connection.connect();
 
