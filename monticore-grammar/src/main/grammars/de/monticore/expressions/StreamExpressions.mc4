@@ -21,9 +21,9 @@ component grammar StreamExpressions extends ExpressionsBasis,
   AppendStreamExpression implements StreamExpression = message:Expression ":" Expression;
 
   /* Concatenation of streams */
-  ConcatStreamExpression implements StreamExpression = StreamExpression "^" StreamExpression;
+  ConcatStreamExpression implements StreamExpression = Expression "^" Expression;
 
   /* Length of stream */
-  LenghtStreamExpression implements StreamExpression = "#" StreamExpression;
+  LenghtStreamExpression implements StreamExpression = "#" Expression;
 
 }
