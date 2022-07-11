@@ -3,7 +3,6 @@ package de.monticore.expressions;
 
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
-import de.monticore.literals.MCCommonLiterals;
 import de.monticore.expressions.ExpressionsBasis;
 
 /**
@@ -39,8 +38,7 @@ import de.monticore.expressions.ExpressionsBasis;
 */
 
 
-component grammar StreamExpressions extends ExpressionsBasis,
-                                            MCCommonLiterals {
+component grammar StreamExpressions extends CommonExpressions {
 
   /*=================================================================*/
   
@@ -75,7 +73,7 @@ component grammar StreamExpressions extends ExpressionsBasis,
   /* 
    * Length of stream 
    */
-  LenghtStreamExpression implements implements Expression <185> 
+  LenghtStreamExpression implements Expression <185>
     = "#" Expression;
 
 }
