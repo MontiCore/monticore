@@ -145,8 +145,13 @@ public class FileReaderWriter {
     String content = null;
     try {
       Reporting.reportOpenInputFile(sourcePath.toString());
-      Reader reader = new InputStreamReader(sourcePath.openStream(), charset.name());
+      URLConnection conn = sourcePath.openConnection();
+      if(conn instanceof JarURLConnection){
+        openedJarFiles.add(((JarURLConnection) conn).getJarFile());
+      }
+      Reader reader = new InputStreamReader(conn.getInputStream(), charset.name());
       content = _readFromFile(reader);
+      reader.close();
     }
     catch (IOException e) {
       Log.error("0xA0577 IOException occured.", e);
