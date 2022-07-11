@@ -66,7 +66,7 @@ public abstract class AReporter extends DefaultReportEventHandler {
 		}
 	}
 
-	protected void closeFile() {
+	public void closeFile() {
 		if (fileOpen) {
 			try {
 				fileOpen = false;

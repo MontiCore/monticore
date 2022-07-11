@@ -14,9 +14,8 @@ import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
@@ -146,8 +145,13 @@ public class FileReaderWriter {
     String content = null;
     try {
       Reporting.reportOpenInputFile(sourcePath.toString());
-      Reader reader = new InputStreamReader(sourcePath.openStream(), charset.name());
+      URLConnection conn = sourcePath.openConnection();
+      if(conn instanceof JarURLConnection){
+        openedJarFiles.add(((JarURLConnection) conn).getJarFile());
+      }
+      Reader reader = new InputStreamReader(conn.getInputStream(), charset.name());
       content = _readFromFile(reader);
+      reader.close();
     }
     catch (IOException e) {
       Log.error("0xA0577 IOException occured.", e);
@@ -215,6 +219,12 @@ public class FileReaderWriter {
   }
 
   /**
+   * Saves all {@link JarFile}s opened by {@link FileReaderWriter#getReader(URL)} if the protocol "jar:" is used.
+   * These files must be closed at the end of programm via {@link FileReaderWriter#closeOpenedJarFiles()}.
+   */
+  protected static Set<JarFile> openedJarFiles = new HashSet<>();
+
+  /**
    * Obtains the reader for a passed model coordinate. The resulting reader
    * can be used as argument for a parse method of a language's parser.
    * @param location
@@ -236,7 +246,13 @@ public class FileReaderWriter {
       Path p = Paths.get(parts[1].substring(1));
       Reporting.reportOpenInputFile(Optional.of(Paths.get(parts[0].substring(10))),
         p);
-      return new InputStreamReader(location.openStream(), Charsets.UTF_8.name());
+
+      // Save opened jar files for later cleanup
+      URLConnection conn = location.openConnection();
+      if(conn instanceof JarURLConnection){
+        openedJarFiles.add(((JarURLConnection) conn).getJarFile());
+      }
+      return new InputStreamReader(conn.getInputStream(), Charsets.UTF_8.name());
     }
     catch (IOException | URISyntaxException e) {
       Log.error("0xA6104 Exception occurred while reading the file at '" + location + "':", e);
@@ -244,4 +260,19 @@ public class FileReaderWriter {
     return null;
   }
 
+  /**
+   * Closes all jar files opened by {@link FileReaderWriter#getReader(URL)}.
+   * Must be called at the end of the program to ensure all resources are freed.
+   */
+  public static void closeOpenedJarFiles(){
+    for (JarFile openedJarFile : openedJarFiles) {
+      try {
+        openedJarFile.close();
+      } catch (IOException e) {
+        // JarFile contains no state to check if it is already closed.
+        // Therefore, a try-catch block is needed
+      }
+    }
+    openedJarFiles.clear();
+  }
 }
