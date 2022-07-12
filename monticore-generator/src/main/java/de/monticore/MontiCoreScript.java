@@ -102,6 +102,7 @@ import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyArtifactScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -1332,6 +1333,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
       Optional<Configuration> config = Optional.ofNullable(configuration);
       List<MCPath> mcPaths = new ArrayList<>();
+      Optional<MontiCoreReports> reportsOpt = Optional.empty();
+
       if (config.isPresent()) {
         MontiCoreConfiguration mcConfig = MontiCoreConfiguration.withConfiguration(config.get());
         // we add the configuration object as property with a special property name
@@ -1366,11 +1369,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
         builder.addVariable("LOG_ID", LOG_ID);
         builder.addVariable("grammarIterator", grammarsPath.getEntries().iterator());
-        builder.addVariable("reportManagerFactory",
-                new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
-                mcConfig.getReport().getAbsolutePath(),
-                mcConfig.getReportPathOutput(),
-                    handcodedPath, templatePath));
+        reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+            mcConfig.getReport().getAbsolutePath(),
+            mcConfig.getReportPathOutput(),
+            handcodedPath, templatePath));
+        builder.addVariable("reportManagerFactory", reportsOpt.get());
 
         // for backward-compatibilty with outdated Maven scripts, we also add
         // the "force" parameter, which is always true
@@ -1380,8 +1383,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       GroovyInterpreter g = builder.build();
       g.evaluate(script);
 
+      // Close all file handles
+      MCPath.closeAllJarFileSystems();
+      FileReaderWriter.closeOpenedJarFiles();
       for (MCPath mcPath : mcPaths) {
         mcPath.close();
+      }
+      if(reportsOpt.isPresent()) {
+        reportsOpt.get().close();
       }
     }
   }

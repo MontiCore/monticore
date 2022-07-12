@@ -110,3 +110,5 @@ while (grammarIterator.hasNext()) {
 if (toolName.isPresent()) {
   generateLaunchScripts(glex, out, toolName.get())
 }
+
+reportManagerFactory.close()
