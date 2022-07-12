@@ -141,6 +141,8 @@ checkMLCs:
   script:
     - "gradle checkArtifacts"
   allow_failure: true
+  except:
+    - master
 
 sonar:
   stage: check
