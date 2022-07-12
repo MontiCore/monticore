@@ -266,7 +266,7 @@ public final class MontiCoreConfiguration implements Configuration {
     Optional<String> report_base = getAsString(REPORT_BASE);
     if (report_base.isPresent()) {
       Path base_dir = Paths.get(report_base.get()).toAbsolutePath();
-      return p->base_dir.relativize(p.toAbsolutePath());
+      return p->Objects.equals(p.getRoot(), base_dir.getRoot()) ? base_dir.relativize(p.toAbsolutePath()) : p.toAbsolutePath();
     } else {
       return Path::toAbsolutePath;
     }

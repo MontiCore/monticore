@@ -232,7 +232,7 @@ and
   [*detailed description*](https://github.com/MontiCore/json/blob/develop/src/main/grammars/de/monticore/lang/json.md)
 
 
-### [MontiArc](https://git.rwth-aachen.de/monticore/montiarc/core) (MontiCore Stable) 
+### [MontiArc](https://github.com/MontiCore/montiarc) (MontiCore Stable) 
 * MontiArc is an architecture and behavior modeling language and framework 
     that provides a platform independent structure and behavior 
     modeling language with an extensible code generation framework.

@@ -654,10 +654,28 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidCallExpressionWithInvalidArgument() throws IOException {
     String divideError = "0xA0212";
+    String argumentError = "0xA0237";
     String noMethodError = "0xA1242";
 
     init_advanced();
-    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, noMethodError);
+    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, argumentError, noMethodError);
+  }
+
+  @Test
+  public void testRegularAssignmentWithTwoMissingFields() throws IOException {
+    String assignmentLeftError = "0xA0198";
+    String assignmentRightError = "0xA0199";
+    String regularAssignmentError = "0xA0182";
+    init_advanced();
+    checkErrorsAndFailOnException("missingField = missingField2", assignmentLeftError, assignmentRightError, regularAssignmentError);
+  }
+
+  @Test
+  public void testMissingMethodWithMissingArgs() throws IOException {
+    String functionArgError = "0xA0237";
+    String functionError = "0xA1242";
+    init_advanced();
+    checkErrorsAndFailOnException("missingMethod(missing1, missing2)", functionArgError, functionArgError, functionError);
   }
 
   /**

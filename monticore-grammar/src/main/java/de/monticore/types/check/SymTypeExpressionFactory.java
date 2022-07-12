@@ -272,11 +272,16 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
       List<SymTypeExpression> argumentTypes) {
-    return new SymTypeOfFunction(returnType, argumentTypes);
+    return createFunction(returnType, argumentTypes, false);
   }
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
       SymTypeExpression... argumentTypes) {
     return createFunction(returnType, Arrays.asList(argumentTypes));
+  }
+
+  public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
+      List<SymTypeExpression> argumentTypes, boolean elliptic) {
+    return new SymTypeOfFunction(returnType, argumentTypes, elliptic);
   }
 }

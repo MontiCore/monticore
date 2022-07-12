@@ -103,13 +103,14 @@ public class ParserInfoGenerator {
 
     // Find name defining states
     Set<Integer> nameDefiningStates =
-        astGrammar
+        astGrammar.getSymbol()
+            .getProdsWithInherited()
+            .values()
+            .stream()
             // Find symbol defining class productions
             // Abstract, interface, and external productions will always be overridden when a parser is generated
             // and therefore the generated method will never directly parse the name token
-            .streamClassProds()
-            .filter(classProd -> {
-              ProdSymbol s = classProd.getSymbol();
+            .filter(s -> {
               if(s.isIsSymbolDefinition()){
                 return true;
               }
@@ -117,7 +118,7 @@ public class ParserInfoGenerator {
               return superProds.stream().anyMatch(ProdSymbolTOP::isIsSymbolDefinition);
             })
             // find name non-terminals with the usage name "name", which parse a name definition
-            .flatMap(classProd -> {
+            .flatMap(s -> {
               final List<ASTNonTerminal> results = new ArrayList<>();
               GrammarVisitor2 visitor = new GrammarVisitor2(){
                 @Override
@@ -129,7 +130,7 @@ public class ParserInfoGenerator {
               };
               Grammar_WithConceptsTraverser t = Grammar_WithConceptsMill.traverser();
               t.add4Grammar(visitor);
-              classProd.accept(t);
+              s.getAstNode().accept(t);
               return results.stream();
             })
             // don't fail if the nonTerminal is not found in Map, since it might be overridden and therefore have no parser state associated with it

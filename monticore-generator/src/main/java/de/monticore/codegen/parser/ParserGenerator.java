@@ -225,30 +225,33 @@ public class ParserGenerator {
       ).toFile();
     assert javaFile.isFile();
 
-    try {
-      // Read File
-      Scanner fileScanner = new Scanner(javaFile);
-      List<String> lines = new ArrayList<>();
+    List<String> lines = new ArrayList<>();
+    // Read File
+    try(Scanner fileScanner = new Scanner(javaFile)) {
       while (fileScanner.hasNextLine()) {
         lines.add(fileScanner.nextLine());
       }
-      fileScanner.close();
+    }catch (IOException e){
+    Log.error("0xE2001 Error removing absolute path from ANTLR-output.", e);
+    }
+
+    if (lines.isEmpty()) {
+      return;
+    }
+
+    // Replace Comment
+    assert lines.get(0).startsWith("// Generated from");
+    lines.set(0, "// Generated with ANTLR");
 
 
-      // Replace Comment
-      assert lines.get(0).startsWith("// Generated from");
-      lines.set(0, "// Generated with ANTLR");
-
-
-      // Overwrite File
-      FileWriter fileStream = new FileWriter(javaFile);
-      BufferedWriter out = new BufferedWriter(fileStream);
+    // Overwrite File
+    try(FileWriter fileStream = new FileWriter(javaFile);
+        BufferedWriter out = new BufferedWriter(fileStream)) {
       for (String line : lines) {
         out.write(line + "\n");
       }
-      out.close();
     }catch (IOException e){
-      Log.error("0xE2001 Error removing absolute path from ANTLR-output.", e);
+      Log.error("0xE2002 Error removing absolute path from ANTLR-output.", e);
     }
   }
 }
