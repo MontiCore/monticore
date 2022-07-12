@@ -146,6 +146,8 @@ checkMLCs:
       - "*/target/**/generated-sources/**/reports/"
     expire_in: 1 week
   allow_failure: true
+  except:
+    - master
 
 sonar:
   stage: check

@@ -10,7 +10,6 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import java.io.*;
-import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -219,13 +218,20 @@ public final class MCPath {
     });
   }
 
-  // A List of all file systems opened for jars. Uses a WeakReference to not interfere with garbage collection.
-  private static List<WeakReference<FileSystem>> openedJarFileSystems = new ArrayList<>();
+  // A List of all file systems opened for jars.
+  private static Map<File, FileSystem> openedJarFileSystems = new HashMap<>();
 
   public static FileSystem getJarFS(File jar) {
+    if(openedJarFileSystems.containsKey(jar)){
+      FileSystem fs = openedJarFileSystems.get(jar);
+      if(fs.isOpen()){
+        return fs;
+      }
+    }
+
     try {
       FileSystem fileSystem = FileSystems.newFileSystem(jar.toPath(), MCPath.class.getClassLoader());
-      openedJarFileSystems.add(new WeakReference<>(fileSystem));
+      openedJarFileSystems.put(jar, fileSystem);
       return fileSystem;
     }
     catch (IOException e) {
@@ -238,9 +244,8 @@ public final class MCPath {
    * Closes all still opened file systems created with {@link MCPath#getJarFS(File)}.
    */
   public static void closeAllJarFileSystems(){
-    for (WeakReference<FileSystem> wr : openedJarFileSystems) {
-      FileSystem fs = wr.get();
-      if (fs != null && fs.isOpen()) {
+    for (FileSystem fs : openedJarFileSystems.values()) {
+      if (fs.isOpen()) {
         try {
           fs.close();
         } catch (IOException e){

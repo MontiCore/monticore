@@ -57,8 +57,7 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
   }
 
   protected ASTMCGrammar parse(URL url){
-    try {
-      Reader reader = FileReaderWriter.getReader(url);
+    try (Reader reader = FileReaderWriter.getReader(url)){
       Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(reader);
       if(optAST.isPresent()){
         return optAST.get();
