@@ -80,6 +80,10 @@ test_it:
     - build
   script:
     - "gradle -p monticore-test/it build $GRADLE_OPTS -Pci"
+# This check must run in a stage where the monticore-generator was executed, otherwise no relevant file handles are opened.
+# Problems can be investigated on small examples projects with https://github.com/jenkinsci/lib-file-leak-detector
+    - echo "Checking that all file handles in the target folder are closed"
+    - if pgrep java | xargs -i ls -la /proc/{}/fd | grep "monticore-test/it/target/"; then echo "Found open file handles!"; exit 1; else echo "No open file handles."; exit 0; fi
   only:
     - merge_requests
     - branches
