@@ -98,9 +98,8 @@ public abstract class JavaLightCocoTest {
 
     // 2. if the file was found, parse the model and create its symtab
     if (url.isPresent()) {
-      Reader reader = FileReaderWriter.getReader(url.get());
       Optional<ASTJavaMethod> optAST;
-      try {
+      try (Reader reader = FileReaderWriter.getReader(url.get())){
         optAST = new TestJavaLightParser().parse(reader);
         if (optAST.isPresent()) {
           artifactScope = (TestJavaLightArtifactScope) new JavaLightPhasedSymbolTableCreatorDelegator().createFromAST(optAST.get());

@@ -102,6 +102,7 @@ import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyArtifactScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -1331,41 +1332,68 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                       .addStaticStars(DEFAULT_STATIC_IMPORTS));
 
       Optional<Configuration> config = Optional.ofNullable(configuration);
-      if (config.isPresent()) {
-        MontiCoreConfiguration mcConfig = MontiCoreConfiguration.withConfiguration(config.get());
-        // we add the configuration object as property with a special property name
-        builder.addVariable(MontiCoreConfiguration.CONFIGURATION_PROPERTY, mcConfig);
+      List<MCPath> mcPaths = new ArrayList<>();
+      Optional<MontiCoreReports> reportsOpt = Optional.empty();
 
-        // add everything properly typed for usage in the script
+      try {
+        if (config.isPresent()) {
+          MontiCoreConfiguration mcConfig = MontiCoreConfiguration.withConfiguration(config.get());
+          // we add the configuration object as property with a special property name
+          builder.addVariable(MontiCoreConfiguration.CONFIGURATION_PROPERTY, mcConfig);
 
-        // as currently MontiCore still can process multiple grammars,
-        // we add a trailing "s" for the proper plural
-        builder.addVariable(GRAMMAR_LONG + "s", mcConfig.getGrammars());
-        builder.addVariable(MODELPATH_LONG, mcConfig.getModelPath());
-        builder.addVariable(HANDCODEDMODELPATH_LONG, mcConfig.getHandcodedModelPath());
-        builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
-        builder.addVariable(OUT_LONG, mcConfig.getOut());
-        builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
-        builder.addVariable(REPORT_LONG, mcConfig.getReport());
-        builder.addVariable(HANDCODEDPATH_LONG, mcConfig.getHandcodedPath());
-        builder.addVariable(TEMPLATEPATH_LONG, mcConfig.getTemplatePath());
-        builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
-        builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
-        builder.addVariable("LOG_ID", LOG_ID);
-        builder.addVariable("grammarIterator", mcConfig.getGrammars().getEntries().iterator());
-        builder.addVariable("reportManagerFactory",
-                new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
-                mcConfig.getReport().getAbsolutePath(),
-                mcConfig.getReportPathOutput(),
-                mcConfig.getHandcodedPath(), mcConfig.getTemplatePath()));
+          // add everything properly typed for usage in the script
 
-        // for backward-compatibilty with outdated Maven scripts, we also add
-        // the "force" parameter, which is always true
-        builder.addVariable("force", true);
+          // as currently MontiCore still can process multiple grammars,
+          // we add a trailing "s" for the proper plural
+          MCPath grammarsPath = mcConfig.getGrammars();
+          MCPath modelPath = mcConfig.getModelPath();
+          MCPath handcodedModelPath = mcConfig.getHandcodedModelPath();
+          MCPath handcodedPath = mcConfig.getHandcodedPath();
+          MCPath templatePath = mcConfig.getTemplatePath();
+
+          mcPaths.add(grammarsPath);
+          mcPaths.add(modelPath);
+          mcPaths.add(handcodedModelPath);
+          mcPaths.add(handcodedPath);
+          mcPaths.add(templatePath);
+
+          builder.addVariable(GRAMMAR_LONG + "s", grammarsPath);
+          builder.addVariable(MODELPATH_LONG, modelPath);
+          builder.addVariable(HANDCODEDMODELPATH_LONG, handcodedModelPath);
+          builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
+          builder.addVariable(OUT_LONG, mcConfig.getOut());
+          builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
+          builder.addVariable(REPORT_LONG, mcConfig.getReport());
+          builder.addVariable(HANDCODEDPATH_LONG, handcodedPath);
+          builder.addVariable(TEMPLATEPATH_LONG, templatePath);
+          builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
+          builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
+          builder.addVariable("LOG_ID", LOG_ID);
+          builder.addVariable("grammarIterator", grammarsPath.getEntries().iterator());
+          reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
+              mcConfig.getReport().getAbsolutePath(),
+              mcConfig.getReportPathOutput(),
+              handcodedPath, templatePath));
+          builder.addVariable("reportManagerFactory", reportsOpt.get());
+
+          // for backward-compatibilty with outdated Maven scripts, we also add
+          // the "force" parameter, which is always true
+          builder.addVariable("force", true);
+        }
+
+        GroovyInterpreter g = builder.build();
+        g.evaluate(script);
+      } finally {
+        // Close all file handles
+        MCPath.closeAllJarFileSystems();
+        FileReaderWriter.closeOpenedJarFiles();
+        for (MCPath mcPath : mcPaths) {
+          mcPath.close();
+        }
+        if (reportsOpt.isPresent()) {
+          reportsOpt.get().close();
+        }
       }
-
-      GroovyInterpreter g = builder.build();
-      g.evaluate(script);
     }
   }
 

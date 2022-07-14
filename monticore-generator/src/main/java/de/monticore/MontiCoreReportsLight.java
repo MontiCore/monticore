@@ -28,6 +28,8 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
   protected Function<Path, Path> reportPathOutput;
 
+  protected IncGenGradleReporterFix gradleReporter;
+
 
   /**
    * Constructor for de.monticore.MontiCoreReports
@@ -56,7 +58,7 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
     ReportManager reports = new ReportManager(this.outputDirectory);
     
-    IncGenGradleReporterFix gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, reportPathOutput, modelName);
+    gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, reportPathOutput, modelName);
 
     //reports.addReportEventHandler(inputOutput); // 17_InputOutputFiles
     //reports.addReportEventHandler(incGenCheck); // IncGenCheck
@@ -64,5 +66,8 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
     return reports;
   }
-  
+
+  public void close(){
+    gradleReporter.closeFile();
+  }
 }

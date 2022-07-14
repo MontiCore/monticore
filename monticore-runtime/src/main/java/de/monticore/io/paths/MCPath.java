@@ -218,9 +218,21 @@ public final class MCPath {
     });
   }
 
+  // A List of all file systems opened for jars.
+  private static Map<File, FileSystem> openedJarFileSystems = new HashMap<>();
+
   public static FileSystem getJarFS(File jar) {
+    if(openedJarFileSystems.containsKey(jar)){
+      FileSystem fs = openedJarFileSystems.get(jar);
+      if(fs.isOpen()){
+        return fs;
+      }
+    }
+
     try {
-      return FileSystems.newFileSystem(jar.toPath(), MCPath.class.getClassLoader());
+      FileSystem fileSystem = FileSystems.newFileSystem(jar.toPath(), MCPath.class.getClassLoader());
+      openedJarFileSystems.put(jar, fileSystem);
+      return fileSystem;
     }
     catch (IOException e) {
       e.printStackTrace();
@@ -228,4 +240,19 @@ public final class MCPath {
     return FileSystems.getDefault();
   }
 
+  /**
+   * Closes all still opened file systems created with {@link MCPath#getJarFS(File)}.
+   */
+  public static void closeAllJarFileSystems(){
+    for (FileSystem fs : openedJarFileSystems.values()) {
+      if (fs.isOpen()) {
+        try {
+          fs.close();
+        } catch (IOException e){
+          e.printStackTrace();
+        }
+      }
+    }
+    openedJarFileSystems.clear();
+  }
 }
