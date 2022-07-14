@@ -4,7 +4,11 @@ package de.monticore.types.check;
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 /**
  * Visitor for Derivation of SymType from Literals
@@ -12,7 +16,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
  * i.e. for
  *    literals/MCLiteralsBasis.mc4
  */
-public class DeriveSymTypeOfMCCommonLiterals implements MCCommonLiteralsVisitor2 {
+public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals implements MCCommonLiteralsVisitor2 {
 
   protected TypeCheckResult typeCheckResult;
 
@@ -60,9 +64,12 @@ public class DeriveSymTypeOfMCCommonLiterals implements MCCommonLiteralsVisitor2
 
   @Override
   public void visit(ASTStringLiteral lit){
-    TypeSymbolSurrogate oo = new TypeSymbolSurrogate("String");
-    oo.setEnclosingScope(BasicSymbolsMill.globalScope());
-    getTypeCheckResult().setResult(new SymTypeOfObject(oo));
+    Optional<TypeSymbol> stringType = getScope(lit.getEnclosingScope()).resolveType("String");
+    if(stringType.isPresent()){
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createTypeObject(stringType.get()));
+    } else {
+      Log.error("0xA0238 The type String could not be found");
+    }
   }
 
   @Override

@@ -36,7 +36,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
   public static final String VOID = "void";
 
-  public static final List<String> PRIMITIVE_LIST = Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR);
+  public static final List<String> PRIMITIVE_LIST = Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR, NULL);
 
 
   public static void initializePrimitives(){
