@@ -5,7 +5,6 @@ plugins {
 }
 
 description = 'MontiCore Generator Main Integration Test'
-sourceCompatibility = '11'
 
 ext.grammarDir = 'src/main/grammars'
 ext.junit_version = '4.13.1'
@@ -43,6 +42,11 @@ compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
 }
 
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
+}
 
 test {
   testLogging {
