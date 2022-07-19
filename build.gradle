@@ -3,7 +3,9 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-  id "io.github.themrmilchmann.ecj" version "0.1.0" // Eclipse compiler as it's much faster than javac
+  // Eclipse compiler as it's much faster than javac
+  // Since the root project does not contain java code, it is only applied to the subprojects
+  id "io.github.themrmilchmann.ecj" version "0.1.0" apply false
   id "org.sonarqube" version "3.0"
   id "jacoco"
   id 'org.barfuin.gradle.jacocolog' version '1.2.3'
