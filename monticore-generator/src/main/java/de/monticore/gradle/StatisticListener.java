@@ -43,10 +43,6 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
 
   }
 
-  public void beforeSettings(Settings settings){
-
-  }
-
   @Override
   public void settingsEvaluated(Settings settings) {
 

@@ -40,4 +40,8 @@ java {
   }
 }
 
+compileTestsJava {
+  options.headerOutputDirectory.convention(null)
+}
+
 jar.dependsOn testsJar

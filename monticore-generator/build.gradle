@@ -9,7 +9,7 @@ buildscript {
 
 plugins {
   id "java-library"
-  id "io.github.themrmilchmann.ecj" version "0.1.0" // Eclipse compiler as it's much faster than javac
+  id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
   id "monticore-bs" version "$previous_mc_version"// MontiCore Plugin
   id "com.github.johnrengelman.shadow" version "6.1.0"
   id 'groovy-gradle-plugin'
@@ -92,12 +92,12 @@ tasks.withType(JavaCompile) {
   options.encoding = "UTF-8"
   options.deprecation false
   options.warnings = false
+  options.fork = true
+  options.headerOutputDirectory.convention(null)
 }
 java {
+  sourceCompatibility = JavaVersion.VERSION_11
   withSourcesJar()
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
-  }
   registerFeature('grammars') {
     usingSourceSet(sourceSets.grammars)
   }

@@ -26,6 +26,9 @@ sourceSets {
 
 // let productTest depend on test as test produces code for productTest
 compileProductTestJava.dependsOn(test)
+compileProductTestJava {
+  options.headerOutputDirectory.convention(null)
+}
 
 // let check depend on productTest such that it is included in the build
 check.dependsOn(productTest)
