@@ -39,7 +39,13 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
     }
   }
 
+  // buildStarted was replaced by beforeSettings in Gradle 7.
+  // To ensure compatibility with both Gradle 6 and 7 both methods are overridden without an Annotation.
   public void buildStarted(Gradle gradle) {
+
+  }
+
+  public void beforeSettings(Settings settings){
 
   }
 

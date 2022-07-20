@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7.4.2-jdk11
 
 #include:
 #  - template: Code-Quality.gitlab-ci.yml
