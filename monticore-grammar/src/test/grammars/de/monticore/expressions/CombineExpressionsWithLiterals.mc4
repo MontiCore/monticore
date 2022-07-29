@@ -8,6 +8,7 @@ grammar CombineExpressionsWithLiterals extends
           de.monticore.expressions.BitExpressions,
           de.monticore.literals.MCCommonLiterals,
           de.monticore.expressions.JavaClassExpressions,
+          de.monticore.expressions.LambdaExpressions,
           de.monticore.types.MCFullGenericTypes,
           de.monticore.types.MCArrayTypes,
           de.monticore.symbols.OOSymbols {
