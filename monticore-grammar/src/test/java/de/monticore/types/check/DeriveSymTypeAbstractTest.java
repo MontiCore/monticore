@@ -9,6 +9,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
+import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
@@ -55,7 +56,11 @@ public abstract class DeriveSymTypeAbstractTest {
         this.tc = tc;
     }
 
-    private ASTExpression parseExpression(String expression) throws IOException {
+    protected TypeCalculator getTypeCalculator() {
+      return this.tc;
+    }
+
+    protected ASTExpression parseExpression(String expression) throws IOException {
         Optional<ASTExpression> astExpression = parseStringExpression(expression);
         assertTrue(astExpression.isPresent());
         return astExpression.get();
@@ -68,12 +73,16 @@ public abstract class DeriveSymTypeAbstractTest {
         addToTraverser(flatExpressionScopeSetterTraverser, enclosingScope);
     }
 
+    protected final void setFlatExpressionScope(ASTExpression astex) {
+      if (flatExpressionScopeSetterTraverser != null) {
+        astex.accept(flatExpressionScopeSetterTraverser);
+      }
+    }
+
     protected final void check(String expression, String expectedType) throws IOException {
         setupTypeCheck();
         ASTExpression astex = parseExpression(expression);
-        if (flatExpressionScopeSetterTraverser != null) {
-            astex.accept(flatExpressionScopeSetterTraverser);
-        }
+        setFlatExpressionScope(astex);
 
         assertEquals(expectedType, tc.typeOf(astex).print());
     }
@@ -81,8 +90,7 @@ public abstract class DeriveSymTypeAbstractTest {
     protected final void checkError(String expression, String expectedError) throws IOException {
         setupTypeCheck();
         ASTExpression astex = parseExpression(expression);
-        if (flatExpressionScopeSetterTraverser != null)
-            astex.accept(flatExpressionScopeSetterTraverser);
+        setFlatExpressionScope(astex);
 
         Log.getFindings().clear();
         try {
@@ -97,9 +105,7 @@ public abstract class DeriveSymTypeAbstractTest {
     protected final void checkErrors(String expression, List<String> expectedErrors) throws IOException {
         setupTypeCheck();
         ASTExpression astex = parseExpression(expression);
-        if (flatExpressionScopeSetterTraverser != null) {
-            astex.accept(flatExpressionScopeSetterTraverser);
-        }
+        setFlatExpressionScope(astex);
 
         Log.getFindings().clear();
         try {
@@ -119,9 +125,7 @@ public abstract class DeriveSymTypeAbstractTest {
       throws IOException {
         setupTypeCheck();
         ASTExpression astex = parseExpression(expression);
-        if (flatExpressionScopeSetterTraverser != null) {
-            astex.accept(flatExpressionScopeSetterTraverser);
-        }
+        setFlatExpressionScope(astex);
 
         Log.getFindings().clear();
         try {
@@ -188,6 +192,9 @@ public abstract class DeriveSymTypeAbstractTest {
         }
         if (traverser instanceof JavaClassExpressionsTraverser) {
             ((JavaClassExpressionsTraverser) traverser).add4JavaClassExpressions(flatExpressionScopeSetter);
+        }
+        if (traverser instanceof LambdaExpressionsTraverser) {
+            ((LambdaExpressionsTraverser) traverser).add4LambdaExpressions(flatExpressionScopeSetter);
         }
         if (traverser instanceof BitExpressionsTraverser) {
             ((BitExpressionsTraverser) traverser).add4BitExpressions(flatExpressionScopeSetter);

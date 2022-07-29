@@ -21,6 +21,8 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor2;
+import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
+import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
@@ -38,7 +40,7 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
-public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, BitExpressionsVisitor2,
+public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, LambdaExpressionsVisitor2, BitExpressionsVisitor2,
     ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2, MCArrayTypesVisitor2, MCFullGenericTypesVisitor2 {
 
   private IExpressionsBasisScope scope;
@@ -303,6 +305,12 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
     expr.setEnclosingScope(scope);
   }
 
+  /*************************************************LAMBDA EXPRESSIONS****************************************************/
+
+  @Override
+  public void visit(ASTLambdaExpression expr) {
+    expr.setEnclosingScope(scope);
+  }
 
   /*************************************************MCBASICTYPES****************************************************/
 
