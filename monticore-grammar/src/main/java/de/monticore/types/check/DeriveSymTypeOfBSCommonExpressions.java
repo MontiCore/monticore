@@ -219,11 +219,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateBooleanAndOpExpression(SymTypeExpression leftResult, SymTypeExpression rightResult) {
-    Optional<SymTypeExpression> wholeResult = Optional.empty();
-    if (isBoolean(leftResult) && isBoolean(rightResult)) {
-      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
-    }
-    return wholeResult;
+    return calculateLogicalOrOpAndOp(leftResult, rightResult);
   }
 
   @Override
@@ -237,9 +233,13 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected Optional<SymTypeExpression> calculateBooleanOrOpExpression(SymTypeExpression leftResult, SymTypeExpression rightResult) {
+    return calculateLogicalOrOpAndOp(leftResult, rightResult);
+  }
+
+  protected Optional<SymTypeExpression> calculateLogicalOrOpAndOp(SymTypeExpression leftResult, SymTypeExpression rightResult) {
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isBoolean(leftResult) && isBoolean(rightResult)) {
-      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
+      wholeResult = Optional.of(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN));
     }
     return wholeResult;
   }
@@ -258,7 +258,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected Optional<SymTypeExpression> calculateLogicalNotExpression(SymTypeExpression innerResult) {
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     if (isBoolean(innerResult)) {
-      wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
+      wholeResult = Optional.of(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN));
     }
     return wholeResult;
   }
@@ -357,6 +357,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         }
         if (!fieldSymbols.isEmpty()) {
           VariableSymbol var = fieldSymbols.get(0);
+          expr.setDefiningSymbol(var);
           SymTypeExpression type = var.getType();
           getTypeCheckResult().setField();
           getTypeCheckResult().setResult(type);
@@ -366,6 +367,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         TypeVarSymbol typeVar = typeVarOpt.get();
         if(checkModifierType(typeVar)){
           SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVariable(typeVar);
+          expr.setDefiningSymbol(typeVar);
           getTypeCheckResult().setType();
           getTypeCheckResult().setResult(wholeResult);
         }else{
@@ -377,6 +379,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         if (checkModifierType(typeSymbol)) {
           SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+          expr.setDefiningSymbol(typeSymbol);
           getTypeCheckResult().setType();
           getTypeCheckResult().setResult(wholeResult);
         } else {
@@ -395,11 +398,13 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if (typeVarOpt.isPresent()) {
         TypeVarSymbol typeVar = typeVarOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeVariable(typeVar);
+        expr.setDefiningSymbol(typeVar);
         getTypeCheckResult().setType();
         getTypeCheckResult().setResult(type);
       } else if (typeSymbolOpt.isPresent()) {
         TypeSymbol typeSymbol = typeSymbolOpt.get();
         SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+        expr.setDefiningSymbol(typeSymbol);
         getTypeCheckResult().setType();
         getTypeCheckResult().setResult(type);
       } else {
@@ -444,6 +449,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     traverser.add4ExpressionsBasis(visitor);
     expr.accept(traverser);
     SymTypeExpression innerResult;
+    List<SymTypeExpression> args = calculateArguments(expr, visitor.getLastName());
     ASTExpression lastExpression = visitor.getLastExpression();
     if(lastExpression != null){
       lastExpression.accept(getTraverser());
@@ -455,7 +461,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       //resolve methods with name of the inner expression
       List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr, visitor.getLastName());
       //count how many methods can be found with the correct arguments and return type
-      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
+      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
       //if the last result is static then filter for static methods
       if (getTypeCheckResult().isType()) {
         fittingMethods = filterModifiersFunctions(fittingMethods);
@@ -465,6 +471,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         if (fittingMethods.size() > 1) {
           checkForReturnType(expr, fittingMethods);
         }
+        expr.setDefiningSymbol(fittingMethods.get(0));
         SymTypeExpression result = fittingMethods.get(0).getType();
         getTypeCheckResult().setMethod();
         getTypeCheckResult().setResult(result);
@@ -476,9 +483,10 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveFunctionMany(visitor.getLastName());
       List<FunctionSymbol> methodlist = new ArrayList<>(methodcollection);
       //count how many methods can be found with the correct arguments and return type
-      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr);
+      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
       //there can only be one method with the correct arguments and return type
       if (fittingMethods.size() == 1) {
+        expr.setDefiningSymbol(fittingMethods.get(0));
         Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getType());
         getTypeCheckResult().setMethod();
         getTypeCheckResult().setResult(wholeResult.get());
@@ -487,6 +495,23 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         logError("0xA1242", expr.get_SourcePositionStart());
       }
     }
+  }
+
+  protected List<SymTypeExpression> calculateArguments(ASTCallExpression expr, String methodName){
+    List<SymTypeExpression> returnList = new ArrayList<>();
+    for(int i = 0; i < expr.getArguments().sizeExpressions(); i++){
+      expr.getArguments().getExpression(i).accept(getTraverser());
+      if(typeCheckResult.isPresentResult() && !typeCheckResult.isType()){
+        returnList.add(typeCheckResult.getResult());
+      }else{
+        //Placeholder as no function can have a parameter of type void and so that the correct number of
+        //SymTypeExpressions is in the list
+        returnList.add(SymTypeExpressionFactory.createTypeVoid());
+        Log.error("0xA0237 The argument of the function " + methodName + " could not be calculated",
+          expr.getArguments().getExpression(i).get_SourcePositionStart());
+      }
+    }
+    return returnList;
   }
 
   protected void checkForReturnType(ASTCallExpression expr, List<FunctionSymbol> fittingMethods){
@@ -505,17 +530,21 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     return innerResult.getMethodList(name, getTypeCheckResult().isType(), true);
   }
 
-  protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr) {
+  protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr, List<SymTypeExpression> args) {
     List<FunctionSymbol> fittingMethods = new ArrayList<>();
     for (FunctionSymbol method : methodlist) {
       //for every method found check if the arguments are correct
-      if (expr.getArguments().getExpressionList().size() == method.getParameterList().size()) {
+      if ((!method.isIsElliptic() &&
+          args.size() == method.getParameterList().size())
+          || (method.isIsElliptic() &&
+          args.size() >= method.getParameterList().size() - 1)) {
         boolean success = true;
-        for (int i = 0; i < method.getParameterList().size(); i++) {
-          expr.getArguments().getExpression(i).accept(getTraverser());
+        for (int i = 0; i < args.size(); i++) {
           //test if every single argument is correct
-          if (!method.getParameterList().get(i).getType().deepEquals(getTypeCheckResult().getResult()) &&
-              !compatible(method.getParameterList().get(i).getType(), getTypeCheckResult().getResult())) {
+          //if an argument is void type then it could not be calculated correctly -> see calculateArguments
+          SymTypeExpression paramType = method.getParameterList().get(Math.min(i, method.getParameterList().size() - 1)).getType();
+          if (!paramType.deepEquals(args.get(i)) &&
+            !compatible(paramType, args.get(i)) || args.get(i).isVoidType()) {
             success = false;
           }
         }
@@ -556,7 +585,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     // if the left and the right part of the expression are numerics,
     // then the whole expression is a boolean
     if (isNumericType(leftResult) && isNumericType(rightResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN));
     }
     //should never happen, no valid result, error will be handled in traverse
     getTypeCheckResult().reset();
@@ -584,13 +613,13 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     //Option one: they are both numeric types
     if (isNumericType(leftResult) && isNumericType(rightResult)
         || isBoolean(leftResult) && isBoolean(rightResult)) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN));
     }
     //Option two: none of them is a primitive type and they are either the same type or in a super/sub type relation
-    if (!leftResult.isTypeConstant() && !rightResult.isTypeConstant() &&
+    if (!leftResult.isPrimitive() && !rightResult.isPrimitive() &&
         (compatible(leftResult, rightResult) || compatible(rightResult, leftResult))
     ) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant(BasicSymbolsMill.BOOLEAN));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN));
     }
     //should never happen, no valid result, error will be handled in traverse
     getTypeCheckResult().reset();
@@ -619,20 +648,19 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     //if one part of the expression is a double and the other is another numeric type then the result is a double
     if ((isDouble(leftResult) && isNumericType(rightResult)) ||
         (isDouble(rightResult) && isNumericType(leftResult))) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("double"));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive("double"));
       //no part of the expression is a double -> try again with float
     } else if ((isFloat(leftResult) && isNumericType(rightResult)) ||
         (isFloat(rightResult) && isNumericType(leftResult))) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("float"));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive("float"));
       //no part of the expression is a float -> try again with long
     } else if ((isLong(leftResult) && isNumericType(rightResult)) ||
         (isLong(rightResult) && isNumericType(leftResult))) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive("long"));
       //no part of the expression is a long -> if both parts are numeric types then the result is a int
-    } else if (leftResult.isTypeConstant() && isIntegralType(leftResult)
-        && rightResult.isTypeConstant() && isIntegralType(rightResult)
+    } else if (isIntegralType(leftResult) && isIntegralType(rightResult)
     ) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+      return Optional.of(SymTypeExpressionFactory.createPrimitive("int"));
     }
     //should never happen, no valid result, error will be handled in traverse
     getTypeCheckResult().reset();
@@ -672,8 +700,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * helper method for the calculation of the ASTBooleanNotExpression
    */
   protected Optional<SymTypeExpression> getUnaryIntegralPromotionType(SymTypeExpression type) {
-    if (!isLong(type) && type.isTypeConstant() && ((SymTypeConstant) type).isIntegralType()) {
-      return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+    if (!isLong(type) && type.isPrimitive() && ((SymTypePrimitive) type).isIntegralType()) {
+      return Optional.of(SymTypeExpressionFactory.createPrimitive("int"));
     }
     return Optional.empty();
   }

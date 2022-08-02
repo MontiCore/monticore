@@ -6,7 +6,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;

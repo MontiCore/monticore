@@ -226,7 +226,7 @@ released: 11.11.2020
     * `monticore-generator/it/02.experiments` to `monticore-test/02.experiments`
     * `monticore-grammar/monticore-grammar-it` to `monticore-test/monticore-grammar-it`
 * Remove the generation of `XModelloader`. Languages should now use `XScopeDeSer` to load symbol tables instead.
-* Removed the generation of the following builder classes (also from the Mill, see [Additions](#Additions) for alternative solution)
+* Removed the generation of the following builder classes (also from the Mill; alternative solutions described below)
     * `XSymbolTableCreatorBuilder` 
     * `XSymbolTableCreatorDelegatorBuilder` 
     * `XScopeDeSerBuilder`

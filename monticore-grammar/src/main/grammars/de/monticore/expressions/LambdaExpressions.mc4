@@ -1,0 +1,59 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.expressions;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.expressions.*;
+import de.monticore.symbols.*;
+import de.monticore.types.*;
+
+component grammar LambdaExpressions
+          extends BasicSymbols,
+                  MCBasicTypes,
+                  ExpressionsBasis {
+
+  /**
+   * This grammar defines lambda expressions, e.g.
+   * (int x, int y) -> x * y, () -> 5, x -> x * 2
+   *
+   * Not part of this grammar are Java-like lambdas with codeblocks, e.g.
+   * (int x) -> {int y = x + 2; return y;}
+   *
+   * The grammar has an extension point for types to be filled when used.
+   *
+   * There are also other kinds of expressions defined in the
+   * grammars mentioned below. These expression definitions can savely be
+   * composed if desired.
+   *
+   * This grammar is part of a hierarchy of expressions, namely
+   * * expressions/ExpressionsBasis.mc4
+   * * --  expressions/CommonExpressions.mc4
+   * * --  --  expressions/JavaClassExpressions.mc4
+   * * --  expressions/AssignmentExpressions.mc4
+   * * --  expressions/BitExpressions.mc4
+   * * --  expressions/LambdaExpressions.mc4
+   * * --  expressions/OCLExpressions.mc4
+   * * --  expressions/SetExpressions.mc4
+   *
+  */
+
+  /*=================================================================*/
+
+  /**
+   * LambdaParameters have optional explicit typing.
+   * However, not setting the type explicitly requires
+   * some sort of type inference to be present.
+   */
+  LambdaParameter implements Variable = MCType? Name;
+
+  LambdaParameters =
+    LambdaParameter
+    | parenthesis:"(" (LambdaParameter || ",")* ")"
+  ;
+
+  scope (shadowing non_exporting ordered) LambdaExpression implements Expression <50> =
+    <rightassoc>
+    LambdaParameters "->"
+    Expression
+  ;
+}

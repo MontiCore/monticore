@@ -42,15 +42,15 @@ public class SymTypeExpressionFactory {
   }
 
   /**
-   * for constants, such as "int" (and no other kinds).
+   * for primitives, such as "int" (and no other kinds).
    * TypeInfo is not needed (as the Objects are predefined singletons)
    */
-  public static SymTypeConstant createTypeConstant(String name) {
+  public static SymTypePrimitive createPrimitive(String name) {
     Optional<TypeSymbol> type = BasicSymbolsMill.globalScope().resolveTypeLocally(name);
     if (!type.isPresent()) {
       Log.error("0x893F62 Internal Error: Non primitive type " + name + " stored as constant.");
     }
-    return new SymTypeConstant(type.get());
+    return new SymTypePrimitive(type.get());
   }
 
   /**
@@ -108,7 +108,7 @@ public class SymTypeExpressionFactory {
   public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol) {
     SymTypeExpression o;
     if(PRIMITIVE_LIST.contains(typeSymbol.getName())){
-      o = createTypeConstant(typeSymbol.getName());
+      o = createPrimitive(typeSymbol.getName());
     } else if ("void".equals(typeSymbol.getName())) {
       o = createTypeVoid();
     } else if ("null".equals(typeSymbol.getName())) {
@@ -133,7 +133,7 @@ public class SymTypeExpressionFactory {
   public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
     if (PRIMITIVE_LIST.contains(name)) {
-      o = createTypeConstant(name);
+      o = createPrimitive(name);
     }
     else if ("void".equals(name)) {
       o = createTypeVoid();
@@ -272,11 +272,16 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
       List<SymTypeExpression> argumentTypes) {
-    return new SymTypeOfFunction(returnType, argumentTypes);
+    return createFunction(returnType, argumentTypes, false);
   }
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
       SymTypeExpression... argumentTypes) {
     return createFunction(returnType, Arrays.asList(argumentTypes));
+  }
+
+  public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
+      List<SymTypeExpression> argumentTypes, boolean elliptic) {
+    return new SymTypeOfFunction(returnType, argumentTypes, elliptic);
   }
 }

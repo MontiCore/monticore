@@ -31,6 +31,8 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   protected static final String JSON_ARGUMENTTYPES = "argumentTypes";
 
+  protected static final String JSON_ELLIPTIC = "elliptic";
+
   /**
    * Type of return value
    * returned when the function is called
@@ -45,6 +47,12 @@ public class SymTypeOfFunction extends SymTypeExpression {
   protected List<SymTypeExpression> argumentTypes;
 
   /**
+   * Whether the function supports varargs
+   * e.g. {@code Integer f(Float... t)}
+   */
+  protected boolean elliptic;
+
+  /**
    * Constructor with all parameters that are stored:
    */
   public SymTypeOfFunction(SymTypeExpression returnType) {
@@ -52,9 +60,15 @@ public class SymTypeOfFunction extends SymTypeExpression {
   }
 
   public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes) {
+    this(returnType, argumentTypes, false);
+  }
+
+  public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes,
+      boolean elliptic) {
     super.typeSymbol = new TypeSymbol(TYPESYMBOL_NAME);
     this.returnType = returnType;
     this.argumentTypes = argumentTypes;
+    this.elliptic = elliptic;
   }
 
   /**
@@ -64,8 +78,11 @@ public class SymTypeOfFunction extends SymTypeExpression {
   public String print() {
     final StringBuilder r = new StringBuilder();
     r.append("(");
-    for (SymTypeExpression argType : argumentTypes) {
-      r.append(argType.print());
+    for (int i = 0; i < argumentTypes.size(); i++) {
+      r.append(argumentTypes.get(i).print());
+      if (i == argumentTypes.size() - 1 && isElliptic()) {
+        r.append("...");
+      }
       r.append(" -> ");
     }
     r.append(returnType.print());
@@ -75,10 +92,12 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   @Override
   public String printFullName() {
-    final StringBuffer r = new StringBuffer();
-    r.append("(");
-    for (SymTypeExpression argType : argumentTypes) {
-      r.append(argType.printFullName());
+    final StringBuilder r = new StringBuilder();
+    for (int i = 0; i < argumentTypes.size(); i++) {
+      r.append(argumentTypes.get(i).printFullName());
+      if (i == argumentTypes.size() - 1 && isElliptic()) {
+        r.append("...");
+      }
       r.append(" -> ");
     }
     r.append(returnType.printFullName());
@@ -99,6 +118,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
       jp.valueJson(exp.printAsJson());
     }
     jp.endArray();
+    jp.member(JSON_ELLIPTIC, isElliptic());
     jp.endObject();
     return jp.getContent();
   }
@@ -146,6 +166,14 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   public SymTypeExpression getType() {
     return returnType;
+  }
+
+  public boolean isElliptic() {
+    return elliptic;
+  }
+
+  public void setElliptic(boolean elliptic) {
+    this.elliptic = elliptic;
   }
 
   // --------------------------------------------------------------------------

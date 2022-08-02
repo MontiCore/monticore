@@ -1,5 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-<center><div style="text-align:center" ><img src="mc-logo.png" /></div></center>
+<center>
+  <div style="text-align:center" ><img src="https://github.com/MontiCore/monticore/raw/dev/mc-logo.png" /></div>
+</center>
 
 # MontiCore - Language Workbench And Development Tool Framework 
 
@@ -30,7 +32,7 @@ This product includes the following software:
 ## Contribution 
 
 When you want to contribute: Please make sure that your complete workspace only 
-uses UNIX line endings (LF) and all files are UTF-8 without BOM. On Windows you should 
+uses UNIX line endings (LF) and all files are UTF-8 without BOM. On Windows, you should 
 configure git to not automatically replace LF with CRLF during checkout 
 by executing the following configuration: 
 

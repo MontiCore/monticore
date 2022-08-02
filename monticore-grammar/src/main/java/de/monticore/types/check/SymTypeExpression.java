@@ -41,7 +41,7 @@ public abstract class SymTypeExpression {
    * Am I primitive? (such as "int")
    * (default: no)
    */
-  public boolean isTypeConstant() {
+  public boolean isPrimitive() {
     return false;
   }
 

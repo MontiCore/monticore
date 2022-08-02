@@ -91,7 +91,7 @@ public class AbstractDeriveTest {
         .build();
     add2scope(person.getSpannedScope(), address);
     add2scope(person.getSpannedScope(), method("foo", SymTypeExpressionFactory.createTypeVoid()));
-    add2scope(person.getSpannedScope(), field("bar", SymTypeExpressionFactory.createTypeConstant("int")));
+    add2scope(person.getSpannedScope(), field("bar", SymTypeExpressionFactory.createPrimitive("int")));
     add2scope(scope, firstsemesterstudent);
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.

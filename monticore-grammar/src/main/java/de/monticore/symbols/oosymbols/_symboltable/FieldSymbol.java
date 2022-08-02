@@ -23,6 +23,7 @@ public class FieldSymbol extends FieldSymbolTOP {
     clone.setIsPublic(this.isPublic);
     clone.setIsStatic(this.isStatic);
     clone.setIsFinal(this.isFinal);
+    clone.setIsDerived(this.isDerived);
     if(isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }

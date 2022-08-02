@@ -129,7 +129,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   protected Optional<SymTypeExpression> calculateArrayExpression(ASTArrayExpression node, SymTypeExpression arrayTypeResult, SymTypeExpression indexResult) {
     Optional<SymTypeExpression> wholeResult = Optional.empty();
     //the type of the index has to be an integral type
-    if(indexResult.isTypeConstant() && ((SymTypeConstant)indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray){
+    if(indexResult.isPrimitive() && ((SymTypePrimitive)indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray){
       SymTypeArray arrayResult = (SymTypeArray) arrayTypeResult;
       wholeResult = Optional.of(getCorrectResultArrayExpression(node.getEnclosingScope(), indexResult, arrayTypeResult, arrayResult));
     }
@@ -146,8 +146,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       //determine whether the result has to be a constant, generic or object
       if(arrayResult.getTypeInfo().getTypeParameterList().isEmpty()){
         //if the return type is a primitive
-        if(SymTypeConstant.boxMap.containsKey(arrayResult.getTypeInfo().getName())){
-          wholeResult = SymTypeExpressionFactory.createTypeConstant(arrayResult.getTypeInfo().getName());
+        if(SymTypePrimitive.boxMap.containsKey(arrayResult.getTypeInfo().getName())){
+          wholeResult = SymTypeExpressionFactory.createPrimitive(arrayResult.getTypeInfo().getName());
         }else {
           //if the return type is an object
           wholeResult = SymTypeExpressionFactory.createTypeObject(arrayResult.getTypeInfo().getName(), getScope(scope));
@@ -379,7 +379,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     }
 
     //the method was not finished yet (either with Log.error or return) -> both types are present and thus the result is boolean
-    wholeResult = Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+    wholeResult = Optional.of(SymTypeExpressionFactory.createPrimitive("boolean"));
 
     getTypeCheckResult().setResult(wholeResult.get());
   }
@@ -404,8 +404,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     SymTypeExpression wholeResult;
     if(typeSymbol.getTypeParameterList().isEmpty()){
       //if the return type is a primitive
-      if(SymTypeConstant.unboxMap.containsKey(typeSymbol.getName())){
-        wholeResult = SymTypeExpressionFactory.createTypeConstant(typeSymbol.getName());
+      if(SymTypePrimitive.unboxMap.containsKey(typeSymbol.getName())){
+        wholeResult = SymTypeExpressionFactory.createPrimitive(typeSymbol.getName());
       }else {
         //the return type is an object
         wholeResult = SymTypeExpressionFactory.createTypeObject(typeSymbol);
@@ -692,7 +692,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         return;
       }
 
-      if (!extType.isTypeConstant()) {
+      if (!extType.isPrimitive()) {
         //see if there is a constructor fitting for the arguments
         List<FunctionSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName(), false);
         if (!constructors.isEmpty()) {
@@ -737,8 +737,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
             expr.accept(getTraverser());
             if (getTypeCheckResult().isPresentResult()) {
               SymTypeExpression result = getTypeCheckResult().getResult();
-              if (result.isTypeConstant()) {
-                if (!((SymTypeConstant) result).isIntegralType()) {
+              if (result.isPrimitive()) {
+                if (!((SymTypePrimitive) result).isIntegralType()) {
                   getTypeCheckResult().reset();
                   logError("0xA0315", expr.get_SourcePositionStart());
                   return;

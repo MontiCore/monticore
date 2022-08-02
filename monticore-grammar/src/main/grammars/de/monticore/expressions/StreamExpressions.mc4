@@ -1,0 +1,79 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.expressions.ExpressionsBasis;
+
+/**
+ * This grammar extends the available expressions with
+ * special operations for Streams as initially defined by 
+ * Broy/Stoelen in [BS01] using the Syntax from 
+ * Ringert/Rumpe [RR11] and 
+ * J. Bürger, H. Kausch, D. Raco, J. Ringert, B. Rumpe, 
+ * S. Stüber, M. Wiartalla [BKR+20] 
+ * (see https://se-rwth.github.io/publications/)
+ *
+ * Stream expressions are partly 
+ * 1) extending the Expression syntax by grammatical operations (see below),
+ * 2) are provided as library of available Stream operations, and
+ * 3) are based on the type constructor Stream<T> (defined in Types)
+ *
+ * The language developer may choose the subset of expressions
+ * of interest and combine these with the appropriate typing infrastructure
+ *
+ * This modularity of expressions and associated types greatly eases
+ * the reuse of type structures in languages similar to Java
+ *
+ * This grammar is part of a hierarchy of expressions, namely
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
+ * * --  expressions/OCLExpressions.mc4
+ * * --  expressions/SetExpressions.mc4
+ * * --  expressions/StreamExpressions.mc4
+ *
+*/
+
+
+component grammar StreamExpressions extends CommonExpressions {
+
+  /*=================================================================*/
+  
+  /* ------ Special Syntax for Functions on Untimed Streams -------- */
+
+  /* 
+   * Empty Stream constant 
+   */
+  EmptyStreamExpression implements Expression = "<>";
+
+// TODO FDr, DS: Priorität klaeren
+// TODO FDr, DS: Beisst sich dies mit dem gleichnamigen Operator in ConditionalExpression?
+  /* 
+   * Append first element 
+   * a:b:c  is equal to  a:(b:c), hence <rightassoc>
+   * a:b^c  is equal to  a:(b^c)
+   * a+b:c  is equal to  (a+b):c, and
+   * a <= b:c  is equal to  a <= (b:c), hence the priority 154, 156
+   */
+  AppendStreamExpression implements Expression <154>, InfixExpression = <rightassoc>
+    left:Expression operator:":" right:Expression;
+
+// TODO FDr, DS: Priorität klaeren
+// TODO FDr, DS: Beisst sich dies mit dem gleichnamigen Operator in BitExpressions.mc4 ?
+  /* 
+   * Concatenation of streams 
+   * a^b^c  is equal to  a^(b^c),  hence <rightassoc>
+   */
+  ConcatStreamExpression implements Expression <156>, InfixExpression = <rightassoc>
+    left:Expression operator:"^" right:Expression;
+
+  /* 
+   * Length of stream 
+   */
+  LenghtStreamExpression implements Expression <185>
+    = "#" Expression;
+
+}

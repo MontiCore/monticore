@@ -10,7 +10,7 @@ dependencies {
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.match:' + emf_compare_version
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.diff:' + emf_compare_version
   testImplementation "junit:junit:$junit_version"
-  testImplementation 'org.codehaus.groovy:groovy:3.0.7'
+  testImplementation 'org.apache.groovy:groovy:4.0.2'
 }
 
 description = 'MontiCore: EMF Runtime Environment'

@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.parserinfo;
+
+// Use to test that compatible parser info is generated in the simplest inheritance case
+grammar ParserInfoSimpleInheritanceTest extends ParserInfoTest {
+  start CompilationUnit;
+}

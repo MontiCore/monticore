@@ -84,6 +84,8 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teFunc3;
 
+  static SymTypeExpression teFunc4;
+
   @BeforeClass
   public static void setUpScope(){
 //    LogStub.init();
@@ -97,9 +99,9 @@ public class SymTypeExpressionTest {
     scope = OOSymbolsMill.scope();
 
     // setup of objects (unchanged during tests)
-    teDouble = createTypeConstant("double");
+    teDouble = createPrimitive("double");
 
-    teInt = createTypeConstant("int");
+    teInt = createPrimitive("int");
 
     teVarA = createTypeVariable("A", scope);
 
@@ -154,6 +156,8 @@ public class SymTypeExpressionTest {
 
     teFunc3 = createFunction(teFunc1, Lists.newArrayList(teFunc2));
 
+    teFunc4 = createFunction(teVoid, Lists.newArrayList(teDouble, teInt), true);
+
   }
 
   @Test
@@ -179,6 +183,7 @@ public class SymTypeExpressionTest {
     assertEquals("(void)", teFunc1.print());
     assertEquals("(double -> int -> int)", teFunc2.print());
     assertEquals("((double -> int -> int) -> (void))", teFunc3.print());
+    assertEquals("(double -> int... -> void)", teFunc4.print());
   }
 
   @Test
@@ -186,14 +191,14 @@ public class SymTypeExpressionTest {
     JsonElement result = JsonParser.parse(teDouble.printAsJson());
     assertTrue(result.isJsonObject());
     JsonObject teDoubleJson = result.getAsJsonObject();
-    assertEquals("de.monticore.types.check.SymTypeConstant", teDoubleJson.getStringMember("kind"));
-    assertEquals("double", teDoubleJson.getStringMember("constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", teDoubleJson.getStringMember("kind"));
+    assertEquals("double", teDoubleJson.getStringMember("primitiveName"));
 
     result = JsonParser.parse(teInt.printAsJson());
     assertTrue(result.isJsonObject());
     JsonObject teIntJson = result.getAsJsonObject();
-    assertEquals("de.monticore.types.check.SymTypeConstant", teIntJson.getStringMember("kind"));
-    assertEquals("int", teIntJson.getStringMember("constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", teIntJson.getStringMember("kind"));
+    assertEquals("int", teIntJson.getStringMember("primitiveName"));
 
     result = JsonParser.parse(teVarA.printAsJson());
     assertTrue(result.isJsonObject());
@@ -230,8 +235,8 @@ public class SymTypeExpressionTest {
     assertEquals("de.monticore.types.check.SymTypeArray", teArr3Json.getStringMember("kind"));
     assertEquals(3, teArr3Json.getIntegerMember("dim"), 0.01);
     JsonObject teArr3ArgJson = teArr3Json.getObjectMember("argument");
-    assertEquals("de.monticore.types.check.SymTypeConstant", teArr3ArgJson.getStringMember("kind"));
-    assertEquals("int", teArr3ArgJson.getStringMember("constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", teArr3ArgJson.getStringMember("kind"));
+    assertEquals("int", teArr3ArgJson.getStringMember("primitiveName"));
 
     result = JsonParser.parse(teSet.printAsJson());
     assertTrue(result.isJsonObject());
@@ -262,9 +267,9 @@ public class SymTypeExpressionTest {
     assertEquals("Map", teMapJson.getStringMember("typeConstructorFullName"));
     List<JsonElement> teMapArgsJson = teMapJson.getArrayMember("arguments");
     assertEquals(2, teMapArgsJson.size(), 0.01);
-    assertEquals("de.monticore.types.check.SymTypeConstant",
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
         teMapArgsJson.get(0).getAsJsonObject().getStringMember("kind"));
-    assertEquals("int", teMapArgsJson.get(0).getAsJsonObject().getStringMember("constName"));
+    assertEquals("int", teMapArgsJson.get(0).getAsJsonObject().getStringMember("primitiveName"));
     assertEquals("de.monticore.types.check.SymTypeOfObject",
         teMapArgsJson.get(1).getAsJsonObject().getStringMember("kind"));
     assertEquals("de.x.Person", teMapArgsJson.get(1).getAsJsonObject().getStringMember("objName"));
@@ -279,12 +284,12 @@ public class SymTypeExpressionTest {
     assertEquals("de.monticore.types.check.SymTypeOfObject",
         teFooArgsJson.get(0).getAsJsonObject().getStringMember("kind"));
     assertEquals("de.x.Person", teFooArgsJson.get(0).getAsJsonObject().getStringMember("objName"));
-    assertEquals("de.monticore.types.check.SymTypeConstant",
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
         teFooArgsJson.get(1).getAsJsonObject().getStringMember("kind"));
-    assertEquals("double", teFooArgsJson.get(1).getAsJsonObject().getStringMember("constName"));
-    assertEquals("de.monticore.types.check.SymTypeConstant",
+    assertEquals("double", teFooArgsJson.get(1).getAsJsonObject().getStringMember("primitiveName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
         teFooArgsJson.get(2).getAsJsonObject().getStringMember("kind"));
-    assertEquals("int", teFooArgsJson.get(2).getAsJsonObject().getStringMember("constName"));
+    assertEquals("int", teFooArgsJson.get(2).getAsJsonObject().getStringMember("primitiveName"));
     assertEquals("de.monticore.types.check.SymTypeOfObject",
         teFooArgsJson.get(3).getAsJsonObject().getStringMember("kind"));
     assertEquals("Human", teFooArgsJson.get(3).getAsJsonObject().getStringMember("objName"));
@@ -301,8 +306,8 @@ public class SymTypeExpressionTest {
     List<JsonElement> teDeep1teMapArgsJson = teDeep1ArgsJson.get(0).getAsJsonObject()
         .getArrayMember("arguments");
     assertEquals(2, teDeep1teMapArgsJson.size(), 0.01);
-    assertEquals("de.monticore.types.check.SymTypeConstant", teDeep1teMapArgsJson.get(0).getAsJsonObject().getStringMember( "kind"));
-    assertEquals("int", teDeep1teMapArgsJson.get(0).getAsJsonObject().getStringMember("constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", teDeep1teMapArgsJson.get(0).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("int", teDeep1teMapArgsJson.get(0).getAsJsonObject().getStringMember("primitiveName"));
     assertEquals("de.monticore.types.check.SymTypeOfObject", teDeep1teMapArgsJson.get(1).getAsJsonObject().getStringMember( "kind"));
     assertEquals("de.x.Person", teDeep1teMapArgsJson.get(1).getAsJsonObject().getStringMember( "objName"));
 
@@ -313,8 +318,8 @@ public class SymTypeExpressionTest {
     assertEquals("java.util.Map2", teDeep2Json.getStringMember("typeConstructorFullName"));
     List<JsonElement> teDeep2ArgsJson = teDeep2Json.getArrayMember("arguments");
     assertEquals(2, teDeep2ArgsJson.size(), 0.01);
-    assertEquals("de.monticore.types.check.SymTypeConstant", teDeep2ArgsJson.get(0).getAsJsonObject().getStringMember( "kind"));
-    assertEquals("int", teDeep2ArgsJson.get(0).getAsJsonObject().getStringMember( "constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", teDeep2ArgsJson.get(0).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("int", teDeep2ArgsJson.get(0).getAsJsonObject().getStringMember( "primitiveName"));
     assertEquals("de.monticore.types.check.SymTypeOfGenerics", teDeep2ArgsJson.get(1).getAsJsonObject().getStringMember( "kind"));
     assertEquals("java.util.Set", teDeep2ArgsJson.get(1).getAsJsonObject().getStringMember( "typeConstructorFullName"));
     List<JsonElement> teDeep2SetArgsJson = teDeep2ArgsJson.get(1).getAsJsonObject()
@@ -325,8 +330,8 @@ public class SymTypeExpressionTest {
     List<JsonElement> teDeep2SetMapArgsJson = teDeep2SetArgsJson.get(0).getAsJsonObject()
         .getArrayMember("arguments");
     assertEquals(2, teDeep2SetMapArgsJson.size(), 0.01);
-    assertEquals("de.monticore.types.check.SymTypeConstant", teDeep2SetMapArgsJson.get(0).getAsJsonObject().getStringMember( "kind"));
-    assertEquals("int", teDeep2SetMapArgsJson.get(0).getAsJsonObject().getStringMember( "constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", teDeep2SetMapArgsJson.get(0).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("int", teDeep2SetMapArgsJson.get(0).getAsJsonObject().getStringMember( "primitiveName"));
     assertEquals("de.monticore.types.check.SymTypeOfObject", teDeep2SetMapArgsJson.get(1).getAsJsonObject().getStringMember( "kind"));
     assertEquals("de.x.Person", teDeep2SetMapArgsJson.get(1).getAsJsonObject().getStringMember( "objName"));
 
@@ -336,22 +341,28 @@ public class SymTypeExpressionTest {
     assertEquals("de.monticore.types.check.SymTypeOfWildcard",teUpperBound2Json.getStringMember("kind"));
     assertTrue(teUpperBound2Json.getBooleanMember("isUpper"));
     JsonObject bound = teUpperBound2Json.getObjectMember("bound");
-    assertEquals("de.monticore.types.check.SymTypeConstant",bound.getStringMember("kind"));
-    assertEquals("int",bound.getStringMember("constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive",bound.getStringMember("kind"));
+    assertEquals("int",bound.getStringMember("primitiveName"));
 
     result = JsonParser.parse(teFunc2.printAsJson());
     assertTrue(result.isJsonObject());
     JsonObject teFunc2Json = result.getAsJsonObject();
     assertEquals("de.monticore.types.check.SymTypeOfFunction",teFunc2Json.getStringMember("kind"));
     JsonObject func2returnValue = teFunc2Json.getObjectMember("returnValue");
-    assertEquals("de.monticore.types.check.SymTypeConstant", func2returnValue.getStringMember( "kind"));
-    assertEquals("int", func2returnValue.getStringMember( "constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", func2returnValue.getStringMember( "kind"));
+    assertEquals("int", func2returnValue.getStringMember( "primitiveName"));
     List<JsonElement> func2Arguments = teFunc2Json.getArrayMember("argumentTypes");
     assertEquals(2, func2Arguments.size());
-    assertEquals("de.monticore.types.check.SymTypeConstant", func2Arguments.get(0).getAsJsonObject().getStringMember( "kind"));
-    assertEquals("double", func2Arguments.get(0).getAsJsonObject().getStringMember( "constName"));
-    assertEquals("de.monticore.types.check.SymTypeConstant", func2Arguments.get(1).getAsJsonObject().getStringMember( "kind"));
-    assertEquals("int", func2Arguments.get(1).getAsJsonObject().getStringMember( "constName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", func2Arguments.get(0).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("double", func2Arguments.get(0).getAsJsonObject().getStringMember( "primitiveName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive", func2Arguments.get(1).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("int", func2Arguments.get(1).getAsJsonObject().getStringMember( "primitiveName"));
+    assertFalse(teFunc2Json.getBooleanMember("elliptic"));
+
+    result = JsonParser.parse(teFunc4.printAsJson());
+    assertTrue(result.isJsonObject());
+    JsonObject teFunc4Json = result.getAsJsonObject();
+    assertTrue(teFunc4Json.getBooleanMember("elliptic"));
   }
 
   @Test
@@ -394,14 +405,14 @@ public class SymTypeExpressionTest {
 
     //SymTypeVariable
     assertTrue(teVarA.deepClone() instanceof SymTypeVariable);
-    assertFalse(teVarA.deepClone().isTypeConstant());
+    assertFalse(teVarA.deepClone().isPrimitive());
     assertTrue(teVarA.deepClone().isTypeVariable());
     assertEquals(teVarA.print(),teVarA.deepClone().print());
 
-    //SymTypeConstant
-    assertTrue(teInt.deepClone() instanceof SymTypeConstant);
+    //SymTypePrimitive
+    assertTrue(teInt.deepClone() instanceof SymTypePrimitive);
     assertEquals(teInt.getTypeInfo().getName(), teInt.deepClone().getTypeInfo().getName());
-    assertTrue(teInt.deepClone().isTypeConstant());
+    assertTrue(teInt.deepClone().isPrimitive());
     assertEquals(teInt.print(),teInt.deepClone().print());
 
     //SymTypeOfObject
@@ -438,7 +449,7 @@ public class SymTypeExpressionTest {
     SymTypeOfNull tNull = SymTypeExpressionFactory.createTypeOfNull();
     assertEquals("null",tNull.print());
 
-    SymTypeConstant tInt = SymTypeExpressionFactory.createTypeConstant("int");
+    SymTypePrimitive tInt = SymTypeExpressionFactory.createPrimitive("int");
     assertEquals("int",tInt.print());
     assertTrue(tInt.isIntegralType());
 
@@ -500,6 +511,9 @@ public class SymTypeExpressionTest {
 
     SymTypeOfFunction tFunc3 = SymTypeExpressionFactory.createFunction(tVoid, tFunc1, tFunc1);
     assertEquals("((void) -> (void) -> void)", tFunc3.print());
+
+    SymTypeOfFunction tFunc4 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(teDouble, teInt), true);
+    assertEquals("(double -> int... -> void)", tFunc4.print());
   }
 
   @Test
@@ -589,7 +603,7 @@ public class SymTypeExpressionTest {
 
     //streamArguments
     Stream<SymTypeExpression> stream =teFoo2.streamArguments();
-    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isTypeConstant)
+    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isPrimitive)
           .collect(Collectors.toList());
     assertEquals(2,list.size());
     assertEquals(teDouble,list.get(0));
@@ -597,7 +611,7 @@ public class SymTypeExpressionTest {
 
     //parallelStreamArguments
     Stream<SymTypeExpression> parStream = teFoo2.parallelStreamArguments();
-    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isTypeConstant)
+    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isPrimitive)
         .collect(Collectors.toList());
     assertEquals(2,parList.size());
     assertEquals(teDouble,parList.get(0));
@@ -679,7 +693,7 @@ public class SymTypeExpressionTest {
     assertTrue(teFoo2.equalsArguments(arguments));
 
     //removeIfArgument
-    teFoo2.removeIfArgument(SymTypeExpression::isTypeConstant);
+    teFoo2.removeIfArgument(SymTypeExpression::isPrimitive);
     assertEquals(2,teFoo2.sizeArguments());
   }
 
@@ -692,14 +706,14 @@ public class SymTypeExpressionTest {
   }
 
   @Test
-  public void symTypeConstantTest(){
-    SymTypeConstant intType = SymTypeExpressionFactory.createTypeConstant("int");
+  public void symTypePrimitiveTest(){
+    SymTypePrimitive intType = SymTypeExpressionFactory.createPrimitive("int");
     assertEquals("int",intType.print());
-    intType.setConstName("double");
+    intType.setPrimitiveName("double");
     assertEquals("double",intType.print());
-    intType.setConstName("int");
+    intType.setPrimitiveName("int");
 
-    assertEquals("java.lang.Integer",intType.getBoxedConstName());
+    assertEquals("java.lang.Integer",intType.getBoxedPrimitiveName());
     assertEquals("Integer",intType.getBaseOfBoxedName());
     assertTrue(intType.isIntegralType());
     assertTrue(intType.isNumericType());
@@ -802,7 +816,7 @@ public class SymTypeExpressionTest {
 
     //streamArgumentTypes
     Stream<SymTypeExpression> stream = teFun.streamArgumentTypes();
-    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isTypeConstant)
+    List<SymTypeExpression> list = stream.filter(SymTypeExpression::isPrimitive)
         .collect(Collectors.toList());
     assertEquals(2, list.size());
     assertEquals(teDouble, list.get(0));
@@ -810,7 +824,7 @@ public class SymTypeExpressionTest {
 
     //parallelStreamArgumentTypes
     Stream<SymTypeExpression> parStream = teFun.parallelStreamArgumentTypes();
-    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isTypeConstant)
+    List<SymTypeExpression> parList = parStream.filter(SymTypeExpression::isPrimitive)
         .collect(Collectors.toList());
     assertEquals(2, parList.size());
     assertEquals(teDouble, parList.get(0));
@@ -892,7 +906,7 @@ public class SymTypeExpressionTest {
     assertTrue(teFun.equalsArgumentTypeTypes(arguments));
 
     //removeIfArgument
-    teFun.removeIfArgumentType(SymTypeExpression::isTypeConstant);
+    teFun.removeIfArgumentType(SymTypeExpression::isPrimitive);
     assertEquals(2, teFun.sizeArgumentTypes());
   }
 

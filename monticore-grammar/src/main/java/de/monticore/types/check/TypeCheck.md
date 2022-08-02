@@ -24,7 +24,7 @@ subexpressions, -types or -literals and combining them to the SymTypeExpression 
 * [OOSymbols](../../../../../grammars/de/monticore/symbols/OOSymbols.mc4) (specialization of the BasicSymbols for object-oriented languages)
 * [SymTypeExpression](SymTypeExpression.java) (result of the TypeCheck, represents type usage)
 * [SymTypeArray](SymTypeArray.java) (subclass of SymTypeExpression, represents arrays)
-* [SymTypeConstant](SymTypeConstant.java) (subclass of SymTypeExpression, represents primitive types)
+* [SymTypePrimitive](SymTypePrimitive.java) (subclass of SymTypeExpression, represents primitive types)
 * [SymTypeOfGenerics](SymTypeOfGenerics.java) (subclass of SymTypeExpression, represents generic types)
 * [SymTypeOfObject](SymTypeOfObject.java) (subclass of SymTypeExpression, represents non-primitive types without type arguments)
 * [SymTypeVariable](SymTypeVariable.java) (subclass of SymTypeExpression, represents type variables)
@@ -109,7 +109,7 @@ used by your language. The DelegatorVisitor needs to implement the Interface
 IDerive. Use this Delegator as Derive-Class in the TypeCheck facade. The
 Synthesize-Class depends on the types grammar you use (see above-mentioned classes).
 For an example of the Delegator-Visitor see 
-[here](../../../../../../test/java/de/monticore/types/check/DeriveSymTypeOfCombineExpressionsDelegator.java).
+[here](../../../../../../test/java/de/monticore/types/check/FullDeriveFromCombineExpressionsWithLiterals.java).
 <br/><br/>
 If you want to create a Derive-Class for your expression/literal grammar, you have to
 extend the Derive-Class of the supergrammar and implement the standard visitor of 

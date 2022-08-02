@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "monticore" version "$version"
+  id "monticore" 
   id "jacoco"
 }
 
 description = 'MontiCore Generator Main Integration Test'
-sourceCompatibility = '11'
 
 ext.grammarDir = 'src/main/grammars'
 ext.junit_version = '4.13.1'
@@ -43,6 +42,11 @@ compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
 }
 
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
+}
 
 test {
   testLogging {

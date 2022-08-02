@@ -76,11 +76,16 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
    */
   @Test
   public void deriveFromPlusExpression() throws IOException {
+    init_basic();
+
     // example with two ints
     check("3+4", "int");
 
     // example with double and int
     check("4.9+12", "double");
+
+    // example with Integer
+    check("foo2+foo2", "int");
 
     // example with String
     check("3 + \"Hallo\"", "String");
@@ -252,6 +257,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         .build();
     add2scope(scope, firstsemesterstudent);
     add2scope(scope, field("foo", _intSymType));
+    add2scope(scope, field("foo2", _IntegerSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
@@ -528,6 +534,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     );
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
+    MethodSymbol ms0 = add(method("areInt", _booleanSymType), field("values", _intSymType));
+    ms0.setIsElliptic(true);
+    add2scope(scope, ms0);
     FieldSymbol fs = field("variable", _intSymType);
     fs.setIsStatic(true);
     MethodSymbol ms = method("store", _doubleSymType);
@@ -619,6 +628,15 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     //test for method with unqualified name with parameters
     check("isInt(4)", "boolean");
 
+    //test for method with varargs with no optional value
+    check("areInt()", "boolean");
+
+    //test for method with varargs with one optional value
+    check("areInt(1)", "boolean");
+
+    //test for method with varargs with multiple optional values
+    check("areInt(1, 2, 3)", "boolean");
+
     //test for method with qualified name without parameters
     check("types.Test.store()", "double");
 
@@ -631,6 +649,33 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     init_advanced();
     checkError("isNot()", "0xA1242");
+  }
+
+  @Test
+  public void testInvalidCallExpressionWithInvalidArgument() throws IOException {
+    String divideError = "0xA0212";
+    String argumentError = "0xA0237";
+    String noMethodError = "0xA1242";
+
+    init_advanced();
+    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, argumentError, noMethodError);
+  }
+
+  @Test
+  public void testRegularAssignmentWithTwoMissingFields() throws IOException {
+    String assignmentLeftError = "0xA0198";
+    String assignmentRightError = "0xA0199";
+    String regularAssignmentError = "0xA0182";
+    init_advanced();
+    checkErrorsAndFailOnException("missingField = missingField2", assignmentLeftError, assignmentRightError, regularAssignmentError);
+  }
+
+  @Test
+  public void testMissingMethodWithMissingArgs() throws IOException {
+    String functionArgError = "0xA0237";
+    String functionError = "0xA1242";
+    init_advanced();
+    checkErrorsAndFailOnException("missingMethod(missing1, missing2)", functionArgError, functionArgError, functionError);
   }
 
   /**

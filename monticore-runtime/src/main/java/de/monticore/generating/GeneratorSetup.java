@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngin
 import de.monticore.generating.templateengine.freemarker.MontiCoreFileTemplateLoader;
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateExceptionHandler;
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
+import de.monticore.generating.templateengine.freemarker.alias.Alias;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
@@ -17,6 +18,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.core.Macro;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.Version;
 
 import java.io.File;
@@ -100,7 +102,7 @@ public class GeneratorSetup {
    * A list of all freemarker functions that serve as aliases for Java methods,
    * e.g. 'include' as alias for 'tc.include'
    */
-  protected List<Macro> aliases = Lists.newArrayList();
+  protected List<Alias> aliases = Lists.newArrayList();
 
   public static final String ALIASES_TEMPLATE = "de.monticore.generating.templateengine.freemarker.Aliases";
   
@@ -305,7 +307,7 @@ public class GeneratorSetup {
   /**
    * @return the aliases
    */
-  public List<Macro> getAliases() {
+  public List<Alias> getAliases() {
     return this.aliases;
   }
 
@@ -313,11 +315,11 @@ public class GeneratorSetup {
   /**
    * @param aliases the aliases to set
    */
-  public void setAliases(List<Macro> aliases) {
+  public void setAliases(List<Alias> aliases) {
     this.aliases = aliases;
   }
   
-  public void addAlias(Macro alias) {
+  public void addAlias(Alias alias) {
     this.aliases.add(alias);
   }
 

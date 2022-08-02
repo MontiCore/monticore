@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -268,7 +268,7 @@ public class InputOutputFilesReporter extends AReporter {
               
               MessageDigest md = MessageDigest.getInstance("MD5");
               md.update(inputModel.getBytes());
-              String digest = Hashing.md5().hashString(inputModel, Charset.forName("UTF-8"))
+              String digest = Hashing.md5().hashString(inputModel, StandardCharsets.UTF_8)
                   .toString();
               
               writeLine(s + INPUT_STATE_SEPARATOR + digest);

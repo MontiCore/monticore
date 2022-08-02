@@ -102,9 +102,9 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   }
 
   protected Optional<SymTypeExpression> calculateTypeShift(SymTypeExpression leftResult, SymTypeExpression rightResult) {
-    if (leftResult.isTypeConstant() && rightResult.isTypeConstant()) {
-      SymTypeConstant leftEx = (SymTypeConstant) leftResult;
-      SymTypeConstant rightEx = (SymTypeConstant) rightResult;
+    if (leftResult.isPrimitive() && rightResult.isPrimitive()) {
+      SymTypePrimitive leftEx = (SymTypePrimitive) leftResult;
+      SymTypePrimitive rightEx = (SymTypePrimitive) rightResult;
 
       //only defined on integral type - integral type
       if (isIntegralType(leftEx) && isIntegralType(rightEx)) {
@@ -131,13 +131,13 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   }
 
   protected Optional<SymTypeExpression> calculateTypeBinary(SymTypeExpression leftResult, SymTypeExpression rightResult) {
-    if (leftResult.isTypeConstant() && rightResult.isTypeConstant()) {
-      SymTypeConstant leftEx = (SymTypeConstant) leftResult;
-      SymTypeConstant rightEx = (SymTypeConstant) rightResult;
+    if (leftResult.isPrimitive() && rightResult.isPrimitive()) {
+      SymTypePrimitive leftEx = (SymTypePrimitive) leftResult;
+      SymTypePrimitive rightEx = (SymTypePrimitive) rightResult;
 
       //only defined on boolean - boolean and integral type - integral type
       if (TypeCheck.isBoolean(leftResult) && TypeCheck.isBoolean(rightResult)) {
-        return Optional.of(SymTypeExpressionFactory.createTypeConstant("boolean"));
+        return Optional.of(SymTypeExpressionFactory.createPrimitive("boolean"));
       } else if (isIntegralType(leftEx) && isIntegralType(rightEx)) {
         return getBinaryNumericPromotion(leftResult, rightResult);
       }
@@ -152,23 +152,23 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
    * cannot be linked with the BinaryExpressions because they are not calculated the same way
    */
   protected Optional<SymTypeExpression> shiftCalculator(SymTypeExpression left, SymTypeExpression right) {
-    if (!left.isTypeConstant() || !right.isTypeConstant()){
+    if (!left.isPrimitive() || !right.isPrimitive()){
       getTypeCheckResult().reset();
       return Optional.empty();
     }
-    SymTypeConstant leftResult = (SymTypeConstant) left;
-    SymTypeConstant rightResult = (SymTypeConstant) right;
+    SymTypePrimitive leftResult = (SymTypePrimitive) left;
+    SymTypePrimitive rightResult = (SymTypePrimitive) right;
 
     //only defined on integral type - integral type
     if (isIntegralType(leftResult) && isIntegralType(rightResult)) {
       if (TypeCheck.isLong(rightResult)) {
         if (TypeCheck.isLong(leftResult)) {
-          return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
+          return Optional.of(SymTypeExpressionFactory.createPrimitive("long"));
         } else {
-          return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+          return Optional.of(SymTypeExpressionFactory.createPrimitive("int"));
         }
       } else {
-        return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+        return Optional.of(SymTypeExpressionFactory.createPrimitive("int"));
       }
     }
     //should never happen
@@ -181,16 +181,16 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
    */
   protected Optional<SymTypeExpression> getBinaryNumericPromotion(SymTypeExpression left, SymTypeExpression right){
     //only integral type - integral type
-    if(left.isTypeConstant() && right.isTypeConstant()) {
-      SymTypeConstant leftResult = (SymTypeConstant) left;
-      SymTypeConstant rightResult = (SymTypeConstant) right;
+    if(left.isPrimitive() && right.isPrimitive()) {
+      SymTypePrimitive leftResult = (SymTypePrimitive) left;
+      SymTypePrimitive rightResult = (SymTypePrimitive) right;
       if ((TypeCheck.isLong(leftResult) && rightResult.isIntegralType()) ||
           (TypeCheck.isLong(rightResult) && leftResult.isIntegralType())) {
-        return Optional.of(SymTypeExpressionFactory.createTypeConstant("long"));
+        return Optional.of(SymTypeExpressionFactory.createPrimitive("long"));
         //no part of the expression is a long -> if both parts are integral types then the result is a int
       }else{
         if (leftResult.isIntegralType()&&rightResult.isIntegralType()) {
-          return Optional.of(SymTypeExpressionFactory.createTypeConstant("int"));
+          return Optional.of(SymTypeExpressionFactory.createPrimitive("int"));
         }
       }
     }

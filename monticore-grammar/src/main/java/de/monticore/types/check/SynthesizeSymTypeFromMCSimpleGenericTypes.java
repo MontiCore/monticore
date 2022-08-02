@@ -82,8 +82,10 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
         }
       }
     }
-
-    getTypeCheckResult().setResult(symType);
+    if(null != symType) {
+      getTypeCheckResult().setResult(symType);
+      genericType.setDefiningSymbol(symType.getTypeInfo());
+    }
   }
 
   /**

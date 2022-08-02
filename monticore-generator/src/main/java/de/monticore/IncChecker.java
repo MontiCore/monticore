@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This class is a duplicate of de.monticore.utils.IncChecker (monticore-runtime)
@@ -14,15 +16,23 @@ import java.nio.charset.Charset;
  */
 public class IncChecker {
 
+  protected static File getFile(String base, String file){
+    Path path = Paths.get(file);
+    if(!path.isAbsolute()){
+      path = Paths.get(base, file);
+    }
+    return path.toFile();
+  }
   /**
    * Provides the logic for the incremental build checks
    * @param incGenGradleCheckFile the IncGenGradleCheck.txt file
    * @param modelName name of the model (such as name of the grammar), used for logging
    * @param logger logger
    * @param fileExtension file extension (such as "mc4") of the input model files (must be equal to the one used in the IncGenGradleCheck)
+   * @param base used to resolve relative paths
    * @return false, if the input files have changed and the task should not be skipped
    */
-  public static boolean incCheck(File incGenGradleCheckFile, String modelName, Logger logger, String fileExtension) throws IOException {
+  public static boolean incCheck(File incGenGradleCheckFile, String modelName, Logger logger, String fileExtension, String base) throws IOException {
     if (incGenGradleCheckFile.exists()) { // check whether report exists
       int fileExtensionLength = fileExtension.length();
       // check for new files to consider
@@ -31,10 +41,10 @@ public class IncChecker {
       StringBuilder removedFiles = new StringBuilder();
       // consider every file referenced in the inc gen gradle check file
       for (String line : Files.readLines(incGenGradleCheckFile, Charset.defaultCharset())) {
-        if (line.startsWith("gen:") && new File(line.substring(4)).exists()) {
+        if (line.startsWith("gen:") && getFile(base, line.substring(4)).exists()) {
           newFiles.append(line);
         }
-        if (line.startsWith("hwc:") && !new File(line.substring(4)).exists()) {
+        if (line.startsWith("hwc:") && !getFile(base, line.substring(4)).exists()) {
           removedFiles.append(line);
         }
         // check whether local modals (such as super grammars) have changed
@@ -42,7 +52,7 @@ public class IncChecker {
           // Since the path can also contain spaces, do not use tokenize
           String inputModelString = line.substring(fileExtensionLength + 1, line.length() - 33);
           String checksum = line.substring(line.length() - 33);
-          File inputModelFile = new File(inputModelString);
+          File inputModelFile = getFile(base, inputModelString);
           if (!inputModelFile.exists()) { // deleted model -> generate
             logger.info("Regenerating Code for " + modelName + " : Input Model " + inputModelString + " does no longer exist.");
             return false;

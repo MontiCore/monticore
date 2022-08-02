@@ -77,22 +77,26 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
     Optional<TypeSymbol> optType = getScope(expr.getEnclosingScope()).resolveType(expr.getName());
     if("null".equals(expr.getName())){
       SymTypeExpression res = createTypeOfNull();
+      expr.setDefiningSymbol(res.getTypeInfo());
       return Optional.of(res);
     }else if (optVar.isPresent()) {
       //no method here, test variable first
       // durch AST-Umbau kann ASTNameExpression keine Methode sein
       VariableSymbol var = optVar.get();
+      expr.setDefiningSymbol(var);
       SymTypeExpression res = var.getType().deepClone();
       getTypeCheckResult().setField();
       return Optional.of(res);
     } else if(optTypeVar.isPresent()) {
       TypeVarSymbol typeVar = optTypeVar.get();
+      expr.setDefiningSymbol(typeVar);
       SymTypeExpression res = createTypeVariable(typeVar);
       getTypeCheckResult().setType();
       return Optional.of(res);
     } else if (optType.isPresent()) {
       //no variable found, test if name is type
       TypeSymbol type = optType.get();
+      expr.setDefiningSymbol(type);
       SymTypeExpression res = createTypeExpression(type);
       getTypeCheckResult().setType();
       return Optional.of(res);

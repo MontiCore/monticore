@@ -89,6 +89,7 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
   interface scope symbol Function = Name ;
   
   symbolrule Function =
+    isElliptic: boolean
     type: de.monticore.types.check.SymTypeExpression ;
 
 }

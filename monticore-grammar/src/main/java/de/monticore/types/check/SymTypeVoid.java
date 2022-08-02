@@ -9,6 +9,7 @@ public class SymTypeVoid extends SymTypeExpression {
   
   public SymTypeVoid() {
     typeSymbol = new TypeSymbolSurrogate(BasicSymbolsMill.VOID);
+    typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
   }
   
   /**

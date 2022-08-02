@@ -3,8 +3,7 @@
 package de.monticore;
 
 import java.nio.charset.Charset;
-
-import com.google.common.base.Charsets;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Common constants in MontiCore.
@@ -12,7 +11,7 @@ import com.google.common.base.Charsets;
  */
 public final class MontiCoreConstants {
   
-  public static final Charset DEFAULT_MODELFILE_CHARSET = Charsets.UTF_8;
+  public static final Charset DEFAULT_MODELFILE_CHARSET = StandardCharsets.UTF_8;
 
   /**
    * Private constructor permitting manual instantiation.

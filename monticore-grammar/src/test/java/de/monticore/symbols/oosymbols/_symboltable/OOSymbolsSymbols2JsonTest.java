@@ -60,7 +60,7 @@ public class OOSymbolsSymbols2JsonTest {
     FieldSymbol variable = OOSymbolsMill.fieldSymbolBuilder()
         .setName("variable")
         .setEnclosingScope(type.getSpannedScope())
-        .setType(SymTypeExpressionFactory.createTypeConstant("double"))
+        .setType(SymTypeExpressionFactory.createPrimitive("double"))
         .build();
 
     typeSpannedScope.add(variable);
@@ -70,7 +70,7 @@ public class OOSymbolsSymbols2JsonTest {
         .setName("function")
         .setEnclosingScope(type.getSpannedScope())
         .setSpannedScope(OOSymbolsMill.scope())
-        .setType(SymTypeExpressionFactory.createTypeConstant("int"))
+        .setType(SymTypeExpressionFactory.createPrimitive("int"))
         .build();
 
     function.setSpannedScope(OOSymbolsMill.scope());

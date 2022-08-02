@@ -5,7 +5,6 @@ package de.monticore.ast;
 import de.monticore.symboltable.IScope;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -19,28 +18,7 @@ import java.util.stream.Stream;
 public interface ASTNode {
 
   IScope getEnclosingScope();
-  
-  /**
-   * Performs a deep clone of this ASTNode and all of its successors
-   *
-   * @return Clone of current ASTNode with a parent which is equal to null
-   */
-  @Deprecated
-  default public ASTNode deepClone(ASTNode result) {
-    Log.errorIfNull(result,
-        "0xA4040 The argument ASTNode of the 'deepClone' method must not be null.");
-    result.set_SourcePositionStart(get_SourcePositionStart().clone());
-    result.set_SourcePositionEnd(get_SourcePositionEnd().clone());
-    for (de.monticore.ast.Comment x : get_PreCommentList()) {
-      result.get_PreCommentList().add(new de.monticore.ast.Comment(x.getText()));
-    }
-    for (de.monticore.ast.Comment x : get_PostCommentList()) {
-      result.get_PostCommentList().add(new de.monticore.ast.Comment(x.getText()));
-    }
-    
-    return result;
-  }
-  
+
   default public boolean equalAttributes(Object o) {
     if (o == null) {
       return false;

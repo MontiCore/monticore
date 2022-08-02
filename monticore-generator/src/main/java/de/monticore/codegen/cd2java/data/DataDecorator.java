@@ -140,7 +140,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     ASTMCType classType = this.getMCTypeFacade().createQualifiedType(simpleName);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(classType, "result");
     ASTCDMethod deepCloneWithParam = this.getCDMethodFacade().createMethod(PUBLIC.build(), classType, DEEP_CLONE_METHOD, parameter);
-    this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", noInheritedAttributes));
+    this.replaceTemplate(EMPTY_BODY, deepCloneWithParam, new TemplateHookPoint("data.DeepCloneWithParameters", noInheritedAttributes, clazz.isPresentCDExtendUsage()));
     return deepCloneWithParam;
   }
 
