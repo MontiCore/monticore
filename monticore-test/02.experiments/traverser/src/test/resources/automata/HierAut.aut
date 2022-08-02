@@ -1,0 +1,11 @@
+automaton HierAut {
+
+  state s1 {
+    state s2;
+  }
+
+  state s3;
+
+  s1 - a > s3;
+
+}
