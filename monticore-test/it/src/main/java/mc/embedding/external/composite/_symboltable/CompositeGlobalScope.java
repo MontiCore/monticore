@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.embedding.external.composite._symboltable;
 
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.Names;
@@ -12,6 +13,7 @@ import mc.embedding.external.host._ast.ASTHost;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -51,7 +53,7 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP {
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
       if (location.isPresent()) {
-        ASTHost parse = parse(location.get().getPath());
+        ASTHost parse = parse(location.get());
         CompositeMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
@@ -62,9 +64,9 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP {
     }
   }
 
-  private ASTHost parse(String model) {
-    try {
-      Optional<ASTHost> ast = new CompositeParser().parse(new FileReader(model));
+  private ASTHost parse(URL model) {
+    try (Reader reader = FileReaderWriter.getReader(model)){
+      Optional<ASTHost> ast = new CompositeParser().parse(reader);
       if (ast.isPresent()) {
         return ast.get();
       }

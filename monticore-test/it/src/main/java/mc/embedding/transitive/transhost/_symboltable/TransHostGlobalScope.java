@@ -2,6 +2,7 @@
 
 package mc.embedding.transitive.transhost._symboltable;
 
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -11,6 +12,7 @@ import mc.embedding.transitive.transhost._parser.TransHostParser;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -37,7 +39,7 @@ public class TransHostGlobalScope extends TransHostGlobalScopeTOP {
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
       if (location.isPresent()) {
-        ASTTransStart parse = parse(location.get().getPath());
+        ASTTransStart parse = parse(location.get());
         TransHostMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
@@ -48,9 +50,9 @@ public class TransHostGlobalScope extends TransHostGlobalScopeTOP {
     }
   }
 
-  private ASTTransStart parse(String model) {
-    try {
-      Optional<ASTTransStart> ast = new TransHostParser().parse(new FileReader(model));
+  private ASTTransStart parse(URL model) {
+    try (Reader reader = FileReaderWriter.getReader(model)){
+      Optional<ASTTransStart> ast = new TransHostParser().parse(reader);
       if (ast.isPresent()) {
         return ast.get();
       }

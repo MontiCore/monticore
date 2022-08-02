@@ -2,6 +2,7 @@
 
 package mc.embedding.host._symboltable;
 
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -11,6 +12,7 @@ import mc.embedding.host._ast.ASTHost;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -37,7 +39,7 @@ public class HostGlobalScope extends HostGlobalScopeTOP {
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
       if (location.isPresent()) {
-        ASTHost parse = parse(location.get().getPath());
+        ASTHost parse = parse(location.get());
         HostMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
@@ -48,9 +50,9 @@ public class HostGlobalScope extends HostGlobalScopeTOP {
     }
   }
 
-  private ASTHost parse(String model) {
-    try {
-      Optional<ASTHost> ast = new HostParser().parse(new FileReader(model));
+  private ASTHost parse(URL model) {
+    try (Reader reader = FileReaderWriter.getReader(model)){
+      Optional<ASTHost> ast = new HostParser().parse(reader);
       if (ast.isPresent()) {
         return ast.get();
       }
