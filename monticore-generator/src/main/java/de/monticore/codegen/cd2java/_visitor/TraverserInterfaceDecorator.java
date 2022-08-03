@@ -101,7 +101,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    */
   protected ASTCDMethod addHandleMethod(ASTMCType astType, boolean traverse) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, astType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), traverse));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), traverse, false));
     return handleMethod;
   }
 
@@ -363,7 +363,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     
     // non-delegating traverser methods
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, symbolType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), true));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), true, true));
     visitorMethods.add(handleMethod);
     visitorMethods.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
     
@@ -417,7 +417,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     
     // non-delegating traverser methods
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, scopeType);
-    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), true));
+    this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), true, true));
     visitorMethods.add(handleMethod);
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeType);
     visitorMethods.add(traverseMethod);
