@@ -11,6 +11,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraver
 import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes;
 import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCSGT4Grammar;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -39,6 +40,11 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    TypeSymbol str = CombineExpressionsWithLiteralsMill.typeSymbolBuilder()
+      .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
+      .setName("String")
+      .build();
+    CombineExpressionsWithLiteralsMill.globalScope().add(str);
     super.setupForEach();
   }
 
@@ -95,6 +101,7 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
 
   @Test
   public void deriveFromLambdaExpressionNoParameterTest() throws IOException {
+    setFlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     // example with int
     check("() -> 5", "(int)");
     // example with lambda nesting
@@ -103,6 +110,7 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
 
   @Test
   public void deriveFromLambdaExpressionOneParameterTest() throws IOException {
+    setFlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     // example with int, long
     check("(int x) -> 5L", "(int -> long)");
     // example with input equaling output
@@ -113,6 +121,7 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
 
   @Test
   public void deriveFromLambdaExpressionMultipleParameterTest() throws IOException {
+    setFlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     // example with int, long, int
     check("(int x, long y) -> 5", "(int -> long -> int)");
     // example with lambda nesting

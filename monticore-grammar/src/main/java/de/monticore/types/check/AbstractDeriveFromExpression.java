@@ -9,6 +9,8 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypePrimitive.unbox;
@@ -40,7 +42,6 @@ public abstract class AbstractDeriveFromExpression {
   }
 
   protected void logError(String errorCode, SourcePosition start){
-    getTypeCheckResult().reset();
     Log.error(errorCode+String.format(ERROR_MSG, start));
   }
 
@@ -50,12 +51,10 @@ public abstract class AbstractDeriveFromExpression {
    * @param expression the expression the SymTypeExpressions is calculated for
    * @param errorCode the code which is logged in case of an error
    */
-  protected void storeResultOrLogError(Optional<SymTypeExpression> result, ASTExpression expression, String errorCode){
-    if(result.isPresent()){
-      //store the result of the expression in the last result
-      getTypeCheckResult().setResult(result.get());
-    }else{
-      getTypeCheckResult().reset();
+  protected void storeResultOrLogError(SymTypeExpression result, ASTExpression expression, String errorCode){
+    getTypeCheckResult().reset();
+    getTypeCheckResult().setResult(result);
+    if(result.isObscureType()){
       logError(errorCode, expression.get_SourcePositionStart());
     }
   }
@@ -65,11 +64,11 @@ public abstract class AbstractDeriveFromExpression {
    * @param expression the expression the SymTypeExpressions is calculated for
    * @return the SymTypeExpression of the expression
    */
-  protected Optional<SymTypeExpression> acceptThisAndReturnSymTypeExpression(ASTExpression expression){
-    Optional<SymTypeExpression> result = Optional.empty();
+  protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTExpression expression){
+    SymTypeExpression result = SymTypeExpressionFactory.createObscureType();
     expression.accept(getTraverser());
     if(getTypeCheckResult().isPresentResult()){
-      result = Optional.of(getTypeCheckResult().getResult());
+      result = getTypeCheckResult().getResult();
     }
     return result;
   }
@@ -79,29 +78,11 @@ public abstract class AbstractDeriveFromExpression {
    * @param literal the literal the SymTypeExpressions is calculated for
    * @return the SymTypeExpression of the literal
    */
-  protected Optional<SymTypeExpression> acceptThisAndReturnSymTypeExpression(ASTLiteral literal){
-    Optional<SymTypeExpression> result = Optional.empty();
+  protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTLiteral literal){
+    SymTypeExpression result = SymTypeExpressionFactory.createObscureType();
     literal.accept(getTraverser());
     if(getTypeCheckResult().isPresentResult()){
-      result = Optional.of(getTypeCheckResult().getResult());
-    }
-    return result;
-  }
-
-  /**
-   * Helper method to calculate the SymTypeExpression of a subexpression in a traverse method or log
-   *  an error if it could not be calculated
-   * @param expression the expression the SymTypeExpressions is calculated for
-   * @param errorCode the code which is logged in case of an error
-   * @return the SymTypeExpression of the expression
-   */
-  protected Optional<SymTypeExpression> acceptThisAndReturnSymTypeExpressionOrLogError(ASTExpression expression, String errorCode) {
-    Optional<SymTypeExpression> result = Optional.empty();
-    if (expression != null) {
-      result = acceptThisAndReturnSymTypeExpression(expression);
-    }
-    if (!result.isPresent()) {
-      logError(errorCode, expression.get_SourcePositionStart());
+      result = getTypeCheckResult().getResult();
     }
     return result;
   }
@@ -126,15 +107,31 @@ public abstract class AbstractDeriveFromExpression {
   /**
    * helper method for the calculation of the ASTBooleanNotExpression
    */
-  protected Optional<SymTypeExpression> getUnaryNumericPromotionType(SymTypeExpression type) {
+  protected SymTypeExpression getUnaryNumericPromotionType(SymTypeExpression type) {
     if (TypeCheck.isByte(type) || TypeCheck.isShort(type) || TypeCheck.isChar(type) || TypeCheck.isInt(type)) {
-      return Optional.of(SymTypeExpressionFactory.createPrimitive("int"));
+      return SymTypeExpressionFactory.createPrimitive("int");
     }
     if (TypeCheck.isLong(type) || TypeCheck.isDouble(type) || isFloat(type)) {
-      return Optional.of(SymTypeExpressionFactory.createPrimitive(unbox(type.print())));
+      return SymTypeExpressionFactory.createPrimitive(unbox(type.print()));
     }
-    return Optional.empty();
+    return SymTypeExpressionFactory.createObscureType();
   }
 
+  protected List<SymTypeExpression> calculateInnerTypes(ASTExpression... expressions){
+    List<SymTypeExpression> result = new ArrayList<>();
+    for(ASTExpression expr : expressions){
+      result.add(acceptThisAndReturnSymTypeExpression(expr));
+    }
+    return result;
+  }
+
+  protected boolean checkNotObscure(List<SymTypeExpression> typesOfInnerExpressions) {
+    for(SymTypeExpression expr : typesOfInnerExpressions){
+      if(expr.isObscureType()){
+        return false;
+      }
+    }
+    return true;
+  }
 
 }

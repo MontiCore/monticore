@@ -167,6 +167,7 @@ public class DefiningSymbolsTest {
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
     traverser.add4MCCollectionTypes(flatExpressionScopeSetter);
     traverser.add4MCSimpleGenericTypes(flatExpressionScopeSetter);
+    traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
     return traverser;
   }
 }

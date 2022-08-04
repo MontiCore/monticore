@@ -120,6 +120,7 @@ public class AbstractDeriveTest {
     AbstractTypeCheckTestTraverser traverser = AbstractTypeCheckTestMill.traverser();
     traverser.add4CommonExpressions(flatExpressionScopeSetter);
     traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
+    traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
     return traverser;
   }
 

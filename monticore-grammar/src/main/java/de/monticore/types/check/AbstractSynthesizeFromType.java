@@ -6,6 +6,7 @@ import de.monticore.types.mcbasictypes._symboltable.IMCBasicTypesScope;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class AbstractSynthesizeFromType {
@@ -41,5 +42,14 @@ public abstract class AbstractSynthesizeFromType {
 
   public TypeCheckResult getTypeCheckResult() {
     return typeCheckResult;
+  }
+
+  protected boolean checkNotObscure(List<SymTypeExpression> typesOfInnerExpressions) {
+    for(SymTypeExpression expr : typesOfInnerExpressions){
+      if(expr.isObscureType()){
+        return false;
+      }
+    }
+    return true;
   }
 }

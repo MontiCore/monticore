@@ -45,35 +45,36 @@ public class DeriveSymTypeOfLambdaExpressions extends AbstractDeriveFromExpressi
 
   @Override
   public void traverse(ASTLambdaExpression exp) {
-    ILambdaExpressionsScope scope = LambdaExpressionsMill.scope();
     getTypeCheckResult().reset();
-    exp.getExpression().accept(traverser);
-    SymTypeExpression returnType = typeCheckResult.getResult();
+    exp.getExpression().accept(getTraverser());
+    SymTypeExpression returnType = getTypeCheckResult().getResult();
 
     List<SymTypeExpression> parameters = new LinkedList<>();
     for (ASTLambdaParameter parameter : exp.getLambdaParameters().getLambdaParameterList()) {
-      Optional<SymTypeExpression> parameterTypeOpt = calculateTypeOfLambdaParameter(parameter);
-      if (parameterTypeOpt.isPresent()) {
-        parameters.add(parameterTypeOpt.get());
-      }
+      parameters.add(calculateTypeOfLambdaParameter(parameter));
     }
 
-    Optional<SymTypeExpression> wholeResult =
-        Optional.of(SymTypeExpressionFactory.createFunction(returnType, parameters));
-    storeResultOrLogError(wholeResult, exp, "A0470");
+    if(!returnType.isObscureType() && checkNotObscure(parameters)) {
+      SymTypeExpression wholeResult =
+        SymTypeExpressionFactory.createFunction(returnType, parameters);
+      storeResultOrLogError(wholeResult, exp, "A0470");
+    } else {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+    }
   }
 
-  public Optional<SymTypeExpression> calculateTypeOfLambdaParameter(ASTLambdaParameter parameter) {
+  public SymTypeExpression calculateTypeOfLambdaParameter(ASTLambdaParameter parameter) {
     if (parameter.isPresentMCType()) {
       synthesize.getTypeCheckResult().reset();
       parameter.getMCType().accept(synthesize.getTraverser());
       if (synthesize.getTypeCheckResult().isPresentResult()) {
-        return Optional.of(synthesize.getTypeCheckResult().getResult());
+        return synthesize.getTypeCheckResult().getResult();
       }
     }
     Log.error("0xBC373 unable to calculate type of lambda parameter",
         parameter.get_SourcePositionStart(), parameter.get_SourcePositionEnd());
-    return Optional.empty();
+    return SymTypeExpressionFactory.createObscureType();
   }
 
 }
