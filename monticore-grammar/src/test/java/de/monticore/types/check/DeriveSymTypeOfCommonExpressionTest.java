@@ -13,6 +13,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraver
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -489,6 +490,18 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     artifactScope4.setName("types3");
     artifactScope4.setPackageName("types3");
 
+    ICombineExpressionsWithLiteralsArtifactScope artifactScope5 = CombineExpressionsWithLiteralsMill.artifactScope();
+    artifactScope5.setEnclosingScope(globalScope);
+    artifactScope5.setImportsList(Lists.newArrayList());
+    artifactScope5.setName("functions1");
+    artifactScope5.setPackageName("functions1");
+
+    ICombineExpressionsWithLiteralsArtifactScope artifactScope6 = CombineExpressionsWithLiteralsMill.artifactScope();
+    artifactScope6.setEnclosingScope(globalScope);
+    artifactScope6.setImportsList(Lists.newArrayList());
+    artifactScope6.setName("functions2");
+    artifactScope6.setPackageName("functions2");
+
     scope = globalScope;
     // No enclosing Scope: Search ending here
 
@@ -592,6 +605,10 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
     add2scope(scope, str);
 
+    FunctionSymbol funcs = function("getPi", _floatSymType);
+    add2scope(artifactScope5, funcs);
+    add2scope(artifactScope6, funcs);
+
     setFlatExpressionScopeSetter(scope);
   }
 
@@ -649,6 +666,10 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     //test for method with qualified name with parameters
     check("types.Test.pay(4)", "void");
+
+    //test for function with that exists in another scope with
+    //the same name but different qualified name
+    check("functions1.functions1.getPi()", "float");
   }
 
   @Test
@@ -656,6 +677,13 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     init_advanced();
     checkError("isNot()", "0xA1242");
+  }
+
+  @Test
+  public void testInvalidCallExpressionWithInvalidQualifiedName() throws IOException {
+    //method isInt() is not in the specified scope -> method cannot be resolved
+    init_advanced();
+    checkError("notAScope.isInt()", "0xA1242");
   }
 
   @Test
