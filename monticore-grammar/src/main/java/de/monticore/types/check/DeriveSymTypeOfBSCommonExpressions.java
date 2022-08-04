@@ -548,7 +548,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if (getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType() && checkNotObscure(args)) {
       innerResult = getTypeCheckResult().getResult();
       //resolve methods with name of the inner expression
-      List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr, visitor.getLastName());
+      List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr,
+          Joiners.DOT.join(visitor.getName()));
       //count how many methods can be found with the correct arguments and return type
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
       //if the last result is static then filter for static methods
