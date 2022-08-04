@@ -30,10 +30,17 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
    */
 
   public void endVisit(ASTMCPrimitiveType primitiveType) {
-    SymTypePrimitive typeConstant =
-            SymTypeExpressionFactory.createPrimitive(primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
-    getTypeCheckResult().setResult(typeConstant);
-    primitiveType.setDefiningSymbol(typeConstant.getTypeInfo());
+    String primName = primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
+    Optional<TypeSymbol> prim = getScope(primitiveType.getEnclosingScope()).resolveType(primName);
+    if(prim.isPresent()){
+      SymTypePrimitive typeConstant =
+        SymTypeExpressionFactory.createPrimitive(prim.get());
+      getTypeCheckResult().setResult(typeConstant);
+      primitiveType.setDefiningSymbol(typeConstant.getTypeInfo());
+    }else{
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      Log.error("0xA0111 The primitive type " + primName + " could not be resolved");
+    }
   }
   
   public void endVisit(ASTMCVoidType voidType) {
@@ -66,10 +73,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
       if(type.isPresent()){
         symType = SymTypeExpressionFactory.createTypeObject(type.get());
       }else{
-        Optional<SymTypeExpression> optSym = handleIfNotFound(qName);
-        if(optSym.isPresent()){
-          symType = optSym.get();
-        }
+        symType = handleIfNotFound(qName);
       }
     }
     getTypeCheckResult().setResult(symType);
@@ -77,7 +81,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
 
   @Override
   public void endVisit(ASTMCQualifiedType node) {
-    if(getTypeCheckResult().isPresentResult()){
+    if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()){
       node.setDefiningSymbol(getTypeCheckResult().getResult().getTypeInfo());
     }
   }
@@ -85,10 +89,10 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
   /**
    * extension method for error handling
    */
-  protected Optional<SymTypeExpression> handleIfNotFound(ASTMCQualifiedName qName){
+  protected SymTypeExpression handleIfNotFound(ASTMCQualifiedName qName){
     Log.error("0xA0324 The qualified type " + qName.getQName() +
         " cannot be found", qName.get_SourcePositionStart());
-    return Optional.empty();
+    return SymTypeExpressionFactory.createObscureType();
   }
 
 

@@ -94,6 +94,10 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  public boolean isObscureType(){
+    return false;
+  }
+
 
   public abstract SymTypeExpression deepClone();
 

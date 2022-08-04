@@ -431,6 +431,6 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
   @Test
   public void testInvalidRegularAssignmentExpression2() throws IOException{
     //test with no field on the left side of the assignment
-    checkError("3=4", "0xA0180");
+    checkError("3=4", "0xA0182");
   }
 }

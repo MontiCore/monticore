@@ -40,6 +40,7 @@ public class MyLangTest {
   
     ASTMyVar var = varOpt.get();
     ASTMCType type = var.getType();
+    type.setEnclosingScope(MyLangMill.globalScope());
     ASTExpression exp = var.getExp();
   
     // synthesize SymTypeExpression from type

@@ -262,6 +262,7 @@ public class TypeCheckTest {
     traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
     traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
+    traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
     return traverser;
   }
 

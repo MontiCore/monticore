@@ -141,6 +141,8 @@ public class SymTypeExpressionDeSer {
           return SymTypeExpressionFactory.createTypeOfNull();
         case BasicSymbolsMill.VOID:
           return SymTypeExpressionFactory.createTypeVoid();
+        case "Obscure":
+          return SymTypeExpressionFactory.createObscureType();
       }
     }
 

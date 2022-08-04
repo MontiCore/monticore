@@ -9,6 +9,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
+import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser;
 import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
@@ -94,12 +95,12 @@ public abstract class DeriveSymTypeAbstractTest {
 
         Log.getFindings().clear();
         try {
-            tc.typeOf(astex);
+            SymTypeExpression result = tc.typeOf(astex);
+            assertTrue(result.isObscureType());
+            assertEquals(expectedError, getFirstErrorCode());
         } catch (RuntimeException e) {
             assertEquals(expectedError, getFirstErrorCode());
-            return;
         }
-        fail();
     }
 
     protected final void checkErrors(String expression, List<String> expectedErrors) throws IOException {
@@ -207,6 +208,9 @@ public abstract class DeriveSymTypeAbstractTest {
         }
         if(traverser instanceof MCSimpleGenericTypesTraverser) {
             ((MCSimpleGenericTypesTraverser) traverser).add4MCSimpleGenericTypes(flatExpressionScopeSetter);
+        }
+        if (traverser instanceof MCCommonLiteralsTraverser) {
+            ((MCCommonLiteralsTraverser) traverser).add4MCCommonLiterals(flatExpressionScopeSetter);
         }
     }
 
