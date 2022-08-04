@@ -5,6 +5,7 @@ package basicjava._symboltable;
 import basicjava.BasicJavaMill;
 import basicjava._ast.ASTCompilationUnit;
 import basicjava._parser.BasicJavaParser;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 
@@ -38,14 +39,13 @@ public class BasicJavaGlobalScope extends BasicJavaGlobalScopeTOP {
 
     // 3. if the file was found, parse the model and create its symtab
     if(location.isPresent()){
-      ASTCompilationUnit ast = parse(location.get().getPath());
+      ASTCompilationUnit ast = parse(location.get());
       BasicJavaMill.scopesGenitorDelegator().createFromAST(ast);
     }
   }
 
-  private ASTCompilationUnit parse(String model){
-    try {
-      Reader reader = new FileReader(model);
+  private ASTCompilationUnit parse(URL model){
+    try(Reader reader = FileReaderWriter.getReader(model)) {
       Optional<ASTCompilationUnit> optAST = new BasicJavaParser().parse(reader);
       if(optAST.isPresent()){
         return optAST.get();

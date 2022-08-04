@@ -7,6 +7,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.logging.Log;
 import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
@@ -74,6 +75,7 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
     Optional<ASTMCType> type = parser.parse_StringMCType("List<int>");
     assertTrue(type.isPresent());
     type.get().setEnclosingScope(MyOwnLanguageMill.globalScope());
+    ((ASTMCListType)(type.get())).getMCTypeArgument().getMCTypeOpt().get().setEnclosingScope(MyOwnLanguageMill.globalScope());
     assertEquals("List<int>",tc.symTypeFromAST(type.get()).printFullName());
   }
 

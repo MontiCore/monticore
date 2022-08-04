@@ -47,12 +47,14 @@ public class SynthesizeSymTypeFromMCArrayTypes extends AbstractSynthesizeFromTyp
       getTypeCheckResult().reset();
       return;
     }
-    SymTypeExpression tex = SymTypeExpressionFactory.createTypeArray(
-            arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope()),
-            arrayType.getDimensions(),
-            getTypeCheckResult().getResult());
-    getTypeCheckResult().setResult(tex);
-    arrayType.setDefiningSymbol(tex.getTypeInfo());
+    if(!getTypeCheckResult().getResult().isObscureType()){
+      SymTypeExpression tex = SymTypeExpressionFactory.createTypeArray(
+        arrayType.printTypeWithoutBrackets(), getScope(arrayType.getEnclosingScope()),
+        arrayType.getDimensions(),
+        getTypeCheckResult().getResult());
+      getTypeCheckResult().setResult(tex);
+      arrayType.setDefiningSymbol(tex.getTypeInfo());
+    }
   }
 
 }

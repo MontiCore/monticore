@@ -55,6 +55,7 @@ public class ForEachIsValidTest {
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
     traverser.add4MCCollectionTypes(flatExpressionScopeSetter);
     traverser.add4MCArrayTypes(flatExpressionScopeSetter);
+    traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
   }
   
   private TestMCCommonStatementsTraverser flatExpressionScopeSetterTraverser;

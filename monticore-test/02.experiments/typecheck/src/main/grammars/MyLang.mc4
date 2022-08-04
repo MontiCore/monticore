@@ -3,10 +3,11 @@ import de.monticore.*;
 import de.monticore.types.*;
 import de.monticore.literals.*;
 import de.monticore.expressions.*;
+import de.monticore.symbols.*;
 
 grammar MyLang extends MCBasicTypes, MCArrayTypes, 
                        MCCommonLiterals, 
-                       CommonExpressions {
+                       CommonExpressions, BasicSymbols {
                        
   MyVar = type:MCType var:Name "=" exp:Expression;
 }

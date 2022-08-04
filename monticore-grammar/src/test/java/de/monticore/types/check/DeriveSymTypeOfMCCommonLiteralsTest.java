@@ -2,9 +2,12 @@
 package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsGlobalScope;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +24,7 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
    */
   
   @BeforeClass
-  public static void setup() {
+  public static void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -61,7 +64,15 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
 
   @Test
   public void deriveTFromLiteral1String() throws IOException {
+    ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
+    TypeSymbol str = CombineExpressionsWithLiteralsMill.typeSymbolBuilder()
+      .setName("String")
+      .setEnclosingScope(gs)
+      .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
+      .build();
+    gs.add(str);
     ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder().setSource("hjasdk").build();
+    lit.setEnclosingScope(gs);
     assertEquals("String", tc.typeOf(lit).print());
   }
 
