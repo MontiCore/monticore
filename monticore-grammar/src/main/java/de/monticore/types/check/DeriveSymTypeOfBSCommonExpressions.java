@@ -527,6 +527,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   @Override
   public void traverse(ASTCallExpression expr) {
     NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
+    // pass our traverser/typecheckresult such that the visitor can derive types
     visitor.setTypeCheckTraverser(getTraverser());
     visitor.setTypeCheckResult(getTypeCheckResult());
     CommonExpressionsTraverser traverser = CommonExpressionsMill.traverser();
