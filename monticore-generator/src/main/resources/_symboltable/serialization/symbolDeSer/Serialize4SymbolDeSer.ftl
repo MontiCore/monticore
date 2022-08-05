@@ -23,6 +23,7 @@ ${tc.signature("hasSpannedScope", "symbolRuleAttributes")}
     && toSerialize.getSpannedScope().getSymbolsSize() > 0) {
     toSerialize.getSpannedScope().accept(s2j.getTraverser());
   }
+  s2j.getTraverser().addTraversedElement(toSerialize.getSpannedScope());
 </#if>
 
   serializeAddons(toSerialize, s2j);
