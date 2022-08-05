@@ -15,5 +15,6 @@ ${tc.signature("handler", "doTraverse", "isSymTabNode")}
       endVisit(node);
     }
 <#if isSymTabNode>
+    addTraversedElement(node);
   }
 </#if>
