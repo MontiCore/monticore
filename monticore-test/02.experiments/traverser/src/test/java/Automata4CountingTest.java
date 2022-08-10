@@ -82,7 +82,7 @@ public class Automata4CountingTest {
     traverser.add4IVisitor(counter);
 
     as.accept(traverser);
-    assertEquals(2, counter.getCount());  // should be 9 after introducing new traversal strategy
+    assertEquals(9, counter.getCount());
   }
   
 

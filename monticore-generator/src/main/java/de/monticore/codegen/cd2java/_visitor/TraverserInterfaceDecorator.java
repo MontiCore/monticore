@@ -385,9 +385,10 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     String handlerName = visitorService.getHandlerSimpleName();
+    String scopeTypeAsString = scopeType.getMCQualifiedName().getQName();
     String topCast = isTop() ? "(" + visitorService.getTraverserInterfaceSimpleName() + ") " : "";
     
-    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), handlerName, topCast);
+    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(TRAVERSER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), handlerName, scopeTypeAsString, topCast);
     StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
         + symbolTableService.getScopeInterfaceFullName() + ") node);");
     
