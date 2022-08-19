@@ -8,6 +8,9 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,9 +23,11 @@ public class ExternalImplementationTest {
 
   private ASTCDClass astZ;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   public ExternalImplementationTest() {
@@ -37,5 +42,7 @@ public class ExternalImplementationTest {
     assertTrue(cdInterface != null);
     String name = TransformationHelper.typeToString(cdInterface);
     assertEquals("mc2cdtransformation.Supergrammar.ASTZExt", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

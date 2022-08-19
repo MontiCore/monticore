@@ -12,7 +12,9 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -64,10 +66,15 @@ public class SymTypeExpressionDeSerTest {
   SymTypeOfWildcard teWildcard;
 
   SymTypeOfGenerics teMap2;
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void init() {
-    Log.enableFailQuick(false);
     //    LogStub.init();
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
@@ -254,6 +261,8 @@ public class SymTypeExpressionDeSerTest {
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
     assertEquals(expectedTS.getName(), actualTS.getName());
+  
+    //assertTrue(Log.getFindings().isEmpty());
   }
 
   protected void performRoundTripSerializationSymTypePrimitive(SymTypePrimitive expr) {
@@ -404,7 +413,6 @@ public class SymTypeExpressionDeSerTest {
     SymTypePrimitiveDeSer symTypePrimitiveDeser = new SymTypePrimitiveDeSer();
     symTypePrimitiveDeser.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F1"));
-
   }
 
 }

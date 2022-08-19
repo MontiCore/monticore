@@ -2,10 +2,14 @@
 
 package mc.feature.deepclone;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.deepclone.deepclone._ast.*;
 import mc.feature.deepclone.deepclone._parser.DeepCloneParser;
 import mc.grammar.literals.ittestliterals._ast.ASTStringLiteral;
 import mc.grammar.literals.ittestliterals._ast.ASTIntLiteral;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,7 +19,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DeepCloneNotEqualTest {
-
+    
+    @Before
+    public void before() {
+        LogStub.init();
+        Log.enableFailQuick(false);
+    }
+    
     @Test
     public void TestName() throws IOException {
         DeepCloneParser parser = new DeepCloneParser();
@@ -25,6 +35,7 @@ public class DeepCloneNotEqualTest {
         ASTCloneName astClone = ast.get().deepClone();
         astClone.setName("NewName");
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -36,6 +47,7 @@ public class DeepCloneNotEqualTest {
         ASTCloneNameList astClone = ast.get().deepClone();
         astClone.setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -49,6 +61,7 @@ public class DeepCloneNotEqualTest {
         astClone.setNameAbsent();
         assertFalse(astClone.isPresentName());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -62,6 +75,7 @@ public class DeepCloneNotEqualTest {
         astClone.setName("NewName");
         assertTrue(astClone.isPresentName());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -73,6 +87,7 @@ public class DeepCloneNotEqualTest {
         ASTCloneAST astClone = ast.get().deepClone();
         astClone.getCloneNameList().setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -85,6 +100,7 @@ public class DeepCloneNotEqualTest {
         ASTCloneASTList astClone = ast.get().deepClone();
         astClone.getCloneAST(1).getCloneNameList().setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -99,6 +115,7 @@ public class DeepCloneNotEqualTest {
         astClone.setCloneASTAbsent();
         assertFalse(astClone.isPresentCloneAST());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -113,6 +130,7 @@ public class DeepCloneNotEqualTest {
         astClone.setCloneAST(newast);
         assertTrue(astClone.isPresentCloneAST());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -126,6 +144,7 @@ public class DeepCloneNotEqualTest {
         ASTStringLiteral string = parser.parse_StringCloneString("\"NewString\"").get().getStringLiteral();
         astClone.setStringLiteral(string);
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -138,6 +157,7 @@ public class DeepCloneNotEqualTest {
         ASTStringLiteral string = parser.parse_StringCloneString("\"NewString\"").get().getStringLiteral();
         astClone.getStringLiteralList().set(1, string);
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -151,6 +171,7 @@ public class DeepCloneNotEqualTest {
         astClone.setStringLiteralAbsent();
         assertFalse(astClone.isPresentStringLiteral());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -165,6 +186,7 @@ public class DeepCloneNotEqualTest {
         astClone.setStringLiteral(string);
         assertTrue(astClone.isPresentStringLiteral());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -177,6 +199,7 @@ public class DeepCloneNotEqualTest {
         ASTIntLiteral i= parser.parse_StringCloneInt("4567").get().getIntLiteral();
         astClone.setIntLiteral(i);
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -189,6 +212,7 @@ public class DeepCloneNotEqualTest {
         ASTIntLiteral i= parser.parse_StringCloneInt("4567").get().getIntLiteral();
         astClone.setIntLiteral(1, i);
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -202,6 +226,7 @@ public class DeepCloneNotEqualTest {
         astClone.setIntLiteralAbsent();
         assertFalse(astClone.isPresentIntLiteral());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -216,6 +241,7 @@ public class DeepCloneNotEqualTest {
         astClone.setIntLiteral(i);
         assertTrue(astClone.isPresentIntLiteral());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -227,6 +253,7 @@ public class DeepCloneNotEqualTest {
         ASTCloneString2 astClone = ast.get().deepClone();
         astClone.setString("NewString");
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -238,6 +265,7 @@ public class DeepCloneNotEqualTest {
         ASTCloneStringList2 astClone = ast.get().deepClone();
         astClone.setString(1,"NewString");
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -251,6 +279,7 @@ public class DeepCloneNotEqualTest {
         astClone.setStringAbsent();
         assertFalse(astClone.isPresentString());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -264,6 +293,7 @@ public class DeepCloneNotEqualTest {
         astClone.setString("NewString");
         assertTrue(astClone.isPresentString());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -275,6 +305,7 @@ public class DeepCloneNotEqualTest {
         ASTCloneInt2 astClone = ast.get().deepClone();
         astClone.setNum_Int("4567");
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -286,6 +317,7 @@ public class DeepCloneNotEqualTest {
         ASTCloneIntList2 astClone = ast.get().deepClone();
         astClone.setNum_Int(1, "2345");
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -299,6 +331,7 @@ public class DeepCloneNotEqualTest {
         astClone.setNum_IntAbsent();
         assertFalse(astClone.isPresentNum_Int());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -312,6 +345,7 @@ public class DeepCloneNotEqualTest {
         astClone.setNum_Int("1234");
         assertTrue(astClone.isPresentNum_Int());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
  /* @Test
@@ -335,6 +369,7 @@ public class DeepCloneNotEqualTest {
         astClone.setCloneEnumAbsent();
         assertFalse(astClone.isPresentCloneEnum());
         assertFalse(ast.get().deepEquals(astClone));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
    /* @Test

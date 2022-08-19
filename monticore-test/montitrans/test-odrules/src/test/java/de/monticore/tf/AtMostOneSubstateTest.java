@@ -2,8 +2,10 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,12 +15,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class AtMostOneSubstateTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   ASTAutomaton aut;
 
   @Test
@@ -35,6 +38,8 @@ public class AtMostOneSubstateTest {
 
     // should not match
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -53,6 +58,8 @@ public class AtMostOneSubstateTest {
     assertTrue(rule.doPatternMatching());
     assertNotNull(rule.get_state_top());
     assertFalse(rule.get_state_sub().isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -74,6 +81,8 @@ public class AtMostOneSubstateTest {
     assertEquals(rule.get_state_top().getName(), "a");
     assertTrue(rule.get_state_sub().isPresent());
     assertEquals(rule.get_state_sub().get().getName(), "c");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -91,6 +100,8 @@ public class AtMostOneSubstateTest {
 
     // two substates should not match
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -109,5 +120,7 @@ public class AtMostOneSubstateTest {
 
     // substate with substate should not match
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

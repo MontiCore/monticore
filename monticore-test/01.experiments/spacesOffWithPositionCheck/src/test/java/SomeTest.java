@@ -1,8 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -15,14 +12,16 @@ import de.monticore.spacefreechecks._parser.SpaceFreeChecksParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
+import static org.junit.Assert.*;
+
 
 public class SomeTest {
     
   // setup the language infrastructure
   SpaceFreeChecksParser parser = new SpaceFreeChecksParser() ;
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -43,6 +42,7 @@ public class SomeTest {
   public void testType1() throws IOException {
     ASTType ast = parser.parse_StringType( " Theo " ).get();
     assertEquals("Theo", ast.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -52,6 +52,7 @@ public class SomeTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getTypeList().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -61,6 +62,7 @@ public class SomeTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getTypeList().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -72,6 +74,7 @@ public class SomeTest {
     assertEquals("Set", ta.getTypeList().get(0).getName());
     ASTTypeArguments ta2 = ta.getTypeList().get(0).getTypeArguments();
     assertEquals("Theo", ta2.getTypeList().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -83,6 +86,7 @@ public class SomeTest {
 
     ASTType ast1 = ((ASTTypeAsExpression)ast0).getType() ;
     assertEquals("List", ast1.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -97,6 +101,7 @@ public class SomeTest {
     assertEquals(ASTTypeAsExpression.class, ast1.getClass());
     ASTType ast2 = ((ASTTypeAsExpression)ast1).getType() ;
     assertEquals("List", ast2.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -114,6 +119,7 @@ public class SomeTest {
     assertEquals(ASTTypeAsExpression.class, ast1.getClass());
     ASTType ast2 = ((ASTTypeAsExpression)ast1).getType() ;
     assertEquals("List", ast2.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -136,6 +142,7 @@ public class SomeTest {
   public void testExpr1() throws IOException {
     ASTExpression ast = parser.parse_StringExpression( " theo + theo " ).get();
     assertEquals(ASTAddExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -144,6 +151,7 @@ public class SomeTest {
     ASTExpression ast = parser.parse_StringExpression(
     	" (theo < ox) > theo " ).get();
     assertEquals(ASTComparisonExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -152,6 +160,7 @@ public class SomeTest {
     ASTExpression ast = parser.parse_StringExpression(
     	" theo >> theo " ).get();
     assertEquals(ASTShiftExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -160,6 +169,7 @@ public class SomeTest {
     ASTExpression ast = parser.parse_StringExpression(
     	"theo > theo >> theo >>> theo >= theo" ).get();
     assertEquals(ASTComparisonExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -188,6 +198,7 @@ public class SomeTest {
   public void testA() throws IOException {
     ASTA ast = parser.parse_StringA( "  Theo " ).get();
     assertEquals("Theo", ast.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -196,6 +207,7 @@ public class SomeTest {
     ASTB ast = parser.parse_StringB( "Otto \n Karo  " ).get();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -204,6 +216,7 @@ public class SomeTest {
     ASTC ast = parser.parse_StringC( "    Otto.Karo" ).get();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -212,6 +225,7 @@ public class SomeTest {
     ASTC ast = parser.parse_StringC( "    O.Karo" ).get();
     assertEquals("O", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -227,6 +241,7 @@ public class SomeTest {
     ASTD ast = parser.parse_StringD( "    Otto.Karo" ).get();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -235,6 +250,7 @@ public class SomeTest {
     ASTD ast = parser.parse_StringD( "    O.Karo" ).get();
     assertEquals("O", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------

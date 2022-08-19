@@ -8,6 +8,8 @@ import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,8 +22,8 @@ import static org.junit.Assert.assertTrue;
 
 public class MCGrammarPrettyPrinterTest {
   
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     GrammarFamilyMill.init();
     Log.init();
     Log.enableFailQuick(false);
@@ -49,7 +51,8 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()));
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -74,7 +77,8 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()));
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -99,7 +103,8 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()));
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -124,6 +129,8 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -148,6 +155,8 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

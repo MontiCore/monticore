@@ -9,6 +9,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -18,11 +19,16 @@ import static org.junit.Assert.*;
 public class OOSymbolsSymbols2JsonTest {
 
   private IOOSymbolsArtifactScope scope;
-
+  
   @Before
-  public void setUp(){
+  public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setUp(){
+    LogStub.getFindings().clear();
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
     OOSymbolsMill.reset();
@@ -84,6 +90,8 @@ public class OOSymbolsSymbols2JsonTest {
   @Test
   public void testDeSer(){
     performRoundTripSerialization(scope);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -130,6 +138,8 @@ public class OOSymbolsSymbols2JsonTest {
     assertTrue(deserializedFunction.isPresent());
     assertEquals("int", function.get().getType().print());
     assertEquals("int", deserializedFunction.get().getType().print());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

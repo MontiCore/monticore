@@ -2,8 +2,10 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,12 +16,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class FlattenStateWithAtMostTwoSubstatesTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   ASTAutomaton aut;
 
   @Test
@@ -36,6 +39,8 @@ public class FlattenStateWithAtMostTwoSubstatesTest {
 
     // should not match
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -69,6 +74,8 @@ public class FlattenStateWithAtMostTwoSubstatesTest {
     rule.undoReplacement();
     assertEquals(1, aut.get().getStateList().size());
     assertEquals(0, aut.get().getState(0).getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -108,9 +115,11 @@ public class FlattenStateWithAtMostTwoSubstatesTest {
     // test undo replacement
     rule.undoReplacement();
     assertEquals(2, aut.get().getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
-  // Todo: patternMachting doesnt terminate
+  // Todo: patternMatching doesnt terminate
   @Ignore
   @Test
   public void testAutomatonWithThreeSubstates() throws IOException {
@@ -127,5 +136,7 @@ public class FlattenStateWithAtMostTwoSubstatesTest {
 
     // pattern should match
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

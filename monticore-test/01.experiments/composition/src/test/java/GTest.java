@@ -7,6 +7,7 @@ import g._ast.ASTA;
 import g._ast.ASTB;
 import g._ast.ASTC;
 import g._parser.GParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,8 +17,9 @@ import java.util.Optional;
 import static org.junit.Assert.assertTrue;
 
 public class GTest {
-  @BeforeClass
-  public static void init() {
+  
+  @Before
+  public void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);

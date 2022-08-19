@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -17,6 +21,12 @@ import mc.feature.lexerformat.kleeneplus._ast.ASTKPStart;
 import mc.feature.lexerformat.kleeneplus._parser.KleenePlusParser;
 
 public class KleenePlusTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   /**
    * Test the following lexer Production: token KLEENETOKEN = 'a' ('b')*;

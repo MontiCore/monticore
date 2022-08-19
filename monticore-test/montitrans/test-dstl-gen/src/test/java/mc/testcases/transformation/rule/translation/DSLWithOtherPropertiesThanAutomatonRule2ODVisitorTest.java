@@ -4,6 +4,7 @@ package mc.testcases.transformation.rule.translation;
 import com.google.common.collect.Maps;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.tr.dslwithotherpropertiesthanautomatontr.DSLWithOtherPropertiesThanAutomatonTRMill;
 import mc.testcases.tr.dslwithotherpropertiesthanautomatontr._ast.*;
 import mc.testcases.tr.dslwithotherpropertiesthanautomatontr._parser.DSLWithOtherPropertiesThanAutomatonTRParser;
@@ -19,6 +20,7 @@ import de.monticore.tf.odrules._ast.ASTODObject;
 import de.monticore.tf.odrules._ast.ASTODRule;
 import de.monticore.tf.rule2od.Variable2AttributeMap;
 import de.monticore.tf.ruletranslation.Rule2ODState;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,11 +34,16 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
     ODRulesScopesGenitorDelegator symbolTable = ODRulesMill.scopesGenitorDelegator();
     symbolTable.createFromAST(od);
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @BeforeClass
   public static void disableFailQuick() {
     DSLWithOtherPropertiesThanAutomatonTRMill.init();
-    Log.enableFailQuick(false);
   }
 
   @Test
@@ -75,7 +82,8 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
     ASTODObject rhsObject = de.monticore.tf.odrules.util.Util.getODObject(rhs, "qualifiedName_1");
     assertNotNull(rhsObject);
     assertEquals(0, rhsObject.getAttributesList().size());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -109,6 +117,7 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
     ASTODObject rhsObject = de.monticore.tf.odrules.util.Util.getODObject(rhs, "$IFOO");
     assertNotNull(rhsObject);
     assertTrue(rhsObject.getAttributesList().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -137,6 +146,7 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
 
     ASTODDefinition rhs = od.getRhs();
     assertTrue(rhs.getODObjectList().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -165,6 +175,7 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
     assertNotNull(lhsObject);
     assertTrue(lhsObject.getAttributesList().isEmpty());
     assertTrue(lhsObject.hasStereotype(ODRuleStereotypes.NOT));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -193,6 +204,7 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
     assertTrue(lhsObject.getAttributesList().isEmpty());
     assertTrue(listParent.hasStereotype(ODRuleStereotypes.LIST));
     assertTrue(listParent.getAllODObjects().contains(lhsObject));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -224,5 +236,6 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
 
     ASTODObject lhsObject = (ASTODObject) opt.getInnerLinksList().get(0).getODObject();
     assertTrue(lhsObject.getAttributesList().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

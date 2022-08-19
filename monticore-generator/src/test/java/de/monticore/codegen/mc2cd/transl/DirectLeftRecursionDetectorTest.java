@@ -6,6 +6,8 @@ import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,9 +31,11 @@ public class DirectLeftRecursionDetectorTest {
   
   private DirectLeftRecursionDetector directLeftRecursionDetector = new DirectLeftRecursionDetector();
 
-  @BeforeClass
-  public static void setUp(){
+  @Before
+  public void setUp(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -57,7 +61,8 @@ public class DirectLeftRecursionDetectorTest {
     final ASTClassProd nonRecursiveProudction2 = productions.get(2);
     isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction2.getAlt(0), nonRecursiveProudction2.getName());
     Assert.assertFalse(isLeftRecursive);
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

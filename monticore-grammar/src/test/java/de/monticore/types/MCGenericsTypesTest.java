@@ -10,6 +10,8 @@ import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,12 +22,14 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class MCGenericsTypesTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
+  
   @Test
   public void testBasicGenericsTypes() throws IOException {
     Class foo = boolean.class;
@@ -45,6 +49,8 @@ public class MCGenericsTypesTest {
       System.out.println(type.get().getClass());
       ASTMCObjectType t = (ASTMCObjectType) type.get();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -66,6 +72,8 @@ public class MCGenericsTypesTest {
       ASTMCArrayType t = (ASTMCArrayType) type.get();
       assertEquals(2,t.getDimensions());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -76,6 +84,8 @@ public class MCGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCMultipleGenericType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -86,6 +96,8 @@ public class MCGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCWildcardTypeArgument);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -116,6 +128,8 @@ public class MCGenericsTypesTest {
     catch (IOException e) {
       fail(e.getMessage());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   
@@ -164,8 +178,8 @@ public class MCGenericsTypesTest {
       //assertTrue(type.get() instanceof ASTMCMultipleGenericType);
 
     }
-
-
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

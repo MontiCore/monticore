@@ -2,8 +2,10 @@
 package mc.testcases.automaton.transformation.rule._parser;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton.tr.automatontr._ast.*;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,13 +16,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class AutomatonTransformationRuleParserTest  {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
-
+  
   @Test
   public void testValidAutomatonRule() throws  IOException {
     String inputFile = "src/test/resources/ValidPattern.mtr";
@@ -34,6 +36,8 @@ public class AutomatonTransformationRuleParserTest  {
     assertEquals(1, o.getTFRule().getITFPartList().size());
     ASTAutomaton_Pat a = (ASTAutomaton_Pat) o.getTFRule().getITFPartList().get(0);
     assertEquals(2, a.getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -55,6 +59,8 @@ public class AutomatonTransformationRuleParserTest  {
     assertEquals(1, s2.getStateList().size());
 
     assertEquals(3, o.getTFRule().getITFPartList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test @Ignore
@@ -79,6 +85,8 @@ public class AutomatonTransformationRuleParserTest  {
     assertFalse(s1.getName().isIdentifierFix());
     assertTrue(s2.getName().isIdentifierFix());
     assertTrue(s3.getName().isIdentifierFix());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -97,6 +105,8 @@ public class AutomatonTransformationRuleParserTest  {
     assertNotNull(a);
 
     assertEquals(1, a.getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -115,7 +125,8 @@ public class AutomatonTransformationRuleParserTest  {
     assertNotNull(t);
     assertEquals("$foo", t.getFrom().getIdentifier());
     assertEquals("$bar", t.getFrom().getNewIdentifier());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -139,6 +150,7 @@ public class AutomatonTransformationRuleParserTest  {
     ASTState_Pat b = (ASTState_Pat) o.getTFRule().getITFPartList().get(1);
     assertNotNull(b);
     assertEquals("$b", b.getName().getIdentifier());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

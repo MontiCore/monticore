@@ -2,18 +2,28 @@
 
 package mc.feature.tokenrule;
 
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.tokenrule.tokenrule._ast.ASTC;
 import mc.feature.tokenrule.tokenrule._ast.ASTG;
 import mc.feature.tokenrule.tokenrule._parser.TokenRuleParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import de.se_rwth.commons.logging.Log;
 
 public class TokenRuleTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void test() throws IOException {

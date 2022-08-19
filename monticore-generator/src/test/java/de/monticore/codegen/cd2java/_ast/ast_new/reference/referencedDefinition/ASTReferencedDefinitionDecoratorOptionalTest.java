@@ -19,6 +19,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
@@ -60,16 +61,22 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
   @Test
   public void testClass() {
     assertEquals("ASTBarOpt", astClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributes() {
     assertTrue(astClass.getCDAttributeList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethods() {
     assertEquals(2, astClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -79,6 +86,8 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(NAME_DEFINITION, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -88,6 +97,8 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -101,5 +112,7 @@ public class ASTReferencedDefinitionDecoratorOptionalTest extends DecoratorTestC
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -25,6 +25,8 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -84,31 +86,43 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedSymbolCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testScopeDeSerClassName() {
     assertEquals("AutomatonDeSer", scopeClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfaceCount() {
     assertEquals(1, scopeClass.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertEquals(0, scopeClass.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(0, scopeClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(15, scopeClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -124,6 +138,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
       assertOneOf(parameter.getMCType(), I_AUTOMATON_SCOPE, AUTOMATON_ARTIFACT_SCOPE);
       assertFalse(method.getMCReturnType().isPresentMCVoidType());
       assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  
+      assertTrue(Log.getFindings().isEmpty());
     }
   }
 
@@ -140,6 +156,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
       assertOneOf(parameter.getMCType(), I_AUTOMATON_SCOPE, AUTOMATON_ARTIFACT_SCOPE);
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -153,6 +171,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,6 +186,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(AUTOMATON_ARTIFACT_SCOPE, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -181,6 +203,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
       assertEquals("scopeJson", parameters.get(1).getName());
       assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+      assertTrue(Log.getFindings().isEmpty());
     }
   }
 
@@ -195,6 +219,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertBoolean(method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -208,6 +234,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertListOf(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -221,6 +249,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -235,6 +265,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertEquals("scopeJson", parameters.get(1).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -248,6 +280,8 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   public static void assertOneOf(ASTMCType actualType, String... expected) {
@@ -261,5 +295,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     if (!result) {
       fail();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

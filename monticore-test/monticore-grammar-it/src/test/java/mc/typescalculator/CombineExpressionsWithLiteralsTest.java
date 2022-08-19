@@ -13,6 +13,7 @@ import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCheckResult;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcd4analysis.TestCD4AnalysisMill;
 import mc.testcd4analysis._symboltable.ITestCD4AnalysisGlobalScope;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
@@ -21,6 +22,7 @@ import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExp
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -34,13 +36,15 @@ import static org.junit.Assert.assertTrue;
 public class CombineExpressionsWithLiteralsTest {
 
   private static final String SYMBOL_PATH = "src/test/resources";
-
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
-
     TestCD4AnalysisMill.reset();
     CombineExpressionsWithLiteralsMill.reset();
 

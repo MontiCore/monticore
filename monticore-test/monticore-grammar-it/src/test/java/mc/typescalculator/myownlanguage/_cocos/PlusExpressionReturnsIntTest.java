@@ -9,6 +9,7 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,11 +18,15 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class PlusExpressionReturnsIntTest {
-
+  
   @Before
-  public void setup(){
+  public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setup(){
     MyOwnLanguageMill.reset();
     MyOwnLanguageMill.init();
     BasicSymbolsMill.initializePrimitives();

@@ -2,9 +2,11 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,12 +17,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class FoldStateRuleTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testEmptyAutomat() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
@@ -40,6 +43,8 @@ public class FoldStateRuleTest {
     ASTState state_2 = rule.get_state_2();
     // compare by object identity
     assertTrue(state_1 == state_2);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

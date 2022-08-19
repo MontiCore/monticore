@@ -5,19 +5,30 @@ package de.monticore.generating.templateengine;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.generating.templateengine.ObjectFactory;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.Assert.*;
 
 public class ObjectFactoryTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testInstanciationWithDefaultConstructor() {
     Object obj = ObjectFactory.createObject("java.lang.String");
     assertNotNull(obj);
     assertEquals(String.class, obj.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -28,6 +39,7 @@ public class ObjectFactoryTest {
     assertNotNull(obj);
     assertEquals(String.class, obj.getClass());
     assertEquals(obj, "myContent");
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -46,6 +58,7 @@ public class ObjectFactoryTest {
     assertNotNull(obj);
     assertEquals(obj.getClass(), (new String()).getClass());
     assertEquals(obj, "yes");
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

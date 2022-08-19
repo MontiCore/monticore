@@ -2,8 +2,12 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class MethodBodyAbsenceTest extends JavaLightCocoTest{
 
@@ -27,6 +31,8 @@ public class MethodBodyAbsenceTest extends JavaLightCocoTest{
   @Test
   public void testCorrect() {
     testValid("de.monticore.javalight.cocos.valid.A0804", "method", checker);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

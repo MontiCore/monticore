@@ -4,6 +4,8 @@ package de.monticore.types;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,12 +15,14 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class MCBasicTypesTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
+  
   @Test
   public void testPrimitiveTypesAPI() throws IOException {
     MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
@@ -43,6 +47,8 @@ public class MCBasicTypesTest {
     assertFalse(isShort);
 
     assertEquals(bool.toString(), "boolean");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -67,7 +73,8 @@ public class MCBasicTypesTest {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -80,6 +87,8 @@ public class MCBasicTypesTest {
       assertTrue(astType.isPresent());
       assertTrue(astType.get() instanceof ASTMCQualifiedType);
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -93,6 +102,8 @@ public class MCBasicTypesTest {
       //test toString
       assertEquals(astType.get().toString(), type);
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -105,5 +116,7 @@ public class MCBasicTypesTest {
     assertTrue(astType.isPresent());
     //test getQName method
     assertEquals(astType.get().getQName(), "socnet.Person");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

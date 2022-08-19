@@ -6,6 +6,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -71,31 +72,43 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalASTCompilationUnit, decoratedASTCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCDName() {
     assertEquals("Automaton", parserCD.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCount() {
     assertEquals(1, parserCD.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClasses(){
     ASTCDClass automatonParser = getClassBy("AutomatonParser", parserCD);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoEnum() {
     assertTrue(parserCD.getCDDefinition().getCDEnumsList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoInterface(){
     assertTrue(parserCD.getCDDefinition().getCDInterfacesList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -107,30 +120,42 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
     assertEquals("symboltable", parserCD.getCDPackageList().get(3));
     assertEquals("automaton", parserCD.getCDPackageList().get(4));
     assertEquals("_parser", parserCD.getCDPackageList().get(5));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testImports() {
     assertEquals(0, parserCD.getMCImportStatementList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCDNameComponent() {
     assertEquals("Automaton", parserCDComponent.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoClassesComponent() {
     assertTrue(parserCDComponent.getCDDefinition().getCDClassesList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoEnumComponent(){
     assertTrue(parserCDComponent.getCDDefinition().getCDEnumsList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoInterfaceComponent(){
     assertTrue(parserCDComponent.getCDDefinition().getCDInterfacesList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

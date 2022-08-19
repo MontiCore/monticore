@@ -3,17 +3,28 @@
 package mc.feature.listrule;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.listrule.listrule._parser.ListRuleParser;
 
 public class ListRuleTest extends GeneratorIntegrationsTest {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testParent1() throws IOException {
     StringReader s = new StringReader(
@@ -38,6 +49,7 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     p.parseParent2(s);
 
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -48,6 +60,7 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     p.parseParent3(s);
 
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -64,6 +77,7 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     p.parseParent4(s);
 
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -75,4 +89,5 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     p.parseParent6(s);
 
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }}

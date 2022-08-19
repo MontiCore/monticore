@@ -17,6 +17,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -33,15 +34,19 @@ public abstract class JavaLightCocoTest {
   static protected TestJavaLightGlobalScope globalScope;
 
   protected TestJavaLightArtifactScope artifactScope;
-
-  @BeforeClass
-  public static void setup() {
+  
+  @Before
+  public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+  
+  @BeforeClass
+  public static void setup() {
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
   }
-
+  
   @Before
   public void init() {
     globalScope = (TestJavaLightGlobalScope) TestJavaLightMill.globalScope();

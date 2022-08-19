@@ -2,8 +2,10 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,12 +15,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class FlattenStateTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   ASTAutomaton aut;
 
   @Test
@@ -35,6 +38,8 @@ public class FlattenStateTest {
 
     // should not match
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -66,6 +71,8 @@ public class FlattenStateTest {
     assertEquals(2, aut.get().getStateList().size());
     assertEquals(1, aut.get().getState(0).getStateList().size());
     assertEquals(0, aut.get().getState(1).getStateList().size());*/
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -83,5 +90,7 @@ public class FlattenStateTest {
 
     // pattern should match
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -8,13 +8,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GeneratorTest {
 
-  @BeforeClass
-  public static void init(){
+  @Before
+  public void init(){
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -29,12 +31,14 @@ public class GeneratorTest {
   public void testPingPong(){
     TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", "target/statepattern" });
     assertEquals(0, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSimple12(){
     TemplatesTool.main(new String[] { "src/test/resources/example/Simple12.aut","src/product/java", "target/statepattern" });
     assertEquals(0, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

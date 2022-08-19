@@ -10,22 +10,24 @@ import mc.embedding.host.HostMill;
 import mc.embedding.host._symboltable.HostSymbol;
 import mc.embedding.host._symboltable.IHostGlobalScope;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class HostTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-
     HostMill.reset();
     HostMill.init();
   }
@@ -37,6 +39,7 @@ public class HostTest extends GeneratorIntegrationsTest {
     HostSymbol hostSymbol = scope.resolveHost("H").orElse(null);
     assertNotNull(hostSymbol);
     assertEquals("H", hostSymbol.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

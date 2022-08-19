@@ -9,11 +9,13 @@ import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
 import mc.typescalculator.myownlanguage._symboltable.IMyOwnLanguageGlobalScope;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -27,11 +29,15 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
 
   protected MyOwnLanguageParser parser = new MyOwnLanguageParser();
   protected TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromMyOwnLanguage(),null);
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setup() {
-    Log.init();
-    Log.enableFailQuick(false);
     MyOwnLanguageMill.reset();
     MyOwnLanguageMill.init();
     BasicSymbolsMill.initializePrimitives();

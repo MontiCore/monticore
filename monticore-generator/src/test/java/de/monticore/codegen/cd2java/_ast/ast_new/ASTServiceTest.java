@@ -9,6 +9,8 @@ import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.codegen.cd2java.CDModifier;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,6 +41,8 @@ public class ASTServiceTest extends DecoratorTestCase {
   @Test
   public void testCDSymbolPresent() {
     assertTrue(astService.getCDSymbol().isPresentAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -46,6 +50,8 @@ public class ASTServiceTest extends DecoratorTestCase {
     ASTService astServiceFromDefinitionSymbol = new ASTService(astcdCompilationUnit.getCDDefinition().getSymbol());
     assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().isPresentAstNode());
     assertDeepEquals(astService.getCDSymbol().getAstNode(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -53,51 +59,69 @@ public class ASTServiceTest extends DecoratorTestCase {
     ASTService createdASTService = ASTService.createASTService(astcdCompilationUnit.getCDDefinition().getSymbol());
     assertTrue(createdASTService.getCDSymbol().isPresentAstNode());
     assertDeepEquals(astService.getCDSymbol().getAstNode(), createdASTService.getCDSymbol().getAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSubPackage() {
     assertEquals("_ast", astService.getSubPackage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetASTBaseInterfaceSimpleName() {
     assertEquals("ASTAutomatonNode", astService.getASTBaseInterfaceSimpleName());
     assertEquals("ASTAutomatonNode", astService.getASTBaseInterfaceSimpleName(astcdCompilationUnit.getCDDefinition().getSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetASTBaseInterfaceFullName() {
     assertEquals(AST_AUT_PACKAGE + "ASTAutomatonNode", astService.getASTBaseInterfaceFullName());
     assertEquals(AST_AUT_PACKAGE + "ASTAutomatonNode", astService.getASTBaseInterfaceFullName(astcdCompilationUnit.getCDDefinition().getSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetASTBaseInterfaceName() {
     assertDeepEquals(AST_AUT_PACKAGE + "ASTAutomatonNode", astService.getASTBaseInterface());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetASTConstantClassSimpleName() {
     assertEquals("ASTConstantsAutomaton", astService.getASTConstantClassSimpleName());
     assertEquals("ASTConstantsAutomaton", astService.getASTConstantClassSimpleName(astcdCompilationUnit.getCDDefinition().getSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetASTConstantClassFullName() {
     assertEquals(AST_AUT_PACKAGE + "ASTConstantsAutomaton", astService.getASTConstantClassFullName());
     assertEquals(AST_AUT_PACKAGE + "ASTConstantsAutomaton", astService.getASTConstantClassFullName(astcdCompilationUnit.getCDDefinition().getSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetASTSimpleName() {
     assertEquals("ASTAutomaton", astService.getASTSimpleName(astAutomaton));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetASTFullName() {
     assertEquals(AST_AUT_PACKAGE + "ASTAutomaton", astService.getASTFullName(astAutomaton));
     assertEquals(AST_AUT_PACKAGE + "ASTAutomaton", astService.getASTFullName(astAutomaton, astcdCompilationUnit.getCDDefinition().getSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -111,6 +135,8 @@ public class ASTServiceTest extends DecoratorTestCase {
     ASTCDClass astAutomatonWithoutName = astAutomaton.deepClone();
     astAutomatonWithoutName.setCDAttributeList(attributeList);
     assertTrue(astService.isSymbolWithoutName(astAutomatonWithoutName));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -121,5 +147,7 @@ public class ASTServiceTest extends DecoratorTestCase {
     assertTrue(getNameMethod.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, getNameMethod.getMCReturnType().getMCType());
     assertTrue(getNameMethod.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

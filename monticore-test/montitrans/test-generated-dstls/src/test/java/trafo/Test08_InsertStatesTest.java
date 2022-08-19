@@ -5,15 +5,25 @@ import de.monticore.tf.InsertStateFirst;
 import de.monticore.tf.InsertStateInplace;
 import de.monticore.tf.InsertStateLast;
 import de.monticore.tf.InsertStateRelative;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import junit.framework.TestCase;
 import mc.testcases.statechart.statechart._ast.*;
 import mc.testcases.statechart.statechart._parser.StatechartParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 
 public class Test08_InsertStatesTest extends TestCase {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testInsertStateFirst() throws IOException {
     StatechartParser p = new StatechartParser();
@@ -40,7 +50,8 @@ public class Test08_InsertStatesTest extends TestCase {
     assertEquals("One", topState.getState(0).getName());
     assertEquals("Two", topState.getState(1).getName());
     assertEquals("Three", topState.getState(2).getName());
-
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -69,7 +80,8 @@ public class Test08_InsertStatesTest extends TestCase {
     assertEquals("One", topState.getState(0).getName());
     assertEquals("Two", topState.getState(1).getName());
     assertEquals("Three", topState.getState(2).getName());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -98,7 +110,8 @@ public class Test08_InsertStatesTest extends TestCase {
     assertEquals("One", topState.getState(0).getName());
     assertEquals("Two", topState.getState(1).getName());
     assertEquals("Three", topState.getState(2).getName());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -126,7 +139,8 @@ public class Test08_InsertStatesTest extends TestCase {
     assertEquals("One", topState.getState(0).getName());
     assertEquals("Two", topState.getState(1).getName());
     assertEquals("Three", topState.getState(2).getName());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

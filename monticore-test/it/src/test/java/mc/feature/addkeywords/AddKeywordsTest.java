@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -19,13 +23,20 @@ import mc.feature.addkeywords.addkeywords._parser.AddKeywordsParser;
 
 public class AddKeywordsTest extends GeneratorIntegrationsTest {
   
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testB() throws IOException {
     
     helperb("3");
     helperb("keyword");
     helperb("key2");
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private void helperb(String in) throws IOException {
@@ -33,6 +44,7 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     b.parseB(new StringReader(in));
         
     assertFalse(b.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -41,7 +53,8 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     helperc("15");
     helperc("keyword");
     helperc("key2");
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private void helperc(String in) throws IOException {
@@ -60,7 +73,8 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     assertEquals(3, helperd("10 keyword 2").getNameList().size());
     assertEquals(3, helperd("2 2 3").getNameList().size());
     assertEquals(3, helperd("48 keyword key2").getNameList().size());
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTD helperd(String in) throws IOException {
@@ -82,7 +96,8 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     assertEquals(3, helpere("10 keyword 2").getINTList().size());
     assertEquals(3, helpere("2 2 3").getINTList().size());
     assertEquals(3, helpere("48 keyword key2").getINTList().size());
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTE helpere(String in) throws IOException {

@@ -11,6 +11,8 @@ import basiccd._parser.BasicCDParser;
 import cdandaut.CDClass2StimulusAdapter;
 import cdandaut.CDClass2StimulusResolver;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import de.se_rwth.commons.logging.Log;
 
 public class CDAndAutTest {
 
@@ -28,15 +31,18 @@ public class CDAndAutTest {
 
   @BeforeClass
   public static void setUpLogger() {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-
     BasicCDMill.reset();
     Automata7Mill.reset();
     BasicCDMill.init();
     Automata7Mill.init();
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testPingPong() throws IOException {
     // read symtab of cd model into cd global scope
@@ -61,5 +67,6 @@ public class CDAndAutTest {
     assertTrue(s.isPresent());
     assertEquals("Bla", s.get().getName());
     assertTrue(s.get() instanceof CDClass2StimulusAdapter); //assure that an adapter was found
+    Assert.assertTrue(Log.getFindings().isEmpty());
   }
 }

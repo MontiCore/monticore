@@ -5,6 +5,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,9 +20,11 @@ public class ExternalInterfaceTranslationTest {
 
   private ASTCDCompilationUnit externalInterface;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public  void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -36,5 +40,7 @@ public class ExternalInterfaceTranslationTest {
     assertEquals(1, a.getModifier().getStereotype().sizeValues());
     assertEquals("externalInterface", a.getModifier().getStereotype().getValues(0).getName());
     assertFalse(a.getModifier().getStereotype().getValues(0).isPresentText());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

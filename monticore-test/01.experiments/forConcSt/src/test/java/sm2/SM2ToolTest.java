@@ -16,8 +16,8 @@ import static org.junit.Assert.assertEquals;
 
 public class SM2ToolTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -49,5 +49,6 @@ public class SM2ToolTest {
     assertEquals(231, res.length());
     Assert.assertTrue(res, res.matches(".*state NoGame <<initial>>.*"));
     Assert.assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
+    Assert.assertTrue(Log.getFindings().isEmpty());
   }
 }

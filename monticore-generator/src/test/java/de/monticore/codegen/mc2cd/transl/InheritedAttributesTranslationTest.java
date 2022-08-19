@@ -8,6 +8,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,9 +37,11 @@ public class InheritedAttributesTranslationTest {
 
   private ASTCDClass astESub;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -65,16 +69,22 @@ public class InheritedAttributesTranslationTest {
   @Test
   public void testASuper() {
     assertTrue(astASuper.getCDAttributeList().stream().noneMatch(this::hasInheritedStereotype));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testESuper() {
     assertTrue(astESuper.getCDAttributeList().stream().noneMatch(this::hasInheritedStereotype));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBSuper() {
     assertTrue(astB.getCDAttributeList().stream().allMatch(this::hasInheritedStereotype));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -86,6 +96,8 @@ public class InheritedAttributesTranslationTest {
         assertFalse(hasInheritedStereotype(astcdAttribute));
       }
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -97,11 +109,14 @@ public class InheritedAttributesTranslationTest {
         assertFalse(hasInheritedStereotype(astcdAttribute));
       }
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testASub() {
     assertTrue(astASub.getCDAttributeList().stream().allMatch(this::hasInheritedStereotype));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -111,6 +126,8 @@ public class InheritedAttributesTranslationTest {
     assertEquals("name2", name2Attr.getName());
     assertDeepEquals(String.class, name2Attr.getMCType());
     assertFalse(hasInheritedStereotype(name2Attr));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private boolean hasInheritedStereotype(ASTCDAttribute astcdAttribute) {

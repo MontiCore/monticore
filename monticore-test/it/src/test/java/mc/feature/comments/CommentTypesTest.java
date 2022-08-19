@@ -3,16 +3,27 @@
 package mc.feature.comments;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.comments.commenttypestest._parser.CommentTypesTestParser;
 
 public class CommentTypesTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   /**
    * This Test tests if xml comments are parsed correctly.
@@ -27,6 +38,7 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -41,6 +53,7 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -55,6 +68,7 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -69,6 +83,7 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -83,6 +98,7 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     p.parseCStart(r);
     
     assertEquals(false, p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

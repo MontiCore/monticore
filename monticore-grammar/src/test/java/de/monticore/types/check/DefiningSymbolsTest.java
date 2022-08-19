@@ -19,7 +19,10 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -38,7 +41,13 @@ public class DefiningSymbolsTest {
   protected FieldSymbol e;
   protected MethodSymbol add;
   protected TypeSymbol listOfInt;
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void testCase(){
     CombineExpressionsWithLiteralsMill.reset();
@@ -99,6 +108,8 @@ public class DefiningSymbolsTest {
     listOfInt = (ASTNameExpression) ((ASTFieldAccessExpression) add.getExpression()).getExpression();
     assertTrue(listOfInt.getDefiningSymbol().isPresent());
     assertEquals(listOfInt.getDefiningSymbol().get(), this.listOfInt);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -134,6 +145,8 @@ public class DefiningSymbolsTest {
     tc.typeOf(listOfInt);
     assertTrue(listOfInt.getDefiningSymbol().isPresent());
     assertEquals(listOfInt.getDefiningSymbol().get(), this.listOfInt);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -154,6 +167,8 @@ public class DefiningSymbolsTest {
     tc.symTypeFromAST(listOfIntType.get());
     assertTrue(listOfIntType.get().getDefiningSymbol().isPresent());
     assertEquals(listOfIntType.get().getDefiningSymbol().get(), this.listOfInt);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   protected CombineExpressionsWithLiteralsTraverser getFlatExpressionScopeSetter(IExpressionsBasisScope scope){

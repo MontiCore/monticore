@@ -7,6 +7,8 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,9 +26,11 @@ public class SpanningScopeTest {
 
   private ASTCDCompilationUnit compilationUnit;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -38,6 +42,8 @@ public class SpanningScopeTest {
   @Test
   public void testDefinitionName() {
     assertEquals("ScopeSpanningSymbols", compilationUnit.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -45,11 +51,15 @@ public class SpanningScopeTest {
     assertEquals(2, compilationUnit.getCDPackageList().size());
     assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
     assertEquals("symbolTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCount() {
     assertEquals(2, compilationUnit.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -68,6 +78,8 @@ public class SpanningScopeTest {
     assertEquals("symbol", symbolStereotype.getName());
     ASTStereoValue scopeStereotype = symbolClassSymbol.getModifier().getStereotype().getValues(1);
     assertEquals("scope", scopeStereotype.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -86,5 +98,7 @@ public class SpanningScopeTest {
     assertEquals("symbol", symbolStereotype.getName());
     ASTStereoValue startProdStereotype = symbolClassSymbol.getModifier().getStereotype().getValues(1);
     assertEquals("startProd", startProdStereotype.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

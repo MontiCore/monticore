@@ -15,6 +15,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     decoratedCD = parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCD = decoratedCD.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCD));
@@ -51,27 +52,39 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(decoratedCD,originalCD);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testCDName() {
     assertEquals("Automaton", cliCD.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testClassCount() {
     assertEquals(1, cliCD.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testClassNames() {
     ASTCDClass automatonCli = getClassBy("AutomatonTool", cliCD);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testNoInterface() {
     assertTrue( cliCD.getCDDefinition().getCDInterfacesList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoEnum() {
     assertTrue(cliCD.getCDDefinition().getCDEnumsList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testPackage() {
@@ -81,11 +94,16 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
     assertEquals("codegen", cliCD.getCDPackageList().get(2));
     assertEquals("ast", cliCD.getCDPackageList().get(3));
     assertEquals("automaton", cliCD.getCDPackageList().get(4));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testImports() {
     assertEquals(0, cliCD.getMCImportStatementList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
+  
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
@@ -99,6 +117,8 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
       ParseResult parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

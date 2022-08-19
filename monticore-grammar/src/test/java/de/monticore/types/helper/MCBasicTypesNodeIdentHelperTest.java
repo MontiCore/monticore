@@ -4,6 +4,10 @@ package de.monticore.types.helper;
 import de.monticore.types.MCBasicTypesNodeIdentHelper;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,6 +16,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class MCBasicTypesNodeIdentHelperTest {
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testGetIdent() throws IOException {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
@@ -37,6 +48,8 @@ public class MCBasicTypesNodeIdentHelperTest {
     assertEquals("@void!MCVoidType",helper.getIdent(astmcVoidType.get()));
     assertEquals("@float!MCPrimitiveType",helper.getIdent(astmcReturnType.get()));
     assertEquals("@void!MCVoidType",helper.getIdent(astmcReturnTypeVoid.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

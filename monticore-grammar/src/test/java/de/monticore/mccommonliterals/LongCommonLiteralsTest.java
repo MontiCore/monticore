@@ -7,6 +7,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,10 +18,9 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class LongCommonLiteralsTest {
-
-
-  @BeforeClass
-  public static void init() {
+  
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -31,6 +31,8 @@ public class LongCommonLiteralsTest {
     assertTrue(lit.isPresent());
     assertTrue(lit.get() instanceof ASTBasicLongLiteral);
     assertEquals(l, ((ASTBasicLongLiteral) lit.get()).getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkFalse(String s) throws IOException {

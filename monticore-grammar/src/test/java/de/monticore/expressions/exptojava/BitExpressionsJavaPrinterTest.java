@@ -22,8 +22,8 @@ public class BitExpressionsJavaPrinterTest {
   
   private BitExpressionsFullJavaPrinter javaPrinter= new BitExpressionsFullJavaPrinter(new IndentPrinter());
   
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -48,6 +48,8 @@ public class BitExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -65,6 +67,8 @@ public class BitExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -82,6 +86,8 @@ public class BitExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -99,6 +105,8 @@ public class BitExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -115,7 +123,10 @@ public class BitExpressionsJavaPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
-    assertTrue(ast.deepEquals(result.get()));  }
+    assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
+  }
   
   @Test
   public void testBinaryAndExpression() throws IOException {
@@ -132,6 +143,8 @@ public class BitExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

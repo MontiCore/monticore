@@ -11,6 +11,7 @@ import mc.feature.referencesymbol.reference._symboltable.IReferenceGlobalScope;
 import mc.feature.referencesymbol.reference._symboltable.IReferenceScope;
 import mc.feature.referencesymbol.reference._symboltable.TestSymbol;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,14 +29,15 @@ public class ReferenceTest {
   private TestSymbol a;
   private TestSymbol b;
   private TestSymbol c;
-
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-
     // reset global scope
     IReferenceGlobalScope globalScope = ReferenceMill.globalScope();
     globalScope.clearLoadedFiles();
@@ -86,6 +88,7 @@ public class ReferenceTest {
     assertTrue(astb.isPresent());
     assertFalse(astb.get().isPresentNameDefinition());
     assertFalse(astb.get().isPresentNameSymbol());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -112,6 +115,7 @@ public class ReferenceTest {
     assertTrue(astReferenceToTest.isPresentNameDefinition());
     assertEquals(astReferenceToTest.getNameSymbol(), b);
     assertEquals(astReferenceToTest.getNameDefinition(), b.getAstNode());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -124,6 +128,7 @@ public class ReferenceTest {
     assertEquals("Z", astReferenceToTest.getName());
     assertFalse(astReferenceToTest.isPresentNameSymbol());
     assertFalse(astReferenceToTest.isPresentNameDefinition());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -154,6 +159,7 @@ public class ReferenceTest {
     assertFalse(astOptionalRef.isPresentNameSymbol());
     assertFalse(astOptionalRef.isPresentNameDefinition());
     astOptionalRef.setName(name);
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,6 +172,7 @@ public class ReferenceTest {
     assertEquals("Z", astReferenceToTest.getName());
     assertFalse(astReferenceToTest.isPresentNameSymbol());
     assertFalse(astReferenceToTest.isPresentNameDefinition());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -188,6 +195,7 @@ public class ReferenceTest {
     list.add("A");
     list.add("C");
     assertEquals(astListRef.getNameList(), list);
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -213,6 +221,7 @@ public class ReferenceTest {
     astListRef.clearNames();
     assertTrue(astListRef.isEmptyNamesSymbol());
     assertTrue(astListRef.isEmptyNamesDefinition());
+    assertTrue(Log.getFindings().isEmpty());
 
   }
 
@@ -251,6 +260,7 @@ public class ReferenceTest {
     testList.add(Optional.ofNullable(a.getAstNode()));
     assertEquals(astListRef.getNamesDefinitionList(), testList);
     assertEquals(astListRef.toArrayNamesDefinition(), testList.toArray());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -288,6 +298,7 @@ public class ReferenceTest {
     testList.add(Optional.ofNullable(a.getAstNode()));
     assertEquals(astListRef.getBlaDefinitionList(), testList);
     assertEquals(astListRef.toArrayBlaDefinition(), testList.toArray());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -325,6 +336,7 @@ public class ReferenceTest {
     testList.add(Optional.ofNullable(a.getAstNode()));
     assertEquals(astListRef.getBlaDefinitionList(), testList);
     assertEquals(astListRef.toArrayBlaDefinition(), testList.toArray());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -351,6 +363,7 @@ public class ReferenceTest {
     assertEquals(astListRef.getName(0), "A");
     assertEquals(astListRef.getNamesSymbol(0).get(), a);
     assertEquals(astListRef.getNamesDefinition(0).get(), a.getAstNode());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -370,6 +383,7 @@ public class ReferenceTest {
     assertEquals(astListRef.getName(3), "D");
     assertFalse(astListRef.getNamesSymbol(3).isPresent());
     assertFalse(astListRef.getNamesDefinition(3).isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -387,6 +401,7 @@ public class ReferenceTest {
     for (Optional<TestSymbol> testSymbol : astReferenceToTest.getNamesSymbolList()) {
       assertFalse(testSymbol.isPresent());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -394,6 +409,7 @@ public class ReferenceTest {
     ASTReferenceToTestBuilder builder = ReferenceMill.referenceToTestBuilder();
     ASTReferenceToTest astReferenceToTest = builder.setName("A").build();
     assertEquals(astReferenceToTest.getName(), "A");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -401,6 +417,7 @@ public class ReferenceTest {
     ASTOptionalRefBuilder builder = ReferenceMill.optionalRefBuilder();
     ASTOptionalRef astOptionalRef = builder.setName("B").build();
     assertEquals(astOptionalRef.getName(), "B");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -415,18 +432,21 @@ public class ReferenceTest {
     assertEquals(astListRef.getName(0), "C");
     assertEquals(astListRef.getName(1), "B");
     assertEquals(astListRef.getName(2), "A");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testFactoryMandatory() {
     ASTReferenceToTest astReferenceToTest = ReferenceMill.referenceToTestBuilder().setName("B").build();
     assertEquals(astReferenceToTest.getName(), "B");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testFactoryOptional() {
     ASTOptionalRef astOptionalRef = ReferenceMill.optionalRefBuilder().setName("C").build();
     assertEquals(astOptionalRef.getName(), "C");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -440,12 +460,14 @@ public class ReferenceTest {
     assertEquals(astListRef.getName(0), "C");
     assertEquals(astListRef.getName(1), "B");
     assertEquals(astListRef.getName(2), "A");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoReference() {
     ASTNoRef astNoRef = astRand.getNoRef(0);
     assertEquals(astNoRef.getName(), "a");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

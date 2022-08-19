@@ -17,6 +17,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "Symbol_Builder");
@@ -66,21 +67,29 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassName() {
     assertEquals("ASymbolBuilder", builderClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesEmpty() {
     assertFalse(builderClass.isPresentCDInterfaceUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoSuperClass() {
     assertFalse(builderClass.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertEquals(1, builderClass.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -90,11 +99,15 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertEquals("ASymbolBuilder", cdConstructor.getName());
     assertTrue(cdConstructor.isEmptyCDParameters());
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributes() {
     assertEquals(7, builderClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -102,6 +115,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("name", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -109,6 +124,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("fullName", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -117,6 +134,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(mcTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
         astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -124,6 +143,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("astNode", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE_OPT), astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -131,6 +152,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("packageName", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -138,12 +161,16 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("accessModifier", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(mcTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE), astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testMethods() {
     assertEquals(16, builderClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -153,6 +180,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbol"), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -162,6 +191,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -171,6 +202,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -180,6 +213,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -190,6 +225,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -200,6 +237,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -209,6 +248,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -219,6 +260,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -230,6 +273,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("name", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -241,6 +286,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("fullName", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -252,6 +299,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("packageName", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -264,6 +313,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -276,6 +327,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("astNode", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -285,6 +338,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType("ASymbolBuilder"), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -297,6 +352,8 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("accessModifier", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -310,5 +367,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -2,6 +2,7 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
 import org.junit.Before;
@@ -12,14 +13,10 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MoveSubstateTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    Log.enableFailQuick(false);
-  }
-
+  
   ASTAutomaton aut;
 
   @Before
@@ -35,6 +32,8 @@ public class MoveSubstateTest {
     assertEquals(2, aut.getStateList().size());
     assertEquals(0, aut.getState(0).getStateList().size());
     assertEquals(1, aut.getState(1).getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -46,6 +45,8 @@ public class MoveSubstateTest {
     assertEquals(2, aut.getStateList().size());
     assertEquals(1, aut.getState(0).getStateList().size());
     assertEquals(0, aut.getState(1).getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

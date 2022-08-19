@@ -11,6 +11,7 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTC;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,10 +24,14 @@ import static org.junit.Assert.assertTrue;
 
 public class IGrammarScopeTest {
 
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @BeforeClass
   public static void setUp(){
-    Log.init();
-    Log.enableFailQuick(false);
     Grammar_WithConceptsMill.reset();
     Grammar_WithConceptsMill.init();
   }
@@ -62,6 +67,8 @@ public class IGrammarScopeTest {
     assertTrue(innerScope.resolveMCGrammar("de.monticore.inherited.Supergrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("CombiningGrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("Automaton").isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -89,6 +96,8 @@ public class IGrammarScopeTest {
     assertFalse(innerScope.resolveInSuperGrammars("Supergrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Supergrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("CombiningGrammar", AccessModifier.ALL_INCLUSION).isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -131,6 +140,8 @@ public class IGrammarScopeTest {
     assertTrue(innerScope.resolveMCGrammar("de.monticore.inherited.Subgrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("de.monticore.inherited.Subsubgrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("Subsubgrammar").isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,5 +177,7 @@ public class IGrammarScopeTest {
     assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Subgrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("Subsubgrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Subsubgrammar", AccessModifier.ALL_INCLUSION).isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

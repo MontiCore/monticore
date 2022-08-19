@@ -30,7 +30,7 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
   @BeforeClass
   public static void disableFailQuick(){
     
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
     BasicSymbolsMill.initializePrimitives();

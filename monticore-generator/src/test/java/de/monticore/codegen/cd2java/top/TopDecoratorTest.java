@@ -11,6 +11,7 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TopDecoratorTest extends DecoratorTestCase {
 
@@ -70,6 +72,8 @@ public class TopDecoratorTest extends DecoratorTestCase {
     assertEquals("ETOP", cdEnum.getName());
     assertDeepEquals(PUBLIC, cdEnum.getModifier());
     engineMock.close();
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -98,5 +102,7 @@ public class TopDecoratorTest extends DecoratorTestCase {
     assertEquals("E", cdEnum.getName());
     assertDeepEquals(PUBLIC, cdEnum.getModifier());
     engineMock.close();
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

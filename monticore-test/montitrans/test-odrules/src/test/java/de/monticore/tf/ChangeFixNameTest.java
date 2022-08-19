@@ -2,6 +2,7 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
@@ -18,12 +19,13 @@ import static org.junit.Assert.*;
 public class ChangeFixNameTest {
 
   private ASTState state;
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Before
   public void setUp() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
@@ -40,12 +42,16 @@ public class ChangeFixNameTest {
   public void testDoReplacment() {
     new ChangeFixName(state).doAll();
     assertEquals("b", state.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCheckConditions_state_1_1() {
     ChangeFixName testee = new ChangeFixName(state);
     assertTrue(testee.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -56,6 +62,8 @@ public class ChangeFixNameTest {
     state.setFinal(false);
     ChangeFixName testee = new ChangeFixName(state);
     assertFalse(testee.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

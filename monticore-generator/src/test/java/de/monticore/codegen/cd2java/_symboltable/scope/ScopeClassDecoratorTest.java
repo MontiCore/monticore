@@ -104,32 +104,44 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedSymbolCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("AutomatonScope", scopeClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesCount() {
     assertEquals(1, scopeClass.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals(I_AUTOMATON_SCOPE, scopeClass.getCDInterfaceUsage().getInterface(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperClass() {
     assertTrue(scopeClass.isPresentCDExtendUsage());
     assertDeepEquals("de.monticore.FooScope", scopeClass.getCDExtendUsage().getSuperclass(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertEquals(4, scopeClass.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -141,6 +153,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(cdConstructor.isEmptyCDParameters());
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -154,6 +168,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("shadowing", cdConstructor.getCDParameter(0).getName());
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -167,6 +183,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("enclosingScope", cdConstructor.getCDParameter(0).getName());
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -183,6 +201,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("shadowing", cdConstructor.getCDParameter(1).getName());
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -195,6 +215,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("automatonSymbolsAlreadyResolved", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -202,6 +224,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("stateSymbolsAlreadyResolved", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -210,6 +234,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("qualifiedNameSymbolsAlreadyResolved", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -217,6 +243,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("fooSymbolsAlreadyResolved", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -224,6 +252,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("stateSymbols", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(STATE_SYMBOL_MAP, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -231,6 +261,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("automatonSymbols", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_SYMBOL_MAP, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -238,6 +270,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("qualifiedNameSymbols", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(QUALIFIED_NAME_SYMBOL_MAP, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -245,6 +279,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("fooSymbols", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(FOO_SYMBOL_MAP, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -252,6 +288,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("enclosingScope", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -259,6 +297,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("subScopes", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertListOf(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -266,6 +306,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("spanningSymbol", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(I_SCOPE_SPANNING_SYMBOL, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -273,6 +315,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("shadowing", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -280,6 +324,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("exportingSymbols", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -287,6 +333,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("ordered", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertBoolean(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -294,6 +342,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("name", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(String.class, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -301,6 +351,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("astNode", scopeClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(AST_NODE_TYPE, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -316,11 +368,15 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute extraAtt = getAttributeBy("extraAttribute", scopeClass);
     assertDeepEquals(PROTECTED, extraAtt.getModifier());
     assertBoolean(extraAtt.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(99, scopeClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -364,6 +420,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(fooRemove.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, fooRemove.sizeCDParameters());
     assertEquals("symbol", fooRemove.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -406,6 +464,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(fooAdd.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, fooAdd.sizeCDParameters());
     assertEquals("symbol", fooAdd.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -418,6 +478,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(AUTOMATON_SYMBOL_MAP, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -429,6 +491,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(STATE_SYMBOL_MAP, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -439,6 +503,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -449,6 +515,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -460,6 +528,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("automatonSymbolsAlreadyResolved", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -471,6 +541,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("stateSymbolsAlreadyResolved", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -480,6 +552,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(I_SCOPE_SPANNING_SYMBOL, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -489,6 +563,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertBoolean(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -498,6 +574,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -509,6 +587,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(I_SCOPE_SPANNING_SYMBOL, method.getCDParameter(0).getMCType());
     assertEquals("spanningSymbol", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -518,6 +598,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -535,6 +617,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.get().sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.get().getCDParameter(0).getMCType());
     assertEquals("subScope", method.get().getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -552,6 +636,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.get().sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.get().getCDParameter(0).getMCType());
     assertEquals("subScope", method.get().getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -564,6 +650,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertListOf(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
     assertEquals("subScopes", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -575,6 +663,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertListOf(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -592,6 +682,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.get().sizeCDParameters());
     assertDeepEquals(I_LEXICAS_SCOPE, method.get().getCDParameter(0).getMCType());
     assertEquals("subScope", method.get().getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -609,6 +701,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.get().sizeCDParameters());
     assertDeepEquals(I_LEXICAS_SCOPE, method.get().getCDParameter(0).getMCType());
     assertEquals("subScope", method.get().getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -627,6 +721,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.get().sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.get().getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.get().getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -645,6 +741,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.get().sizeCDParameters());
     assertDeepEquals(I_LEXICAS_SCOPE, method.get().getCDParameter(0).getMCType());
     assertEquals("newEnclosingScope", method.get().getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -655,6 +753,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -666,6 +766,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("extraAttribute", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -676,6 +778,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertListOf(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -687,6 +791,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertListOf(String.class, method.getCDParameter(0).getMCType());
     assertEquals("foo", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -697,6 +803,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -710,5 +818,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -8,6 +8,7 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,10 +18,15 @@ public class NoNTInheritanceCycleTest extends CocoTest {
 
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4022.A4022";
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
     checker.addCoCo(new NoNTInheritanceCycle());
   }
 

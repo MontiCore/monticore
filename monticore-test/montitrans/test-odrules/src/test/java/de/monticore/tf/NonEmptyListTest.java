@@ -2,9 +2,11 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -14,12 +16,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class NonEmptyListTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testDoPatternMatching_1() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonTwoStatesAndSubstate.aut";
@@ -37,6 +40,8 @@ public class NonEmptyListTest {
     assertEquals(1, testee.get_list_1_state_1().size());
     ASTState subState = aut.get().getState(0).getState(0);
     assertEquals(subState, testee.get_list_1_state_1().get(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -57,6 +62,8 @@ public class NonEmptyListTest {
     assertEquals(1, testee.get_list_1_state_1().size());
     ASTState subState = aut.get().getState(1).getState(0);
     assertEquals(subState, testee.get_list_1_state_1().get(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

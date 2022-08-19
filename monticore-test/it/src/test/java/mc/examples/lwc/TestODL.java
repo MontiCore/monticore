@@ -10,7 +10,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.examples.lwc.odl.odl.ODLMill;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -21,6 +25,12 @@ import mc.examples.lwc.odl.odl._ast.ASTODLCompilationUnit;
 import mc.examples.lwc.odl.odl._parser.ODLParser;
 
 public class TestODL extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testParser() throws IOException {
@@ -88,6 +98,7 @@ public class TestODL extends GeneratorIntegrationsTest {
     assertEquals(instances.getObjectList().get(1).getName(), "car");
     assertTrue(instances.getObjectList().get(1).getType().deepEquals(
         ODLMill.qualifiedNameBuilder().setNamesList(Lists.newArrayList("lwc", "edl", "Car")).build()));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

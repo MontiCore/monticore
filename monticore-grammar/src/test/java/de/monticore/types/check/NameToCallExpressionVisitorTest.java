@@ -13,13 +13,16 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTrav
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class NameToCallExpressionVisitorTest {
 
@@ -27,7 +30,7 @@ public class NameToCallExpressionVisitorTest {
 
   @Before
   public void setupLog() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -45,6 +48,8 @@ public class NameToCallExpressionVisitorTest {
     Optional<ASTExpression> astex = p.parse_StringExpression("test()");
     astex.get().accept(traverser);
     assertEquals("test",visitor.getLastName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -67,6 +72,8 @@ public class NameToCallExpressionVisitorTest {
     astex.get().accept(traverser);
     assertEquals("test", visitor.getLastName());
     assertEquals(((ASTFieldAccessExpression) expr).getExpression(), visitor.getLastExpression());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   protected ICombineExpressionsWithLiteralsScope getFlatExpressionScope() {

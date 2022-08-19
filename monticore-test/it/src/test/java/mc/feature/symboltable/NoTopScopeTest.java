@@ -2,6 +2,7 @@
 package mc.feature.symboltable;
 
 import de.monticore.symboltable.ISymbol;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.symboltable.notopscope.NoTopScopeMill;
 import mc.feature.symboltable.notopscope._ast.ASTFoo;
 import mc.feature.symboltable.notopscope._parser.NoTopScopeParser;
@@ -12,6 +13,8 @@ import mc.feature.symboltable.subnotopscope.SubNoTopScopeMill;
 import mc.feature.symboltable.subnotopscope._ast.ASTSubFoo;
 import mc.feature.symboltable.subnotopscope._parser.SubNoTopScopeParser;
 import mc.feature.symboltable.subnotopscope._symboltable.ISubNoTopScopeGlobalScope;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,9 +22,16 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import de.se_rwth.commons.logging.Log;
 
 public class NoTopScopeTest {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   /**
    * test the generation of the method getTopLevelSymbol() of an ArtifactScope
    * if the start production is only a symbol and not a scope spanning symbol
@@ -55,6 +65,7 @@ public class NoTopScopeTest {
     scope.add(eSymbol);
     topLevelSymbol = scope.getTopLevelSymbol();
     assertFalse(topLevelSymbol.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -83,5 +94,6 @@ public class NoTopScopeTest {
     scope.add(eSymbol);
     topLevelSymbol = scope.getTopLevelSymbol();
     assertFalse(topLevelSymbol.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

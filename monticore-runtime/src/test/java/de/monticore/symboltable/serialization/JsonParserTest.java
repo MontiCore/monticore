@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -12,6 +15,12 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import java.util.function.Function;
 
 public class JsonParserTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testSimpleInvalidObject() {
@@ -67,6 +76,7 @@ public class JsonParserTest {
     assertEquals(3.4, result.getMember("blub").getAsJsonNumber().getNumberAsDouble(), 0.1);
 
     assertTrue( JsonParser.parseJsonObject("{}").isJsonObject());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

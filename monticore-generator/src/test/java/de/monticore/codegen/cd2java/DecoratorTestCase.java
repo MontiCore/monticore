@@ -14,7 +14,9 @@ import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -26,11 +28,15 @@ import static org.junit.Assert.fail;
 public abstract class DecoratorTestCase {
 
   private static final String MODEL_PATH = "src/test/resources/";
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setUpDecoratorTestCase() {
-    Log.init();
-    Log.enableFailQuick(false);
     CD4CodeMill.reset();
     CD4CodeMill.init();
     ICD4CodeGlobalScope globalScope = CD4CodeMill.globalScope();

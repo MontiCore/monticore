@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
-import de.monticore.expressions.assignmentexpressions._ast.ASTIncPrefixExpression;
-import de.monticore.expressions.bitexpressions.BitExpressionsMill;
-import de.monticore.expressions.bitexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testbitexpressions._parser.TestBitExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
@@ -23,13 +20,13 @@ public class BitExpressionsPrettyPrinterTest {
   private TestBitExpressionsParser parser = new TestBitExpressionsParser();
 
   private BitExpressionsFullPrettyPrinter prettyPrinter= new BitExpressionsFullPrettyPrinter(new IndentPrinter());
-
-  @BeforeClass
-  public static void setUp() {
+  
+  @Before
+  public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Before
   public void init() {
     prettyPrinter.getPrinter().clearBuffer();
@@ -51,6 +48,8 @@ public class BitExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -69,6 +68,8 @@ public class BitExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,6 +88,8 @@ public class BitExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -105,6 +108,8 @@ public class BitExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -122,7 +127,10 @@ public class BitExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));  }
+    assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
+  }
 
   @Test
   public void testBinaryAndExpression() throws IOException {
@@ -140,5 +148,7 @@ public class BitExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

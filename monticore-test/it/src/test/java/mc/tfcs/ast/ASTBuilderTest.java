@@ -1,20 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-package de.monticore.tf.ast;
+package mc.tfcs.ast;
 
 import com.google.common.collect.Lists;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTTransition;
 import mc.feature.javasql.javasql.javasql.JavaSQLMill;
 import mc.feature.javasql.sql.sql.SQLMill;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
+import de.se_rwth.commons.logging.Log;
 
 public class ASTBuilderTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void createASTBuilder() {
@@ -39,6 +48,7 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     transition1.setTo(to);
     // Compare these instances
     assertTrue(transition.deepEquals(transition1));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -79,6 +89,7 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
 
     assertTrue(sqlStatement.getClass().isAssignableFrom(javasqlStatement.getClass()));
     assertFalse(javasqlStatement.getClass().isAssignableFrom(sqlStatement.getClass()));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

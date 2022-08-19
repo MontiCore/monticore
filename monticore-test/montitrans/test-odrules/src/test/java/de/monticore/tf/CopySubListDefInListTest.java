@@ -2,6 +2,7 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.misc.MiscMill;
 import mc.testcases.misc._ast.ASTDef;
 import mc.testcases.misc._ast.ASTSub;
@@ -12,12 +13,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class CopySubListDefInListTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   ASTDef def, def2, def3, def4;
   ASTSub sub, sub2;
 
@@ -55,6 +57,8 @@ public class CopySubListDefInListTest {
     assertTrue(def2.isPresentSub());
     assertFalse(def3.isPresentSub());
     assertFalse(def4.isPresentSub());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

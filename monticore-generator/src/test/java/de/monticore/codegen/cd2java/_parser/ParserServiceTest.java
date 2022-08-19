@@ -6,6 +6,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +38,8 @@ public class ParserServiceTest extends DecoratorTestCase {
   @Test
   public void testCDSymbolPresent(){
     assertTrue(parserService.getCDSymbol().isPresentAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -43,11 +47,15 @@ public class ParserServiceTest extends DecoratorTestCase {
     ParserService createdParserService = ParserService.createParserService(astcdCompilationUnit.getCDDefinition().getSymbol());
     assertTrue(createdParserService.getCDSymbol().isPresentAstNode());
     assertDeepEquals(parserService.getCDSymbol().getAstNode(), createdParserService.getCDSymbol().getAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSubPackage() {
     assertEquals("_parser", parserService.getSubPackage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -56,12 +64,16 @@ public class ParserServiceTest extends DecoratorTestCase {
     assertEquals("AutomatonParser", parserService.getParserClassSimpleName(parserService.getCDSymbol()));
     assertEquals("de.monticore.codegen.symboltable.automaton._parser.AutomatonParser", parserService.getParserClassFullName());
     assertEquals("de.monticore.codegen.symboltable.automaton._parser.AutomatonParser", parserService.getParserClassFullName(parserService.getCDSymbol()));
-  }
+    
+    assertTrue(Log.getFindings().isEmpty());
+ }
 
   @Test
   public void testGetAntlrParserNameMethods(){
     assertEquals("AutomatonAntlrParser", parserService.getAntlrParserSimpleName());
     assertEquals("AutomatonAntlrParser", parserService.getAntlrParserSimpleName(parserService.getCDSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -69,11 +81,15 @@ public class ParserServiceTest extends DecoratorTestCase {
     String automatonClassName = astAutomaton.getName();
     assertEquals("ASTAutomaton", automatonClassName);
     assertEquals("Automaton", parserService.removeASTPrefix(automatonClassName));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetParseRuleNameJavaCompatible(){
     assertEquals("automaton", parserService.getParseRuleNameJavaCompatible(astAutomaton));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -81,5 +97,7 @@ public class ParserServiceTest extends DecoratorTestCase {
     assertTrue(parserService.getStartProd().isPresent());
     assertEquals(parserService.getStartProd(), parserService.getStartProd((ASTCDDefinition) parserService.getCDSymbol().getAstNode()));
     assertEquals("de.monticore.codegen.symboltable.Automaton.ASTAutomaton", parserService.getStartProd().get());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

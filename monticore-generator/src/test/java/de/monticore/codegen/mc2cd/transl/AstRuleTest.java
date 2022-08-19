@@ -7,7 +7,9 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,6 +19,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertInt;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * this test checks the addition of attributes with astrules
@@ -27,11 +30,11 @@ public final class AstRuleTest {
 
   private final ASTCDClass impl;
 
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     GrammarFamilyMill.init();
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
   }
 
   public AstRuleTest() {
@@ -46,6 +49,8 @@ public final class AstRuleTest {
     assertEquals(1, astC.getCDAttributeList().size());
     assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
     assertInt(astC.getCDAttributeList().get(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -58,6 +63,8 @@ public final class AstRuleTest {
 
     ASTCDAttribute varName2 = getAttributeBy("varName2", impl);
     assertDeepEquals("varType2", varName2.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }
