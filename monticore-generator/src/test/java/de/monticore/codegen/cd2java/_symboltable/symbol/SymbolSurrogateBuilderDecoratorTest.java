@@ -68,6 +68,8 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // ScopeSpanningSymbol
@@ -75,23 +77,31 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassNameAutomatonSymbol() {
     assertEquals("AutomatonSymbolSurrogateBuilder", builderClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperNoInterfaces() {
     assertFalse(builderClass.isPresentCDInterfaceUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testSuperClassNotPresent() {
     assertFalse(builderClass.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testConstructorCount() {
     assertEquals(1, builderClass.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -103,11 +113,15 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     assertTrue(cdConstructor.isEmptyCDParameters());
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(5, builderClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -115,6 +129,8 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("name", builderClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -122,6 +138,8 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("enclosingScope", builderClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(I_AUTOMATON_SCOPE, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -129,6 +147,8 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("realBuilder", builderClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonSymbolSurrogateBuilder", astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -138,6 +158,8 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -149,6 +171,8 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("name", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -158,6 +182,8 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -169,6 +195,8 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -182,5 +210,7 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

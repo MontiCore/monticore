@@ -6,6 +6,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,15 +20,21 @@ import static de.se_rwth.commons.logging.LogStub.enableFailQuick;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import de.se_rwth.commons.logging.Log;
 
 public class GrammarInheritanceCycleTest extends CocoTest {
 
   private final String MESSAGE = " The grammar A4023%s introduces an inheritance cycle.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @BeforeClass
   public static void disableFailQuick() {
-    enableFailQuick(false);
     checker.addCoCo(new GrammarInheritanceCycle());
   }
 

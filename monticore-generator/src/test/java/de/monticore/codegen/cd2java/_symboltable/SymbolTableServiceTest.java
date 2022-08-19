@@ -13,6 +13,8 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,6 +47,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
   @Test
   public void testCDSymbolPresent() {
     assertTrue(symTabService.getCDSymbol().isPresentAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -52,6 +56,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     SymbolTableService astServiceFromDefinitionSymbol = new SymbolTableService(astcdCompilationUnit.getCDDefinition().getSymbol());
     assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().isPresentAstNode());
     assertDeepEquals(symTabService.getCDSymbol().getAstNode(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,11 +65,15 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     SymbolTableService createdSymbolTableService = SymbolTableService.createSymbolTableService(astcdCompilationUnit.getCDDefinition().getSymbol());
     assertTrue(createdSymbolTableService.getCDSymbol().isPresentAstNode());
     assertDeepEquals(symTabService.getCDSymbol().getAstNode(), createdSymbolTableService.getCDSymbol().getAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSubPackage() {
     assertEquals("_symboltable", symTabService.getSubPackage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -76,6 +86,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     Optional<String> startProdValue = symTabService.getStartProdValue(astModifier.get());
     assertTrue(startProdValue.isPresent());
     assertEquals("_ast.ASTFoo", startProdValue.get());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,6 +99,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     assertFalse(cd4AnalysisParser.hasErrors());
 
     assertTrue(symTabService.hasStartProd(astcdDefinition.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -100,6 +114,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     assertFalse(cd4AnalysisParser.hasErrors());
 
     assertTrue(symTabService.hasStartProd(astcdDefinition.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -113,6 +129,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     assertFalse(cd4AnalysisParser.hasErrors());
 
     assertTrue(symTabService.hasStartProd(astcdDefinition.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -126,6 +144,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     Optional<String> startProdValue = symTabService.getStartProd(astcdDefinition.get());
     assertTrue(startProdValue.isPresent());
     assertEquals("_ast.ASTFoo", startProdValue.get());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -141,6 +161,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     Optional<String> startProdValue = symTabService.getStartProd(astcdDefinition.get());
     assertTrue(startProdValue.isPresent());
     assertEquals("de.monticore.codegen.symboltable.Automaton.ASTFoo", startProdValue.get());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -156,6 +178,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     Optional<String> startProdValue = symTabService.getStartProd(astcdDefinition.get());
     assertTrue(startProdValue.isPresent());
     assertEquals("de.monticore.codegen.symboltable.Automaton.ASTFoo", startProdValue.get());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -168,6 +192,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
     ASTMCQualifiedType qualifiedType = mcTypeFacade.createQualifiedType("a.b.C");
     assertEquals("null", symTabService.determineReturnType(qualifiedType));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -181,6 +207,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     assertFalse(cd4AnalysisParser.hasErrors());
 
     assertTrue(symTabService.hasProd(astcdDefinition.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -194,6 +222,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     assertFalse(cd4AnalysisParser.hasErrors());
 
     assertTrue(symTabService.hasProd(astcdDefinition.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -205,6 +235,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     assertFalse(cd4AnalysisParser.hasErrors());
 
     assertFalse(symTabService.hasProd(astcdDefinition.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -218,6 +250,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     Optional<String> symbolTypeValue = symTabService.getSymbolTypeValue(astcdDefinition.get());
     assertTrue(symbolTypeValue.isPresent());
     assertEquals("FooSymbol", symbolTypeValue.get());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -231,6 +265,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     Optional<String> symbolTypeValue = symTabService.getSymbolTypeValue(astcdDefinition.get());
     assertTrue(symbolTypeValue.isPresent());
     assertEquals("FooSymbol", symbolTypeValue.get());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -243,6 +279,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
     Optional<String> symbolTypeValue = symTabService.getDefiningSymbolSimpleName(astcdClass.get());
     assertFalse(symbolTypeValue.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -255,6 +293,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
     Optional<String> symbolTypeValue = symTabService.getDefiningSymbolSimpleName(astcdClass.get());
     assertFalse(symbolTypeValue.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -268,6 +308,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     Optional<String> symbolTypeValue = symTabService.getDefiningSymbolSimpleName(astcdClass.get());
     assertTrue(symbolTypeValue.isPresent());
     assertEquals("FooSymbol", symbolTypeValue.get());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -281,6 +323,8 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     assertFalse(cd4AnalysisParser.hasErrors());
 
     assertEquals("a.b.FooSymbol", symTabService.getSymbolFullName(astcdClass.get(), bar));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -293,5 +337,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
     assertFalse(cd4AnalysisParser.hasErrors());
 
     assertEquals("FooSymbol", symTabService.getSymbolSimpleName(astcdClass.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

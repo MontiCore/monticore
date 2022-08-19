@@ -16,13 +16,15 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Main class for the HierAutomaton DSL tool.
  */
 public class HierAutomataTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -85,7 +87,8 @@ public class HierAutomataTest {
     s.setOutputDirectory(new File("target/out3"));
     ge = new GeneratorEngine(s);
     ge.generate("tpl3/StateMachine.ftl", Paths.get("pingPong.aut"), ast);
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**

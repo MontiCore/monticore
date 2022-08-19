@@ -14,9 +14,11 @@ import de.monticore.types.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.accessor.OptionalAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -35,11 +37,15 @@ public class OptionalAccessorDecoratorTest extends DecoratorTestCase {
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Before
   public void setup() {
-    LogStub.init();
-
     // dummy cd needed for a good generated error Code
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
 
@@ -52,6 +58,8 @@ public class OptionalAccessorDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethods() {
     assertEquals(2, methods.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -61,6 +69,8 @@ public class OptionalAccessorDecoratorTest extends DecoratorTestCase {
     Assert.assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -70,5 +80,7 @@ public class OptionalAccessorDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getCDParameterList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

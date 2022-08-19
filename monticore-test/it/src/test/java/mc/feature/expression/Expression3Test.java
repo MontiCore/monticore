@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,8 +27,9 @@ import mc.feature.expression.expression3._parser.Expression3Parser;
 
 public class Expression3Test extends GeneratorIntegrationsTest {
   
-  @BeforeClass
-  public static void disableFailQuick() {
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   
@@ -47,6 +50,7 @@ public class Expression3Test extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -62,6 +66,7 @@ public class Expression3Test extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -75,6 +80,7 @@ public class Expression3Test extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -88,6 +94,7 @@ public class Expression3Test extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -101,6 +108,7 @@ public class Expression3Test extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -114,6 +122,7 @@ public class Expression3Test extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -127,6 +136,7 @@ public class Expression3Test extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -139,6 +149,7 @@ public class Expression3Test extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

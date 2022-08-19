@@ -19,8 +19,8 @@ import org.junit.Test;
  */
 public class AutomataParseTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     Log.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -60,6 +60,7 @@ public class AutomataParseTest {
     // parse for a sublanguage, here: a State
     Optional<ASTState> s = p.parse_StringState("state Ping;");
     assertTrue(s.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
     
   }
   

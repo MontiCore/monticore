@@ -5,9 +5,9 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.CharSource;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Files;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the {@link IncChecker} testing against the expected incCheck result after changing the files.
@@ -36,7 +38,13 @@ public class IncCheckerTest {
       {"mc4"}, {"sc"}, {"longerEnding"}
     });
   }
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   protected final String fileEnding;
 
   public IncCheckerTest(String fileEnding) {
@@ -108,6 +116,8 @@ public class IncCheckerTest {
     // Change input model/content
     Files.writeToFile(CharSource.wrap("new file content").asByteSource(StandardCharsets.UTF_8).openStream(), inputFile);
     Assert.assertFalse("IncCheck with changed input model did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private String calcChacheEntry(File file) throws IOException {

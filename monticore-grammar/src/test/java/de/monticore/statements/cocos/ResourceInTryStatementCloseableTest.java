@@ -12,6 +12,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,11 +26,14 @@ public class ResourceInTryStatementCloseableTest {
   
   private static final TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
   
-  @BeforeClass
-  public static void disableFailQuick(){
-    
+  @Before
+  public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+  
+  @BeforeClass
+  public static void disableFailQuick() {
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();

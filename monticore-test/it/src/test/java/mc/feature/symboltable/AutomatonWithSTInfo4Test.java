@@ -3,17 +3,27 @@
 package mc.feature.symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo4.AutomatonWithSTInfo4Mill;
 import mc.feature.symboltable.automatonwithstinfo4._ast.ASTState;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import de.se_rwth.commons.logging.Log;
 
 public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
@@ -31,8 +41,9 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
     ASTState s = AutomatonWithSTInfo4Mill.stateBuilder().setName("S").build();
     s.setSymbol(new AutomatonElementSymbol("S") );
     AutomatonElementSymbol aESymbol = s.getSymbol();
-
-
+  
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

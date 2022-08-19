@@ -2,6 +2,7 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
 import org.junit.Before;
@@ -15,12 +16,13 @@ import static org.junit.Assert.*;
 public class CreateStateTest {
 
   ASTAutomaton aut;
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Before
   public void setUp() throws IOException {
     String inputFile = "src/main/models/automaton/EmptyAutomaton.aut";
@@ -35,6 +37,8 @@ public class CreateStateTest {
     CreateState testee = new CreateState(aut);
     testee.doAll();
     assertEquals(noOfStates_Before + 1, aut.getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -44,6 +48,8 @@ public class CreateStateTest {
     assertNull(testee.get_state_1());
     testee.doReplacement();
     assertEquals(aut.getState(0), testee.get_state_1());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

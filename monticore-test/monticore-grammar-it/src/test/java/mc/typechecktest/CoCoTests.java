@@ -38,13 +38,14 @@ public class CoCoTests {
 
   @BeforeClass
   public static void init(){
-    LogStub.init();
-    LogStub.enableFailQuick(false);
     TypeCheckTestMill.init();
   }
 
   @Before
   public void setup() throws IOException {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    
     TypeCheckTestMill.globalScope().clear();
     BasicSymbolsMill.initializePrimitives();
     TypeSymbol string = TypeCheckTestMill

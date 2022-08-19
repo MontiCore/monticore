@@ -17,6 +17,8 @@ import de.monticore.codegen.cd2java._ast_emf.EmfService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,24 +55,32 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassName() {
     assertEquals("AutomataPackage", packageInterface.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterface() {
     assertEquals(1, packageInterface.getInterfaceList().size());
     assertDeepEquals("de.monticore.emf._ast.ASTEPackage", packageInterface.getCDExtendUsage().getSuperclass(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testAttributeSize() {
     assertEquals(28, packageInterface.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(packageInterface.getCDMethodList().isEmpty());
     assertEquals(21, packageInterface.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -78,6 +88,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("eNAME", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals(String.class, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -85,6 +97,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("eNS_URI", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals(String.class, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -92,6 +106,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("eNS_PREFIX", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals(String.class, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -99,6 +115,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("eINSTANCE", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertDeepEquals("AutomataPackage", attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -106,6 +124,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ConstantsAutomata", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -113,6 +133,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTAutomaton", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -120,6 +142,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTState", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -127,6 +151,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -135,6 +161,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTBodyExt", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -142,6 +170,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTTransitionWithAction", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -149,6 +179,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTAutName", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -156,6 +188,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTAutomaton_Name", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -163,6 +197,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTAutomaton_States", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -170,6 +206,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTAutomaton_Transitions", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -177,6 +215,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTState_Name", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -184,6 +224,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTState_States", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -191,6 +233,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTState_Transitions", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -198,6 +242,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition_From", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -205,6 +251,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition_Input", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -212,6 +260,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTTransition_To", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -219,6 +269,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("ASTAutName_Input", packageInterface);
     assertDeepEquals(PACKAGE_PRIVATE, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -228,6 +280,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EEnum", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -236,6 +290,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -244,6 +300,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -252,6 +310,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -260,6 +320,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -268,6 +330,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -276,6 +340,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -284,6 +350,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EAttribute", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -292,6 +360,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EReference", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -300,6 +370,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EReference", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -308,6 +380,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PACKAGE_PRIVATE_ABSTRACT, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EAttribute", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -315,6 +389,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(packageInterface.getCDMethodList()
         .stream()
         .noneMatch(m -> m.getName().equals("getASTAutName_Input")));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -328,6 +404,8 @@ public class PackageInterfaceDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

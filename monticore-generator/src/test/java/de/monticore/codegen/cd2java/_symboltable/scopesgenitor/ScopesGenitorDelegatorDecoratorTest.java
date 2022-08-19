@@ -93,31 +93,43 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     //create non present SymbolTableCreator
     Optional<ASTCDClass> optScopeSkeletonCreatorDelegator = decorator.decorate(cd);
     assertFalse(optScopeSkeletonCreatorDelegator.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("AutomatonScopesGenitorDelegator", scopesGenitorClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoSuperInterfaces() {
     assertFalse(scopesGenitorClass.isPresentCDInterfaceUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoSuperClass() {
     assertFalse(scopesGenitorClass.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertEquals(1, scopesGenitorClass.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -127,11 +139,15 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     assertEquals("AutomatonScopesGenitorDelegator", constructor.getName());
     assertTrue(constructor.isEmptyCDParameters());
     assertFalse(constructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeSize() {
     assertEquals(4, scopesGenitorClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -139,6 +155,8 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("scopeStack", scopesGenitorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("Deque<de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope>", astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -146,6 +164,8 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("symbolTable", scopesGenitorClass);
     assertDeepEquals(PROTECTED_FINAL, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_SCOPES_GENITOR, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -153,6 +173,8 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("globalScope", scopesGenitorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_GLOBAL_SCOPE, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -160,11 +182,15 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("traverser", scopesGenitorClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(AUTOMATON_TRAVERSER, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethods() {
     assertEquals(1, scopesGenitorClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -176,6 +202,8 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
     assertEquals("rootNode", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -189,5 +217,7 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

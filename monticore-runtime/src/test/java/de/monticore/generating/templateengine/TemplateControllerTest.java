@@ -8,11 +8,10 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import freemarker.template.Template;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +37,12 @@ public class TemplateControllerTest {
   private FreeMarkerTemplateEngineMock freeMarkerTemplateEngine;
 
   private FileReaderWriterMock fileHandler;
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Before
   public void setup() {
@@ -74,6 +79,7 @@ public class TemplateControllerTest {
 
     assertNotNull(tc.getAST());
     assertSame(ASTNodeMock.INSTANCE, tc.getAST());
+    assertTrue(Log.getFindings().isEmpty());
 
   }
 
@@ -95,6 +101,7 @@ public class TemplateControllerTest {
     assertTrue(fileHandler.getStoredFilesAndContents().containsKey(writtenFilePath));
     assertEquals("Content of template: " + TEMPLATE_NAME,
         fileHandler.getContentForFile(writtenFilePath.toString()).get());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -117,6 +124,7 @@ public class TemplateControllerTest {
     assertNotNull(result);
     assertEquals("A", result.toString().trim());
     FileReaderWriter.init();
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -144,7 +152,8 @@ public class TemplateControllerTest {
     assertEquals(1, tc.getTemplateBlackList().size());
     assertFalse(tc.isTemplateNoteGenerated(templateI));
     assertTrue(tc.isTemplateNoteGenerated(templateII));
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   /**
    *
@@ -169,6 +178,7 @@ public class TemplateControllerTest {
     assertEquals(1, tc.getTemplateBlackList().size());
     assertFalse(tc.isTemplateNoteGenerated(templateI));
     assertTrue(tc.isTemplateNoteGenerated(templateII));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

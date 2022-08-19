@@ -10,6 +10,9 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+import de.se_rwth.commons.logging.Log;
+
 public class MethodExceptionThrowsTest extends JavaLightCocoTest {
 
   private static final JavaLightCoCoChecker checker = new JavaLightCoCoChecker();
@@ -36,6 +39,8 @@ public class MethodExceptionThrowsTest extends JavaLightCocoTest {
     globalScope.add(TestJavaLightMill.oOTypeSymbolBuilder().setName("java.lang.Throwable").build());
 
     testValid("de.monticore.javalight.cocos.valid.MethodDecl", "meth1", checker);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

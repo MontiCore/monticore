@@ -1,8 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.interfaces;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.interfaces.optionalgeneration._ast.*;
 import mc.feature.interfaces.optionalgeneration._parser.OptionalGenerationParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,6 +17,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class OptionalInterfacesTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testMethodExistenceTest1() throws IOException{
@@ -22,6 +32,8 @@ public class OptionalInterfacesTest {
     assertTrue(astOpt1.isPresent());
     assertTrue(astOpt1.get().isPresentName());
     assertEquals("Name",astOpt1.get().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -32,6 +44,8 @@ public class OptionalInterfacesTest {
     assertTrue(astTest2.isPresent());
     assertTrue(astTest2.get().isPresentName());
     assertEquals("someName", astTest2.get().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -42,6 +56,8 @@ public class OptionalInterfacesTest {
     assertTrue(astOpt2.isPresent());
     assertTrue(astOpt2.get().isPresentName());
     assertEquals("Name",astOpt2.get().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -52,6 +68,8 @@ public class OptionalInterfacesTest {
     assertTrue(astTest4.isPresent());
     assertEquals("someName",astTest4.get().getName());
     assertTrue(astTest4.get().isPresentName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

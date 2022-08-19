@@ -6,6 +6,7 @@ import de.monticore.literals.mcjavaliterals._ast.ASTDoubleLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,8 +16,8 @@ import static org.junit.Assert.*;
 
 public class DoubleJavaLiteralsTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -25,6 +26,8 @@ public class DoubleJavaLiteralsTest {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTDoubleLiteral);
     assertEquals(d, ((ASTDoubleLiteral) lit).getValue(), 0);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

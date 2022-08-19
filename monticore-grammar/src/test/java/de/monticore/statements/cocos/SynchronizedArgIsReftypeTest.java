@@ -12,6 +12,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,12 +25,15 @@ import static org.junit.Assert.assertTrue;
 public class SynchronizedArgIsReftypeTest {
 
   private static final TestMCSynchronizedStatementsCoCoChecker checker = new TestMCSynchronizedStatementsCoCoChecker();
-
-  @BeforeClass
-  public static void disableFailQuick() {
-
+  
+  @Before
+  public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+  
+  @BeforeClass
+  public static void disableFailQuick() {
     TestMCSynchronizedStatementsMill.reset();
     TestMCSynchronizedStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();

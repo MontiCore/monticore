@@ -23,13 +23,13 @@ public class JavaClassExpressionsPrettyPrinterTest {
   private TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
 
   private JavaClassExpressionsFullPrettyPrinter prettyPrinter= new JavaClassExpressionsFullPrettyPrinter(new IndentPrinter());
-
-  @BeforeClass
-  public static void setUp() {
+  
+  @Before
+  public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Before
   public void init() {
     prettyPrinter.getPrinter().clearBuffer();
@@ -49,6 +49,8 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -65,6 +67,8 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -139,6 +143,8 @@ public class JavaClassExpressionsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(result);
 
     assertEquals("a.this", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -156,6 +162,8 @@ public class JavaClassExpressionsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(result);
 
     assertEquals("a[b]", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -173,6 +181,8 @@ public class JavaClassExpressionsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(result);
 
     assertEquals("a.super(b)", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testGenericInvocationExpressionExpression() throws IOException {
@@ -207,6 +217,8 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -223,6 +235,8 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -239,6 +253,8 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

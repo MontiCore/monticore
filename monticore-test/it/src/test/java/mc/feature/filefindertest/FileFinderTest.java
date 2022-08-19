@@ -3,11 +3,14 @@ package mc.feature.filefindertest;
 
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.filefindertest.filefindertest.FileFinderTestMill;
 import mc.feature.filefindertest.filefindertest._ast.ASTSCArtifact;
 import mc.feature.filefindertest.filefindertest._parser.FileFinderTestParser;
 import mc.feature.filefindertest.filefindertest._symboltable.*;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,6 +23,12 @@ import static org.junit.Assert.assertTrue;
 public class FileFinderTest {
   
   protected static final String SYMBOL_PATH = "target/test/resources";
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Before
   public void setUp() throws IOException {
@@ -50,6 +59,7 @@ public class FileFinderTest {
     gs.setSymbolPath(new MCPath(Paths.get(SYMBOL_PATH)));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertTrue(statechartSymbol.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -61,6 +71,7 @@ public class FileFinderTest {
     gs.setSymbolPath(new MCPath(Paths.get(SYMBOL_PATH)));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertTrue(statechartSymbol.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -72,6 +83,7 @@ public class FileFinderTest {
     gs.setSymbolPath(new MCPath(Paths.get(SYMBOL_PATH)));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertFalse(statechartSymbol.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -82,6 +94,7 @@ public class FileFinderTest {
     gs.setSymbolPath(new MCPath(Paths.get("src/test")));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertFalse(statechartSymbol.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -92,6 +105,7 @@ public class FileFinderTest {
     gs.setSymbolPath(new MCPath());
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertFalse(statechartSymbol.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -103,5 +117,6 @@ public class FileFinderTest {
     gs.setSymbolPath(new MCPath(Paths.get(SYMBOL_PATH)));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
     assertTrue(statechartSymbol.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

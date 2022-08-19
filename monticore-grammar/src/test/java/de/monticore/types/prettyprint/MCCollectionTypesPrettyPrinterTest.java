@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 public class MCCollectionTypesPrettyPrinterTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -42,6 +42,8 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -57,6 +59,8 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -72,6 +76,8 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(listType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,6 +93,8 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(optionalType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -102,6 +110,8 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(mapType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -117,5 +127,7 @@ public class MCCollectionTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(setType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

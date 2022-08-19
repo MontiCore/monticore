@@ -12,16 +12,15 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class AutomataSymbolsTest {
   
   // setup the language infrastructure
   AutomataParser parser = new AutomataParser() ;
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
@@ -41,6 +40,7 @@ public class AutomataSymbolsTest {
     ASTAutomaton ast = parser.parse( "src/test/resources/example/HierarchyPingPong.aut" ).get();
     assertEquals("PingPong", ast.getName());
     assertEquals(2, ast.getTransitionList().size());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -51,12 +51,14 @@ public class AutomataSymbolsTest {
     assertEquals("ping",s1.getName());
     assertEquals("",s1.getPackageName());
     assertEquals("ping",s1.getFullName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
   @Test
   public void testCount1() throws IOException {
     ASTAutomaton ast = parser.parse( "src/test/resources/example/CountPingPong.aut" ).get();
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 

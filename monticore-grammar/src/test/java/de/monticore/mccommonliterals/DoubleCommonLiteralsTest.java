@@ -7,6 +7,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,8 +19,8 @@ import static org.junit.Assert.*;
 
 public class DoubleCommonLiteralsTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -50,6 +51,8 @@ public class DoubleCommonLiteralsTest {
     catch (IOException e) {
       fail(e.getMessage());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

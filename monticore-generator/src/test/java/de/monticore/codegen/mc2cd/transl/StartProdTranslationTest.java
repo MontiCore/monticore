@@ -6,6 +6,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,9 +26,11 @@ public class StartProdTranslationTest {
 
   private ASTCDCompilationUnit interfaceStartProd;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
 
@@ -47,6 +51,8 @@ public class StartProdTranslationTest {
     assertEquals("startProd", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
     assertFalse(globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue().isEmpty());
     assertEquals("mc2cdtransformation.Supergrammar.X", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -56,6 +62,8 @@ public class StartProdTranslationTest {
     assertEquals(1, xClass.getModifier().getStereotype().sizeValues());
     assertEquals("startProd", xClass.getModifier().getStereotype().getValues(0).getName());
     assertTrue(xClass.getModifier().getStereotype().getValues(0).getValue().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -65,5 +73,7 @@ public class StartProdTranslationTest {
     assertEquals(1, aInterface.getModifier().getStereotype().sizeValues());
     assertEquals("startProd", aInterface.getModifier().getStereotype().getValues(0).getName());
     assertTrue(aInterface.getModifier().getStereotype().getValues(0).getValue().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.symboltable.serialization.json.JsonArray;
@@ -24,10 +25,14 @@ public class JsonPrinterSecurityTest {
   
   
   @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
+  @Before
   public void disableIndentation() {
     JsonPrinter.enableIndentation();
-//    LogStub.init();
-    Log.enableFailQuick(false);
   }
   
   @Test
@@ -65,6 +70,7 @@ public class JsonPrinterSecurityTest {
     assertTrue(getName(b2).startsWith("Bar2"));
     // without escaping, Bar2 would contain the injected child Bar2.1
     assertEquals(false, b2.hasMember("children"));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   protected JsonArray getChildren(JsonObject foo) {

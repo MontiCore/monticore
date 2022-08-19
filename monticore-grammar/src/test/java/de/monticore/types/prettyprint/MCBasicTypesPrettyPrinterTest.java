@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
 
 public class MCBasicTypesPrettyPrinterTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -44,6 +44,8 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(qualifiedName.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,6 +61,8 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(importStatement.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -74,6 +78,8 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(primitiveType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -89,6 +95,8 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(voidType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -104,6 +112,8 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(voidType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -119,6 +129,8 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(voidType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -134,6 +146,8 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(qualifiedReferenceType.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -149,6 +163,8 @@ public class MCBasicTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(packageDeclaration.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -173,7 +189,8 @@ public class MCBasicTypesPrettyPrinterTest {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -190,5 +207,7 @@ public class MCBasicTypesPrettyPrinterTest {
     }catch(IOException e){
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

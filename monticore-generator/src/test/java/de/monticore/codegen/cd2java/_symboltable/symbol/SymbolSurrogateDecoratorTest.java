@@ -76,6 +76,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // ScopeSpanningSymbol
@@ -83,16 +85,22 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassNameAutomatonSymbol() {
     assertEquals("AutomatonSymbolSurrogate", symbolClassAutomaton.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
     assertDeepEquals(AUTOMATON_SYMBOL, symbolClassAutomaton.getCDExtendUsage().getSuperclass(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertEquals(1, symbolClassAutomaton.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -106,11 +114,15 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(1, symbolClassAutomaton.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -118,11 +130,15 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("delegate", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(AUTOMATON_SYMBOL, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethods() {
     assertEquals(7, symbolClassAutomaton.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,6 +148,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -144,6 +162,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertEquals("name", method.getCDParameter(0).getName());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -154,6 +174,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -164,6 +186,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -176,6 +200,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -185,6 +211,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -198,6 +226,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -212,5 +242,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

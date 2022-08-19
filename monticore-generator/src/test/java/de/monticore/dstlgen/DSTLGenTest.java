@@ -10,14 +10,15 @@ import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by
@@ -27,9 +28,11 @@ import static org.junit.Assert.assertNotNull;
 //TODO: The DSTLGenCLI has been merged into the standard MontiCore script - adapt this test
 public class DSTLGenTest {
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -65,6 +68,8 @@ public class DSTLGenTest {
     checker.checkAll(tfGrammarSymbol.getAstGrammar().get());
 
     assertEquals("The log contains errors: " + Log.getFindings(), 0, Log.getErrorCount());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

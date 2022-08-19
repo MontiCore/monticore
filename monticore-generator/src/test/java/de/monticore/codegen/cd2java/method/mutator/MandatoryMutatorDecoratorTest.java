@@ -6,8 +6,10 @@ import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.MandatoryMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -24,10 +26,15 @@ public class MandatoryMutatorDecoratorTest {
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Before
   public void setup() {
-    LogStub.init();
     ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), String.class, "a");
     MandatoryMutatorDecorator mandatoryMutatorDecorator = new MandatoryMutatorDecorator(glex);
     this.methods = mandatoryMutatorDecorator.decorate(attribute);
@@ -36,6 +43,8 @@ public class MandatoryMutatorDecoratorTest {
   @Test
   public void testMethods() {
     assertEquals(1, methods.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -47,5 +56,7 @@ public class MandatoryMutatorDecoratorTest {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(String.class, parameter.getMCType());
     assertEquals("a", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

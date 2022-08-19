@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +47,7 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -65,32 +66,44 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMillName() {
     assertEquals("AutomatonParserForSubAutomaton", parserClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperClass() {
     assertTrue(parserClass.isPresentCDExtendUsage());
     assertDeepEquals("de.monticore.codegen.parser.automaton._parser.AutomatonParser", parserClass.getCDExtendUsage().getSuperclass(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoInterfaces() {
     assertEquals(0, parserClass.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoAttributes() {
     assertEquals(0, parserClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(12, parserClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -121,6 +134,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
     assertEquals(1, parseReader.getCDThrowsDeclaration().sizeException());
     assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -151,6 +166,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
     assertEquals(1, parseReader.getCDThrowsDeclaration().sizeException());
     assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -164,6 +181,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

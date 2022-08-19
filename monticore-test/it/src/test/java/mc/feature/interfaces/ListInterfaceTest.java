@@ -1,8 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.interfaces;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.interfaces.listgeneration._ast.*;
 import mc.feature.interfaces.listgeneration._parser.ListGenerationParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,6 +17,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ListInterfaceTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testMethodExistenceTokenPlus() throws IOException{
@@ -23,6 +33,8 @@ public class ListInterfaceTest {
     assertEquals(2,ast.get().getNameList().size());
     assertFalse(ast.get().isEmptyNames());
     assertEquals(0,ast.get().indexOfName("Name"));
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -34,6 +46,8 @@ public class ListInterfaceTest {
     assertEquals(2,ast.get().getNameList().size());
     assertFalse(ast.get().isEmptyNames());
     assertEquals(0,ast.get().indexOfName("Name"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -44,6 +58,8 @@ public class ListInterfaceTest {
     assertTrue(ast.isPresent());
     assertEquals(2,ast.get().getTestList().size());
     assertFalse(ast.get().isEmptyTest());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -54,5 +70,7 @@ public class ListInterfaceTest {
     assertTrue(ast.isPresent());
     assertEquals(3,ast.get().getTestList().size());
     assertFalse(ast.get().isEmptyTest());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -2,8 +2,10 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,12 +15,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class NotStateWithConditionsTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   ASTAutomaton aut;
 
   @Test
@@ -34,6 +37,8 @@ public class NotStateWithConditionsTest {
 
     // assertions
     assertFalse(rule.doPatternMatching());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -49,5 +54,7 @@ public class NotStateWithConditionsTest {
 
     // assertions
     rule.doPatternMatching();
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

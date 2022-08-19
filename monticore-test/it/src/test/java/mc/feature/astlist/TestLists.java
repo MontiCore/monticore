@@ -2,16 +2,27 @@
 
 package mc.feature.astlist;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTB;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestLists extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   /** Tests if remove function works correctly with the equals method */
   @Test
@@ -37,6 +48,7 @@ public class TestLists extends GeneratorIntegrationsTest {
     assertEquals(6, list.indexOf(g));
     list.remove(g);
     assertEquals(-1, list.indexOf(g));
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

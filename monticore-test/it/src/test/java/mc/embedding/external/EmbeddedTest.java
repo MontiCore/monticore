@@ -9,24 +9,22 @@ import mc.embedding.external.embedded.EmbeddedMill;
 import mc.embedding.external.embedded._symboltable.IEmbeddedGlobalScope;
 import mc.embedding.external.embedded._symboltable.TextSymbol;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class EmbeddedTest extends GeneratorIntegrationsTest {
-
+  
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-
     EmbeddedMill.reset();
     EmbeddedMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -38,6 +36,7 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
     final TextSymbol textSymbol = scope.resolveText("E").orElse(null);
     assertNotNull(textSymbol);
     assertEquals("E", textSymbol.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

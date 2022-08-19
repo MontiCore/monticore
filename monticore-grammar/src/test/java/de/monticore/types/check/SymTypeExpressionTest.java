@@ -10,6 +10,8 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -88,8 +90,6 @@ public class SymTypeExpressionTest {
 
   @BeforeClass
   public static void setUpScope(){
-//    LogStub.init();
-    Log.enableFailQuick(false);
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -159,7 +159,13 @@ public class SymTypeExpressionTest {
     teFunc4 = createFunction(teVoid, Lists.newArrayList(teDouble, teInt), true);
 
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void printTest() {
     assertEquals("double", teDouble.print());

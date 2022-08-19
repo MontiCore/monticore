@@ -8,7 +8,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,19 +18,17 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TokenTypeTest {
 
   private final ASTCDClass astTest;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
-  }
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   public TokenTypeTest() {
@@ -47,65 +47,87 @@ public class TokenTypeTest {
   public void testNumber() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("a").get();
     assertEquals("int", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBoolean() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("b").get();
     assertEquals("boolean", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testChar() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("c").get();
     assertEquals("char", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInt() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("d").get();
     assertEquals("int", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testFloat() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("e").get();
     assertEquals("float", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDouble() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("f").get();
     assertEquals("double", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testLong() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("g").get();
     assertEquals("long", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCard() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("h").get();
     assertEquals("int", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testShort() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("i").get();
     assertEquals("short", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testByte() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("j").get();
     assertEquals("byte", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testByte2() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("k").get();
     assertEquals("byte", cdAttribute.getMCType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

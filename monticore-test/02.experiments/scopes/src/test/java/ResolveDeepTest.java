@@ -14,6 +14,7 @@ import automata2._symboltable.IAutomata2ArtifactScope;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import de.se_rwth.commons.logging.Log;
 
 public class ResolveDeepTest {
 
@@ -30,9 +32,10 @@ public class ResolveDeepTest {
 
   protected static Automata2Parser parser2 = new Automata2Parser();
 
-  @BeforeClass
-  public static void storeSymbols() throws IOException {
+  @Before
+  public void storeSymbols() throws IOException {
     LogStub.init();
+    Log.enableFailQuick(false);
 
     //init global scopes with the model path and store symtab of test model
     String testmodel = "src/test/resources/example/HierarchyPingPong.aut";
@@ -102,6 +105,7 @@ public class ResolveDeepTest {
     Optional<StateSymbol> deep_sym = scope.resolveState("PingPong.deep");
     IAutomataScope deep_scope = deep_sym.get().getSpannedScope();
     assertTrue(deep_scope.resolveStateDown("substate").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void reInitGlobalScopes(MCPath mp1, MCPath mp2) {
@@ -145,6 +149,7 @@ public class ResolveDeepTest {
     // resolve for deeply nested state symbol
     assertTrue(!AutomataMill.globalScope().resolveState("PingPong.very.deep.substate").isPresent());
     assertTrue(Automata2Mill.globalScope().resolveState("PingPong.very.deep.substate").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

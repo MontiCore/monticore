@@ -7,6 +7,10 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,6 +19,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class MCCollectionTypesNodeIdentHelperTest {
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testGetIdent() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
@@ -38,5 +49,7 @@ public class MCCollectionTypesNodeIdentHelperTest {
     assertEquals("@Optional!MCOptionalType",helper.getIdent(astmcGenericType3.get()));
     assertEquals("@a.B.C!MCBasicTypeArgument", helper.getIdent(astmcBasicTypeArgument.get()));
     assertEquals("@boolean!MCPrimitiveTypeArgument",helper.getIdent(astmcPrimitiveTypeArgument.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

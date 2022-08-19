@@ -15,6 +15,7 @@ import mc.embedding.transitive.transcomposite.TransCompositeMill;
 import mc.embedding.transitive.transcomposite._symboltable.ITransCompositeGlobalScope;
 import mc.embedding.transitive.transhost._symboltable.TransStartSymbol;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,15 +24,13 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class TransCompositeTest extends GeneratorIntegrationsTest {
-
+  
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-
     TransCompositeMill.reset();
     TransCompositeMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -58,7 +57,8 @@ public class TransCompositeTest extends GeneratorIntegrationsTest {
     final ContentSymbol text2ContentSymbol = hostSymbol.getSpannedScope().resolveContent("Hello").orElse(null);
     assertNotNull(text2ContentSymbol);
     assertTrue(text2ContentSymbol instanceof Text2ContentAdapter);
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

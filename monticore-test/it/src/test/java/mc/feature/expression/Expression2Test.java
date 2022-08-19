@@ -2,32 +2,25 @@
 
 package mc.feature.expression;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.se_rwth.commons.logging.LogStub;
+import mc.GeneratorIntegrationsTest;
+import mc.feature.expression.expression2._ast.*;
+import mc.feature.expression.expression2._parser.Expression2Parser;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
-import mc.GeneratorIntegrationsTest;
-import mc.feature.expression.expression2._ast.ASTAddExpr;
-import mc.feature.expression.expression2._ast.ASTBracketExpr;
-import mc.feature.expression.expression2._ast.ASTConstantsExpression2;
-import mc.feature.expression.expression2._ast.ASTExpr;
-import mc.feature.expression.expression2._ast.ASTMultExpr;
-import mc.feature.expression.expression2._ast.ASTPowerExpr;
-import mc.feature.expression.expression2._ast.ASTPrimaryExpr;
-import mc.feature.expression.expression2._parser.Expression2Parser;
 
 public class Expression2Test extends GeneratorIntegrationsTest {
   
-  @BeforeClass
-  public static void disableFailQuick() {
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   
@@ -45,10 +38,10 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       ASTExpr ast = res.get();
       assertTrue(ast instanceof ASTAddExpr);
       assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -58,12 +51,12 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
       assertTrue(ast instanceof ASTPrimaryExpr);
-
+      
       assertEquals("1", ((ASTPrimaryExpr) ast).getNumericLiteral());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -73,12 +66,12 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
       assertTrue(ast instanceof ASTMultExpr);
-
+      
       assertEquals(ASTConstantsExpression2.STAR, ((ASTMultExpr) ast).getOp());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -88,12 +81,12 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
       assertTrue(ast instanceof ASTBracketExpr);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
-
+  
   @Test
   public void testExpr1() {
     try {
@@ -101,12 +94,12 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
       assertTrue(ast instanceof ASTAddExpr);
-
+      
       assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -116,12 +109,12 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
       assertTrue(ast instanceof ASTAddExpr);
-
+      
       assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -131,24 +124,24 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       assertTrue(res.isPresent());
       ASTExpr ast = res.get();
       assertTrue(ast instanceof ASTAddExpr);
-
+      
       assertEquals(ASTConstantsExpression2.MINUS, ((ASTAddExpr) ast).getOp());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
-
+  
   @Test
   public void testPowerWithRightAssoc() {
     try {
       Optional<ASTExpr> res = parse("2^3^4");
       assertTrue(res.isPresent());
-      assertTrue(res.get()instanceof ASTPowerExpr);
-    }
-    catch (Exception e) {
+      assertTrue(res.get() instanceof ASTPowerExpr);
+    } catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

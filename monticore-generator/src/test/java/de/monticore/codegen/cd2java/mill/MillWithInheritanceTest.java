@@ -36,8 +36,10 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.CDModifier.*;
@@ -58,8 +60,6 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -107,6 +107,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -114,6 +116,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertEquals("mill", millClass.getCDAttributeList().get(0).getName());
     assertEquals("millASTBlubBuilder", millClass.getCDAttributeList().get(1).getName());
     assertEquals("millASTBliBuilder", millClass.getCDAttributeList().get(2).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -121,6 +125,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     for (ASTCDAttribute astcdAttribute : millClass.getCDAttributeList()) {
         assertTrue(astcdAttribute.getModifier().isProtected());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -128,6 +134,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertEquals(1, millClass.getCDConstructorList().size());
     assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructorList().get(0).getModifier()));
     assertEquals("CGrammarMill", millClass.getCDConstructorList().get(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -142,6 +150,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertDeepEquals("CGrammarMill", getMill.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED_STATIC.build().deepEquals(getMill.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -157,6 +167,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertTrue(initMe.getMCReturnType().isPresentMCVoidType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(initMe.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -170,6 +182,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertTrue(init.getMCReturnType().isPresentMCVoidType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(init.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -183,6 +197,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertTrue(init.getMCReturnType().isPresentMCVoidType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(init.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -197,6 +213,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.factory.bgrammar._ast.ASTBBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -212,6 +230,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.factory.agrammar._ast.ASTFooBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -226,6 +246,8 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.factory.agrammar._ast.ASTBarBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -239,5 +261,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

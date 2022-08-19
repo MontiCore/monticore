@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -41,6 +44,12 @@ import mc.feature.cocochecker.c._cocos.CCoCoChecker;
  */
 public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   final StringBuilder checked = new StringBuilder();
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   final private AASTXCoCo cocoA = new AASTXCoCo() {
     @Override
@@ -106,6 +115,7 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     
     checker.checkAll(ast);
     assertEquals("BAYZ", checked.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -128,6 +138,7 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     
     checkerA.checkAll(ast);
     assertEquals("BAYZ", checked.toString());
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

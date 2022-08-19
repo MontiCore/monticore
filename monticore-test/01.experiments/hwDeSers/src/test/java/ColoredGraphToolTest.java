@@ -2,7 +2,10 @@
 
 import coloredgraph.ColoredGraphTool;
 import coloredgraph._symboltable.*;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.awt.*;
@@ -12,6 +15,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ColoredGraphToolTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   /**
    * Use the single argument for specifying the single input model file.
@@ -25,6 +34,7 @@ public class ColoredGraphToolTest {
     ColoredGraphTool.main(new String[] { "-i", "src/test/resources/TrafficLight.cg" });
     File stFile = new File("target/src/test/resources/TrafficLight.cgsym");
     assertTrue(stFile.exists());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -62,6 +72,7 @@ public class ColoredGraphToolTest {
     assertEquals("BlinkBlue", blinkSymbol.getName());
     assertEquals(new Color(0, 0, 204), blinkSymbol.getColor());
     assertEquals(false, blinkSymbol.isInitial());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

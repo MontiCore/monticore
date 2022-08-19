@@ -16,6 +16,7 @@ import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefGloba
 import mc.feature.referencesymbol.supgrammarref._symboltable.ISupGrammarRefScope;
 import mc.feature.referencesymbol.supgrammarref._symboltable.SupGrammarRefScopesGenitorDelegator;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -33,13 +34,15 @@ public class SupReferenceTest {
   private TestSymbol b;
   private TestSymbol c;
   private TestSymbol d;
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-
     // reset global scope
     ISupGrammarRefGlobalScope globalScope = SupGrammarRefMill.globalScope();
     globalScope.clearLoadedFiles();
@@ -100,6 +103,7 @@ public class SupReferenceTest {
     assertEquals("A", supRef.getName());
     supRef.setName("B");
     assertEquals("B", supRef.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -115,6 +119,7 @@ public class SupReferenceTest {
     assertEquals("A", supRefOpt.getName());
     supRefOpt.setName("B");
     assertEquals("B", supRefOpt.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -134,6 +139,7 @@ public class SupReferenceTest {
     assertEquals("A", supRefList.getName(0));
     supRefList.setName(0, "B");
     assertEquals("B", supRefList.getName(0));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -146,6 +152,7 @@ public class SupReferenceTest {
     assertEquals(supRef.getNameSymbol(), b);
 
     assertEquals(supRef.getNameDefinition(), b.getAstNode());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -161,6 +168,7 @@ public class SupReferenceTest {
     assertEquals(supRef.getNameSymbol(), c);
 
     assertEquals(supRef.getNameDefinition(), c.getAstNode());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -174,6 +182,7 @@ public class SupReferenceTest {
     assertEquals(supRefOpt.getNameSymbol(), a);
 
     assertEquals(supRefOpt.getNameDefinition(), a.getAstNode());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -189,6 +198,7 @@ public class SupReferenceTest {
     assertEquals(supRefOpt.getNameSymbol(), c);
 
     assertEquals(supRefOpt.getNameDefinition(), c.getAstNode());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -200,6 +210,7 @@ public class SupReferenceTest {
     assertFalse(supRefOpt.isPresentNameDefinition());
     assertFalse(supRefOpt.isPresentNameSymbol());
     assertFalse(supRefOpt.isPresentName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -228,6 +239,7 @@ public class SupReferenceTest {
     assertEquals(supRefList.toArrayNames().length, 4);
     assertEquals(supRefList.toArrayNamesSymbol().length, 4);
     assertEquals(supRefList.toArrayNamesDefinition().length, 4);
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -238,6 +250,7 @@ public class SupReferenceTest {
     assertTrue(supRefList.getNamesDefinitionList().isEmpty());
     assertTrue(supRefList.getNamesSymbolList().isEmpty());
     assertTrue(supRefList.getNameList().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -257,6 +270,7 @@ public class SupReferenceTest {
 
     assertTrue(supRefList.getNamesDefinition(0).isPresent());
     assertEquals(d.getAstNode(), supRefList.getNamesDefinition(0).get());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -285,6 +299,7 @@ public class SupReferenceTest {
     assertTrue(supRefList.containsName("A"));
     assertTrue(supRefList.containsNamesDefinition(Optional.ofNullable(a.getAstNode())));
     assertTrue(supRefList.containsNamesSymbol(Optional.ofNullable(a)));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -327,5 +342,6 @@ public class SupReferenceTest {
     definitionList.add(Optional.ofNullable(c.getAstNode()));
     definitionList.add(Optional.ofNullable(d.getAstNode()));
     assertEquals(supRefList.getNamesDefinitionList(), definitionList);
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

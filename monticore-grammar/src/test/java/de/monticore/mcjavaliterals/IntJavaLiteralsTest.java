@@ -4,6 +4,10 @@ package de.monticore.mcjavaliterals;
 
 import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -11,11 +15,19 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 public class IntJavaLiteralsTest {
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   private void checkIntLiteral(int i, String s) throws IOException {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertTrue(lit instanceof ASTIntLiteral);
     assertEquals(i, ((ASTIntLiteral) lit).getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

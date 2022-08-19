@@ -3,9 +3,12 @@ package de.monticore.codegen.cd2java;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * test that error codes are generated deterministic
@@ -25,5 +28,7 @@ public class GeneratedErrorCodeTest extends DecoratorTestCase {
     String generatedErrorCode2 = service2.getGeneratedErrorCode(codeTest2);
 
     assertEquals(generatedErrorCode, generatedErrorCode2);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

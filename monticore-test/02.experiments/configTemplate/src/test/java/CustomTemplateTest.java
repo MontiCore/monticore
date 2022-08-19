@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,6 +10,9 @@ import automata.AutomataMill;
 import automata._ast.ASTAutomaton;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -17,6 +21,12 @@ import org.junit.Test;
 public class CustomTemplateTest {
 
   private static final String MSG = "Empty method body detected!";
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   /**
    * @throws IOException

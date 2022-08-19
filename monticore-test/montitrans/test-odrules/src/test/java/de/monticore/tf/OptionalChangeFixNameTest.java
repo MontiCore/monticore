@@ -3,6 +3,7 @@ package de.monticore.tf;
 
 import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
 import org.junit.Before;
@@ -17,12 +18,13 @@ import static org.junit.Assert.*;
 public class OptionalChangeFixNameTest {
 
   private ASTAutomaton automaton;
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   private void setUp(String model) throws IOException {
     String inputFile = "src/main/models/automaton/" + model;
     AutomatonParser parser = new AutomatonParser();
@@ -40,6 +42,8 @@ public class OptionalChangeFixNameTest {
     assertTrue(testee.doPatternMatching());
     assertTrue(testee.get_state_2().isPresent());
     assertEquals(testee.get_state_2().get().getName(), "c");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -53,6 +57,8 @@ public class OptionalChangeFixNameTest {
     testee.doReplacement();
     assertTrue(testee.get_state_2().isPresent());
     assertEquals(testee.get_state_2().get().getName(), "c_new");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

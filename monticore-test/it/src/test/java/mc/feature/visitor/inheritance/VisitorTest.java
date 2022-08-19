@@ -3,10 +3,14 @@
 package mc.feature.visitor.inheritance;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.visitor.inheritance.a.AMill;
 import mc.feature.visitor.inheritance.b.BMill;
 import mc.feature.visitor.inheritance.c.CMill;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.ast.ASTNode;
@@ -15,6 +19,7 @@ import mc.feature.visitor.inheritance.a._ast.ASTXA;
 import mc.feature.visitor.inheritance.b._ast.ASTXB;
 import mc.feature.visitor.inheritance.c._ast.ASTXC;
 import mc.feature.visitor.inheritance.c._visitor.CTraverser;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Tests that for grammar C extends B extends A the CVisitor also visits rules
@@ -23,6 +28,13 @@ import mc.feature.visitor.inheritance.c._visitor.CTraverser;
  * 
  */
 public class VisitorTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testSimple() {
     CTraverser traverser = CMill.traverser();
@@ -40,5 +52,6 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     traverser.handle(CMill.xCBuilder().build());
     assertEquals("C", v.getRun());
     v.clear();
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

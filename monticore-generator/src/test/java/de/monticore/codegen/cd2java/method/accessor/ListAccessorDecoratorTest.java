@@ -11,8 +11,11 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -29,10 +32,15 @@ public class ListAccessorDecoratorTest {
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setup() {
-    LogStub.init();
     ASTMCType listType = MCTypeFacade.getInstance().createListTypeOf(String.class);
     ASTCDAttribute attribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), listType, "a");
     ListAccessorDecorator listAccessorDecorator = new ListAccessorDecorator(glex);
@@ -42,6 +50,8 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testMethods() {
     assertEquals(19, methods.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -50,6 +60,8 @@ public class ListAccessorDecoratorTest {
     ASTMCType expectedReturnType = CDTypeFactory.create("List<String>");
     assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -63,6 +75,8 @@ public class ListAccessorDecoratorTest {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("element", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -77,6 +91,8 @@ public class ListAccessorDecoratorTest {
     ASTMCType expectedParameterType = CDTypeFactory.create("Collection<?>");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("collection", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -86,6 +102,8 @@ public class ListAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -95,6 +113,8 @@ public class ListAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertInt(method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -106,6 +126,8 @@ public class ListAccessorDecoratorTest {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertArrayOf(String.class, parameter.getMCType());
     assertEquals("array", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -114,6 +136,8 @@ public class ListAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertArrayOf(Object.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -123,6 +147,8 @@ public class ListAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals("Spliterator<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,6 +158,8 @@ public class ListAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals("Stream<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -141,6 +169,8 @@ public class ListAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals("Stream<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -153,6 +183,8 @@ public class ListAccessorDecoratorTest {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertInt(parameter.getMCType());
     assertEquals("index", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,6 +198,8 @@ public class ListAccessorDecoratorTest {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("element", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -179,6 +213,8 @@ public class ListAccessorDecoratorTest {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("element", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -192,6 +228,8 @@ public class ListAccessorDecoratorTest {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -200,6 +238,8 @@ public class ListAccessorDecoratorTest {
     assertTrue(method.getCDParameterList().isEmpty());
     assertEquals("int", method.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -209,6 +249,8 @@ public class ListAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals("ListIterator<String>", method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -222,6 +264,8 @@ public class ListAccessorDecoratorTest {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertInt(parameter.getMCType());
     assertEquals("index", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -240,5 +284,7 @@ public class ListAccessorDecoratorTest {
     parameter = method.getCDParameter(1);
     assertInt(parameter.getMCType());
     assertEquals("end", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

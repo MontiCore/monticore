@@ -19,7 +19,10 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -35,7 +38,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
   private ASTCDInterface dataInterface;
 
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
+  
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
@@ -58,16 +61,22 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassSignature() {
     assertEquals("ASTA", dataInterface.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributesCount() {
     assertTrue(dataInterface.getCDAttributeList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(5, dataInterface.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -78,6 +87,8 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.data.datainterface._symboltable.ASymbol", method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -88,6 +99,8 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -100,6 +113,8 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
         method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -114,6 +129,8 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.data.datainterface._symboltable.IDataInterfaceScope",
         parameter.getMCType());
     assertEquals("enclosingScope", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -125,23 +142,31 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesCount() {
     assertEquals(2, dataInterface.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testASTNodeSuperInterface() {
     ASTMCObjectType superInteface = dataInterface.getCDExtendUsage().getSuperclass(0);
     assertDeepEquals("de.monticore.ast.ASTNode", superInteface);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testASTDataInterfaceNodeSuperInterface() {
     ASTMCObjectType superInteface = dataInterface.getCDExtendUsage().getSuperclass(1);
     assertDeepEquals("de.monticore.codegen.data.datainterface._ast.ASTDataInterfaceNode", superInteface);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -155,6 +180,8 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -185,6 +212,8 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

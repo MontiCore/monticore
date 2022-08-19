@@ -6,6 +6,9 @@ import cdautomata.CDAutomataMill;
 import cdautomata._ast.ASTCDAutomaton;
 import cdautomata._parser.CDAutomataParser;
 import cdautomata._symboltable.ICDAutomataArtifactScope;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -14,6 +17,7 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import de.se_rwth.commons.logging.Log;
 
 public class CDAutTest {
 
@@ -21,10 +25,15 @@ public class CDAutTest {
 
   @BeforeClass
   public static void setUp() {
-    //    LogStub.init();         // replace log by a sideffect free variant
     CDAutomataMill.init();
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testResolveAdapted() throws IOException {
     //initialize
@@ -49,6 +58,7 @@ public class CDAutTest {
 
     //assure that the same object of the adapter was found in both calls
     assertEquals(symbol.get(), symbol2.get());
+    Assert.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

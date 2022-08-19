@@ -1,12 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.*;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
 
 public class GenerateAutomataParserTest {
-
+  
+  @Before
   public void setup() {
     LogStub.init();         // replace log by a sideffect free variant
         // LogStub.initPlusLog();  // for manual testing purpose only
@@ -21,5 +24,7 @@ public class GenerateAutomataParserTest {
   public void test() {
     String[] args = {"src/test/resources/Automata.mc4", "target/gen"};
     GenerateAutomataParser.main(args);
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

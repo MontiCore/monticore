@@ -13,6 +13,7 @@ import mc.embedding.embedded._symboltable.TextSymbol;
 import mc.embedding.host._symboltable.ContentSymbol;
 import mc.embedding.host._symboltable.HostSymbol;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,13 +22,15 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class CompositeTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-
     CompositeMill.reset();
     CompositeMill.init();
    }
@@ -51,8 +54,9 @@ public class CompositeTest extends GeneratorIntegrationsTest {
     final ContentSymbol text2ContentSymbol = hostSymbol.getSpannedScope().resolveContent("Hello").orElse(null);
     assertNotNull(text2ContentSymbol);
     assertTrue(text2ContentSymbol instanceof Text2ContentAdapter);
-
-
+  
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -20,10 +20,10 @@ import static org.junit.Assert.assertTrue;
  * Main class for the some Demonstration to Parse
  */
 public class LexicalModesParseTest {
-
-  @BeforeClass
-  public static void init() {
-    Log.init();
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -41,6 +41,7 @@ public class LexicalModesParseTest {
             + "}";
     Optional<ASTAutomaton> at = p.parse_String(aut);
     assertTrue(at.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -56,6 +57,7 @@ public class LexicalModesParseTest {
     assertEquals(1, ast.sizeStates());
     assertEquals(1, ast.sizeTags());
     assertEquals("dies ist beliebiger Text mit state", ast.getTag(0).getText2());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -16,6 +16,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,31 +69,43 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("AutomatonArtifactScope", scopeClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesCount() {
     assertEquals(1, scopeClass.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperClassCount() {
     assertTrue(scopeClass.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperClass() {
     assertDeepEquals(AUTOMATON_SCOPE, scopeClass.getCDExtendUsage().getSuperclass(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertEquals(3, scopeClass.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -109,6 +122,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("imports", cdConstructor.getCDParameter(1).getName());
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -131,6 +146,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
 
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -140,11 +157,15 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("AutomatonArtifactScope", cdConstructor.getName());
     assertTrue(cdConstructor.isEmptyCDParameters());
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeSize() {
     assertEquals(2, scopeClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -152,17 +173,23 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("packageName", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testImportsAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("imports", scopeClass);
     assertListOf(IMPORT_STATEMENT, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(8, scopeClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -173,6 +200,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -185,6 +214,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("packageName", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -195,6 +226,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -207,6 +240,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(MCTypeFacade.createListTypeOf(IMPORT_STATEMENT), method.getCDParameter(0).getMCType());
     assertEquals("imports", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -218,6 +253,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser", method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -228,6 +265,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -238,6 +277,8 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
     assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -252,5 +293,7 @@ public class ArtifactScopeClassDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -19,6 +19,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +67,7 @@ public class ODDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
@@ -93,41 +94,57 @@ public class ODDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("Automaton2OD", odClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeSize() {
     assertEquals(5, odClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(14, odClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoSuperClass() {
     assertFalse(odClass.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCount() {
     assertEquals(2, odClass.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testImplementsVisitorInterface() {
     assertDeepEquals(VISITOR_FULL_NAME, odClass.getCDInterfaceUsage().getInterface(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -139,6 +156,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute automatonVisitor = getAttributeBy("traverser", odClass);
     assertDeepEquals(PROTECTED, automatonVisitor.getModifier());
     assertDeepEquals(TRAVERSER_FULL_NAME, automatonVisitor.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -146,6 +165,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute pp = getAttributeBy("pp", odClass);
     assertDeepEquals(PROTECTED, pp.getModifier());
     assertDeepEquals(INDENT_PRINTER, pp.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -153,6 +174,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute reporting = getAttributeBy("reporting", odClass);
     assertDeepEquals(PROTECTED, reporting.getModifier());
     assertDeepEquals(REPORTING_REPOSITORY, reporting.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -160,6 +183,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute printEmptyOptional = getAttributeBy("printEmptyOptional", odClass);
     assertDeepEquals(PROTECTED, printEmptyOptional.getModifier());
     assertBoolean(printEmptyOptional.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -167,6 +192,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute printEmptyList = getAttributeBy("printEmptyList", odClass);
     assertDeepEquals(PROTECTED, printEmptyList.getModifier());
     assertBoolean(printEmptyList.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -177,6 +204,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
   public void testHandleMethodCount() {
     List<ASTCDMethod> methodList = getMethodsBy("handle", 1, odClass);
     assertEquals(5, methodList.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -189,6 +218,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -201,6 +232,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -213,6 +246,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -226,6 +261,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -238,6 +275,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -252,6 +291,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertEquals("name", method.getCDParameter(0).getName());
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertEquals("value", method.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -265,6 +306,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertEquals("objName", method.getCDParameter(0).getName());
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertEquals("objType", method.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -273,12 +316,16 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
 
     assertEquals(2, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("modelName", method.getCDParameter(0).getName());
     assertDeepEquals(AST_AUTOMATON_Node, method.getCDParameter(1).getMCType());
     assertEquals("node", method.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -288,6 +335,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(TRAVERSER_FULL_NAME, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -298,6 +347,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(TRAVERSER_FULL_NAME, method.getCDParameter(0).getMCType());
     assertEquals("traverser", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -307,6 +358,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -316,6 +369,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertBoolean(method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -326,6 +381,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("printEmptyList", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -336,6 +393,8 @@ public class ODDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("printEmptyOptional", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -20,6 +20,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.*;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
@@ -37,10 +38,9 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
   private ASTCDCompilationUnit originalCompilationUnit;
-
+  
   @Before
   public void setUp() {
-    LogStub.init();         // replace log by a sideffect free variant
         // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
 
@@ -57,16 +57,22 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("ASTConstantsAutomaton", constantClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(5, constantClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -74,6 +80,8 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("LANGUAGE", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
     assertDeepEquals("String", astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -81,6 +89,8 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("DEFAULT", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
     assertInt(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -88,6 +98,8 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("FINAL", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
     assertInt(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -95,6 +107,8 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("INITIAL", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC_FINAL, astcdAttribute.getModifier());
     assertInt(astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -103,11 +117,15 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC_STATIC, astcdAttribute.getModifier());
     assertDeepEquals("String[]", astcdAttribute.getMCType());
     assertFalse(astcdAttribute.isPresentInitial());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(1, constantClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -116,6 +134,8 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PUBLIC_STATIC, method.getModifier());
     assertDeepEquals("Collection<String>", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -129,5 +149,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

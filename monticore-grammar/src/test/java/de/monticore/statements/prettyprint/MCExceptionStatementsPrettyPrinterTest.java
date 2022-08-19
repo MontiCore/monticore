@@ -22,8 +22,8 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
   private MCExceptionStatementsFullPrettyPrinter prettyPrinter = new MCExceptionStatementsFullPrettyPrinter(new IndentPrinter());
 
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void setUp() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -47,6 +47,8 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -63,6 +65,8 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -82,6 +86,8 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -99,6 +105,8 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -116,6 +124,8 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -133,6 +143,8 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -150,5 +162,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

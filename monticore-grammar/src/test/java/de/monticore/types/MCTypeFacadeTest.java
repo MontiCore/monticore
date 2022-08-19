@@ -22,8 +22,8 @@ public class MCTypeFacadeTest {
 
   private MCTypeFacade mcTypeFacade;
 
-  @BeforeClass
-  public static void disableFailQuick() {
+  @Before
+  public void disableFailQuick() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -37,12 +37,16 @@ public class MCTypeFacadeTest {
   public void testCreateQualifiedTypeName() {
     ASTMCQualifiedType qualifiedType = mcTypeFacade.createQualifiedType("a.b.c.Foo");
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), qualifiedType.getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCreateQualifiedTypeClass() {
     ASTMCQualifiedType qualifiedType = mcTypeFacade.createQualifiedType(java.lang.String.class);
     assertEquals(Lists.newArrayList("String"), qualifiedType.getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -52,6 +56,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeOpt().get()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,6 +65,8 @@ public class MCTypeFacadeTest {
     ASTMCWildcardTypeArgument type = mcTypeFacade.createWildCardWithNoBounds();
     assertFalse(type.isPresentLowerBound());
     assertFalse(type.isPresentUpperBound());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -68,6 +76,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.isPresentUpperBound());
     assertTrue(type.getUpperBound() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getUpperBound()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -78,6 +88,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.isPresentUpperBound());
     assertTrue(type.getUpperBound() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getUpperBound()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,6 +99,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.isPresentUpperBound());
     assertTrue(type.getUpperBound() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getUpperBound()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -98,6 +112,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -110,6 +126,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -121,6 +139,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,6 +152,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -143,6 +165,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -155,6 +179,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,6 +192,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -177,6 +205,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -188,6 +218,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -200,6 +232,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -211,6 +245,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -222,6 +258,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -233,6 +271,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -245,6 +285,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -256,6 +298,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument(0).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("a", "b", "c", "Foo"), ((ASTMCQualifiedType) type.getMCTypeArgument(0).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -271,6 +315,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getValue().getMCTypeOpt().isPresent());
     assertTrue(type.getValue().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("Integer"), ((ASTMCQualifiedType) type.getValue().getMCTypeOpt().get()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -287,6 +333,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getValue().getMCTypeOpt().isPresent());
     assertTrue(type.getValue().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getValue().getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -302,6 +350,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getValue().getMCTypeOpt().isPresent());
     assertTrue(type.getValue().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getValue().getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -317,6 +367,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getValue().getMCTypeOpt().isPresent());
     assertTrue(type.getValue().getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getValue().getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -337,6 +389,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArgument(1).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -357,6 +411,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArgument(1).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -376,6 +432,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArgument(1).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -392,6 +450,8 @@ public class MCTypeFacadeTest {
     assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().isPresent());
     assertTrue(type.getMCTypeArgument(1).getMCTypeOpt().get() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("d", "e", "f", "Bla"), ((ASTMCQualifiedType) type.getMCTypeArgument(1).getMCTypeOpt().get()).getNameList());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -400,6 +460,8 @@ public class MCTypeFacadeTest {
     assertEquals(3, type.getDimensions());
     assertTrue(type.getMCType() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("int"), ((ASTMCQualifiedType) type.getMCType()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -408,6 +470,8 @@ public class MCTypeFacadeTest {
     assertEquals(3, type.getDimensions());
     assertTrue(type.getMCType() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("Integer"), ((ASTMCQualifiedType) type.getMCType()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -416,17 +480,23 @@ public class MCTypeFacadeTest {
     assertEquals(3, type.getDimensions());
     assertTrue(type.getMCType() instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("int"), ((ASTMCQualifiedType) type.getMCType()).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCreateVoidType() {
     ASTMCVoidType type = mcTypeFacade.createVoidType();
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCreateBooleanType() {
     ASTMCPrimitiveType type = mcTypeFacade.createBooleanType();
     assertTrue(type.isBoolean());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -436,12 +506,16 @@ public class MCTypeFacadeTest {
 
     ASTMCType stringType = mcTypeFacade.createStringType();
     assertFalse(mcTypeFacade.isBooleanType(stringType));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCreateIntType() {
     ASTMCPrimitiveType type = mcTypeFacade.createIntType();
     assertTrue(type.isInt());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -449,5 +523,7 @@ public class MCTypeFacadeTest {
     ASTMCType type = mcTypeFacade.createStringType();
     assertTrue(type instanceof ASTMCQualifiedType);
     assertEquals(Lists.newArrayList("String"), ((ASTMCQualifiedType) type).getNameList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

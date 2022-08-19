@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
 
 public class MCSimpleGenericTypesPrettyPrinterTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -44,6 +44,8 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,6 +61,8 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -74,6 +78,8 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(typeArgument.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -93,6 +99,8 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(astBefore.get().deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

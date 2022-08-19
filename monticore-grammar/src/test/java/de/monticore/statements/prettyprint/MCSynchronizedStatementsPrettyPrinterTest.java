@@ -22,8 +22,8 @@ public class MCSynchronizedStatementsPrettyPrinterTest {
 
   private MCSynchronizedStatementsFullPrettyPrinter prettyPrinter = new MCSynchronizedStatementsFullPrettyPrinter(new IndentPrinter());
 
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void setUp() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -47,6 +47,8 @@ public class MCSynchronizedStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

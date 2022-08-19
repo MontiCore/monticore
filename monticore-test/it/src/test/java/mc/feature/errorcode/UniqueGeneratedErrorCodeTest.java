@@ -1,6 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.errorcode;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -12,8 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * checks that generated error codes are unique
@@ -25,6 +28,12 @@ public class UniqueGeneratedErrorCodeTest {
   private List<String> errorCodes = new ArrayList<>();
 
   private final Pattern pattern = Pattern.compile(".*0xA(\\d{4})x(\\d{10}).*");
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testOnlyUniqueGeneratedErrorCodes() {
@@ -36,6 +45,8 @@ public class UniqueGeneratedErrorCodeTest {
     }
     assertNotNull(files);
     checkFileList(files);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   protected void checkFileList(File[] files) {

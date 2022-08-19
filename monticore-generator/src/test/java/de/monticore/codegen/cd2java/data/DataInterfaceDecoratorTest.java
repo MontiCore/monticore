@@ -14,6 +14,8 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +24,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 public class DataInterfaceDecoratorTest extends DecoratorTestCase {
@@ -49,16 +52,22 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassSignature() {
     assertEquals("ASTA", dataInterface.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributesCount() {
     assertTrue(dataInterface.getCDAttributeList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(51, dataInterface.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -74,6 +83,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -93,6 +104,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     parameter = method.getCDParameter(1);
     assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -108,6 +121,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -127,6 +142,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     parameter = method.getCDParameter(1);
     assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -142,6 +159,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -157,6 +176,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,6 +187,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(dataInterface.getName(), method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -179,6 +202,8 @@ public class DataInterfaceDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

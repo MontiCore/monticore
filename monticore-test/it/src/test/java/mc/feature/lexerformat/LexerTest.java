@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -17,6 +21,12 @@ import mc.feature.lexerformat.lexerformat._ast.ASTTest2;
 import mc.feature.lexerformat.lexerformat._parser.LexerFormatParser;
 
 public class LexerTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void test0() throws IOException {
@@ -27,6 +37,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
     
     int r = ast.get().getA();
     assertEquals(7, r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -38,6 +49,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
 
     boolean r = ast.get().isB();
     assertEquals(true, r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -48,6 +60,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
     
     boolean r = ast.get().isB();
     assertEquals(true, r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -58,6 +71,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
 
     boolean r = ast.get().isB();
     assertEquals(false, r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -68,6 +82,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
 
     boolean r = ast.get().isB();
     assertEquals(false, r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -78,6 +93,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
 
     char r = ast.get().getC();
     assertEquals('a', r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -88,7 +104,8 @@ public class LexerTest extends GeneratorIntegrationsTest {
     assertTrue(ast.isPresent());
 
     float r = ast.get().getD();
-    assertEquals(99.5f, r, 0);   
+    assertEquals(99.5f, r, 0);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -99,6 +116,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
 
     int r = ast.get().getE();
     assertEquals(-1, r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -106,6 +124,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest2> ast = p.parseTest2(new StringReader("1;1"));
     assertTrue(ast.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -113,6 +132,7 @@ public class LexerTest extends GeneratorIntegrationsTest {
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("<<ddfdfd>>"));
     assertTrue(ast.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test

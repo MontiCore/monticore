@@ -21,13 +21,12 @@ import org.junit.Test;
  */
 public class AutomataParseTest {
   
-  @BeforeClass
-  public static void init() {
-    Log.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-  
+
   @Before
   public void setUp() {
     Log.clearFindings();
@@ -62,7 +61,8 @@ public class AutomataParseTest {
     // parse for a sublanguage, here: a State
     Optional<ASTState> s = p.parse_StringState("state Ping;");
     assertTrue(s.isPresent());
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

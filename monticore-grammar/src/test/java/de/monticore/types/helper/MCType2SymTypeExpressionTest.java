@@ -31,18 +31,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MCType2SymTypeExpressionTest {
-
-
+  
   @BeforeClass
   public static void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
     init();
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   public static void init(){
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     gs.add(DefsTypeBasic.type("Person"));
@@ -126,6 +129,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
     assertTrue(valueTypeArgument instanceof SymTypeOfObject);
     assertEquals("de.mc.PairB", valueTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -150,8 +155,8 @@ public class MCType2SymTypeExpressionTest {
 
     SymTypeExpression argument2 = valueTypeArg.getArgumentList().get(1);
     assertEquals("de.mc.PairC", argument2.printFullName());
-
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -168,6 +173,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
     assertTrue(valueTypeArgument instanceof SymTypeOfObject);
     assertEquals("de.mc.PersonValue", valueTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -184,6 +191,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression valueTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(1);
     assertTrue(valueTypeArgument instanceof SymTypeOfObject);
     assertEquals("PersonValue", valueTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -205,7 +214,8 @@ public class MCType2SymTypeExpressionTest {
         assertEquals(primitiveValue, valueTypeArgument.printFullName());
       }
     }
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -218,6 +228,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) optSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertEquals("de.mc.Person", listTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -230,6 +242,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) optSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertEquals("Person", listTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -244,6 +258,8 @@ public class MCType2SymTypeExpressionTest {
       assertTrue(listTypeArgument instanceof SymTypePrimitive);
       assertEquals(primitive, listTypeArgument.printFullName());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -257,6 +273,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertEquals("de.mc.Person", listTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -269,6 +287,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) setSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertEquals("Person", listTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -284,6 +304,8 @@ public class MCType2SymTypeExpressionTest {
       assertTrue(listTypeArgument instanceof SymTypePrimitive);
       assertEquals(primitive, listTypeArgument.printFullName());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -296,6 +318,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertEquals("de.mc.Person", listTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -308,6 +332,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression listTypeArgument = ((SymTypeOfGenerics) listSymTypeExpression).getArgumentList().get(0);
     assertTrue(listTypeArgument instanceof SymTypeOfObject);
     assertEquals("Person", listTypeArgument.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -322,6 +348,8 @@ public class MCType2SymTypeExpressionTest {
       assertTrue(listTypeArgument instanceof SymTypePrimitive);
       assertEquals(primitive, listTypeArgument.printFullName());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -335,6 +363,8 @@ public class MCType2SymTypeExpressionTest {
       assertTrue(symTypeExpression instanceof SymTypePrimitive);
       assertEquals(primitive, symTypeExpression.printFullName());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -345,6 +375,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression symTypeExpression = mcType2TypeExpression(booleanType);
     assertTrue(symTypeExpression instanceof SymTypeVoid);
     assertEquals("void", symTypeExpression.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -356,6 +388,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression symTypeExpression = mcType2TypeExpression(qualifiedType);
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertEquals("de.mc.Person", symTypeExpression.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -366,6 +400,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression symTypeExpression = mcType2TypeExpression(qualifiedType);
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertEquals("Person", symTypeExpression.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -376,6 +412,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression symTypeExpression = mcType2TypeExpression(qualifiedName);
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertEquals("de.mc.Person", symTypeExpression.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -386,6 +424,8 @@ public class MCType2SymTypeExpressionTest {
     SymTypeExpression symTypeExpression = mcType2TypeExpression(qualifiedName);
     assertTrue(symTypeExpression instanceof SymTypeOfObject);
     assertEquals("Person", symTypeExpression.printFullName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

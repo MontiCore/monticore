@@ -9,24 +9,22 @@ import mc.embedding.transitive.transhost.TransHostMill;
 import mc.embedding.transitive.transhost._symboltable.ITransHostGlobalScope;
 import mc.embedding.transitive.transhost._symboltable.TransStartSymbol;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class TransHostTest extends GeneratorIntegrationsTest {
-
+  
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-
     TransHostMill.reset();
     TransHostMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -37,6 +35,7 @@ public class TransHostTest extends GeneratorIntegrationsTest {
     TransStartSymbol hostSymbol = scope.resolveTransStart("TH").orElse(null);
     assertNotNull(hostSymbol);
     assertEquals("TH", hostSymbol.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }
