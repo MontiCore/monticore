@@ -2,6 +2,7 @@
 ${tc.signature("handler", "doTraverse", "isSymTabNode")}
 <#if isSymTabNode>
   if (!getTraversedElements().contains(node)) {
+    addTraversedElement(node);
 </#if>
     if (get${handler}().isPresent()) {
       get${handler}().get().handle(node);
@@ -15,6 +16,5 @@ ${tc.signature("handler", "doTraverse", "isSymTabNode")}
       endVisit(node);
     }
 <#if isSymTabNode>
-    addTraversedElement(node);
   }
 </#if>
