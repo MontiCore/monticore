@@ -13,6 +13,7 @@ import de.monticore.symboltable.SymbolWithScopeOfUnknownKind;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public interface ITraverser {
 
@@ -104,5 +105,21 @@ public interface ITraverser {
   }
 
   default void traverse(SymbolWithScopeOfUnknownKind symbol) {}
+
+  Set<Object> getTraversedElements();
+
+  void setTraversedElements(Set<Object> traversedElements);
+
+  default void addTraversedElement(Object element) {
+    getTraversedElements().add(element);
+  }
+
+  default void addAllTraversedElements(Set<Object> elements) {
+    getTraversedElements().addAll(elements);
+  }
+
+  default void clearTraversedElements() {
+    getTraversedElements().clear();
+  }
 
 }

@@ -302,9 +302,10 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     DiagramSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
+    String scopeTypeAsString = scopeType.getMCQualifiedName().getQName();
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     
-    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(HANDLER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive());
+    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(HANDLER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), scopeTypeAsString);
     StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
         + symbolTableService.getScopeInterfaceFullName() + ") node);");
     

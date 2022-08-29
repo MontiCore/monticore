@@ -37,6 +37,12 @@ public final class VisitorConstants {
 
   public static final String TRAVERSE = "traverse";
 
+  public static final String TRAVERSED_ELEMS_NAME = "traversedElements";
+
+  public static final String TRAVERSED_ELEMS_TYPE = "Set<Object>";
+
+  public static final String TRAVERSED_ELEMS_INSTANCE_TYPE = "HashSet<Object>";
+
   public static final String IVISITOR_FULL_NAME = "de.monticore.visitor.IVisitor";
 
   public static final String ITRAVERSER_FULL_NAME = "de.monticore.visitor.ITraverser";

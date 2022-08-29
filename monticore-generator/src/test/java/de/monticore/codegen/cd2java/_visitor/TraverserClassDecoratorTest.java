@@ -84,14 +84,14 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(6, traverserClass.getCDAttributeList().size());
+    assertEquals(7, traverserClass.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(10, traverserClass.getCDMethodList().size());
+    assertEquals(12, traverserClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
