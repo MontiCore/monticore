@@ -38,6 +38,8 @@ import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -104,12 +106,16 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationCopy() {
     assertNotEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testPackageChanged() {
     String packageName = decoratedCompilationUnit.getCDPackageList().stream().reduce((a, b) -> a + "." + b).get();
     assertEquals("de.monticore.codegen.ast.ast._ast", packageName);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -117,6 +123,8 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "ast", "_ast");
     assertEquals(expectedPackage, decoratedCompilationUnit.getCDPackageList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,5 +140,7 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
       ParseResult parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

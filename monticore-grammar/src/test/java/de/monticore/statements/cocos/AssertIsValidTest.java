@@ -11,6 +11,7 @@ import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,11 +25,14 @@ public class AssertIsValidTest {
   
   private static final TestMCAssertStatementsCoCoChecker checker = new TestMCAssertStatementsCoCoChecker();
   
-  @BeforeClass
-  public static void disableFailQuick(){
-
+  @Before
+  public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+  
+  @BeforeClass
+  public static void disableFailQuick(){
     TestMCAssertStatementsMill.reset();
     TestMCAssertStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();

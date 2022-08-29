@@ -13,6 +13,7 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
@@ -65,27 +66,37 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCount() {
     assertEquals(2, visitorCompilationUnit.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCount() {
     assertEquals(3, visitorCompilationUnit.getCDDefinition().getCDInterfacesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testEnumEmpty() {
     assertTrue(visitorCompilationUnit.getCDDefinition().getCDEnumsList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testPackageChanged() {
     String packageName = visitorCompilationUnit.getCDPackageList().stream().reduce((a, b) -> a + "." + b).get();
     assertEquals("de.monticore.codegen.ast.automaton._visitor", packageName);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -93,6 +104,8 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "automaton", "_visitor");
     assertEquals(expectedPackage, visitorCompilationUnit.getCDPackageList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -106,7 +119,8 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     for (ASTCDInterface astcdInterface : decoratedCompilationUnit.getCDDefinition().getCDInterfacesList()) {
       StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, astcdInterface, astcdInterface);
     }
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -116,6 +130,8 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     ASTCDInterface handler = getInterfaceBy("AutomatonHandler", visitorCompilationUnit);
     ASTCDClass inheritanceHandler = getClassBy("AutomatonInheritanceHandler", visitorCompilationUnit);
     ASTCDClass traverserImplementation = getClassBy("AutomatonTraverserImplementation", visitorCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

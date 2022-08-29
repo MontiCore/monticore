@@ -2,10 +2,14 @@
 
 package mc.feature.mcenum;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 
 import mc.feature.mcenum.enums._ast.*;
 import mc.feature.mcenum.enums._parser.EnumsParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,6 +20,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class EnumTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testa() throws IOException {
@@ -32,6 +42,7 @@ public class EnumTest extends GeneratorIntegrationsTest {
     assertEquals(true, ast.getF().getIntValue() == ASTConstantsEnums.PLUS);
     assertEquals(true, ast.getF().ordinal() == 0);
     assertEquals(true, ast.getF().name() == "PLUS");
+    assertTrue(Log.getFindings().isEmpty());
   }
   
    @Test
@@ -48,7 +59,8 @@ public class EnumTest extends GeneratorIntegrationsTest {
     assertEquals(true, ast.getF(0) == ASTF.PLUS);
     assertEquals(true, ast.getF(0).getIntValue() == ASTConstantsEnums.PLUS);
     assertEquals(2, ast.sizeFs());
-    
+  
+     assertTrue(Log.getFindings().isEmpty());
   }
   
    @Test
@@ -66,7 +78,8 @@ public class EnumTest extends GeneratorIntegrationsTest {
     assertEquals(2, ast.sizeFs());
     assertEquals(ast.getF(0), ast.getF(1));
     assertEquals(true, ast.getF(0) == ASTF.PLUS);
-    
+  
+     assertTrue(Log.getFindings().isEmpty());
   }
   
    @Test
@@ -85,6 +98,7 @@ public class EnumTest extends GeneratorIntegrationsTest {
     assertEquals(2, ast.sizeFs());
     assertEquals(true, ast.getF(0) == ASTF.PLUS);
     assertEquals(true, ast.getF(1) == ASTF.MINUS);
-    
+  
+     assertTrue(Log.getFindings().isEmpty());
   }
 }

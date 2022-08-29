@@ -19,17 +19,12 @@ import g2.G2Mill;
 
 public class Builders4Test {
   
-  @BeforeClass
-  public static void init() {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-  }
-
   ASTT t7,t8,t9,t10;
 
   @Before
   public void setUp() throws RecognitionException, IOException {
+    LogStub.init();
+    Log.enableFailQuick(false);
     Log.getFindings().clear();
     t7 =  G2Mill.tBuilder().build();
     t8 =  G2Mill.tBuilder().build();
@@ -54,6 +49,7 @@ public class Builders4Test {
     assertTrue(t8 == s.getA());
     assertTrue(!(t7 == s.getA()));
     assertEquals(g1._ast.ASTS.class, s.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // tests whether generated build-setters work in G2
@@ -71,6 +67,7 @@ public class Builders4Test {
     assertEquals(5, s.sizeC());  // 3 are predefined in the hc builder
     assertTrue(t10 == s.getC(4));
     assertEquals(g2._ast.ASTS.class, s.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests: Builder from G2 derived through G1
@@ -83,6 +80,7 @@ public class Builders4Test {
     assertEquals(g2._ast.ASTS.class, s.getClass());
     // 3 are predefined in the hc builder
     assertEquals(3, ((g2._ast.ASTS)s).sizeC());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests: Builder from G3 derived through G1
@@ -96,6 +94,7 @@ public class Builders4Test {
     // overwritten (so the result is 0) 
     assertEquals(0, s2.sizeC());
     assertEquals(g3._ast.ASTS.class, s2.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests: Builder from G3 derived through G1
@@ -109,6 +108,7 @@ public class Builders4Test {
     // overwritten (so the result is 0)
     assertEquals(0, s3.sizeC());
     assertEquals(g3._ast.ASTS.class, s3.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

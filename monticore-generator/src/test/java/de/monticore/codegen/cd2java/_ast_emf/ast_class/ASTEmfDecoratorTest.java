@@ -22,6 +22,8 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,25 +71,31 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassName() {
     assertEquals("ASTAutomaton", emfClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterface() {
     assertEquals(1, emfClass.getInterfaceList().size());
     assertDeepEquals("de.monticore.codegen._ast_emf.automata._ast.ASTAutomataNode", emfClass.getCDInterfaceUsage().getInterface(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperClass() {
     assertTrue(emfClass.isPresentCDExtendUsage());
     assertEquals("de.monticore.emf._ast.ASTECNode", emfClass.printSuperclasses());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeSize() {
     assertEquals(3, emfClass.getCDAttributeList().size());
-
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -95,12 +103,16 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     getAttributeBy("symbol", emfClass);
     getAttributeBy("spannedScope", emfClass);
     getAttributeBy("enclosingScope", emfClass);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodSize() {
     assertFalse(emfClass.getCDMethodList().isEmpty());
     assertEquals(21, emfClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -116,6 +128,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getCDParameter(1).getMCType());
     assertEquals("coreType", method.getCDParameter(2).getName());
     assertBoolean(method.getCDParameter(2).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -129,6 +143,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertInt(method.getCDParameter(0).getMCType());
     assertEquals("newValue", method.getCDParameter(1).getName());
     assertDeepEquals(Object.class, method.getCDParameter(1).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -140,6 +156,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertEquals("featureID", method.getCDParameter(0).getName());
     assertInt(method.getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -155,6 +173,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertEquals("baseClass", method.getCDParameter(1).getName());
     assertDeepEquals("Class<?>",
         method.getCDParameter(1).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -169,6 +189,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertEquals("baseClass", method.getCDParameter(1).getName());
     assertDeepEquals("Class<?>",
         method.getCDParameter(1).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -177,6 +199,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -185,6 +209,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, method.getModifier());
     assertDeepEquals("org.eclipse.emf.ecore.EClass", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -194,6 +220,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test (expected = AssertionError.class)
   public void testToStringASTTransitionWithAction() {
     getMethodBy("toString", emfTransitionClass);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -202,6 +230,8 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSuperClassASTTransitionWithAction() {
     assertFalse(emfTransitionClass.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -215,5 +245,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

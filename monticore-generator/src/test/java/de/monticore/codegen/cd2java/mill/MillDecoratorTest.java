@@ -44,8 +44,11 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import junit.framework.TestCase;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -69,11 +72,9 @@ public class MillDecoratorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit decoratedSymbolCompilationUnit;
 
   private ASTCDCompilationUnit decoratedScopeCompilationUnit;
-
+  
   @Before
   public void setUp() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -184,16 +185,22 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertEquals("de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol", cachedValue);
     
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMillName() {
     assertEquals("AutomatonMill", millClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeSize() {
     assertEquals(23, millClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -223,6 +230,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
     getAttributeBy("millAutomatonScopesGenitor", millClass);
     getAttributeBy("millAutomatonScopesGenitorDelegator", millClass);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -233,6 +242,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
       }
     }
     assertDeepEquals(PROTECTED, getAttributeBy("automatonGlobalScope", millClass).getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -240,6 +251,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertEquals(1, millClass.getCDConstructorList().size());
     assertTrue(PROTECTED.build().deepEquals(millClass.getCDConstructorList().get(0).getModifier()));
     assertEquals("AutomatonMill", millClass.getCDConstructorList().get(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -254,6 +267,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("AutomatonMill", getMill.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED_STATIC.build().deepEquals(getMill.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -269,6 +284,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertTrue(initMe.getMCReturnType().isPresentMCVoidType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(initMe.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -282,6 +299,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertTrue(init.getMCReturnType().isPresentMCVoidType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(init.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -295,6 +314,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertTrue(reset.getMCReturnType().isPresentMCVoidType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(reset.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -309,6 +330,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._ast.ASTAutomatonBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -323,6 +346,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._ast.ASTAutomatonBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -338,6 +363,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._ast.ASTStateBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -352,6 +379,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._ast.ASTStateBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -367,6 +396,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._ast.ASTTransitionBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -381,6 +412,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._ast.ASTTransitionBuilder", fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -396,6 +429,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -411,6 +446,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -427,6 +464,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -442,6 +481,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -457,6 +498,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -472,6 +515,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -488,6 +533,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -503,6 +550,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -519,6 +568,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -534,6 +585,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -549,6 +602,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -564,6 +619,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -579,6 +636,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -594,6 +653,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -611,6 +672,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Modifier
     ASTModifier modifier = PUBLIC_STATIC.build();
     assertTrue(modifier.deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -627,6 +690,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
     //test Modifier
     ASTModifier modifier = PROTECTED.build();
     assertTrue(modifier.deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -643,6 +708,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PUBLIC_STATIC.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -658,6 +725,8 @@ public class MillDecoratorTest extends DecoratorTestCase {
         fooBarBuilder.getMCReturnType().getMCType());
     //test Modifier
     assertTrue(PROTECTED.build().deepEquals(fooBarBuilder.getModifier()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -671,5 +740,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

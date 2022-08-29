@@ -17,6 +17,7 @@ import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,8 +44,8 @@ public class ParserGeneratorTest {
 
   private File outputPath;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     Log.init();
     Log.enableFailQuick(false);
     GrammarFamilyMill.init();
@@ -72,6 +73,8 @@ public class ParserGeneratorTest {
     ParserGenerator.generateParser(glex, grammar, symbolTable, new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
     assertEquals(0, Log.getFindingsCount());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,6 +90,8 @@ public class ParserGeneratorTest {
     ParserGenerator.generateParser(glex, grammar, symbolTable, new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
     assertEquals(0, Log.getFindingsCount());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -102,6 +107,8 @@ public class ParserGeneratorTest {
     ParserGenerator.generateParser(glex, grammar, symbolTable, new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
     assertEquals(0, Log.getFindingsCount());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -117,6 +124,8 @@ public class ParserGeneratorTest {
     ParserGenerator.generateParser(glex, grammar, symbolTable, new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
     assertEquals(0, Log.getFindingsCount());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,6 +141,8 @@ public class ParserGeneratorTest {
     ParserGenerator.generateParser(glex, grammar, symbolTable, new MCPath(), new MCPath(),
             new File("target/generated-test-sources/parsertest"));
     assertEquals(0, Log.getFindingsCount());
+  
+    assertTrue(Log.getFindings().isEmpty());
    }
 
 
@@ -148,7 +159,8 @@ public class ParserGeneratorTest {
     ParserGenerator.generateParser(glex, grammar, symbolTable, new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
     assertEquals(0, Log.getFindingsCount());
-    assertEquals(0, Log.getFindingsCount());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private ASTMCGrammar createSymbolsFromAST(IGrammarFamilyGlobalScope globalScope, ASTMCGrammar ast) {

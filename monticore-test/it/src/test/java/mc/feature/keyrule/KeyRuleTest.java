@@ -2,6 +2,8 @@
 
 package mc.feature.keyrule;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.aststring.aststring._ast.ASTStart;
 import mc.feature.aststring.aststring._parser.AststringParser;
@@ -9,6 +11,8 @@ import mc.feature.keyrule.keyrule._ast.ASTA;
 import mc.feature.keyrule.keyrule._ast.ASTB;
 import mc.feature.keyrule.keyrule._ast.ASTJ;
 import mc.feature.keyrule.keyrule._parser.KeyRuleParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,6 +24,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class KeyRuleTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void test() throws IOException {

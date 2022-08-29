@@ -33,13 +33,6 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
    * literals/MCLiteralsBasis.mc4
    */
 
-  @BeforeClass
-  public static void setup() {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-  }
-
   @Before
   public void setupForEach() {
     CombineExpressionsWithLiteralsMill.reset();

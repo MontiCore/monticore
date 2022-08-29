@@ -18,6 +18,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
@@ -78,31 +79,43 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testVisitorName() {
     assertEquals("AutomatonTraverser", traverserInterface.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(0, traverserInterface.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(46, traverserInterface.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCount() {
     assertEquals(1, traverserInterface.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterface() {
     assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsTraverser", traverserInterface.getCDExtendUsage().getSuperclass(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -116,6 +129,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -127,7 +142,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDParameter astcdParameter = astcdMethod.getCDParameter(0);
     assertEquals("automatonVisitor", astcdParameter.getName());
     assertDeepEquals(AUTOMATONVISITOR2, astcdParameter.getMCType());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -137,7 +153,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(astcdMethod.getMCReturnType().isPresentMCType());
     assertListOf(AUTOMATONVISITOR2, astcdMethod.getMCReturnType().getMCType());
     assertEquals(0, astcdMethod.sizeCDParameters());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -147,7 +164,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(astcdMethod.getMCReturnType().isPresentMCType());
     assertOptionalOf(AUTOMATONHANDLER, astcdMethod.getMCReturnType().getMCType());
     assertEquals(0, astcdMethod.sizeCDParameters());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -159,7 +177,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDParameter astcdParameter = astcdMethod.getCDParameter(0);
     assertEquals("automatonHandler", astcdParameter.getName());
     assertDeepEquals(AUTOMATONHANDLER, astcdParameter.getMCType());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -172,6 +191,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -184,6 +205,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -196,6 +219,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -208,6 +233,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -220,6 +247,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -232,6 +261,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -244,6 +275,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -256,6 +289,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -269,6 +304,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -281,6 +318,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -293,6 +332,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -305,6 +346,8 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

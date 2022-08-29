@@ -2,14 +2,24 @@
 package trafo;
 
 import de.monticore.tf.EliminateDo;
+import de.se_rwth.commons.logging.LogStub;
 import junit.framework.TestCase;
 import mc.testcases.statechart.statechart._ast.*;
 import mc.testcases.statechart.statechart._parser.StatechartParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.io.IOException;
+import de.se_rwth.commons.logging.Log;
 
 public class Test02_EliminateDoTest extends TestCase {
-
+    
+    @Before
+    public void before() {
+        LogStub.init();
+        Log.enableFailQuick(false);
+    }
+    
     public void testDoAll() throws IOException {
         StatechartParser p = new StatechartParser();
 
@@ -45,6 +55,7 @@ public class Test02_EliminateDoTest extends TestCase {
         assertFalse(state.isPresentEntryAction());
         assertFalse(state.isPresentExitAction());
         assertTrue(state.isPresentDoAction());
+        assertTrue(Log.getFindings().isEmpty());
     }
 
 }

@@ -40,15 +40,12 @@ public class TypeCheckTest {
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setupForEach() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setupForEach() {
+    
     // Setting up a Scope Infrastructure (without a global Scope)
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();

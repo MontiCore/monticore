@@ -2,8 +2,12 @@
 
 package mc.feature.interfaces;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.interfaces.methodinterface._ast.*;
 import mc.feature.interfaces.methodinterface._parser.MethodInterfaceParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,6 +18,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MethodInterfaceTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testInterfaceDefaultA() throws IOException {
@@ -22,6 +32,8 @@ public class MethodInterfaceTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals("test", ast.get().getTest());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -31,6 +43,8 @@ public class MethodInterfaceTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals("A", ast.get().getTest());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -40,6 +54,8 @@ public class MethodInterfaceTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals("A", ast.get().getTest());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -49,6 +65,8 @@ public class MethodInterfaceTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals("B", ast.get().getTest2());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -58,6 +76,8 @@ public class MethodInterfaceTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals("B", ast.get().getTest2());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -67,5 +87,7 @@ public class MethodInterfaceTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertEquals("ABC", ast.get().getTest3());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

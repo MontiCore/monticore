@@ -2,6 +2,10 @@
 
 import automata.AutomataTool;
 import automata._ast.ASTAutomaton;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,6 +18,12 @@ import static org.junit.Assert.*;
 public class GroovyHookTest {
 
   private AutomataTool tool = new AutomataTool();
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   /**
    * @throws IOException
@@ -24,6 +34,7 @@ public class GroovyHookTest {
     assertNotNull(ast);
     assertEquals("PingPong", ast.getName());
     assertEquals(3, ast.countStates());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

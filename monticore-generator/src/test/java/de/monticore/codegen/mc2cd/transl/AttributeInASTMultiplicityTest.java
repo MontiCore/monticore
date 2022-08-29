@@ -7,6 +7,9 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,9 +33,11 @@ public class AttributeInASTMultiplicityTest {
   
   private ASTCDClass astC;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
   
   public AttributeInASTMultiplicityTest() {
@@ -62,6 +67,8 @@ public class AttributeInASTMultiplicityTest {
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX",
         ((ASTSimpleReferenceType) type.getTypeArguments().get().getTypeArguments().get(0))
             .getNames().get(0));*/
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -73,6 +80,8 @@ public class AttributeInASTMultiplicityTest {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -80,5 +89,7 @@ public class AttributeInASTMultiplicityTest {
     List<ASTCDAttribute> attributes = astC.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
     assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTZ", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

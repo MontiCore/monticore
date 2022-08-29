@@ -2,8 +2,10 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,12 +18,13 @@ import static org.junit.Assert.*;
 public class OptionalListTest {
 
   private ASTAutomaton automaton;
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   private void setUp(String model) throws IOException {
     String inputFile = "src/main/models/automaton/" + model;
     AutomatonParser parser = new AutomatonParser();
@@ -37,6 +40,8 @@ public class OptionalListTest {
 
     OptionalList testee = new OptionalList(automaton);
     assertFalse(testee.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -49,6 +54,8 @@ public class OptionalListTest {
     if (testee.get_list_substate().isPresent()) {
       assertEquals(0, testee.get_list_substate().get().size());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,6 +66,8 @@ public class OptionalListTest {
     assertTrue(testee.doPatternMatching());
     assertTrue(testee.get_list_substate().isPresent());
     assertEquals(3, testee.get_list_substate().get().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -72,5 +81,7 @@ public class OptionalListTest {
     assertEquals(testee.get_list_substate().get().size(), 2);
     assertEquals(testee.get_list_substate().get().get(0).getName(), "f");
     assertEquals(testee.get_list_substate().get().get(1).getName(), "g");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

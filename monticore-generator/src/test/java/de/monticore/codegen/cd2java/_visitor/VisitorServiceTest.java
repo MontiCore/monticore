@@ -8,6 +8,8 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,6 +43,8 @@ public class VisitorServiceTest extends DecoratorTestCase {
   @Test
   public void testCDSymbolPresent() {
     assertTrue(astService.getCDSymbol().isPresentAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -48,6 +52,8 @@ public class VisitorServiceTest extends DecoratorTestCase {
     VisitorService astServiceFromDefinitionSymbol = new VisitorService(astcdCompilationUnit.getCDDefinition().getSymbol());
     assertTrue(astServiceFromDefinitionSymbol.getCDSymbol().isPresentAstNode());
     assertDeepEquals(astService.getCDSymbol().getAstNode(), astServiceFromDefinitionSymbol.getCDSymbol().getAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -55,29 +61,39 @@ public class VisitorServiceTest extends DecoratorTestCase {
     VisitorService createdVisitorService = VisitorService.createVisitorService(astcdCompilationUnit.getCDDefinition().getSymbol());
     assertTrue(createdVisitorService.getCDSymbol().isPresentAstNode());
     assertDeepEquals(astService.getCDSymbol().getAstNode(), createdVisitorService.getCDSymbol().getAstNode());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSubPackage() {
     assertEquals("_visitor", astService.getSubPackage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetVisitorSimpleName() {
     assertEquals("AutomatonVisitor", astService.getVisitorSimpleName());
     assertEquals("AutomatonVisitor", astService.getVisitorSimpleName(astcdCompilationUnit.getCDDefinition().getSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetVisitorFullName() {
     assertEquals(VISITOR_AUT_PACKAGE + "AutomatonVisitor", astService.getVisitorFullName());
     assertEquals(VISITOR_AUT_PACKAGE + "AutomatonVisitor", astService.getVisitorFullName(astcdCompilationUnit.getCDDefinition().getSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGetVisitorType() {
     assertDeepEquals(VISITOR_AUT_PACKAGE + "AutomatonVisitor", astService.getVisitorType());
     assertDeepEquals(VISITOR_AUT_PACKAGE + "AutomatonVisitor", astService.getVisitorType(astcdCompilationUnit.getCDDefinition().getSymbol()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -89,6 +105,8 @@ public class VisitorServiceTest extends DecoratorTestCase {
     assertEquals(1, visitMethod.sizeCDParameters());
     assertEquals("node", visitMethod.getCDParameter(0).getName());
     assertDeepEquals("_ast.ASTFoo", visitMethod.getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -96,5 +114,7 @@ public class VisitorServiceTest extends DecoratorTestCase {
     List<ASTMCObjectType> allVisitorTypesInHierarchy = astService.getSuperTraverserInterfaces();
     assertEquals(1, allVisitorTypesInHierarchy.size());
     assertDeepEquals("de.monticore.codegen.ast.lexicals._visitor.LexicalsTraverser", allVisitorTypesInHierarchy.get(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

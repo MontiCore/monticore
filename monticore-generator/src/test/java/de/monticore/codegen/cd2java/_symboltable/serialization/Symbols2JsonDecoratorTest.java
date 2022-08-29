@@ -24,6 +24,7 @@ import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -86,22 +87,30 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedSymbolCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName(){
     assertEquals("AutomatonSymbols2Json", symbolTablePrinterClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfaces(){
     assertEquals(1, symbolTablePrinterClass.getInterfaceList().size());
     assertDeepEquals(AUTOMATON_VISITOR, symbolTablePrinterClass.getInterfaceList().get(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCountConstructors(){
     assertEquals(2, symbolTablePrinterClass.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -113,11 +122,15 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertEquals(2, constructors.get(1).sizeCDParameters());
     assertDeepEquals(AUTOMATON_TRAVERSER, constructors.get(1).getCDParameter(0).getMCType());
     assertDeepEquals(JSON_PRINTER, constructors.get(1).getCDParameter(1).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCountAttributes(){
     assertEquals(7, symbolTablePrinterClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -125,6 +138,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("printer", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
     assertDeepEquals(JSON_PRINTER, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,6 +147,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("realThis", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
     assertDeepEquals(SYMBOLS2JSON_SIMPLE, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -139,11 +156,15 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("traverser", symbolTablePrinterClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
     assertDeepEquals(AUTOMATON_TRAVERSER, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount(){
     assertEquals(22, symbolTablePrinterClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -154,6 +175,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(JSON_PRINTER, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -165,6 +188,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertEquals("printer", method.getCDParameter(0).getName());
     assertDeepEquals(JSON_PRINTER, method.getCDParameter(0).getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -175,6 +200,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(AUTOMATON_TRAVERSER, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -187,6 +214,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertEquals("traverser", parameter.getName());
     assertDeepEquals(AUTOMATON_TRAVERSER, parameter.getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -197,6 +226,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -214,6 +245,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(STATE_SYMBOL, methods.get(2).getCDParameter(0).getMCType());
     assertDeepEquals(FOO_SYMBOL, methods.get(3).getCDParameter(0).getMCType());
     assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(4).getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -228,6 +261,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     }
     assertDeepEquals(I_AUTOMATON_SCOPE, methods.get(0).getCDParameter(0).getMCType());
     assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, methods.get(1).getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -239,6 +274,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
       assertTrue(method.getMCReturnType().isPresentMCVoidType());
       assertEquals(0, method.sizeCDParameters());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -259,6 +296,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
     assertEquals("model", methods.get(2).getCDParameter(0).getName());
     assertDeepEquals(String.class, methods.get(2).getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -273,6 +312,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getCDParameter(1).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -289,6 +330,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
       assertFalse(method.getMCReturnType().isPresentMCVoidType());
       assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -302,6 +345,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("String", parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(I_AUTOMATON_ARTIFACT_SCOPE, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   public static void assertOneOf(ASTMCType actualType, String... expected) {
@@ -315,6 +360,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     if (!result) {
       fail();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -331,5 +378,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     ParseResult<CompilationUnit> parseResult = new JavaParser(new ParserConfiguration()).parse(generate.toString());
     assertTrue("Parsing of the generated code failed. The generated code is: \n"
         + generate, parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

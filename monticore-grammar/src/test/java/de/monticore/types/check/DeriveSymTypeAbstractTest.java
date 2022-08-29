@@ -31,8 +31,8 @@ import static org.junit.Assert.*;
 
 public abstract class DeriveSymTypeAbstractTest {
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void setup() {
         LogStub.init();         // replace log by a sideffect free variant
         Log.enableFailQuick(false);
     }

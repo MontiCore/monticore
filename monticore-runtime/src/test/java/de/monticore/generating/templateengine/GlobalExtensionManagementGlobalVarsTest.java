@@ -7,8 +7,11 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link GlobalExtensionManagement}.
@@ -25,7 +29,14 @@ public class GlobalExtensionManagementGlobalVarsTest {
 
   private TemplateControllerMock tc;
   private GlobalExtensionManagement glex;
-
+  
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setup() {
     glex = new GlobalExtensionManagement();
@@ -36,6 +47,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
     config.setOutputDirectory(new File("dummy"));
     config.setTracing(false);
     tc = new TemplateControllerMock(config, "");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @AfterClass
@@ -61,6 +73,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
     glex.addToGlobalVar("liste", new String("c"));
     output = tc.include(TEMPLATE_PACKAGE + "GlobalListVars");
     assertEquals("abc", output.toString().replaceAll("\\s+", ""));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -75,6 +88,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
     String res = ge.generate(TEMPLATE_PACKAGE + "TestVariables4", ast).toString();
 
     assertEquals("A:16B:38C:555", res.replaceAll("\\r\\n|\\r|\\n", ""));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

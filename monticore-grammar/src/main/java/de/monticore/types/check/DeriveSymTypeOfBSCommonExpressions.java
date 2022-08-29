@@ -14,6 +14,7 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -526,6 +527,9 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   @Override
   public void traverse(ASTCallExpression expr) {
     NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
+    // pass our traverser/typecheckresult such that the visitor can derive types
+    visitor.setTypeCheckTraverser(getTraverser());
+    visitor.setTypeCheckResult(getTypeCheckResult());
     CommonExpressionsTraverser traverser = CommonExpressionsMill.traverser();
     traverser.setCommonExpressionsHandler(visitor);
     traverser.add4CommonExpressions(visitor);
@@ -545,7 +549,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if (getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType() && checkNotObscure(args)) {
       innerResult = getTypeCheckResult().getResult();
       //resolve methods with name of the inner expression
-      List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr, visitor.getLastName());
+      List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr,
+          Joiners.DOT.join(visitor.getName()));
       //count how many methods can be found with the correct arguments and return type
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
       //if the last result is static then filter for static methods
@@ -567,7 +572,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         logError("0xA2239", expr.get_SourcePositionStart());
       }
     } else if(!getTypeCheckResult().isPresentResult()) {
-      Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope()).resolveFunctionMany(visitor.getLastName());
+      Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope())
+          .resolveFunctionMany(Joiners.DOT.join(visitor.getName()));
       List<FunctionSymbol> methodlist = new ArrayList<>(methodcollection);
       //count how many methods can be found with the correct arguments and return type
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
@@ -588,6 +594,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected List<SymTypeExpression> calculateArguments(ASTCallExpression expr, String methodName){
     List<SymTypeExpression> returnList = new ArrayList<>();
     for(int i = 0; i < expr.getArguments().sizeExpressions(); i++){
+      getTypeCheckResult().reset();
       expr.getArguments().getExpression(i).accept(getTraverser());
       if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().isType()){
         returnList.add(getTypeCheckResult().getResult());

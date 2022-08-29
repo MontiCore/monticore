@@ -8,12 +8,22 @@ import java.util.Optional;
 import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._parser.AutomataParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Main class for the some Demonstration to Parse
  */
 public class AutomataParseTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   /**
    * @throws IOException 
@@ -43,7 +53,8 @@ public class AutomataParseTest {
     // parse for a sublanguage, here: a State
     Optional<ASTState> s = p.parse_StringState("state Ping;");
     assertTrue(s.isPresent());
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

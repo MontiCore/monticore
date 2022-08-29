@@ -23,13 +23,13 @@ public class LambdaExpressionsPrettyPrinterTest {
 
   protected LambdaExpressionsFullPrettyPrinter prettyPrinter =
       new LambdaExpressionsFullPrettyPrinter(new IndentPrinter());
-
-  @BeforeClass
-  public static void setUp() {
+  
+  @Before
+  public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Before
   public void init() {
     prettyPrinter.getPrinter().clearBuffer();
@@ -38,16 +38,22 @@ public class LambdaExpressionsPrettyPrinterTest {
   @Test
   public void testLambdaWithoutParameter() throws IOException {
     testLambdaExpression("() -> a");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testLambdaWithoutTypeWithoutParenthesis() throws IOException {
     testLambdaExpression("a -> a");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testLambdaWithoutTypeWithParenthesis() throws IOException {
     testLambdaExpression("(a) -> a");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -72,11 +78,15 @@ public class LambdaExpressionsPrettyPrinterTest {
         + "a"
     );
     assertTrue(pattern.asPredicate().test(output));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testLambdaMultipeParametersWithoutType() throws IOException {
     testLambdaExpression("(a, b) -> a");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -107,13 +117,17 @@ public class LambdaExpressionsPrettyPrinterTest {
         + "a"
     );
     assertTrue(pattern.asPredicate().test(output));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
-
+  
   public void testLambdaExpression(String exp) throws IOException {
     ASTLambdaExpression ast = parseLambdaExpression(exp);
     String output = prettyPrinter.prettyprint(ast);
     ASTLambdaExpression ast2 = parseLambdaExpression(output);
     assertTrue(ast.deepEquals(ast2));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   public ASTLambdaExpression parseLambdaExpression(String exp) throws IOException {

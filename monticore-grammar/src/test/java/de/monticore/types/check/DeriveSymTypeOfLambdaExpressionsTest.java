@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import de.se_rwth.commons.logging.Log;
 
 public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractTest {
 
@@ -28,12 +30,6 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
    * Focus: Deriving Type of Literals, here:
    * literals/MCLiteralsBasis.mc4
    */
-
-  @BeforeClass
-  public static void setup() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
-  }
 
   @Before
   public void setupForEach() {
@@ -95,6 +91,8 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
     ASTExpression astex = parseAndGenerateSymbolTable(expression);
 
     assertEquals(expectedType, getTypeCalculator().typeOf(astex).print());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /*--------------------------------------------------- TESTS ---------------------------------------------------------*/

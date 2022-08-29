@@ -30,12 +30,6 @@ public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
    *    literals/MCLiteralsBasis.mc4
    */
   
-  @BeforeClass
-  public static void setup() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
-  }
-  
   @Before
   public void setupForEach() {
     CombineExpressionsWithLiteralsMill.reset();

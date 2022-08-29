@@ -2,9 +2,11 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,11 +18,13 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 
 public class ListWithAssignTest {
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testEmptyAutomat() throws  IOException {
     String inputFile = "src/main/models/automaton/EmptyAutomaton.aut";
@@ -32,6 +36,8 @@ public class ListWithAssignTest {
     ListWithAssign rule = new ListWithAssign(aut.get());
 
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -49,5 +55,7 @@ public class ListWithAssignTest {
     rule.doReplacement();
 
     assertTrue(true);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

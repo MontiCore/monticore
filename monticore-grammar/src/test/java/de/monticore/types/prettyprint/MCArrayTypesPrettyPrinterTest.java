@@ -20,8 +20,8 @@ import static org.junit.Assert.assertTrue;
 
 public class MCArrayTypesPrettyPrinterTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -46,5 +46,7 @@ public class MCArrayTypesPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
     assertTrue(type.deepEquals(ast.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

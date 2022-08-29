@@ -79,32 +79,44 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedScopeCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("IAutomatonScope", scopeInterface.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesCount() {
     assertEquals(2, scopeInterface.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfaces() {
     assertDeepEquals(I_LEXICAS_SCOPE, scopeInterface.getCDExtendUsage().getSuperclass(0));
     assertDeepEquals("de.monticore.IBlaScope", scopeInterface.getCDExtendUsage().getSuperclass(1));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoAttributes() {
     assertTrue(scopeInterface.getCDAttributeList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(166, scopeInterface.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -115,6 +127,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -125,6 +139,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -136,6 +152,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("symbolAlreadyResolved", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -147,6 +165,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("symbolAlreadyResolved", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -161,6 +181,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, resolveName.sizeCDParameters());
     assertDeepEquals(String.class, resolveName.getCDParameter(0).getMCType());
     assertEquals("name", resolveName.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -177,6 +199,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", resolveNameModifier.getCDParameter(0).getName());
     assertDeepEquals(ACCESS_MODIFIER, resolveNameModifier.getCDParameter(1).getMCType());
     assertEquals("modifier", resolveNameModifier.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -206,6 +230,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", resoleFoundSymbolsNameModifier.getCDParameter(1).getName());
     assertDeepEquals(ACCESS_MODIFIER, resoleFoundSymbolsNameModifier.getCDParameter(2).getMCType());
     assertEquals("modifier", resoleFoundSymbolsNameModifier.getCDParameter(2).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -221,6 +247,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, resolveName.sizeCDParameters());
     assertDeepEquals(String.class, resolveName.getCDParameter(0).getMCType());
     assertEquals("name", resolveName.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -237,6 +265,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", resolveNameModifier.getCDParameter(0).getName());
     assertDeepEquals(ACCESS_MODIFIER, resolveNameModifier.getCDParameter(1).getMCType());
     assertEquals("modifier", resolveNameModifier.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -255,6 +285,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", resoleNameModifierPredicate.getCDParameter(1).getName());
     assertDeepEquals(PREDICATE, resoleNameModifierPredicate.getCDParameter(2).getMCType());
     assertEquals("predicate", resoleNameModifierPredicate.getCDParameter(2).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -269,6 +301,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, resolveName.sizeCDParameters());
     assertDeepEquals(String.class, resolveName.getCDParameter(0).getMCType());
     assertEquals("name", resolveName.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -285,6 +319,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", resolveNameModifier.getCDParameter(0).getName());
     assertDeepEquals(ACCESS_MODIFIER, resolveNameModifier.getCDParameter(1).getMCType());
     assertEquals("modifier", resolveNameModifier.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -303,6 +339,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", resoleNameModifierPredicate.getCDParameter(1).getName());
     assertDeepEquals(PREDICATE, resoleNameModifierPredicate.getCDParameter(2).getMCType());
     assertEquals("predicate", resoleNameModifierPredicate.getCDParameter(2).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -323,6 +361,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", resoleFoundSymbolsNameModifier.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, resoleFoundSymbolsNameModifier.getCDParameter(3).getMCType());
     assertEquals("predicate", resoleFoundSymbolsNameModifier.getCDParameter(3).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -337,6 +377,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, resolveName.sizeCDParameters());
     assertDeepEquals(String.class, resolveName.getCDParameter(0).getMCType());
     assertEquals("name", resolveName.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -362,6 +404,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", methodPredicate.getCDParameter(0).getName());
     assertDeepEquals(PREDICATE, methodPredicate.getCDParameter(1).getMCType());
     assertEquals("predicate", methodPredicate.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -391,6 +435,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", resoleFoundSymbolsNameModifier.getCDParameter(1).getName());
     assertDeepEquals(ACCESS_MODIFIER, resoleFoundSymbolsNameModifier.getCDParameter(2).getMCType());
     assertEquals("modifier", resoleFoundSymbolsNameModifier.getCDParameter(2).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -411,6 +457,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -422,6 +470,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("name", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -439,6 +489,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -456,6 +508,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -473,6 +527,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -490,6 +546,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -507,6 +565,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -520,6 +580,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("name", method.getCDParameter(0).getName());
     assertDeepEquals(AUTOMATON_SYMBOL_MAP, method.getCDParameter(1).getMCType());
     assertEquals("symbols", method.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -529,6 +591,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertDeepEquals(AUTOMATON_SYMBOL_MAP, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -538,6 +602,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(MCTypeFacade.createListTypeOf(AUTOMATON_SYMBOL), method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -552,6 +618,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, automatonMethod.sizeCDParameters());
     assertDeepEquals(AUTOMATON_SYMBOL, automatonMethod.getCDParameter(0).getMCType());
     assertEquals("symbol", automatonMethod.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -566,6 +634,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, automatonMethod.sizeCDParameters());
     assertDeepEquals(AUTOMATON_SYMBOL, automatonMethod.getCDParameter(0).getMCType());
     assertEquals("symbol", automatonMethod.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -575,6 +645,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertDeepEquals("List<? extends IAutomatonScope>", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -586,6 +658,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("IAutomatonScope", method.getCDParameter(0).getMCType());
     assertEquals("subScope", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -598,6 +672,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("IAutomatonScope", method.getCDParameter(0).getMCType());
     assertEquals("subScope", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -609,6 +685,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("IAutomatonScope", method.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -618,6 +696,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
     assertDeepEquals("IAutomatonScope", method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -629,6 +709,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals("de.monticore.codegen.symboltable.automaton._visitor.AutomatonTraverser", method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -640,6 +722,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -651,6 +735,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("extraAttribute", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -661,6 +747,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertListOf(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -672,6 +760,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertListOf(String.class, method.getCDParameter(0).getMCType());
     assertEquals("foo", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -683,6 +773,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -694,6 +786,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertInt(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -707,5 +801,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

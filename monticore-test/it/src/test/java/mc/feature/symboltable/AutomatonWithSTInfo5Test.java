@@ -3,15 +3,25 @@
 package mc.feature.symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo5._symboltable.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import de.se_rwth.commons.logging.Log;
 
 public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
@@ -35,7 +45,8 @@ public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
 //
 //    StateSymbol from = transitionSymbol.getFrom();
 //    StateSymbol to = transitionSymbol.getTo();
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

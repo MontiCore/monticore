@@ -2,8 +2,10 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,12 +15,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class ConstraintForOptionalTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   ASTAutomaton aut;
 
   @Test
@@ -35,6 +38,8 @@ public class ConstraintForOptionalTest {
 
     // should not match
     assertFalse(rule.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -53,6 +58,8 @@ public class ConstraintForOptionalTest {
     assertTrue(rule.doPatternMatching());
     assertEquals(rule.get_$A().getName(), "a");
     assertFalse(rule.get_$C().isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -73,6 +80,8 @@ public class ConstraintForOptionalTest {
     assertTrue(rule.doPatternMatching());
     assertEquals(rule.get_$A().getName(), "a");
     assertFalse(rule.get_$C().isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -93,5 +102,7 @@ public class ConstraintForOptionalTest {
     assertEquals(rule.get_$A().getName(), "a");
     assertTrue(rule.get_$C().isPresent());
     assertEquals(rule.get_$C().get().getName(), "c");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

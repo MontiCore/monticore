@@ -9,6 +9,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,8 +21,8 @@ import static org.junit.Assert.*;
 
 public class IntCommonLiteralsTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -32,6 +33,8 @@ public class IntCommonLiteralsTest {
     assertTrue(lit.isPresent());
     assertTrue(lit.get() instanceof ASTNatLiteral);
     assertEquals(i, ((ASTNatLiteral) lit.get()).getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkSignedIntLiteral(int i, String s) throws IOException {
@@ -40,6 +43,8 @@ public class IntCommonLiteralsTest {
     assertTrue(lit.isPresent());
     assertTrue(lit.get() instanceof ASTSignedNatLiteral);
     assertEquals(i, ((ASTSignedNatLiteral) lit.get()).getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkFalse(String s) throws IOException {
@@ -52,6 +57,8 @@ public class IntCommonLiteralsTest {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTSignedNatLiteral> lit = parser.parseSignedNatLiteral(new StringReader(s));
     assertTrue(!lit.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

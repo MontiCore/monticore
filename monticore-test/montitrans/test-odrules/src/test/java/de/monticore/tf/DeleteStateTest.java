@@ -2,6 +2,7 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
 import org.junit.Before;
@@ -12,16 +13,18 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeleteStateTest {
 
   ASTAutomaton aut;
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Before
   public void setUp() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
@@ -35,6 +38,8 @@ public class DeleteStateTest {
     int noOfStates_Before = aut.getStateList().size();
     new DeleteState(aut).doAll();
     assertEquals(noOfStates_Before - 1, aut.getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -45,6 +50,8 @@ public class DeleteStateTest {
     testee.undoReplacement();
 
     assertEquals(noOfStates_Before, aut.getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

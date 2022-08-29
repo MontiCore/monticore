@@ -16,6 +16,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -56,16 +57,22 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCopy() {
     assertNotEquals(originalClass, builderClass);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("ABuilder", builderClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperClassName() {
     assertFalse(builderClass.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -75,6 +82,8 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     ASTCDConstructor constructor = constructors.get(0);
     assertDeepEquals(PUBLIC, constructor.getModifier());
     assertTrue(constructor.getCDParameterList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -100,6 +109,8 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     attribute = getAttributeBy(REAL_BUILDER, builderClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals(builderClass.getName(), attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -109,6 +120,8 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(originalClass.getName(), build.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, build.getModifier());
     assertTrue(build.getCDParameterList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -118,6 +131,8 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     assertBoolean(isValid.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, isValid.getModifier());
     assertTrue(isValid.getCDParameterList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -126,6 +141,8 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, builderClass, builderClass);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -137,5 +154,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
     assertEquals(1, setF.getCDParameterList().size());
 
     assertTrue(builderClass.getCDMethodList().stream().noneMatch(m -> m.getName().equals("getF")));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

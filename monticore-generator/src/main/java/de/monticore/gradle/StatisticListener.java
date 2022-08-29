@@ -79,13 +79,19 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
   @Override
   public void buildFinished(BuildResult buildResult) {
     Log.debug("buildFinished", this.getClass().getName());
-    data.setExecutionTime(Duration.between(projectStartTime, Instant.now()));
     alreadyRegistered.set(false);   // Reset is necessary, otherwise Listener is not used in next build
 
-    if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
-      System.out.println(data.toString());
+    if(projectStartTime != null) {
+      data.setExecutionTime(Duration.between(projectStartTime, Instant.now()));
+
+
+      if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
+        System.out.println(data.toString());
+      }
+      NetworkHandler.sendReport(data.toString());
+    } else{
+      Log.info("<projectStartTime> was null. No report sent.", this.getClass().getName());
     }
-    NetworkHandler.sendReport(data.toString());
   }
 
   @Override

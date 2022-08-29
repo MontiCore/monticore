@@ -4,8 +4,10 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import de.se_rwth.commons.logging.Log;
 
 public class InheritedScopePropertyTest extends CocoTest {
   
@@ -14,10 +16,15 @@ public class InheritedScopePropertyTest extends CocoTest {
   private final String grammar = "de.monticore.grammar.cocos.invalid.A0135.A0135";
   private final String grammar2 = "de.monticore.grammar.cocos.invalid.A0135.A0135a";
   private final String grammar3 = "de.monticore.grammar.cocos.invalid.A0135.A0135b";
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
     checker.addCoCo(new InheritedScopeProperty());
   }
 

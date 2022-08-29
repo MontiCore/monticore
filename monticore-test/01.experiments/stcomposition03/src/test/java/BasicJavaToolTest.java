@@ -10,6 +10,8 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import javaandaut.Class2StimulusAdapter;
 import javaandaut.JavaAndAutTool;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.util.Optional;
@@ -23,13 +25,16 @@ public class BasicJavaToolTest {
 
   @BeforeClass
   public static void setUpLogger(){
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
     Automata7Mill.reset();
     Automata7Mill.init();
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testPingPong(){
     MCPath symbolPath = new MCPath(Paths.get("src/test/resources/example"));
@@ -40,6 +45,7 @@ public class BasicJavaToolTest {
     assertTrue(hit.isPresent());
     assertEquals("Hit", hit.get().getName());
     assertTrue(hit.get() instanceof Class2StimulusAdapter); //assure that an adapter was found
+    Assert.assertTrue(Log.getFindings().isEmpty());
   }
 
 

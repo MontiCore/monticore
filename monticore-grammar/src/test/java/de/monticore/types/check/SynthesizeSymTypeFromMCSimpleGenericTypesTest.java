@@ -20,6 +20,7 @@ import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesT
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
    * i.e. for
    *    types/MCSimpleGenericTypes.mc4
    */
-  
+
   @Before
   public void setup() {
     LogStub.init();

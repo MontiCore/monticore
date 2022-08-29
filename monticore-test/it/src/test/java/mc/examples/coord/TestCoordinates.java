@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.prettyprint.IndentPrinter;
@@ -29,6 +33,12 @@ import mc.examples.polar.coordpolar._visitor.CoordpolarTraverser;
 public class TestCoordinates extends GeneratorIntegrationsTest {
   
   private static final double DELTA = 1e-5;
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testCoordcartesianParser() throws IOException {
@@ -50,6 +60,8 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astCartesian.get().getCoordinateList().get(2).getX(), 1);
     assertEquals(astCartesian.get().getCoordinateList().get(2).getY(), 7);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -75,6 +87,7 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astPolar.get().getCoordinateList().get(2).getD(), 47.11, DELTA);
     assertEquals(astPolar.get().getCoordinateList().get(2).getPhi(), 0.815, DELTA);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -116,7 +129,8 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astPolar.get().getCoordinateList().get(2).getD(), 7.07106, DELTA);
     assertEquals(astPolar.get().getCoordinateList().get(2).getPhi(), 1.428899, DELTA);
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -167,7 +181,8 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(astTransformed.get().getCoordinateList().get(2).getX(), 7);
     assertEquals(astTransformed.get().getCoordinateList().get(2).getY(), 1);
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -7,6 +7,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,9 +22,11 @@ public class DerivedAttributeNameTest {
 
   private ASTCDCompilationUnit compilationUnit;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -46,6 +50,8 @@ public class DerivedAttributeNameTest {
     assertEquals(1, fooClass.get().getCDAttributeList().size());
     assertEquals("foo", fooClass.get().getCDAttributeList().get(0).getName());
     assertFalse(hasDerivedAttributeName(fooClass.get().getCDAttributeList().get(0)));
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -57,6 +63,8 @@ public class DerivedAttributeNameTest {
     assertFalse(hasDerivedAttributeName(bar.get().getCDAttributeList().get(0)));
     assertEquals("d", bar.get().getCDAttributeList().get(1).getName());
     assertTrue(hasDerivedAttributeName(bar.get().getCDAttributeList().get(1)));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -72,6 +80,8 @@ public class DerivedAttributeNameTest {
     assertFalse(hasDerivedAttributeName(blub.get().getCDAttributeList().get(2)));
     assertEquals("efg", blub.get().getCDAttributeList().get(3).getName());
     assertFalse(hasDerivedAttributeName(blub.get().getCDAttributeList().get(3)));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,5 +97,7 @@ public class DerivedAttributeNameTest {
     assertTrue(hasDerivedAttributeName(test.get().getCDAttributeList().get(2)));
     assertEquals("k", test.get().getCDAttributeList().get(3).getName());
     assertFalse(hasDerivedAttributeName(test.get().getCDAttributeList().get(3)));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -22,8 +22,8 @@ import de.se_rwth.commons.logging.LogStub;
 
 public class UMLModifierPrettyPrinterTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
@@ -50,6 +50,8 @@ public class UMLModifierPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(modifier.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -68,5 +70,7 @@ public class UMLModifierPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(modifier.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

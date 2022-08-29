@@ -3,10 +3,15 @@
 package mc.feature.comments;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -18,6 +23,12 @@ import mc.feature.featuredsl._ast.ASTSpices2;
 import mc.feature.featuredsl._parser.FeatureDSLParser;
 
 public class CommentTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testConstants() throws IOException  {
@@ -52,7 +63,8 @@ public class CommentTest extends GeneratorIntegrationsTest {
     assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreCommentList().get(0).getText());
     assertEquals("// First Constant 2",  ast.getWiredList().get(0).get_PostCommentList().get(0).getText());
     assertEquals("/*Second Constant*/", ast.getWiredList().get(1).get_PreCommentList().get(0).getText());
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

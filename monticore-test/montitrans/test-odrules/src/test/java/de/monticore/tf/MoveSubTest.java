@@ -3,6 +3,7 @@ package de.monticore.tf;
 
 import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.misc.MiscMill;
 import mc.testcases.misc._ast.ASTDef;
 import mc.testcases.misc._ast.ASTSub;
@@ -13,16 +14,16 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public class MoveSubTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   ASTDef oldParent, newParent;
   ASTSub child;
 
@@ -45,6 +46,8 @@ public class MoveSubTest {
 
     assertFalse(oldParent.isPresentSub());
     assertSame(child, newParent.getSub());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

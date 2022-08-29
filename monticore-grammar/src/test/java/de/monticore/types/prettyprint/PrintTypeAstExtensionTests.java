@@ -19,11 +19,12 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PrintTypeAstExtensionTests {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -54,6 +55,8 @@ public class PrintTypeAstExtensionTests {
         e.printStackTrace();
       }
     }
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -67,6 +70,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -79,6 +84,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -92,6 +99,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -104,6 +113,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -118,6 +129,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -133,6 +146,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -149,6 +164,8 @@ public class PrintTypeAstExtensionTests {
         e.printStackTrace();
       }
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -168,6 +185,8 @@ public class PrintTypeAstExtensionTests {
         e.printStackTrace();
       }
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -183,6 +202,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -203,6 +224,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -219,6 +242,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -238,6 +263,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -257,6 +284,8 @@ public class PrintTypeAstExtensionTests {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

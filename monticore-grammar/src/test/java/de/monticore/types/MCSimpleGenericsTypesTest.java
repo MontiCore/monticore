@@ -8,6 +8,7 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,8 +19,8 @@ import static org.junit.Assert.*;
 
 public class MCSimpleGenericsTypesTest {
 
-  @BeforeClass
-  public static void disableFailQuick() {
+  @Before
+  public void disableFailQuick() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -41,6 +42,8 @@ public class MCSimpleGenericsTypesTest {
 
       ASTMCObjectType t = (ASTMCObjectType) type.get();
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -51,6 +54,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCListType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -61,6 +66,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCBasicGenericType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -71,6 +78,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCMapType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -81,6 +90,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCBasicGenericType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -91,6 +102,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCBasicGenericType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -101,6 +114,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCOptionalType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -111,6 +126,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCBasicGenericType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -122,6 +139,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCSetType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,6 +151,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCBasicGenericType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -142,6 +163,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCBasicTypeArgument);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -152,6 +175,8 @@ public class MCSimpleGenericsTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCListType);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -173,5 +198,7 @@ public class MCSimpleGenericsTypesTest {
     assertEquals("a.B", basicGenericType.get().printWithoutTypeArguments());
     assertEquals("a.B", genericType.get().printWithoutTypeArguments());
     assertFalse(parser.hasErrors());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

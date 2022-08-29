@@ -12,6 +12,7 @@ import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScopesGenitorDele
 import mc.feature.scopes.superautomaton._symboltable.AutomatonSymbol;
 import mc.feature.scopes.superautomaton._symboltable.StateSymbol;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,13 +27,15 @@ public class ScopesTest {
   private ASTSup astSup;
   private SupAutomatonScopesGenitorDelegator symbolTableCreator;
   private ISupAutomatonGlobalScope globalScope;
-
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-        // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
     SupAutomatonMill.reset();
     SupAutomatonMill.init();
     SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
@@ -74,6 +77,7 @@ public class ScopesTest {
     assertTrue(pongStateSymbol.isPresent());
     assertTrue(noGameStateSymbol.isPresent());
     assertTrue(pingStateSymbolGlobal.isPresent());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

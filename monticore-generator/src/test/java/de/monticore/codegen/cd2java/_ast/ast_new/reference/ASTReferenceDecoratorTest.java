@@ -10,6 +10,7 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +60,8 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
   public void testMandatoryAttributeSize() {
     assertFalse(astMandClass.getCDAttributeList().isEmpty());
     assertEquals(1, astMandClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -66,12 +69,16 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astMandClass);
     assertTrue(nameSymbol.getModifier().isProtected());
     assertDeepEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", nameSymbol.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testOptionalAttributeSize() {
     assertFalse(astOptClass.getCDAttributeList().isEmpty());
     assertEquals(1, astOptClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -79,12 +86,16 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astOptClass);
     assertTrue(nameSymbol.getModifier().isProtected());
     assertDeepEquals("de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol", nameSymbol.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testListAttributeSize() {
     assertFalse(astListClass.getCDAttributeList().isEmpty());
     assertEquals(1, astListClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -92,23 +103,31 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute nameSymbol = getAttributeBy("nameSymbol", astListClass);
     assertTrue(nameSymbol.getModifier().isProtected());
     assertDeepEquals("Map<String,de.monticore.codegen.ast.referencedsymbol._symboltable.FooSymbol>", nameSymbol.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMandatoryMethods() {
     assertEquals(5, astMandClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testOptionalMethods() {
     assertEquals(5, astOptClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testListMethods() {
     assertEquals(39, astListClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

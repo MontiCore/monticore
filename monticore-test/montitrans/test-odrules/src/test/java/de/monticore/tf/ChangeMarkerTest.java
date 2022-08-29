@@ -2,6 +2,7 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.petrinet._ast.ASTPetrinet;
 import mc.testcases.petrinet._parser.PetrinetParser;
 import org.junit.Before;
@@ -17,13 +18,13 @@ public class ChangeMarkerTest {
 
   ChangeMarker cm;
   ASTPetrinet petri;
-
-  @BeforeClass
-  public static void disableFailQuick() {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Before
   public void doBefore() throws IOException {
     String inputFile = "src/main/models/petrinet/TestPetriNet.pn";
@@ -45,6 +46,8 @@ public class ChangeMarkerTest {
     assertEquals(cm.get_connection_2().getName(), cm.get_place_1().getName());
     assertTrue(cm.get_transition_1().getFromList().contains(cm.get_connection_1()));
     assertTrue(cm.get_transition_1().getToList().contains(cm.get_connection_2()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -54,6 +57,8 @@ public class ChangeMarkerTest {
 
     assertEquals("44", cm.get_marker_1().getAmount());
     assertEquals("0", cm.get_marker_2().getAmount());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -2,8 +2,10 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,12 +17,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 
 public class ExpandInitialTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testDoAll() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonTwoStatesAndSubstate.aut";
@@ -38,6 +41,8 @@ public class ExpandInitialTest {
     assertFalse(aut.get().getState(0).isInitial());
     assertFalse(aut.get().getState(1).isInitial());
     assertTrue(aut.get().getState(0).getState(0).isInitial());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -58,6 +63,8 @@ public class ExpandInitialTest {
     assertFalse(aut.get().getState(0).isInitial());
     assertFalse(aut.get().getState(1).isInitial());
     assertFalse(aut.get().getState(0).getState(0).isInitial());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

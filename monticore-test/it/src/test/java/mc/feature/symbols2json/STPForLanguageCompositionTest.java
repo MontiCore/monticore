@@ -4,24 +4,27 @@ package mc.feature.symbols2json;
 import com.google.common.collect.Lists;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.symbols2json.sub.SubMill;
 import mc.feature.symbols2json.sub._symboltable.ISubScope;
 import mc.feature.symbols2json.sub._symboltable.SubDeSer;
 import mc.feature.symbols2json.sub._symboltable.SubSymbols2Json;
 import mc.feature.symbols2json.sup1.Sup1Mill;
 import mc.feature.symbols2json.sup2.Sup2Mill;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class STPForLanguageCompositionTest {
-
-  @BeforeClass
-  public static void initLog(){
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testGetAndSetJsonPrinter(){
     SubSymbols2Json symTabPrinter = new SubSymbols2Json();
@@ -29,6 +32,7 @@ public class STPForLanguageCompositionTest {
     assertNotNull(printer);
     symTabPrinter.setJsonPrinter(new JsonPrinter());
     assertNotEquals(printer, symTabPrinter.getJsonPrinter());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -56,6 +60,7 @@ public class STPForLanguageCompositionTest {
     assertTrue(serialized.contains("\"name\":\"c\""));
     assertTrue(serialized.contains("\"name\":\"c2\""));
     assertTrue(serialized.contains("\"name\":\"c3\""));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -63,6 +68,7 @@ public class STPForLanguageCompositionTest {
     JsonPrinter printer = new JsonPrinter();
     SubSymbols2Json symTabPrinter = new SubSymbols2Json(SubMill.traverser(), printer);
     assertEquals(printer,symTabPrinter.getJsonPrinter());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
