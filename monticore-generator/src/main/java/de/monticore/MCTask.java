@@ -4,8 +4,10 @@ package de.monticore;
 
 import com.google.common.collect.Iterables;
 import de.monticore.cli.MontiCoreTool;
+import de.monticore.gradle.GradleTaskStatistic;
 import de.monticore.mcbasics.MCBasicsMill;
 import de.monticore.dstlgen.util.DSTLPathUtil;
+import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
@@ -57,7 +59,7 @@ import java.util.stream.Collectors;
  *                        defaults to empty list
  */
 @CacheableTask
-public abstract class MCTask extends DefaultTask {
+public abstract class MCTask extends DefaultTask implements GradleTaskStatistic {
   
   public MCTask() {
     Project project = getProject();
@@ -309,9 +311,9 @@ public abstract class MCTask extends DefaultTask {
     }
   }
 
-  public void rebuildGrammar() {
+  @Internal
+  protected String[] getParameters(){
     List<String> mp = new ArrayList();
-    getLogger().info("out of date: " + grammar.get().getAsFile().getName());
     // if not disabled put grammar configuration on model path
     if (addGrammarConfig) {
       getProject().getConfigurations().getByName(MCPlugin.GRAMMAR_CONFIGURATION_NAME).forEach(it -> mp.add(it.toString()));
@@ -320,7 +322,7 @@ public abstract class MCTask extends DefaultTask {
     for (String c : includeConfigs) {
       getProject().getConfigurations().getByName(c).forEach(it -> mp.add(it.toString()));
     }
-    
+
     mp.addAll(modelPath);
     // construct string array from configuration to pass it to MontiCore
     List<String> params = new ArrayList<>(Arrays.asList("-g", grammar.get().getAsFile().toString(),
@@ -399,7 +401,13 @@ public abstract class MCTask extends DefaultTask {
     if (help) {
       params.add("-h");
     }
-    String[] p = params.toArray(new String[0]);
+
+    return params.toArray(new String[0]);
+  }
+
+  public void rebuildGrammar() {
+    getLogger().info("out of date: " + grammar.get().getAsFile().getName());
+    String[] p = getParameters();
 
     System.setSecurityManager(new SecurityManager()
     {
@@ -475,6 +483,22 @@ public abstract class MCTask extends DefaultTask {
     file.delete();
     file.createNewFile();
     FileUtils.writeStringToFile(file, "version = " + getProject().getVersion(), StandardCharsets.UTF_8);
+  }
+
+  @Override
+  @Internal
+  public JsonElement getGradleStatisticData(){
+    JsonObject result = new JsonObject();
+
+    {
+      JsonArray params = new JsonArray();
+      params.addAll(
+          Arrays.stream(getParameters()).map(JsonString::new).collect(Collectors.toList())
+      );
+      result.putMember("parameter", params);
+    }
+
+    return result;
   }
 
 }

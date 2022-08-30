@@ -11,7 +11,7 @@ public class NetworkHandler {
   private static void sendRequest(URL url, String data) throws IOException {
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("POST");
-      connection.setRequestProperty("STAT_TYPE", "MC_GRADLE");
+      connection.setRequestProperty("STAT_TYPE", "MC_GRADLE_JSON");
       connection.setRequestProperty("Content-Type", "text/html");
 
       connection.setDoOutput(true);
