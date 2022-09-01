@@ -204,7 +204,7 @@ trigger-guidsl-dev:
   stage: trigger_languages
   trigger:
     project: monticore/languages/gui-dsl
-    branch: master
+    branch: develop
   only:
     - dev
 
