@@ -245,8 +245,8 @@ as they allow math oriented style of specification.
 ### [OptionalOperators.mc4][OCL-OptionalOperators] (stable)
 * This grammar defines nine operators dealing with optional values, e.g. defined by 
   `java.lang.Optional`. The operators are also called *Elvis operators*.
-* E.g.: `val ?: 0W`     equals to   `val.isPresent ? val.get : 0W`
-* `x ?>= y` equals `x.isPresent && x.get >= y` 
+* E.g.: `val ?: 42`     equals to   `val.isPresent() ? val.get() : 42`
+* `x ?>= y` equals `x.isPresent() && x.get() >= y` 
 * This grammar resides in the [MontiCore/OCL][OCL] project.
 
 
