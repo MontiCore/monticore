@@ -246,7 +246,7 @@ as they allow math oriented style of specification.
 * This grammar defines nine operators dealing with optional values, e.g. defined by 
   `java.lang.Optional`. The operators are also called *Elvis operators*.
 * E.g.: `val ?: 42`     equals to   `val.isPresent() ? val.get() : 42`
-* `x ?>= y` equals `x.isPresent() && x.get() >= y` 
+* `x ?>= y` equals `x.isPresent() ? x.get() >= y : false` 
 * This grammar resides in the [MontiCore/OCL][OCL] project.
 
 
