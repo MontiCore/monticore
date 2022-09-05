@@ -5,6 +5,7 @@ package de.monticore;
 import com.google.common.collect.Iterables;
 import de.monticore.cli.MontiCoreTool;
 import de.monticore.gradle.GradleTaskStatistic;
+import de.monticore.gradle.UserJsonString;
 import de.monticore.mcbasics.MCBasicsMill;
 import de.monticore.dstlgen.util.DSTLPathUtil;
 import de.monticore.symboltable.serialization.json.*;
@@ -493,7 +494,7 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
     {
       JsonArray params = new JsonArray();
       params.addAll(
-          Arrays.stream(getParameters()).map(JsonString::new).collect(Collectors.toList())
+          Arrays.stream(getParameters()).map(UserJsonString::new).collect(Collectors.toList())
       );
       result.putMember("parameter", params);
     }
