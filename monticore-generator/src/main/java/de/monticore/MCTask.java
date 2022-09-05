@@ -4,8 +4,11 @@ package de.monticore;
 
 import com.google.common.collect.Iterables;
 import de.monticore.cli.MontiCoreTool;
+import de.monticore.gradle.GradleTaskStatistic;
+import de.monticore.gradle.UserJsonString;
 import de.monticore.mcbasics.MCBasicsMill;
 import de.monticore.dstlgen.util.DSTLPathUtil;
+import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
@@ -24,10 +27,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +63,7 @@ import java.util.stream.Collectors;
  *                        defaults to empty list
  */
 @CacheableTask
-public abstract class MCTask extends DefaultTask {
+public abstract class MCTask extends DefaultTask implements GradleTaskStatistic {
   
   public MCTask() {
     Project project = getProject();
@@ -309,9 +315,13 @@ public abstract class MCTask extends DefaultTask {
     }
   }
 
-  public void rebuildGrammar() {
-    List<String> mp = new ArrayList();
-    getLogger().info("out of date: " + grammar.get().getAsFile().getName());
+  @Internal
+  protected String[] getParameters(){
+    return getParameters(File::getAbsolutePath);
+  }
+
+  protected String[] getParameters(Function<File, String> printPath){
+    List<String> mp = new ArrayList<>();
     // if not disabled put grammar configuration on model path
     if (addGrammarConfig) {
       getProject().getConfigurations().getByName(MCPlugin.GRAMMAR_CONFIGURATION_NAME).forEach(it -> mp.add(it.toString()));
@@ -320,25 +330,26 @@ public abstract class MCTask extends DefaultTask {
     for (String c : includeConfigs) {
       getProject().getConfigurations().getByName(c).forEach(it -> mp.add(it.toString()));
     }
-    
+
     mp.addAll(modelPath);
     // construct string array from configuration to pass it to MontiCore
-    List<String> params = new ArrayList<>(Arrays.asList("-g", grammar.get().getAsFile().toString(),
-        "-o", outputDir.get().getAsFile().toString()));
+    List<String> params = new ArrayList<>(Arrays.asList("-g", printPath.apply(grammar.get().getAsFile()),
+        "-o", printPath.apply(outputDir.get().getAsFile())));
     // Note 1: toString needs to be called on most elements, since Gradle can put a File to a String field
     if(getReportDir().isPresent()){
       params.add("-r");
-      params.add(getReportDir().get().getAsFile().toString());
+      params.add(printPath.apply(getReportDir().get().getAsFile()));
     }
     if(getReportDir().isPresent()){
       params.add("-rb");
-      params.add(this.getProject().getProjectDir().toPath().toAbsolutePath().toString());
+      params.add(printPath.apply(this.getProject().getProjectDir().toPath().toFile()));
     }
     if (!mp.isEmpty()) {
       params.add("-mp");
       // See Note 1
       for (Object it : mp) {
-        params.add(it.toString());
+        Path p = Paths.get(it.toString());
+        params.add(printPath.apply(p.toFile()));
       }
     }
     if (toolName != null) {
@@ -349,21 +360,24 @@ public abstract class MCTask extends DefaultTask {
       params.add("-hcp");
       // See Note 1
       for (Object it : handcodedPath) {
-        params.add(it.toString());
+        Path p = Paths.get(it.toString());
+        params.add(printPath.apply(p.toFile()));
       }
     }
     if (!templatePath.isEmpty()) {
       params.add("-fp");
       // See Note 1
       for (Object it : templatePath) {
-        params.add(it.toString());
+        Path p = Paths.get(it.toString());
+        params.add(printPath.apply(p.toFile()));
       }
     }
     if (!handcodedModelPath.isEmpty()) {
       params.add("-hcg");
       // See Note 1
       for (Object it : handcodedModelPath) {
-        params.add(it.toString());
+        Path p = Paths.get(it.toString());
+        params.add(printPath.apply(p.toFile()));
       }
     }
     params.add("-dstlGen");
@@ -394,12 +408,18 @@ public abstract class MCTask extends DefaultTask {
     }
     if (customLog.isPresent()) {
       params.add("-cl");
-      params.add(customLog.get().getAsFile().toString());
+      params.add(printPath.apply(customLog.get().getAsFile()));
     }
     if (help) {
       params.add("-h");
     }
-    String[] p = params.toArray(new String[0]);
+
+    return params.toArray(new String[0]);
+  }
+
+  public void rebuildGrammar() {
+    getLogger().info("out of date: " + grammar.get().getAsFile().getName());
+    String[] p = getParameters();
 
     System.setSecurityManager(new SecurityManager()
     {
@@ -475,6 +495,33 @@ public abstract class MCTask extends DefaultTask {
     file.delete();
     file.createNewFile();
     FileUtils.writeStringToFile(file, "version = " + getProject().getVersion(), StandardCharsets.UTF_8);
+  }
+
+  @Override
+  @Internal
+  public JsonElement getGradleStatisticData(){
+    JsonObject result = new JsonObject();
+
+    {
+      JsonArray params = new JsonArray();
+      Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
+
+      String[] usedParams = getParameters(f->{
+        try {
+          return cwd.relativize(f.toPath()).toString();
+        } catch (IllegalArgumentException ignored){ // Can occur, if build is on external harddrive, and `~/.gradle` on internal harddrive
+          return f.getPath();
+        }
+      });
+      params.addAll(
+          Arrays.stream(usedParams)
+              .map(UserJsonString::new)
+              .collect(Collectors.toList())
+      );
+      result.putMember("parameter", params);
+    }
+
+    return result;
   }
 
 }
