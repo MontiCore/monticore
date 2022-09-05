@@ -34,7 +34,7 @@ build:
   stage: build
   script:
     - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
-    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -i"
+    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -PgenTR=true -i"
   tags:
     - gradle
   artifacts:
@@ -119,7 +119,7 @@ test_montitrans:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -Pci"
+    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -PgenTR=true -Pci"
   only:
     - merge_requests
     - branches
@@ -131,7 +131,7 @@ deploy:
   dependencies:
     - build
   script:
-    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -Pci"
+    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -PgenTR=true -Pci"
   only:
     - dev
   except:
