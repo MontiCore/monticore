@@ -506,7 +506,13 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
       JsonArray params = new JsonArray();
       Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
 
-      String[] usedParams = getParameters(f->cwd.relativize(f.toPath()).toString());
+      String[] usedParams = getParameters(f->{
+        try {
+          return cwd.relativize(f.toPath()).toString();
+        } catch (IllegalArgumentException ignored){ // Can occur, if build is on external harddrive, and `~/.gradle` on internal harddrive
+          return f.getPath();
+        }
+      });
       params.addAll(
           Arrays.stream(usedParams)
               .map(UserJsonString::new)
