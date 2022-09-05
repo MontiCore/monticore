@@ -27,10 +27,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -314,7 +317,11 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
 
   @Internal
   protected String[] getParameters(){
-    List<String> mp = new ArrayList();
+    return getParameters(File::getAbsolutePath);
+  }
+
+  protected String[] getParameters(Function<File, String> printPath){
+    List<String> mp = new ArrayList<>();
     // if not disabled put grammar configuration on model path
     if (addGrammarConfig) {
       getProject().getConfigurations().getByName(MCPlugin.GRAMMAR_CONFIGURATION_NAME).forEach(it -> mp.add(it.toString()));
@@ -326,22 +333,23 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
 
     mp.addAll(modelPath);
     // construct string array from configuration to pass it to MontiCore
-    List<String> params = new ArrayList<>(Arrays.asList("-g", grammar.get().getAsFile().toString(),
-        "-o", outputDir.get().getAsFile().toString()));
+    List<String> params = new ArrayList<>(Arrays.asList("-g", printPath.apply(grammar.get().getAsFile()),
+        "-o", printPath.apply(outputDir.get().getAsFile())));
     // Note 1: toString needs to be called on most elements, since Gradle can put a File to a String field
     if(getReportDir().isPresent()){
       params.add("-r");
-      params.add(getReportDir().get().getAsFile().toString());
+      params.add(printPath.apply(getReportDir().get().getAsFile()));
     }
     if(getReportDir().isPresent()){
       params.add("-rb");
-      params.add(this.getProject().getProjectDir().toPath().toAbsolutePath().toString());
+      params.add(printPath.apply(this.getProject().getProjectDir().toPath().toFile()));
     }
     if (!mp.isEmpty()) {
       params.add("-mp");
       // See Note 1
       for (Object it : mp) {
-        params.add(it.toString());
+        Path p = Paths.get(it.toString());
+        params.add(printPath.apply(p.toFile()));
       }
     }
     if (toolName != null) {
@@ -352,21 +360,24 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
       params.add("-hcp");
       // See Note 1
       for (Object it : handcodedPath) {
-        params.add(it.toString());
+        Path p = Paths.get(it.toString());
+        params.add(printPath.apply(p.toFile()));
       }
     }
     if (!templatePath.isEmpty()) {
       params.add("-fp");
       // See Note 1
       for (Object it : templatePath) {
-        params.add(it.toString());
+        Path p = Paths.get(it.toString());
+        params.add(printPath.apply(p.toFile()));
       }
     }
     if (!handcodedModelPath.isEmpty()) {
       params.add("-hcg");
       // See Note 1
       for (Object it : handcodedModelPath) {
-        params.add(it.toString());
+        Path p = Paths.get(it.toString());
+        params.add(printPath.apply(p.toFile()));
       }
     }
     params.add("-dstlGen");
@@ -397,7 +408,7 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
     }
     if (customLog.isPresent()) {
       params.add("-cl");
-      params.add(customLog.get().getAsFile().toString());
+      params.add(printPath.apply(customLog.get().getAsFile()));
     }
     if (help) {
       params.add("-h");
@@ -493,8 +504,13 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
 
     {
       JsonArray params = new JsonArray();
+      Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
+
+      String[] usedParams = getParameters(f->cwd.relativize(f.toPath()).toString());
       params.addAll(
-          Arrays.stream(getParameters()).map(UserJsonString::new).collect(Collectors.toList())
+          Arrays.stream(usedParams)
+              .map(UserJsonString::new)
+              .collect(Collectors.toList())
       );
       result.putMember("parameter", params);
     }
