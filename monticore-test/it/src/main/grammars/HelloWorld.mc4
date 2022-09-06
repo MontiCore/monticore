@@ -11,7 +11,6 @@ grammar HelloWorld extends mc.common.Basics {
 
 Start = "Hello" "World" "!";
 
-
 Composite implements Component =  
   "composite"  "(" children:Component* ")";
   
@@ -45,5 +44,7 @@ astrule Component =
 
 
 Test =	["private"];
+
+Bla = ["helloworld"];
 
 }
