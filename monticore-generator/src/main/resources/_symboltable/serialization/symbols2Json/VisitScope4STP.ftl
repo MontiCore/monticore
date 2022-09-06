@@ -1,5 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symbols2Json")}
+
+for (de.monticore.symboltable.IScope scope : node.getSubScopes()) {
+  if (!scope.isPresentSpanningSymbol() || !scope.isExportingSymbols()) {
+    getTraverser().addTraversedElement(scope);
+  }
+}
 if (node.isPresentSpanningSymbol() && node.isExportingSymbols()) {
   if(getJsonPrinter().toString().isEmpty()){
     getJsonPrinter().beginObject();
