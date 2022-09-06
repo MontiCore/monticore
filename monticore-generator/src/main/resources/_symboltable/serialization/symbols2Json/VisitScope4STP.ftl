@@ -6,12 +6,10 @@ for (de.monticore.symboltable.IScope scope : node.getSubScopes()) {
     getTraverser().addTraversedElement(scope);
   }
 }
-if (node.isPresentSpanningSymbol() && node.isExportingSymbols()) {
-  if(getJsonPrinter().toString().isEmpty()){
-    getJsonPrinter().beginObject();
-  } else{
-    getJsonPrinter().beginObject(de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE);
-  }
-  scopeDeSer.serialize(node, getRealThis());
-  getJsonPrinter().beginArray(de.monticore.symboltable.serialization.JsonDeSers.SYMBOLS);
+if(getJsonPrinter().toString().isEmpty()){
+  getJsonPrinter().beginObject();
+} else{
+  getJsonPrinter().beginObject(de.monticore.symboltable.serialization.JsonDeSers.SPANNED_SCOPE);
 }
+scopeDeSer.serialize(node, getRealThis());
+getJsonPrinter().beginArray(de.monticore.symboltable.serialization.JsonDeSers.SYMBOLS);
