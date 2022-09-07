@@ -235,7 +235,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTCDMethod endVisitMethod = visitorService
             .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbols2Json.EndVisit4ArtifactScope", I_ARTIFACT_SCOPE_TYPE, symbols2Json));
+            + "symbols2Json.EndVisit4Scope", I_ARTIFACT_SCOPE_TYPE, symbols2Json));
     visitorMethods.add(endVisitMethod);
 
     return visitorMethods;
