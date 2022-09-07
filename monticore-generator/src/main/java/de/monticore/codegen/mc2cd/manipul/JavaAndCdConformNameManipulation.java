@@ -8,7 +8,10 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._visitor.CDBasisVisitor2;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.se_rwth.commons.JavaNamesHelper;
+import de.se_rwth.commons.Names;
 
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 /**
@@ -21,12 +24,18 @@ public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDComp
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
     CD4AnalysisTraverser traverser = CD4AnalysisMill.traverser();
-    traverser.add4CDBasis(new ManipulateVisitor());
+    traverser.add4CDBasis(new ManipulateVisitor(cdCompilationUnit.getCDPackageList(), cdCompilationUnit.getCDDefinition().getName()));
     cdCompilationUnit.accept(traverser);
     return cdCompilationUnit;
   }
 
   protected class ManipulateVisitor implements CDBasisVisitor2 {
+
+    protected String diagramName;
+
+    public ManipulateVisitor(List<String> packageNames, String name) {
+      this.diagramName = Names.constructQualifiedName(packageNames, name.toLowerCase());
+    }
 
     public CD4AnalysisTraverser getTraverser() {
       return traverser;
@@ -38,9 +47,16 @@ public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDComp
 
     CD4AnalysisTraverser traverser;
 
+    protected String getDiagramConformName(String name) {
+      if (name.equals(diagramName)) {
+        return JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED + name;
+      }
+      return name;
+    }
+
     @Override
     public void visit(ASTCDAttribute node) {
-      node.setName(TransformationHelper.getJavaAndCdConformName(node.getName()));
+      node.setName(getDiagramConformName(TransformationHelper.getJavaAndCdConformName(node.getName())));
     }
   }
 }
