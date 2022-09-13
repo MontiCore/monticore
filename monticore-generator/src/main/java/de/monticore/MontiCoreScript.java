@@ -611,7 +611,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
       setup.setGlex(glex);
       CD4C.init(setup);
-      CD4C.getInstance().setEmptyBodyTemplate("core.EmptyBody");
+      CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
 
       TemplateController tc = setup.getNewTemplateController(configTemplate);
       TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
