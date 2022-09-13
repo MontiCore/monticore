@@ -4,23 +4,23 @@ package de.monticore.codegen.cd2java._ast.ast_constants;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CDModifier;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.*;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
@@ -49,7 +49,6 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
-
     ASTConstantsDecorator decorator = new ASTConstantsDecorator(this.glex, new AbstractService(decoratedCompilationUnit));
     this.constantClass = decorator.decorate(decoratedCompilationUnit);
   }
@@ -143,7 +142,9 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, constantClass, constantClass);
+    CD4C.init(generatorSetup);
+
+    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, constantClass, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);

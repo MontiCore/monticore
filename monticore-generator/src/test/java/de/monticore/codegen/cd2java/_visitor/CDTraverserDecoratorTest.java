@@ -1,11 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -113,11 +114,12 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    CD4C.init(generatorSetup);
     for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassesList()) {
-      StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
+      StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, clazz, packageDir);
     }
     for (ASTCDInterface astcdInterface : decoratedCompilationUnit.getCDDefinition().getCDInterfacesList()) {
-      StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, astcdInterface, astcdInterface);
+      StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.INTERFACE, astcdInterface, packageDir);
     }
   
     assertTrue(Log.getFindings().isEmpty());

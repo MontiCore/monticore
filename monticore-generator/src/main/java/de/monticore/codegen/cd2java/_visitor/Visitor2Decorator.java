@@ -18,7 +18,7 @@ import de.se_rwth.commons.Joiners;
 
 import java.util.*;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;

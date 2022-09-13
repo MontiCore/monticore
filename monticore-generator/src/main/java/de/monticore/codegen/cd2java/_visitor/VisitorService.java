@@ -17,7 +17,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 public class VisitorService extends AbstractService<VisitorService> {

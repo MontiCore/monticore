@@ -30,8 +30,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;

@@ -2,12 +2,15 @@
 package de.monticore.codegen.cd2java._ast;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTFullDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
@@ -17,13 +20,17 @@ import de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
+import static de.monticore.cd.codegen.CD2JavaTemplates.PACKAGE;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.NODE_SUFFIX;
 
@@ -71,14 +78,15 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
 
     ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(ast.getCDDefinition().getName())
-        .setModifier(CD4CodeMill.modifierBuilder().build())
-        .addAllCDElements(createASTClasses(ast))
-        .addAllCDElements(createASTBuilderClasses(ast))
-        .addCDElement(createASTConstantsClass(ast))
-        .addAllCDElements(createASTInterfaces(ast))
-        .addCDElement(createLanguageInterface(ast))
-        .addAllCDElements(createEnums(ast))
-        .build();
+        .setModifier(CD4CodeMill.modifierBuilder().build()).build();
+    astCD.setDefaultPackageName(Joiners.DOT.join(astPackage));
+
+    astCD.addAllCDElements(createASTClasses(ast));
+    astCD.addAllCDElements(createASTBuilderClasses(ast));
+    astCD.addCDElement(createASTConstantsClass(ast));
+    astCD.addAllCDElements(createASTInterfaces(ast));
+    astCD.addCDElement(createLanguageInterface(ast));
+    astCD.addAllCDElements(createEnums(ast));
 
     // change the package and add deprecated annotations to all classes, interfaces, enums
     for (ASTCDClass cdClass : astCD.getCDClassesList()) {
@@ -87,12 +95,12 @@ public class ASTCDDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
     }
 
     for (ASTCDInterface cdInterface : astCD.getCDInterfacesList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(astPackage));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdInterface, createPackageHookPoint(astPackage));
       this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
     }
 
     for (ASTCDEnum cdEnum : astCD.getCDEnumsList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(astPackage));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdEnum, createPackageHookPoint(astPackage));
       this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
     }
 

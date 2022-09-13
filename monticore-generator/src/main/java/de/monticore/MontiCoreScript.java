@@ -6,20 +6,25 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import de.monticore.cd._parser.CDAfterParseHelper;
 import de.monticore.cd._symboltable.BuiltInTypes;
+import de.monticore.cd.codegen.CDGenerator;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._visitor.CD4CodeTraverser;
+import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDMember;
+import de.monticore.cdbasis.trafo.CDBasisDefaultPackageTrafo;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CDGenerator;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.*;
@@ -118,7 +123,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import parser.MCGrammarParser;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -1073,6 +1080,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setModelName(diagramName);
     setup.setGlex(glex);
 
+    CD4CodeAfterParseTrafo trafo = new CD4CodeAfterParseTrafo();
+    trafo.transform(decoratedCD);
+
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
   }
@@ -1111,6 +1121,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
     setup.setModelName(diagramName);
     setup.setGlex(glex);
+
+    CD4CodeAfterParseTrafo trafo = new CD4CodeAfterParseTrafo();
+    trafo.transform(decoratedCD);
+
     CDEmfGenerator generator = new CDEmfGenerator(setup);
     //set originalDefinition, because information is needed in template
     generator.setOriginalDefinition(oldCD.getCDDefinition().deepClone());

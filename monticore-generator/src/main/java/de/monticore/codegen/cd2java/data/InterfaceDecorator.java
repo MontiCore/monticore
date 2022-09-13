@@ -8,9 +8,12 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
 
@@ -48,7 +51,14 @@ public class InterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     // make other methods abstract (for referenced symbol methods)
     changedInput.getCDMethodList().forEach(x->x.getModifier().setAbstract(true));
     // only then add the normal methods (e.g. for astrule methods with implementation)
-    changedInput.addAllCDMembers(originalInput.getCDMethodList());
+    for (ASTCDMethod meth: originalInput.getCDMethodList()) {
+      ASTCDMethod newMethod = meth.deepClone();
+      changedInput.addCDMember(newMethod);
+      if (service.isMethodBodyPresent(newMethod)) {
+        glex.replaceTemplate(EMPTY_BODY, newMethod, new StringHookPoint(service.getMethodBody(newMethod)));
+      }
+    }
+
 
     // delete all private or protected methods
     List<ASTCDMethod> l = changedInput.getCDMethodList().stream()

@@ -13,8 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> {
 

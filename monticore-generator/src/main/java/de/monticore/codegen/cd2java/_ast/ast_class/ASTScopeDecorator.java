@@ -16,7 +16,7 @@ import java.util.List;
 
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SPANNED_SCOPE_VAR;
-import static de.monticore.codegen.cd2java.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates a list of scope attributes that are used for the AST class

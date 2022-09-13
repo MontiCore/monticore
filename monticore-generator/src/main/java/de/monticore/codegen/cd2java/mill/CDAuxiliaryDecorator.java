@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java.mill;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -14,8 +13,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
+import static de.monticore.cd.codegen.CD2JavaTemplates.PACKAGE;
 import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java.mill.MillConstants.AUXILIARY_PACKAGE;
 
 public class CDAuxiliaryDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {

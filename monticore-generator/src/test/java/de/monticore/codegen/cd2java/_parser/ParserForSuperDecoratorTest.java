@@ -1,30 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._parser;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.google.common.collect.Lists;
-
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CDModifier;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.GeneratorEngine;
@@ -32,7 +20,18 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ParserForSuperDecoratorTest extends DecoratorTestCase {
 
@@ -175,7 +174,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, parserClass, parserClass);
+    CD4C.init(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, parserClass, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);

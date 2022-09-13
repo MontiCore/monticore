@@ -9,6 +9,7 @@ import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -27,8 +28,9 @@ import static org.junit.Assert.fail;
 
 public abstract class DecoratorTestCase {
 
-  private static final String MODEL_PATH = "src/test/resources/";
-  
+  protected static final String MODEL_PATH = "src/test/resources/";
+  protected ASTCDPackage packageDir;
+
   @Before
   public void initLog() {
     LogStub.init();
@@ -42,6 +44,8 @@ public abstract class DecoratorTestCase {
     ICD4CodeGlobalScope globalScope = CD4CodeMill.globalScope();
     BuiltInTypes.addBuiltInTypes(globalScope);
    // globalScope.setModelPath(new ModelPath(Paths.get(MODEL_PATH)));
+    packageDir = CD4CodeMill.cDPackageBuilder().
+            setMCQualifiedName(CD4CodeMill.mCQualifiedNameBuilder().build()).build();
   }
 
   public ASTCDCompilationUnit parse(String... names) {

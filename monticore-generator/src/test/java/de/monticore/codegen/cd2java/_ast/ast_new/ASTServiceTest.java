@@ -6,7 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.umlmodifier._ast.ASTModifier;
-import de.monticore.codegen.cd2java.CDModifier;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.se_rwth.commons.logging.Log;

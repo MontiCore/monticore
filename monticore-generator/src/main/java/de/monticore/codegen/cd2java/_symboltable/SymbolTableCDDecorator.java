@@ -2,16 +2,13 @@
 package de.monticore.codegen.cd2java._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
@@ -29,7 +26,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
+import static de.monticore.cd.codegen.CD2JavaTemplates.PACKAGE;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 import static de.se_rwth.commons.Names.constructQualifiedName;
@@ -137,7 +137,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     //create symbolTablePrinter class
     ASTCDClass symbolTablePrinterClass = createSymbolTablePrinterClass(scopeCD, symbolCD);
 
-    ASTCDDefinition symTabCD = CD4AnalysisMill.cDDefinitionBuilder()
+    ASTCDDefinitionBuilder symTabCD = CD4AnalysisMill.cDDefinitionBuilder()
         .setName(astCD.getCDDefinition().getName())
         .setModifier(CD4CodeMill.modifierBuilder().build())
         .addAllCDElements(decoratedSymbolClasses)
@@ -149,8 +149,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .addAllCDElements(symbolDeSerList)
         .addCDElement(symbolTablePrinterClass)
         .addCDElement(createICommonSymbol(astCD))
-        .addAllCDElements(createSymbolResolverInterfaces(symbolProds))
-        .build();
+        .addAllCDElements(createSymbolResolverInterfaces(symbolProds));
+
 
     //if the grammar is not a component grammar
 //    if (!symbolTableService.hasComponentStereotype(astCD.getCDDefinition())) {
@@ -181,7 +181,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
       Optional<ASTCDClass> scopeSkeletonCreator = createScopesGenitor(astCD);
       scopeSkeletonCreator.ifPresent(symTabCD::addCDElement);
 
-    addPackageAndAnnotation(symTabCD, symbolTablePackage);
+    //addPackageAndAnnotation(symTabCD, symbolTablePackage);
 
     ASTMCPackageDeclaration mCPackageDeclaration = CD4AnalysisMill.mCPackageDeclarationBuilder().setMCQualifiedName(
             CD4AnalysisMill.mCQualifiedNameBuilder()
@@ -190,7 +190,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
             .build();
     return CD4AnalysisMill.cDCompilationUnitBuilder()
         .setMCPackageDeclaration(mCPackageDeclaration)
-        .setCDDefinition(symTabCD)
+        .setCDDefinition(symTabCD.build())
         .build();
   }
 
@@ -201,12 +201,12 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     }
 
     for (ASTCDInterface cdInterface : symTabCD.getCDInterfacesList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
       this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
     }
 
     for (ASTCDEnum cdEnum : symTabCD.getCDEnumsList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
       this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
     }
   }

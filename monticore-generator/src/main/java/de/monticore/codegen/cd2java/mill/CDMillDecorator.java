@@ -11,7 +11,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.*;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
 /**
  * created mill class for a grammar

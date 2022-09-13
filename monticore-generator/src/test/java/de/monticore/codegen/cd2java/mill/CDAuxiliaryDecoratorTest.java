@@ -4,7 +4,7 @@ package de.monticore.codegen.cd2java.mill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;

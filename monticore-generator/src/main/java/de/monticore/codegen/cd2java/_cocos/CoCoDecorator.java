@@ -2,13 +2,13 @@
 package de.monticore.codegen.cd2java._cocos;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
@@ -16,7 +16,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
 /**
  * combines the CoCo checker class and all CoCo interfaces to create the _coco package
@@ -54,12 +56,12 @@ public class CoCoDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCo
 
     // change the package to _coco
     for (ASTCDClass ast : cocoCD.getCDClassesList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
       this.replaceTemplate(ANNOTATIONS, ast, createAnnotationsHookPoint(ast.getModifier()));
     }
 
     for (ASTCDInterface ast : cocoCD.getCDInterfacesList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, ast, createPackageHookPoint(cocoPackage));
       this.replaceTemplate(ANNOTATIONS, ast, createAnnotationsHookPoint(ast.getModifier()));
     }
     

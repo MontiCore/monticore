@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import de.monticore.ast.Comment;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -24,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
@@ -107,6 +108,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         AbstractDeSers.add(symbolTableService.getSymbolDeSerFullName(symbolClass));
       }
     }
+    CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
     return clazz;
   }
 

@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
-import static de.monticore.codegen.cd2java.CDModifier.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * created c class for the generation of the constant class for a grammar

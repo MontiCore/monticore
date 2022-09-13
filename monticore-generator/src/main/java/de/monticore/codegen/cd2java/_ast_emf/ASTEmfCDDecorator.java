@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf;
 
+import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
@@ -16,6 +16,7 @@ import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageImplDecorator;
 import de.monticore.codegen.cd2java._ast_emf.emf_package.PackageInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast_emf.enums.EmfEnumDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,23 +57,18 @@ public class ASTEmfCDDecorator extends ASTCDDecorator {
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit ast) {
     ASTCDCompilationUnit compilationUnit = super.decorate(ast);
 
-    List<String> astPackage = new ArrayList<>(ast.getCDPackageList());
-    astPackage.addAll(Arrays.asList(ast.getCDDefinition().getName().toLowerCase(), ASTConstants.AST_PACKAGE));
-
-    compilationUnit.getCDDefinition().addCDElement(createPackageInterface(ast, astPackage));
-    compilationUnit.getCDDefinition().addCDElement(createPackageImpl(ast, astPackage));
+    compilationUnit.getCDDefinition().addCDElement(createPackageInterface(ast));
+    compilationUnit.getCDDefinition().addCDElement(createPackageImpl(ast));
     return compilationUnit;
   }
 
-  protected ASTCDInterface createPackageInterface(ASTCDCompilationUnit compilationUnit, List<String> astPackage) {
+  protected ASTCDInterface createPackageInterface(ASTCDCompilationUnit compilationUnit) {
     ASTCDInterface astcdInterface = packageInterfaceDecorator.decorate(compilationUnit);
-    this.replaceTemplate(CoreTemplates.PACKAGE, astcdInterface, createPackageHookPoint(astPackage));
     return astcdInterface;
   }
 
-  protected ASTCDClass createPackageImpl(ASTCDCompilationUnit compilationUnit, List<String> astPackage) {
+  protected ASTCDClass createPackageImpl(ASTCDCompilationUnit compilationUnit) {
     ASTCDClass astcdClass = packageImplDecorator.decorate(compilationUnit);
-    this.replaceTemplate(CoreTemplates.PACKAGE, astcdClass, createPackageHookPoint(astPackage));
     return astcdClass;
   }
 }

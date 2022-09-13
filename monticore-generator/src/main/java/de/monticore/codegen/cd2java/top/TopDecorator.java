@@ -7,7 +7,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.se_rwth.commons.Names.constructQualifiedName;
 
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;

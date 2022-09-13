@@ -33,7 +33,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 import static de.monticore.codegen.cd2java.cli.CLIConstants.CLI_SUFFIX;

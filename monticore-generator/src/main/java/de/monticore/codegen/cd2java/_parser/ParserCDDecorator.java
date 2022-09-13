@@ -2,21 +2,27 @@
 package de.monticore.codegen.cd2java._parser;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.se_rwth.commons.Joiners;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
+import static de.monticore.cd.codegen.CD2JavaTemplates.PACKAGE;
 import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_PACKAGE;
 
 public class ParserCDDecorator extends AbstractDecorator {
@@ -48,6 +54,7 @@ public class ParserCDDecorator extends AbstractDecorator {
         .setName(astCD.getCDDefinition().getName())
         .setModifier(CD4CodeMill.modifierBuilder().build())
         .build();
+    parserCD.setDefaultPackageName(Joiners.DOT.join(parserPackage));
 
     createParserClass(astCD).ifPresent(parserCD::addCDElement);
     List<ASTCDClass> parserForSuperClasses = createParserForSuperClasses(astCD);
@@ -76,12 +83,12 @@ public class ParserCDDecorator extends AbstractDecorator {
     }
 
     for (ASTCDInterface cdInterface : parserCD.getCDInterfacesList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdInterface, createPackageHookPoint(parserPackage));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdInterface, createPackageHookPoint(parserPackage));
       this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
     }
 
     for (ASTCDEnum cdEnum : parserCD.getCDEnumsList()) {
-      this.replaceTemplate(CoreTemplates.PACKAGE, cdEnum, createPackageHookPoint(parserPackage));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdEnum, createPackageHookPoint(parserPackage));
       this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
     }
   }

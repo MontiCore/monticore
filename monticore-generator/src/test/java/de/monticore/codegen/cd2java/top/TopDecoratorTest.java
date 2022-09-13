@@ -24,7 +24,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

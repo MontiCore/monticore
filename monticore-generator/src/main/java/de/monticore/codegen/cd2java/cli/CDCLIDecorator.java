@@ -15,7 +15,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.*;
+import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
+import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 
 /**
  * Creates the Class diagram for all CLI-Specific classes
@@ -49,6 +51,7 @@ public class CDCLIDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDC
         .setName(mainCD.getCDDefinition().getName())
         .setModifier(CD4AnalysisMill.modifierBuilder().build())
         .build();
+    astCD.setDefaultPackageName(packageDecl.getMCQualifiedName().toString());
     ASTCDDefinition cdDefinition = mainCD.getCDDefinition();
     if (!parserService.hasComponentStereotype(cdDefinition.getModifier())) {
       Optional<ASTCDClass> cliClass = cliDecorator.decorate(mainCD);

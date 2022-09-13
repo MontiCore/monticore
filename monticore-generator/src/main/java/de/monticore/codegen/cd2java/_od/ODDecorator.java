@@ -14,9 +14,9 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.codegen.cd2java._od.ODConstants.INDENT_PRINTER;
 import static de.monticore.codegen.cd2java._od.ODConstants.REPORTING_REPOSITORY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;

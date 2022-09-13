@@ -8,8 +8,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import org.apache.commons.lang3.StringUtils;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 @Deprecated
 public class MandatoryMutatorSymbolSurrogateDecorator extends MandatoryMutatorDecorator {

@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast.builder;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTCNode;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -23,8 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
 
 /**
@@ -71,6 +72,10 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
       this.replaceTemplate(BUILD_INIT_TEMPLATE, uncheckedBuildMethod, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass));
     }
     builderClass.addCDMember(uncheckedBuildMethod);
+
+    CD4C.getInstance().addImport(builderClass, "de.monticore.ast.ASTNode");
+    CD4C.getInstance().addImport(builderClass, "de.monticore.ast.ASTCNode");
+    CD4C.getInstance().addImport(builderClass, "de.monticore.ast.Comment");
 
     return builderClass;
   }

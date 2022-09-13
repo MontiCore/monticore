@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.ListMultimap;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
@@ -28,10 +29,10 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -103,6 +104,11 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .map(ASTCDClass::getCDMethodList)
         .flatMap(List::stream)
         .collect(Collectors.toList());
+    for (ASTCDMethod meth: scopeRuleMethodList) {
+      if (symbolTableService.isMethodBodyPresent(meth)) {
+        glex.replaceTemplate(EMPTY_BODY, meth, new StringHookPoint(symbolTableService.getMethodBody(meth)));
+      }
+    }
 
     List<ASTCDMethod> scopeRuleAttributeMethods = scopeRuleAttributeList
         .stream()
@@ -187,7 +193,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
     if (scopeRuleSuperClass.isPresent()) {
       builder.setCDExtendUsage(scopeRuleSuperClass.get().getCDExtendUsage().deepClone());
     }
-    return builder.build();
+    ASTCDClass clazz = builder.build();
+    CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
+    return clazz;
   }
 
   protected List<ASTCDConstructor> createConstructors(String scopeClassName) {
