@@ -145,7 +145,7 @@ development. See language definition and usage method in
    freely composable.
 
 * [**List of languages**](Languages.md).
-   This is a another list of newer MontiCore 6
+   This is a another list of newer MontiCore
    languages that can be used out of the box or also composed. 
    Many of them already are rather stable, but some of them also undergo a
    lively development and enhancement. 
