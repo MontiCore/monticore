@@ -11,6 +11,8 @@ import de.monticore.umlstereotype._ast.ASTStereotype;
 import java.util.Arrays;
 import java.util.List;
 
+//TODO: MB Visitor für die Deprecated Annos implementieren
+@Deprecated
 public final class CoreTemplates {
 
   private CoreTemplates() {

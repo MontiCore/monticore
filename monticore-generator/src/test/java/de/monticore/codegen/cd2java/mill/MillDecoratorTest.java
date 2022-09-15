@@ -50,10 +50,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -67,33 +73,48 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
-  private ASTCDCompilationUnit decoratedSymbolCompilationUnit;
+  private ASTCDCompilationUnit originalSymbolCompilationUnit;
 
-  private ASTCDCompilationUnit decoratedScopeCompilationUnit;
-  
+  private ASTCDCompilationUnit originalScopeCompilationUnit;
+
+  private ASTCDCompilationUnit clonedCD;
+
+
   @Before
   public void setUp() {
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
-    decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
-    decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
-    originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
+    originalCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
+    originalScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
+    originalSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
+    clonedCD = originalCompilationUnit.deepClone();
+    decoratedCompilationUnit = getASTCD();
+    addSymbolCD();
+    addTraverserCD();
+    this.glex.setGlobalValue("service", new VisitorService(originalCompilationUnit));
 
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    ParserService parserService = new ParserService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
+    ParserService parserService = new ParserService(originalCompilationUnit);
     MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
-    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD(), getTraverserCD(), getSymbolCD()));
+    this.millClass = decorator.decorate(getPackages());
   }
 
+  protected List<ASTCDPackage> getPackages() {
+    ArrayList<ASTCDPackage> packageList = Lists.newArrayList();
+    decoratedCompilationUnit.getCDDefinition().getCDPackagesList().stream()
+            .filter(p -> p.getName().endsWith(AST_PACKAGE)
+                    || p.getName().endsWith(VISITOR_PACKAGE)
+                    || p.getName().endsWith(SYMBOL_TABLE_PACKAGE))
+            .forEach(p -> packageList.add(p));
+    return packageList;
+  }
   protected ASTCDCompilationUnit getASTCD() {
-    ASTService astService = new ASTService(decoratedCompilationUnit);
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    ASTService astService = new ASTService(originalCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, new DataDecoratorUtil());
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
@@ -104,7 +125,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     ASTReferenceDecorator<ASTCDInterface> astInterfaceReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDInterface>(glex, symbolTableService);
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astClassReferencedSymbolDecorator);
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(decoratedCompilationUnit));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(originalCompilationUnit));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex, astService), astService);
@@ -114,13 +135,13 @@ public class MillDecoratorTest extends DecoratorTestCase {
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator, astInterfaceReferencedSymbolDecorator);
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator,
         astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
-    return astcdDecorator.decorate(decoratedCompilationUnit);
+    return astcdDecorator.decorate(originalCompilationUnit);
   }
 
-  protected ASTCDCompilationUnit getTraverserCD() {
+  protected void addTraverserCD() {
     MCPath targetPath = Mockito.mock(MCPath.class);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
 
     TraverserInterfaceDecorator traverserInterfaceDecorator = new TraverserInterfaceDecorator(glex, visitorService, symbolTableService);
@@ -131,12 +152,12 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
     CDTraverserDecorator decorator = new CDTraverserDecorator(this.glex, targetPath, visitorService, traverserInterfaceDecorator,
         traverserClassDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
-    return decorator.decorate(decoratedCompilationUnit);
+    decorator.decorate(originalCompilationUnit, decoratedCompilationUnit);
   }
 
-  protected ASTCDCompilationUnit getSymbolCD() {
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+  protected void addSymbolCD() {
+    SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, symbolTableService);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex, symbolTableService);
 
@@ -171,18 +192,13 @@ public class MillDecoratorTest extends DecoratorTestCase {
         symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopesGenitorDecorator, scopesGenitorDelegatorDecorator);
 
     // cd with no handcoded classes
-    return symbolTableCDDecorator.decorate(decoratedCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
+    symbolTableCDDecorator.decorate(originalCompilationUnit, originalSymbolCompilationUnit, originalScopeCompilationUnit, decoratedCompilationUnit);
   }
 
 
   @Test
   public void testCompilationUnitNotChanged() {
-    // TODO NJ: Remove the following loc as soon as stereotype deep equals is fixed
-    ASTCDElement clazz = ((ASTCDPackage) originalCompilationUnit.getCDDefinition().getCDElement(0)).getCDElement(6);
-    String cachedValue = ((ASTCDClass) clazz).getModifier().getStereotype().getValues(0).getValue();
-    assertEquals("de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol", cachedValue);
-    
-    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+    assertDeepEquals(clonedCD, originalCompilationUnit);
   
     assertTrue(Log.getFindings().isEmpty());
   }

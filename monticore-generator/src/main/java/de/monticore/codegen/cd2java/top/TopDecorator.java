@@ -1,17 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.top;
 
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
-import static de.monticore.cd.facade.CDModifier.*;
-import static de.se_rwth.commons.Names.constructQualifiedName;
-
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
-
+import static de.se_rwth.commons.Names.constructQualifiedName;
+// TODO: Delete in version 7.5.0-SNAPSHOT (see cd4analysis)
+@Deprecated
 public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDCompilationUnit> {
 
   /*
@@ -29,20 +32,26 @@ public class TopDecorator extends AbstractCreator<ASTCDCompilationUnit,ASTCDComp
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit originalCD) {
-    ASTCDCompilationUnit topCD = originalCD;
-    topCD.getCDDefinition().getCDClassesList().stream()
-        .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdClass.getName())))
-        .forEach(this::applyTopMechanism);
+    for (ASTCDPackage p: originalCD.getCDDefinition().getCDPackagesList()) {
+      p.getCDElementList().stream()
+              .filter(e -> e instanceof ASTCDClass)
+              .map(e -> (ASTCDClass) e)
+              .filter(cdClass -> existsHandwrittenClass(hwPath, constructQualifiedName(p.getMCQualifiedName().getPartsList(), cdClass.getName())))
+              .forEach(this::applyTopMechanism);
 
-    topCD.getCDDefinition().getCDInterfacesList().stream()
-        .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdInterface.getName())))
-        .forEach(this::applyTopMechanism);
+      p.getCDElementList().stream()
+              .filter(e -> e instanceof ASTCDInterface)
+              .map(e -> (ASTCDInterface) e)
+              .filter(cdInterface -> existsHandwrittenClass(hwPath, constructQualifiedName(p.getMCQualifiedName().getPartsList(), cdInterface.getName())))
+              .forEach(this::applyTopMechanism);
 
-    topCD.getCDDefinition().getCDEnumsList().stream()
-        .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(topCD.getCDPackageList(), cdEnum.getName())))
-        .forEach(this::applyTopMechanism);
-
-    return topCD;
+      p.getCDElementList().stream()
+              .filter(e -> e instanceof ASTCDEnum)
+              .map(e -> (ASTCDEnum) e)
+              .filter(cdEnum -> existsHandwrittenClass(hwPath, constructQualifiedName(p.getMCQualifiedName().getPartsList(), cdEnum.getName())))
+              .forEach(this::applyTopMechanism);
+    }
+    return originalCD;
   }
 
   protected void applyTopMechanism(ASTCDClass cdClass) {

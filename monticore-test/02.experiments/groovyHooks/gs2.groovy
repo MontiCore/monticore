@@ -11,11 +11,11 @@ glex = args[0]
 decoratedCD = args[2]
 
 // log cd name
-cdName = decoratedCD.get(0).getCDDefinition().getName()
+cdName = decoratedCD.getCDDefinition().getName()
 Log.info("Class diagram name: " + cdName, "GS2")
 
 // manipulate AST CD
 facade = CDMethodFacade.getInstance()
 m = facade.createMethodByDefinition("public int countStates();")
 glex.replaceTemplate(CD2JavaTemplates.EMPTY_BODY, m, new StringHookPoint("return states.size();"))
-decoratedCD.get(0).getCDDefinition().getCDElementList().get(0).getCDElementList().get(0).addCDMember(m)
+decoratedCD.getCDDefinition().getPackageWithName("automata._ast").get().getCDElementList().get(0).addCDMember(m)

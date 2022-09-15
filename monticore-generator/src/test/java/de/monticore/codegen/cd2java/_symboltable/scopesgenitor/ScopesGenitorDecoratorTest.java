@@ -101,13 +101,8 @@ public class ScopesGenitorDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testCompilationUnitNotChanged() {
-    // TODO NJ: Remove the following loc as soon as stereotype deep equals is fixed
-    ASTCDElement clazz = ((ASTCDPackage) originalCompilationUnit.getCDDefinition().getCDElement(0)).getCDElement(6);
-    String cachedValue = ((ASTCDClass) clazz).getModifier().getStereotype().getValues(0).getValue();
-    assertEquals("de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol", cachedValue);
-    
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 

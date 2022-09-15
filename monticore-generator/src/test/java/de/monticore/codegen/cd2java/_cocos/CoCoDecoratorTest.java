@@ -36,7 +36,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
 
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-  private ASTCDCompilationUnit ast;
+  private ASTCDCompilationUnit decoratedAst;
 
   @Before
   public void setup() {
@@ -45,8 +45,8 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "cocos", "CoCos");
+    decoratedAst = createEmptyCompilationUnit(ast);
     this.glex.setGlobalValue("service", new AbstractService(ast));
-
 
     CoCoService coCoService = new CoCoService(ast);
     VisitorService visitorService = new VisitorService(ast);
@@ -58,15 +58,12 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     CoCoCheckerDecorator coCoCheckerDecorator = new CoCoCheckerDecorator(glex, methodDecorator, coCoService, visitorService);
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, coCoService, astService);
     CoCoDecorator coCoDecorator = new CoCoDecorator(glex, targetPath, coCoCheckerDecorator, coCoInterfaceDecorator);
-    this.ast = coCoDecorator.decorate(ast);
+    coCoDecorator.decorate(ast, decoratedAst);
   }
 
   @Test
   public void testPackage() {
-    List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "cocos", "cocos", "_cocos");
-    assertEquals(expectedPackage, ast.getCDPackageList());
-  
-    assertTrue(Log.getFindings().isEmpty());
+    assertTrue (decoratedAst.getCDDefinition().getPackageWithName("de.monticore.codegen.cocos.cocos._cocos").isPresent());
   }
 
   @Test
@@ -75,15 +72,16 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     CD4C.init(generatorSetup);
-    for (ASTCDClass clazz : ast.getCDDefinition().getCDClassesList()) {
-      StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, clazz, clazz);
+
+    for (ASTCDClass clazz : decoratedAst.getCDDefinition().getCDClassesList()) {
+      StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, clazz, packageDir);
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();
       JavaParser parser = new JavaParser(configuration);
       ParseResult parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
-    for (ASTCDInterface astcdInterface : ast.getCDDefinition().getCDInterfacesList()) {
+    for (ASTCDInterface astcdInterface : decoratedAst.getCDDefinition().getCDInterfacesList()) {
       StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.INTERFACE, astcdInterface, packageDir);
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();

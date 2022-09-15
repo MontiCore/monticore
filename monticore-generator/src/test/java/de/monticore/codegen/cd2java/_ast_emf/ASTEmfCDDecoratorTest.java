@@ -111,19 +111,8 @@ public class ASTEmfCDDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testPackageChanged() {
-    String packageName = decoratedCompilationUnit.getCDPackageList().stream().reduce((a, b) -> a + "." + b).get();
-    assertEquals("de.monticore.codegen.ast.ast._ast", packageName);
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-
-  @Test
   public void testPackage() {
-    List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "ast", "_ast");
-    assertEquals(expectedPackage, decoratedCompilationUnit.getCDPackageList());
-  
+    assertTrue (decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.codegen.ast.ast._ast").isPresent());
     assertTrue(Log.getFindings().isEmpty());
   }
 

@@ -1,24 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
-import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.codegen.cd2java.AbstractCreator;
+import com.google.common.collect.Lists;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.codegen.CD2JavaTemplates.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
-import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
 
 /**
  * created mill class for a grammar
  */
-public class CDMillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, ASTCDCompilationUnit> {
+public class CDMillDecorator extends AbstractDecorator {
 
   protected final MillDecorator millDecorator;
 
@@ -28,32 +27,17 @@ public class CDMillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>,
     this.millDecorator = millDecorator;
   }
 
-  public ASTCDCompilationUnit decorate(final List<ASTCDCompilationUnit> cdList) {
-    ASTCDCompilationUnit mainCD = cdList.get(0);
-
+  public void decorate(final ASTCDCompilationUnit inputCD, ASTCDCompilationUnit decoratedCD) {
     // decorate for mill classes
-    ASTCDClass millClass = millDecorator.decorate(cdList);
+    List<ASTCDPackage> packageList = Lists.newArrayList();
+    packageList.add(getPackage(inputCD, decoratedCD, AST_PACKAGE));
+    packageList.add(getPackage(inputCD, decoratedCD, VISITOR_PACKAGE));
+    packageList.add(getPackage(inputCD, decoratedCD, SYMBOL_TABLE_PACKAGE));
 
-    // create package at the top level of the grammar package -> remove _ast package
-    List<String> topLevelPackage = new ArrayList<>(mainCD.getCDPackageList());
-    topLevelPackage.remove(topLevelPackage.size() - 1);
-    ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
-            CD4CodeMill.mCQualifiedNameBuilder().setPartsList(topLevelPackage).build()).build();
+    ASTCDClass millClass = millDecorator.decorate(packageList);
 
-    ASTCDDefinition astCD = CD4AnalysisMill.cDDefinitionBuilder()
-        .setName(mainCD.getCDDefinition().getName())
-        .setModifier(CD4CodeMill.modifierBuilder().build())
-        .addCDElement(millClass)
-        .build();
-
-    for (ASTCDClass cdClass : astCD.getCDClassesList()) {
-      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(topLevelPackage));
-      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
-    }
-
-    return CD4AnalysisMill.cDCompilationUnitBuilder()
-        .setMCPackageDeclaration(packageDecl)
-        .setCDDefinition(astCD)
-        .build();
+    // create package at the top level of the grammar package
+    ASTCDPackage millPackage = getPackage(inputCD, decoratedCD, DEFAULT_PACKAGE);
+    millPackage.addCDElement(millClass);
   }
 }

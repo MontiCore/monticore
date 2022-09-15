@@ -4,7 +4,6 @@ package de.monticore.codegen.cd2java.mill;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import com.google.common.collect.Lists;
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
@@ -75,7 +74,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     MillDecorator decorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
-    this.millClass = decorator.decorate(Lists.newArrayList(getASTCD()));
+    this.millClass = decorator.decorate(getASTCD().getCDDefinition().getCDPackagesList());
   }
 
   protected ASTCDCompilationUnit getASTCD() {

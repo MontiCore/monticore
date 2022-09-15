@@ -1,13 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
-import com.google.common.collect.Lists;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDElement;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
@@ -40,11 +38,12 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
@@ -53,17 +52,17 @@ import static org.junit.Assert.assertEquals;
 
 public class CDMillDecoratorTest extends DecoratorTestCase {
 
-  private ASTCDCompilationUnit millCD;
-
   private GlobalExtensionManagement glex;
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
-  private ASTCDCompilationUnit decoratedSymbolCompilationUnit;
+  private ASTCDCompilationUnit symbolCompilationUnit;
 
-  private ASTCDCompilationUnit decoratedScopeCompilationUnit;
+  private ASTCDCompilationUnit scopeCompilationUnit;
+
+  private ASTCDCompilationUnit clonedCD;
 
   @Before
   public void setUp() {
@@ -71,26 +70,27 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
-    decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
-    decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
+    originalCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
+    scopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
+    symbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
+    clonedCD = originalCompilationUnit.deepClone();
+    decoratedCompilationUnit = getASTCD();
+    getSymbolCD();
+    this.glex.setGlobalValue("service", new VisitorService(originalCompilationUnit));
 
-    originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
-
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    ParserService parserService = new ParserService(decoratedCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
+    ParserService parserService = new ParserService(originalCompilationUnit);
     MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
 
     CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator);
-    this.millCD = cdMillDecorator.decorate(Lists.newArrayList(getASTCD(), getSymbolCD()));
+    cdMillDecorator.decorate(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   protected ASTCDCompilationUnit getASTCD() {
-    ASTService astService = new ASTService(decoratedCompilationUnit);
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    ASTService astService = new ASTService(originalCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, new DataDecoratorUtil());
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
@@ -101,7 +101,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     ASTReferenceDecorator<ASTCDInterface> astInterfaceReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDInterface>(glex, symbolTableService);
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astClassReferencedSymbolDecorator);
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(decoratedCompilationUnit));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(originalCompilationUnit));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
     ASTConstantsDecorator astConstantsDecorator = new ASTConstantsDecorator(glex, astService);
     EnumDecorator enumDecorator = new EnumDecorator(glex, new AccessorDecorator(glex, astService), astService);
@@ -111,14 +111,14 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     FullASTInterfaceDecorator fullASTInterfaceDecorator = new FullASTInterfaceDecorator(dataInterfaceDecorator, astInterfaceDecorator, astInterfaceReferencedSymbolDecorator);
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator,
         astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
-    return astcdDecorator.decorate(decoratedCompilationUnit);
+    return astcdDecorator.decorate(originalCompilationUnit);
   }
 
 
-  protected ASTCDCompilationUnit getSymbolCD() {
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
-    ParserService parserService = new ParserService(decoratedCompilationUnit);
+  protected void getSymbolCD() {
+    SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
+    ParserService parserService = new ParserService(originalCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, symbolTableService);
     AccessorDecorator accessorDecorator = new AccessorDecorator(glex, symbolTableService);
 
@@ -152,50 +152,43 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
         symbolDeSerDecorator, scopeDeSerDecorator, symbolTablePrinterDecorator, scopesGenitorDecorator, scopesGenitorDelegatorDecorator);
 
     // cd with no handcoded classes
-    return symbolTableCDDecorator.decorate(decoratedCompilationUnit, decoratedSymbolCompilationUnit, decoratedScopeCompilationUnit);
+    symbolTableCDDecorator.decorate(originalCompilationUnit, symbolCompilationUnit, scopeCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test
   public void testCompilationUnitNotChanged() {
-    // TODO NJ: Remove the following loc as soon as stereotype deep equals is fixed
-    ASTCDElement clazz = ((ASTCDPackage) originalCompilationUnit.getCDDefinition().getCDElement(0)).getCDElement(6);
-    String cachedValue = ((ASTCDClass) clazz).getModifier().getStereotype().getValues(0).getValue();
-    assertEquals("de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol", cachedValue);
-    
-    assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+    assertDeepEquals(clonedCD, originalCompilationUnit);
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testPackageName() {
-    assertEquals(5, millCD.sizePackage());
-    assertEquals("de", millCD.getCDPackageList().get(0));
-    assertEquals("monticore", millCD.getCDPackageList().get(1));
-    assertEquals("codegen", millCD.getCDPackageList().get(2));
-    assertEquals("symboltable", millCD.getCDPackageList().get(3));
-    assertEquals("automaton", millCD.getCDPackageList().get(4));
-  
+    Assert.assertTrue (decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.codegen.symboltable.automaton").isPresent());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDefinitionName() {
-    assertEquals("Automaton", millCD.getCDDefinition().getName());
+    assertEquals("Automaton", decoratedCompilationUnit.getCDDefinition().getName());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassSize() {
-    assertEquals(1, millCD.getCDDefinition().getCDClassesList().size());
+    Optional<ASTCDPackage> p = decoratedCompilationUnit.getCDDefinition().getCDPackagesList().stream()
+            .filter(pp -> "de.monticore.codegen.symboltable.automaton".equals(pp.getName())).findAny();
+    assertTrue (p.isPresent());
+    assertEquals(1, p.get().getCDElementList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMillClass() {
-    ASTCDClass automatonMill = getClassBy("AutomatonMill", millCD);
+    ASTCDClass automatonMill = getClassBy("AutomatonMill", decoratedCompilationUnit);
   
     assertTrue(Log.getFindings().isEmpty());
   }

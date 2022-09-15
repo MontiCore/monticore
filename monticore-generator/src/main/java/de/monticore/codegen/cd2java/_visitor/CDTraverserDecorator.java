@@ -1,28 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._visitor;
 
-import com.google.common.collect.Lists;
-import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
-import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
+import de.se_rwth.commons.Joiners;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static de.monticore.cd.codegen.CD2JavaTemplates.PACKAGE;
-import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
-import static de.se_rwth.commons.Names.constructQualifiedName;
 
-public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDCompilationUnit> {
+public class CDTraverserDecorator extends AbstractDecorator {
 
   protected final TraverserInterfaceDecorator iTraverserDecorator;
   protected final TraverserClassDecorator traverserDecorator;
@@ -50,16 +41,10 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     this.inheritanceHandlerDecorator = inheritanceHandlerDecorator;
   }
 
-  @Override
-  public ASTCDCompilationUnit decorate(ASTCDCompilationUnit input) {
-    List<String> visitorPackage = Lists.newArrayList();
-    input.getCDPackageList().forEach(p -> visitorPackage.add(p.toLowerCase()));
-    visitorPackage.addAll(Arrays.asList(input.getCDDefinition().getName().toLowerCase(), VISITOR_PACKAGE));
-    ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
-            CD4CodeMill.mCQualifiedNameBuilder().setPartsList(visitorPackage).build()).build();
-
+  public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD) {
+    ASTCDPackage visitorPackage = getPackage(input, decoratedCD, VISITOR_PACKAGE);
     // check for TOP classes
-    setIfExistsHandwrittenFile(visitorPackage);
+    setIfExistsHandwrittenFile(visitorPackage.getName());
 
     // decorate cd
     ASTCDInterface traverserInterface = iTraverserDecorator.decorate(input);
@@ -68,29 +53,11 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDInterface handlerInterface = handlerDecorator.decorate(input);
     ASTCDClass inheritanceClass  = inheritanceHandlerDecorator.decorate(input);
     
-    // build cd
-    ASTCDDefinition astCD = CD4CodeMill.cDDefinitionBuilder()
-        .setName(input.getCDDefinition().getName())
-        .setModifier(CD4CodeMill.modifierBuilder().build())
-        .addCDElement(traverserInterface)
-        .addCDElement(traverserClass)
-        .addCDElement(visitor2Interface)
-        .addCDElement(handlerInterface)
-        .addCDElement(inheritanceClass)
-        .build();
-
-    for (ASTCDClass cdClass : astCD.getCDClassesList()) {
-      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(visitorPackage));
-    }
-
-    for (ASTCDInterface cdInterface : astCD.getCDInterfacesList()) {
-      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdInterface, createPackageHookPoint(visitorPackage));
-    }
-
-    return CD4CodeMill.cDCompilationUnitBuilder()
-        .setMCPackageDeclaration(packageDecl)
-        .setCDDefinition(astCD)
-        .build();
+    visitorPackage.addCDElement(traverserInterface);
+    visitorPackage.addCDElement(traverserClass);
+    visitorPackage.addCDElement(visitor2Interface);
+    visitorPackage.addCDElement(handlerInterface);
+    visitorPackage.addCDElement(inheritanceClass);
   }
 
   /**
@@ -98,9 +65,9 @@ public class CDTraverserDecorator extends AbstractCreator<ASTCDCompilationUnit, 
    * 
    * @param visitorPackage The package under observation
    */
-  protected void setIfExistsHandwrittenFile(List<String> visitorPackage) {
+  protected void setIfExistsHandwrittenFile(String visitorPackage) {
     boolean isVisitorHandCoded = existsHandwrittenClass(handCodedPath,
-        constructQualifiedName(visitorPackage, visitorService.getTraverserInterfaceSimpleName()));
+        Joiners.DOT.join(visitorPackage, visitorService.getTraverserInterfaceSimpleName()));
     iTraverserDecorator.setTop(isVisitorHandCoded);
   }
 }

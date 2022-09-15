@@ -6,9 +6,17 @@ import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.cd.facade.CDConstructorFacade;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.types.MCTypeFacade;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 public abstract class AbstractDecorator {
 
@@ -17,6 +25,8 @@ public abstract class AbstractDecorator {
    * Decide if your new Decorator is a Creator or a Transformer, to overwrite the correct decorate method
    * Only a class to sum up general Decorator functionality
    **/
+
+  public static final String DEFAULT_PACKAGE = "";
 
   protected final GlobalExtensionManagement glex;
 
@@ -107,4 +117,24 @@ public abstract class AbstractDecorator {
   public DecorationHelper getDecorationHelper() {
     return decorationHelper;
   }
+
+  protected ASTCDPackage getPackage(ASTCDCompilationUnit origCD, ASTCDCompilationUnit decoratedCD, String packageName) {
+    String completeName = getPackageName(origCD, packageName);
+    Optional<ASTCDPackage> astCDPackage = decoratedCD.getCDDefinition().getCDPackagesList().stream()
+            .filter(p -> p.getName().equals(completeName)).findFirst();
+    if (astCDPackage.isPresent()) {
+      return astCDPackage.get();
+    } else {
+      ASTCDPackage p = CD4CodeMill.cDPackageBuilder().setMCQualifiedName(
+              CD4CodeMill.mCQualifiedNameBuilder().setPartsList(Arrays.asList(completeName.split("\\."))).build()).build();
+      decoratedCD.getCDDefinition().addCDPackage(0, p);
+      return p;
+    }
+  }
+
+  protected String getPackageName(ASTCDCompilationUnit origCD, String subPackage) {
+    String origPackage = Names.constructQualifiedName(origCD.getCDPackageList(), origCD.getCDDefinition().getName());
+    return (subPackage.isEmpty()?origPackage: Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
+  }
+
 }
