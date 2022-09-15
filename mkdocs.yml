@@ -2,6 +2,7 @@ site_name: MontiCore
 theme:
   name: 'material'
   favicon: 'img/favicon.ico'
+  custom_dir: docs/overrides
   icon:
     logo: 'fontawesome/solid/desktop'
 
