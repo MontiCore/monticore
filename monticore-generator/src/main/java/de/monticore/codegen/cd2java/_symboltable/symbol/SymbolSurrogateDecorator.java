@@ -63,12 +63,12 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     ASTModifier modifier = symbolTableService.createModifierPublicModifier(symbolInput.getModifier());
     
     // symbol rule methods and attributes
-    List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.deepClone().getCDAttributeList()
+    List<ASTCDMethod> symbolRuleAttributeMethods = symbolInput.getCDAttributeList()
       .stream()
       .map(methodDecorator.getMutatorDecorator()::decorate)
       .flatMap(List::stream)
       .collect(Collectors.toList());
-    symbolRuleAttributeMethods.addAll(symbolInput.deepClone().getCDAttributeList()
+    symbolRuleAttributeMethods.addAll(symbolInput.getCDAttributeList()
       .stream()
       .map(methodDecorator.getAccessorDecorator()::decorate)
       .flatMap(List::stream)
@@ -81,7 +81,9 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .filter(m -> !m.getName().equals("getEnclosingScope"))
       .collect(Collectors.toList());
     List<ASTCDMethod> delegateSymbolRuleAttributeMethods = createOverriddenMethodDelegates(delegateMethods);
-    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
+    List<ASTCDMethod> symbolRuleMethods = symbolInput.getCDMethodList().stream()
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     List<ASTCDMethod> delegateSymbolRuleMethods = createOverriddenMethodDelegates(symbolRuleMethods);
     
     ASTCDAttribute delegateAttribute = createDelegateAttribute(symbolFullName);

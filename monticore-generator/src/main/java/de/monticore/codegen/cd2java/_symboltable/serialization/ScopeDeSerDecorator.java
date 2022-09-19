@@ -98,12 +98,13 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
 
     // list of all scope rule attributes
-    List<ASTCDAttribute> scopeRuleAttrList = scopeInput.deepClone().getCDDefinition()
-        .getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getCDAttributeList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTCDAttribute> scopeRuleAttrList = scopeInput.getCDDefinition()
+            .getCDClassesList()
+            .stream()
+            .map(ASTCDClass::getCDAttributeList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     scopeRuleAttrList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
     // map with all symbol kinds  available in this scope

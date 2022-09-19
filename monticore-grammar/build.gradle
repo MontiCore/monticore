@@ -10,7 +10,6 @@ buildscript {
 
 plugins {
     id "java-library"
-    id "com.github.johnrengelman.shadow" version "6.0.0"
     id "monticore"
     id "jacoco"
 }
@@ -255,13 +254,8 @@ java {
     }
 }
 
-shadowJar {
-    from sourceSets.grammars.resources
-}
-
-jar.dependsOn(shadowJar)
 jar.dependsOn(grammarsJar)
 
 if (findProperty('ci') == null) {
-    jar.dependsOn(shadowJar, testJar)
+    jar.dependsOn(testJar)
 }

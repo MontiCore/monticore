@@ -82,15 +82,20 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTModifier modifier = symbolTableService.createModifierPublicModifier(symbolInput.getModifier());
 
     // uses symbol rule methods and attributes
-    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList()
-            .stream().filter(attr -> !symbolTableService.isInheritedAttribute(attr)).collect(Collectors.toList());
+    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.getCDAttributeList()
+            .stream()
+            .filter(attr -> !symbolTableService.isInheritedAttribute(attr))
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
             .stream()
             .map(methodDecorator::decorate)
             .flatMap(List::stream)
             .collect(Collectors.toList());
-    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
+    List<ASTCDMethod> symbolRuleMethods = symbolInput.getCDMethodList().stream()
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     for (ASTCDMethod meth: symbolRuleMethods) {
       if (symbolTableService.isMethodBodyPresent(meth)) {
         glex.replaceTemplate(EMPTY_BODY, meth, new StringHookPoint(symbolTableService.getMethodBody(meth)));

@@ -73,7 +73,7 @@ public class ASTEmfDecorator extends ASTDecorator {
 
   public List<ASTCDMethod> createEMethods(ASTCDClass astcdClass) {
     // with inherited attributes
-    List<ASTCDAttribute> copiedAttributeList = astcdClass.deepClone().getCDAttributeList();
+    List<ASTCDAttribute> copiedAttributeList = astcdClass.getCDAttributeList();
 
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     String className = astcdClass.getName();

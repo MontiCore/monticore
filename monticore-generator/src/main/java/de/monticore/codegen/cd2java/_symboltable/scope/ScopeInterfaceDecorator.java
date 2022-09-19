@@ -87,17 +87,19 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     String scopeInterfaceName = INTERFACE_PREFIX + symbolTableService.getCDName() + SCOPE_SUFFIX;
 
     // get scope rule attributes and methods
-    List<ASTCDAttribute> scopeRuleAttributes = scopeInput.deepClone().getCDDefinition().getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getCDAttributeList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTCDAttribute> scopeRuleAttributes = scopeInput.getCDDefinition().getCDClassesList()
+            .stream()
+            .map(ASTCDClass::getCDAttributeList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getCDMethodList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+            .stream()
+            .map(ASTCDClass::getCDMethodList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     scopeRuleMethodList.forEach(m -> m.getModifier().setAbstract(true));
 
     List<ASTCDMethod> scopeRuleAttributeMethods = scopeRuleAttributes
@@ -116,11 +118,12 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       superScopeInterfaces.add(getMCTypeFacade().createQualifiedType(I_SCOPE));
     }
 
-    List<ASTMCObjectType> scopeRuleInterfaces = scopeInput.deepClone().getCDDefinition().getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getInterfaceList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTMCObjectType> scopeRuleInterfaces = scopeInput.getCDDefinition().getCDClassesList()
+            .stream()
+            .map(ASTCDClass::getInterfaceList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
 
     Set<String> symbolAttributes = createSymbolAttributesNames(symbolInput.getCDDefinition().getCDClassesList(), symbolTableService.getCDSymbol());
     symbolAttributes.addAll(getSuperSymbolAttributesNames());

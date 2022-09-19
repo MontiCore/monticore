@@ -89,21 +89,23 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTMCQualifiedType scopeInterfaceType = symbolTableService.getScopeInterfaceType();
 
     // attributes and methods from scope rule
-    List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.deepClone().getCDDefinition()
-        .getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getCDAttributeList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTCDAttribute> scopeRuleAttributeList = scopeInput.getCDDefinition()
+            .getCDClassesList()
+            .stream()
+            .map(ASTCDClass::getCDAttributeList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     scopeRuleAttributeList
         .forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
-    List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition()
-        .getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getCDMethodList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTCDMethod> scopeRuleMethodList = scopeInput.getCDDefinition()
+            .getCDClassesList()
+            .stream()
+            .map(ASTCDClass::getCDMethodList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     for (ASTCDMethod meth: scopeRuleMethodList) {
       if (symbolTableService.isMethodBodyPresent(meth)) {
         glex.replaceTemplate(EMPTY_BODY, meth, new StringHookPoint(symbolTableService.getMethodBody(meth)));
@@ -151,11 +153,12 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTCDAttribute astNodeAttribute = createASTNodeAttribute();
     List<ASTCDMethod> astNodeMethods = methodDecorator.decorate(astNodeAttribute);
 
-    Optional<ASTCDClass> scopeRuleSuperClass = scopeInput.deepClone().getCDDefinition()
+    Optional<ASTCDClass> scopeRuleSuperClass = scopeInput.getCDDefinition()
             .getCDClassesList()
             .stream()
             .filter(ASTCDClass::isPresentCDExtendUsage)
-            .findFirst();
+            .findFirst()
+            .map(c -> c.deepClone());
 
     List<ASTCDMethod> resolveSubKindsMethods = createResolveSubKindsNameMethods(symbolInput.getCDDefinition());
 

@@ -57,7 +57,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
       for(DiagramSymbol symbol: service.getSuperCDsTransitive()){
         if(!service.hasComponentStereotype(((ASTCDDefinition) symbol.getAstNode()).getModifier())){
           String superGrammarName = symbol.getName();
-          List<ASTCDClass> astcdClasses = astCD.getCDDefinition().deepClone().getCDClassesList();
+          List<ASTCDClass> astcdClasses = astCD.getCDDefinition().getCDClassesList();
           ASTMCQualifiedType superClass = getMCTypeFacade().createQualifiedType(service.getParserClassFullName(symbol));
           String className = superGrammarName + PARSER_SUFFIX + FOR_SUFFIX + grammarName;
 

@@ -44,7 +44,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
-    this.clazzName = originalClass.deepClone().getName();
+    this.clazzName = originalClass.getName();
     changedClass.addCDMember(createDefaultConstructor(originalClass));
     if (originalClass.isPresentCDExtendUsage()) {
       changedClass.setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().build());
@@ -63,10 +63,11 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     }
 
     //remove inherited attributes, because these are already defined in superclass
-    List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
-        .stream()
-        .filter(a -> !service.isInheritedAttribute(a))
-        .collect(Collectors.toList());
+    List<ASTCDAttribute> ownAttributes = originalClass.getCDAttributeList()
+            .stream()
+            .filter(a -> !service.isInheritedAttribute(a))
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
 
     changedClass.addAllCDMembers(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
     // no Inherited attributes only, because inherited once are cloned through super.deepClone()
