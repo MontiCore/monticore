@@ -73,7 +73,7 @@ public class TypeCheck {
       if(isChar(leftType)&& isChar(right)){
         return true;
       }
-      if(isShort(leftType)&& isShort(right)){
+      if(isShort(leftType)&& (isByte(right) || isShort(right))){
         return true;
       }
       if(isByte(leftType)&& isByte(right)){
