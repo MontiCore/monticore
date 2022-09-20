@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
 
 import java.util.*;
@@ -78,6 +79,10 @@ public interface ISymbol {
     final List<T> sortedSymbols = new ArrayList<>(unorderedSymbols);
     Collections.sort(sortedSymbols, Comparator.comparing(ISymbol::getSourcePosition));
     return ImmutableList.copyOf(sortedSymbols);
+  }
+
+  default void accept (ITraverser visitor)  {
+    visitor.handle(this);
   }
 
 }
