@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
@@ -9,9 +10,11 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Stream;
 
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
@@ -63,20 +66,18 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
 
   @Override
   public void endVisit(ASTMCQualifiedName qName) {
-    Optional<TypeVarSymbol> typeVar = getScope(qName.getEnclosingScope()).resolveTypeVar(qName.getQName());
-    SymTypeExpression symType = null;
-    if(typeVar.isPresent()){
-      symType = SymTypeExpressionFactory.createTypeVariable(typeVar.get());
-    }else{
-      //then test for types
-      Optional<TypeSymbol> type = getScope(qName.getEnclosingScope()).resolveType(qName.getQName());
-      if(type.isPresent()){
-        symType = SymTypeExpressionFactory.createTypeObject(type.get());
-      }else{
-        symType = handleIfNotFound(qName);
-      }
+    // Search for matching type variables
+    Optional<? extends SymTypeExpression> symType = createTypeVariable(qName);
+
+    // If no matching type variables, search for matching types
+    if (symType.isEmpty()) {
+      symType = createTypeObject(qName);
     }
-    getTypeCheckResult().setResult(symType);
+
+    // Update result, if still no matching symbol then create sym-type obscure
+    this.getTypeCheckResult().setResult(
+      symType.isPresent() ? symType.get() : createObscure(qName)
+    );
   }
 
   @Override
@@ -87,13 +88,72 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
   }
 
   /**
-   * extension method for error handling
+   * This method creates a sym-type expression for the first resolved type
+   * variable symbol matching the provided qualified name. It logs an error if
+   * multiple matching symbols are found. The resulting sym-type expression is
+   * encapsulated in an optional.
+   * @param qName the qualified name
+   * @return an optional of the created sym-type expression, empty if no match
+   * type variable symbol is found
    */
-  protected SymTypeExpression handleIfNotFound(ASTMCQualifiedName qName){
-    Log.error("0xA0324 The qualified type " + qName.getQName() +
-        " cannot be found", qName.get_SourcePositionStart());
-    return SymTypeExpressionFactory.createObscureType();
+  protected Optional<SymTypeVariable> createTypeVariable(ASTMCQualifiedName qName) {
+    Preconditions.checkNotNull(qName);
+
+    List<TypeVarSymbol> matches = getScope(qName.getEnclosingScope())
+      .resolveTypeVarMany(qName.getQName());
+    if (matches.isEmpty()) {
+      return Optional.empty();
+    } else {
+      SymTypeVariable symType = SymTypeExpressionFactory.createTypeVariable(matches.get(0));
+      if (matches.size() > 1) {
+        Log.error("0xA0325 Reference " + qName.getQName()
+            + " matches multiple type variables: "
+            + StringUtils.join(matches, ", "),
+          qName.get_SourcePositionStart()
+        );
+      }
+      return Optional.of(symType);
+    }
   }
 
+  /**
+   * This method creates a sym-type expression for the first resolved type
+   * symbol matching the provided qualified name. It logs an error if
+   * multiple matching symbols are found. The resulting sym-type expression is
+   * encapsulated in an optional.
+   * @param qName the qualified name
+   * @return an optional of the created sym-type expression, empty if no match
+   * type symbol is found
+   */
+  protected Optional<SymTypeOfObject> createTypeObject(ASTMCQualifiedName qName) {
+    Preconditions.checkNotNull(qName);
 
+    List<TypeSymbol> matches = getScope(qName.getEnclosingScope())
+      .resolveTypeMany(qName.getQName());
+    if (matches.isEmpty()) {
+      return Optional.empty();
+    } else {
+      SymTypeOfObject symType = SymTypeExpressionFactory.createTypeObject(matches.get(0));
+      if (matches.size() > 1) {
+        Log.error("0xA0326 Reference " + qName.getQName()
+            + " matches multiple types: "
+            + StringUtils.join(matches, ", "),
+          qName.get_SourcePositionStart()
+        );
+      }
+      return Optional.of(symType);
+    }
+  }
+
+  /**
+   * This method creates a sym-type obscure and logs an error that no symbol
+   * matching the provided qualified name can be found.
+   * @param qName the qualified name
+   * @return a sym-type obscure
+   */
+  protected SymTypeObscure createObscure(ASTMCQualifiedName qName) {
+    Preconditions.checkNotNull(qName);
+    Log.error("0xA0324 Cannot find symbol " + qName.getQName(), qName.get_SourcePositionStart());
+    return SymTypeExpressionFactory.createObscureType();
+  }
 }
