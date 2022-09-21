@@ -261,6 +261,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("foo2", _IntegerSymType));
     add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("longF", _longSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
@@ -454,10 +455,14 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
    */
   @Test
   public void deriveFromBooleanNotExpression() throws IOException {
+    init_basic();
+
     //test with a int
     check("~3", "int");
     //test with a char
     check("~\'a\'", "int");
+    //test with a long
+    check("~longF", "long");
   }
 
   @Test
