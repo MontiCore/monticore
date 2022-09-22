@@ -735,8 +735,12 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * helper method for the calculation of the ASTBooleanNotExpression
    */
   protected SymTypeExpression getUnaryIntegralPromotionType(SymTypeExpression type) {
-    if (!isLong(type) && type.isPrimitive() && ((SymTypePrimitive) type).isIntegralType()) {
-      return SymTypeExpressionFactory.createPrimitive("int");
+    if (type.isPrimitive() && isIntegralType(type)) {
+      if (isLong(type)) {
+        return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.LONG);
+      } else {
+        return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT);
+      }
     }
     return SymTypeExpressionFactory.createObscureType();
   }
