@@ -23,9 +23,9 @@ public class SymTypeOfWildcard extends SymTypeExpression {
     if(bound==null){
       return "?";
     }else if(isUpper){
-      return "? super "+bound.print();
-    }else{
       return "? extends "+bound.print();
+    }else{
+      return "? super "+bound.print();
     }
   }
 
@@ -34,9 +34,9 @@ public class SymTypeOfWildcard extends SymTypeExpression {
     if(bound==null){
       return "?";
     }else if(isUpper){
-      return "? super "+bound.printFullName();
-    }else{
       return "? extends "+bound.printFullName();
+    }else{
+      return "? super "+bound.printFullName();
     }
   }
 

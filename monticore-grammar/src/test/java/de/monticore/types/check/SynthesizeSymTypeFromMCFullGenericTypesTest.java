@@ -241,5 +241,13 @@ public class SynthesizeSymTypeFromMCFullGenericTypesTest {
     assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
+  @Test
+  public void symTypeFromAST_TestGeneric8() throws IOException {
+    String s = "List<? extends java.lang.String>";
+    ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
+    asttype.accept(traverser);
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+  }
+
 
 }
