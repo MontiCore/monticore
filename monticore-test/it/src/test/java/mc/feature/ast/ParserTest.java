@@ -13,6 +13,10 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -28,6 +32,12 @@ import mc.feature.featuredsl._ast.ASTSpices2;
 import mc.feature.featuredsl._parser.FeatureDSLParser;
 
 public class ParserTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testConstants() throws IOException {
@@ -55,7 +65,8 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertEquals(true, ((ASTSpices1) ast.getWiredList().get(3)).isPepper());
     
     assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWiredList().get(4)).getSpicelevel());
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -70,7 +81,6 @@ public class ParserTest extends GeneratorIntegrationsTest {
     p.parseAutomaton(s);
     
     assertEquals(true, p.hasErrors());
-    
   }
   
   /*  Grammar:  B: A:A (B:A)*; 
@@ -93,7 +103,8 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertTrue(ast.isPresent());
     assertEquals(true, ast.get().getA() instanceof ASTA);
     assertEquals(true, ast.get().getBList() instanceof List);
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /*  Grammar:  B: A:A (A:A)*; 
@@ -115,7 +126,8 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertTrue(ast.isPresent());
     assertEquals(false, p.hasErrors());
     assertEquals(true, ast.get().getAList() instanceof List);
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /*  Grammar: 
@@ -134,7 +146,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     FeatureDSLParser p = new FeatureDSLParser();
     Optional<ASTComplexname> ast = p.parseComplexname(s);
     
-    assertFalse(ast.isPresent());    
+    assertFalse(ast.isPresent());
   }
   
 }

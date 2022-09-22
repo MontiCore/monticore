@@ -4,7 +4,7 @@
 This page describes the technical installation and usage of MontiCore for
 language developers. This page further inspects a simple example grammar and the
 Java classes and other artifacts generated from this grammar. After installing
-MontiCore as described on this page, it can be used to develop new modelling
+MontiCore as described on this page, it can be used to develop new modeling
 languages and generators as described in subsequent chapters.
 
 MontiCore provides a command line interface (CLI) tool and can easily be used

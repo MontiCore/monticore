@@ -4,18 +4,25 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import de.se_rwth.commons.logging.Log;
 
 public class DuplicatedSymbolDefinitionInProdTest extends CocoTest {
 
   private final String MESSAGE = " Symbol or scope is mentioned more than once in the declaration 'A'.";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4041.A4041";
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
     checker.addCoCo(new DuplicatedSymbolDefinitionInProd());
   }
 

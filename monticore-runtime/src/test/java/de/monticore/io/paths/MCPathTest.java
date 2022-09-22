@@ -3,6 +3,8 @@ package de.monticore.io.paths;
 
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,8 +24,8 @@ import static org.junit.Assert.*;
 
 public class MCPathTest {
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     Log.init();
     Log.enableFailQuick(false);
   }
@@ -42,6 +44,7 @@ public class MCPathTest {
     assertTrue(grammar.isPresent());
     assertTrue(fileInJar.isPresent());
     assertFalse(nonExistent.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -70,6 +73,7 @@ public class MCPathTest {
     assertTrue(fileInJar.isPresent());
     assertTrue(fileInJar2.isPresent());
     assertFalse(fileNotInJar.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -81,6 +85,7 @@ public class MCPathTest {
     assertEquals(1, mp.getEntries().size());
     mp.addEntry(models);
     assertEquals(2, mp.getEntries().size());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -91,6 +96,7 @@ public class MCPathTest {
     assertEquals(1, mp.getEntries().size());
     mp.removeEntry(resources);
     assertTrue(mp.isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -107,6 +113,7 @@ public class MCPathTest {
     assertTrue(paths.contains(resources.toAbsolutePath()));
     assertTrue(paths.contains(models.toAbsolutePath()));
     assertTrue(paths.contains(java.toAbsolutePath()));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -118,6 +125,7 @@ public class MCPathTest {
     assertFalse(mp.isEmpty());
     mp.removeEntry(resources);
     assertTrue(mp.isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -129,6 +137,7 @@ public class MCPathTest {
     mp.addEntry(models);
     assertEquals("[" + resources.toUri().toURL().toString() + ", "
       + models.toUri().toURL().toString() + "]" ,mp.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -138,6 +147,7 @@ public class MCPathTest {
     Optional<Path> result = MCPath.toPath(url);
     assertTrue(result.isPresent());
     assertEquals(result.get(), resources.toAbsolutePath());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -146,6 +156,7 @@ public class MCPathTest {
     Optional<URL> result = MCPath.toURL(resources);
     assertTrue(result.isPresent());
     assertEquals(result.get().toURI(), resources.toUri());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -167,18 +178,21 @@ public class MCPathTest {
     String jdk = System.getenv("JAVA_HOME").replaceAll("\\\\", "/") + "/jre/lib/rt.jar";
     MCPath mp = new MCPath(jdk);
     assertTrue(mp.find("java/util/List.class").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testShouldNotFind(){
     MCPath mp = new MCPath("");
     assertFalse(mp.find("java/util/List.class").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testShouldNotFind2(){
     MCPath mp = new MCPath("this/is/a/test");
     assertFalse(mp.find("java/util/List.class").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

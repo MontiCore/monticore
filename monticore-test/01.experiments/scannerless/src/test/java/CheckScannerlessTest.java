@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-package test;
 
 import de.monticore.scannerless._ast.*;
 import de.monticore.scannerless._parser.ScannerlessParser;
@@ -12,23 +11,19 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
+import static org.junit.Assert.*;
 
 public class CheckScannerlessTest {
     
   // setup the language infrastructure
   ScannerlessParser parser = new ScannerlessParser() ;
   
-  @BeforeClass
-  public static void init() {
-    // replace log by a side effect free variant
-    LogStub.init();        
-    // LogStub.initPlusLog();  // for manual testing purposes
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-  
+
 
   @Before
   public void setUp() { 
@@ -44,6 +39,7 @@ public class CheckScannerlessTest {
   public void testType1() throws IOException {
     ASTType ast = parser.parse_StringType( " Theo " ).get();
     assertEquals("Theo", ast.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -53,6 +49,7 @@ public class CheckScannerlessTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getType(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -62,6 +59,7 @@ public class CheckScannerlessTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getTypeList().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -73,6 +71,7 @@ public class CheckScannerlessTest {
     assertEquals("Set", ta.getTypeList().get(0).getName());
     ASTTypeArguments ta2 = ta.getTypeList().get(0).getTypeArguments();
     assertEquals("Theo", ta2.getTypeList().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -84,6 +83,7 @@ public class CheckScannerlessTest {
 
     ASTType ast1 = ((ASTTypeAsExpression)ast0).getType() ;
     assertEquals("List", ast1.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -98,6 +98,7 @@ public class CheckScannerlessTest {
     assertEquals(ASTTypeAsExpression.class, ast1.getClass());
     ASTType ast2 = ((ASTTypeAsExpression)ast1).getType() ;
     assertEquals("List", ast2.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -115,6 +116,7 @@ public class CheckScannerlessTest {
     assertEquals(ASTTypeAsExpression.class, ast1.getClass());
     ASTType ast2 = ((ASTTypeAsExpression)ast1).getType() ;
     assertEquals("List", ast2.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -138,6 +140,7 @@ public class CheckScannerlessTest {
   public void testExpr1() throws IOException {
     ASTExpression ast = parser.parse_StringExpression( " theo + theo " ).get();
     assertEquals(ASTAddExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -146,6 +149,7 @@ public class CheckScannerlessTest {
     ASTExpression ast = parser.parse_StringExpression(
     	" (theo < ox) > theo " ).get();
     assertEquals(ASTComparisonExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -154,6 +158,7 @@ public class CheckScannerlessTest {
     ASTExpression ast = parser.parse_StringExpression(
     	" theo >> theo " ).get();
     assertEquals(ASTShiftExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -162,6 +167,7 @@ public class CheckScannerlessTest {
     ASTExpression ast = parser.parse_StringExpression(
     	"theo > theo >> theo >>> theo >= theo" ).get();
     assertEquals(ASTComparisonExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -190,6 +196,7 @@ public class CheckScannerlessTest {
   public void testA() throws IOException {
     ASTA ast = parser.parse_StringA( "  Theo " ).get();
     assertEquals("Theo", ast.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -198,6 +205,7 @@ public class CheckScannerlessTest {
     ASTB ast = parser.parse_StringB( "Otto \n Karo  " ).get();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -206,6 +214,7 @@ public class CheckScannerlessTest {
     ASTC ast = parser.parse_StringC( "    Otto,Karo" ).get();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------

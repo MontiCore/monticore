@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,8 +23,9 @@ import mc.feature.expression.expression._parser.ExpressionParser;
 
 public class ExpressionTest extends GeneratorIntegrationsTest {
   
-  @BeforeClass
-  public static void disableFailQuick() {
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   
@@ -43,6 +46,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -57,6 +61,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -70,6 +75,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -83,6 +89,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -96,6 +103,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -109,6 +117,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -122,6 +131,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -135,6 +145,7 @@ public class ExpressionTest extends GeneratorIntegrationsTest {
     catch (Exception e) {
       fail(e.getMessage());
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

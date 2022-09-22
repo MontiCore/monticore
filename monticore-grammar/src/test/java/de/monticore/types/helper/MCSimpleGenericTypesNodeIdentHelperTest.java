@@ -6,6 +6,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,6 +19,13 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class MCSimpleGenericTypesNodeIdentHelperTest {
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testGetIdent() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
@@ -36,5 +47,7 @@ public class MCSimpleGenericTypesNodeIdentHelperTest {
     assertEquals("@Optional!MCBasicGenericType", helper.getIdent(astmcType2.get()));
     assertEquals("@java.util.Optional!MCBasicGenericType",helper.getIdent(astmcType3.get()));
     assertEquals("@a.b.c.D!MCBasicGenericType",helper.getIdent(astmcType4.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

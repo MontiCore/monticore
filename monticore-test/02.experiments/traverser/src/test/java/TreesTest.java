@@ -7,6 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import subtrees.SubTreesMill;
@@ -18,6 +22,12 @@ import trees._parser.TreesParser;
 import trees._visitor.TreesTraverser;
 
 public class TreesTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testTrees() throws IOException {
@@ -31,6 +41,7 @@ public class TreesTest {
     
     // compute and check result
     assertEquals(3, leafCount(tree.get()));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -45,6 +56,7 @@ public class TreesTest {
     
     // compute and check result
     assertEquals(6, leafCount(tree.get()));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**

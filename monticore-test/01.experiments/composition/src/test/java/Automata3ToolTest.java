@@ -15,8 +15,8 @@ import org.junit.Test;
 
 public class Automata3ToolTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public  void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -48,6 +48,7 @@ public class Automata3ToolTest {
     // original:                         state NoGame /*[*/ true /*]*/ <<initial>>
     assertTrue(res, res.matches(".*state NoGame /.../ true /.../ <<initial>>.*"));
     assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -58,6 +59,7 @@ public class Automata3ToolTest {
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(6, p.size());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

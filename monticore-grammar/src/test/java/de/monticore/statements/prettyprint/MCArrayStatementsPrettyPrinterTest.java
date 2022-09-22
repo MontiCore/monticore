@@ -23,8 +23,8 @@ public class MCArrayStatementsPrettyPrinterTest {
 
   private MCArrayStatementsFullPrettyPrinter prettyPrinter = new MCArrayStatementsFullPrettyPrinter(new IndentPrinter());
 
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void setUp() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -49,6 +49,8 @@ public class MCArrayStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -65,6 +67,8 @@ public class MCArrayStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

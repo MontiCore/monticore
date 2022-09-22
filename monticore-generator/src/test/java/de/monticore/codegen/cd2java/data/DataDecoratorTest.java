@@ -18,6 +18,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 public class DataDecoratorTest extends DecoratorTestCase {
@@ -37,7 +39,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
     ASTCDClass clazz = getClassBy("A", cd);
     this.glex.setGlobalValue("service", new AbstractService(cd));
@@ -56,11 +58,15 @@ public class DataDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassSignature() {
     assertEquals("A", dataClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributes() {
     assertEquals(5, dataClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -68,6 +74,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("i", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
     assertInt(attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -75,6 +83,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("s", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals(String.class, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -82,6 +92,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("opt", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
     assertOptionalOf(String.class, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -89,6 +101,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("list", dataClass);
     assertTrue(attribute.getModifier().isProtected());
     assertListOf(String.class, attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -96,12 +110,16 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute attribute = getAttributeBy("b", dataClass);
     assertDeepEquals(PROTECTED, attribute.getModifier());
     assertDeepEquals("de.monticore.codegen.data.ASTB", attribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructors() {
     assertFalse(dataClass.getCDConstructorList().isEmpty());
     assertEquals(1, dataClass.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -109,12 +127,16 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDConstructor defaultConstructor = dataClass.getCDConstructorList().get(0);
     assertDeepEquals(PROTECTED, defaultConstructor.getModifier());
     assertTrue(defaultConstructor.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethods() {
     assertFalse(dataClass.getCDMethodList().isEmpty());
     assertEquals(52, dataClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -130,6 +152,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -149,6 +173,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     parameter = method.getCDParameter(1);
     assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -164,6 +190,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -183,6 +211,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     parameter = method.getCDParameter(1);
     assertBoolean(parameter.getMCType());
     assertEquals("forceSameOrder", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -198,6 +228,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -213,6 +245,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(Object.class, parameter.getMCType());
     assertEquals("o", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -222,6 +256,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(dataClass.getName(), method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -237,6 +273,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     ASTCDParameter parameter = method.getCDParameter(0);
     assertDeepEquals(dataClass.getName(), parameter.getMCType());
     assertEquals("result", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -250,6 +288,8 @@ public class DataDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -276,5 +316,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

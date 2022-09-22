@@ -12,6 +12,8 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -259,6 +261,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("foo2", _IntegerSymType));
     add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("longF", _longSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
@@ -267,6 +270,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         createTypeObject("FirstSemesterStudent", scope)));
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
+
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
 
     setFlatExpressionScopeSetter(scope);
   }
@@ -409,7 +415,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidBracketExpression() throws IOException {
     //a cannot be resolved -> a has no type
     init_basic();
-    checkError("(a)", "0xA0229");
+    checkError("(a)", "0xED680");
   }
 
   /**
@@ -449,10 +455,14 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
    */
   @Test
   public void deriveFromBooleanNotExpression() throws IOException {
+    init_basic();
+
     //test with a int
     check("~3", "int");
     //test with a char
     check("~\'a\'", "int");
+    //test with a long
+    check("~longF", "long");
   }
 
   @Test
@@ -484,6 +494,18 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     artifactScope4.setImportsList(Lists.newArrayList());
     artifactScope4.setName("types3");
     artifactScope4.setPackageName("types3");
+
+    ICombineExpressionsWithLiteralsArtifactScope artifactScope5 = CombineExpressionsWithLiteralsMill.artifactScope();
+    artifactScope5.setEnclosingScope(globalScope);
+    artifactScope5.setImportsList(Lists.newArrayList());
+    artifactScope5.setName("functions1");
+    artifactScope5.setPackageName("functions1");
+
+    ICombineExpressionsWithLiteralsArtifactScope artifactScope6 = CombineExpressionsWithLiteralsMill.artifactScope();
+    artifactScope6.setEnclosingScope(globalScope);
+    artifactScope6.setImportsList(Lists.newArrayList());
+    artifactScope6.setName("functions2");
+    artifactScope6.setPackageName("functions2");
 
     scope = globalScope;
     // No enclosing Scope: Search ending here
@@ -585,6 +607,13 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope3, testType3);
     add2scope(scope,testType);
 
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
+
+    FunctionSymbol funcs = function("getPi", _floatSymType);
+    add2scope(artifactScope5, funcs);
+    add2scope(artifactScope6, funcs);
+
     setFlatExpressionScopeSetter(scope);
   }
 
@@ -642,6 +671,10 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     //test for method with qualified name with parameters
     check("types.Test.pay(4)", "void");
+
+    //test for function with that exists in another scope with
+    //the same name but different qualified name
+    check("functions1.functions1.getPi()", "float");
   }
 
   @Test
@@ -652,30 +685,33 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   }
 
   @Test
+  public void testInvalidCallExpressionWithInvalidQualifiedName() throws IOException {
+    //method isInt() is not in the specified scope -> method cannot be resolved
+    init_advanced();
+    checkError("notAScope.isInt()", "0xA1242");
+  }
+
+  @Test
   public void testInvalidCallExpressionWithInvalidArgument() throws IOException {
     String divideError = "0xA0212";
-    String argumentError = "0xA0237";
     String noMethodError = "0xA1242";
 
     init_advanced();
-    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, argumentError, noMethodError);
+    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, noMethodError);
   }
 
   @Test
   public void testRegularAssignmentWithTwoMissingFields() throws IOException {
-    String assignmentLeftError = "0xA0198";
-    String assignmentRightError = "0xA0199";
-    String regularAssignmentError = "0xA0182";
+    String regularAssignmentError = "0xA0181";
     init_advanced();
-    checkErrorsAndFailOnException("missingField = missingField2", assignmentLeftError, assignmentRightError, regularAssignmentError);
+    checkErrorsAndFailOnException("missingField = missingField2", regularAssignmentError);
   }
 
   @Test
   public void testMissingMethodWithMissingArgs() throws IOException {
-    String functionArgError = "0xA0237";
     String functionError = "0xA1242";
     init_advanced();
-    checkErrorsAndFailOnException("missingMethod(missing1, missing2)", functionArgError, functionArgError, functionError);
+    checkErrorsAndFailOnException("missingMethod(missing1, missing2)", functionError);
   }
 
   /**
@@ -721,6 +757,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
     FieldSymbol mySubList = field("mySubList", subsub);
     add2scope(scope, mySubList);
+
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
 
     setFlatExpressionScopeSetter(scope);
   }
@@ -876,6 +915,8 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     FieldSymbol genSubSubVar = field("genSubSubVar", genSubSubType);
     add2scope(scope, genSubSubVar);
 
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
 
     setFlatExpressionScopeSetter(scope);
 
@@ -1257,6 +1298,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
     FieldSymbol mySubList = field("mySubList", subsub);
     add2scope(scope, mySubList);
+
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
 
     //set scope of method myAdd as standard resolving scope
     setFlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) myAdd.getSpannedScope());

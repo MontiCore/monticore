@@ -15,8 +15,8 @@ import static org.junit.Assert.assertEquals;
 
 public class AutomataToolTest {
   
-  @BeforeClass
-  public static void init(){
+  @Before
+  public void init(){
     LogStub.init();// replace log by a sideffect free variant
     Log.enableFailQuick(false);
     // LogStub.initPlusLog();  // for manual testing purpose only
@@ -38,6 +38,7 @@ public class AutomataToolTest {
                                      "-o", "target/statepattern",
                                       "-s", "target/example/PingPong.autsym"});
     assertEquals(0, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -48,6 +49,7 @@ public class AutomataToolTest {
                                      "-o", "target/statepattern",
                                      "-s", "target/example/Simple12.autsym"});
     assertEquals(0, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test

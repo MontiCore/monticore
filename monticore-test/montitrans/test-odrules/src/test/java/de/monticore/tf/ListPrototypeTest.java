@@ -3,6 +3,7 @@ package de.monticore.tf;
 
 import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
@@ -22,12 +23,13 @@ import static org.junit.Assert.assertTrue;
 public class ListPrototypeTest {
 
   ASTAutomaton aut;
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Before
   public void setUp() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonSubstateWithSubstate.aut";
@@ -41,6 +43,8 @@ public class ListPrototypeTest {
     ListPrototype testee = new ListPrototype(aut);
     ArrayList<ASTState> states = new ArrayList<>();
     assertTrue(testee.doPatternMatching());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -62,6 +66,8 @@ public class ListPrototypeTest {
     assertEquals("b", aut.getStateList().get(0).getStateList().get(0).getName());
     assertEquals(1, aut.getStateList().get(0).getStateList().get(0).getStateList().size());
     assertEquals("c", aut.getStateList().get(0).getStateList().get(0).getStateList().get(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

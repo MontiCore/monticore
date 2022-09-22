@@ -2,14 +2,24 @@
 
 package mc.feature.symboltable;
 
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import de.se_rwth.commons.logging.Log;
 
 public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
@@ -26,6 +36,7 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
 //    Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();
 
     StateSymbolSurrogate stateSymbolReference;
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

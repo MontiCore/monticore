@@ -53,7 +53,7 @@ task generateTR {}
 fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
     def g = it
     def taskname = "generateGrammar${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-    def withDSTLGen = !["ODRuleGeneration", "ODRules", "TFBasisExts", "TFCommons",  // Do not generate TR grammars for TR-component grammars
+    def withDSTLGen = ("true").equals(getProperty('genTR')) && !["ODRuleGeneration", "ODRules", "TFBasisExts", "TFCommons",  // Do not generate TR grammars for TR-component grammars
             "MCJavaLiterals", "Grammar", "Grammar_WithConcepts"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
     task "$taskname"(type: MCTask) {
         grammar = file g
@@ -67,7 +67,6 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
         dstlGen = withDSTLGen
     }
     generate.dependsOn("$taskname")
-
     if (withDSTLGen) {   // run MC on the TR grammar
       task "${taskname}TR"(type: MCTask) {
         outputDir = file grammarOutDir

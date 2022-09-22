@@ -19,7 +19,9 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -39,7 +41,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "cocos", "CoCos");
@@ -63,6 +65,8 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
   public void testPackage() {
     List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "cocos", "cocos", "_cocos");
     assertEquals(expectedPackage, ast.getCDPackageList());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -86,5 +90,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
       ParseResult parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -13,6 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -26,11 +27,11 @@ import static org.junit.Assert.*;
  *
  */
 public class GeneratorEngineTest {
-
+  
   @Before
-  public void setup() {
+  public void before() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -56,6 +57,7 @@ public class GeneratorEngineTest {
     assertEquals(1, fileHandler.getStoredFilesAndContents().size());
     assertTrue(fileHandler.getStoredFilesAndContents().containsKey(Paths.get
         (new File("target1/a/GenerateInFile.test").getAbsolutePath())));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @AfterClass
@@ -82,6 +84,7 @@ public class GeneratorEngineTest {
     assertEquals("the.Template", template.getName());
 
     assertEquals(0, fileHandler.getStoredFilesAndContents().size());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -103,5 +106,6 @@ public class GeneratorEngineTest {
 
     assertTrue(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), classname));
     assertFalse(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), notExistName));
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

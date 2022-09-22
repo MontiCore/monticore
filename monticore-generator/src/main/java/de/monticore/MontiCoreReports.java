@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
@@ -12,6 +13,8 @@ import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTr
 import de.monticore.io.paths.MCPath;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -31,6 +34,7 @@ public class MontiCoreReports implements ReportManagerFactory {
 
   protected Function<Path, Path> reportPathOutput;
   
+  protected List<AReporter> reporters = new ArrayList<>();
 
   /**
    * Constructor for de.monticore.MontiCoreReports
@@ -110,7 +114,33 @@ public class MontiCoreReports implements ReportManagerFactory {
     //reports.addReportEventHandler(incGenCheck); // IncGenCheck
     reports.addReportEventHandler(gradleReporter);
 
+    reporters.add(summary);
+    reporters.add(generated);
+    reporters.add(handwritten);
+    reporters.add(templates);
+    reporters.add(hookPoints);
+    reporters.add(instantiations);
+    reporters.add(variables);
+    reporters.add(detail);
+    reporters.add(templateTree);
+    reporters.add(nodeTree);
+    reporters.add(nodeTreeDecorated);
+    reporters.add(nodeTypes);
+    reporters.add(transformations);
+    reporters.add(artifactGml);
+    reporters.add(artifactGV);
+    reporters.add(ioReporter);
+    reporters.add(finishReporter);
+    reporters.add(objDiagram);
+    reporters.add(gradleReporter);
+
     return reports;
+  }
+
+  public void close(){
+    for (AReporter reporter : reporters) {
+      reporter.closeFile();
+    }
   }
   
 }

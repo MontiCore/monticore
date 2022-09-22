@@ -13,6 +13,7 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,14 +46,15 @@ public class AbstractDeriveTest {
 
   @BeforeClass
   public static void initLog(){
-    Log.init();
     AbstractTypeCheckTestMill.reset();
     AbstractTypeCheckTestMill.init();
-    Log.enableFailQuick(false);
   }
   
   @Before
   public void setup(){
+    LogStub.init();
+    Log.enableFailQuick(false);
+    
     scope = AbstractTypeCheckTestMill.scope();
     scope.setEnclosingScope(null);
     scope.setExportingSymbols(true);
@@ -120,6 +122,7 @@ public class AbstractDeriveTest {
     AbstractTypeCheckTestTraverser traverser = AbstractTypeCheckTestMill.traverser();
     traverser.add4CommonExpressions(flatExpressionScopeSetter);
     traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
+    traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
     return traverser;
   }
 
@@ -130,6 +133,8 @@ public class AbstractDeriveTest {
     expr.get().accept(traverser);
 
     assertEquals("int", tc.typeOf(expr.get()).print());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -139,6 +144,8 @@ public class AbstractDeriveTest {
     expr.get().accept(traverser);
 
     assertEquals("Address", tc.typeOf(expr.get()).print());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -148,6 +155,8 @@ public class AbstractDeriveTest {
     expr.get().accept(traverser);
 
     assertEquals("void", tc.typeOf(expr.get()).print());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -157,6 +166,8 @@ public class AbstractDeriveTest {
     expr.get().accept(traverser);
 
     assertEquals("int", tc.typeOf(expr.get()).print());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,6 +177,8 @@ public class AbstractDeriveTest {
     expr.get().accept(traverser);
 
     assertEquals("void", tc.typeOf(expr.get()).print());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbols")}
+${tc.signature("symbols", "scopeType")}
   // traverse symbols within the scope
 <#list symbols as symbol>
     <#assign simpleName = symbol>
@@ -10,3 +10,8 @@ ${tc.signature("symbols")}
     s.accept(getTraverser());
   }
 </#list>
+
+  // traverse sub-scopes
+  for (${scopeType} scope : node.getSubScopes()) {
+    scope.accept(getTraverser());
+  }

@@ -19,8 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 public class MCCommonUnitTest {
@@ -28,17 +27,11 @@ public class MCCommonUnitTest {
   // setup the language infrastructure
   TestMCCommonParser parser = new TestMCCommonParser() ;
   
-  @BeforeClass
-  public static void init() {
-    // replace log by a sideffect free variant
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-
   @Before
   public void setUp() {
-    Log.getFindings().clear();
+    LogStub.init();
+    Log.enableFailQuick(false);
+    LogStub.getFindings().clear();
   }
   
   // --------------------------------------------------------------------
@@ -51,12 +44,17 @@ public class MCCommonUnitTest {
     ASTNatLiteral ast = parser.parse_StringNatLiteral( " 9" ).get();
     assertEquals("9", ast.getSource());
     assertEquals(9, ast.getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
+  
   @Test
   public void testNat4() throws IOException {
     ASTNatLiteral ast = parser.parse_StringNatLiteral( " 42 " ).get();
     assertEquals("42", ast.getSource());
     assertEquals(42, ast.getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -70,6 +68,8 @@ public class MCCommonUnitTest {
     assertEquals(true, ast.isProtected());
     assertEquals(true, ast.isFinal());
     assertEquals(false, ast.isLocal());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -84,6 +84,8 @@ public class MCCommonUnitTest {
     assertEquals(true, ast.isPresentStereotype());
     ASTStereotype sty = ast.getStereotype();
     assertEquals("x1", sty.getValue("bla"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -100,6 +102,8 @@ public class MCCommonUnitTest {
     assertEquals(true, ast.isPresentText());
     assertEquals("17", ast.getText().getValue());
     assertEquals("17", ast.getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -110,6 +114,8 @@ public class MCCommonUnitTest {
     assertEquals("cc", ast.getName());
     assertEquals(false, ast.isPresentText());
     assertEquals("", ast.getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -123,6 +129,8 @@ public class MCCommonUnitTest {
     assertEquals(false, ast.contains("bla"));
     assertEquals(true, ast.contains("a1",""));
     assertEquals(false, ast.contains("a1","wert1"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -136,6 +144,8 @@ public class MCCommonUnitTest {
     assertEquals(true, ast.contains("a1"));
     assertEquals(false, ast.contains("a1",""));
     assertEquals(true, ast.contains("a1","wert1"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -150,6 +160,8 @@ public class MCCommonUnitTest {
       fail("Expected an Exception to be thrown");
     } catch (java.util.NoSuchElementException ex) { }
     assertEquals("", ast.getValue("bla"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -158,6 +170,7 @@ public class MCCommonUnitTest {
     Optional<ASTStereotype> oast = parser.parse_StringStereotype(
         "<< bla, a1=\"wert1\" > >" );
     assertEquals(false, oast.isPresent());
+    
   }
 
 
@@ -171,6 +184,8 @@ public class MCCommonUnitTest {
     ASTCompleteness ast = parser.parse_StringCompleteness( "(c)"  ).get();
     assertEquals(true, ast.isComplete());
     assertEquals(false, ast.isIncomplete());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -182,6 +197,8 @@ public class MCCommonUnitTest {
     assertEquals(true, ast.isIncomplete());
     assertEquals(false, ast.isRightComplete());
     assertEquals(false, ast.isLeftComplete());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -193,6 +210,8 @@ public class MCCommonUnitTest {
     assertEquals(false, ast.isIncomplete());
     assertEquals(true, ast.isRightComplete());
     assertEquals(false, ast.isLeftComplete());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -215,6 +234,8 @@ public class MCCommonUnitTest {
     assertEquals(true, ast.isMany());
     assertEquals(0, ast.getLowerBound());
     assertEquals(0, ast.getUpperBound());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -226,6 +247,8 @@ public class MCCommonUnitTest {
     assertEquals(true, ast.isNoUpperLimit());
     assertEquals(7, ast.getLowerBound());
     assertEquals(0, ast.getUpperBound());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -236,6 +259,8 @@ public class MCCommonUnitTest {
     assertEquals(false, ast.isMany());
     assertEquals(17, ast.getLowerBound());
     assertEquals(235, ast.getUpperBound());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -246,6 +271,8 @@ public class MCCommonUnitTest {
     assertEquals(false, ast.isMany());
     assertEquals(34, ast.getLowerBound());
     assertEquals(15, ast.getUpperBound());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

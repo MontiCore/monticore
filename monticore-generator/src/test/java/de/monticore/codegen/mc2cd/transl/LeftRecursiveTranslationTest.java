@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,8 +20,8 @@ public class LeftRecursiveTranslationTest {
 
   private ASTCDCompilationUnit leftRecursive;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     Log.init();
     Log.enableFailQuick(false);
     GrammarFamilyMill.init();
@@ -39,6 +40,8 @@ public class LeftRecursiveTranslationTest {
     assertEquals(1, a.getModifier().getStereotype().sizeValues());
     assertEquals("left_recursive", a.getModifier().getStereotype().getValues(0).getName());
     assertFalse(a.getModifier().getStereotype().getValues(0).isPresentText());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -14,9 +14,9 @@ import java.util.Optional;
 public class SynthesizeFromMCSGT4Grammar extends SynthesizeSymTypeFromMCSimpleGenericTypes {
 
   @Override
-  protected Optional<SymTypeExpression> handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments) {
+  protected SymTypeExpression handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments) {
     TypeSymbol surrogate = new TypeSymbolSurrogate(String.join(".", type.getNameList()));
     surrogate.setEnclosingScope(getScope(type.getEnclosingScope()));
-    return Optional.of(SymTypeExpressionFactory.createGenerics(surrogate, arguments));
+    return SymTypeExpressionFactory.createGenerics(surrogate, arguments);
   }
 }

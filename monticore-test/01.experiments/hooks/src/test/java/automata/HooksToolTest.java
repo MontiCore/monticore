@@ -9,12 +9,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class HooksToolTest {
 
-  @BeforeClass
-  public static void init(){
+  @Before
+  public void init(){
     LogStub.init();         // replace log by a sideffect free variant
+    Log.enableFailQuick(false);
     // LogStub.initPlusLog();  // for manual testing purpose only
   }
 
@@ -37,6 +39,7 @@ public class HooksToolTest {
         "target/statepattern", 
         "src/main/resources"});
     assertEquals(0, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -47,6 +50,7 @@ public class HooksToolTest {
         "target/statepattern",
         "src/main/resources"});
     assertEquals(0, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -57,6 +61,7 @@ public class HooksToolTest {
         "target/statepattern2", 
         "src/main/templates"});
     assertEquals(0, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

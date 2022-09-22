@@ -2,8 +2,10 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,12 +15,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class DeleteOptionalStateTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   ASTAutomaton aut;
 
   @Test
@@ -42,6 +45,8 @@ public class DeleteOptionalStateTest {
 
     // nothing should change
     assertEquals(0, aut.get().getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -65,5 +70,7 @@ public class DeleteOptionalStateTest {
 
     // state should be deleted
     assertEquals(0, aut.get().getStateList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -2,6 +2,8 @@
 package mc.feature.multipletopsymbols;
 
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.multipletopsymbols.statechart.StatechartMill;
 import mc.feature.multipletopsymbols.statechart._ast.ASTSCArtifact;
 import mc.feature.multipletopsymbols.statechart._parser.StatechartParser;
@@ -9,6 +11,7 @@ import mc.feature.multipletopsymbols.statechart._symboltable.IStatechartArtifact
 import mc.feature.multipletopsymbols.statechart._symboltable.IStatechartGlobalScope;
 import mc.feature.multipletopsymbols.statechart._symboltable.StateSymbol;
 import mc.feature.multipletopsymbols.statechart._symboltable.StatechartSymbol;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,7 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class StatechartResolvingTest {
-
+  
   protected static IStatechartGlobalScope gs;
 
   @BeforeClass
@@ -30,7 +33,13 @@ public class StatechartResolvingTest {
     gs.setSymbolPath(new MCPath(Paths.get("src/test/resources")));
     gs.setFileExt("sc");
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testResolving() throws IOException {
     StatechartParser parser = StatechartMill.parser();
@@ -57,6 +66,8 @@ public class StatechartResolvingTest {
     assertTrue(t.isPresent());
     assertTrue(s2.isPresent());
     assertTrue(u.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

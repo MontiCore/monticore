@@ -25,8 +25,8 @@ public class MCJavaLiteralsPrettyPrinterTest {
 
   private MCJavaLiteralsFullPrettyPrinter prettyPrinter = new MCJavaLiteralsFullPrettyPrinter(new IndentPrinter());
 
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void setUp() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -50,6 +50,8 @@ public class MCJavaLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -67,6 +69,8 @@ public class MCJavaLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -84,6 +88,8 @@ public class MCJavaLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -101,5 +107,7 @@ public class MCJavaLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

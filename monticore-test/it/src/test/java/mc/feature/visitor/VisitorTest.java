@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.se_rwth.commons.logging.Log;
@@ -24,6 +27,12 @@ import mc.feature.visitor.sup._ast.ASTA;
 import mc.feature.visitor.sup._visitor.SupVisitor2;
 
 public class VisitorTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testConcreteVisitor() throws IOException {
@@ -48,6 +57,7 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     // no expected error, as super visitor should run on sub language
     t2.handle(node.get());
     assertEquals(errorCount, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

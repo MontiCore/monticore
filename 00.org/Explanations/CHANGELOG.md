@@ -22,13 +22,10 @@ released: 13.09.2021
 * Several modes can now be specified in a grammar (for further
 explanations see [ANTLR](https://www.antlr.org/)). For the grammars, one
 file is now generated for lexer rules and one for the parser rules.
-
 * delete deprecated classes:
   `ModelPath`, `IterablePath`, `ModelCoordinate`, `ModelCoordinateImpl`, `ModelCoordinates`, and `FileFinder`
-
 * The symbol table now stores for productions whether a 
   production is left-recursive.
-  
 * In the log class the dependency to ch.qos.logback:logback-core was removed
   
 ##  MontiCore 7.1.0
@@ -226,7 +223,7 @@ released: 11.11.2020
     * `monticore-generator/it/02.experiments` to `monticore-test/02.experiments`
     * `monticore-grammar/monticore-grammar-it` to `monticore-test/monticore-grammar-it`
 * Remove the generation of `XModelloader`. Languages should now use `XScopeDeSer` to load symbol tables instead.
-* Removed the generation of the following builder classes (also from the Mill, see [Additions](#Additions) for alternative solution)
+* Removed the generation of the following builder classes (also from the Mill; alternative solutions described below)
     * `XSymbolTableCreatorBuilder` 
     * `XSymbolTableCreatorDelegatorBuilder` 
     * `XScopeDeSerBuilder`

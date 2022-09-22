@@ -2,6 +2,7 @@
 package mc.testcases.automaton.transformation.rule._cocos;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton.tr.automatontr._ast.*;
 import mc.testcases.automaton.tr.automatontr._cocos.AutomatonTRCoCoChecker;
 import mc.testcases.automaton.tr.automatontr._cocos.NoOptOnRHSCoCo;
@@ -19,8 +20,10 @@ import static org.junit.Assert.*;
  * Created by DW
  */
 public class NoOptOnRHSCoCoTest {
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void disableFailQuick() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 

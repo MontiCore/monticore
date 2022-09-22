@@ -4,7 +4,6 @@ plugins {
 }
 
 description = 'MontiCore-MontiTrans Integration Test'
-sourceCompatibility = '11'
 
 ext.grammarDir = 'src/main/grammars'
 ext.junit_version = '4.13.1'
@@ -28,6 +27,12 @@ subprojects {
       capabilities {
         requireCapability("de.monticore:monticore-grammar-grammars")
       }
+    }
+  }
+
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(11)
     }
   }
 }

@@ -8,11 +8,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.expression.expression._ast.ASTExpr;
 import mc.feature.expression.expression._parser.ExpressionParser;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Tests the source position's computing for the AST nodes
@@ -20,6 +24,12 @@ import mc.feature.expression.expression._parser.ExpressionParser;
  * 
  */
 public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testExp() throws IOException {
@@ -60,6 +70,7 @@ public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
       }
       node = leftChild;
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTExpr parse(String input) throws IOException {

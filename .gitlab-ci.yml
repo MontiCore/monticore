@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7.4.2-jdk11
 
 #include:
 #  - template: Code-Quality.gitlab-ci.yml
@@ -34,7 +34,7 @@ build:
   stage: build
   script:
     - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
-    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -i"
+    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -PgenTR=true -i"
   tags:
     - gradle
   artifacts:
@@ -80,6 +80,10 @@ test_it:
     - build
   script:
     - "gradle -p monticore-test/it build $GRADLE_OPTS -Pci"
+# This check must run in a stage where the monticore-generator was executed, otherwise no relevant file handles are opened.
+# Problems can be investigated on small examples projects with https://github.com/jenkinsci/lib-file-leak-detector
+    - echo "Checking that all file handles in the target folder are closed"
+    - if pgrep java | xargs -i ls -la /proc/{}/fd | grep "monticore-test/it/target/"; then echo "Found open file handles!"; exit 1; else echo "No open file handles."; exit 0; fi
   only:
     - merge_requests
     - branches
@@ -115,7 +119,7 @@ test_montitrans:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -Pci"
+    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -PgenTR=true -Pci"
   only:
     - merge_requests
     - branches
@@ -127,7 +131,7 @@ deploy:
   dependencies:
     - build
   script:
-    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -Pci"
+    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -PgenTR=true -Pci"
   only:
     - dev
   except:
@@ -146,6 +150,8 @@ checkMLCs:
       - "*/target/**/generated-sources/**/reports/"
     expire_in: 1 week
   allow_failure: true
+  except:
+    - master
 
 sonar:
   stage: check
@@ -198,7 +204,7 @@ trigger-guidsl-dev:
   stage: trigger_languages
   trigger:
     project: monticore/languages/gui-dsl
-    branch: master
+    branch: dev
   only:
     - dev
 
@@ -267,6 +273,13 @@ trigger-umlp-dev:
   only:
     - dev
 
+trigger-ucd-dev:
+  stage: trigger_languages
+  trigger:
+    project: monticore/languages/ucd
+    branch: dev
+  only:
+    - dev
 
 trigger-cd4a-master:
   stage: trigger_languages
@@ -409,5 +422,5 @@ githubmirror:
     - git remote add github git@github.com:MontiCore/monticore.git
     - git push github $CI_COMMIT_BRANCH --force
   only:
-    - opendev
+    - dev
     - master

@@ -4,6 +4,7 @@ package mc.feature.symbolrules;
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.symbolrules.symbolrulelisttest.SymbolruleListTestMill;
 import mc.feature.symbolrules.symbolrulelisttest._parser.SymbolruleListTestParser;
 import mc.feature.symbolrules.symbolrulelisttest._symboltable.ISymbolruleListTestArtifactScope;
@@ -14,6 +15,7 @@ import mc.feature.symbolrules.symbolruletest._ast.ASTFoo;
 import mc.feature.symbolrules.symbolruletest._parser.SymbolruleTestParser;
 import mc.feature.symbolrules.symbolruletest._symboltable.*;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,9 +23,16 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import de.se_rwth.commons.logging.Log;
 
 public class SymbolruleTest {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setup(){
     SymbolruleTestMill.reset();
@@ -78,6 +87,7 @@ public class SymbolruleTest {
     assertEquals(deserializedTest2, deserializedTest2.getIfPublic());
     assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(deserializedTest2.getSuperTypes(0)));
     assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(deserializedTest2.getByName("int")));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -125,6 +135,7 @@ public class SymbolruleTest {
     assertEquals("symbol4", bar2SpannedScope.getLocalTest1Symbols().get(1).getName());
     assertEquals(1, bar2SpannedScope.getLocalTest2Symbols().size());
     assertEquals("symbol22", bar2SpannedScope.getLocalTest2Symbols().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -134,6 +145,7 @@ public class SymbolruleTest {
     Dummy dummy = (Dummy) symbol;
     assertTrue(symbol instanceof IDummy);
     IDummy iDummy = (IDummy) symbol;
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -184,6 +196,7 @@ public class SymbolruleTest {
     assertEquals(as.getFloatingPoints(0), as2.getFloatingPoints(0));
     assertEquals(as.getFloatingPoints(1), as2.getFloatingPoints(1));
     assertEquals(as.getFloatingPoints(2), as2.getFloatingPoints(2));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

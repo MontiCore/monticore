@@ -9,20 +9,26 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TerminalWithUsageNameTest {
   
   private ASTCDClass astA;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
   
   public TerminalWithUsageNameTest() {
@@ -41,5 +47,7 @@ public class TerminalWithUsageNameTest {
     
     assertEquals("testname", cdAttribute.getName());
     assertEquals("String", TransformationHelper.typeToString(cdAttribute.getMCType()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

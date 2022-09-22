@@ -1,7 +1,7 @@
 quickcomms
 .gradle
-gradle/
-monticore-generator/gradle/
+/gradle/
+/monticore-generator/gradle/
 **/gradlew.bat
 **/gradlew
 target/

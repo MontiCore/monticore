@@ -1,12 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static de.monticore.symboltable.serialization.JsonTokenKind.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class JsonLexerTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Test
   public void testNumberWhitespaces() {
@@ -21,6 +32,8 @@ public class JsonLexerTest {
     assertEquals(WHITESPACE, lexer.poll().getKind());
     assertEquals("2.5", lexer.poll().getValue());
     assertEquals(false, lexer.hasNext());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -44,6 +57,8 @@ public class JsonLexerTest {
     assertEquals(BOOLEAN, lexer.poll().getKind());
     assertEquals(END_OBJECT, lexer.poll().getKind());
     assertEquals(false, lexer.hasNext());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -67,6 +82,8 @@ public class JsonLexerTest {
     assertEquals(NULL, lexer.poll().getKind());
     assertEquals(END_ARRAY, lexer.poll().getKind());
     assertEquals(false, lexer.hasNext());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -106,6 +123,8 @@ public class JsonLexerTest {
     checkSingleToken("\"\\t\"", STRING);
     checkSingleToken("\"\\\"\"", STRING);
     checkSingleToken("\"foo \\b\\f\\r\\n\\t\\\" foo \"", STRING);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   protected void checkSingleToken(String json, JsonTokenKind expectedTokenKind) {

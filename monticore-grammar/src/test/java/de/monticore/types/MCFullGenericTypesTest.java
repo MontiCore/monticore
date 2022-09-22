@@ -4,6 +4,10 @@ package de.monticore.types;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,7 +16,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class MCFullGenericTypesTest {
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testPrintTypeWithoutTypeArguments() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
@@ -23,6 +33,8 @@ public class MCFullGenericTypesTest {
     assertEquals("a.B.D.E.G", multipleGenericType.get().printWithoutTypeArguments());
     assertEquals("a.B.D.E.G", genericType.get().printWithoutTypeArguments());
     assertFalse(parser.hasErrors());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

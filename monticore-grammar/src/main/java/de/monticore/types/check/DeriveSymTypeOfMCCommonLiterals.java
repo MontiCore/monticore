@@ -68,6 +68,8 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals imp
     if(stringType.isPresent()){
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createTypeObject(stringType.get()));
     } else {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       Log.error("0xA0238 The type String could not be found");
     }
   }

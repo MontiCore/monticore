@@ -3,12 +3,23 @@ package de.monticore.types.helper;
 
 import de.monticore.types.MCBasicTypesHelper;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MCBasicTypesHelperTest {
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testGetPrimitive(){
     assertEquals(ASTConstantsMCBasicTypes.BOOLEAN,MCBasicTypesHelper.primitiveName2Const("boolean"));
@@ -21,5 +32,7 @@ public class MCBasicTypesHelperTest {
     assertEquals(ASTConstantsMCBasicTypes.INT,MCBasicTypesHelper.primitiveName2Const("int"));
     assertEquals(ASTConstantsMCBasicTypes.LONG,MCBasicTypesHelper.primitiveName2Const("long"));
     assertEquals(ASTConstantsMCBasicTypes.SHORT,MCBasicTypesHelper.primitiveName2Const("short"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

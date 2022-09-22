@@ -24,8 +24,8 @@ public class AssignmentExpressionsJavaPrinterTest {
   
   private AssignmentExpressionsFullJavaPrinter javaPrinter = new AssignmentExpressionsFullJavaPrinter(new IndentPrinter());
   
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -49,6 +49,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -65,6 +67,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -79,6 +83,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a++", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -93,6 +99,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a--", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -111,6 +119,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -129,6 +139,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a+=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -147,6 +159,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a-=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -165,6 +179,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a%=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -183,6 +199,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a&=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -201,6 +219,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a^=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -219,6 +239,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a/=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -237,6 +259,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a*=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -255,6 +279,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a|=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -273,6 +299,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a<<=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -291,6 +319,8 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a>>=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -309,5 +339,7 @@ public class AssignmentExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a>>>=b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

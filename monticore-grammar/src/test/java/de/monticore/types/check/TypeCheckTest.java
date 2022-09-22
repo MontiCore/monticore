@@ -16,7 +16,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -27,6 +26,8 @@ import java.util.stream.Collectors;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static de.monticore.types.check.TypeCheck.isSubtypeOf;
+import static de.monticore.types.check.TypeCheck.compatible;
+import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -40,15 +41,12 @@ public class TypeCheckTest {
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setupForEach() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setupForEach() {
+    
     // Setting up a Scope Infrastructure (without a global Scope)
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -192,6 +190,95 @@ public class TypeCheckTest {
     assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
   }
 
+  @Test
+  public void testCompatibilityForPrimitives() {
+    SymTypeExpression booleanT = createPrimitive(BasicSymbolsMill.BOOLEAN);
+    SymTypeExpression byteT = createPrimitive(BasicSymbolsMill.BYTE);
+    SymTypeExpression shortT = createPrimitive(BasicSymbolsMill.SHORT);
+    SymTypeExpression charT = createPrimitive(BasicSymbolsMill.CHAR);
+    SymTypeExpression intT = createPrimitive(BasicSymbolsMill.INT);
+    SymTypeExpression longT = createPrimitive(BasicSymbolsMill.LONG);
+    SymTypeExpression floatT = createPrimitive(BasicSymbolsMill.FLOAT);
+    SymTypeExpression doubleT = createPrimitive(BasicSymbolsMill.DOUBLE);
+
+    assertTrue(compatible(booleanT, booleanT));
+    assertTrue(compatible(byteT, byteT));
+    assertTrue(compatible(shortT, byteT));
+    assertTrue(compatible(shortT, shortT));
+    assertTrue(compatible(charT, charT));
+    assertTrue(compatible(intT, byteT));
+    assertTrue(compatible(intT, shortT));
+    assertTrue(compatible(intT, charT));
+    assertTrue(compatible(intT, intT));
+    assertTrue(compatible(longT, byteT));
+    assertTrue(compatible(longT, shortT));
+    assertTrue(compatible(longT, charT));
+    assertTrue(compatible(longT, intT));
+    assertTrue(compatible(longT, longT));
+    assertTrue(compatible(floatT, byteT));
+    assertTrue(compatible(floatT, shortT));
+    assertTrue(compatible(floatT, charT));
+    assertTrue(compatible(floatT, intT));
+    assertTrue(compatible(floatT, longT));
+    assertTrue(compatible(floatT, floatT));
+    assertTrue(compatible(doubleT, byteT));
+    assertTrue(compatible(doubleT, shortT));
+    assertTrue(compatible(doubleT, charT));
+    assertTrue(compatible(doubleT, intT));
+    assertTrue(compatible(doubleT, longT));
+    assertTrue(compatible(doubleT, floatT));
+    assertTrue(compatible(doubleT, doubleT));
+  }
+
+  @Test
+  public void testIncompatibilityForPrimitives() {
+    SymTypeExpression booleanT = createPrimitive(BasicSymbolsMill.BOOLEAN);
+    SymTypeExpression byteT = createPrimitive(BasicSymbolsMill.BYTE);
+    SymTypeExpression shortT = createPrimitive(BasicSymbolsMill.SHORT);
+    SymTypeExpression charT = createPrimitive(BasicSymbolsMill.CHAR);
+    SymTypeExpression intT = createPrimitive(BasicSymbolsMill.INT);
+    SymTypeExpression longT = createPrimitive(BasicSymbolsMill.LONG);
+    SymTypeExpression floatT = createPrimitive(BasicSymbolsMill.FLOAT);
+    SymTypeExpression doubleT = createPrimitive(BasicSymbolsMill.DOUBLE);
+
+    assertFalse(compatible(booleanT, byteT));
+    assertFalse(compatible(booleanT, shortT));
+    assertFalse(compatible(booleanT, charT));
+    assertFalse(compatible(booleanT, intT));
+    assertFalse(compatible(booleanT, longT));
+    assertFalse(compatible(booleanT, floatT));
+    assertFalse(compatible(booleanT, doubleT));
+    assertFalse(compatible(byteT, booleanT));
+    assertFalse(compatible(byteT, shortT));
+    assertFalse(compatible(byteT, charT));
+    assertFalse(compatible(byteT, intT));
+    assertFalse(compatible(byteT, longT));
+    assertFalse(compatible(byteT, floatT));
+    assertFalse(compatible(byteT, doubleT));
+    assertFalse(compatible(shortT, booleanT));
+    assertFalse(compatible(shortT, charT));
+    assertFalse(compatible(shortT, intT));
+    assertFalse(compatible(shortT, longT));
+    assertFalse(compatible(shortT, floatT));
+    assertFalse(compatible(shortT, doubleT));
+    assertFalse(compatible(charT, booleanT));
+    assertFalse(compatible(charT, byteT));
+    assertFalse(compatible(charT, shortT));
+    assertFalse(compatible(charT, intT));
+    assertFalse(compatible(charT, longT));
+    assertFalse(compatible(charT, floatT));
+    assertFalse(compatible(charT, doubleT));
+    assertFalse(compatible(intT, booleanT));
+    assertFalse(compatible(intT, longT));
+    assertFalse(compatible(intT, floatT));
+    assertFalse(compatible(intT, doubleT));
+    assertFalse(compatible(longT, booleanT));
+    assertFalse(compatible(longT, floatT));
+    assertFalse(compatible(longT, doubleT));
+    assertFalse(compatible(floatT, booleanT));
+    assertFalse(compatible(floatT, doubleT));
+    assertFalse(compatible(doubleT, booleanT));
+  }
 
   @Test
   public void testCompatibilityForGenerics() {
@@ -262,6 +349,7 @@ public class TypeCheckTest {
     traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
     traverser.add4JavaClassExpressions(flatExpressionScopeSetter);
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
+    traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
     return traverser;
   }
 

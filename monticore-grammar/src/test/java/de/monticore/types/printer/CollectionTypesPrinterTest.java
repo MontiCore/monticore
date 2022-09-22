@@ -6,6 +6,9 @@ import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,6 +17,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class CollectionTypesPrinterTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testPrintType() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
@@ -39,5 +49,7 @@ public class CollectionTypesPrinterTest {
     assertEquals("Set<int>",printer.prettyprint(astmcSetType.get()));
     assertEquals("Optional<Character>", printer.prettyprint(astmcOptionalType.get()));
     assertEquals("Map<String,String>",printer.prettyprint(astmcMapType.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

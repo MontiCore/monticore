@@ -10,7 +10,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.examples.lwc.edl.edl.EDLMill;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -21,6 +25,12 @@ import mc.examples.lwc.edl.edl._ast.ASTEntity;
 import mc.examples.lwc.edl.edl._parser.EDLParser;
 
 public class TestEDL extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testParser() throws IOException {
@@ -76,7 +86,8 @@ public class TestEDL extends GeneratorIntegrationsTest {
                 .setQualifiedName(
                     EDLMill.qualifiedNameBuilder().setNamesList(Lists.newArrayList("lwc", "edl", "Person"))
                         .build()).build()));
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

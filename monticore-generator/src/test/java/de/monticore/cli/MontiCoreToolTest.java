@@ -5,6 +5,7 @@ package de.monticore.cli;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.FileUtils;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
@@ -100,14 +101,10 @@ public class MontiCoreToolTest {
   public MontiCoreToolTest() throws IOException {
   }
 
-  @BeforeClass
-  public static void deactivateFailQuick() {
-    Log.init();
-    Log.enableFailQuick(false);
-  }
-
   @Before
   public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
     GrammarFamilyMill.reset();
     GrammarFamilyMill.init();
   }
@@ -117,6 +114,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(simpleArgs);
     
     assertTrue(!false);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -124,6 +123,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(devLogArgs);
     
     assertTrue(!false);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -131,6 +132,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(customLogArgs);
     
     assertTrue(!false);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -138,6 +141,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(customScriptArgs);
     
     assertTrue(!false);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -145,6 +150,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(customEmfScriptArgs);
     
     assertTrue(!false);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -152,6 +159,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(help);
 
     assertTrue(!false);
+  
+    assertTrue(Log.getFindings().isEmpty());
 }
   @Ignore // It's not possible to switch off fail quick (Logger in CLI)
   @Test
@@ -159,6 +168,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(argsWithNoGrammars);
     
     assertTrue(!false);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -207,6 +218,8 @@ public class MontiCoreToolTest {
     }
     diff.forEach(s -> System.out.println("\t " + s));
     assertTrue(diff.isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @After

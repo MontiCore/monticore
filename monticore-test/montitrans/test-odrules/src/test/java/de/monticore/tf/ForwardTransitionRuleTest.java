@@ -2,9 +2,11 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,12 +18,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ForwardTransitionRuleTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testForwardTransition() throws IOException {
     String inputFile = "src/main/models/automaton/Testautomat.aut";
@@ -44,6 +47,8 @@ public class ForwardTransitionRuleTest {
     assertEquals(4, hierarchicalState.getTransitionList().size());
 
     assertEquals("c", aut.get().getTransition(0).getTo());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -62,6 +67,8 @@ public class ForwardTransitionRuleTest {
 
     List<?> allChanges = ftr.getMatches();
     assertEquals(1, allChanges.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -81,6 +88,8 @@ public class ForwardTransitionRuleTest {
     assertTrue(ftr.get_state_3().isInitial());
     assertEquals(ftr.get_transition_1().getFrom(), ftr.get_state_1().getName());
     assertEquals(ftr.get_transition_1().getTo(), ftr.get_state_2().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -98,6 +107,8 @@ public class ForwardTransitionRuleTest {
     ftr.doPatternMatching();
     assertEquals(1, ftr.getMatches().size());
     assertEquals(aut.get().getState(1), ftr.get_state_2());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -115,6 +126,8 @@ public class ForwardTransitionRuleTest {
     ftr.doPatternMatching();
     assertEquals(1, ftr.getMatches().size());
     assertEquals(aut.get().getState(2), ftr.get_state_2());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

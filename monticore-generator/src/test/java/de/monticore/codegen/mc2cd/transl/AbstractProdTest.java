@@ -7,7 +7,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,10 +39,11 @@ public class AbstractProdTest {
 
   private ASTCDClass astF;
 
-  @BeforeClass
-  public static void disableFailQuick() {
+  @Before
+  public void disableFailQuick() {
     GrammarFamilyMill.init();
-    LogStub.enableFailQuick(false);
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   public AbstractProdTest() {
@@ -61,6 +64,8 @@ public class AbstractProdTest {
     assertTrue(astB.getModifier().isAbstract());
     assertTrue(astC.getModifier().isAbstract());
     assertTrue(astD.getModifier().isAbstract());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -72,6 +77,8 @@ public class AbstractProdTest {
     assertTrue(astA.isPresentCDExtendUsage());
     String name = typeToString(astA.getCDExtendUsage().getSuperclass(0));
     assertEquals("mc2cdtransformation.AbstractProd.ASTextendedProd", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -84,6 +91,8 @@ public class AbstractProdTest {
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("mc2cdtransformation.AbstractProd.ASTimplementedProd", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -95,6 +104,8 @@ public class AbstractProdTest {
     assertTrue(astC.isPresentCDExtendUsage());
     String name = typeToString(astC.getCDExtendUsage().getSuperclass(0));
     assertEquals("AstExtendedType", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -107,6 +118,8 @@ public class AbstractProdTest {
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("AstImplementedType", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -118,6 +131,8 @@ public class AbstractProdTest {
     assertTrue(astE.isPresentCDExtendUsage());
     String name = typeToString(astE.getCDExtendUsage().getSuperclass(0));
     assertEquals("java.util.Observable", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -130,5 +145,7 @@ public class AbstractProdTest {
     assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
     assertEquals("java.io.Serializable", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

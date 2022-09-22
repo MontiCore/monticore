@@ -3,17 +3,18 @@
 package de.monticore.generating.templateengine;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
 import de.monticore.io.FileReaderWriter;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.generating.GeneratorSetup;
@@ -30,8 +31,13 @@ public class TemplateControllerHookPointsTest {
   private GlobalExtensionManagement glex;
   
   @Before
-  public void setup() {
+  public void before() {
     LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
+  @Before
+  public void setup() {
     glex = new GlobalExtensionManagement();
         
     GeneratorSetup config = new GeneratorSetup();
@@ -50,6 +56,7 @@ public class TemplateControllerHookPointsTest {
   @Test
   public void testUndefinedHook() {
     assertEquals("/* Hookpoint: hp1 */", glex.defineHookPoint(tc, "hp1"));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -60,6 +67,7 @@ public class TemplateControllerHookPointsTest {
     glex.bindHookPoint("hp1", new StringHookPoint("value of hp1"));
     hpValue = glex.defineHookPointWithDefault(tc, "hp1", "default");
     assertEquals("value of hp1", hpValue);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -166,11 +174,13 @@ public class TemplateControllerHookPointsTest {
   @Test
   public void testStringHookInSubtemplate() {
     assertEquals("TopStringHook Hello Brave New World!", tc.include(TEMPLATE_PACKAGE + "TopStringHook").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testTemplateHookInSubtemplate() {
     assertEquals("TopTemplateHook A", tc.include(TEMPLATE_PACKAGE + "TopTemplateHook").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -189,6 +199,7 @@ public class TemplateControllerHookPointsTest {
         new TemplateHookPoint(TEMPLATE_PACKAGE + "B"), 
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
     assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -207,6 +218,7 @@ public class TemplateControllerHookPointsTest {
         new TemplateHookPoint(TEMPLATE_PACKAGE + "B"), 
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
     assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -234,6 +246,7 @@ public class TemplateControllerHookPointsTest {
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
     r = tc.include(TEMPLATE_PACKAGE + "A");
     assertEquals("BC", r.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -255,6 +268,7 @@ public class TemplateControllerHookPointsTest {
     // replacing B has no effect on A
     glex.replaceTemplate(TEMPLATE_PACKAGE + "B", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
     assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   
@@ -270,6 +284,7 @@ public class TemplateControllerHookPointsTest {
     
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -279,6 +294,7 @@ public class TemplateControllerHookPointsTest {
     String hpValue = glex.defineHookPoint(tc, "hp1");
     assertNotNull(hpValue);
     assertEquals("true", hpValue);
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

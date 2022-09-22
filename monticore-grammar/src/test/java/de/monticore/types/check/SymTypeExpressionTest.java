@@ -10,6 +10,8 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -84,10 +86,10 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teFunc3;
 
+  static SymTypeExpression teFunc4;
+
   @BeforeClass
   public static void setUpScope(){
-//    LogStub.init();
-    Log.enableFailQuick(false);
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -154,8 +156,16 @@ public class SymTypeExpressionTest {
 
     teFunc3 = createFunction(teFunc1, Lists.newArrayList(teFunc2));
 
-  }
+    teFunc4 = createFunction(teVoid, Lists.newArrayList(teDouble, teInt), true);
 
+  }
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void printTest() {
     assertEquals("double", teDouble.print());
@@ -179,6 +189,7 @@ public class SymTypeExpressionTest {
     assertEquals("(void)", teFunc1.print());
     assertEquals("(double -> int -> int)", teFunc2.print());
     assertEquals("((double -> int -> int) -> (void))", teFunc3.print());
+    assertEquals("(double -> int... -> void)", teFunc4.print());
   }
 
   @Test
@@ -352,6 +363,12 @@ public class SymTypeExpressionTest {
     assertEquals("double", func2Arguments.get(0).getAsJsonObject().getStringMember( "primitiveName"));
     assertEquals("de.monticore.types.check.SymTypePrimitive", func2Arguments.get(1).getAsJsonObject().getStringMember( "kind"));
     assertEquals("int", func2Arguments.get(1).getAsJsonObject().getStringMember( "primitiveName"));
+    assertFalse(teFunc2Json.getBooleanMember("elliptic"));
+
+    result = JsonParser.parse(teFunc4.printAsJson());
+    assertTrue(result.isJsonObject());
+    JsonObject teFunc4Json = result.getAsJsonObject();
+    assertTrue(teFunc4Json.getBooleanMember("elliptic"));
   }
 
   @Test
@@ -500,6 +517,9 @@ public class SymTypeExpressionTest {
 
     SymTypeOfFunction tFunc3 = SymTypeExpressionFactory.createFunction(tVoid, tFunc1, tFunc1);
     assertEquals("((void) -> (void) -> void)", tFunc3.print());
+
+    SymTypeOfFunction tFunc4 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(teDouble, teInt), true);
+    assertEquals("(double -> int... -> void)", tFunc4.print());
   }
 
   @Test

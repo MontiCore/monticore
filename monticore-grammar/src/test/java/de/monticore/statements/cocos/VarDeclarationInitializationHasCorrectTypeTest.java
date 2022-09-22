@@ -14,6 +14,7 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,12 +32,15 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     new TestMCVarDeclarationStatementsCoCoChecker();
 
   private static final TestMCVarDeclarationStatementsParser parser = new TestMCVarDeclarationStatementsParser();
-
-  @BeforeClass
-  public static void setUp(){
-    Log.init();
-    //LogStub.init();
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
+  }
+  
+  @BeforeClass
+  public static void setUp() {
     TestMCVarDeclarationStatementsMill.reset();
     TestMCVarDeclarationStatementsMill.init();
     checker.setTraverser(TestMCVarDeclarationStatementsMill.traverser());

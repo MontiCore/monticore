@@ -19,6 +19,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,7 +65,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
     ICD4CodeGlobalScope gs = CD4CodeMill.globalScope();
     this.glex.setGlobalValue("service", new AbstractService(ast));
@@ -85,29 +86,39 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
-    Assert.assertTrue(parseResult.isSuccessful());
+    assertTrue(parseResult.isSuccessful());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("AutomatonCoCoChecker", cocoChecker.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(1, cocoChecker.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testTraverserAttribute() {
     ASTCDAttribute attribute = getAttributeBy("traverser", cocoChecker);
     assertDeepEquals(PROTECTED, attribute.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertFalse(cocoChecker.getCDConstructorList().isEmpty());
     assertEquals(1, cocoChecker.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -115,11 +126,15 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     ASTCDConstructor defaultConstructor = cocoChecker.getCDConstructorList().get(0);
     assertDeepEquals(PUBLIC, defaultConstructor.getModifier());
     assertTrue(defaultConstructor.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(14, cocoChecker.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,6 +147,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("traverser", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -142,6 +159,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(astType, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -154,6 +173,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("checker", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,6 +187,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("checker", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -179,6 +202,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    Assert.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -192,6 +217,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -205,6 +232,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -218,6 +247,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -231,6 +262,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("coco", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -243,6 +276,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("node", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -255,6 +290,8 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertDeepEquals(astType, method.getCDParameter(0).getMCType());
     assertEquals("node", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

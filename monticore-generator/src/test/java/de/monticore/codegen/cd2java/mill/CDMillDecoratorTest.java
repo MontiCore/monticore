@@ -39,13 +39,16 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class CDMillDecoratorTest extends DecoratorTestCase {
@@ -64,8 +67,6 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -136,7 +137,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, new MCPath());
     ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService, new MCPath());
-    Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator);
+    Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator, new MCPath());
     ScopesGenitorDecorator scopesGenitorDecorator = new ScopesGenitorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator = new ScopesGenitorDelegatorDecorator(glex, symbolTableService, visitorService);
 
@@ -162,6 +163,8 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     assertEquals("de.monticore.codegen.symboltable.automaton._symboltable.SymbolInterfaceSymbol", cachedValue);
     
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -172,20 +175,28 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     assertEquals("codegen", millCD.getCDPackageList().get(2));
     assertEquals("symboltable", millCD.getCDPackageList().get(3));
     assertEquals("automaton", millCD.getCDPackageList().get(4));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDefinitionName() {
     assertEquals("Automaton", millCD.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassSize() {
     assertEquals(1, millCD.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMillClass() {
     ASTCDClass automatonMill = getClassBy("AutomatonMill", millCD);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

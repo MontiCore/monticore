@@ -2,11 +2,15 @@
 
 package mc.feature.keyrule;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.keyrule.nokeywordrule._ast.ASTB;
 import mc.feature.keyrule.nokeywordrule._ast.ASTJ;
 import mc.feature.keyrule.nokeywordrule._ast.ASTK;
 import mc.feature.keyrule.nokeywordrule._parser.NoKeywordRuleParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,6 +19,12 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class NoKeywordRuleTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void test() throws IOException {
@@ -37,7 +47,6 @@ public class NoKeywordRuleTest extends GeneratorIntegrationsTest {
     Optional<ASTK> astk = parser.parse_StringK("bla1");
     assertFalse(parser.hasErrors());
     assertTrue(astk.isPresent());
-
   }
   
 }

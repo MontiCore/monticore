@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
+import de.monticore.generating.GeneratorEngine;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -25,6 +27,7 @@ import java.util.Map;
 
 import static de.monticore.codegen.cd2java.CDModifier.*;
 import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.END_VISIT;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
@@ -40,6 +43,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
   protected final MethodDecorator methodDecorator;
 
+  protected final MCPath hwPath;
+
   protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> accessorDecorator;
 
   protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
@@ -51,14 +56,15 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
   public Symbols2JsonDecorator(final GlobalExtensionManagement glex,
                                final SymbolTableService symbolTableService,
                                final VisitorService visitorService,
-                               final MethodDecorator methodDecorator) {
+                               final MethodDecorator methodDecorator,
+                               final MCPath hwPath) {
     super(glex);
     this.symbolTableService = symbolTableService;
     this.visitorService = visitorService;
     this.methodDecorator = methodDecorator;
     this.accessorDecorator = methodDecorator.getAccessorDecorator();
     this.mutatorDecorator = methodDecorator.getMutatorDecorator();
-
+    this.hwPath = hwPath;
   }
 
   public ASTCDClass decorate(ASTCDCompilationUnit scopeCD, ASTCDCompilationUnit symbolCD) {
@@ -72,6 +78,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     List<DiagramSymbol> superGrammars = symbolTableService.getSuperCDsTransitive();
 
     ASTCDAttribute traverserAttribute = createTraverserAttribute(traverserFullName);
+    ASTCDAttribute realThisAttribute = createRealThisAttribute(symbols2JsonName);
+    List<ASTCDMethod> realThisMethods = methodDecorator.decorate(realThisAttribute);
 
     ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade()
       .createQualifiedType(scopeInterfaceFullName), "toSerialize");
@@ -84,6 +92,8 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .setModifier(PUBLIC.build())
             .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(getMCTypeFacade().createQualifiedType(visitorFullName)).build())
             .addAllCDMembers(createDeSerAttrs(symbolDefiningProds))
+            .addCDMember(realThisAttribute)
+            .addAllCDMembers(realThisMethods)
             .addCDMember(getCDAttributeFacade().createAttribute(PROTECTED.build(), JSON_PRINTER, "printer"))
             .addCDMember(createGetJsonPrinterMethod())
             .addCDMember(createSetJsonPrinterMethod())
@@ -164,7 +174,13 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
   protected List<ASTCDAttribute> createDeSerAttrs(List<ASTCDType> prods) {
     List<ASTCDAttribute> attrList = Lists.newArrayList();
-    attrList.add(getCDAttributeFacade().createAttribute(PROTECTED.build(), I_DE_SER, "scopeDeSer"));
+    String typeOfDeSer = I_DE_SER + "<"
+        + symbolTableService.getScopeInterfaceFullName() + ", "
+        + symbolTableService.getArtifactScopeInterfaceFullName() + ", "
+        + symbolTableService.getSymbols2JsonSimpleName()
+        + (GeneratorEngine.existsHandwrittenClass(hwPath, symbolTableService.getSymbols2JsonFullName()) ? "TOP" : "")
+        + ">";
+    attrList.add(getCDAttributeFacade().createAttribute(PROTECTED.build(), typeOfDeSer, "scopeDeSer"));
     for (ASTCDType prod : prods) {
       String name = StringTransformations.uncapitalize(symbolTableService.getSymbolDeSerSimpleName(prod));
       attrList.add(getCDAttributeFacade().createAttribute(PROTECTED.build(), symbolTableService.getSymbolDeSerFullName(prod), name));
@@ -283,6 +299,11 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
       .createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "serialize", toSerialize);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(SERIALIZE_TEMPL));
     return method;
+  }
+  protected ASTCDAttribute createRealThisAttribute(String symbols2JsonSimpleName){
+    ASTCDAttribute realThis = getCDAttributeFacade().createAttribute(PROTECTED.build(), symbols2JsonSimpleName, "realThis");
+    this.replaceTemplate(VALUE, realThis, new StringHookPoint("= (" + symbols2JsonSimpleName + ") this"));
+    return realThis;
   }
 
 }

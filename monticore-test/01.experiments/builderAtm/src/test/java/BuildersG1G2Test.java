@@ -20,18 +20,13 @@ import g1._ast.ASTTBuilder;
 import g2.G2Mill;
 
 public class BuildersG1G2Test {
-  
-  @BeforeClass
-  public static void init() {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-  }
 
   ASTT t7,t8,t9,t10;
 
   @Before
   public void setUp() throws RecognitionException, IOException {
+    LogStub.init();
+    Log.enableFailQuick(false);
     Log.getFindings().clear();
     t7 =  G2Mill.tBuilder().build();
     t8 =  G2Mill.tBuilder().build();
@@ -48,6 +43,7 @@ public class BuildersG1G2Test {
                 .add_PreComment(new Comment("blubb2"));
     assertEquals(2, tb.size_PreComments());
     assertEquals("blubb2", tb.get_PreComment(1).getText());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests whether inherited attributes are set through builder
@@ -59,6 +55,7 @@ public class BuildersG1G2Test {
 		.build();
     assertEquals(2, t.size_PreComments());
     assertEquals("blubb2", t.get_PreComment(1).getText());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests whether generated build-setters work
@@ -72,6 +69,7 @@ public class BuildersG1G2Test {
     assertTrue(t8 == s.getA());
     assertTrue(!(t7 == s.getA()));
     assertEquals(g1._ast.ASTS.class, s.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // tests whether generated build-setters work in G2
@@ -88,6 +86,7 @@ public class BuildersG1G2Test {
     assertEquals(5, s.sizeC());
     assertTrue(t10 == s.getC(4));
     assertEquals(g2._ast.ASTS.class, s.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests whether generated build-setters work in G2
@@ -102,6 +101,7 @@ public class BuildersG1G2Test {
     	s.getB();
       fail("Expected an Exception to be thrown");
     } catch (java.lang.IllegalStateException ex) { }
+    
   }
 
   // tests: Builder from G2 derived through G1
@@ -113,6 +113,7 @@ public class BuildersG1G2Test {
                 .build();
     assertTrue(t7 == s.getA());
     assertEquals(g2._ast.ASTS.class, s.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests: Builder from G3 derived through G1
@@ -136,6 +137,7 @@ public class BuildersG1G2Test {
                 .build();
     assertTrue(t7 == s3.getA());
     assertEquals(g3._ast.ASTS.class, s3.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

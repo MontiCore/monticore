@@ -15,6 +15,7 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +48,8 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testInterfaceSize() {
     assertEquals(3, interfaces.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -54,6 +57,8 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     ASTCDInterface cdInterface = interfaces.get(0);
     assertEquals(1, cdInterface.getInterfaceList().size());
     assertDeepEquals("de.monticore.codegen.cocos.cocos._visitor.CoCosVisitor2", cdInterface.getCDExtendUsage().getSuperclass(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -81,6 +86,8 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTCoCosNode", parameter.getMCType());
     assertEquals("node", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -108,6 +115,8 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTA", parameter.getMCType());
     assertEquals("node", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -135,6 +144,8 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
     parameter = method.getCDParameter(0);
     assertDeepEquals("de.monticore.codegen.cocos.cocos._ast.ASTI", parameter.getMCType());
     assertEquals("node", parameter.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -150,5 +161,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
       ParseResult parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

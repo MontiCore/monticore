@@ -9,6 +9,7 @@ import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsPar
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,11 +21,11 @@ import static org.junit.Assert.*;
 
 public class MCGrammarParserTest {
 
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     GrammarFamilyMill.init();
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -42,6 +43,8 @@ public class MCGrammarParserTest {
     assertEquals(3, grammar.getExternalProdList().size());
     assertEquals(1, grammar.getInterfaceProdList().size());
     GrammarTransformer.transform(grammar);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -58,6 +61,8 @@ public class MCGrammarParserTest {
     result = parser.parseASTRule(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
 
   }
 
@@ -69,6 +74,8 @@ public class MCGrammarParserTest {
     Optional<ASTSemanticpredicateOrAction> result = parser.parseSemanticpredicateOrAction(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -79,6 +86,8 @@ public class MCGrammarParserTest {
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -89,6 +98,8 @@ public class MCGrammarParserTest {
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -99,6 +110,8 @@ public class MCGrammarParserTest {
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -119,6 +132,8 @@ public class MCGrammarParserTest {
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -177,6 +192,8 @@ public class MCGrammarParserTest {
     ASTNonTerminal toState = (ASTNonTerminal) transition.getAltList().get(0).getComponentList().get(0);
     assertTrue(toState.isPresentReferencedSymbol());
     assertEquals("State", toState.getReferencedSymbol());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

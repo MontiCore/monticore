@@ -2,6 +2,7 @@
 package mc.testcd4analysis._symboltable;
 
 import com.google.common.collect.ImmutableSet;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -13,6 +14,7 @@ import mc.testcd4analysis._parser.TestCD4AnalysisParser;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -87,16 +89,16 @@ public class TestCD4AnalysisGlobalScope extends TestCD4AnalysisGlobalScopeTOP{
       location = getSymbolPath().find(modelName, "cd");
       if(location.isPresent() && !isFileLoaded(location.get().toString())){
         addLoadedFile(location.get().toString());
-        ASTCDCompilationUnit ast = parse(location.get().getFile());
+        ASTCDCompilationUnit ast = parse(location.get());
         ITestCD4AnalysisArtifactScope as = new TestCD4AnalysisPhasedSymbolTableCreatorDelegator().createFromAST(ast);
         addSubScope(as);
       }
     }
   }
 
-  private ASTCDCompilationUnit parse(String model){
-    try {
-      Optional<ASTCDCompilationUnit> optAST = new TestCD4AnalysisParser().parse(new FileReader(model));
+  private ASTCDCompilationUnit parse(URL model){
+    try (Reader reader = FileReaderWriter.getReader(model)){
+      Optional<ASTCDCompilationUnit> optAST = new TestCD4AnalysisParser().parse(reader);
       if(optAST.isPresent()){
         return optAST.get();
       }

@@ -4,12 +4,8 @@ package de.monticore.expressions.exptojava;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
-import de.monticore.expressions.testjavaclassexpressions._ast.ASTExtType;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;
-import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisHandler;
-import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.MCCommonLiteralsPrettyPrinterTest;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -27,8 +23,8 @@ public class JavaClassExpressionsJavaPrinterTest {
   
   private JavaClassExpressionsFullJavaPrinter javaPrinter= new JavaClassExpressionsFullJavaPrinter(new IndentPrinter());
   
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -52,6 +48,8 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -68,6 +66,8 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -82,6 +82,8 @@ public class JavaClassExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a.this", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -99,6 +101,8 @@ public class JavaClassExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a[b]", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -116,6 +120,8 @@ public class JavaClassExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a.super(b)", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -132,6 +138,8 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -148,6 +156,8 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -164,6 +174,8 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -12,20 +12,29 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandle
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
- * The usage of this class is to transform a call expression so that it is easier to resolve in the TypeCheck
- * We take the call expression, set the name of the call expression to the name of the inner name/qualified
- * name expression and set the inner expression to the inner expression of the inner expression
+ * The usage of this class is to collect information about a call expression
+ * so that it is easier to resolve in the TypeCheck
+ *
+ * We take the call expression, and split it into a qualified name and an expression having a type
+ * such that type.qualifiedName(args) has the type of the call expression
+ * if no type can be found, the expression is set to the inner expression for compatibility reasons
  *
  * This makes it far easier to calculate the type of a call expression
  *
- * Visitor Run is idempotent (use #2430 technique if available)
- * actually this is called in DeriveSymTypeOfCommonExpressions
+ * this is called in DeriveSymTypeOfCommonExpressions
  */
 
 public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, CommonExpressionsHandler, ExpressionsBasisVisitor2, ExpressionsBasisHandler {
 
   protected CommonExpressionsTraverser traverser;
+
+  // these are the traverser and typeCheckResult of the typecheck using this visitor
+  protected CommonExpressionsTraverser typeCheckTraverser;
+  protected TypeCheckResult typeCheckResult;
 
   @Override
   public CommonExpressionsTraverser getTraverser() {
@@ -43,39 +52,62 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
     this.traverser = (CommonExpressionsTraverser) traverser;
   }
 
-  protected String lastName = "";
+  protected CommonExpressionsTraverser getTypeCheckTraverser() {
+    return typeCheckTraverser;
+  }
+
+  public void setTypeCheckTraverser(
+      CommonExpressionsTraverser typeCheckTraverser) {
+    this.typeCheckTraverser = typeCheckTraverser;
+  }
+
+  protected TypeCheckResult getTypeCheckResult() {
+    return typeCheckResult;
+  }
+
+  public void setTypeCheckResult(TypeCheckResult typeCheckResult) {
+    this.typeCheckResult = typeCheckResult;
+  }
+
+  protected List<String> name = new LinkedList<>();
   protected ASTExpression lastExpression = null;
 
   @Override
   public void traverse(ASTCallExpression expr){
     // avoid run if Name is already set
-    if (lastName.isEmpty()) {
+    if (name.isEmpty()) {
       expr.getExpression().accept(getTraverser());
     }
   }
 
   @Override
   public void traverse(ASTFieldAccessExpression expr){
-    if(lastName.isEmpty()){
-      lastName = expr.getName();
-    }
-    if(lastExpression == null){
+    name.add(0, expr.getName());
+    getTypeCheckResult().reset();
+    expr.getExpression().accept(getTypeCheckTraverser());
+    if(getTypeCheckResult().isPresentResult() || lastExpression == null) {
       lastExpression = expr.getExpression();
+    }
+    if(!getTypeCheckResult().isPresentResult()) {
+      expr.getExpression().accept(getTraverser());
     }
   }
 
   @Override
   public void traverse(ASTNameExpression expr){
-    if(lastName.isEmpty()){
-      lastName = expr.getName();
-    }
+    name.add(0, expr.getName());
   }
 
   public ASTExpression getLastExpression() {
     return lastExpression;
   }
 
+  public List<String> getName() {
+    return name;
+  }
+
+  @Deprecated
   public String getLastName() {
-    return lastName;
+    return name.get(name.size() - 1);
   }
 }

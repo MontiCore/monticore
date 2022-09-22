@@ -18,6 +18,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class ASTReferencedDefinitionDecoratorListTest extends DecoratorTestCase 
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
@@ -54,16 +55,22 @@ public class ASTReferencedDefinitionDecoratorListTest extends DecoratorTestCase 
   @Test
   public void testClass() {
     assertEquals("ASTBarList", astClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributes() {
     assertTrue(astClass.getCDAttributeList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethods() {
     assertEquals(19, astClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -77,5 +84,7 @@ public class ASTReferencedDefinitionDecoratorListTest extends DecoratorTestCase 
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

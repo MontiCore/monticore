@@ -3,8 +3,10 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import de.se_rwth.commons.logging.Log;
 
 public class ConservativeExtensionCheckTest extends CocoTest  {
 
@@ -13,10 +15,15 @@ public class ConservativeExtensionCheckTest extends CocoTest  {
 
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
     checker.addCoCo(new ConservativeExtensionCheck());
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testInvalid1() {
     testInvalidGrammar(grammar +"1", ConservativeExtensionCheck.ERROR_CODE,

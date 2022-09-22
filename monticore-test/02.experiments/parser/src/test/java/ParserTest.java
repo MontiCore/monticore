@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import g1.G1Mill;
 import g1._ast.ASTN;
 import g1._parser.G1Parser;
@@ -11,6 +12,7 @@ import g4._auxiliary.G1MillForG4;
 import g4._auxiliary.G3MillForG4;
 import g4._parser.G4Parser;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,9 +21,10 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class ParserTest {
-
+  
   @Before
-  public void setup(){
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -32,6 +35,7 @@ public class ParserTest {
     Optional<ASTN> optionalN =  parser.parse_StringN("...N4T1");
     assertTrue(optionalN.isPresent());
     assertTrue(optionalN.get() instanceof g4._ast.ASTN);
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -50,6 +54,7 @@ public class ParserTest {
     Optional<g4._ast.ASTN> optionalN = parser.parse_StringN("...N4T1");
     assertTrue(optionalN.isPresent());
     assertTrue(optionalN.get() instanceof g4._ast.ASTN);
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -21,8 +21,8 @@ import static org.junit.Assert.assertTrue;
 
 public class MCNumbersPrettyPrinterTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
@@ -49,6 +49,8 @@ public class MCNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(decimal.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -67,6 +69,8 @@ public class MCNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(decimal.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -85,6 +89,8 @@ public class MCNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(integer.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -103,5 +109,7 @@ public class MCNumbersPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(integer.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -11,11 +11,9 @@ import static org.junit.Assert.fail;
 import java.io.File;
 
 import de.monticore.io.FileReaderWriter;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import com.google.common.collect.Lists;
 
@@ -32,10 +30,15 @@ public class TemplateControllerSignatureUsageTest {
 
   private TemplateControllerMock tc;
   private GlobalExtensionManagement glex;
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Before
   public void setup() {
-    LogStub.init();
     glex = new GlobalExtensionManagement();
 
     GeneratorSetup config = new GeneratorSetup();
@@ -59,7 +62,8 @@ public class TemplateControllerSignatureUsageTest {
   @Test
   public void testSignatureWithOneParameter() {
     StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithOneParameter", Lists.<Object>newArrayList("Charly"));
-
+  
+    assertTrue(Log.getFindings().isEmpty());
     assertEquals("Name is Charly", output.toString());
   }
 
@@ -69,6 +73,7 @@ public class TemplateControllerSignatureUsageTest {
         Lists.<Object>newArrayList("Charly", "30", "Aachen"));
 
     assertEquals("Name is Charly, age is 30, city is Aachen", output.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -77,6 +82,7 @@ public class TemplateControllerSignatureUsageTest {
         Lists.<Object>newArrayList("Charly", "30", "Aachen", "52062", "Engineer", "No friends"));
 
     assertEquals("Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends", output.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -85,6 +91,7 @@ public class TemplateControllerSignatureUsageTest {
         Lists.<Object>newArrayList("T1"));
 
     assertEquals("T1 -> Name is T2", output.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -97,6 +104,7 @@ public class TemplateControllerSignatureUsageTest {
     } catch (MontiCoreFreeMarkerException e) {
       assertTrue(e.getCause() instanceof IllegalArgumentException);
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Ignore
@@ -106,6 +114,7 @@ public class TemplateControllerSignatureUsageTest {
         Lists.<Object>newArrayList("Charly"));
 
     assertEquals("Hello Charly\nSorry, what was your name?", templateOutput.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
     
   @Test
@@ -117,5 +126,6 @@ public class TemplateControllerSignatureUsageTest {
         "Name is Charly, age is 30, city is Aachen\n" +
         "Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends"
         , templateOutput.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

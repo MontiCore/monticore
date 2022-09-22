@@ -22,6 +22,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,7 +95,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, new MCPath());
     ScopeDeSerDecorator scopeDeSerDecorator = new ScopeDeSerDecorator(glex, symbolTableService, methodDecorator, visitorService, new MCPath());
-    Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator);
+    Symbols2JsonDecorator symbolTablePrinterDecorator = new Symbols2JsonDecorator(glex, symbolTableService, visitorService, methodDecorator, new MCPath());
     ScopesGenitorDecorator scopesGenitorDecorator = new ScopesGenitorDecorator(glex, symbolTableService, visitorService, methodDecorator);
     ScopesGenitorDelegatorDecorator scopesGenitorDelegatorDecorator = new ScopesGenitorDelegatorDecorator(glex, symbolTableService, visitorService);
 
@@ -137,16 +138,22 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(originalASTCompilationUnit, decoratedASTCompilationUnit);
     assertDeepEquals(originalSymbolCompilationUnit, decoratedSymbolCompilationUnit);
     assertDeepEquals(originalScopeCompilationUnit, decoratedScopeCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCDName() {
     assertEquals("Automaton", symTabCD.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCount() {
     assertEquals(27, symTabCD.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -173,11 +180,15 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonSymbolTablePrinter = getClassBy("AutomatonSymbols2Json", symTabCD);
     ASTCDClass automatonScopesGenitor = getClassBy("AutomatonScopesGenitor", symTabCD);
     ASTCDClass automatonScopesGenitorDelegator = getClassBy("AutomatonScopesGenitorDelegator", symTabCD);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCount() {
     assertEquals(7, symTabCD.getCDDefinition().getCDInterfacesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -189,11 +200,15 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iAutomatonSymbolResolver = getInterfaceBy("IAutomatonSymbolResolver", symTabCD);
     ASTCDInterface iStateSymbolResolver = getInterfaceBy("IStateSymbolResolver", symTabCD);
     ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolver", symTabCD);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoEnum() {
     assertTrue(symTabCD.getCDDefinition().getCDEnumsList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -205,23 +220,30 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     assertEquals("symboltable", symTabCD.getCDPackageList().get(3));
     assertEquals("automaton", symTabCD.getCDPackageList().get(4));
     assertEquals("_symboltable", symTabCD.getCDPackageList().get(5));
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testImports() {
     assertEquals(0, symTabCD.getMCImportStatementList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testCDNameWithHC() {
     assertEquals("Automaton", symTabCDWithHC.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCountWithHC() {
     assertEquals(27, symTabCDWithHC.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -243,11 +265,15 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonArtifactScope = getClassBy("AutomatonArtifactScope", symTabCDWithHC);
     ASTCDClass automatonScopesGenitor = getClassBy("AutomatonScopesGenitor", symTabCDWithHC);
     ASTCDClass automatonScopesGenitorDelegator = getClassBy("AutomatonScopesGenitorDelegator", symTabCDWithHC);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCountWithHC() {
     assertEquals(7, symTabCDWithHC.getCDDefinition().getCDInterfacesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -259,21 +285,29 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iAutomatonSymbolResolver = getInterfaceBy("IAutomatonSymbolResolver", symTabCDWithHC);
     ASTCDInterface iStateSymbolResolver = getInterfaceBy("IStateSymbolResolver", symTabCDWithHC);
     ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolver", symTabCDComponent);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoEnumWithHC() {
     assertTrue(symTabCDWithHC.getCDDefinition().getCDEnumsList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCDNameComponent() {
     assertEquals("Automaton", symTabCDComponent.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCountComponent() {
     assertEquals(27, symTabCDComponent.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -291,11 +325,15 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDClass automatonSymbolSurrogateBuilder = getClassBy("AutomatonSymbolSurrogateBuilder", symTabCDComponent);
     ASTCDClass stateSymbolSurrogateBuilder = getClassBy("StateSymbolSurrogateBuilder", symTabCDComponent);
     ASTCDClass fooSymbolSurrogateBuilder = getClassBy("FooSymbolSurrogateBuilder", symTabCDComponent);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCountComponent() {
     assertEquals(7, symTabCDComponent.getCDDefinition().getCDInterfacesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -307,10 +345,14 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ASTCDInterface iAutomatonSymbolResolver = getInterfaceBy("IAutomatonSymbolResolver", symTabCDComponent);
     ASTCDInterface iStateSymbolResolver = getInterfaceBy("IStateSymbolResolver", symTabCDComponent);
     ASTCDInterface symbolInterfaceSymbol = getInterfaceBy("ISymbolInterfaceSymbolResolver", symTabCDComponent);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoEnumComponent() {
     assertTrue(symTabCDComponent.getCDDefinition().getCDEnumsList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

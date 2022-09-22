@@ -2,9 +2,12 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class MethodAbstractAndOtherModifiersTest extends JavaLightCocoTest{
 
@@ -26,6 +29,8 @@ public class MethodAbstractAndOtherModifiersTest extends JavaLightCocoTest{
   public void testCorrect() {
     testValid("de.monticore.javalight.cocos.valid.A0802",
         "a", checker);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

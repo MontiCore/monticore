@@ -20,8 +20,8 @@ import de.se_rwth.commons.logging.LogStub;
 
 public class UMLStereotypePrettyPrinterTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
@@ -48,6 +48,8 @@ public class UMLStereotypePrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(stereotype.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -66,5 +68,7 @@ public class UMLStereotypePrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(stereovalue.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

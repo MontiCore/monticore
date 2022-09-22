@@ -67,6 +67,8 @@ public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // ScopeSpanningSymbol
@@ -74,21 +76,29 @@ public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassNameAutomatonSymbol() {
     assertEquals("IAutomatonSymbolResolver", symbolClassAutomaton.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoSuperInterfacesl() {
     assertFalse(symbolClassAutomaton.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoAttribute() {
     assertTrue( symbolClassAutomaton.getCDAttributeList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethods() {
     assertEquals(1, symbolClassAutomaton.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -106,5 +116,7 @@ public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
     assertEquals("modifier", method.getCDParameter(2).getName());
     assertDeepEquals(PREDICATE, method.getCDParameter(3).getMCType());
     assertEquals("predicate", method.getCDParameter(3).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

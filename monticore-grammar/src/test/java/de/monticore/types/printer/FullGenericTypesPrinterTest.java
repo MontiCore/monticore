@@ -8,6 +8,8 @@ import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestP
 import de.monticore.types.prettyprint.MCFullGenericTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,8 +20,9 @@ import static org.junit.Assert.*;
 
 public class FullGenericTypesPrinterTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -48,5 +51,7 @@ public class FullGenericTypesPrinterTest {
     assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", printer.prettyprint(astmcMultipleGenericType.get()));
 //    assertEquals("<a extends b &c &d, e extends f &g>", FullGenericTypesPrinter.printType(astmcTypeParameters.get()));
 //    assertEquals("a extends b &c &d", FullGenericTypesPrinter.printType(astmcTypeVariableDeclaration.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

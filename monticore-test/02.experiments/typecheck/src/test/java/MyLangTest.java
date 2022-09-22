@@ -13,15 +13,25 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCalculator;
 import de.monticore.types.check.TypeCheck;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mylang.FullDeriveFromMyLang;
 import mylang.MyLangMill;
 import mylang.FullSynthesizeFromMyLang;
 import mylang._ast.ASTMyVar;
 import mylang._parser.MyLangParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
 public class MyLangTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testMyLang() throws IOException {
@@ -40,6 +50,7 @@ public class MyLangTest {
   
     ASTMyVar var = varOpt.get();
     ASTMCType type = var.getType();
+    type.setEnclosingScope(MyLangMill.globalScope());
     ASTExpression exp = var.getExp();
   
     // synthesize SymTypeExpression from type
@@ -61,7 +72,8 @@ public class MyLangTest {
   
     // check whether the expression is of assignable type 
     assertTrue(tc.isOfTypeForAssign(symType1,exp));
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   

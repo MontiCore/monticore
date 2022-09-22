@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,12 +18,16 @@ import static org.junit.Assert.assertTrue;
  * Tests the JsonPrinter
  */
 public class JsonPrinterTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Before
   public void disableIndentation() {
     JsonPrinter.disableIndentation();
-    LogStub.init();
-    Log.enableFailQuick(false);
   }
 
   @Test
@@ -40,6 +45,7 @@ public class JsonPrinterTest {
     String serialized = printer.getContent();
     assertTrue(null != JsonParser.parseJsonObject(serialized));
     assertTrue(!serialized.contains("kindHierarchy"));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -47,6 +53,7 @@ public class JsonPrinterTest {
     JsonPrinter printer = new JsonPrinter();
     printer.value("\"\t\\\n\'");
     assertEquals("\"\\\"\\t\\\\\\n\\'\"", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -60,6 +67,7 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.endObject();
     assertEquals("", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -75,6 +83,7 @@ public class JsonPrinterTest {
     printer.member("s", "");
     printer.endObject();
     assertEquals("{\"s\":\"\"}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -90,6 +99,7 @@ public class JsonPrinterTest {
     printer.member("i", 0);
     printer.endObject();
     assertEquals("{\"i\":0}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -105,6 +115,7 @@ public class JsonPrinterTest {
     printer.member("b", false);
     printer.endObject();
     assertEquals("{\"b\":false}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,6 +143,7 @@ public class JsonPrinterTest {
     printer.endArray();
     printer.endObject();
     assertEquals("", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -165,6 +177,7 @@ public class JsonPrinterTest {
     printer.member("longAttribute", 123456789L);
     printer.endObject();
     assertEquals("{\"longAttribute\":123456789}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -216,6 +229,7 @@ public class JsonPrinterTest {
     printer.member("listAttribute", Lists.newArrayList("first", "second"));
     printer.endObject();
     assertEquals("{\"listAttribute\":[\"first\",\"second\"]}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

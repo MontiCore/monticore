@@ -7,7 +7,9 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -42,14 +44,16 @@ public class NonTerminalMultiplicityTest {
 
   private ASTCDClass astJ;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   public NonTerminalMultiplicityTest() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/NonTerminalMultiplicityGrammar.mc4")).get();
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
@@ -71,6 +75,8 @@ public class NonTerminalMultiplicityTest {
   public void testNonTerminalName() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
     assertEquals("x", attributes.get(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -82,6 +88,8 @@ public class NonTerminalMultiplicityTest {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -93,6 +101,8 @@ public class NonTerminalMultiplicityTest {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -104,6 +114,8 @@ public class NonTerminalMultiplicityTest {
     List<ASTCDAttribute> attributes = astC.getCDAttributeList();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -115,6 +127,8 @@ public class NonTerminalMultiplicityTest {
     List<ASTCDAttribute> attributes = astD.getCDAttributeList();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -126,6 +140,8 @@ public class NonTerminalMultiplicityTest {
     List<ASTCDAttribute> attributes = astE.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -137,6 +153,8 @@ public class NonTerminalMultiplicityTest {
     List<ASTCDAttribute> attributes = astF.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -148,6 +166,8 @@ public class NonTerminalMultiplicityTest {
     List<ASTCDAttribute> attributes = astG.getCDAttributeList();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -163,6 +183,8 @@ public class NonTerminalMultiplicityTest {
     
     String yTypeName = typeToString(attributes.get(1).getMCType());
     assertEquals("Optional", yTypeName);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -175,5 +197,7 @@ public class NonTerminalMultiplicityTest {
     assertEquals(1, attributes.size());
     String xTypeName = typeToString(attributes.get(0).getMCType());
     assertEquals("Optional", xTypeName);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

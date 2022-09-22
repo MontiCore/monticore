@@ -2,4 +2,4 @@
 ${tc.signature("scope")}
 de.monticore.symboltable.serialization.json.JsonObject scope =
   de.monticore.symboltable.serialization.JsonParser.parseJsonObject(serialized);
-return (${scope}) scopeDeSer.deserializeArtifactScope(scope);
+return scopeDeSer.deserializeArtifactScope(scope);

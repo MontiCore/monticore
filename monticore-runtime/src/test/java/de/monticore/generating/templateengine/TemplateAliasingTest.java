@@ -35,8 +35,8 @@ public class TemplateAliasingTest {
   private GeneratorSetup config;
 
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -51,7 +51,7 @@ public class TemplateAliasingTest {
     config.setTracing(false);
     
     tc = new TemplateController(config, "");
-
+  
     LogStub.getPrints().clear();
   }
 
@@ -65,6 +65,7 @@ public class TemplateAliasingTest {
     StringBuilder templateOutput =
         tc.include(ALIASES_PACKAGE + "IncludeAlias");
     assertEquals("Plain is included.", templateOutput.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -80,6 +81,7 @@ public class TemplateAliasingTest {
         "List argument\n" +
         "Plain is included.Plain is included.\n" +
         "Plain is included.Plain is included.", templateOutput.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -88,6 +90,7 @@ public class TemplateAliasingTest {
     StringBuilder templateOutput =
         tc.include(ALIASES_PACKAGE + "Include2Alias", new AliasTestASTNodeMock(content));
     assertEquals(content, templateOutput.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -96,6 +99,7 @@ public class TemplateAliasingTest {
         tc.include(ALIASES_PACKAGE + "IncludeArgsAndSignatureAlias");
 
     assertEquals("Name is Charly, age is 30, city is Aachen", templateOut.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -104,6 +108,7 @@ public class TemplateAliasingTest {
         tc.includeArgs(ALIASES_PACKAGE + "SignatureAliasWithThreeParameters", "Max Mustermann", "45", "Berlin");
 
     assertEquals("Name is Max Mustermann, age is 45, city is Berlin", templateOut.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -142,6 +147,7 @@ public class TemplateAliasingTest {
     assertEquals("a1\n" +
         "c1\n" +
         "c2", templateOut.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -180,6 +186,7 @@ public class TemplateAliasingTest {
     assertEquals("a1\n" +
         "c1\n" +
         "c2", templateOut.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -195,6 +202,7 @@ public class TemplateAliasingTest {
     assertEquals("bound\n" +
         "/* Hookpoint: WithAst */\n" +
         "/* Hookpoint: WithAlternativeAst */", templateOut.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -209,6 +217,7 @@ public class TemplateAliasingTest {
     }
 
     assertTrue("Log not empty!\n" + LogStub.getPrints(), LogStub.getPrints().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -234,6 +243,7 @@ public class TemplateAliasingTest {
     }
 
     assertTrue("Log not empty!\n" + LogStub.getPrints(), LogStub.getPrints().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -276,6 +286,7 @@ public class TemplateAliasingTest {
     templateOut =
         tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");
     assertEquals("true\ntrue", templateOut.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -303,6 +314,7 @@ public class TemplateAliasingTest {
     assertEquals("item 1", aList.get(0));
     assertEquals("item 2", aList.get(1));
     assertEquals("item 3", bList.get(0));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -313,6 +325,7 @@ public class TemplateAliasingTest {
     tc.include(ALIASES_PACKAGE + "ChangeGlobalVarAlias");
 
     assertEquals("changed", glex.getGlobalVar("a"));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -324,6 +337,7 @@ public class TemplateAliasingTest {
     glex.requiredGlobalVar("a");
 
     assertTrue("Log is not empty, messages: "  + LogStub.getPrints(), LogStub.getPrints().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -345,6 +359,7 @@ public class TemplateAliasingTest {
 
     assertEquals("value", templateOut.toString());
     assertTrue(LogStub.getPrints().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -353,6 +368,7 @@ public class TemplateAliasingTest {
         tc.include(ALIASES_PACKAGE + "GetGlobalVarAlias");
 
     assertEquals("unset", templateOut.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

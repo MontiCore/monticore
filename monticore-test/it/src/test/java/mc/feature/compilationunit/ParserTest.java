@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -19,6 +23,12 @@ import mc.feature.compilationunit.compunit._parser.CompunitParser;
 
 public class ParserTest extends GeneratorIntegrationsTest {
   
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testFoo() throws IOException {
     CompunitParser p = new CompunitParser();
@@ -27,6 +37,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertFalse(p.hasErrors());
     assertTrue(cUnit.isPresent());
     assertTrue(cUnit.get() instanceof ASTCuFoo);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -37,6 +48,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertFalse(p.hasErrors());
     assertTrue(cUnit.isPresent());
     assertTrue(cUnit.get() instanceof ASTCuBar);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

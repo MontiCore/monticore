@@ -52,13 +52,6 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
    * literals/MCLiteralsBasis.mc4
    */
 
-  @BeforeClass
-  public static void setup() {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-  }
-
   @Before
   public void setupForEach() {
     CombineExpressionsWithLiteralsMill.reset();
@@ -431,6 +424,6 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
   @Test
   public void testInvalidRegularAssignmentExpression2() throws IOException{
     //test with no field on the left side of the assignment
-    checkError("3=4", "0xA0180");
+    checkError("3=4", "0xA0182");
   }
 }

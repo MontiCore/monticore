@@ -19,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 
 public class CardinalityPrettyPrinterTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
@@ -47,6 +47,8 @@ public class CardinalityPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(cardinality.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -65,6 +67,8 @@ public class CardinalityPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(cardinality.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -83,5 +87,7 @@ public class CardinalityPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(cardinality.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,6 +41,8 @@ public class TypeCD2JavaTest extends DecoratorTestCase {
     assertEquals("java", simpleReferenceType.getNameList().get(0));
     assertEquals("util", simpleReferenceType.getNameList().get(1));
     assertEquals("List", simpleReferenceType.getNameList().get(2));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -58,6 +62,8 @@ public class TypeCD2JavaTest extends DecoratorTestCase {
     assertEquals("automaton", typeArgument.getNameList().get(4));
     assertEquals("_ast", typeArgument.getNameList().get(5));
     assertEquals("ASTState", typeArgument.getNameList().get(6));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -68,5 +74,7 @@ public class TypeCD2JavaTest extends DecoratorTestCase {
     assertFalse(simpleReferenceType.getNameList().isEmpty());
     assertEquals(1, simpleReferenceType.getNameList().size());
     assertEquals("String", simpleReferenceType.getNameList().get(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }
