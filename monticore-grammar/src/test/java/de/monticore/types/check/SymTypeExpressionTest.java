@@ -182,10 +182,10 @@ public class SymTypeExpressionTest {
     assertEquals("x.Foo<de.x.Person,double,int,Human>", teFoo.printFullName());
     assertEquals("java.util.Set<Map<int,de.x.Person>>", teDeep1.printFullName());
     assertEquals("java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>", teDeep2.printFullName());
-    assertEquals("? super int", teUpperBound.print());
-    assertEquals("? extends Human", teLowerBound.print());
+    assertEquals("? extends int", teUpperBound.print());
+    assertEquals("? super Human", teLowerBound.print());
     assertEquals("?",teWildcard.print());
-    assertEquals("java.util.Map<? super int,?>", teMap3.printFullName());
+    assertEquals("java.util.Map<? extends int,?>", teMap3.printFullName());
     assertEquals("(void)", teFunc1.print());
     assertEquals("(double -> int -> int)", teFunc2.print());
     assertEquals("((double -> int -> int) -> (void))", teFunc3.print());
@@ -728,7 +728,7 @@ public class SymTypeExpressionTest {
   @Test
   public void symTypeOfWildcardTest(){
     SymTypeOfWildcard upperBoundInt = (SymTypeOfWildcard) teUpperBound;
-    assertEquals("? super int", upperBoundInt.print());
+    assertEquals("? extends int", upperBoundInt.print());
     assertEquals("int", upperBoundInt.getBound().print());
     assertTrue(upperBoundInt.isUpper());
   }
