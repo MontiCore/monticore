@@ -261,6 +261,8 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("foo2", _IntegerSymType));
     add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("byteF", _byteSymType));
+    add2scope(scope, field("shortF", _shortSymType));
     add2scope(scope, field("longF", _longSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
@@ -425,6 +427,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void deriveFromConditionalExpression() throws IOException {
     //initialize symbol table
     init_basic();
+
+    //test with byte and short
+    check("bar2 ? byteF : shortF", "short");
 
     //test with two ints as true and false expression
     check("3<4?9:10", "int");
