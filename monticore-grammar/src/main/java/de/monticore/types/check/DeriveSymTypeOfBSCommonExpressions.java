@@ -48,7 +48,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected SymTypeExpression calculatePlusPrefixExpression(SymTypeExpression innerResult) {
-    return getUnaryNumericPromotionType(innerResult);
+    return getBitUnaryNumericPromotionType(innerResult);
   }
 
   @Override
@@ -61,7 +61,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected SymTypeExpression calculateMinusPrefixExpression(SymTypeExpression innerResult) {
-    return getUnaryNumericPromotionType(innerResult);
+    return getBitUnaryNumericPromotionType(innerResult);
   }
 
   /**

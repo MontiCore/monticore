@@ -5,16 +5,18 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.types.check.SymTypePrimitive.unbox;
 import static de.monticore.types.check.TypeCheck.isFloat;
+import static de.monticore.types.check.TypeCheck.isDouble;
+import static de.monticore.types.check.TypeCheck.isLong;
 
 public abstract class AbstractDeriveFromExpression {
 
@@ -105,16 +107,30 @@ public abstract class AbstractDeriveFromExpression {
   }
 
   /**
-   * helper method for the calculation of the ASTBooleanNotExpression
+   * helper method for arithmetic suffix and prefix expressions (++e, --e, e++, e--)
    */
   protected SymTypeExpression getUnaryNumericPromotionType(SymTypeExpression type) {
-    if (TypeCheck.isByte(type) || TypeCheck.isShort(type) || TypeCheck.isChar(type) || TypeCheck.isInt(type)) {
-      return SymTypeExpressionFactory.createPrimitive("int");
-    }
-    if (TypeCheck.isLong(type) || TypeCheck.isDouble(type) || isFloat(type)) {
+    if (isNumericType(type)) {
       return SymTypeExpressionFactory.createPrimitive(unbox(type.print()));
     }
     return SymTypeExpressionFactory.createObscureType();
+  }
+
+  /**
+   * helper method for bit prefix expressions (+e, -e)
+   */
+  protected SymTypeExpression getBitUnaryNumericPromotionType(SymTypeExpression type) {
+    if (isDouble(type)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
+    } else if (isFloat(type)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.FLOAT);
+    } else if (isLong(type)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.LONG);
+    } else if (isIntegralType(type)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT);
+    } else {
+      return SymTypeExpressionFactory.createObscureType();
+    }
   }
 
   protected List<SymTypeExpression> calculateInnerTypes(ASTExpression... expressions){
