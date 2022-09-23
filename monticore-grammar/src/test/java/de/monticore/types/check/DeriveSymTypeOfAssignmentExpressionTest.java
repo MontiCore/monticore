@@ -80,6 +80,9 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("byteF", _byteSymType));
+    add2scope(scope, field("shortF", _shortSymType));
+    add2scope(scope, field("charF", _charSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
     add2scope(scope, field("varchar", _charSymType));
     add2scope(scope, field("varfloat", _floatSymType));
@@ -102,6 +105,16 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
    */
   @Test
   public void deriveFromIncSuffixExpression() throws IOException {
+
+    //example with byte
+    check("byteF++", "byte");
+
+    //example with short
+    check("shortF++", "short");
+
+    //example with char
+    check("charF++", "char");
+
     //example with int
     check("3++", "int");
 
@@ -109,7 +122,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     check("4.5f++", "float");
 
     //example with char
-    check("\'e\'++", "int");
+    check("'e'++", "char");
   }
 
   @Test
@@ -123,6 +136,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
    */
   @Test
   public void deriveFromDecSuffixExpression() throws IOException {
+    //example with byte
+    check("byteF--", "byte");
+
+    //example with short
+    check("shortF--", "short");
+
+    //example with char
+    check("charF--", "char");
+
     //example with int
     check("12--", "int");
 
@@ -141,6 +163,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
    */
   @Test
   public void deriveFromIncPrefixExpression() throws IOException {
+    //example with byte
+    check("++byteF", "byte");
+
+    //example with short
+    check("++shortF", "short");
+
+    //example with char
+    check("++charF", "char");
+
     //example with int
     check("++3", "int");
 
@@ -159,6 +190,15 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
    */
   @Test
   public void deriveFromDecPrefixExpression() throws IOException {
+    //example with byte
+    check("--byteF", "byte");
+
+    //example with short
+    check("--shortF", "short");
+
+    //example with char
+    check("--charF", "char");
+
     //example with int
     check("--1", "int");
 
