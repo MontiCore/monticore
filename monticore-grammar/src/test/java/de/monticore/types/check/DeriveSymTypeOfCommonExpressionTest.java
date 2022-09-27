@@ -707,7 +707,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @Test
   public void testRegularAssignmentWithTwoMissingFields() throws IOException {
-    String regularAssignmentError = "0xA0181";
+    String regularAssignmentError = "0xA0180";
     init_advanced();
     checkErrorsAndFailOnException("missingField = missingField2", regularAssignmentError);
   }
