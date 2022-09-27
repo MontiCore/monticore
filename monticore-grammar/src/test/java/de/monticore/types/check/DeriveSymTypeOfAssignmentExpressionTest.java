@@ -83,16 +83,14 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     add2scope(scope, f);
     f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("foo", _intSymType));
-    add2scope(scope, field("bar2", _booleanSymType));
-    add2scope(scope, field("byteF", _byteSymType));
-    add2scope(scope, field("shortF", _shortSymType));
-    add2scope(scope, field("charF", _charSymType));
-    add2scope(scope, field("vardouble", _doubleSymType));
+    add2scope(scope, field("varbool", _booleanSymType));
+    add2scope(scope, field("varbyte", _byteSymType));
     add2scope(scope, field("varchar", _charSymType));
-    add2scope(scope, field("varfloat", _floatSymType));
-    add2scope(scope, field("varlong", _longSymType));
+    add2scope(scope, field("varshort", _shortSymType));
     add2scope(scope, field("varint", _intSymType));
+    add2scope(scope, field("varlong", _longSymType));
+    add2scope(scope, field("varfloat", _floatSymType));
+    add2scope(scope, field("vardouble", _doubleSymType));
     add2scope(scope, field("varString", SymTypeExpressionFactory.createTypeObject("String", scope)));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
@@ -112,13 +110,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
   public void deriveFromIncSuffixExpression() throws IOException {
 
     //example with byte
-    check("byteF++", "byte");
+    check("varbyte++", "byte");
 
     //example with short
-    check("shortF++", "short");
+    check("varshort++", "short");
 
     //example with char
-    check("charF++", "char");
+    check("varchar++", "char");
 
     //example with int
     check("varint++", "int");
@@ -145,13 +143,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
   @Test
   public void deriveFromDecSuffixExpression() throws IOException {
     //example with byte
-    check("byteF--", "byte");
+    check("varbyte--", "byte");
 
     //example with short
-    check("shortF--", "short");
+    check("varshort--", "short");
 
     //example with char
-    check("charF--", "char");
+    check("varchar--", "char");
 
     //example with int
     check("varint--", "int");
@@ -175,13 +173,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
   @Test
   public void deriveFromIncPrefixExpression() throws IOException {
     //example with byte
-    check("++byteF", "byte");
+    check("++varbyte", "byte");
 
     //example with short
-    check("++shortF", "short");
+    check("++varshort", "short");
 
     //example with char
-    check("++charF", "char");
+    check("++varchar", "char");
 
     //example with int
     check("++varint", "int");
@@ -205,13 +203,13 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
   @Test
   public void deriveFromDecPrefixExpression() throws IOException {
     //example with byte
-    check("--byteF", "byte");
+    check("--varbyte", "byte");
 
     //example with short
-    check("--shortF", "short");
+    check("--varshort", "short");
 
     //example with char
-    check("--charF", "char");
+    check("--varchar", "char");
 
     //example with int
     check("--varint", "int");
@@ -272,7 +270,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
   @Test
   public void deriveFromPlusAssignmentExpression() throws IOException {
     //example with int - int
-    check("foo+=7", "int");
+    check("varint+=7", "int");
     //example with long - double
     check("varlong+=5.6", "long");
     //example with String - Person
@@ -344,7 +342,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     //example with int - int
     check("varint%=9", "int");
     //example with int - float
-    check("foo%=9.8f", "int");
+    check("varint%=9.8f", "int");
   }
 
   @Test
@@ -361,7 +359,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     //example with int - int
     check("varint&=9", "int");
     //example with boolean - boolean
-    check("bar2&=false", "boolean");
+    check("varbool&=false", "boolean");
     //example with char - int
     check("varchar&=4", "char");
   }
@@ -380,7 +378,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     //example with int - int
     check("varint|=9", "int");
     //example with boolean - boolean
-    check("bar2|=true", "boolean");
+    check("varbool|=true", "boolean");
   }
 
   @Test
@@ -397,7 +395,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     //example with int - int
     check("varint^=9", "int");
     //example with boolean - boolean
-    check("bar2^=false", "boolean");
+    check("varbool^=false", "boolean");
   }
 
   @Test
@@ -414,7 +412,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     //example with int - int
     check("varint<<=9", "int");
     //example with int - char
-    check("foo<<='c'", "int");
+    check("varint<<='c'", "int");
   }
 
   @Test
