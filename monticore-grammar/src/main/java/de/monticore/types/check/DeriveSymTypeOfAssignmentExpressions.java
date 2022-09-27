@@ -11,9 +11,11 @@ import de.monticore.expressions.assignmentexpressions._ast.ASTIncSuffixExpressio
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsHandler;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor2;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
+import static de.monticore.types.check.SymTypePrimitive.unbox;
 import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.TypeCheck.isBoolean;
 import static de.monticore.types.check.TypeCheck.isString;
@@ -39,55 +41,75 @@ public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpr
 
   @Override
   public void traverse(ASTIncSuffixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    if (!innerResult.isObscureType()) {
-      SymTypeExpression calcResult = calculateIncSuffixExpression(innerResult);
-      storeResultOrLogError(calcResult, expr, "0xA0170");
-    }
-  }
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression symType = this.affix(expr.getExpression(), "++", expr.get_SourcePositionStart());
 
-  protected SymTypeExpression calculateIncSuffixExpression(SymTypeExpression innerResult) {
-    return getUnaryNumericPromotionType(innerResult);
+    this.getTypeCheckResult().reset();
+    this.getTypeCheckResult().setResult(symType);
+
   }
 
   @Override
   public void traverse(ASTDecSuffixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    if (!innerResult.isObscureType()) {
-      SymTypeExpression calcResult = calculateDecSuffixExpression(innerResult);
-      storeResultOrLogError(calcResult, expr, "0xA0171");
-    }
-  }
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression symType = this.affix(expr.getExpression(), "--", expr.get_SourcePositionStart());
 
-  protected SymTypeExpression calculateDecSuffixExpression(SymTypeExpression innerResult) {
-    return getUnaryNumericPromotionType(innerResult);
+    this.getTypeCheckResult().reset();
+    this.getTypeCheckResult().setResult(symType);
   }
 
   @Override
   public void traverse(ASTIncPrefixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    if (!innerResult.isObscureType()) {
-      SymTypeExpression calcResult = calculateIncPrefixExpression(innerResult);
-      storeResultOrLogError(calcResult, expr, "0xA0172");
-    }
-  }
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression symType = this.affix(expr.getExpression(), "++", expr.get_SourcePositionStart());
 
-  protected SymTypeExpression calculateIncPrefixExpression(SymTypeExpression innerResult) {
-    return getUnaryNumericPromotionType(innerResult);
+    this.getTypeCheckResult().reset();
+    this.getTypeCheckResult().setResult(symType);
   }
 
   @Override
   public void traverse(ASTDecPrefixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    if (!innerResult.isObscureType()) {
-      SymTypeExpression calcResult = calculateDecPrefixExpression(innerResult);
-      storeResultOrLogError(calcResult, expr, "0xA0173");
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression symType = this.affix(expr.getExpression(), "--", expr.get_SourcePositionStart());
+
+    this.getTypeCheckResult().reset();
+    this.getTypeCheckResult().setResult(symType);
+  }
+
+  protected SymTypeExpression affix(ASTExpression expr, String op, SourcePosition pos) {
+    // calculate the type of the inner expressions
+    this.getTypeCheckResult().reset();
+    expr.accept(this.getTraverser());
+    TypeCheckResult inner = this.getTypeCheckResult().copy();
+
+    // result of inner type computation should be present
+    if (!inner.isPresentResult()) {
+      // should never happen, we expect results to be present
+      // indicates that the underlying type resolver is erroneous
+      this.logError("0xA0182", expr.get_SourcePositionStart());
+      return SymTypeExpressionFactory.createObscureType();
+    } else if (inner.getResult().isObscureType()) {
+      // if inner obscure then error already logged
+      return SymTypeExpressionFactory.createObscureType();
+    } else if (!inner.isField()) {
+      // inner should be a field
+      Log.error("0xA0183 Variable expected.", expr.get_SourcePositionStart());
+      return SymTypeExpressionFactory.createObscureType();
+    } else {
+      // else check with signature
+      return affix(inner.getResult(), op, pos);
     }
   }
 
-  protected SymTypeExpression calculateDecPrefixExpression(SymTypeExpression innerResult) {
-    return getUnaryNumericPromotionType(innerResult);
+  protected SymTypeExpression affix(SymTypeExpression inner, String op, SourcePosition pos) {
+    if (isNumericType(inner)) {
+      return SymTypeExpressionFactory.createPrimitive(unbox(inner.print()));
+    } else {
+      Log.error("0xA0184 Operator '" + op + "' not applicable to " + "'" + inner.print() + "'", pos);
+      return SymTypeExpressionFactory.createObscureType();
+    }
   }
+
 
   @Override
   public void traverse(ASTAssignmentExpression expr) {

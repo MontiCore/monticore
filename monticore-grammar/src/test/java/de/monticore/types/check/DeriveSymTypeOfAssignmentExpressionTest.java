@@ -121,19 +121,22 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     check("charF++", "char");
 
     //example with int
-    check("3++", "int");
+    check("varint++", "int");
 
     //example with float
-    check("4.5f++", "float");
+    check("varfloat++", "float");
 
     //example with char
-    check("'e'++", "char");
+    check("varchar++", "char");
   }
 
   @Test
   public void testInvalidIncSuffixExpression() throws IOException {
-    //only possible with numeric types
-    checkError("\"Hello\"++", "0xA0170");
+    //only possible wit variables
+    checkError("1++", "0xA0183");
+
+    //not applicable to Strings
+    checkError("varString++", "0xA0184");
   }
 
   /**
@@ -151,16 +154,19 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     check("charF--", "char");
 
     //example with int
-    check("12--", "int");
+    check("varint--", "int");
 
     //example with double
-    check("4.2--", "double");
+    check("vardouble--", "double");
   }
 
   @Test
   public void testInvalidDecSuffixExpression() throws IOException {
-    //only possible with numeric types
-    checkError("\"Hello\"--", "0xA0171");
+    //only possible wit variables
+    checkError("1--", "0xA0183");
+
+    //not applicable to Strings
+    checkError("varString--", "0xA0184");
   }
 
   /**
@@ -178,16 +184,19 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     check("++charF", "char");
 
     //example with int
-    check("++3", "int");
+    check("++varint", "int");
 
     //example with long
-    check("++6L", "long");
+    check("++varlong", "long");
   }
 
   @Test
   public void testInvalidIncPrefixExpression() throws IOException {
-    //only possible with numeric types
-    checkError("++\"Hello\"", "0xA0172");
+    //only possible wit variables
+    checkError("++1", "0xA0183");
+
+    //not applicable to Strings
+    checkError("++varString", "0xA0184");
   }
 
   /**
@@ -205,16 +214,19 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     check("--charF", "char");
 
     //example with int
-    check("--1", "int");
+    check("--varint", "int");
 
     //example with float
-    check("--6.7f", "float");
+    check("--varfloat", "float");
   }
 
   @Test
   public void testInvalidDecPrefixExpression() throws IOException {
-    //only possible with numeric types
-    checkError("--\"Hello\"", "0xA0173");
+    //only possible wit variables
+    checkError("--1", "0xA0183");
+
+    //not applicable to Strings
+    checkError("--varString", "0xA0184");
   }
 
   /**

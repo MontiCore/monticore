@@ -107,16 +107,6 @@ public abstract class AbstractDeriveFromExpression {
   }
 
   /**
-   * helper method for arithmetic suffix and prefix expressions (++e, --e, e++, e--)
-   */
-  protected SymTypeExpression getUnaryNumericPromotionType(SymTypeExpression type) {
-    if (isNumericType(type)) {
-      return SymTypeExpressionFactory.createPrimitive(unbox(type.print()));
-    }
-    return SymTypeExpressionFactory.createObscureType();
-  }
-
-  /**
    * helper method for bit prefix expressions (+e, -e)
    */
   protected SymTypeExpression getBitUnaryNumericPromotionType(SymTypeExpression type) {

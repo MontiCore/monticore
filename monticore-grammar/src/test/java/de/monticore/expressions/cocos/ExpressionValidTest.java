@@ -65,7 +65,6 @@ public class ExpressionValidTest extends CocoTest {
     checkValid("(5<6)&&(1<=1)");
     checkValid("!true||false&&(5>=0)");
     checkValid("5.0/2.5%2");
-    checkValid("5++--");
   }
 
   @Test
