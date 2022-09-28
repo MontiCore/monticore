@@ -12,6 +12,9 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -57,6 +60,7 @@ public class NameToCallExpressionVisitorTest {
    */
   @Test
   public void fieldAccessTest() throws IOException{
+    // Set up the visitor
     FullDeriveFromCombineExpressionsWithLiterals derive = new FullDeriveFromCombineExpressionsWithLiterals();
     CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
     NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
@@ -66,10 +70,43 @@ public class NameToCallExpressionVisitorTest {
     traverser.add4CommonExpressions(visitor);
     traverser.setExpressionsBasisHandler(visitor);
     traverser.add4ExpressionsBasis(visitor);
-    Optional<ASTExpression> astex = p.parse_StringExpression("a.b.test()");
+
+    // Set up symbols we will use
+    OOTypeSymbol typeWithMethod = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
+      .setName("Bar")
+      .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
+      .build();
+    CombineExpressionsWithLiteralsMill.globalScope().add(typeWithMethod);
+    CombineExpressionsWithLiteralsMill.globalScope().addSubScope(typeWithMethod.getSpannedScope());
+
+    MethodSymbol method = CombineExpressionsWithLiteralsMill.methodSymbolBuilder()
+      .setName("test")
+      .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
+      .build();
+    typeWithMethod.addMethodSymbol(method);
+
+    OOTypeSymbol accessedType = CombineExpressionsWithLiteralsMill.oOTypeSymbolBuilder()
+      .setName("Foo")
+      .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
+      .build();
+    CombineExpressionsWithLiteralsMill.globalScope().add(accessedType);
+    CombineExpressionsWithLiteralsMill.globalScope().addSubScope(accessedType.getSpannedScope());
+
+    FieldSymbol fieldInFoo = CombineExpressionsWithLiteralsMill.fieldSymbolBuilder()
+      .setName("b")
+      .setIsStatic(true)
+      .setType(SymTypeExpressionFactory.createTypeExpression(typeWithMethod))
+      .build();
+    accessedType.addFieldSymbol(fieldInFoo);
+
+    Optional<ASTExpression> astex = p.parse_StringExpression("Foo.b.test()");
     ASTExpression expr = ((ASTCallExpression) astex.get()).getExpression();
     expr.accept(getFlatExpressionScopeSetter(getFlatExpressionScope()));
+
+    // When
     astex.get().accept(traverser);
+
+    // Then
     assertEquals("test", visitor.getLastName());
     assertEquals(((ASTFieldAccessExpression) expr).getExpression(), visitor.getLastExpression());
   

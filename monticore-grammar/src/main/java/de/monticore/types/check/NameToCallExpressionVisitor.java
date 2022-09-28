@@ -85,10 +85,11 @@ public class NameToCallExpressionVisitor implements CommonExpressionsVisitor2, C
     name.add(0, expr.getName());
     getTypeCheckResult().reset();
     expr.getExpression().accept(getTypeCheckTraverser());
-    if(getTypeCheckResult().isPresentResult() || lastExpression == null) {
+    if(lastExpression == null
+      ||(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType())) {
       lastExpression = expr.getExpression();
     }
-    if(!getTypeCheckResult().isPresentResult()) {
+    if(!getTypeCheckResult().isPresentResult() || getTypeCheckResult().getResult().isObscureType()) {
       expr.getExpression().accept(getTraverser());
     }
   }

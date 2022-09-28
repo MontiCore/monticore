@@ -49,9 +49,9 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
     if(wholeResult.isPresent()){
       getTypeCheckResult().setResult(wholeResult.get());
     }else{
-     //name not found --> package or nothing
      getTypeCheckResult().reset();
-     Log.info("package expected", "DeriveSymTypeOfExpression");
+     getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+     logError("0xA0240", expr.get_SourcePositionStart());
     }
   }
 

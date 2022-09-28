@@ -150,7 +150,7 @@ public class CoCoTests {
   @Test
   public void testStaticAbstractOOFields(){
     testValidAbstract(staticAbstractOOFields);
-    testInvalidOO("0xA1236", staticAbstractOOFields);
+    testInvalidOO("0xA0241", staticAbstractOOFields);
   }
 
   @Test

@@ -12,7 +12,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
@@ -124,7 +123,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     check("2*19", "int");
 
     //example with long and char
-    check("\'a\'*3L", "long");
+    check("'a'*3L", "long");
   }
 
   @Test
@@ -192,7 +191,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     check("7>=2", "boolean");
 
     //example with two other numeric types
-    check("2.5>=\'d\'", "boolean");
+    check("2.5>='d'", "boolean");
   }
 
   @Test
@@ -226,7 +225,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     check("7>2", "boolean");
 
     //example with two other numeric types
-    check("2.5>\'d\'", "boolean");
+    check("2.5>'d'", "boolean");
   }
 
   @Test
@@ -417,7 +416,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidBracketExpression() throws IOException {
     //a cannot be resolved -> a has no type
     init_basic();
-    checkError("(a)", "0xED680");
+    checkError("(a)", "0xA0240");
   }
 
   /**
@@ -465,7 +464,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     //test with a int
     check("~3", "int");
     //test with a char
-    check("~\'a\'", "int");
+    check("~'a'", "int");
     //test with a long
     check("~longF", "long");
   }
@@ -619,6 +618,18 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(artifactScope5, funcs);
     add2scope(artifactScope6, funcs);
 
+    // Creating types for legal access on "types.DeepNesting.firstLayer.onlyMember", where firstLayer and onlyMember are fields
+    OOTypeSymbol oneFieldMember = type("OneFieldMember", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, oneFieldMember);
+    FieldSymbol onlyMember = field("onlyMember", _intSymType);
+    add2scope(oneFieldMember.getSpannedScope(), onlyMember);
+
+    OOTypeSymbol deepNesting = type("DeepNesting", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(artifactScope2, deepNesting);
+    FieldSymbol firstLayer = field("firstLayer", SymTypeExpressionFactory.createTypeExpression(oneFieldMember));
+    firstLayer.setIsStatic(true);
+    add2scope(deepNesting.getSpannedScope(), firstLayer);
+
     setFlatExpressionScopeSetter(scope);
   }
 
@@ -646,6 +657,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     //test for variable in inner type
     check("types3.types2.Test.TestInnerType.testVariable", "short");
+
+    // test for nested field access ("firstLayer" is a static member, "onlyMember" is an instance member)
+    check("types.DeepNesting.firstLayer.onlyMember", "int");
   }
 
   /**
@@ -707,16 +721,16 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @Test
   public void testRegularAssignmentWithTwoMissingFields() throws IOException {
-    String regularAssignmentError = "0xA0180";
+    String[] regularAssignmentError = new String[] {"0xA0240", "0xA0240"};
     init_advanced();
     checkErrorsAndFailOnException("missingField = missingField2", regularAssignmentError);
   }
 
   @Test
   public void testMissingMethodWithMissingArgs() throws IOException {
-    String functionError = "0xA1242";
+    String[] errors = new String[] {"0xA0240", "0xA0240", "0xA1242"};
     init_advanced();
-    checkErrorsAndFailOnException("missingMethod(missing1, missing2)", functionError);
+    checkErrorsAndFailOnException("missingMethod(missing1, missing2)", errors);
   }
 
   /**
@@ -1389,7 +1403,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidStaticType() throws IOException {
     init_static_example();
 
-    checkError("B.D", "0xA1303");
+    checkError("B.D", "0xA0241");
   }
 
   @Test
@@ -1403,7 +1417,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidStaticField() throws IOException {
     init_static_example();
 
-    checkError("B.field", "0xA1236");
+    checkError("B.field", "0xA0241");
   }
 
   @Test
@@ -1421,6 +1435,34 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   }
 
   @Test
+  public void testMissingTypeQualified() throws IOException {
+    init_basic();
+
+    checkError("pac.kage.not.present.Type", "0xA0241");
+  }
+
+  @Test
+  public void testMissingFieldQualified() throws IOException {
+    init_static_example();
+
+    checkError("B.notPresentField", "0xA0241");
+  }
+
+  @Test
+  public void testMissingFieldUnqualified() throws IOException {
+    init_basic();
+
+    checkError("notPresentField", "0xA0240");
+  }
+
+  @Test
+  public void testMissingMethodQualified() throws IOException {
+    init_basic();
+
+    checkError("pac.kage.not.present.Type.method()", "0xA1242");
+  }
+
+  @Test
   public void testSubClassesDoNotKnowStaticMethodsOfSuperClasses() throws IOException{
     init_static_example();
 
@@ -1431,7 +1473,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testSubClassesDoNotKnowStaticFieldsOfSuperClasses() throws IOException{
     init_static_example();
 
-    checkError("C.field", "0xA1317");
+    checkError("C.field", "0xA0241");
   }
 
   @Test
