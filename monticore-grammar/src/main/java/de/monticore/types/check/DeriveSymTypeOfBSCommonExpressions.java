@@ -1,26 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.prettyprint.CommonExpressionsFullPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.se_rwth.commons.Joiners;
+import de.monticore.symbols.basicsymbols._symboltable.*;
+import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.monticore.types.check.TypeCheck.*;
 
@@ -406,96 +399,165 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   /**
+   * Checks whether the expression has the form of a valid qualified java name.
+   */
+  protected boolean isQualifiedName(ASTFieldAccessExpression expr) {
+    ASTExpression currentExpr = expr;
+
+    // Iterate over subexpressions to check whether they are of the form NameExpression ("." FieldAccessExpression)*
+    // Therefore, NameExpression will terminate the traversal, indicating that the expression is a valid name.
+    // If the pattern is broken by another expression, then the expression is no valid name, and we terminate.
+    while(!(currentExpr instanceof ASTNameExpression)) {
+      if(currentExpr instanceof ASTFieldAccessExpression) {
+        currentExpr = ((ASTFieldAccessExpression) currentExpr).getExpression();
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks whether the expression has the form of a valid qualified, or unqualified, java name.
+   */
+  protected boolean isName(ASTExpression expr) {
+    return expr instanceof ASTNameExpression ||
+      (expr instanceof ASTFieldAccessExpression && isQualifiedName((ASTFieldAccessExpression) expr));
+  }
+
+  /**
    * We use traverse to collect the result of the inner part of the expression and calculate the result for the whole expression
    */
   @Override
   public void traverse(ASTFieldAccessExpression expr) {
-    CommonExpressionsFullPrettyPrinter printer = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
-    SymTypeExpression innerResult;
+    if(isQualifiedName(expr) && expr.getEnclosingScope() instanceof IBasicSymbolsScope) {
+      calculateNamingChainFieldAccess(expr);
+    } else {
+      calculateArithmeticFieldAccessExpression(expr);
+    }
+  }
+
+  /**
+   * Calculate the type result of FieldAccessExpressions that represent qualified names and cascading field accesses.
+   * E.g., pac.kage.Type.staticMember, or, localField.innerField.furtherNestedField.
+   * But not: pac.kage.Type.staticMethod().innerField, as here <i>innerField</i> is not only qualified by names, but
+   * it is based on the access of a value returned by a CallExpression.
+   * @param expr The only valid sub expressions of the FieldAccessExpression are other FieldAccessExpressions, and
+   *             a {@link ASTNameExpression} that is the end of the field access chain.
+   */
+  protected void calculateNamingChainFieldAccess(ASTFieldAccessExpression expr) {
+    Optional<List<ASTExpression>> astNamePartsOpt = collectSubExpressions(expr);
+
+    if (!astNamePartsOpt.isPresent()) {
+      Log.error("0x0xA2310 (Internal error) The qualified name parts of a FieldAccessExpression can not be " +
+        "calculated as the field access expression is no qualified name. " + expr.get_SourcePositionStart().toString());
+      this.getTypeCheckResult().reset();
+      this.getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+
+    } else {
+      // We will incrementally try to build our result:
+      // We will start with the first name part and check whether it resolves to an entity.
+      // Then we will check whether further field accesses are (nested) accesses on that entity's members.
+      // When there is no such entity, or it does not have a member we were looking for, then we try to resolve the
+      // qualified name up to the part of the name where we currently are.
+      List<ASTExpression> astNameParts = astNamePartsOpt.get();
+
+      getTypeCheckResult().reset();
+      for(int i = 0; i < astNameParts.size(); i++) {
+        if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
+          calculateFieldAccess((ASTFieldAccessExpression) astNameParts.get(i), true);
+        } else {
+          calculatedQualifiedEntity(astNameParts.subList(0, i + 1));
+        }
+      }
+
+      if(!getTypeCheckResult().isPresentResult() || getTypeCheckResult().getResult().isObscureType()) {
+        logError("0xA0241", expr.get_SourcePositionStart());
+      }
+    }
+  }
+
+  /**
+   * Calculate the type result of FieldAccessExpressions that do not represent qualified names.
+   */
+  protected void calculateArithmeticFieldAccessExpression(ASTFieldAccessExpression expr) {
     expr.getExpression().accept(getTraverser());
     if (getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
-      //store the type of the inner expression in a variable
-      innerResult = getTypeCheckResult().getResult();
-      //look for this type in our scope
-      TypeSymbol innerResultType = innerResult.getTypeInfo();
-      if (innerResultType instanceof TypeVarSymbol) {
-        Log.error("0xA0321 The type " + innerResultType.getName() + " is a type variable and cannot have methods and attributes");
+      calculateFieldAccess(expr, false);
+    } // else do nothing (as the type check result is already absent or obscure).
+  }
+
+  /**
+   * Calculates the type result of the field access expression, given that the type result of the accessed entity's
+   * owner has already been computed (and is accessible via getTypeCheckResult()).
+   * @param quiet Prevents the logging of errors if no entity is found that could be accessed, i.e., if the field access
+   *              is invalid and the calculation of a result is not possible.
+   */
+  protected void calculateFieldAccess(ASTFieldAccessExpression expr,
+                                                 boolean quiet) {
+    TypeCheckResult fieldOwner = getTypeCheckResult().copy();
+    SymTypeExpression fieldOwnerExpr = fieldOwner.getResult();
+    TypeSymbol fieldOwnerSymbol = fieldOwnerExpr.getTypeInfo();
+    if (fieldOwnerSymbol instanceof TypeVarSymbol && !quiet) {
+      Log.error("0xA0321 The type " + fieldOwnerSymbol.getName() + " is a type variable and cannot have methods and attributes");
+    }
+    //search for a method, field or type in the scope of the type of the inner expression
+    List<VariableSymbol> fieldSymbols = getCorrectFieldsFromInnerType(fieldOwnerExpr, expr);
+    Optional<TypeSymbol> typeSymbolOpt = fieldOwnerSymbol.getSpannedScope().resolveType(expr.getName());
+    Optional<TypeVarSymbol> typeVarOpt = fieldOwnerSymbol.getSpannedScope().resolveTypeVar(expr.getName());
+
+    if (!fieldSymbols.isEmpty()) {
+      //cannot be a method, test variable first
+      //durch AST-Umbau kann ASTFieldAccessExpression keine Methode sein
+      //if the last result is a type then filter for static field symbols
+      if (fieldOwner.isType()) {
+        fieldSymbols = filterModifiersVariables(fieldSymbols);
       }
-      //search for a method, field or type in the scope of the type of the inner expression
-      List<VariableSymbol> fieldSymbols = getCorrectFieldsFromInnerType(innerResult, expr);
-      Optional<TypeSymbol> typeSymbolOpt = innerResultType.getSpannedScope().resolveType(expr.getName());
-      Optional<TypeVarSymbol> typeVarOpt = innerResultType.getSpannedScope().resolveTypeVar(expr.getName());
-      if (!fieldSymbols.isEmpty()) {
-        //cannot be a method, test variable first
-        //durch AST-Umbau kann ASTFieldAccessExpression keine Methode sein
-        //if the last result is a type then filter for static field symbols
-        if (getTypeCheckResult().isType()) {
-          fieldSymbols = filterModifiersVariables(fieldSymbols);
-        }
-        if (fieldSymbols.size() != 1) {
-          getTypeCheckResult().reset();
-          getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      if (fieldSymbols.size() != 1) {
+        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+        if(!quiet) {
           logError("0xA1236", expr.get_SourcePositionStart());
         }
-        if (!fieldSymbols.isEmpty()) {
-          VariableSymbol var = fieldSymbols.get(0);
-          expr.setDefiningSymbol(var);
-          SymTypeExpression type = var.getType();
-          getTypeCheckResult().setField();
-          getTypeCheckResult().setResult(type);
-        }
-      } else if (typeVarOpt.isPresent()) {
-        //test for type var first
-        TypeVarSymbol typeVar = typeVarOpt.get();
-        if(checkModifierType(typeVar)){
-          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVariable(typeVar);
-          expr.setDefiningSymbol(typeVar);
-          getTypeCheckResult().setType();
-          getTypeCheckResult().setResult(wholeResult);
-        }else{
-          getTypeCheckResult().reset();
-          getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-          logError("0xA1306", expr.get_SourcePositionStart());
-        }
-      } else if (typeSymbolOpt.isPresent()) {
-        //no variable found, test type
-        TypeSymbol typeSymbol = typeSymbolOpt.get();
-        if (checkModifierType(typeSymbol)) {
-          SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
-          expr.setDefiningSymbol(typeSymbol);
-          getTypeCheckResult().setType();
-          getTypeCheckResult().setResult(wholeResult);
-        } else {
-          getTypeCheckResult().reset();
-          getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-          logError("0xA1303", expr.get_SourcePositionStart());
-        }
-      } else {
-        getTypeCheckResult().reset();
-        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-        logError("0xA1317", expr.get_SourcePositionStart());
       }
-    } else if (!getTypeCheckResult().isPresentResult()) {
-      //inner type has no result --> try to resolve a type
-      String toResolve = printer.prettyprint(expr);
-      Optional<TypeVarSymbol> typeVarOpt = getScope(expr.getEnclosingScope()).resolveTypeVar(toResolve);
-      Optional<TypeSymbol> typeSymbolOpt = getScope(expr.getEnclosingScope()).resolveType(toResolve);
-      if (typeVarOpt.isPresent()) {
-        TypeVarSymbol typeVar = typeVarOpt.get();
-        SymTypeExpression type = SymTypeExpressionFactory.createTypeVariable(typeVar);
+      if (!fieldSymbols.isEmpty()) {
+        VariableSymbol var = fieldSymbols.get(0);
+        expr.setDefiningSymbol(var);
+        SymTypeExpression type = var.getType();
+        getTypeCheckResult().setField();
+        getTypeCheckResult().setResult(type);
+      }
+    } else if (typeVarOpt.isPresent()) {
+      //test for type var first
+      TypeVarSymbol typeVar = typeVarOpt.get();
+      if(checkModifierType(typeVar)){
+        SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeVariable(typeVar);
         expr.setDefiningSymbol(typeVar);
         getTypeCheckResult().setType();
-        getTypeCheckResult().setResult(type);
-      } else if (typeSymbolOpt.isPresent()) {
-        TypeSymbol typeSymbol = typeSymbolOpt.get();
-        SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+        getTypeCheckResult().setResult(wholeResult);
+      } else{
+        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+        if(!quiet) {
+          logError("0xA1306", expr.get_SourcePositionStart());
+        }
+      }
+    } else if (typeSymbolOpt.isPresent()) {
+      //no variable found, test type
+      TypeSymbol typeSymbol = typeSymbolOpt.get();
+      if (checkModifierType(typeSymbol)) {
+        SymTypeExpression wholeResult = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
         expr.setDefiningSymbol(typeSymbol);
         getTypeCheckResult().setType();
-        getTypeCheckResult().setResult(type);
+        getTypeCheckResult().setResult(wholeResult);
       } else {
-        //the inner type has no result and there is no type found
-        getTypeCheckResult().reset();
-        Log.info("package expected", "DeriveSymTypeOfCommonExpressions");
+        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+        if(!quiet) {
+          logError("0xA1303", expr.get_SourcePositionStart());
+        }
+      }
+    } else {
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      if(!quiet) {
+        logError("0xA1317", expr.get_SourcePositionStart());
       }
     }
   }
@@ -522,59 +584,179 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   /**
+   * Transforms {@link ASTNameExpression}s and {@link ASTFieldAccessExpression}s into the names they represent (for
+   * field access expressions it takes the name of the accessed field/entity).
+   */
+  protected String astNameToString(ASTExpression expression) {
+    if(expression instanceof ASTNameExpression) {
+      return ((ASTNameExpression) expression).getName();
+    } else if (expression instanceof ASTFieldAccessExpression) {
+      return ((ASTFieldAccessExpression) expression).getName();
+    } else {
+      throw new IllegalArgumentException();
+    }
+  }
+
+  /**
+   * If the FieldAccessExpression represents a qualified name, then this method returns its name parts.
+   * Else an empty optional is returned.
+   */
+  protected Optional<List<ASTExpression>> collectSubExpressions(ASTFieldAccessExpression expr) {
+    ASTExpression currentExpr = expr;
+    List<ASTExpression> nameParts = new LinkedList<>();
+
+    while(!(currentExpr instanceof ASTNameExpression)) {
+      if(currentExpr instanceof ASTFieldAccessExpression) {
+        ASTFieldAccessExpression curExpr = (ASTFieldAccessExpression) currentExpr;
+        nameParts.add(0, curExpr);
+
+        currentExpr = curExpr.getExpression();  // Advance iteration
+      } else {
+        return Optional.empty();
+      }
+    }
+
+    // Do not forget to add the terminal NameExpression
+    nameParts.add(0, currentExpr);
+    return Optional.of(nameParts);
+  }
+
+  /**
+   * Tries to resolve the given name parts to a variable, type variable, or type and if a symbol is found, then
+   * it(s type) is set as the current type check result.
+   * If no symbol is found, then nothing happens (no error logged, no altering of the type check result).
+   * If multiple fields are found, then the result is set to obscure, and an error is logged.
+   * Variables take precedence over types variables that take precedence over
+   * types.
+   * @param astNameParts Expressions that represent a qualified identification of a {@link VariableSymbol},
+   *                  {@link TypeVarSymbol}, or {@link TypeSymbol}. Therefore, the list that must contain a
+   *                  {@code NameExpression} at the beginning, followed only by {@code FieldAccessExpression}s.
+   */
+  protected void calculatedQualifiedEntity(List<ASTExpression> astNameParts) {
+    List<String> nameParts = astNameParts.stream().map(this::astNameToString).collect(Collectors.toList());
+    String qualName = String.join(".", nameParts);
+    ASTExpression lastExpr = astNameParts.get(astNameParts.size() - 1);
+
+    List<VariableSymbol> fieldSymbols = getScope(lastExpr.getEnclosingScope()).resolveVariableMany(qualName);
+    Optional<TypeSymbol> typeSymbolOpt = getScope(lastExpr.getEnclosingScope()).resolveType(qualName);
+    Optional<TypeVarSymbol> typeVarOpt = getScope(lastExpr.getEnclosingScope()).resolveTypeVar(qualName);
+
+    if (!fieldSymbols.isEmpty()) {
+      if (fieldSymbols.size() != 1) {
+        logError("0xA1236", lastExpr.get_SourcePositionStart());
+        getTypeCheckResult().reset();
+        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      } else {
+        VariableSymbol var = fieldSymbols.get(0);
+        trySetDefiningSymbolOrError(lastExpr, var);
+        SymTypeExpression type = var.getType();
+        getTypeCheckResult().setField();
+        getTypeCheckResult().setResult(type);
+      }
+
+    } else if (typeVarOpt.isPresent()) {
+      TypeVarSymbol typeVar = typeVarOpt.get();
+      SymTypeExpression type = SymTypeExpressionFactory.createTypeVariable(typeVar);
+      trySetDefiningSymbolOrError(lastExpr, typeVar);
+      getTypeCheckResult().setType();
+      getTypeCheckResult().setResult(type);
+
+    } else if (typeSymbolOpt.isPresent()) {
+      TypeSymbol typeSymbol = typeSymbolOpt.get();
+      SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
+      trySetDefiningSymbolOrError(lastExpr, typeSymbol);
+      getTypeCheckResult().setType();
+      getTypeCheckResult().setResult(type);
+    }
+  }
+
+  /**
+   * If {@code expr} is of type {@link ASTNameExpression}, {@link ASTFieldAccessExpression}, or
+   * {@link ASTCallExpression}, then {@code definingSymbol} is set as its defining symbol. Else, an error is logged.
+   */
+  protected void trySetDefiningSymbolOrError(ASTExpression expr, ISymbol definingSymbol) {
+    if(expr instanceof ASTNameExpression) {
+      ((ASTNameExpression) expr).setDefiningSymbol(definingSymbol);
+    } else if(expr instanceof ASTFieldAccessExpression) {
+      ((ASTFieldAccessExpression) expr).setDefiningSymbol(definingSymbol);
+    } else if (expr instanceof ASTCallExpression) {
+      ((ASTCallExpression) expr).setDefiningSymbol(definingSymbol);
+    } else {
+      Log.error("0xA2306 (Internal error) tried to set the symbol on an Expression that is none of the following:" +
+        "ASTNameExpression, ASTFieldAccessExpression, ASTCallExpression.");
+    }
+  }
+
+  /**
    * We use traverse to collect the result of the inner part of the expression and calculate the result for the whole expression
    */
   @Override
   public void traverse(ASTCallExpression expr) {
-    NameToCallExpressionVisitor visitor = new NameToCallExpressionVisitor();
-    // pass our traverser/typecheckresult such that the visitor can derive types
-    visitor.setTypeCheckTraverser(getTraverser());
-    visitor.setTypeCheckResult(getTypeCheckResult());
-    CommonExpressionsTraverser traverser = CommonExpressionsMill.traverser();
-    traverser.setCommonExpressionsHandler(visitor);
-    traverser.add4CommonExpressions(visitor);
-    traverser.setExpressionsBasisHandler(visitor);
-    traverser.add4ExpressionsBasis(visitor);
-    expr.accept(traverser);
-    SymTypeExpression innerResult;
-    List<SymTypeExpression> args = calculateArguments(expr, visitor.getLastName());
-    //make sure that the type of the last argument is not stored in the TypeCheckResult anymore
-    getTypeCheckResult().reset();
-    ASTExpression lastExpression = visitor.getLastExpression();
-    if(lastExpression != null){
-      lastExpression.accept(getTraverser());
-    }else{
-      expr.getExpression().accept(getTraverser());
+    if (isName(expr.getExpression()) && expr.getEnclosingScope() instanceof IBasicSymbolsScope) {
+      calculateNamingChainCallExpression(expr);
+    } else {
+      calculateArithmeticCallExpression(expr);
     }
-    if (getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType() && checkNotObscure(args)) {
-      innerResult = getTypeCheckResult().getResult();
-      //resolve methods with name of the inner expression
-      List<FunctionSymbol> methodlist = getCorrectMethodsFromInnerType(innerResult, expr,
-          Joiners.DOT.join(visitor.getName()));
-      //count how many methods can be found with the correct arguments and return type
-      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
-      //if the last result is static then filter for static methods
-      if (getTypeCheckResult().isType()) {
-        fittingMethods = filterModifiersFunctions(fittingMethods);
-      }
-      //there can only be one method with the correct arguments and return type
-      if (!fittingMethods.isEmpty()) {
-        if (fittingMethods.size() > 1) {
-          checkForReturnType(expr, fittingMethods);
-        }
-        expr.setDefiningSymbol(fittingMethods.get(0));
-        SymTypeExpression result = fittingMethods.get(0).getType();
-        getTypeCheckResult().setMethod();
-        getTypeCheckResult().setResult(result);
+  }
+
+  /**
+   * Calculate the type result of call expressions that represent fully qualified method calls (like when calling a
+   * static method: {@code pac.kage.Type.staticMethod()}) and methodCalls on cascading field accesses (e.g.,
+   * {@code localField.innerField.instanceMethod()}). But not:
+   * {@code pac.kage.Type.staticMethod().innerField.instanceMethod()}, as here <i>instanceMethod</i> is not only
+   * qualified by names, but it is based on the access of a value returned by a CallExpression.
+   * @param expr The only valid sub expressions of the CallExpression are FieldAccessExpressions, or a
+   *             {@link ASTNameExpression} that is the leaf of the field access chain, or alternatively defines a local
+   *             method call ({@code localMethod("foo")}.
+   */
+  protected void calculateNamingChainCallExpression(ASTCallExpression expr) {
+    Optional<List<ASTExpression>> astNamePartsOpt = Optional.empty();
+
+    if(expr.getExpression() instanceof ASTFieldAccessExpression) {
+      ASTFieldAccessExpression qualExpr = (ASTFieldAccessExpression) expr.getExpression();
+      astNamePartsOpt = collectSubExpressions(qualExpr);
+    } else if(expr.getExpression() instanceof ASTNameExpression){
+      ASTNameExpression nameExpr = (ASTNameExpression) expr.getExpression();
+      astNamePartsOpt = Optional.of(Collections.singletonList(nameExpr));
+    }
+
+    if(astNamePartsOpt.isEmpty()){
+      Log.error("0x0xA2312 (Internal error) The (qualified) name parts of a CallExpression can not be " +
+        "calculated as the call expression is not defined by a (qualified) name. "
+        + expr.get_SourcePositionStart().toString());
+      this.getTypeCheckResult().reset();
+      this.getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      return;
+    }
+
+    List<ASTExpression> astNameParts = astNamePartsOpt.get();
+    List<String> nameParts = astNameParts.stream().map(this::astNameToString).collect(Collectors.toList());
+    List<SymTypeExpression> args = calculateArguments(expr, nameParts.get(nameParts.size() - 1));
+
+    // We will incrementally try to build our result:
+    // We will start with the first name part and check whether it resolves to an entity.
+    // Then we will check whether further field accesses are (nested) accesses on that entity's members.
+    // When there is no such entity, or it does not have a member we were looking for, then we try to resolve the
+    // qualified name up to the part of the name where we currently are.
+    // We terminate *before* the last name part, as the last name part must resolve to a method and not a type or field.
+
+    getTypeCheckResult().reset();
+    for(int i = 0; i < astNameParts.size() - 1; i++) {
+      if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
+        calculateFieldAccess((ASTFieldAccessExpression) astNameParts.get(i), true);
       } else {
-        getTypeCheckResult().reset();
-        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-        logError("0xA2239", expr.get_SourcePositionStart());
+        calculatedQualifiedEntity(astNameParts.subList(0, i + 1));
       }
-    } else if(!getTypeCheckResult().isPresentResult()) {
-      Collection<FunctionSymbol> methodcollection = getScope(expr.getEnclosingScope())
-          .resolveFunctionMany(Joiners.DOT.join(visitor.getName()));
-      List<FunctionSymbol> methodlist = new ArrayList<>(methodcollection);
+    }
+
+    if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType() && checkNotObscure(args)) {
+      calculateCallExpression(expr, args);
+    } else {
+      // Check whether we have a fully qualified static method.
+      String qualNamePrefix = String.join(".", nameParts);
+      List<FunctionSymbol> funcSymbols = getScope(expr.getEnclosingScope()).resolveFunctionMany(qualNamePrefix);
+
+      List<FunctionSymbol> methodlist = new ArrayList<>(funcSymbols);
       //count how many methods can be found with the correct arguments and return type
       List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
       //there can only be one method with the correct arguments and return type
@@ -588,6 +770,61 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         logError("0xA1242", expr.get_SourcePositionStart());
       }
+    }
+  }
+
+  /**
+   * Calculates the type result of the expression, given that it is not a simple, or qualified method access (e.g.,
+   * {@code pac.kage.Owner.staticMethod()}, or {@code isInt()} (a local Method name)).
+   */
+  protected void calculateArithmeticCallExpression(ASTCallExpression expr) {
+
+    List<SymTypeExpression> args = calculateArguments(expr, astNameToString(expr.getExpression()));
+
+    //make sure that the type of the last argument is not stored in the TypeCheckResult anymore
+    getTypeCheckResult().reset();
+    expr.getExpression().accept(getTraverser());
+
+    calculateCallExpression(expr, args);
+  }
+
+  /**
+   * Calculates the type result of the call expression, given that the type result of the method owner has already been
+   * computed (and is accessible via getTypeCheckResult()), and that the type of its arguments has already been
+   * computed.
+   */
+  protected void calculateCallExpression(ASTCallExpression expr, List<SymTypeExpression> args) {
+    if(!getTypeCheckResult().isPresentResult()
+      || getTypeCheckResult().getResult().isObscureType()
+      || !checkNotObscure(args)) {
+      return;
+    }
+
+    String methodName = astNameToString(expr.getExpression());
+    SymTypeExpression methodOwnerExpr = getTypeCheckResult().getResult();
+
+    // Filter based on the method modifiers
+    List<FunctionSymbol> methodList = getCorrectMethodsFromInnerType(methodOwnerExpr, expr, methodName);
+    // Filter based on a compatible signature
+    List<FunctionSymbol> fittingMethods = getFittingMethods(methodList, expr, args);
+    // If the last result is static then filter for static methods
+    if (getTypeCheckResult().isType()) {
+      fittingMethods = filterModifiersFunctions(fittingMethods);
+    }
+
+    // There can only be one method with the correct arguments and return type
+    if (!fittingMethods.isEmpty()) {
+      if (fittingMethods.size() > 1) {
+        checkForReturnType(expr, fittingMethods);
+      }
+      expr.setDefiningSymbol(fittingMethods.get(0));
+      SymTypeExpression result = fittingMethods.get(0).getType();
+      getTypeCheckResult().setMethod();
+      getTypeCheckResult().setResult(result);
+    } else {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      logError("0xA2239", expr.get_SourcePositionStart());
     }
   }
 
