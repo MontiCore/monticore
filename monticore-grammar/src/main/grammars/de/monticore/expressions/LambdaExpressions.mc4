@@ -20,7 +20,7 @@ component grammar LambdaExpressions
    * (int x) -> {int y = x + 2; return y;}
    *
    * There are also other kinds of expressions defined in the
-   * grammars mentioned below. These expression definitions can savely be
+   * grammars mentioned below. These expression definitions can safely be
    * composed if desired.
    *
    * This grammar is part of a hierarchy of expressions, namely
@@ -49,9 +49,14 @@ component grammar LambdaExpressions
     | parenthesis:"(" (LambdaParameter || ",")* ")"
   ;
 
+  interface LambdaBody;
+
+  LambdaExpressionBody implements LambdaBody = Expression;
+
   scope (shadowing non_exporting ordered) LambdaExpression implements Expression <50> =
     <rightassoc>
     LambdaParameters "->"
-    Expression
+    LambdaBody
   ;
+
 }
