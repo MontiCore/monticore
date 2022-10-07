@@ -537,6 +537,12 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
         .setEnclosingScope(scope)
         .build();
+    OOTypeSymbol selfReflectiveStudent = OOSymbolsMill.oOTypeSymbolBuilder()
+      .setName("SelfReflectiveStudent")
+      .setSpannedScope(OOSymbolsMill.scope())
+      .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
+      .setEnclosingScope(scope)
+      .build();
     add2scope(artifactScope2, person);
     add2scope(scope3, person);
     add2scope(scope, person);
@@ -549,6 +555,16 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope3, firstsemesterstudent);
     add2scope(scope, firstsemesterstudent);
 
+    add2scope(artifactScope2, selfReflectiveStudent);
+    add2scope(scope, selfReflectiveStudent);
+
+    MethodSymbol studentSelfReflection = OOSymbolsMill.methodSymbolBuilder()
+      .setName("self")
+      .setType(SymTypeExpressionFactory.createTypeExpression(selfReflectiveStudent))
+      .setSpannedScope(OOSymbolsMill.scope())
+      .build();
+    selfReflectiveStudent.addMethodSymbol(studentSelfReflection);
+
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
@@ -557,6 +573,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
     add2scope(scope, field("firstsemester",
         SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope))
+    );
+    add2scope(scope, field("selfReflectiveStudent",
+      SymTypeExpressionFactory.createTypeObject("SelfReflectiveStudent", scope))
     );
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
@@ -694,6 +713,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     //test for function with that exists in another scope with
     //the same name but different qualified name
     check("functions1.functions1.getPi()", "float");
+
+    // test method chaining
+    check("selfReflectiveStudent.self().self()", "SelfReflectiveStudent");
   }
 
   @Test
@@ -713,10 +735,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidCallExpressionWithInvalidArgument() throws IOException {
     String divideError = "0xA0212";
-    String noMethodError = "0xA1242";
 
     init_advanced();
-    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, noMethodError);
+    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError);
   }
 
   @Test

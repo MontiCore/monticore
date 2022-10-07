@@ -749,43 +749,37 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       }
     }
 
-    if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType() && checkNotObscure(args)) {
-      calculateCallExpression(expr, args);
+    if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
+      calculateOwnedCallExpression(expr, args);
     } else {
-      // Check whether we have a fully qualified static method.
-      String qualNamePrefix = String.join(".", nameParts);
-      List<FunctionSymbol> funcSymbols = getScope(expr.getEnclosingScope()).resolveFunctionMany(qualNamePrefix);
-
-      List<FunctionSymbol> methodlist = new ArrayList<>(funcSymbols);
-      //count how many methods can be found with the correct arguments and return type
-      List<FunctionSymbol> fittingMethods = getFittingMethods(methodlist, expr, args);
-      //there can only be one method with the correct arguments and return type
-      if (fittingMethods.size() == 1 && checkNotObscure(args)) {
-        expr.setDefiningSymbol(fittingMethods.get(0));
-        Optional<SymTypeExpression> wholeResult = Optional.of(fittingMethods.get(0).getType());
-        getTypeCheckResult().setMethod();
-        getTypeCheckResult().setResult(wholeResult.get());
-      } else {
-        getTypeCheckResult().reset();
-        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-        logError("0xA1242", expr.get_SourcePositionStart());
-      }
+      // Check whether we have a fully qualified method. Local method calls will also end in this program branch.
+      String qualName = String.join(".", nameParts);
+      calculateQualifiedMethod(qualName, expr, args);
     }
   }
 
   /**
-   * Calculates the type result of the expression, given that it is not a simple, or qualified method access (e.g.,
-   * {@code pac.kage.Owner.staticMethod()}, or {@code isInt()} (a local Method name)).
+   * Calculates the type result of the expression, given that it is not a simple, or qualified method access. E.g.,
+   * this method calculates the result of {@code "FooBar".substring(0, 3)}, or
+   * {@code ( foo ? new LinkedList<String>() : new ArrayList<String>() ).add("bar")}. On the other hand, this method is
+   * not suited for {@code pac.kage.Owner.staticMethod()}, or {@code isInt()} (a local Method name).
+   * Use {@link #calculateNamingChainCallExpression(ASTCallExpression)} in these cases.
    */
   protected void calculateArithmeticCallExpression(ASTCallExpression expr) {
-
     List<SymTypeExpression> args = calculateArguments(expr, astNameToString(expr.getExpression()));
-
-    //make sure that the type of the last argument is not stored in the TypeCheckResult anymore
     getTypeCheckResult().reset();
-    expr.getExpression().accept(getTraverser());
+    getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
 
-    calculateCallExpression(expr, args);
+    ASTExpression methodNameExpr = expr.getExpression();
+    if (methodNameExpr instanceof ASTFieldAccessExpression) {
+      // MethodName has the form `... .owner.methodName -> calc the type of the owner and then calculate its method type
+      ((ASTFieldAccessExpression) methodNameExpr).getExpression().accept(getTraverser());
+      calculateOwnedCallExpression(expr, args);
+    } else {
+      Log.debug("Unexpectedly, the call expression was not made up of a field access expression.",
+        "DeriveSTOfBSCommonExpressions#calculateArithmeticCallExpression");
+      calculateOwnedCallExpression(expr, args);
+    }
   }
 
   /**
@@ -793,38 +787,95 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * computed (and is accessible via getTypeCheckResult()), and that the type of its arguments has already been
    * computed.
    */
-  protected void calculateCallExpression(ASTCallExpression expr, List<SymTypeExpression> args) {
+  protected void calculateOwnedCallExpression(ASTCallExpression expr, List<SymTypeExpression> args) {
     if(!getTypeCheckResult().isPresentResult()
-      || getTypeCheckResult().getResult().isObscureType()
-      || !checkNotObscure(args)) {
+      || getTypeCheckResult().getResult().isObscureType()) {
       return;
     }
 
     String methodName = astNameToString(expr.getExpression());
     SymTypeExpression methodOwnerExpr = getTypeCheckResult().getResult();
-
     // Filter based on the method modifiers
     List<FunctionSymbol> methodList = getCorrectMethodsFromInnerType(methodOwnerExpr, expr, methodName);
-    // Filter based on a compatible signature
-    List<FunctionSymbol> fittingMethods = getFittingMethods(methodList, expr, args);
-    // If the last result is static then filter for static methods
-    if (getTypeCheckResult().isType()) {
-      fittingMethods = filterModifiersFunctions(fittingMethods);
+
+    if(getTypeCheckResult().isType()) {
+      methodList = filterModifiersFunctions(methodList);
     }
 
-    // There can only be one method with the correct arguments and return type
-    if (!fittingMethods.isEmpty()) {
-      if (fittingMethods.size() > 1) {
-        checkForReturnType(expr, fittingMethods);
-      }
-      expr.setDefiningSymbol(fittingMethods.get(0));
-      SymTypeExpression result = fittingMethods.get(0).getType();
-      getTypeCheckResult().setMethod();
-      getTypeCheckResult().setResult(result);
-    } else {
+    if(methodList.isEmpty()) {
       getTypeCheckResult().reset();
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       logError("0xA2239", expr.get_SourcePositionStart());
+    } else {
+      calculateMethodReturnTypeBasedOnSignature(methodList, expr, args);
+    }
+  }
+
+  /**
+   * Checks whether there exists a method symbol with the name given by {@code qualName} with matching argument types.
+   * If such a method exists, it's return type is set as the type check result.
+   * @param qualName Qualified name of the method symbol to look for. Can also be a simple name without qualification.
+   * @param callExpr The call expression of the method call. Needed as entry point to the symbol table to resolve
+   *                 method symbols.
+   * @param argTypes The types of the method arguments. Are allowed to be obscure, but in this case the method will also
+   *                 always set *obscure* to be the method's type. Nevertheless, this method may print errors, if there
+   *                 is no method symbol of the given name at all, regardless of matching argument types.
+   */
+  protected void calculateQualifiedMethod(String qualName,
+                                          ASTCallExpression callExpr,
+                                          List<SymTypeExpression> argTypes) {
+    List<FunctionSymbol> funcSymbols = getScope(callExpr.getEnclosingScope()).resolveFunctionMany(qualName);
+    List<FunctionSymbol> methodList = new ArrayList<>(funcSymbols);
+
+    calculateMethodReturnTypeBasedOnSignature(methodList, callExpr, argTypes);
+  }
+
+  /**
+   * Checks whether any of the {@code candidates} methods that the {@code callExpr} may represent match the given
+   * {@code argTypes} signature. If there are multiple candidates remaining and the callExpr has bounds on the types
+   * that it may represent, then the candidate with the matching return type is chosen.
+   * The chosen candidate's return type is then set as the current type check result.
+   * @param argTypes The types of the method arguments. Are allowed to be obscure, but in this case the method will also
+   *                 always set *obscure* to be the method's type. Nevertheless, this method may print errors, if there
+   *                 is no method symbol of the given name at all, regardless of matching argument types.
+   */
+  protected void calculateMethodReturnTypeBasedOnSignature(List<FunctionSymbol> candidates,
+                                                           ASTCallExpression callExpr,
+                                                           List<SymTypeExpression> argTypes) {
+    if(candidates.isEmpty()) {
+      logError("0xA1242", callExpr.get_SourcePositionStart());
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+    }
+
+    // From now on we need the argument types of the method call. Hence, if the arguments are malformed we can not
+    // proceed and exit early
+    if(!checkNotObscure(argTypes)) {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      return;
+    }
+
+    if(!checkNotObscure(argTypes)) {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+    }
+
+    // Filter based on a compatible signature
+    List<FunctionSymbol> fittingMethods = getFittingMethods(candidates, callExpr, argTypes);
+    // There can only be one method with the correct arguments and return type
+    if (!fittingMethods.isEmpty()) {
+      if (fittingMethods.size() > 1) {
+        checkForReturnType(callExpr, fittingMethods);
+      }
+      callExpr.setDefiningSymbol(fittingMethods.get(0));
+      SymTypeExpression wholeResult = fittingMethods.get(0).getType();
+      getTypeCheckResult().setMethod();
+      getTypeCheckResult().setResult(wholeResult);
+    } else {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      logError("0xA1241", callExpr.get_SourcePositionStart());
     }
   }
 
