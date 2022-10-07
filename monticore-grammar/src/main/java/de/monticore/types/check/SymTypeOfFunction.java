@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  */
 public class SymTypeOfFunction extends SymTypeExpression {
 
-  protected static final String TYPESYMBOL_NAME = "function";
+  public static final String TYPESYMBOL_NAME = "function";
 
   protected static final String JSON_KIND = "de.monticore.types.check.SymTypeOfFunction";
 
@@ -93,6 +93,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   @Override
   public String printFullName() {
     final StringBuilder r = new StringBuilder();
+    r.append("(");
     for (int i = 0; i < argumentTypes.size(); i++) {
       r.append(argumentTypes.get(i).printFullName());
       if (i == argumentTypes.size() - 1 && isElliptic()) {
