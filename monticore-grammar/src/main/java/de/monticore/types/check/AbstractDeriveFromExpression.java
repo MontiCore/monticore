@@ -106,23 +106,6 @@ public abstract class AbstractDeriveFromExpression {
         TypeCheck.isByte(type));
   }
 
-  /**
-   * helper method for bit prefix expressions (+e, -e)
-   */
-  protected SymTypeExpression getBitUnaryNumericPromotionType(SymTypeExpression type) {
-    if (isDouble(type)) {
-      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
-    } else if (isFloat(type)) {
-      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.FLOAT);
-    } else if (isLong(type)) {
-      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.LONG);
-    } else if (isIntegralType(type)) {
-      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT);
-    } else {
-      return SymTypeExpressionFactory.createObscureType();
-    }
-  }
-
   protected List<SymTypeExpression> calculateInnerTypes(ASTExpression... expressions){
     List<SymTypeExpression> result = new ArrayList<>();
     for(ASTExpression expr : expressions){
