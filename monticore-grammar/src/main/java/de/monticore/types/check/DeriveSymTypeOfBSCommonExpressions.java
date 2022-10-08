@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
@@ -10,6 +11,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symboltable.ISymbol;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -33,28 +35,54 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
 
   @Override
   public void traverse(ASTPlusPrefixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    if(!innerResult.isObscureType()){
-      SymTypeExpression wholeResult = calculatePlusPrefixExpression(innerResult);
-      storeResultOrLogError(wholeResult, expr, "0xA0174");
-    }
-  }
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression symType = numericPrefix(expr.getExpression(), "+", expr.get_SourcePositionStart());
 
-  protected SymTypeExpression calculatePlusPrefixExpression(SymTypeExpression innerResult) {
-    return getBitUnaryNumericPromotionType(innerResult);
+    this.getTypeCheckResult().reset();
+    this.getTypeCheckResult().setResult(symType);
   }
 
   @Override
   public void traverse(ASTMinusPrefixExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    if(!innerResult.isObscureType()){
-      SymTypeExpression wholeResult = calculateMinusPrefixExpression(innerResult);
-      storeResultOrLogError(wholeResult, expr, "0xA0175");
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression symType = numericPrefix(expr.getExpression(), "-", expr.get_SourcePositionStart());
+
+    this.getTypeCheckResult().reset();
+    this.getTypeCheckResult().setResult(symType);
+  }
+
+  protected SymTypeExpression numericPrefix(ASTExpression expr, String op, SourcePosition pos) {
+    this.getTypeCheckResult().reset();
+    expr.accept(this.getTraverser());
+    TypeCheckResult inner = this.getTypeCheckResult().copy();
+
+    // result of inner type computation should be present
+    if (!inner.isPresentResult()) {
+      // should never happen, we expect results to be present
+      // indicates that the underlying type resolver is erroneous
+      this.logError("0xA0174", expr.get_SourcePositionStart());
+      return SymTypeExpressionFactory.createObscureType();
+    } else if (inner.getResult().isObscureType()) {
+      // if inner obscure then error already logged
+      return SymTypeExpressionFactory.createObscureType();
+    } else {
+      return numericPrefix(inner.getResult(), op, pos);
     }
   }
 
-  protected SymTypeExpression calculateMinusPrefixExpression(SymTypeExpression innerResult) {
-    return getBitUnaryNumericPromotionType(innerResult);
+  protected SymTypeExpression numericPrefix(SymTypeExpression inner, String op, SourcePosition pos) {
+    if (isDouble(inner)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
+    } else if (isFloat(inner)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.FLOAT);
+    } else if (isLong(inner)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.LONG);
+    } else if (isIntegralType(inner)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT);
+    } else {
+      Log.error("0xA0175 Operator '" + op + "' not applicable to " + "'" + inner.print() + "'", pos);
+      return SymTypeExpressionFactory.createObscureType();
+    }
   }
 
   /**
@@ -328,19 +356,41 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    */
   @Override
   public void traverse(ASTLogicalNotExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    if(!innerResult.isObscureType()) {
-      SymTypeExpression wholeResult = calculateLogicalNotExpression(innerResult);
-      storeResultOrLogError(wholeResult, expr, "0xA0228");
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression symType = this.derive(expr);
+
+    this.getTypeCheckResult().reset();
+    this.getTypeCheckResult().setResult(symType);
+  }
+
+  protected SymTypeExpression derive(ASTLogicalNotExpression expr) {
+    // calculate the type of the inner expressions
+    this.getTypeCheckResult().reset();
+    expr.getExpression().accept(this.getTraverser());
+    TypeCheckResult inner = this.getTypeCheckResult().copy();
+
+    // result of inner type computation should be present
+    if (!inner.isPresentResult()) {
+      // should never happen, we expect results to be present
+      // indicates that the underlying type resolver is erroneous
+      this.logError("0xA0170", expr.getExpression().get_SourcePositionStart());
+      return SymTypeExpressionFactory.createObscureType();
+    } else if (inner.getResult().isObscureType()) {
+      // if inner obscure then error already logged
+      return SymTypeExpressionFactory.createObscureType();
+    } else {
+      // else check with signature
+      return logicalNot(inner.getResult(), expr.get_SourcePositionStart());
     }
   }
 
-  protected SymTypeExpression calculateLogicalNotExpression(SymTypeExpression innerResult) {
-    SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
-    if (isBoolean(innerResult)) {
-      wholeResult = SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
+  protected SymTypeExpression logicalNot(SymTypeExpression inner, SourcePosition pos) {
+    if (isBoolean(inner)) {
+     return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
+    } else {
+      Log.error("0xA0171 Operator '!' not applicable to " + "'" + inner.print() + "'", pos);
+      return SymTypeExpressionFactory.createObscureType();
     }
-    return wholeResult;
   }
 
   /**
@@ -382,20 +432,45 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    */
   @Override
   public void traverse(ASTBooleanNotExpression expr) {
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(expr.getExpression());
-    if(!innerResult.isObscureType()) {
-      SymTypeExpression wholeResult = calculateBooleanNotExpression(innerResult);
-      storeResultOrLogError(wholeResult, expr, "0xA0236");
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression symType = this.derive(expr);
+
+    this.getTypeCheckResult().reset();
+    this.getTypeCheckResult().setResult(symType);
+  }
+
+  protected SymTypeExpression derive(ASTBooleanNotExpression expr) {
+    // calculate the type of the inner expressions
+    this.getTypeCheckResult().reset();
+    expr.getExpression().accept(this.getTraverser());
+    TypeCheckResult inner = this.getTypeCheckResult().copy();
+
+    // result of inner type computation should be present
+    if (!inner.isPresentResult()) {
+      // should never happen, we expect results to be present
+      // indicates that the underlying type resolver is erroneous
+      this.logError("0xA0172", expr.getExpression().get_SourcePositionStart());
+      return SymTypeExpressionFactory.createObscureType();
+    } else if (inner.getResult().isObscureType()) {
+      // if inner obscure then error already logged
+      return SymTypeExpressionFactory.createObscureType();
+    } else {
+      // else check with signature
+      return booleanNot(inner.getResult(), expr.get_SourcePositionStart());
     }
   }
 
-  protected SymTypeExpression calculateBooleanNotExpression(SymTypeExpression innerResult) {
-    SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
-    //the inner result has to be an integral type
-    if (isIntegralType(innerResult)) {
-      wholeResult = getUnaryIntegralPromotionType(getTypeCheckResult().getResult());
+  protected SymTypeExpression booleanNot(SymTypeExpression inner, SourcePosition pos) {
+    if (isIntegralType(inner)) {
+      if (isLong(inner)) {
+        return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.LONG);
+      } else {
+        return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT);
+      }
+    } else {
+      Log.error("0xA0173 Operator '~' not applicable to " + "'" + inner.print() + "'", pos);
+      return SymTypeExpressionFactory.createObscureType();
     }
-    return wholeResult;
   }
 
   /**

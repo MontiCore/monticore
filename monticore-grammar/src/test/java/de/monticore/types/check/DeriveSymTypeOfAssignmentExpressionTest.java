@@ -261,7 +261,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
   @Test
   public void testInvalidPlusPrefixExpression() throws IOException {
     //only possible with numeric types
-    checkError("+\"Hello\"", "0xA0174");
+    checkError("+\"Hello\"", "0xA0175");
   }
 
   /**

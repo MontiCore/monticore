@@ -46,7 +46,7 @@ public class ExpressionValidTest extends CocoTest {
     assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().toString(), Log.getFindings().isEmpty());
   }
 
   public void checkInvalid(String expressionString) throws IOException {

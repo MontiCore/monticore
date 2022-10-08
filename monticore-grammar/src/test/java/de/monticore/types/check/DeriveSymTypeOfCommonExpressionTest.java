@@ -391,7 +391,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidLogicalNotExpression() throws IOException {
     //only possible with a boolean as inner expression
-    checkError("!4", "0xA0228");
+    checkError("!4", "0xA0171");
   }
 
   /**
@@ -472,7 +472,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidBooleanNotExpression() throws IOException {
     //only possible with an integral type (int, long, char, short, byte)
-    checkError("~3.4", "0xA0236");
+    checkError("~3.4", "0xA0173");
   }
 
   /**
