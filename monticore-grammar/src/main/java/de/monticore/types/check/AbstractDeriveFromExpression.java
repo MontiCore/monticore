@@ -75,6 +75,27 @@ public abstract class AbstractDeriveFromExpression {
     return result;
   }
 
+  protected SymTypeExpression acceptAndReturnSymType(ASTExpression expr) {
+    // calculate the type
+    this.getTypeCheckResult().reset();
+    expr.accept(this.getTraverser());
+    TypeCheckResult res = this.getTypeCheckResult();
+
+    // result should be present
+    if (!res.isPresentResult()) {
+      // should never happen, we expect results to be present
+      // indicates that the underlying type resolver is erroneous
+      this.logError("0xA0169", expr.get_SourcePositionStart());
+      return SymTypeExpressionFactory.createObscureType();
+    } else if (res.getResult().isObscureType()) {
+      // if inner obscure then error already logged
+      return SymTypeExpressionFactory.createObscureType();
+    } else {
+      // else return sym-type
+      return res.getResult();
+    }
+  }
+
   /**
    * Helper method to calculate the SymTypeExpression of a subliteral in a traverse method
    * @param literal the literal the SymTypeExpressions is calculated for
