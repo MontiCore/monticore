@@ -3,10 +3,10 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
+import de.monticore.cd.codegen.CDGenerator;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CDGenerator;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._parser.ParserCDDecorator;
 import de.monticore.codegen.cd2java._parser.ParserClassDecorator;
@@ -28,7 +28,6 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
-import java.util.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,6 +35,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class ParserGenerator {

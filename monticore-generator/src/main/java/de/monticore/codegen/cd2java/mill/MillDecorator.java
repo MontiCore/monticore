@@ -4,11 +4,14 @@ package de.monticore.codegen.cd2java.mill;
 import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -16,6 +19,7 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -28,14 +32,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.DELEGATOR_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.mill.MillConstants.*;
 import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
@@ -43,7 +46,7 @@ import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
 /**
  * created mill class for a grammar
  */
-public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, ASTCDClass> {
+public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
   protected final VisitorService visitorService;
@@ -59,7 +62,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     this.parserService = parserService;
   }
 
-  public ASTCDClass decorate(final List<ASTCDCompilationUnit> cdList) {
+  public ASTCDClass decorate(List<ASTCDPackage> packageList) {
     String millClassName = symbolTableService.getMillSimpleName();
     ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
 
@@ -86,21 +89,26 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     // list of all classes needed for the reset and initMe method
     List<ASTCDClass> allClasses = new ArrayList<>();
 
-    for (ASTCDCompilationUnit cd : cdList) {
+    for (ASTCDPackage cd : packageList) {
       // filter out all classes that are abstract and only builder classes
-      List<ASTCDClass> classList = cd.getCDDefinition().deepClone().getCDClassesList()
-          .stream()
-          .filter(x -> !x.getModifier().isAbstract())
-          .filter(this::checkIncludeInMill)
-          .collect(Collectors.toList());
+      List<ASTCDClass> classList = cd.getCDElementList()
+              .stream()
+              .filter (x -> x instanceof ASTCDClass)
+              .map (x -> (ASTCDClass) x)
+              .filter(x -> !x.getModifier().isAbstract())
+              .filter(this::checkIncludeInMill)
+              .map(x -> x.deepClone())
+              .collect(Collectors.toList());
 
 
       // filter out all classes that are abstract and end with the TOP suffix
-      List<ASTCDClass> topClassList = cd.getCDDefinition().deepClone().getCDClassesList()
-          .stream()
-          .filter(x -> x.getModifier().isAbstract())
-          .filter(x -> x.getName().endsWith(TOP_SUFFIX))
-          .collect(Collectors.toList());
+      List<ASTCDClass> topClassList = cd.getCDElementList()
+              .stream()
+              .filter (x -> x instanceof ASTCDClass)
+              .map (x -> (ASTCDClass) x)
+              .filter(x -> x.getModifier().isAbstract())
+              .filter(x -> x.getName().endsWith(TOP_SUFFIX))
+              .collect(Collectors.toList());
       // remove TOP suffix
       topClassList.forEach(x -> x.setName(x.getName().substring(0, x.getName().length() - 3)));
       // check if builder classes
@@ -254,12 +262,12 @@ public class MillDecorator extends AbstractCreator<List<ASTCDCompilationUnit>, A
     return resetMethod;
   }
 
-  protected List<ASTCDMethod> addBuilderMethods(List<ASTCDClass> astcdClassList, ASTCDCompilationUnit cd) {
+  protected List<ASTCDMethod> addBuilderMethods(List<ASTCDClass> astcdClassList, ASTCDPackage cd) {
     List<ASTCDMethod> builderMethodsList = new ArrayList<>();
 
     for (ASTCDClass astcdClass : astcdClassList) {
       String astName = astcdClass.getName();
-      String packageDef = String.join(".", cd.getCDPackageList());
+      String packageDef = cd.getName();
       ASTMCQualifiedType builderType = this.getMCTypeFacade().createQualifiedType(packageDef + "." + astName);
       String methodName = astName.startsWith(AST_PREFIX) ?
           StringTransformations.uncapitalize(astName.replaceFirst(AST_PREFIX, ""))

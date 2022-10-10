@@ -1,26 +1,33 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.enums;
 
+import com.google.common.collect.Lists;
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCD4CodeEnumConstant;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnumConstant;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import de.se_rwth.commons.logging.Log;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.CONSTANT;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PRIVATE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.INT_VALUE;
-import static de.monticore.codegen.cd2java.CDModifier.*;
 
 /**
  * creates corresponding AST enums for enum definitions in grammars
@@ -44,13 +51,18 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
     ASTModifier modifier = astService.createModifierPublicModifier(input.getModifier());
     String enumName = input.getName();
     String constantClassName = astService.getASTConstantClassFullName();
+    ASTLiteralExpression expr = CD4CodeMill.literalExpressionBuilder()
+            .setLiteral(CD4CodeMill.stringLiteralBuilder().setSource(constantClassName).build()).build();
     ASTCDAttribute intValueAttribute = getIntValueAttribute();
     List<ASTCDMethod> intValueMethod = accessorDecorator.decorate(intValueAttribute);
-    List<ASTCDEnumConstant> constants = input.getCDEnumConstantList().stream()
-        .map(ASTCDEnumConstant::deepClone)
-        .collect(Collectors.toList());
-    for (ASTCDEnumConstant constant : constants) {
-      this.replaceTemplate(EMPTY_BODY, constant, new TemplateHookPoint(CONSTANT, constant.getName(), constantClassName));
+    List<ASTCD4CodeEnumConstant> constants = Lists.newArrayList();
+    for (ASTCDEnumConstant enumConstant: input.getCDEnumConstantList()) {
+      try {
+        constants.add(CD4CodeMill.parser().parse_StringCD4CodeEnumConstant(
+                enumConstant.getName() + "(" + constantClassName + "." + enumConstant.getName() + ")").get());
+      } catch (IOException e) {
+        Log.error("0xA5C09 Cannot decorate enum constant " + enumConstant.getName(), enumConstant.get_SourcePositionStart());
+      }
     }
     return CD4AnalysisMill.cDEnumBuilder()
         .setName(enumName)

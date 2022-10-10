@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import de.monticore.ast.Comment;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -24,9 +25,9 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
@@ -97,12 +98,13 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .createParameter(getMCTypeFacade().createQualifiedType(JSON_OBJECT), SCOPE_JSON_VAR);
 
     // list of all scope rule attributes
-    List<ASTCDAttribute> scopeRuleAttrList = scopeInput.deepClone().getCDDefinition()
-        .getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getCDAttributeList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTCDAttribute> scopeRuleAttrList = scopeInput.getCDDefinition()
+            .getCDClassesList()
+            .stream()
+            .map(ASTCDClass::getCDAttributeList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     scopeRuleAttrList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
     // map with all symbol kinds  available in this scope
@@ -136,6 +138,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         AbstractDeSers.add(symbolTableService.getScopeDeSerFullName());
       }
     }
+    CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
+    CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.serialization.*");
     return clazz;
   }
 

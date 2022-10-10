@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
 

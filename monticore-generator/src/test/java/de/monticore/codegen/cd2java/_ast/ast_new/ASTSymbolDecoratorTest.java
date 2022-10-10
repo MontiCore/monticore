@@ -18,7 +18,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;

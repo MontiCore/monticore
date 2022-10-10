@@ -12,7 +12,7 @@ import de.monticore.utils.Link;
 
 import java.util.function.UnaryOperator;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 
 public class AttributeInSymbolRuleToCDAttribute implements
         UnaryOperator<Link<ASTMCGrammar, ASTCDCompilationUnit>> {

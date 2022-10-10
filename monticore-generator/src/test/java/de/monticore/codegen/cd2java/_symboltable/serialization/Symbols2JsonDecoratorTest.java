@@ -5,9 +5,11 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.codegen.cd2java.CDModifier;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.CoreTemplates;
@@ -372,7 +374,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
 
     // When
-    StringBuilder generate = generatorEngine.generate(CoreTemplates.CLASS, symbolTablePrinterClass, symbolTablePrinterClass);
+    CD4C.init(generatorSetup);
+    StringBuilder generate = generatorEngine.generate(CD2JavaTemplates.CLASS, symbolTablePrinterClass, packageDir);
 
     // Then
     ParseResult<CompilationUnit> parseResult = new JavaParser(new ParserConfiguration()).parse(generate.toString());

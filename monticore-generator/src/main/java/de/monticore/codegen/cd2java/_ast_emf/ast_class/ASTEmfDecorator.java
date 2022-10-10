@@ -6,7 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.codegen.cd2java.CDModifier;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -22,7 +22,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
 /**
@@ -73,7 +73,7 @@ public class ASTEmfDecorator extends ASTDecorator {
 
   public List<ASTCDMethod> createEMethods(ASTCDClass astcdClass) {
     // with inherited attributes
-    List<ASTCDAttribute> copiedAttributeList = astcdClass.deepClone().getCDAttributeList();
+    List<ASTCDAttribute> copiedAttributeList = astcdClass.getCDAttributeList();
 
     String packageName = astService.getCDName() + PACKAGE_SUFFIX;
     String className = astcdClass.getName();

@@ -1,20 +1,19 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("packageInterface", "astCDDefinition")}
-${tc.include("core.Package")}
-<#assign cdPrinter = glex.getGlobalVar("cdPrinter")>
+${tc.signature("packageInterface", "astCDDefinition", "packageDir")}
+${tc.include("cd2java.Package", packageDir)}
 
-${tc.include("core.Imports")}
+${tc.include("cd2java.Imports")}
 
 ${cdPrinter.printSimpleModifier(packageInterface.getModifier())} interface ${packageInterface.getName()} <#rt><#lt>
 <#if packageInterface.isPresentCDExtendUsage()>extends ${cdPrinter.printObjectTypeList(packageInterface.getCDExtendUsage().getSuperclassList())} </#if>{
 
 
 <#list packageInterface.getCDAttributeList() as attribute>
-    ${tc.include("core.Attribute", attribute)}
+    ${tc.include("cd2java.Attribute", attribute)}
 </#list>
 
 <#list packageInterface.getCDMethodList() as method>
-    <#if !method.getModifier().isAbstract()>default </#if>${tc.include("core.Method", method)}
+    <#if !method.getModifier().isAbstract()>default </#if>${tc.include("cd2java.Method", method)}
 </#list>
 
   interface Literals {

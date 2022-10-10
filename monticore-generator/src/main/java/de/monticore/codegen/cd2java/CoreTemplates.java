@@ -1,40 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.umlstereotype._ast.ASTStereoValue;
-import de.monticore.umlstereotype._ast.ASTStereotype;
-import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
+import de.monticore.umlstereotype._ast.ASTStereotype;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
+//TODO: MB Visitor für die Deprecated Annos implementieren
+@Deprecated
 public final class CoreTemplates {
-
-  public static final String PACKAGE = "core.Package";
-
-  public static final String CLASS = "core.Class";
-
-  public static final String INTERFACE = "core.Interface";
-
-  public static final String ATTRIBUTE = "core.Attribute";
-
-  public static final String VALUE = "core.Value";
-
-  public static final String CONSTRUCTOR = "core.Constructor";
-
-  public static final String METHOD = "core.Method";
-
-  public static final String EMPTY_BODY = "core.EmptyBody";
-
-  public static final String CONSTANT = "core.Constants";
-
-  public static final String ENUM = "core.Enum";
-
-  public static final String ANNOTATIONS = "core.Annotations";
 
   private CoreTemplates() {
   }

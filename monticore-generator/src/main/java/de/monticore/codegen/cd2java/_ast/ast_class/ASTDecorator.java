@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast.ast_class;
 
 import de.monticore.ast.ASTCNode;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -26,8 +27,8 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
@@ -91,6 +92,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       changedClass.getModifier().setAbstract(true);
       changedClass.addCDMember(astService.createGetNameMethod());
     }
+    CD4C.getInstance().addImport(changedClass, "de.monticore.ast.ASTNode");
+    CD4C.getInstance().addImport(changedClass, "de.monticore.ast.ASTCNode");
+    CD4C.getInstance().addImport(changedClass, "de.monticore.ast.Comment");
     return changedClass;
   }
 

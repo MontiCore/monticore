@@ -2,12 +2,14 @@
 package de.monticore.codegen.top;
 
 classdiagram Top {
+    package de.monticore.codegen.top {
+      public class C {
+          protected C();
+      }
 
-    public class C {
-        protected C();
+      public interface I {}
+
+      public enum E {;}
+
     }
-
-    public interface I {}
-
-    public enum E {;}
 }

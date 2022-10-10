@@ -8,7 +8,7 @@ import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 /**
  * created all list getter methods for the referencedSymbols

@@ -2,17 +2,20 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cd4codebasis._ast.*;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
-import static de.monticore.codegen.cd2java.CDModifier.*;
 
 /**
  * creates for a grammar the corresponding ASTXNode interface
@@ -31,12 +34,15 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
   @Override
   public ASTCDInterface decorate(final ASTCDCompilationUnit compilationUnit) {
     // creates Interfaces like for example ASTAutomataNode
-    return CD4AnalysisMill.cDInterfaceBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(astService.getASTBaseInterfaceSimpleName())
-        .setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(ASTNode.class)).build())
-        .addCDMember(getAcceptTraverserMethod())
-        .build();
+    ASTCDInterface nodeInterface = CD4AnalysisMill.cDInterfaceBuilder()
+            .setModifier(PUBLIC.build())
+            .setName(astService.getASTBaseInterfaceSimpleName())
+            .setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(ASTNode.class)).build())
+            .addCDMember(getAcceptTraverserMethod())
+            .build();
+
+    CD4C.getInstance().addImport(nodeInterface, "de.monticore.ast.ASTNode");
+    return nodeInterface;
   }
 
   protected ASTCDMethod getAcceptTraverserMethod() {
