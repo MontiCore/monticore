@@ -167,8 +167,8 @@ public class CoCoTests {
 
   @Test
   public void testComplicatedWrongAssignment(){
-    testInvalidAbstract("0xA0211",complicatedWrongAssignment);
-    testInvalidOO("0xA0211", complicatedWrongAssignment);
+    testInvalidAbstract("0xA0168",complicatedWrongAssignment);
+    testInvalidOO("0xA0168", complicatedWrongAssignment);
   }
 
   @Test
