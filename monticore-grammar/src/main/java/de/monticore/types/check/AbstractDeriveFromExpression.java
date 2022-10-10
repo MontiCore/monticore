@@ -66,31 +66,19 @@ public abstract class AbstractDeriveFromExpression {
    * @param expression the expression the SymTypeExpressions is calculated for
    * @return the SymTypeExpression of the expression
    */
-  protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTExpression expression){
-    SymTypeExpression result = SymTypeExpressionFactory.createObscureType();
-    expression.accept(getTraverser());
-    if(getTypeCheckResult().isPresentResult()){
-      result = getTypeCheckResult().getResult();
-    }
-    return result;
-  }
-
-  protected SymTypeExpression acceptAndReturnSymType(ASTExpression expr) {
+  protected SymTypeExpression acceptThisAndReturnSymTypeExpression(ASTExpression expression) {
     // calculate the type
     this.getTypeCheckResult().reset();
-    expr.accept(this.getTraverser());
+    expression.accept(this.getTraverser());
     TypeCheckResult res = this.getTypeCheckResult();
 
     // result should be present
     if (!res.isPresentResult()) {
       // should never happen, we expect results to be present
       // indicates that the underlying type resolver is erroneous
-      this.logError("0xA0169", expr.get_SourcePositionStart());
+      this.logError("0xA0169", expression.get_SourcePositionStart());
       return SymTypeExpressionFactory.createObscureType();
-    } else if (res.getResult().isObscureType()) {
-      // if inner obscure then error already logged
-      return SymTypeExpressionFactory.createObscureType();
-    } else {
+    } else  {
       // else return sym-type
       return res.getResult();
     }
