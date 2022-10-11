@@ -448,7 +448,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidConditionalExpression() throws IOException {
     //true and 7 are not of the same type
-    checkError("3<4?true:7", "0xA164");
+    checkError("3<4?true:7", "0xA0164");
   }
 
   @Test
@@ -459,7 +459,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     Log.getFindings().clear();
     getTypeCalculator().typeOf(astex);
-    assertEquals("0xA165", getFirstErrorCode());
+    assertEquals("0xA0165", getFirstErrorCode());
   }
 
   /**
