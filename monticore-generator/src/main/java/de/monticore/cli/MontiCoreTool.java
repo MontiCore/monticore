@@ -238,8 +238,8 @@ public class MontiCoreTool {
     try {
       // if the user specifies a custom script to use, we check if it is
       // available and load its content
-      if (cmd.hasOption("sc")) {
-        File f = new File(cmd.getOptionValue("sc", StringUtils.EMPTY));
+      if (cmd.hasOption(SCRIPT)) {
+        File f = new File(cmd.getOptionValue(SCRIPT, StringUtils.EMPTY));
         Reporting.reportFileExistenceChecking(Lists.newArrayList(),
             f.toPath().toAbsolutePath());
 
@@ -247,8 +247,8 @@ public class MontiCoreTool {
           script = Files.asCharSource(f, StandardCharsets.UTF_8).read();
         } else {
           ClassLoader l = MontiCoreScript.class.getClassLoader();
-          if (l.getResource(cmd.getOptionValue("sc", StringUtils.EMPTY)) != null) {
-            script = Resources.asCharSource(l.getResource(cmd.getOptionValue("sc", StringUtils.EMPTY)),
+          if (l.getResource(cmd.getOptionValue(SCRIPT, StringUtils.EMPTY)) != null) {
+            script = Resources.asCharSource(l.getResource(cmd.getOptionValue(SCRIPT, StringUtils.EMPTY)),
                     StandardCharsets.UTF_8).read();
           } else {
             Log.error("0xA1056 Custom script \"" + f.getAbsolutePath() + "\" not found!");

@@ -1373,7 +1373,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
               mcConfig.getReport().getAbsolutePath(),
               mcConfig.getReportPathOutput(),
-              handcodedPath, templatePath));
+              handcodedPath, templatePath, mcConfig.getStatJson()));
           builder.addVariable("reportManagerFactory", reportsOpt.get());
 
           // for backward-compatibilty with outdated Maven scripts, we also add
