@@ -447,33 +447,39 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    */
   @Override
   public void traverse(ASTConditionalExpression expr) {
-    List<SymTypeExpression> innerTypes = calculateInnerTypes(expr.getCondition(), expr.getTrueExpression(), expr.getFalseExpression());
-    if(checkNotObscure(innerTypes)){
-      SymTypeExpression wholeResult = calculateConditionalExpressionType(innerTypes.get(0), innerTypes.get(1), innerTypes.get(2));
-      storeResultOrLogError(wholeResult, expr, "0xA0234");
-    }else{
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
+    Preconditions.checkNotNull(expr);
+    SymTypeExpression condition = this.acceptThisAndReturnSymTypeExpression(expr.getCondition());
+    SymTypeExpression first = this.acceptThisAndReturnSymTypeExpression(expr.getTrueExpression());
+    SymTypeExpression second = this.acceptThisAndReturnSymTypeExpression(expr.getFalseExpression());
+
+    getTypeCheckResult().reset();
+    getTypeCheckResult().setResult(this.calculateConditionalExpressionType(expr, condition, first, second));
   }
 
-  protected SymTypeExpression calculateConditionalExpressionType(SymTypeExpression conditionResult,
-                                                                           SymTypeExpression trueResult,
-                                                                           SymTypeExpression falseResult) {
-    SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
-    //condition has to be boolean
-    if (isBoolean(conditionResult)) {
-      //check if "then" and "else" are either from the same type or are in sub-supertype relation
-      if (compatible(trueResult, falseResult)) {
-        wholeResult = trueResult;
-      } else if (compatible(falseResult, trueResult)) {
-        wholeResult = falseResult;
-      } else {
-        // first argument can be null since it should not be relevant to the type calculation
-        wholeResult = getBinaryNumericPromotion(trueResult, falseResult);
-      }
+  protected SymTypeExpression calculateConditionalExpressionType(ASTConditionalExpression expr,
+                                                                 SymTypeExpression conditionResult,
+                                                                 SymTypeExpression trueResult,
+                                                                 SymTypeExpression falseResult) {
+    if (!conditionResult.isObscureType() && !isBoolean(conditionResult)) {
+      // if obscure then error already logged
+      // else condition must be boolean
+      Log.error("0xA165 Expected '" + BasicSymbolsMill.BOOLEAN + "' but provided '" + conditionResult.print() + "'",
+        expr.getCondition().get_SourcePositionStart(), expr.getCondition().get_SourcePositionEnd());
     }
-    return wholeResult;
+
+    if (compatible(trueResult, falseResult)) {
+      return trueResult;
+    } else if (compatible(falseResult, trueResult)) {
+     return falseResult;
+    } else {
+      SymTypeExpression inner = getBinaryNumericPromotion(trueResult, falseResult);
+      if (inner.isObscureType()) {
+        // binary numeric promotion does not log error
+        Log.error("0xA164 Resulting types '" + trueResult + "' and '" + falseResult + "' of operator ? are incompatible",
+          expr.getTrueExpression().get_SourcePositionStart(), expr.getFalseExpression().get_SourcePositionEnd());
+      }
+      return inner;
+    }
   }
 
   /**

@@ -19,12 +19,14 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTest {
@@ -446,14 +448,20 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidConditionalExpression() throws IOException {
     //true and 7 are not of the same type
-    checkError("3<4?true:7", "0xA0234");
+    checkError("3<4?true:7", "0xA164");
   }
 
   @Test
   public void testInvalidConditionalExpression2() throws IOException {
-    //3 is not a boolean condition
-    checkError("3?true:false", "0xA0234");
+    setupTypeCheck();
+    ASTExpression astex = parseExpression("3?true:false");
+    setFlatExpressionScope(astex);
+
+    Log.getFindings().clear();
+    getTypeCalculator().typeOf(astex);
+    assertEquals("0xA165", getFirstErrorCode());
   }
+
   /**
    * test BooleanNotExpression
    */
