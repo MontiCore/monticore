@@ -463,7 +463,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if (!conditionResult.isObscureType() && !isBoolean(conditionResult)) {
       // if obscure then error already logged
       // else condition must be boolean
-      Log.error("0xA165 Expected '" + BasicSymbolsMill.BOOLEAN + "' but provided '" + conditionResult.print() + "'",
+      Log.error("0xA0165 Expected '" + BasicSymbolsMill.BOOLEAN + "' but provided '" + conditionResult.print() + "'",
         expr.getCondition().get_SourcePositionStart(), expr.getCondition().get_SourcePositionEnd());
     }
 
@@ -475,7 +475,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       SymTypeExpression inner = getBinaryNumericPromotion(trueResult, falseResult);
       if (inner.isObscureType()) {
         // binary numeric promotion does not log error
-        Log.error("0xA164 Resulting types '" + trueResult + "' and '" + falseResult + "' of operator ? are incompatible",
+        Log.error("0xA0164 Resulting types '" + trueResult + "' and '" + falseResult + "' of operator ? are incompatible",
           expr.getTrueExpression().get_SourcePositionStart(), expr.getFalseExpression().get_SourcePositionEnd());
       }
       return inner;
