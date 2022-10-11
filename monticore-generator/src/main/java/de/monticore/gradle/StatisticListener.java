@@ -62,13 +62,6 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
   @Override
   public void projectsEvaluated(Gradle gradle) {
     Log.debug("projectsEvaluated", this.getClass().getName());
-    System.out.println("Performance statistic of this build are tracked by the Software-Engineering Chair at RWTH Aachen. \n" +
-        "The data will help to improve Monticore. \n\n" +
-        "You can Opt-Out by setting \n" +
-        "\t de.monticore.gradle.performance_statistic=false\n" +
-        "in <gradle.properties>"
-    );
-
     this.data = new StatisticData();
     this.data.setProject(gradle.getRootProject());
     this.data.setGradle(gradle);
@@ -88,9 +81,9 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
       if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
         System.out.println(data.toString());
       }
-      NetworkHandler.sendReport(data.toString());
+      StatisticsHandler.storeReport(data.toString(), StatisticsHandler.ReportType.GradleReport);
     } else{
-      Log.info("<projectStartTime> was null. No report sent.", this.getClass().getName());
+      Log.info("<projectStartTime> was null. ", this.getClass().getName());
     }
   }
 

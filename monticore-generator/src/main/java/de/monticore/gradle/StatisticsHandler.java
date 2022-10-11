@@ -2,20 +2,32 @@ package de.monticore.gradle;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class NetworkHandler {
+public class StatisticsHandler {
+  public enum ReportType { GradleReport, JarReport }
 
-  private static void sendRequest(URL url, String data) throws IOException {
+  protected static String getStatType(ReportType type){
+    String result = "";
+    switch(type){
+      case GradleReport:
+        result = "MC_GRADLE_JSON";
+        break;
+      case JarReport:
+        result = "MC_JAR_JSON";
+        break;
+    }
+    return result;
+  }
+
+  private static void sendRequest(URL url, String data, ReportType type) throws IOException {
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("POST");
-      connection.setRequestProperty("STAT_TYPE", "MC_GRADLE_JSON");
+      connection.setRequestProperty("STAT_TYPE", getStatType(type));
       connection.setRequestProperty("Content-Type", "text/html");
 
       connection.setDoOutput(true);
-      // connection.setDoInput(false);
       connection.setRequestProperty("Content-Length", Integer.toString(data.length()));
       connection.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
       connection.setConnectTimeout(200);
@@ -27,16 +39,10 @@ public class NetworkHandler {
       }
   }
 
-  public static void sendReport(String report){
+  public static void storeReport(String report, ReportType type) {
     try {
-      sendRequest(new URL("https://build.se.rwth-aachen.de:8844"), report);
-      System.out.println("Performance Statistic Successful");
-    } catch (Exception e) {
-      System.err.println("Failure Sending Performance Statistic. \n"
-          + e.getMessage());    }
+      sendRequest(new URL("https://" + "build.se.rwth-aachen.de" + ":8844"), report, type);
+    } catch (Exception ignored) {
+    }
   }
-
-  /* public static void sendError(Exception e){
-
-  } */
 }

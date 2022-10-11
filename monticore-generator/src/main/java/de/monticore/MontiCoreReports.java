@@ -11,6 +11,7 @@ import de.monticore.generating.templateengine.reporting.reporter.*;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symboltable.serialization.json.JsonElement;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class MontiCoreReports implements ReportManagerFactory {
   protected MCPath templatePath;
 
   protected Function<Path, Path> reportPathOutput;
+  protected JsonElement mcConfig;
   
   protected List<AReporter> reporters = new ArrayList<>();
 
@@ -43,12 +45,13 @@ public class MontiCoreReports implements ReportManagerFactory {
       String outputDirectory,
       String reportDiretory,
       Function<Path, Path> reportPathOutput, MCPath handwrittenPath,
-      MCPath templatePath) {
+      MCPath templatePath, JsonElement mcConfig) {
     this.outputDirectory = outputDirectory;
     this.reportDirectory = reportDiretory;
     this.handwrittenPath = handwrittenPath;
     this.templatePath = templatePath;
     this.reportPathOutput = reportPathOutput;
+    this.mcConfig = mcConfig;
   }
 
   /**
@@ -91,6 +94,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, lowerCaseName);
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
+    StatisticsReporter statistics = new StatisticsReporter(mcConfig, this.reportDirectory, lowerCaseName, repository, traverserSummary);
     IncGenGradleReporterFix gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, reportPathOutput, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
@@ -110,6 +114,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     reports.addReportEventHandler(artifactGV); // 16_ArtifactGv
     reports.addReportEventHandler(ioReporter); // 18_InvolvedFiles
     reports.addReportEventHandler(finishReporter); // 19_Successful
+    reports.addReportEventHandler(statistics);  // 20_Statistics
     reports.addReportEventHandler(objDiagram); // ObjectDiagram
     //reports.addReportEventHandler(incGenCheck); // IncGenCheck
     reports.addReportEventHandler(gradleReporter);
@@ -131,6 +136,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     reporters.add(artifactGV);
     reporters.add(ioReporter);
     reporters.add(finishReporter);
+    reporters.add(statistics);
     reporters.add(objDiagram);
     reporters.add(gradleReporter);
 
