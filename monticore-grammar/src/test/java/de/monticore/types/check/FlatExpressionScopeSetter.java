@@ -49,13 +49,16 @@ import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._symboltable.IMCFullGenericTypesScope;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor2;
+import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
+import de.monticore.types.mcfunctiontypes._symboltable.IMCFunctionTypesScope;
+import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._symboltable.IMCSimpleGenericTypesScope;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
 public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, LambdaExpressionsVisitor2, BitExpressionsVisitor2,
-    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2, MCArrayTypesVisitor2, MCFullGenericTypesVisitor2, MCCommonLiteralsVisitor2 {
+    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2, MCArrayTypesVisitor2, MCFullGenericTypesVisitor2, MCFunctionTypesVisitor2, MCCommonLiteralsVisitor2 {
 
   private IScope scope;
 
@@ -408,6 +411,13 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
   @Override
   public void visit(ASTMCInnerType node) {
     node.setEnclosingScope((IMCFullGenericTypesScope) scope);
+  }
+
+  /*************************************************MCFUNCTIONTYPES****************************************************/
+
+  @Override
+  public void visit(ASTMCFunctionType node) {
+    node.setEnclosingScope((IMCFunctionTypesScope) scope);
   }
 
   /*************************************************MCARRAYTYPE****************************************************/
