@@ -9,6 +9,7 @@ import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -22,11 +23,15 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -242,7 +247,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(19, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(20, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -256,6 +261,28 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
         method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
   
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testAcceptSuperMethod() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", 1, symbolClassAutomaton);
+    ASTMCType visitorType = mcTypeFacade.createQualifiedType("de.monticore.visitor.ITraverser");
+
+    methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
+    assertEquals(1, methods.size());
+
+    ASTCDMethod method = methods.get(0);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertFalse(method.isEmptyCDParameters());
+    assertEquals(1, method.sizeCDParameters());
+
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertDeepEquals(visitorType, parameter.getMCType());
+    assertEquals("visitor", parameter.getName());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -535,7 +562,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(17, symbolClassState.getCDMethodList().size());
+    assertEquals(18, symbolClassState.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
