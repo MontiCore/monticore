@@ -150,7 +150,7 @@ public abstract class DeriveSymTypeAbstractTest {
         checkErrorsAndFailOnException(expression, Arrays.asList(expectedErrors));
     }
 
-    private String getFirstErrorCode() {
+    protected String getFirstErrorCode() {
         if (Log.getFindings().size() > 0) {
             String firstFinding = Log.getFindings().get(0).getMsg();
             return firstFinding.split(" ")[0];
