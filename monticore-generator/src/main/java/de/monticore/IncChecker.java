@@ -53,7 +53,7 @@ public class IncChecker {
           String inputModelString = line.substring(fileExtensionLength + 1, line.length() - 33);
           String checksum = line.substring(line.length() - 33);
           File inputModelFile = getFile(base, inputModelString);
-          if (!inputModelFile.exists()) { // deleted model -> generate
+          if (!inputModelFile.exists() || !inputModelFile.isFile()) { // deleted model -> generate
             logger.info("Regenerating Code for " + modelName + " : Input Model " + inputModelString + " does no longer exist.");
             return false;
           } else if (!Files.asByteSource(inputModelFile).hash(Hashing.md5()).toString().equals(checksum.trim())) {
