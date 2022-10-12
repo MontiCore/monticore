@@ -19,8 +19,6 @@ component grammar LambdaExpressions
    * Not part of this grammar are Java-like lambdas with codeblocks, e.g.
    * (int x) -> {int y = x + 2; return y;}
    *
-   * The grammar has an extension point for types to be filled when used.
-   *
    * There are also other kinds of expressions defined in the
    * grammars mentioned below. These expression definitions can savely be
    * composed if desired.
