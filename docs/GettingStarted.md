@@ -805,17 +805,17 @@ from a MontiCore grammar. For these Java classes, generated for the
 
 **With Powershell on Windows**
 ```powershell
-javac -cp monticore.jar -sourcepath "src/;out/;hwc/" `
+javac -cp monticore-rt.jar -sourcepath "src/;out/;hwc/" `
                                   src/automata/AutomataTool.java
 ```
 **With Bash on Unix**
 ```bash
-javac -cp monticore.jar -sourcepath "src/:out/:hwc/" \
+javac -cp monticore-rt.jar -sourcepath "src/:out/:hwc/" \
                                   src/automata/AutomataTool.java
 ```
 **With cmd on Windows**
 ```batch
-javac -cp monticore.jar -sourcepath "src/;out/;hwc/" ^
+javac -cp monticore-rt.jar -sourcepath "src/;out/;hwc/" ^
                                   src/automata/AutomataTool.java
 ```
 
