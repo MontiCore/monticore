@@ -27,7 +27,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   protected static final String JSON_KIND = "de.monticore.types.check.SymTypeOfFunction";
 
-  protected static final String JSON_RETURNTYPE = "returnValue";
+  protected static final String JSON_RETURNTYPE = "returnType";
 
   protected static final String JSON_ARGUMENTTYPES = "argumentTypes";
 

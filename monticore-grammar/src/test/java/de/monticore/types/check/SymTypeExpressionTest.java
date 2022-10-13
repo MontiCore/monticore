@@ -354,9 +354,9 @@ public class SymTypeExpressionTest {
     assertTrue(result.isJsonObject());
     JsonObject teFunc2Json = result.getAsJsonObject();
     assertEquals("de.monticore.types.check.SymTypeOfFunction",teFunc2Json.getStringMember("kind"));
-    JsonObject func2returnValue = teFunc2Json.getObjectMember("returnValue");
-    assertEquals("de.monticore.types.check.SymTypePrimitive", func2returnValue.getStringMember( "kind"));
-    assertEquals("int", func2returnValue.getStringMember( "primitiveName"));
+    JsonObject func2returnType = teFunc2Json.getObjectMember("returnType");
+    assertEquals("de.monticore.types.check.SymTypePrimitive", func2returnType.getStringMember( "kind"));
+    assertEquals("int", func2returnType.getStringMember( "primitiveName"));
     List<JsonElement> func2Arguments = teFunc2Json.getArrayMember("argumentTypes");
     assertEquals(2, func2Arguments.size());
     assertEquals("de.monticore.types.check.SymTypePrimitive", func2Arguments.get(0).getAsJsonObject().getStringMember( "kind"));
