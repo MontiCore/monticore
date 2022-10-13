@@ -80,13 +80,15 @@ public class SymTypeOfFunction extends SymTypeExpression {
     r.append("(");
     for (int i = 0; i < argumentTypes.size(); i++) {
       r.append(argumentTypes.get(i).print());
-      if (i == argumentTypes.size() - 1 && isElliptic()) {
+      if(i < argumentTypes.size() - 1){
+        r.append(", ");
+      } else if (isElliptic()) {
         r.append("...");
       }
-      r.append(" -> ");
     }
-    r.append(returnType.print());
     r.append(")");
+    r.append(" -> ");
+    r.append(returnType.print());
     return r.toString();
   }
 
@@ -96,13 +98,15 @@ public class SymTypeOfFunction extends SymTypeExpression {
     r.append("(");
     for (int i = 0; i < argumentTypes.size(); i++) {
       r.append(argumentTypes.get(i).printFullName());
-      if (i == argumentTypes.size() - 1 && isElliptic()) {
+      if(i < argumentTypes.size() - 1){
+        r.append(", ");
+      } else if (isElliptic()) {
         r.append("...");
       }
-      r.append(" -> ");
     }
-    r.append(returnType.printFullName());
     r.append(")");
+    r.append(" -> ");
+    r.append(returnType.printFullName());
     return r.toString();
   }
 

@@ -32,37 +32,37 @@ public class SynthesizeSymTypeFromMCcFunctionTypesTest {
 
   @Test
   public void symTypeFromAST_TestRunnable() throws IOException {
-    testSynthesizePrintCompare("(void)");
+    testSynthesizePrintCompare("() -> void");
   }
 
   @Test
   public void symTypeFromAST_TestSimpleFunction1() throws IOException {
-    testSynthesizePrintCompare("(int -> int)");
+    testSynthesizePrintCompare("(int) -> int");
   }
 
   @Test
   public void symTypeFromAST_TestSimpleFunction2() throws IOException {
-    testSynthesizePrintCompare("(long -> int -> int)");
+    testSynthesizePrintCompare("(long, int) -> int");
   }
 
   @Test
   public void symTypeFromAST_TestEllipticFunction1() throws IOException {
-    testSynthesizePrintCompare("(int... -> int)");
+    testSynthesizePrintCompare("(int...) -> int");
   }
 
   @Test
   public void symTypeFromAST_TestEllipticFunction2() throws IOException {
-    testSynthesizePrintCompare("(long -> int... -> void)");
+    testSynthesizePrintCompare("(long, int...) -> void");
   }
 
   @Test
   public void symTypeFromAST_TestHigherOrderFunction1() throws IOException {
-    testSynthesizePrintCompare("((int -> void) -> (int))");
+    testSynthesizePrintCompare("((int) -> void) -> () -> int");
   }
 
   @Test
   public void symTypeFromAST_TestHigherOrderEllipticFunction() throws IOException {
-    testSynthesizePrintCompare("(int -> ((int -> long... -> ((int)))... -> void))");
+    testSynthesizePrintCompare("(int) -> (() -> (int, long...) -> int...) -> void");
   }
 
   protected ASTMCFunctionType parse(String mcTypeStr) throws IOException {

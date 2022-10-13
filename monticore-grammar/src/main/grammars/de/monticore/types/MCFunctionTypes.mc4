@@ -7,7 +7,7 @@ import de.monticore.types.*;
 
 /**
  * This grammar introduces function types
- * such as (int -> int), (String -> void), ((long -> int) -> int)
+ * such as int -> int, (String -> int) -> void, (boolean, int) -> int
  * 
  * This grammar is part of a hierarchy of types, namely
  * * types.MCBasicTypes.mc4       
@@ -25,12 +25,17 @@ component grammar MCFunctionTypes
    * 
    *  Any number of arguments is possible.
   */
+  MCFunctionParameters =
+    "(" (
+    (MCType || ",")+
+    (isElliptic:"...")?
+    )? ")"
+  ;
 
   MCFunctionType implements MCType =
-       "("
-       (MCType "->")*
-       (MCType isElliptic:"..." "->")?
-       MCReturnType
-       ")";
+    <rightassoc>
+    MCFunctionParameters "->"
+    MCReturnType
+  ;
 
 }

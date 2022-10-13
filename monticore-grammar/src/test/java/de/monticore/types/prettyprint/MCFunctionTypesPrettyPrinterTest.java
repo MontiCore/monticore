@@ -26,37 +26,37 @@ public class MCFunctionTypesPrettyPrinterTest {
 
   @Test
   public void testMCBasicTypeArgument() throws IOException {
-    testPrintParseCompare("(int -> int)");
+    testPrintParseCompare("(int) -> int");
   }
 
   @Test
   public void testMCBasicTypeArgument2() throws IOException {
-    testPrintParseCompare("(long -> int -> void)");
+    testPrintParseCompare("(long, int) -> void");
   }
 
   @Test
   public void testSupplier() throws IOException {
-    testPrintParseCompare("(int)");
+    testPrintParseCompare("() -> int");
   }
 
   @Test
   public void testElliptic1() throws IOException {
-    testPrintParseCompare("(int -> int... -> int)");
+    testPrintParseCompare("(int, int...) -> int");
   }
 
   @Test
   public void testElliptic2() throws IOException {
-    testPrintParseCompare("(int... -> void)");
+    testPrintParseCompare("(int...) -> void");
   }
 
   @Test
   public void testHigherOrderFunction1() throws IOException {
-    testPrintParseCompare("((int -> void) -> (int -> long))");
+    testPrintParseCompare("((int) -> void) -> (int) -> long");
   }
 
   @Test
   public void testHigherOrderFunction2() throws IOException {
-    testPrintParseCompare("(long -> ((long -> int) -> int) -> ((long -> void) -> int))");
+    testPrintParseCompare("(long, ((long) -> int) -> int) -> ((long) -> void) -> int");
   }
 
   protected ASTMCFunctionType parse(String mcTypeStr) throws IOException {
