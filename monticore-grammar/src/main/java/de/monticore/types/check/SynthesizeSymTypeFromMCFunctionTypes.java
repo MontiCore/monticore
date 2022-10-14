@@ -36,7 +36,7 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
     SymTypeExpression symType = null;
 
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
-    for (ASTMCType arg : functionType.getMCTypeList()) {
+    for (ASTMCType arg : functionType.getMCFunctionParameters().getMCTypeList()) {
       getTypeCheckResult().reset();
       if (null != arg) {
         arg.accept(getTraverser());
@@ -68,7 +68,7 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
     symType = SymTypeExpressionFactory.createFunction(
         returnArgument,
         arguments,
-        functionType.isPresentIsElliptic()
+        functionType.getMCFunctionParameters().isPresentIsElliptic()
     );
     getTypeCheckResult().setResult(symType);
     functionType.setDefiningSymbol(symType.getTypeInfo());

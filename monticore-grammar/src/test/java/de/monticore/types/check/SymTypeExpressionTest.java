@@ -186,10 +186,10 @@ public class SymTypeExpressionTest {
     assertEquals("? super Human", teLowerBound.print());
     assertEquals("?",teWildcard.print());
     assertEquals("java.util.Map<? extends int,?>", teMap3.printFullName());
-    assertEquals("(void)", teFunc1.print());
-    assertEquals("(double -> int -> int)", teFunc2.print());
-    assertEquals("((double -> int -> int) -> (void))", teFunc3.print());
-    assertEquals("(double -> int... -> void)", teFunc4.print());
+    assertEquals("() -> void", teFunc1.print());
+    assertEquals("(double, int) -> int", teFunc2.print());
+    assertEquals("((double, int) -> int) -> () -> void", teFunc3.print());
+    assertEquals("(double, int...) -> void", teFunc4.print());
   }
 
   @Test
@@ -354,9 +354,9 @@ public class SymTypeExpressionTest {
     assertTrue(result.isJsonObject());
     JsonObject teFunc2Json = result.getAsJsonObject();
     assertEquals("de.monticore.types.check.SymTypeOfFunction",teFunc2Json.getStringMember("kind"));
-    JsonObject func2returnValue = teFunc2Json.getObjectMember("returnValue");
-    assertEquals("de.monticore.types.check.SymTypePrimitive", func2returnValue.getStringMember( "kind"));
-    assertEquals("int", func2returnValue.getStringMember( "primitiveName"));
+    JsonObject func2returnType = teFunc2Json.getObjectMember("returnType");
+    assertEquals("de.monticore.types.check.SymTypePrimitive", func2returnType.getStringMember( "kind"));
+    assertEquals("int", func2returnType.getStringMember( "primitiveName"));
     List<JsonElement> func2Arguments = teFunc2Json.getArrayMember("argumentTypes");
     assertEquals(2, func2Arguments.size());
     assertEquals("de.monticore.types.check.SymTypePrimitive", func2Arguments.get(0).getAsJsonObject().getStringMember( "kind"));
@@ -510,16 +510,16 @@ public class SymTypeExpressionTest {
     assertEquals("void",tExpr.print());
 
     SymTypeOfFunction tFunc1 = SymTypeExpressionFactory.createFunction(tVoid);
-    assertEquals("(void)", tFunc1.print());
+    assertEquals("() -> void", tFunc1.print());
 
     SymTypeOfFunction tFunc2 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(tFunc1, tFunc1));
-    assertEquals("((void) -> (void) -> void)", tFunc2.print());
+    assertEquals("(() -> void, () -> void) -> void", tFunc2.print());
 
     SymTypeOfFunction tFunc3 = SymTypeExpressionFactory.createFunction(tVoid, tFunc1, tFunc1);
-    assertEquals("((void) -> (void) -> void)", tFunc3.print());
+    assertEquals("(() -> void, () -> void) -> void", tFunc3.print());
 
     SymTypeOfFunction tFunc4 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(teDouble, teInt), true);
-    assertEquals("(double -> int... -> void)", tFunc4.print());
+    assertEquals("(double, int...) -> void", tFunc4.print());
   }
 
   @Test

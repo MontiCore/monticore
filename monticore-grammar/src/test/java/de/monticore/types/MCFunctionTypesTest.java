@@ -29,64 +29,81 @@ public class MCFunctionTypesTest {
 
   @Test
   public void testRunnableFunctionType() throws IOException {
-    ASTMCFunctionType type = parse("(void)");
+    ASTMCFunctionType type = parse("() -> void");
     assertEquals("void",
-        type.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertFalse(type.isPresentIsElliptic());
-    assertEquals(0, type.getMCTypeList().size());
+        type.getMCReturnType()
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
+    assertEquals(0, type.getMCFunctionParameters().getMCTypeList().size());
   }
 
   @Test
   public void testSupplierFunctionType() throws IOException {
-    ASTMCFunctionType type = parse("(int)");
+    ASTMCFunctionType type = parse("() -> int");
     assertEquals("int",
-        type.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertFalse(type.isPresentIsElliptic());
-    assertEquals(0, type.getMCTypeList().size());
+        type.getMCReturnType()
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
+    assertEquals(0, type.getMCFunctionParameters().getMCTypeList().size());
   }
 
   @Test
   public void testWithInputFunctionType() throws IOException {
-    ASTMCFunctionType type = parse("(int -> long -> void)");
+    ASTMCFunctionType type = parse("(int, long) -> void");
     assertEquals("void",
-        type.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertFalse(type.isPresentIsElliptic());
-    assertEquals(2, type.getMCTypeList().size());
+        type.getMCReturnType()
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
+    assertEquals(2, type.getMCFunctionParameters().getMCTypeList().size());
     assertEquals("int",
-        type.getMCType(0).printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+        type.getMCFunctionParameters().getMCType(0)
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
     assertEquals("long",
-        type.getMCType(1).printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+        type.getMCFunctionParameters().getMCType(1)
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
   }
 
   @Test
   public void testEllipticFunctionType1() throws IOException {
-    ASTMCFunctionType type = parse("(long... -> void)");
+    ASTMCFunctionType type = parse("(long...) -> void");
     assertEquals("void",
-        type.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertTrue(type.isPresentIsElliptic());
-    assertEquals(1, type.getMCTypeList().size());
+        type.getMCReturnType()
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+    assertTrue(type.getMCFunctionParameters().isPresentIsElliptic());
+    assertEquals(1, type.getMCFunctionParameters().getMCTypeList().size());
     assertEquals("long",
-        type.getMCType(0).printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+        type.getMCFunctionParameters().getMCType(0)
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
   }
 
   @Test
   public void testEllipticFunctionType2() throws IOException {
-    ASTMCFunctionType type = parse("(int -> long... -> long)");
+    ASTMCFunctionType type = parse("(int, long...) -> long");
     assertEquals("long",
-        type.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertTrue(type.isPresentIsElliptic());
-    assertEquals(2, type.getMCTypeList().size());
+        type.getMCReturnType()
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+    assertTrue(type.getMCFunctionParameters().isPresentIsElliptic());
+    assertEquals(2, type.getMCFunctionParameters().getMCTypeList().size());
     assertEquals("int",
-        type.getMCType(0).printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+        type.getMCFunctionParameters().getMCType(0)
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
     assertEquals("long",
-        type.getMCType(1).printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+        type.getMCFunctionParameters().getMCType(1)
+            .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
   }
 
   @Test
-  public void testHigherOrderFunctionType() throws IOException {
-    ASTMCFunctionType type = parse("((long -> void) -> (int -> long))");
-    assertFalse(type.isPresentIsElliptic());
-    assertEquals(1, type.getMCTypeList().size());
+  public void testHigherOrderFunctionType1() throws IOException {
+    ASTMCFunctionType type = parse("() -> () -> void");
+    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
+    assertEquals(0, type.getMCFunctionParameters().getMCTypeList().size());
+  }
+
+  @Test
+  public void testHigherOrderFunctionType2() throws IOException {
+    ASTMCFunctionType type = parse("((long) -> void) -> (int) -> long");
+    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
+    assertEquals(1, type.getMCFunctionParameters().getMCTypeList().size());
   }
 
   protected ASTMCFunctionType parse(String mcTypeStr) throws IOException {
