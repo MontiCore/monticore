@@ -191,6 +191,7 @@ Some snipets for operators defined in expressions:
     SetExp:        .isin.  .in.  union  intersect  setand  setor
                    { item | specifier }
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
+    LambdaExp:     i -> i  (a, b) -> a+b
     SIUnits:       5km  3,2m/s  22l  2.400J  
     JavaClass:     this  .[.]  (.).  super  .instanceof.
 
@@ -248,6 +249,13 @@ as they allow math oriented style of specification.
 * E.g.: `val ?: 42`     equals to   `val.isPresent() ? val.get() : 42`
 * `x ?>= y` equals `x.isPresent() ? x.get() >= y : false` 
 * This grammar resides in the [MontiCore/OCL][OCL] project.
+
+
+### [LambdaExpressions.mc4](expressions/LambdaExpressions.mc4) (beta)
+* This grammar defines lambda expressions.
+Lambda expression define anonymous functions.
+* This is a subset of Java Expressions
+and allow for a more functional programming style (see e.g. Haskell).
 
 
 ### [SIUnits.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
