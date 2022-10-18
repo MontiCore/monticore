@@ -253,9 +253,11 @@ as they allow math oriented style of specification.
 
 ### [LambdaExpressions.mc4](expressions/LambdaExpressions.mc4) (beta)
 * This grammar defines lambda expressions.
-Lambda expression define anonymous functions.
-* This is a subset of Java Expressions
-and allow for a more functional programming style (see e.g. Haskell).
+Lambda expression define anonymous functions that can be passed around and evaluated 
+through application on appropriate arguments.
+* Lambda expressions are fully typed (see e.g. Haskell) and can be nested.
+* This is only the subset of Java's lambda expressions that allows to define 
+a functional programming style (preventing side effects).
 
 
 ### [SIUnits.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
