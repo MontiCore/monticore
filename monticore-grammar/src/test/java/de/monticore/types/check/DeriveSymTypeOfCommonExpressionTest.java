@@ -734,6 +734,13 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   }
 
   @Test
+  public void testInvalidCallExpressionWithMissingNameAndNotComposedOfCallback() throws IOException {
+    // Expression (2 + 3)() and all other Expressions in front of brackets are parsable
+    init_advanced();
+    checkError("(2 + 3)()", "0xA1237");
+  }
+
+  @Test
   public void testInvalidCallExpressionWithInvalidQualifiedName() throws IOException {
     //method isInt() is not in the specified scope -> method cannot be resolved
     init_advanced();

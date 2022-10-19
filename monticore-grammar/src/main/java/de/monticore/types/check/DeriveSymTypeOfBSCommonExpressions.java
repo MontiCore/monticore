@@ -10,7 +10,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.*;
-import de.monticore.symboltable.ISymbol;
+import de.monticore.types.check.helpers.*;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -23,6 +23,20 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
 
   protected CommonExpressionsTraverser traverser;
 
+  protected SubExprNameExtractor subExprNameExtractor;
+
+  protected DefiningSymbolSetter definingSymbolSetter;
+
+  public DeriveSymTypeOfBSCommonExpressions() {
+    this(new SubExprNameExtractor4CommonExpressions(), new DefiningSymbolSetter4CommonExpressions());
+  }
+
+  public DeriveSymTypeOfBSCommonExpressions(SubExprNameExtractor subExprNameExtractor,
+                                            DefiningSymbolSetter definingSymbolSetter) {
+    this.subExprNameExtractor = subExprNameExtractor;
+    this.definingSymbolSetter = definingSymbolSetter;
+  }
+
   @Override
   public CommonExpressionsTraverser getTraverser() {
     return traverser;
@@ -31,6 +45,22 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   @Override
   public void setTraverser(CommonExpressionsTraverser traverser) {
     this.traverser = traverser;
+  }
+
+  public SubExprNameExtractor getSubExprNameExtractor() {
+    return subExprNameExtractor;
+  }
+
+  public void setSubExprNameExtractor(SubExprNameExtractor subExprNameExtractor) {
+    this.subExprNameExtractor = subExprNameExtractor;
+  }
+
+  public DefiningSymbolSetter getDefiningSymbolSetter() {
+    return definingSymbolSetter;
+  }
+
+  public void setDefiningSymbolSetter(DefiningSymbolSetter definingSymboLSetter) {
+    this.definingSymbolSetter = definingSymboLSetter;
   }
 
   @Override
@@ -529,39 +559,15 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   /**
-   * Checks whether the expression has the form of a valid qualified java name.
-   */
-  protected boolean isQualifiedName(ASTFieldAccessExpression expr) {
-    ASTExpression currentExpr = expr;
-
-    // Iterate over subexpressions to check whether they are of the form NameExpression ("." FieldAccessExpression)*
-    // Therefore, NameExpression will terminate the traversal, indicating that the expression is a valid name.
-    // If the pattern is broken by another expression, then the expression is no valid name, and we terminate.
-    while(!(currentExpr instanceof ASTNameExpression)) {
-      if(currentExpr instanceof ASTFieldAccessExpression) {
-        currentExpr = ((ASTFieldAccessExpression) currentExpr).getExpression();
-      } else {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Checks whether the expression has the form of a valid qualified, or unqualified, java name.
-   */
-  protected boolean isName(ASTExpression expr) {
-    return expr instanceof ASTNameExpression ||
-      (expr instanceof ASTFieldAccessExpression && isQualifiedName((ASTFieldAccessExpression) expr));
-  }
-
-  /**
    * We use traverse to collect the result of the inner part of the expression and calculate the result for the whole expression
    */
   @Override
   public void traverse(ASTFieldAccessExpression expr) {
-    if(isQualifiedName(expr) && expr.getEnclosingScope() instanceof IBasicSymbolsScope) {
-      calculateNamingChainFieldAccess(expr);
+    SubExprNameExtractionResult extractedNames = getSubExprNameExtractor().calculateNameParts(expr);
+
+    if(extractedNames.resultIsValidName() && expr.getEnclosingScope() instanceof IBasicSymbolsScope) {
+      List<ExprToNamePair> nameParts = extractedNames.getNamePartsIfValid().get();
+      calculateNamingChainFieldAccess(expr, nameParts);
     } else {
       calculateArithmeticFieldAccessExpression(expr);
     }
@@ -575,40 +581,32 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * @param expr The only valid sub expressions of the FieldAccessExpression are other FieldAccessExpressions, and
    *             a {@link ASTNameExpression} that is the end of the field access chain.
    */
-  protected void calculateNamingChainFieldAccess(ASTFieldAccessExpression expr) {
-    Optional<List<ASTExpression>> astNamePartsOpt = collectSubExpressions(expr);
+  protected void calculateNamingChainFieldAccess(ASTFieldAccessExpression expr,
+                                                 List<ExprToNamePair> nameParts) {
 
-    if (!astNamePartsOpt.isPresent()) {
-      Log.error("0x0xA2310 (Internal error) The qualified name parts of a FieldAccessExpression can not be " +
-        "calculated as the field access expression is no qualified name. " + expr.get_SourcePositionStart().toString());
-      this.getTypeCheckResult().reset();
-      this.getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
 
-    } else {
-      // We will incrementally try to build our result:
-      // We will start with the first name part and check whether it resolves to an entity.
-      // Then we will check whether further field accesses are (nested) accesses on that entity's members.
-      // When there is no such entity, or it does not have a member we were looking for, then we try to resolve the
-      // qualified name up to the part of the name where we currently are.
-      List<ASTExpression> astNameParts = astNamePartsOpt.get();
+    // We will incrementally try to build our result:
+    // We will start with the first name part and check whether it resolves to an entity.
+    // Then we will check whether further field accesses are (nested) accesses on that entity's members.
+    // When there is no such entity, or it does not have a member we were looking for, then we try to resolve the
+    // qualified name up to the part of the name where we currently are.
 
-      getTypeCheckResult().reset();
-      for(int i = 0; i < astNameParts.size(); i++) {
-        if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
-          calculateFieldAccess((ASTFieldAccessExpression) astNameParts.get(i), true);
-        } else {
-          calculatedQualifiedEntity(astNameParts.subList(0, i + 1));
-        }
+    getTypeCheckResult().reset();
+    for(int i = 0; i < nameParts.size(); i++) {
+      if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
+        calculateFieldAccess((ASTFieldAccessExpression) nameParts.get(i).getExpression(), true);
+      } else {
+        calculatedQualifiedEntity(nameParts.subList(0, i + 1));
       }
+    }
 
-      if(!getTypeCheckResult().isPresentResult() || getTypeCheckResult().getResult().isObscureType()) {
-        logError("0xA0241", expr.get_SourcePositionStart());
-      }
+    if(!getTypeCheckResult().isPresentResult() || getTypeCheckResult().getResult().isObscureType()) {
+      logError("0xA0241", expr.get_SourcePositionStart());
     }
   }
 
   /**
-   * Calculate the type result of FieldAccessExpressions that do not represent qualified names.
+   * Calculate the type result of FieldAccessExpressions that do not represent qualified names. (E.g. `new Foo().bar`)
    */
   protected void calculateArithmeticFieldAccessExpression(ASTFieldAccessExpression expr) {
     expr.getExpression().accept(getTraverser());
@@ -624,7 +622,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    *              is invalid and the calculation of a result is not possible.
    */
   protected void calculateFieldAccess(ASTFieldAccessExpression expr,
-                                                 boolean quiet) {
+                                      boolean quiet) {
     TypeCheckResult fieldOwner = getTypeCheckResult().copy();
     SymTypeExpression fieldOwnerExpr = fieldOwner.getResult();
     TypeSymbol fieldOwnerSymbol = fieldOwnerExpr.getTypeInfo();
@@ -714,58 +712,20 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   /**
-   * Transforms {@link ASTNameExpression}s and {@link ASTFieldAccessExpression}s into the names they represent (for
-   * field access expressions it takes the name of the accessed field/entity).
-   */
-  protected String astNameToString(ASTExpression expression) {
-    if(expression instanceof ASTNameExpression) {
-      return ((ASTNameExpression) expression).getName();
-    } else if (expression instanceof ASTFieldAccessExpression) {
-      return ((ASTFieldAccessExpression) expression).getName();
-    } else {
-      throw new IllegalArgumentException();
-    }
-  }
-
-  /**
-   * If the FieldAccessExpression represents a qualified name, then this method returns its name parts.
-   * Else an empty optional is returned.
-   */
-  protected Optional<List<ASTExpression>> collectSubExpressions(ASTFieldAccessExpression expr) {
-    ASTExpression currentExpr = expr;
-    List<ASTExpression> nameParts = new LinkedList<>();
-
-    while(!(currentExpr instanceof ASTNameExpression)) {
-      if(currentExpr instanceof ASTFieldAccessExpression) {
-        ASTFieldAccessExpression curExpr = (ASTFieldAccessExpression) currentExpr;
-        nameParts.add(0, curExpr);
-
-        currentExpr = curExpr.getExpression();  // Advance iteration
-      } else {
-        return Optional.empty();
-      }
-    }
-
-    // Do not forget to add the terminal NameExpression
-    nameParts.add(0, currentExpr);
-    return Optional.of(nameParts);
-  }
-
-  /**
    * Tries to resolve the given name parts to a variable, type variable, or type and if a symbol is found, then
    * it(s type) is set as the current type check result.
    * If no symbol is found, then nothing happens (no error logged, no altering of the type check result).
    * If multiple fields are found, then the result is set to obscure, and an error is logged.
    * Variables take precedence over types variables that take precedence over
    * types.
-   * @param astNameParts Expressions that represent a qualified identification of a {@link VariableSymbol},
+   * @param nameParts Expressions that represent a qualified identification of a {@link VariableSymbol},
    *                  {@link TypeVarSymbol}, or {@link TypeSymbol}. Therefore, the list that must contain a
    *                  {@code NameExpression} at the beginning, followed only by {@code FieldAccessExpression}s.
    */
-  protected void calculatedQualifiedEntity(List<ASTExpression> astNameParts) {
-    List<String> nameParts = astNameParts.stream().map(this::astNameToString).collect(Collectors.toList());
-    String qualName = String.join(".", nameParts);
-    ASTExpression lastExpr = astNameParts.get(astNameParts.size() - 1);
+  protected void calculatedQualifiedEntity(List<ExprToNamePair> nameParts) {
+    List<String> namePartStrings = nameParts.stream().map(ExprToNamePair::getName).collect(Collectors.toList());
+    String qualName = String.join(".", namePartStrings);
+    ASTExpression lastExpr = nameParts.get(nameParts.size() - 1).getExpression();
 
     List<VariableSymbol> fieldSymbols = getScope(lastExpr.getEnclosingScope()).resolveVariableMany(qualName);
     Optional<TypeSymbol> typeSymbolOpt = getScope(lastExpr.getEnclosingScope()).resolveType(qualName);
@@ -778,7 +738,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       } else {
         VariableSymbol var = fieldSymbols.get(0);
-        trySetDefiningSymbolOrError(lastExpr, var);
+        definingSymbolSetter.setDefiningSymbol(lastExpr, var);
         SymTypeExpression type = var.getType();
         getTypeCheckResult().setField();
         getTypeCheckResult().setResult(type);
@@ -787,33 +747,16 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     } else if (typeVarOpt.isPresent()) {
       TypeVarSymbol typeVar = typeVarOpt.get();
       SymTypeExpression type = SymTypeExpressionFactory.createTypeVariable(typeVar);
-      trySetDefiningSymbolOrError(lastExpr, typeVar);
+      definingSymbolSetter.setDefiningSymbol(lastExpr, typeVar);
       getTypeCheckResult().setType();
       getTypeCheckResult().setResult(type);
 
     } else if (typeSymbolOpt.isPresent()) {
       TypeSymbol typeSymbol = typeSymbolOpt.get();
       SymTypeExpression type = SymTypeExpressionFactory.createTypeExpression(typeSymbol);
-      trySetDefiningSymbolOrError(lastExpr, typeSymbol);
+      definingSymbolSetter.setDefiningSymbol(lastExpr, typeSymbol);
       getTypeCheckResult().setType();
       getTypeCheckResult().setResult(type);
-    }
-  }
-
-  /**
-   * If {@code expr} is of type {@link ASTNameExpression}, {@link ASTFieldAccessExpression}, or
-   * {@link ASTCallExpression}, then {@code definingSymbol} is set as its defining symbol. Else, an error is logged.
-   */
-  protected void trySetDefiningSymbolOrError(ASTExpression expr, ISymbol definingSymbol) {
-    if(expr instanceof ASTNameExpression) {
-      ((ASTNameExpression) expr).setDefiningSymbol(definingSymbol);
-    } else if(expr instanceof ASTFieldAccessExpression) {
-      ((ASTFieldAccessExpression) expr).setDefiningSymbol(definingSymbol);
-    } else if (expr instanceof ASTCallExpression) {
-      ((ASTCallExpression) expr).setDefiningSymbol(definingSymbol);
-    } else {
-      Log.error("0xA2306 (Internal error) tried to set the symbol on an Expression that is none of the following:" +
-        "ASTNameExpression, ASTFieldAccessExpression, ASTCallExpression.");
     }
   }
 
@@ -822,10 +765,25 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    */
   @Override
   public void traverse(ASTCallExpression expr) {
-    if (isName(expr.getExpression()) && expr.getEnclosingScope() instanceof IBasicSymbolsScope) {
-      calculateNamingChainCallExpression(expr);
+    SubExprNameExtractionResult extractedNames = getSubExprNameExtractor().calculateNameParts(expr.getExpression());
+
+    Optional<String> methodName = extractedNames.getLastName();
+
+    if (methodName.isEmpty()) {
+      // We do not have any method name. The expression looks like `(2+3)()` and is parsed as a CallExpression that has
+      // the syntactic form of `CallExpression = Expression Arguments;`
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      logError("0xA1237", expr.get_SourcePositionStart());
+      return;
+    }
+
+    List<SymTypeExpression> arguments = calculateArguments(expr, methodName.get());
+
+    if (extractedNames.resultIsValidName() && expr.getEnclosingScope() instanceof IBasicSymbolsScope) {
+      calculateNamingChainCallExpression(expr, extractedNames.getNamePartsIfValid().get(), arguments);
     } else {
-      calculateArithmeticCallExpression(expr);
+      calculateArithmeticCallExpression(expr, methodName.get(), extractedNames.getNamePartsRaw(), arguments);
     }
   }
 
@@ -835,33 +793,19 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * {@code localField.innerField.instanceMethod()}). But not:
    * {@code pac.kage.Type.staticMethod().innerField.instanceMethod()}, as here <i>instanceMethod</i> is not only
    * qualified by names, but it is based on the access of a value returned by a CallExpression.
-   * @param expr The only valid sub expressions of the CallExpression are FieldAccessExpressions, or a
-   *             {@link ASTNameExpression} that is the leaf of the field access chain, or alternatively defines a local
-   *             method call ({@code localMethod("foo")}.
+   *
+   * @param expr The call expression itself
+   * @param nameParts The name parts of the method in their order of appearance. Provide both their AST version, and
+   *                  their String version!
+   * @param argTypes the types of the arguments of the method
    */
-  protected void calculateNamingChainCallExpression(ASTCallExpression expr) {
-    Optional<List<ASTExpression>> astNamePartsOpt = Optional.empty();
+  protected void calculateNamingChainCallExpression(ASTCallExpression expr,
+                                                    List<ExprToNamePair> nameParts,
+                                                    List<SymTypeExpression> argTypes) {
+    List<ASTExpression> astNameParts = nameParts.stream().map(ExprToNamePair::getExpression).collect(Collectors.toList());
+    List<String> stringNameParts = nameParts.stream().map(ExprToNamePair::getName).collect(Collectors.toList());
 
-    if(expr.getExpression() instanceof ASTFieldAccessExpression) {
-      ASTFieldAccessExpression qualExpr = (ASTFieldAccessExpression) expr.getExpression();
-      astNamePartsOpt = collectSubExpressions(qualExpr);
-    } else if(expr.getExpression() instanceof ASTNameExpression){
-      ASTNameExpression nameExpr = (ASTNameExpression) expr.getExpression();
-      astNamePartsOpt = Optional.of(Collections.singletonList(nameExpr));
-    }
-
-    if(astNamePartsOpt.isEmpty()){
-      Log.error("0x0xA2312 (Internal error) The (qualified) name parts of a CallExpression can not be " +
-        "calculated as the call expression is not defined by a (qualified) name. "
-        + expr.get_SourcePositionStart().toString());
-      this.getTypeCheckResult().reset();
-      this.getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      return;
-    }
-
-    List<ASTExpression> astNameParts = astNamePartsOpt.get();
-    List<String> nameParts = astNameParts.stream().map(this::astNameToString).collect(Collectors.toList());
-    List<SymTypeExpression> args = calculateArguments(expr, nameParts.get(nameParts.size() - 1));
+    String methodName = stringNameParts.get(stringNameParts.size() - 1);
 
     // We will incrementally try to build our result:
     // We will start with the first name part and check whether it resolves to an entity.
@@ -875,16 +819,16 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
         calculateFieldAccess((ASTFieldAccessExpression) astNameParts.get(i), true);
       } else {
-        calculatedQualifiedEntity(astNameParts.subList(0, i + 1));
+        calculatedQualifiedEntity(nameParts.subList(0, i + 1));
       }
     }
 
     if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
-      calculateOwnedCallExpression(expr, args);
+      calculateOwnedCallExpression(expr, methodName, argTypes);
     } else {
       // Check whether we have a fully qualified method. Local method calls will also end in this program branch.
-      String qualName = String.join(".", nameParts);
-      calculateQualifiedMethod(qualName, expr, args);
+      String qualName = String.join(".", stringNameParts);
+      calculateQualifiedMethod(qualName, expr, argTypes);
     }
   }
 
@@ -893,23 +837,26 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * this method calculates the result of {@code "FooBar".substring(0, 3)}, or
    * {@code ( foo ? new LinkedList<String>() : new ArrayList<String>() ).add("bar")}. On the other hand, this method is
    * not suited for {@code pac.kage.Owner.staticMethod()}, or {@code isInt()} (a local Method name).
-   * Use {@link #calculateNamingChainCallExpression(ASTCallExpression)} in these cases.
+   * Use {@link #calculateNamingChainCallExpression(ASTCallExpression, List, List)} in these cases.
    */
-  protected void calculateArithmeticCallExpression(ASTCallExpression expr) {
-    List<SymTypeExpression> args = calculateArguments(expr, astNameToString(expr.getExpression()));
+  protected void calculateArithmeticCallExpression(ASTCallExpression expr,
+                                                   String methodName,
+                                                   List<ExprToOptNamePair> methodCallParts,
+                                                   List<SymTypeExpression> argumentTypes) {
+    if(methodCallParts.size() < 2) {
+      Log.error("0xA1240 (Internal error) call expression just consists of a method name, but the program " +
+        "flow ended in the branch that calculates call expressions on method chains and similar.");
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      return;
+    }
+
     getTypeCheckResult().reset();
     getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
 
-    ASTExpression methodNameExpr = expr.getExpression();
-    if (methodNameExpr instanceof ASTFieldAccessExpression) {
-      // MethodName has the form `... .owner.methodName -> calc the type of the owner and then calculate its method type
-      ((ASTFieldAccessExpression) methodNameExpr).getExpression().accept(getTraverser());
-      calculateOwnedCallExpression(expr, args);
-    } else {
-      Log.debug("Unexpectedly, the call expression was not made up of a field access expression.",
-        "DeriveSTOfBSCommonExpressions#calculateArithmeticCallExpression");
-      calculateOwnedCallExpression(expr, args);
-    }
+    ASTExpression methodOwner = methodCallParts.get(methodCallParts.size() - 2).getExpression();
+    methodOwner.accept(getTraverser());
+    calculateOwnedCallExpression(expr, methodName, argumentTypes);
   }
 
   /**
@@ -917,13 +864,12 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * computed (and is accessible via getTypeCheckResult()), and that the type of its arguments has already been
    * computed.
    */
-  protected void calculateOwnedCallExpression(ASTCallExpression expr, List<SymTypeExpression> args) {
+  protected void calculateOwnedCallExpression(ASTCallExpression expr, String methodName, List<SymTypeExpression> args) {
     if(!getTypeCheckResult().isPresentResult()
       || getTypeCheckResult().getResult().isObscureType()) {
       return;
     }
 
-    String methodName = astNameToString(expr.getExpression());
     SymTypeExpression methodOwnerExpr = getTypeCheckResult().getResult();
     // Filter based on the method modifiers
     List<FunctionSymbol> methodList = getCorrectMethodsFromInnerType(methodOwnerExpr, expr, methodName);

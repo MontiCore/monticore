@@ -85,7 +85,7 @@ public abstract class DeriveSymTypeAbstractTest {
         ASTExpression astex = parseExpression(expression);
         setFlatExpressionScope(astex);
 
-        assertEquals(expectedType, tc.typeOf(astex).print());
+        assertEquals("Wrong return type for expression " + expression, expectedType, tc.typeOf(astex).print());
     }
 
     protected final void checkError(String expression, String expectedError) throws IOException {
