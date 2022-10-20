@@ -769,21 +769,12 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
 
     Optional<String> methodName = extractedNames.getLastName();
 
-    if (methodName.isEmpty()) {
-      // We do not have any method name. The expression looks like `(2+3)()` and is parsed as a CallExpression that has
-      // the syntactic form of `CallExpression = Expression Arguments;`
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      logError("0xA1237", expr.get_SourcePositionStart());
-      return;
-    }
-
-    List<SymTypeExpression> arguments = calculateArguments(expr, methodName.get());
+    List<SymTypeExpression> arguments = calculateArguments(expr);
 
     if (extractedNames.resultIsValidName() && expr.getEnclosingScope() instanceof IBasicSymbolsScope) {
       calculateNamingChainCallExpression(expr, extractedNames.getNamePartsIfValid().get(), arguments);
     } else {
-      calculateArithmeticCallExpression(expr, methodName.get(), extractedNames.getNamePartsRaw(), arguments);
+      calculateArithmeticCallExpression(expr, methodName.orElse(""), extractedNames.getNamePartsRaw(), arguments);
     }
   }
 
@@ -812,10 +803,10 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     // Then we will check whether further field accesses are (nested) accesses on that entity's members.
     // When there is no such entity, or it does not have a member we were looking for, then we try to resolve the
     // qualified name up to the part of the name where we currently are.
-    // We terminate *before* the last name part, as the last name part must resolve to a method and not a type or field.
 
+    // We terminate at the last name part, as the last part may resolve to a field of a function type
     getTypeCheckResult().reset();
-    for(int i = 0; i < astNameParts.size() - 1; i++) {
+    for(int i = 0; i < astNameParts.size(); i++) {
       if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
         calculateFieldAccess((ASTFieldAccessExpression) astNameParts.get(i), true);
       } else {
@@ -823,12 +814,29 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       }
     }
 
-    if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
-      calculateOwnedCallExpression(expr, methodName, argTypes);
-    } else {
-      // Check whether we have a fully qualified method. Local method calls will also end in this program branch.
-      String qualName = String.join(".", stringNameParts);
-      calculateQualifiedMethod(qualName, expr, argTypes);
+    if(getTypeCheckResult().isPresentResult() && getTypeCheckResult().getResult().isFunctionType()) {
+      calculateFunctionReturnTypeBasedOnSignature(
+          Collections.singletonList((SymTypeOfFunction) getTypeCheckResult().getResult()), expr, argTypes);
+    }
+    else {
+      // We terminate *before* the last name part, as the last name part must resolve to a method and not a type or field.
+      getTypeCheckResult().reset();
+      for(int i = 0; i < astNameParts.size() - 1; i++) {
+        if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
+          calculateFieldAccess((ASTFieldAccessExpression) astNameParts.get(i), true);
+        } else {
+          calculatedQualifiedEntity(nameParts.subList(0, i + 1));
+        }
+      }
+
+      if(getTypeCheckResult().isPresentResult() && !getTypeCheckResult().getResult().isObscureType()) {
+        calculateOwnedCallExpression(expr, methodName, argTypes);
+      } else {
+        getTypeCheckResult().reset();
+        // Check whether we have a fully qualified method. Local method calls will also end in this program branch.
+        String qualName = String.join(".", stringNameParts);
+        calculateQualifiedMethod(qualName, expr, argTypes);
+      }
     }
   }
 
@@ -840,23 +848,54 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * Use {@link #calculateNamingChainCallExpression(ASTCallExpression, List, List)} in these cases.
    */
   protected void calculateArithmeticCallExpression(ASTCallExpression expr,
-                                                   String methodName,
-                                                   List<ExprToOptNamePair> methodCallParts,
-                                                   List<SymTypeExpression> argumentTypes) {
+      String methodName,
+      List<ExprToOptNamePair> methodCallParts,
+      List<SymTypeExpression> argTypes) {
     if(methodCallParts.size() < 2) {
       Log.error("0xA1240 (Internal error) call expression just consists of a method name, but the program " +
-        "flow ended in the branch that calculates call expressions on method chains and similar.");
+          "flow ended in the branch that calculates call expressions on method chains and similar.");
       getTypeCheckResult().reset();
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       return;
     }
-
     getTypeCheckResult().reset();
     getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
 
     ASTExpression methodOwner = methodCallParts.get(methodCallParts.size() - 2).getExpression();
     methodOwner.accept(getTraverser());
-    calculateOwnedCallExpression(expr, methodName, argumentTypes);
+    calculateOwnedCallExpression(expr, methodName, argTypes);
+
+
+    ASTExpression methodNameExpr = expr.getExpression();
+    if (methodNameExpr instanceof ASTFieldAccessExpression) {
+      getTypeCheckResult().reset();
+      ((ASTFieldAccessExpression) methodNameExpr).getExpression().accept(getTraverser());
+      calculateFieldAccess((ASTFieldAccessExpression) methodNameExpr, true);
+      if(getTypeCheckResult().isPresentResult() && getTypeCheckResult().getResult().isFunctionType()) {
+        // Expression has the form ... .owner.func -> func is a field that has a function type
+        calculateFunctionReturnTypeBasedOnSignature(
+            Collections.singletonList((SymTypeOfFunction) getTypeCheckResult().getResult()), expr, argTypes);
+      }
+      else {
+        // MethodName has the form `... .owner.methodName -> calc the type of the owner and then calculate its method type
+        ((ASTFieldAccessExpression) methodNameExpr).getExpression().accept(getTraverser());
+        calculateOwnedCallExpression(expr, methodName, argTypes);
+      }
+    } else {
+      expr.getExpression().accept(getTraverser());
+      if(getTypeCheckResult().isPresentResult() && getTypeCheckResult().getResult().isFunctionType()) {
+        calculateFunctionReturnTypeBasedOnSignature(
+            Collections.singletonList((SymTypeOfFunction) getTypeCheckResult().getResult()), expr, argTypes);
+      }
+      else {
+        if(!getTypeCheckResult().isPresentResult()) {
+          Log.debug("Unexpectedly, the call expression was not made up of a field access expression " +
+                  "and its expressions type was not a function.",
+              "DeriveSTOfBSCommonExpressions#calculateArithmeticCallExpression");
+        }
+        calculateOwnedCallExpression(expr, methodName, argTypes);
+      }
+    }
   }
 
   /**
@@ -887,6 +926,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     }
   }
 
+
+
   /**
    * Checks whether there exists a method symbol with the name given by {@code qualName} with matching argument types.
    * If such a method exists, it's return type is set as the type check result.
@@ -906,18 +947,28 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     calculateMethodReturnTypeBasedOnSignature(methodList, callExpr, argTypes);
   }
 
+
+  protected void calculateFunctionReturnTypeBasedOnSignature(List<SymTypeOfFunction> candidates,
+                                                             ASTCallExpression callExpr,
+                                                             List<SymTypeExpression> argTypes) {
+    calculateFunctionReturnTypeBasedOnSignature(candidates, callExpr, argTypes, Collections.emptyMap());
+  }
+
   /**
-   * Checks whether any of the {@code candidates} methods that the {@code callExpr} may represent match the given
+   * Checks whether any of the {@code candidates} functions that the {@code callExpr} may represent match the given
    * {@code argTypes} signature. If there are multiple candidates remaining and the callExpr has bounds on the types
    * that it may represent, then the candidate with the matching return type is chosen.
    * The chosen candidate's return type is then set as the current type check result.
-   * @param argTypes The types of the method arguments. Are allowed to be obscure, but in this case the method will also
+   * @param argTypes The types of the method arguments. Are allowed to be obscure, but in this case the function will also
    *                 always set *obscure* to be the method's type. Nevertheless, this method may print errors, if there
    *                 is no method symbol of the given name at all, regardless of matching argument types.
+   * @param definingSymbols if one candidate is found the corresponding symbol
+   *                        is set as the defining symbol, if applicable.
    */
-  protected void calculateMethodReturnTypeBasedOnSignature(List<FunctionSymbol> candidates,
-                                                           ASTCallExpression callExpr,
-                                                           List<SymTypeExpression> argTypes) {
+  protected void calculateFunctionReturnTypeBasedOnSignature(List<SymTypeOfFunction> candidates,
+                                                               ASTCallExpression callExpr,
+                                                               List<SymTypeExpression> argTypes,
+                                                               Map<SymTypeOfFunction, FunctionSymbol> definingSymbols) {
     if(candidates.isEmpty()) {
       logError("0xA1242", callExpr.get_SourcePositionStart());
       getTypeCheckResult().reset();
@@ -932,20 +983,17 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       return;
     }
 
-    if(!checkNotObscure(argTypes)) {
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
-
     // Filter based on a compatible signature
-    List<FunctionSymbol> fittingMethods = getFittingMethods(candidates, callExpr, argTypes);
+    List<SymTypeOfFunction> fittingFunctions = getFittingFunctions(candidates, callExpr, argTypes);
     // There can only be one method with the correct arguments and return type
-    if (!fittingMethods.isEmpty()) {
-      if (fittingMethods.size() > 1) {
-        checkForReturnType(callExpr, fittingMethods);
+    if (!fittingFunctions.isEmpty()) {
+      if (fittingFunctions.size() > 1) {
+        checkForReturnType(fittingFunctions, callExpr);
       }
-      callExpr.setDefiningSymbol(fittingMethods.get(0));
-      SymTypeExpression wholeResult = fittingMethods.get(0).getType();
+      if(definingSymbols.containsKey(fittingFunctions.get(0))){
+        callExpr.setDefiningSymbol(definingSymbols.get(fittingFunctions.get(0)));
+      }
+      SymTypeExpression wholeResult = fittingFunctions.get(0).getType();
       getTypeCheckResult().setMethod();
       getTypeCheckResult().setResult(wholeResult);
     } else {
@@ -955,7 +1003,29 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     }
   }
 
-  protected List<SymTypeExpression> calculateArguments(ASTCallExpression expr, String methodName){
+  /**
+   * Checks whether any of the {@code candidates} methods that the {@code callExpr} may represent match the given
+   * {@code argTypes} signature. If there are multiple candidates remaining and the callExpr has bounds on the types
+   * that it may represent, then the candidate with the matching return type is chosen.
+   * The chosen candidate's return type is then set as the current type check result.
+   * @param argTypes The types of the method arguments. Are allowed to be obscure, but in this case the method will also
+   *                 always set *obscure* to be the method's type. Nevertheless, this method may print errors, if there
+   *                 is no method symbol of the given name at all, regardless of matching argument types.
+   */
+  protected void calculateMethodReturnTypeBasedOnSignature(List<FunctionSymbol> candidates,
+                                                           ASTCallExpression callExpr,
+                                                           List<SymTypeExpression> argTypes) {
+    List<SymTypeOfFunction> functions = new ArrayList<>();
+    Map<SymTypeOfFunction, FunctionSymbol> symTypeToSymbol = new HashMap<>();
+    for(FunctionSymbol functionSymbol : candidates) {
+      SymTypeOfFunction function = functionSymbol.getFunctionType();
+      functions.add(function);
+      symTypeToSymbol.put(function, functionSymbol);
+    }
+    calculateFunctionReturnTypeBasedOnSignature(functions, callExpr, argTypes, symTypeToSymbol);
+  }
+
+  protected List<SymTypeExpression> calculateArguments(ASTCallExpression expr){
     List<SymTypeExpression> returnList = new ArrayList<>();
     for(int i = 0; i < expr.getArguments().sizeExpressions(); i++){
       getTypeCheckResult().reset();
@@ -972,9 +1042,16 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected void checkForReturnType(ASTCallExpression expr, List<FunctionSymbol> fittingMethods){
-    SymTypeExpression returnType = fittingMethods.get(0).getType();
-    for (FunctionSymbol method : fittingMethods) {
-      if (!returnType.deepEquals(method.getType())) {
+    checkForReturnType(
+        fittingMethods.stream().map(FunctionSymbol::getFunctionType).collect(Collectors.toList()),
+        expr
+    );
+  }
+
+  protected void checkForReturnType(List<SymTypeOfFunction> fittingFunctions, ASTCallExpression expr) {
+    SymTypeExpression returnType = fittingFunctions.get(0).getType();
+    for (SymTypeOfFunction function: fittingFunctions) {
+      if (!returnType.deepEquals(function.getType())) {
         getTypeCheckResult().reset();
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         logError("0xA1239", expr.get_SourcePositionStart());
@@ -989,28 +1066,42 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     return innerResult.getMethodList(name, getTypeCheckResult().isType(), true);
   }
 
-  protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr, List<SymTypeExpression> args) {
-    List<FunctionSymbol> fittingMethods = new ArrayList<>();
-    for (FunctionSymbol method : methodlist) {
-      //for every method found check if the arguments are correct
-      if ((!method.isIsElliptic() &&
-          args.size() == method.getParameterList().size())
-          || (method.isIsElliptic() &&
-          args.size() >= method.getParameterList().size() - 1)) {
+  protected List<SymTypeOfFunction> getFittingFunctions(List<SymTypeOfFunction> candidates,
+                                                     ASTCallExpression expr,
+                                                     List<SymTypeExpression> args) {
+    List<SymTypeOfFunction> fittingFunctions = new ArrayList<>();
+    for (SymTypeOfFunction function : candidates) {
+      //for every function check if the arguments are correct
+      if ((!function.isElliptic() &&
+          args.size() == function.getArgumentTypeList().size())
+          || (function.isElliptic() &&
+          args.size() >= function.getArgumentTypeList().size() - 1)) {
         boolean success = true;
         for (int i = 0; i < args.size(); i++) {
           //test if every single argument is correct
           //if an argument is void type then it could not be calculated correctly -> see calculateArguments
-          SymTypeExpression paramType = method.getParameterList().get(Math.min(i, method.getParameterList().size() - 1)).getType();
+          SymTypeExpression paramType = function.getArgumentTypeList()
+              .get(Math.min(i, function.getArgumentTypeList().size() - 1));
           if (!paramType.deepEquals(args.get(i)) &&
-            !compatible(paramType, args.get(i)) || args.get(i).isVoidType()) {
+              !compatible(paramType, args.get(i)) ||
+              args.get(i).isVoidType()) {
             success = false;
           }
         }
         if (success) {
-          //method has the correct arguments and return type
-          fittingMethods.add(method);
+          //function has the correct arguments and return type
+          fittingFunctions.add(function);
         }
+      }
+    }
+    return fittingFunctions;
+  }
+
+  protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr, List<SymTypeExpression> args) {
+    List<FunctionSymbol> fittingMethods = new ArrayList<>();
+    for (FunctionSymbol method : methodlist) {
+      if (!getFittingFunctions(Collections.singletonList(method.getFunctionType()), expr, args).isEmpty()) {
+        fittingMethods.add(method);
       }
     }
     return fittingMethods;
