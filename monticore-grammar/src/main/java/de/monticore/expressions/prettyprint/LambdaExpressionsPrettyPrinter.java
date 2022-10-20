@@ -3,6 +3,7 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
+import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpressionBody;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameter;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameters;
 import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsHandler;
@@ -74,8 +75,13 @@ public class LambdaExpressionsPrettyPrinter
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getLambdaParameters().accept(getTraverser());
     getPrinter().print(" -> ");
-    node.getExpression().accept(getTraverser());
+    node.getLambdaBody().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTLambdaExpressionBody node) {
+    node.getExpression().accept(getTraverser());
   }
 
   public String prettyprint(ASTExpression node) {

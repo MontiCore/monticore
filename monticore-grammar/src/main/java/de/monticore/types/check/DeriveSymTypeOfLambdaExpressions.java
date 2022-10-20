@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.expressions.lambdaexpressions.LambdaExpressionsMill;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
+import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpressionBody;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameter;
-import de.monticore.expressions.lambdaexpressions._symboltable.ILambdaExpressionsScope;
 import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsHandler;
 import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsTraverser;
 import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsVisitor2;
@@ -12,7 +11,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in LambdaExpressions
@@ -46,7 +44,7 @@ public class DeriveSymTypeOfLambdaExpressions extends AbstractDeriveFromExpressi
   @Override
   public void traverse(ASTLambdaExpression exp) {
     getTypeCheckResult().reset();
-    exp.getExpression().accept(getTraverser());
+    exp.getLambdaBody().accept(getTraverser());
     SymTypeExpression returnType = getTypeCheckResult().getResult();
 
     List<SymTypeExpression> parameters = new LinkedList<>();
@@ -62,6 +60,11 @@ public class DeriveSymTypeOfLambdaExpressions extends AbstractDeriveFromExpressi
       getTypeCheckResult().reset();
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
     }
+  }
+
+  @Override
+  public void traverse(ASTLambdaExpressionBody node) {
+    node.getExpression().accept(getTraverser());
   }
 
   public SymTypeExpression calculateTypeOfLambdaParameter(ASTLambdaParameter parameter) {
