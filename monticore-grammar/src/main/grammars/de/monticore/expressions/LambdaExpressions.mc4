@@ -19,6 +19,9 @@ component grammar LambdaExpressions
    * Not part of this grammar are Java-like lambdas with codeblocks, e.g.
    * (int x) -> {int y = x + 2; return y;}
    *
+   * The grammar has the extension point LambdaBody which can be used to allow different kinds of lambda bodies, e.g.
+   * codeblocks.
+   *
    * There are also other kinds of expressions defined in the
    * grammars mentioned below. These expression definitions can safely be
    * composed if desired.
@@ -49,6 +52,9 @@ component grammar LambdaExpressions
     | parenthesis:"(" (LambdaParameter || ",")* ")"
   ;
 
+  /**
+   * Extension point that can be used to allow different bodies for lambda statements, e.g codeblocks.
+   */
   interface LambdaBody;
 
   LambdaExpressionBody implements LambdaBody = Expression;
