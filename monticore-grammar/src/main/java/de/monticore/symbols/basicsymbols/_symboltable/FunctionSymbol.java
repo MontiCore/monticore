@@ -3,6 +3,8 @@ package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +81,18 @@ public class FunctionSymbol extends FunctionSymbolTOP {
     for(VariableSymbol parameter: this.getParameterList()){
       parameter.replaceTypeVariables(replaceMap);
     }
+  }
+
+  /*
+   * Returns the type of the function.
+   * Note that {@link getType()} only provides the return type of the function
+   */
+  public SymTypeOfFunction getFunctionType() {
+    List<SymTypeExpression> parameterTypes = new ArrayList<>();
+    for(VariableSymbol parameter : getParameterList()) {
+      parameterTypes.add(parameter.getType());
+    }
+    return SymTypeExpressionFactory.createFunction(getType(), parameterTypes, isIsElliptic());
   }
 
 }

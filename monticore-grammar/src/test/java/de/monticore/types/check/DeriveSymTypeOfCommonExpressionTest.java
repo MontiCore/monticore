@@ -573,6 +573,11 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
       .build();
     selfReflectiveStudent.addMethodSymbol(studentSelfReflection);
 
+    FieldSymbol studentSelfReflectionField = field("selfField",
+        SymTypeExpressionFactory.createFunction(SymTypeExpressionFactory.createTypeExpression(selfReflectiveStudent))
+    );
+    selfReflectiveStudent.addFieldSymbol(studentSelfReflectionField);
+
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
@@ -585,11 +590,14 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope, field("selfReflectiveStudent",
       SymTypeExpressionFactory.createTypeObject("SelfReflectiveStudent", scope))
     );
-    add2scope(scope, method("isInt", _booleanSymType));
+    MethodSymbol ms2 = method("isInt", _booleanSymType);
+    add2scope(scope, ms2);
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
     MethodSymbol ms0 = add(method("areInt", _booleanSymType), field("values", _intSymType));
     ms0.setIsElliptic(true);
     add2scope(scope, ms0);
+    add2scope(scope, method("getIsInt", ms2.getFunctionType()));
+    add2scope(scope, method("getAreInt", ms0.getFunctionType()));
     FieldSymbol fs = field("variable", _intSymType);
     fs.setIsStatic(true);
     MethodSymbol ms = method("store", _doubleSymType);
@@ -724,6 +732,16 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     // test method chaining
     check("selfReflectiveStudent.self().self()", "SelfReflectiveStudent");
+
+    // test function chaining
+    check("getIsInt()()", "boolean");
+
+    // test function chaining with varargs
+    check("getAreInt()()", "boolean");
+    check("getAreInt()(1,2)", "boolean");
+
+    // test function chaining using fields
+    check("selfReflectiveStudent.selfField().selfField()", "SelfReflectiveStudent");
   }
 
   @Test
@@ -737,7 +755,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidCallExpressionWithMissingNameAndNotComposedOfCallback() throws IOException {
     // Expression (2 + 3)() and all other Expressions in front of brackets are parsable
     init_advanced();
-    checkError("(2 + 3)()", "0xA1237");
+    checkError("(2 + 3)()", "0xA2239");
   }
 
   @Test
@@ -745,6 +763,13 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     //method isInt() is not in the specified scope -> method cannot be resolved
     init_advanced();
     checkError("notAScope.isInt()", "0xA1242");
+  }
+
+  @Test
+  public void testInvalidCallExpressionWithFunctionChaining() throws IOException {
+    //function isNot() is part of the return type of getIsInt() -> function cannot be resolved
+    init_advanced();
+    checkError("getIsInt.isNot()", "0xA1242");
   }
 
   @Test
