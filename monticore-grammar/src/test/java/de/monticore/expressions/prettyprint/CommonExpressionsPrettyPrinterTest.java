@@ -154,7 +154,6 @@ public class CommonExpressionsPrettyPrinterTest {
     ASTCallExpression result = CommonExpressionsMill.callExpressionBuilder()
         .setExpression(a.get())
         .setArguments(arguments.get())
-        .setName("a")
         .build();
 
     String output = prettyPrinter.prettyprint(result);

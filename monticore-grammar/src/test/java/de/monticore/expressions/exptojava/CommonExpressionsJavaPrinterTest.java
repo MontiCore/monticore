@@ -155,7 +155,6 @@ public class CommonExpressionsJavaPrinterTest {
     ASTCallExpression result = CommonExpressionsMill.callExpressionBuilder()
       .setExpression(a.get())
       .setArguments(arguments.get())
-      .setName("a")
       .build();
     
     String output = javaPrinter.print(result);

@@ -147,7 +147,6 @@ public class AddSuffixToOptionalsVisitor implements
         ASTCallExpression callExpr = CommonExpressionsMill.callExpressionBuilder()
                 .setExpression(getExpr)
                 .setArguments(CommonExpressionsMill.argumentsBuilder().build())
-                .setName("")
                 .build();
 
         return callExpr;
