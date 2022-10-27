@@ -736,6 +736,11 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     // test function chaining
     check("getIsInt()()", "boolean");
 
+    // test indirect function chaining
+    //todo enable after fix of
+    //https://git.rwth-aachen.de/monticore/monticore/-/issues/3282
+    //check("(getIsInt())()", "boolean");
+
     // test function chaining with varargs
     check("getAreInt()()", "boolean");
     check("getAreInt()(1,2)", "boolean");
