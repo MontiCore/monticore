@@ -72,6 +72,8 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
            SplitRule
          |
            KeywordRule
+         |
+           AddRule
          )*
       "}" ;
 
@@ -520,6 +522,9 @@ component grammar Grammar extends de.monticore.literals.MCCommonLiterals,
   */
   KeywordRule =
     "nokeyword" (String || ",")+ ";";
+
+  AddRule =
+    "additionalkeyword" keyword:String ":" additionalKeyWord:(String || ",")+ ";";
 
   // ----------------------------------------------------------------------
   // AST

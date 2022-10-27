@@ -27,6 +27,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   protected Map<String, Collection<String>> tokenModes = Maps.newHashMap();
 
+  protected Map<String, Collection<String>> additionalKeywords = Maps.newHashMap();
+
   protected final LoadingCache<String, Optional<ProdSymbol>> prodCache = CacheBuilder.newBuilder()
           .maximumSize(10000)
           .build(new CacheLoader<String, Optional<ProdSymbol>>() {
@@ -197,8 +199,30 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ret;
   }
 
+  public Map<String, Collection<String>> getAdditionalKeywordsWithInherited() {
+    final Map<String, Collection<String>> ret = Maps.newHashMap(additionalKeywords);
+    for (MCGrammarSymbol superGrammar: getAllSuperGrammars()) {
+      for (Map.Entry<String, Collection<String>> keyword: superGrammar.getAdditionalKeywords().entrySet()) {
+        Collection<String> superKeywords;
+        if (ret.containsKey(keyword.getKey())) {
+          // the keyword already exists
+          superKeywords = ret.get(keyword.getKey());
+        } else {
+          superKeywords = Sets.newHashSet();
+        }
+        superKeywords.addAll(keyword.getValue());
+        ret.put(keyword.getKey(), superKeywords);
+      }
+    }
+    return ret;
+  }
+
   public Map<String, Collection<String>> getTokenModes() {
     return  Maps.newHashMap(tokenModes);
+  }
+
+  public Map<String, Collection<String>> getAdditionalKeywords() {
+    return  Maps.newHashMap(additionalKeywords);
   }
 
   public Optional<ASTMCGrammar> getAstGrammar() {
@@ -281,9 +305,15 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     if (tokenModes.containsKey(modeName)) {
       tokenModes.get(modeName).add(tokenName);
     } else {
-      Collection<String> tokenList = Sets.newHashSet(tokenName);
-      tokenModes.put(modeName, tokenList);
+      tokenModes.put(modeName, Sets.newHashSet(tokenName));
     }
   }
 
+  public void addKeywords(String keyword, Collection<String> additionalKeywords) {
+    if (this.additionalKeywords.containsKey(keyword)) {
+      this.additionalKeywords.get(keyword).addAll(additionalKeywords);
+    } else {
+      this.additionalKeywords.put(keyword, Sets.newHashSet(additionalKeywords));
+    }
+  }
 }

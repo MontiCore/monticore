@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar Keywords  {
+
+  A =  "A";
+
+  B =  "B";
+
+  additionalkeyword "A": "a";
+
+  additionalkeyword "B": "x", "y", "z";
+
+ }

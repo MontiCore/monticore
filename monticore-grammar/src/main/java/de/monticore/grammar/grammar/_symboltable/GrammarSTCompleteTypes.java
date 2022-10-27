@@ -58,6 +58,11 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   }
 
   @Override
+  public void visit(ASTAddRule node) {
+    grammarSymbol.addKeywords(node.getKeyword(), node.getAdditionalKeyWordList());
+  }
+
+  @Override
   public void visit(ASTKeyConstant node) {
     grammarSymbol.noKeywords.addAll(node.getStringList());
   }
