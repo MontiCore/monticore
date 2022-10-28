@@ -19,6 +19,14 @@ import java.util.stream.Collectors;
 
 import static de.monticore.types.check.TypeCheck.*;
 
+/**
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in CommonExpressions
+ * The BS stands for BasicSymbols. Therefore, the class should not be used in an OO-context as it does not know
+ * OO concepts such as the modifiers static, public or private.
+ * For an OO language, use {@link de.monticore.types.check.DeriveSymTypeOfCommonExpressions} instead, which
+ * extends the functionality of this class so that it may be used in an OO-context as well.
+ * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ */
 public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpression implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
   protected CommonExpressionsTraverser traverser;
