@@ -30,6 +30,7 @@ component grammar LambdaExpressions
    * * expressions/ExpressionsBasis.mc4
    * * --  expressions/CommonExpressions.mc4
    * * --  --  expressions/JavaClassExpressions.mc4
+   * * --  --  expressions/OptionalExpressions.mc4
    * * --  expressions/AssignmentExpressions.mc4
    * * --  expressions/BitExpressions.mc4
    * * --  expressions/LambdaExpressions.mc4
