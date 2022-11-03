@@ -593,9 +593,7 @@ public class ProductionFactory {
     }
     for (int i = 1; i < srcNode.getConstantList().size(); i++) {
       constant.append(OR);
-      if (srcNode.getConstant(i)
-              .isPresentUsageName() && !srcNode.getConstant(i)
-              .isPresentUsageName()) {
+      if (srcNode.getConstant(i).isPresentUsageName()) {
         constant.append(srcNode.getConstant(i).getUsageName())
                 .append(COLON);
       }
