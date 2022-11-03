@@ -87,24 +87,6 @@ public class JavaLightPrettyPrinterTest {
   }
 
   @Test
-  public void testInterfaceMethodDeclaration() throws IOException {
-    Optional<ASTInterfaceMethodDeclaration> result = parser.parse_StringInterfaceMethodDeclaration("private static final int foo(String s, boolean b)[][][] throws e.Exception;");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTInterfaceMethodDeclaration ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    result = parser.parse_StringInterfaceMethodDeclaration(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-
-    assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
   public void testThrows() throws IOException {
     Optional<ASTThrows> result = parser.parse_StringThrows("a.b.c.D, person.A ");
     assertFalse(parser.hasErrors());
