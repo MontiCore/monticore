@@ -53,14 +53,15 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
 
     SymTypeExpression symType = null;
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
-    for (ASTMCTypeArgument arg : genericType.getMCTypeArgumentList()) {
+    for (int i = 0; i<genericType.sizeMCTypeArguments(); i++) {
+      ASTMCTypeArgument arg = genericType.getMCTypeArgument(i);
       if (null != arg) {
         arg.accept(getTraverser());
       }
 
       if (!getTypeCheckResult().isPresentResult()) {
-        Log.error("0xE9CDB Internal Error: SymType argument missing for generic type. "
-            + " Probably TypeCheck mis-configured.");
+        Log.error("0xE9CDB The type argument number " + i+1 + " of the generic type " +
+          "could not be synthesized.", genericType.get_SourcePositionStart());
         getTypeCheckResult().reset();
         return;
       }
@@ -70,8 +71,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
     if(checkNotObscure(arguments)) {
       Optional<TypeVarSymbol> typeVar = getScope(genericType.getEnclosingScope()).resolveTypeVar(genericType.printWithoutTypeArguments());
       if (typeVar.isPresent()) {
-        Log.error("0xA0320 The generic type " + genericType.printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter()) +
-            " cannot have a generic parameter because " + genericType.getName(genericType.getNameList().size() - 1) + " is a type variable",
+        Log.error("0xA0320 The generic type cannot have a generic parameter because it is a type variable",
           genericType.get_SourcePositionStart());
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       } else {
@@ -87,6 +87,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
         genericType.setDefiningSymbol(symType.getTypeInfo());
       }
     }else{
+      // one of the type arguments could not be synthesized => the generic type itself cannot be synthesized correctly
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
     }
   }
@@ -96,7 +97,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
    */
   protected SymTypeExpression handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments){
     Log.error("0xA0323 The generic type " + type.printWithoutTypeArguments() +
-        "cannot be found", type.get_SourcePositionStart());
+        "could not be resolved", type.get_SourcePositionStart());
     return SymTypeExpressionFactory.createObscureType();
   }
 
