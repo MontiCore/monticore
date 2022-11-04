@@ -22,7 +22,7 @@ grammar languages are comfortable to use.
 
 <div align="center">
   <a href="https://monticore.de/handbook.pdf" target="_blank">
-  <img src="https://se-rwth.de/books/handbook2021.cover.gif" width="250">
+  <img src="https://www.se-rwth.de/assets/img/covers/HKR21.png" width="250">
   </a>
   <br>[HKR21] Katrin Hölldobler, Oliver Kautz, Bernhard Rumpe: <br>
       MontiCore Language Workbench and Library Handbook: Edition 2021. <br>
