@@ -152,7 +152,7 @@ development. See language definition and usage method in
    These complete languages are usually composed of a number of language
    components.
 
-* [**MontiCore topic list**](https://www.se-rwth.de/topics/) 
+* [**MontiCore topic list**](https://www.se-rwth.de/research/) 
    Describes various research topics which MontiCore builds on or
    where MontiCore has been used as foundation.
 
