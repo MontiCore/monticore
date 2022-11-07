@@ -264,6 +264,8 @@ public class MCCommonStatementsPrettyPrinter implements
         return "volatile";
       case ASTConstantsMCCommonStatements.STRICTFP:
         return "strictfp";
+      case ASTConstantsMCCommonStatements.MODIFIER_DEFAULT:
+        return "default";
       default:
         return null;
     }

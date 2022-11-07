@@ -101,6 +101,8 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
           case SYNCHRONIZED:
             javaMethodSymbol.setIsSynchronized(true);
             break;
+          case MODIFIER_DEFAULT:
+            javaMethodSymbol.setIsDefault(true);
           default:
             break;
         }
