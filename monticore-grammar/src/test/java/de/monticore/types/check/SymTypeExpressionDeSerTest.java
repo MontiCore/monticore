@@ -66,7 +66,15 @@ public class SymTypeExpressionDeSerTest {
   SymTypeOfWildcard teWildcard;
 
   SymTypeOfGenerics teMap2;
-  
+
+  SymTypeOfFunction teFun1;
+
+  SymTypeOfFunction teFun2;
+
+  SymTypeOfFunction teFun3;
+
+  SymTypeOfFunction teFun4;
+
   @Before
   public void initLog() {
     LogStub.init();
@@ -128,6 +136,14 @@ public class SymTypeExpressionDeSerTest {
     teMap2 = createGenerics("Map", scope,
             Lists.newArrayList(teUpperBound, teWildcard));
 
+    teFun1 = createFunction(teInt);
+
+    teFun2 = createFunction(teInt, teInt);
+
+    teFun3 = createFunction(teInt, teInt, teP);
+
+    teFun4 = createFunction(teInt, List.of(teInt), true);
+
     scope.add(new OOTypeSymbol("A"));
     scope.add(new OOTypeSymbol("B"));
     scope.add(new OOTypeSymbol("Human"));
@@ -168,6 +184,10 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerialization(teUpperBound);
     performRoundTripSerialization(teWildcard);
     performRoundTripSerialization(teMap2);
+    performRoundTripSerialization(teFun1);
+    performRoundTripSerialization(teFun2);
+    performRoundTripSerialization(teFun3);
+    performRoundTripSerialization(teFun4);
 
     performRoundTripSerializationSymTypePrimitive(teDouble);
     performRoundTripSerializationSymTypePrimitive(teInt);
@@ -184,6 +204,10 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerializationSymTypeOfGenerics(teDeep1);
     performRoundTripSerializationSymTypeOfGenerics(teDeep2);
     performRoundTripSerializationSymTypeOfGenerics(teMap2);
+    performRoundTripSerializationSymTypeOfFunction(teFun1);
+    performRoundTripSerializationSymTypeOfFunction(teFun2);
+    performRoundTripSerializationSymTypeOfFunction(teFun3);
+    performRoundTripSerializationSymTypeOfFunction(teFun4);
   }
 
   protected void performRoundTripSerialization(SymTypeExpression expr) {
@@ -205,6 +229,21 @@ public class SymTypeExpressionDeSerTest {
 
   protected void performRoundTripSerializationSymTypeOfGenerics(SymTypeOfGenerics expr) {
     SymTypeOfGenericsDeSer deser = new SymTypeOfGenericsDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized);
+    assertNotNull(deserialized);
+
+    assertEquals(expr.print(), deserialized.print());
+    assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(), actualTS.getName());
+  }
+
+  protected void performRoundTripSerializationSymTypeOfFunction(SymTypeOfFunction expr) {
+    SymTypeOfFunctionDeSer deser = new SymTypeOfFunctionDeSer();
 
     String serialized = deser.serialize(expr);
 
@@ -302,6 +341,10 @@ public class SymTypeExpressionDeSerTest {
     performRoundtrip2(teLowerBound);
     performRoundtrip2(teWildcard);
     performRoundtrip2(teMap2);
+    performRoundtrip2(teFun1);
+    performRoundtrip2(teFun2);
+    performRoundtrip2(teFun3);
+    performRoundtrip2(teFun4);
   }
 
   protected void performRoundtrip2(SymTypeExpression expr) {

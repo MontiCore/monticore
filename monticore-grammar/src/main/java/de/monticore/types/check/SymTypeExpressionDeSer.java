@@ -37,6 +37,8 @@ public class SymTypeExpressionDeSer {
 
   protected SymTypeOfWildcardDeSer symTypeOfWildcardDeSer;
 
+  protected SymTypeOfFunctionDeSer symTypeOfFunctionDeSer;
+
   protected SymTypeExpressionDeSer() {
     //this is a singleton, do not use constructor
     this.symTypeArrayDeSer = new SymTypeArrayDeSer();
@@ -45,6 +47,7 @@ public class SymTypeExpressionDeSer {
     this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
     this.symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
+    this.symTypeOfFunctionDeSer = new SymTypeOfFunctionDeSer();
   }
 
   public static void serializeMember(JsonPrinter printer, String memberName,
@@ -162,6 +165,8 @@ public class SymTypeExpressionDeSer {
           return symTypeVariableDeSer.deserialize(o);
         case SymTypeOfWildcardDeSer.SERIALIZED_KIND:
           return symTypeOfWildcardDeSer.deserialize(o);
+        case SymTypeOfFunctionDeSer.SERIALIZED_KIND:
+          return symTypeOfFunctionDeSer.deserialize(o);
       }
     }
 
