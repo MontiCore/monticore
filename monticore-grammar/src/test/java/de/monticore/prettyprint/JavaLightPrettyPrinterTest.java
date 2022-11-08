@@ -51,6 +51,24 @@ public class JavaLightPrettyPrinterTest {
   }
 
   @Test
+  public void testDefaultMethod() throws IOException {
+    Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("default int foo(String s, boolean b)[][] throws e.Exception { return expr; }");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTMethodDeclaration ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringMethodDeclaration(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testConstructorDeclaration() throws IOException {
     Optional<ASTConstructorDeclaration> result = parser.parse_StringConstructorDeclaration("public ClassName(String s, boolean b) throws e.Exception { private Integer foo = a;}");
     assertFalse(parser.hasErrors());
