@@ -1,5 +1,4 @@
 ///* (c) https://github.com/MontiCore/monticore */
-import de.monticore.MCTask
 
 buildscript {
     if (findProperty('bootstrap')) {
@@ -10,7 +9,7 @@ buildscript {
 
 plugins {
     id "java-library"
-    id "monticore"
+    id "monticore" version "$version"
     id "jacoco"
 }
 

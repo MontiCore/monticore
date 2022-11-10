@@ -2,7 +2,7 @@
 
 package de.monticore;
 
-grammar KeyAndNext  extends mc.grammars.lexicals.TestLexicals {
+grammar KeyAndNext {
 
   A =  key("b") {next("c")}? b:Name;
 
@@ -22,4 +22,7 @@ grammar KeyAndNext  extends mc.grammars.lexicals.TestLexicals {
 
   I = {next("b")}? b:Name "foo" b:Name?;
 
+  token Name =
+    ( 'a'..'z' | 'A'..'Z' | '_' | '$' )
+    ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
  }

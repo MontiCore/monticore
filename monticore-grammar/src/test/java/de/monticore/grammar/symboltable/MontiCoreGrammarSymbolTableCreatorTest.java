@@ -24,7 +24,7 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   @Before
   public void before() {
-    LogStub.init();
+    Log.init();
     Log.enableFailQuick(false);
   }
   
@@ -311,6 +311,21 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals(1, tokenModes.get("FOO_MODE").size());
     assertEquals(1, tokenModes.get("BLA_MODE").size());
   
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testReplaceKeywords() {
+    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
+
+    MCGrammarSymbol grammar = globalScope.resolveMCGrammar("de.monticore.Keywords").orElse(null);
+    assertNotNull(grammar);
+
+    Map<String, Collection<String>> keywords = grammar.getReplacedKeywordsWithInherited();
+    assertEquals(2, keywords.size());
+    assertEquals(1, keywords.get("A").size());
+    assertEquals(4, keywords.get("B").size());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
