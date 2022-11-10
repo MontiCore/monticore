@@ -315,16 +315,16 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   }
 
   @Test
-  public void testAdditionalKeywords() {
+  public void testReplaceKeywords() {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
 
     MCGrammarSymbol grammar = globalScope.resolveMCGrammar("de.monticore.Keywords").orElse(null);
     assertNotNull(grammar);
 
-    Map<String, Collection<String>> additionalKeywords = grammar.getAdditionalKeywordsWithInherited();
-    assertEquals(2, additionalKeywords.size());
-    assertEquals(1, additionalKeywords.get("A").size());
-    assertEquals(3, additionalKeywords.get("B").size());
+    Map<String, Collection<String>> keywords = grammar.getReplacedKeywordsWithInherited();
+    assertEquals(2, keywords.size());
+    assertEquals(1, keywords.get("A").size());
+    assertEquals(4, keywords.get("B").size());
 
     assertTrue(Log.getFindings().isEmpty());
   }

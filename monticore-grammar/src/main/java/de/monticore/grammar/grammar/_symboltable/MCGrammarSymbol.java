@@ -27,7 +27,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   protected Map<String, Collection<String>> tokenModes = Maps.newHashMap();
 
-  protected Map<String, Collection<String>> additionalKeywords = Maps.newHashMap();
+  protected Map<String, Collection<String>> replacedKeywords = Maps.newHashMap();
 
   protected final LoadingCache<String, Optional<ProdSymbol>> prodCache = CacheBuilder.newBuilder()
           .maximumSize(10000)
@@ -199,8 +199,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ret;
   }
 
-  public Map<String, Collection<String>> getAdditionalKeywordsWithInherited() {
-    final Map<String, Collection<String>> ret = Maps.newHashMap(additionalKeywords);
+  public Map<String, Collection<String>> getReplacedKeywordsWithInherited() {
+    final Map<String, Collection<String>> ret = Maps.newHashMap(replacedKeywords);
     for (MCGrammarSymbol superGrammar: getAllSuperGrammars()) {
       for (Map.Entry<String, Collection<String>> keyword: superGrammar.getAdditionalKeywords().entrySet()) {
         Collection<String> superKeywords;
@@ -222,7 +222,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   }
 
   public Map<String, Collection<String>> getAdditionalKeywords() {
-    return  Maps.newHashMap(additionalKeywords);
+    return  Maps.newHashMap(replacedKeywords);
   }
 
   public Optional<ASTMCGrammar> getAstGrammar() {
@@ -310,10 +310,10 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   }
 
   public void addKeywords(String keyword, Collection<String> additionalKeywords) {
-    if (this.additionalKeywords.containsKey(keyword)) {
-      this.additionalKeywords.get(keyword).addAll(additionalKeywords);
+    if (this.replacedKeywords.containsKey(keyword)) {
+      this.replacedKeywords.get(keyword).addAll(additionalKeywords);
     } else {
-      this.additionalKeywords.put(keyword, Sets.newHashSet(additionalKeywords));
+      this.replacedKeywords.put(keyword, Sets.newHashSet(additionalKeywords));
     }
   }
 }

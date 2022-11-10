@@ -8,8 +8,8 @@ grammar Keywords  {
 
   B =  "B";
 
-  additionalkeyword "A": "a";
+  replacekeyword "A": "a";
 
-  additionalkeyword "B": "x", "y", "z";
+  replacekeyword "B": "B", "x", "y", "z";
 
  }
