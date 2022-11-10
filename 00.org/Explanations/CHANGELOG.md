@@ -7,14 +7,24 @@ to be released
 ### Additions
 * new grammar rule replacekeyword
 * add attribute derived to FieldSymbol
+* generate XParserInfo
+  * Used by generated language servers
+  * Can be queried for additional info about specific parser states of the generated ANTLR parser
+  * Contains methods stateHasUsageNameY to check the usage name of the nonterminal associated with a parser state
+  * Contains methods stateReferencesZSymbol to check the referenced symbol kind of `Name` nonterminal associated with a parser state
 
 ### Changes
 * Java 11
+* Gradle 7 compatibility
 * delete deprecated method deepClone in ASTNodes
 * use CDGenerator (cdanalysis)
 * Visitor Pattern: Introduce state-based traversal of symbol table
   * Allows for combined AST and symbol table traversal from global and artifact scopes
   * Comes with integrated stand-alone symbol table traversal
+
+### Fixes
+* close all jars used to load models via MCPath
+  * `gradle clean` should no longer fail because of dangling opened grammar jars
 
 ## MontiCore 7.3.0
 released: 04.04.2022
