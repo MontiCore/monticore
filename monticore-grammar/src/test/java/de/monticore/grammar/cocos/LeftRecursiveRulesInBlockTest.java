@@ -11,7 +11,6 @@ import de.se_rwth.commons.logging.Log;
 
 public class LeftRecursiveRulesInBlockTest extends CocoTest {
 
-  private final String MESSAGE =  " The left recursive rule A is not allowed in blocks, because it is not supported in Antlr. ";
   private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4056.A4056";
   
@@ -29,9 +28,15 @@ public class LeftRecursiveRulesInBlockTest extends CocoTest {
   @Test
   public void testSimpleLeftRecursion() {
     testInvalidGrammar(grammar, LeftRecursiveRulesInBlock.ERROR_CODE,
-        String.format(MESSAGE, "interface"), checker);
+        String.format(LeftRecursiveRulesInBlock.ERROR_MSG_FORMAT, "A"), checker);
   }
-  
+
+  @Test
+  public void testComplexLeftRecursion() {
+    testInvalidGrammar(grammar+"a", LeftRecursiveRulesInBlock.ERROR_CODE,
+            String.format(LeftRecursiveRulesInBlock.ERROR_MSG_FORMAT, "PlusExpression"), checker);
+  }
+
   @Test
   public void testCorrect(){
     testValidGrammar("de.monticore.grammar.cocos.valid.Attributes", checker);
