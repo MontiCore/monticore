@@ -12,6 +12,9 @@ to be released
 * Java 11
 * delete deprecated method deepClone in ASTNodes
 * use CDGenerator (cdanalysis)
+* Visitor Pattern: Introduce state-based traversal of symbol table
+  * Allows for combined AST and symbol table traversal from global and artifact scopes
+  * Comes with integrated stand-alone symbol table traversal
 
 ## MontiCore 7.3.0
 released: 04.04.2022
