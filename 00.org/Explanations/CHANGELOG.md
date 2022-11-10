@@ -1,8 +1,20 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 # Release Notes
-## MontiCore 7.3.0
+## MontiCore 7.4.0
 to be released
+
+### Additions
+* new grammar rule replacekeyword
+* add attribute derived to FieldSymbol
+
+### Changes
+* Java 11
+* delete deprecated method deepClone in ASTNodes
+* use CDGenerator (cdanalysis)
+
+## MontiCore 7.3.0
+released: 04.04.2022
 
 ### Additions
 * add cocos for lexical mode
