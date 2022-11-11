@@ -19,8 +19,10 @@ to be released
   * add SymTypeFunction to store the type of a function
   * add the functionality for Function chaining, allowing to call functions returned by other functions
   * add varargs support for CallExpressions
-* Add MCFunctionTypes to write the type of a function in a model
+  * add deriver for LambdaExpressions
+* Add grammar MCFunctionTypes to write the type of a function in a model
 * Add ExpressionStatementIsValid CoCo
+* Add grammars LambdaExpressions and StreamExpressions
 
 ### Changes
 * Java 11
