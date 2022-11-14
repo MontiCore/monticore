@@ -5,10 +5,9 @@
 package de.monticore.grammar.grammarfamily._symboltable;
 
 import de.monticore.cd._symboltable.*;
-import de.monticore.cd.typescalculator.CDTypesCalculator;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._visitor.CD4CodeTraverser;
-import de.monticore.cd4code.typescalculator.DeriveSymTypeOfCD4Code;
+import de.monticore.cd4code.typescalculator.FullDeriveFromCD4Code;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.grammar.grammar_withconcepts.SynthesizeFromMCBT4Grammar;
 import de.monticore.grammar.grammar_withconcepts.SynthesizeFromMCSGT4Grammar;
@@ -23,10 +22,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Optional;
 
-public class DeriveSymType extends DeriveSymTypeOfCD4Code {
+public class DeriveSymType extends FullDeriveFromCD4Code {
 
   @Override
-  protected void init(CD4CodeTraverser traverser) {
+  public void init(CD4CodeTraverser traverser) {
     this.typeCheckResult = new TypeCheckResult();
 
     final DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
@@ -46,33 +45,6 @@ public class DeriveSymType extends DeriveSymTypeOfCD4Code {
     deriveSymTypeOfCommonExpressions.setTypeCheckResult(getTypeCheckResult());
     traverser.add4CommonExpressions(deriveSymTypeOfCommonExpressions);
     traverser.setCommonExpressionsHandler(deriveSymTypeOfCommonExpressions);
-
-    // New!
-    final SynthesizeSymTypeFromMCBasicTypes synthesizeSymTypeFromMCBasicTypes = new SynthesizeFromMCBT4Grammar();
-    synthesizeSymTypeFromMCBasicTypes.setTypeCheckResult(getTypeCheckResult());
-    traverser.add4MCBasicTypes(synthesizeSymTypeFromMCBasicTypes);
-    traverser.setMCBasicTypesHandler(synthesizeSymTypeFromMCBasicTypes);
-
-    final SynthesizeSymTypeFromMCCollectionTypes synthesizeSymTypeFromMCCollectionTypes = new SynthesizeSymTypeFromMCCollectionTypes();
-    synthesizeSymTypeFromMCCollectionTypes.setTypeCheckResult(getTypeCheckResult());
-    traverser.add4MCCollectionTypes(synthesizeSymTypeFromMCCollectionTypes);
-    traverser.setMCCollectionTypesHandler(synthesizeSymTypeFromMCCollectionTypes);
-
-    final SynthesizeSymTypeFromMCArrayTypes synthesizeSymTypeFromMCArrayTypes = new SynthesizeSymTypeFromMCArrayTypes();
-    synthesizeSymTypeFromMCArrayTypes.setTypeCheckResult(getTypeCheckResult());
-    traverser.add4MCArrayTypes(synthesizeSymTypeFromMCArrayTypes);
-    traverser.setMCArrayTypesHandler(synthesizeSymTypeFromMCArrayTypes);
-
-    // New!
-    final SynthesizeSymTypeFromMCSimpleGenericTypes synthesizeSymTypeFromMCSimpleGenericTypes = new SynthesizeFromMCSGT4Grammar();
-    synthesizeSymTypeFromMCSimpleGenericTypes.setTypeCheckResult(getTypeCheckResult());
-    traverser.add4MCSimpleGenericTypes(synthesizeSymTypeFromMCSimpleGenericTypes);
-    traverser.setMCSimpleGenericTypesHandler(synthesizeSymTypeFromMCSimpleGenericTypes);
-
-    final SynthesizeSymTypeFromMCFullGenericTypes synthesizeSymTypeFromMCFullGenericTypes = new SynthesizeSymTypeFromMCFullGenericTypes();
-    synthesizeSymTypeFromMCFullGenericTypes.setTypeCheckResult(getTypeCheckResult());
-    traverser.add4MCFullGenericTypes(synthesizeSymTypeFromMCFullGenericTypes);
-    traverser.setMCFullGenericTypesHandler(synthesizeSymTypeFromMCFullGenericTypes);
 
     final DeriveSymTypeOfBitExpressions deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
     deriveSymTypeOfBitExpressions.setTypeCheckResult(getTypeCheckResult());
