@@ -5,6 +5,7 @@ package de.monticore.codegen.parser;
 import com.google.common.base.Joiner;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -12,7 +13,6 @@ import de.monticore.codegen.cd2java._parser.ParserCDDecorator;
 import de.monticore.codegen.cd2java._parser.ParserClassDecorator;
 import de.monticore.codegen.cd2java._parser.ParserForSuperDecorator;
 import de.monticore.codegen.cd2java._parser.ParserService;
-import de.monticore.codegen.cd2java.top.TopDecorator;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
 import de.monticore.generating.GeneratorEngine;
@@ -193,7 +193,7 @@ public class ParserGenerator {
     ASTCDCompilationUnit decoratedCD = parserCDDecorator.decorate(astClassDiagram);
 
     TopDecorator topDecorator = new TopDecorator(handcodedPath);
-    decoratedCD = topDecorator.decorate(decoratedCD);
+    topDecorator.decoratePackage(decoratedCD);
 
     glex.setGlobalValue("service", new AbstractService(astClassDiagram));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
