@@ -73,7 +73,7 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:01experiments:forConcSt')
   include(':monticore-test:01experiments:forEmfAst')
   include(':monticore-test:01experiments:forMill')
-  include(':monticore-test:01experiments:forParser')
+  // TODO MB include(':monticore-test:01experiments:forParser')
   include(':monticore-test:01experiments:forVisitors')
   include(':monticore-test:01experiments:generator')
   include(':monticore-test:01experiments:glex')

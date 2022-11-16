@@ -41,20 +41,6 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   }
 
   @Override
-  public void endVisit(ASTInterfaceMethodDeclaration ast){
-    JavaMethodSymbol symbol = ast.getSymbol();
-    addModifiersToMethOrConstr(symbol, ast.getMCModifierList());
-    symbol.setType(createTypeLoader(ast.getMCReturnType()));
-    if (ast.isPresentThrows()) {
-      addThrowsToMethod(symbol, ast.getThrows());
-    }
-    if (ast.getFormalParameters().isPresentFormalParameterListing()
-        && ast.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()) {
-      symbol.setIsElliptic(true);
-    }
-  }
-
-  @Override
   public void endVisit(ASTConstructorDeclaration ast){
     JavaMethodSymbol symbol = ast.getSymbol();
     addModifiersToMethOrConstr(symbol, ast.getMCModifierList());

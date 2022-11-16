@@ -600,13 +600,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public void configureGenerator(GlobalExtensionManagement glex, ASTCDCompilationUnit cd, MCPath templatePath) {
     String configTemplate = glex.getGlobalVar(CONFIGTEMPLATE_LONG, StringUtils.EMPTY).toString();
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
+    setup.setGlex(glex);
+    CD4C.init(setup);
+    CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
     if (!configTemplate.isEmpty()) {
-      GeneratorSetup setup = new GeneratorSetup();
-      setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
-      setup.setGlex(glex);
-      CD4C.init(setup);
-      CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
-
       TemplateController tc = setup.getNewTemplateController(configTemplate);
       TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
       List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService(), cd.getCDDefinition());
