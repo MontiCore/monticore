@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.replacerule;
+
+grammar ReplaceRule2 extends mc.feature.replacerule.ReplaceRule {
+
+   // Replace keyword
+   replacekeyword "A": "a1";
+
+   // Add keyword in combination with nokeyword
+   replacekeyword "BLA": "bla", "BLA";
+   nokeyword "bla";
+
+   // Replace keyword in combination with key
+   replacekeyword "BLA_C": "bla_c";
+
+   // Replace keyword in combination with splittoken
+   splittoken ">>";
+   replacekeyword ">>": "}}";
+
+   // Add keyword in combination with token
+   replacekeyword "<<": "<<", "{{";
+
+}
