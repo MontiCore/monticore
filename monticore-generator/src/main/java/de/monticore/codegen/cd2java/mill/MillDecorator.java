@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.TopDecorator.TOP_SUFFIX;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
@@ -41,7 +42,6 @@ import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.mill.MillConstants.*;
-import static de.monticore.codegen.cd2java.top.TopDecorator.TOP_SUFFIX;
 
 /**
  * created mill class for a grammar

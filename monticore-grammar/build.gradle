@@ -1,5 +1,4 @@
 ///* (c) https://github.com/MontiCore/monticore */
-import de.monticore.MCTask
 
 buildscript {
     if (findProperty('bootstrap')) {
@@ -10,7 +9,8 @@ buildscript {
 
 plugins {
     id "java-library"
-    id "monticore"
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "monticore" version "$version"
     id "jacoco"
 }
 
@@ -254,8 +254,13 @@ java {
     }
 }
 
+shadowJar {
+    from sourceSets.grammars.resources
+}
+
+jar.dependsOn(shadowJar)
 jar.dependsOn(grammarsJar)
 
 if (findProperty('ci') == null) {
-    jar.dependsOn(testJar)
+    jar.dependsOn(shadowJar, testJar)
 }

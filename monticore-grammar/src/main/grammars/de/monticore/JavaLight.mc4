@@ -44,19 +44,13 @@ symbolrule JavaMethod =
     isAbstract: boolean
     isSynchronized: boolean
     isNative:boolean
-    isStrictfp: boolean;
+    isStrictfp: boolean
+    isDefault: boolean;
 
-MethodDeclaration implements JavaMethod,
-                             ClassBodyDeclaration
+MethodDeclaration implements JavaMethod, ClassBodyDeclaration, InterfaceBodyDeclaration
     =   MCModifier* ExtTypeParameters?
                MCReturnType Name FormalParameters (dim:"[" "]")*
                ("throws" Throws)? (MCJavaBlock | ";");
-
-InterfaceMethodDeclaration implements JavaMethod,
-                                      InterfaceBodyDeclaration
-    =   MCModifier* ExtTypeParameters?
-                MCReturnType Name FormalParameters (dim:"[" "]")*
-                ("throws" Throws)? ";";
 
 ConstructorDeclaration implements JavaMethod, ClassBodyDeclaration
     =   MCModifier* ExtTypeParameters? Name FormalParameters

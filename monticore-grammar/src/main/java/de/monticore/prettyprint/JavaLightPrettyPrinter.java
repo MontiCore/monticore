@@ -65,28 +65,6 @@ public class JavaLightPrettyPrinter implements
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 
-  @Override
-  public void handle(ASTInterfaceMethodDeclaration a) {
-    CommentPrettyPrinter.printPreComments(a, getPrinter());
-    a.getMCModifierList().stream().forEach(m -> {getPrinter().print(" "); m.accept(getTraverser()); getPrinter().print(" ");});
-    if (a.isPresentExtTypeParameters()) {
-      a.getExtTypeParameters().accept(getTraverser());
-    }
-    a.getMCReturnType().accept(getTraverser());
-    getPrinter().print(" ");
-    printNode(a.getName());
-    a.getFormalParameters().accept(getTraverser());
-    for (int i = 0; i < a.getDimList().size(); i++) {
-      getPrinter().print("[]");
-    }
-    if (a.isPresentThrows()) {
-      getPrinter().print(" throws ");
-      a.getThrows().accept(getTraverser());
-    }
-    getPrinter().print(";");
-    CommentPrettyPrinter.printPostComments(a, getPrinter());
-  }
-
 
   @Override
   public void handle(ASTThrows a) {

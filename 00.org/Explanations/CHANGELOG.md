@@ -1,8 +1,58 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 # Release Notes
+## MontiCore 7.4.0
+released: 14.11.2022
+
+### Additions
+* new grammar rule replacekeyword
+* add attribute derived to FieldSymbol
+* generate XParserInfo
+  * Used by generated language servers
+  * Can be queried for additional info about specific parser states of the generated ANTLR parser
+  * Contains methods stateHasUsageNameY to check the usage name of the nonterminal associated with a parser state
+  * Contains methods stateReferencesZSymbol to check the referenced symbol kind of `Name` nonterminal associated with a parser state
+* Additions to the TypeCheck
+  * add new abstract classes AbstractDerive and AbstractSynthesize with basic functionality for FullDerivers and FullSynthesizers
+  * add new class TypeCalculator that can be used to derive SymTypeExpressions from Expressions and synthesize them from types
+  * add SymTypeObscure: new SymTypeExpression that is used when the SymTypeExpression for an expression could not be derived
+  * add SymTypeFunction to store the type of a function
+  * add the functionality for Function chaining, allowing to call functions returned by other functions
+  * add varargs support for CallExpressions
+  * add deriver for LambdaExpressions
+* Add grammar MCFunctionTypes to write the type of a function in a model
+* Add ExpressionStatementIsValid CoCo
+* Add grammars LambdaExpressions and StreamExpressions
+
+### Changes
+* Java 11
+* Gradle 7 compatibility
+* delete deprecated method deepClone in ASTNodes
+* use CDGenerator (cdanalysis)
+* Visitor Pattern: Introduce state-based traversal of symbol table
+  * Allows for combined AST and symbol table traversal from global and artifact scopes
+  * Comes with integrated stand-alone symbol table traversal
+* TypeCheck Refactoring
+  * rename currentResult to result in TypeCheckResult
+  * split TypeCheck facade into TypeCalculator (used to derive SymTypeExpressions from Expressions and synthesize them from types) and TypeCheck (static functions that are useful when checking for type compatibility or for comparing SymTypeExpressions)
+  * rename SymTypeConstant to SymTypePrimitive
+  * Deriver now evaluate all subexpressions of an expression and do not stop at the first error
+  * do not log multiple errors for the same error: If an error occurs in the derivation of a subexpression and this error leads to another error in the derivation of the expression itself, do not log another error
+  * remove the name of CallExpression
+  * rework the calculation of CallExpression, NameExpression and FieldAccessExpression
+  * rework TypeCheck error messages to make them more clear
+
+
+### Fixes
+* close all jars used to load models via MCPath
+  * `gradle clean` should no longer fail because of dangling opened grammar jars
+* TypeCheck
+  * fix an error in the WildCardTypeArgument where ? super and ? extends were swapped
+  * fix TypeCheck not logging an error for NameExpression and FieldAccessExpression in isolation
+  * make short compatible to byte
+
 ## MontiCore 7.3.0
-to be released
+released: 04.04.2022
 
 ### Additions
 * add cocos for lexical mode

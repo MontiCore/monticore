@@ -466,6 +466,7 @@ public class MontiCoreScriptTest {
     MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit visitorPackageCD = createEmptyCompilationUnit(cd);
+    mc.configureGenerator(glex,visitorPackageCD, templatePath);
     mc.decorateTraverserForVisitorPackage(glex, cd4AGlobalScope, cd, visitorPackageCD, handcodedPath);
 
     assertNotNull(visitorPackageCD);
@@ -529,6 +530,7 @@ public class MontiCoreScriptTest {
     MCPath handcodedPath = new MCPath("src/test/resources");
 
     ASTCDCompilationUnit astPackageCD = mc.decorateForASTPackage(glex, cd4AGlobalScope, cd, handcodedPath);
+    mc.configureGenerator(glex,astPackageCD, templatePath);
 
     assertNotNull(astPackageCD);
     assertNotNull(astPackageCD.getCDDefinition());

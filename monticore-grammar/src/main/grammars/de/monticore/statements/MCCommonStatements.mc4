@@ -48,7 +48,7 @@ JavaModifier implements MCModifier =
       Modifier:["private" | "public" | "protected" | "static"
           | "transient" | "final" | "abstract" | "native"
           | "threadsafe" | "synchronized" | "const" | "volatile"
-          | "strictfp"] ;
+          | "strictfp" | modifier_default:"default"] ;
 
 IfStatement implements MCStatement
     =   "if" "(" condition:Expression ")"

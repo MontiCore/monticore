@@ -9,10 +9,10 @@ import com.google.common.io.Resources;
 import de.monticore.cd._symboltable.BuiltInTypes;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
-import de.monticore.cd4code.trafo.CD4CodeAfterParseTrafo;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -74,7 +74,6 @@ import de.monticore.codegen.cd2java.mill.CDAuxiliaryDecorator;
 import de.monticore.codegen.cd2java.mill.CDMillDecorator;
 import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
-import de.monticore.codegen.cd2java.top.TopDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
@@ -600,13 +599,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
   public void configureGenerator(GlobalExtensionManagement glex, ASTCDCompilationUnit cd, MCPath templatePath) {
     String configTemplate = glex.getGlobalVar(CONFIGTEMPLATE_LONG, StringUtils.EMPTY).toString();
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
+    setup.setGlex(glex);
+    CD4C.init(setup);
+    CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
     if (!configTemplate.isEmpty()) {
-      GeneratorSetup setup = new GeneratorSetup();
-      setup.setAdditionalTemplatePaths(templatePath.getEntries().stream().map(p -> new File(p.toUri())).collect(Collectors.toList()));
-      setup.setGlex(glex);
-      CD4C.init(setup);
-      CD4C.getInstance().setEmptyBodyTemplate("cd2java.EmptyBody");
-
       TemplateController tc = setup.getNewTemplateController(configTemplate);
       TemplateHookPoint hp = new TemplateHookPoint(configTemplate);
       List<Object> args = Arrays.asList(setup.getGlex(), new TemplateHPService(), cd.getCDDefinition());
@@ -1050,7 +1048,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setGlex(glex);
 
     TopDecorator topDecorator = new TopDecorator(handcodedPath);
-    topDecorator.decorate(decoratedCD);
+    topDecorator.decoratePackage(decoratedCD);
 
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
@@ -1089,7 +1087,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setGlex(glex);
 
     TopDecorator topDecorator = new TopDecorator(handcodedPath);
-    topDecorator.decorate(decoratedCD);
+    topDecorator.decoratePackage(decoratedCD);
 
     CDEmfGenerator generator = new CDEmfGenerator(setup);
     //set originalDefinition, because information is needed in template
