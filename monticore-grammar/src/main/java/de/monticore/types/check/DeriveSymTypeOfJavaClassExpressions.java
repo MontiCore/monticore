@@ -43,12 +43,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   @Override
   public void traverse(ASTThisExpression node) {
     SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(node.getExpression());
-    SymTypeExpression wholeResult = calculateThisExpression(node, innerResult);
+    if(!innerResult.isObscureType()) {
+      SymTypeExpression wholeResult = calculateThisExpression(node, innerResult);
 
-    getTypeCheckResult().reset();
-    getTypeCheckResult().setResult(wholeResult);
-    if(wholeResult.isObscureType()) {
-      Log.error("0xA0252 Could not derive the type that 'this' refers to", node.get_SourcePositionStart());
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(wholeResult);
+      if (wholeResult.isObscureType()) {
+        Log.error("0xA0252 Could not derive the type that 'this' refers to", node.get_SourcePositionStart());
+      }
     }
   }
 
