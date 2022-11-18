@@ -6,7 +6,6 @@ import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.gradle.IncGenGradleReporterFix;
 import de.monticore.generating.templateengine.reporting.reporter.*;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
@@ -95,7 +94,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
     StatisticsReporter statistics = new StatisticsReporter(mcConfig, this.reportDirectory, lowerCaseName, repository, traverserSummary);
-    IncGenGradleReporterFix gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, reportPathOutput, lowerCaseName);
+    IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
     reports.addReportEventHandler(generated); // 02_GeneratedFiles

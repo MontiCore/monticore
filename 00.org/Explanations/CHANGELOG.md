@@ -2,7 +2,7 @@
 
 # Release Notes
 ## MontiCore 7.4.0
-to be released
+released: 14.11.2022
 
 ### Additions
 * new grammar rule replacekeyword
