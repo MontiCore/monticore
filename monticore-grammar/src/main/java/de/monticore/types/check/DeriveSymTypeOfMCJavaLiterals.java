@@ -6,8 +6,9 @@ import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTLongLiteral;
 import de.monticore.literals.mcjavaliterals._visitor.MCJavaLiteralsVisitor2;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 
-public class DeriveSymTypeOfMCJavaLiterals implements MCJavaLiteralsVisitor2 {
+public class DeriveSymTypeOfMCJavaLiterals extends DeriveSymTypeOfMCCommonLiterals implements MCJavaLiteralsVisitor2 {
 
   protected TypeCheckResult typeCheckResult;
 
@@ -21,22 +22,22 @@ public class DeriveSymTypeOfMCJavaLiterals implements MCJavaLiteralsVisitor2 {
 
   @Override
   public void visit(ASTIntLiteral lit){
-    getTypeCheckResult().setResult(SymTypeExpressionFactory.createPrimitive("int"));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.INT));
   }
 
   @Override
   public void visit(ASTLongLiteral lit){
-    getTypeCheckResult().setResult(SymTypeExpressionFactory.createPrimitive("long"));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.LONG));
   }
 
   @Override
   public void visit(ASTFloatLiteral lit){
-    getTypeCheckResult().setResult(SymTypeExpressionFactory.createPrimitive("float"));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.FLOAT));
   }
 
   @Override
   public void visit(ASTDoubleLiteral lit){
-    getTypeCheckResult().setResult(SymTypeExpressionFactory.createPrimitive("double"));
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.DOUBLE));
   }
 
 }
