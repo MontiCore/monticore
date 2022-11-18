@@ -22,38 +22,22 @@ public class DeriveSymTypeOfMCJavaLiterals extends DeriveSymTypeOfMCCommonLitera
 
   @Override
   public void visit(ASTIntLiteral lit){
-    if(checkInt(lit.getSource(), lit.get_SourcePositionStart())){
-      getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.INT));
-    } else {
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.INT));
   }
 
   @Override
   public void visit(ASTLongLiteral lit){
-    if(checkLong(lit.getSource().substring(0, lit.getSource().length()-1), lit.get_SourcePositionStart())){
-      getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.LONG));
-    } else {
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.LONG));
   }
 
   @Override
   public void visit(ASTFloatLiteral lit){
-    if(checkFloat(lit.getSource().substring(0, lit.getSource().length()-1), lit.get_SourcePositionStart())){
-      getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.FLOAT));
-    } else {
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.FLOAT));
   }
 
   @Override
   public void visit(ASTDoubleLiteral lit){
-    if(checkDouble(lit.getSource(), lit.get_SourcePositionStart())){
-      getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.DOUBLE));
-    } else {
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
+    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.DOUBLE));
   }
 
 }

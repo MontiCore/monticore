@@ -4,15 +4,12 @@ package de.monticore.symbols.basicsymbols;
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.types.check.helpers.TypeCheckSettings;
 
 import java.util.List;
 
 public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
   protected static BasicSymbolsMill primitiveTypesInitializer;
-
-  protected static TypeCheckSettings typeCheckSettings;
 
   public static void initMe (BasicSymbolsMill a)  {
     BasicSymbolsMillTOP.initMe(a);
@@ -55,13 +52,6 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
     for(String primitive: PRIMITIVE_LIST){
       gs.add(createPrimitive(primitive));
     }
-  }
-
-  public static TypeCheckSettings getTypeCheckSettings(){
-    if(typeCheckSettings == null){
-      typeCheckSettings = new TypeCheckSettings();
-    }
-    return typeCheckSettings;
   }
 
   protected TypeSymbol createPrimitive(String name){
