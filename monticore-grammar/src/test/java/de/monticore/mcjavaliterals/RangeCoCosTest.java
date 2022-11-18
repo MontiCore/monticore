@@ -3,10 +3,10 @@ package de.monticore.mcjavaliterals;
 
 import de.monticore.literals.mcjavaliterals._ast.*;
 import de.monticore.literals.mcjavaliterals._cocos.MCJavaLiteralsCoCoChecker;
-import de.monticore.literals.mcjavaliterals.cocos.DoubleLiteralRange;
-import de.monticore.literals.mcjavaliterals.cocos.FloatLiteralRange;
-import de.monticore.literals.mcjavaliterals.cocos.IntLiteralRange;
-import de.monticore.literals.mcjavaliterals.cocos.LongLiteralRange;
+import de.monticore.literals.mcjavaliterals.cocos.DoubleLiteralRangeCoCo;
+import de.monticore.literals.mcjavaliterals.cocos.FloatLiteralRangeCoCo;
+import de.monticore.literals.mcjavaliterals.cocos.IntLiteralRangeCoCo;
+import de.monticore.literals.mcjavaliterals.cocos.LongLiteralRangeCoCo;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -35,7 +35,7 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
-    checker.addCoCo(new IntLiteralRange(min, max));
+    checker.addCoCo(new IntLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
@@ -48,7 +48,7 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
-    checker.addCoCo(new LongLiteralRange(min, max));
+    checker.addCoCo(new LongLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
@@ -61,7 +61,7 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
-    checker.addCoCo(new DoubleLiteralRange(min, max));
+    checker.addCoCo(new DoubleLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
@@ -74,7 +74,7 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
-    checker.addCoCo(new FloatLiteralRange(min, max));
+    checker.addCoCo(new FloatLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
@@ -87,7 +87,7 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
-    checker.addCoCo(new IntLiteralRange(min, max));
+    checker.addCoCo(new IntLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
@@ -101,7 +101,7 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
-    checker.addCoCo(new LongLiteralRange(min, max));
+    checker.addCoCo(new LongLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
@@ -115,7 +115,7 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
-    checker.addCoCo(new DoubleLiteralRange(min, max));
+    checker.addCoCo(new DoubleLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
@@ -129,7 +129,7 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
-    checker.addCoCo(new FloatLiteralRange(min, max));
+    checker.addCoCo(new FloatLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 

@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.math.BigDecimal;
 
-public class BasicDoubleLiteralRange implements MCCommonLiteralsASTBasicDoubleLiteralCoCo {
+public class BasicDoubleLiteralRangeCoCo implements MCCommonLiteralsASTBasicDoubleLiteralCoCo {
 
   public static final String ERROR_MSG = " number %s not in range [%s,%s] for BasicDoubleLiteral";
   public static final String ERROR_CODE = "0xA0212";
@@ -15,12 +15,12 @@ public class BasicDoubleLiteralRange implements MCCommonLiteralsASTBasicDoubleLi
   protected BigDecimal min;
   protected BigDecimal max;
 
-  public BasicDoubleLiteralRange(){
+  public BasicDoubleLiteralRangeCoCo(){
     this.min = BigDecimal.valueOf(-Double.MAX_VALUE);
     this.max = BigDecimal.valueOf(Double.MAX_VALUE);
   }
 
-  public BasicDoubleLiteralRange(BigDecimal min, BigDecimal max){
+  public BasicDoubleLiteralRangeCoCo(BigDecimal min, BigDecimal max){
     this.min = min;
     this.max = max;
   }

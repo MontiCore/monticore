@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.math.BigInteger;
 
-public class LongLiteralRange implements MCJavaLiteralsASTLongLiteralCoCo {
+public class LongLiteralRangeCoCo implements MCJavaLiteralsASTLongLiteralCoCo {
 
   public static final String ERROR_MSG = " number %s not in range [%s,%s] for LongLiteral";
   public static final String ERROR_CODE = "0xA0217";
@@ -15,12 +15,12 @@ public class LongLiteralRange implements MCJavaLiteralsASTLongLiteralCoCo {
   protected BigInteger min;
   protected BigInteger max;
 
-  public LongLiteralRange(){
+  public LongLiteralRangeCoCo(){
     this.min = BigInteger.valueOf(Long.MIN_VALUE);
     this.max = BigInteger.valueOf(Long.MAX_VALUE);
   }
 
-  public LongLiteralRange(BigInteger min, BigInteger max){
+  public LongLiteralRangeCoCo(BigInteger min, BigInteger max){
     this.min = min;
     this.max = max;
   }

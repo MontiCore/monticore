@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.math.BigDecimal;
 
-public class FloatLiteralRange implements MCJavaLiteralsASTFloatLiteralCoCo {
+public class FloatLiteralRangeCoCo implements MCJavaLiteralsASTFloatLiteralCoCo {
 
   public static final String ERROR_MSG = " number %s not in range [%s,%s] for FloatLiteral";
   public static final String ERROR_CODE = "0xA0219";
@@ -15,12 +15,12 @@ public class FloatLiteralRange implements MCJavaLiteralsASTFloatLiteralCoCo {
   protected BigDecimal min;
   protected BigDecimal max;
 
-  public FloatLiteralRange(){
+  public FloatLiteralRangeCoCo(){
     this.min = BigDecimal.valueOf(-Float.MAX_VALUE);
     this.max = BigDecimal.valueOf(Float.MAX_VALUE);
   }
 
-  public FloatLiteralRange(BigDecimal min, BigDecimal max){
+  public FloatLiteralRangeCoCo(BigDecimal min, BigDecimal max){
     this.min = min;
     this.max = max;
   }

@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.math.BigDecimal;
 
-public class SignedBasicDoubleLiteralRange implements MCCommonLiteralsASTSignedBasicDoubleLiteralCoCo {
+public class SignedBasicDoubleLiteralRangeCoCo implements MCCommonLiteralsASTSignedBasicDoubleLiteralCoCo {
 
   public static final String ERROR_MSG = " number %s not in range [%s,%s] for SignedBasicDoubleLiteral";
   public static final String ERROR_CODE = "0xA0214";
@@ -15,12 +15,12 @@ public class SignedBasicDoubleLiteralRange implements MCCommonLiteralsASTSignedB
   protected BigDecimal min;
   protected BigDecimal max;
 
-  public SignedBasicDoubleLiteralRange(){
+  public SignedBasicDoubleLiteralRangeCoCo(){
     this.min = BigDecimal.valueOf(-Double.MAX_VALUE);
     this.max = BigDecimal.valueOf(Double.MAX_VALUE);
   }
 
-  public SignedBasicDoubleLiteralRange(BigDecimal min, BigDecimal max){
+  public SignedBasicDoubleLiteralRangeCoCo(BigDecimal min, BigDecimal max){
     this.min = min;
     this.max = max;
   }

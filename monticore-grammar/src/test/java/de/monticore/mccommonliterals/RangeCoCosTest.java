@@ -32,10 +32,10 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
-    checker.addCoCo(new BasicFloatLiteralRange(new BigDecimal(min), new BigDecimal(max)));
-    checker.addCoCo(new BasicDoubleLiteralRange(new BigDecimal(min), new BigDecimal(max)));
-    checker.addCoCo(new BasicLongLiteralRange(min, max));
-    checker.addCoCo(new NatLiteralRange(min, max));
+    checker.addCoCo(new BasicFloatLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
+    checker.addCoCo(new BasicDoubleLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
+    checker.addCoCo(new BasicLongLiteralRangeCoCo(min, max));
+    checker.addCoCo(new NatLiteralRangeCoCo(min, max));
 
     checker.checkAll(astex.get());
 
@@ -48,10 +48,10 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
-    checker.addCoCo(new BasicFloatLiteralRange());
-    checker.addCoCo(new BasicDoubleLiteralRange());
-    checker.addCoCo(new BasicLongLiteralRange());
-    checker.addCoCo(new NatLiteralRange());
+    checker.addCoCo(new BasicFloatLiteralRangeCoCo());
+    checker.addCoCo(new BasicDoubleLiteralRangeCoCo());
+    checker.addCoCo(new BasicLongLiteralRangeCoCo());
+    checker.addCoCo(new NatLiteralRangeCoCo());
 
     checker.checkAll(astex.get());
 
@@ -64,10 +64,10 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
-    checker.addCoCo(new SignedBasicFloatLiteralRange());
-    checker.addCoCo(new SignedBasicDoubleLiteralRange());
-    checker.addCoCo(new SignedBasicLongLiteralRange());
-    checker.addCoCo(new SignedNatLiteralRange());
+    checker.addCoCo(new SignedBasicFloatLiteralRangeCoCo());
+    checker.addCoCo(new SignedBasicDoubleLiteralRangeCoCo());
+    checker.addCoCo(new SignedBasicLongLiteralRangeCoCo());
+    checker.addCoCo(new SignedNatLiteralRangeCoCo());
 
     checker.checkAll(astex.get());
 
@@ -80,10 +80,10 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
-    checker.addCoCo(new BasicFloatLiteralRange(new BigDecimal(min), new BigDecimal(max)));
-    checker.addCoCo(new BasicDoubleLiteralRange(new BigDecimal(min), new BigDecimal(max)));
-    checker.addCoCo(new BasicLongLiteralRange(min, max));
-    checker.addCoCo(new NatLiteralRange(min, max));
+    checker.addCoCo(new BasicFloatLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
+    checker.addCoCo(new BasicDoubleLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
+    checker.addCoCo(new BasicLongLiteralRangeCoCo(min, max));
+    checker.addCoCo(new NatLiteralRangeCoCo(min, max));
 
     checker.checkAll(astex.get());
 
@@ -97,10 +97,10 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
-    checker.addCoCo(new BasicFloatLiteralRange());
-    checker.addCoCo(new BasicDoubleLiteralRange());
-    checker.addCoCo(new BasicLongLiteralRange());
-    checker.addCoCo(new NatLiteralRange());
+    checker.addCoCo(new BasicFloatLiteralRangeCoCo());
+    checker.addCoCo(new BasicDoubleLiteralRangeCoCo());
+    checker.addCoCo(new BasicLongLiteralRangeCoCo());
+    checker.addCoCo(new NatLiteralRangeCoCo());
 
     checker.checkAll(astex.get());
 
@@ -114,10 +114,10 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
-    checker.addCoCo(new SignedBasicFloatLiteralRange(new BigDecimal(min), new BigDecimal(max)));
-    checker.addCoCo(new SignedBasicDoubleLiteralRange(new BigDecimal(min), new BigDecimal(max)));
-    checker.addCoCo(new SignedBasicLongLiteralRange(min, max));
-    checker.addCoCo(new SignedNatLiteralRange(min, max));
+    checker.addCoCo(new SignedBasicFloatLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
+    checker.addCoCo(new SignedBasicDoubleLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
+    checker.addCoCo(new SignedBasicLongLiteralRangeCoCo(min, max));
+    checker.addCoCo(new SignedNatLiteralRangeCoCo(min, max));
 
     checker.checkAll(astex.get());
 
@@ -131,10 +131,10 @@ public class RangeCoCosTest {
     assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
-    checker.addCoCo(new SignedBasicFloatLiteralRange());
-    checker.addCoCo(new SignedBasicDoubleLiteralRange());
-    checker.addCoCo(new SignedBasicLongLiteralRange());
-    checker.addCoCo(new SignedNatLiteralRange());
+    checker.addCoCo(new SignedBasicFloatLiteralRangeCoCo());
+    checker.addCoCo(new SignedBasicDoubleLiteralRangeCoCo());
+    checker.addCoCo(new SignedBasicLongLiteralRangeCoCo());
+    checker.addCoCo(new SignedNatLiteralRangeCoCo());
 
     checker.checkAll(astex.get());
 

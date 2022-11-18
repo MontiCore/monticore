@@ -5,11 +5,8 @@ import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Optional;
 
 /**
