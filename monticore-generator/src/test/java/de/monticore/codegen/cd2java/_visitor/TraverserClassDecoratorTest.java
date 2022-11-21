@@ -75,42 +75,42 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testVisitorName() {
     assertEquals("AutomatonTraverserImplementation", traverserClass.getName());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(7, traverserClass.getCDAttributeList().size());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(12, traverserClass.getCDMethodList().size());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCount() {
     assertEquals(1, traverserClass.getInterfaceList().size());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterface() {
     assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser", traverserClass.getCDInterfaceUsage().getInterface(0));
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -119,7 +119,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("realThis", traverserClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonTraverserImplementation", astcdAttribute.getMCType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -128,7 +128,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("automatonVisitorList", traverserClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertListOf(AUTOMATON_VISITOR2, astcdAttribute.getMCType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -137,7 +137,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("lexicalsVisitorList", traverserClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertListOf(LEXICALS_VISITOR2, astcdAttribute.getMCType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -146,7 +146,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("automatonHandler", traverserClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(AUTOMATON_HANDLER, astcdAttribute.getMCType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -155,7 +155,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("lexicalsHandler", traverserClass);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertOptionalOf(LEXICALS_HANDLER, astcdAttribute.getMCType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -171,7 +171,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -184,7 +184,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDParameter astcdParameter = astcdMethod.getCDParameter(0);
     assertEquals("automatonVisitor", astcdParameter.getName());
     assertDeepEquals(AUTOMATON_VISITOR2, astcdParameter.getMCType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
 
   }
@@ -198,7 +198,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDParameter astcdParameter = astcdMethod.getCDParameter(0);
     assertEquals("lexicalsVisitor", astcdParameter.getName());
     assertDeepEquals(LEXICALS_VISITOR2, astcdParameter.getMCType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
 
   }
@@ -210,7 +210,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(astcdMethod.getMCReturnType().isPresentMCType());
     assertListOf(AUTOMATON_VISITOR2, astcdMethod.getMCReturnType().getMCType());
     assertEquals(0, astcdMethod.sizeCDParameters());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -221,7 +221,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(astcdMethod.getMCReturnType().isPresentMCType());
     assertListOf(LEXICALS_VISITOR2, astcdMethod.getMCReturnType().getMCType());
     assertEquals(0, astcdMethod.sizeCDParameters());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -234,7 +234,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDParameter astcdParameter = astcdMethod.getCDParameter(0);
     assertEquals("automatonHandler", astcdParameter.getName());
     assertDeepEquals(AUTOMATON_HANDLER, astcdParameter.getMCType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -247,7 +247,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     ASTCDParameter astcdParameter = astcdMethod.getCDParameter(0);
     assertEquals("lexicalsHandler", astcdParameter.getName());
     assertDeepEquals(LEXICALS_HANDLER, astcdParameter.getMCType());
-    
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -258,7 +258,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(astcdMethod.getMCReturnType().isPresentMCType());
     assertOptionalOf(AUTOMATON_HANDLER, astcdMethod.getMCReturnType().getMCType());
     assertEquals(0, astcdMethod.sizeCDParameters());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -269,7 +269,7 @@ public class TraverserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(astcdMethod.getMCReturnType().isPresentMCType());
     assertOptionalOf(LEXICALS_HANDLER, astcdMethod.getMCReturnType().getMCType());
     assertEquals(0, astcdMethod.sizeCDParameters());
-    
+
     assertTrue(Log.getFindings().isEmpty());
   }
 

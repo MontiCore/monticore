@@ -79,6 +79,7 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:01experiments:glex')
   include(':monticore-test:01experiments:lexicalModes')
   include(':monticore-test:01experiments:patternAccess')
+  include(':monticore-test:01experiments:prettyPrinters')
   include(':monticore-test:01experiments:questionnaire')
   include(':monticore-test:01experiments:S01_intro')
   include(':monticore-test:01experiments:scannerless')

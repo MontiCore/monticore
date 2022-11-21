@@ -9,7 +9,6 @@ import java.util.*;
 /**
  * Pretty prints automatons. Use {@link #print(ASTAutomata16)} to start a pretty
  * print and get the result by using {@link #getResult()}.
- *
 
  */
 public class Automata16PrettyPrinter
