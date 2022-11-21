@@ -82,6 +82,8 @@ import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
 import de.monticore.codegen.mc2cd.symbolTransl.MC2CDSymbolTranslation;
 import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
+import de.monticore.codegen.prettyprint.CDPrettyPrinterDecorator;
+import de.monticore.codegen.prettyprint.PrettyPrinterGenerator;
 import de.monticore.dstlgen.DSTLGenScript;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -328,6 +330,22 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
+   * Generates the PrettyPrinter and FullPrettyPrinter for the given grammar.
+   * Technically this is both a derive step and a decorate step
+   * Requires the grammar AST and derived AST CD
+   * @param glex {@link GlobalExtensionManagement}
+   * @param grammar to generate the parser for
+   * @return a CD for the _prettyprint package
+   */
+  public ASTCDCompilationUnit generatePrettyPrinter(GlobalExtensionManagement glex, ASTMCGrammar grammar) {
+    Log.errorIfNull(
+            grammar,
+            "0xA4109 PrettyPrinter generation can't be processed: the reference to the grammar ast is null");
+    return PrettyPrinterGenerator.generatePrettyPrinter(glex, grammar);
+  }
+
+
+  /**
    * @param ast
    * @return
    */
@@ -432,6 +450,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     cds.add(deriveASTCD(astGrammar, glex, cdScope));
     cds.add(deriveSymbolCD(astGrammar, cdScope));
     cds.add(deriveScopeCD(astGrammar, cdScope));
+    cds.add(generatePrettyPrinter(glex, astGrammar));
     return cds;
   }
 
@@ -667,6 +686,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decorateMill(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateCLI(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateAuxiliary(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
+    decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     return decoratedCD;
   }
 
@@ -856,6 +876,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     cdAuxiliaryDecorator.decorate(cd, decoratedCD);
   }
 
+  public void decoratePrettyPrinter(GlobalExtensionManagement glex, ASTCDCompilationUnit input, ICD4AnalysisScope cdScope,
+                                                ASTCDCompilationUnit prettyPrintCD, ASTCDCompilationUnit decoratedCD,
+                                                MCPath handCodedPath){
+    CDPrettyPrinterDecorator prettyPrinterDecorator = new CDPrettyPrinterDecorator(glex);
+    prettyPrinterDecorator.decorate(input, decoratedCD, prettyPrintCD);
+  }
+
   /**
    * Adds the suffix "List" to all attribute names that comprise multiple
    * instances.
@@ -971,6 +998,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decorateMill(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateCLI(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateAuxiliary(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
+    decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     return decoratedCD;
   }
 
