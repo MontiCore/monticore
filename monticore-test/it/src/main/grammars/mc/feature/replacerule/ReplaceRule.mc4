@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.replacerule;
+
+grammar ReplaceRule extends mc.common.Basics {
+  A = "A" Name;
+
+  B = "BLA" Name;
+
+  C = key("BLA_C") Name;
+
+  D = ">>" Name;
+
+  E = token("<<") Name;
+
+}
