@@ -38,27 +38,35 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeF
    * We use mainly endVisit, because the result is synthesized along the
    * tree, when walking upwards
    */
-
+  @Override
   public void traverse(ASTMCWildcardTypeArgument wildcardType) {
-    SymTypeOfWildcard tex;
+    SymTypeExpression tex;
     if (wildcardType.isPresentLowerBound()) {
       wildcardType.getLowerBound().accept(getTraverser());
       if (!getTypeCheckResult().isPresentResult()) {
-        Log.error("0xE9CDD Internal Error: SymType argument missing for generic type. "
-          + " Probably TypeCheck mis-configured.");
+        Log.error("0xE9CDD The lower bound type of the wildcard type " +
+          "could not be synthesized.", wildcardType.get_SourcePositionStart());
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         return;
       }
-      tex = SymTypeExpressionFactory.createWildcard(false, getTypeCheckResult().getResult());
+      if(!getTypeCheckResult().getResult().isObscureType()) {
+        tex = SymTypeExpressionFactory.createWildcard(false, getTypeCheckResult().getResult());
+      } else {
+        tex = SymTypeExpressionFactory.createObscureType();
+      }
     } else if (wildcardType.isPresentUpperBound()) {
       wildcardType.getUpperBound().accept(getTraverser());
       if (!getTypeCheckResult().isPresentResult()) {
-        Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
-          + " Probably TypeCheck mis-configured.");
+        Log.error("0xE9CDA The upper bound type of the wildcard type " +
+          "could not be synthesized.", wildcardType.get_SourcePositionStart());
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         return;
       }
-      tex = SymTypeExpressionFactory.createWildcard(true, getTypeCheckResult().getResult());
+      if(!getTypeCheckResult().getResult().isObscureType()) {
+        tex = SymTypeExpressionFactory.createWildcard(true, getTypeCheckResult().getResult());
+      } else {
+        tex = SymTypeExpressionFactory.createObscureType();
+      }
     } else {
       tex = SymTypeExpressionFactory.createWildcard();
     }

@@ -22,22 +22,22 @@ public class DeriveSymTypeOfMCJavaLiterals extends DeriveSymTypeOfMCCommonLitera
 
   @Override
   public void visit(ASTIntLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.INT));
+    derivePrimitive(lit, BasicSymbolsMill.INT);
   }
 
   @Override
   public void visit(ASTLongLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.LONG));
+    derivePrimitive(lit, BasicSymbolsMill.LONG);
   }
 
   @Override
   public void visit(ASTFloatLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.FLOAT));
+    derivePrimitive(lit, BasicSymbolsMill.FLOAT);
   }
 
   @Override
   public void visit(ASTDoubleLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.DOUBLE));
+    derivePrimitive(lit, BasicSymbolsMill.DOUBLE);
   }
 
 }

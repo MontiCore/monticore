@@ -108,7 +108,7 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
   @Test
   public void testInvalidLeftShiftExpression() throws IOException{
     //only possible with integral types
-    checkError("3<<4.5", "0xA0200");
+    checkError("3<<4.5", "0xA0201");
   }
 
   /**
@@ -144,7 +144,7 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
   @Test
   public void testInvalidLogicalRightExpression() throws IOException{
     //only possible with integral types
-    checkError("3>>>4.5", "0xA0202");
+    checkError("3>>>4.5", "0xA0201");
   }
 
   /**
@@ -162,7 +162,7 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
   @Test
   public void testInvalidBinaryOrOpExpression() throws IOException{
     //only possible with integral types
-    checkError("3|4.5", "0xA0204");
+    checkError("3|4.5", "0xA0203");
   }
 
   /**
@@ -198,6 +198,6 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
   @Test
   public void testInvalidBinaryXorExpression() throws IOException{
     //only possible with integral types
-    checkError("3^4.5", "0xA0205");
+    checkError("3^4.5", "0xA0203");
   }
 }

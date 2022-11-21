@@ -609,7 +609,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     }
 
     if(!getTypeCheckResult().isPresentResult() || getTypeCheckResult().getResult().isObscureType()) {
-      logError("0xA0241", expr.get_SourcePositionStart());
+      String qualName = nameParts.stream().map(ExprToNamePair::getName).collect(Collectors.joining("."));
+      Log.error("0xA0241 No SymTypeExpression could be derived for the FieldAccessExpression " + qualName, expr.get_SourcePositionStart());
     }
   }
 
@@ -635,12 +636,13 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     SymTypeExpression fieldOwnerExpr = fieldOwner.getResult();
     TypeSymbol fieldOwnerSymbol = fieldOwnerExpr.getTypeInfo();
     if (fieldOwnerSymbol instanceof TypeVarSymbol && !quiet) {
-      Log.error("0xA0321 The type " + fieldOwnerSymbol.getName() + " is a type variable and cannot have methods and attributes");
+      Log.error("0xA0321 The type " + fieldOwnerSymbol.getName() + " is a type variable and cannot have methods and attributes", expr.get_SourcePositionStart());
     }
     //search for a method, field or type in the scope of the type of the inner expression
     List<VariableSymbol> fieldSymbols = getCorrectFieldsFromInnerType(fieldOwnerExpr, expr);
     Optional<TypeSymbol> typeSymbolOpt = fieldOwnerSymbol.getSpannedScope().resolveType(expr.getName());
     Optional<TypeVarSymbol> typeVarOpt = fieldOwnerSymbol.getSpannedScope().resolveTypeVar(expr.getName());
+    String qualName = fieldOwnerSymbol.getName() + "." + expr.getName();
 
     if (!fieldSymbols.isEmpty()) {
       //cannot be a method, test variable first
@@ -652,7 +654,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if (fieldSymbols.size() != 1) {
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         if(!quiet) {
-          logError("0xA1236", expr.get_SourcePositionStart());
+          Log.error("0xA1236 Ambiguous: Found" + fieldSymbols.size() + " symbols for " + qualName, expr.get_SourcePositionStart());
         }
       }
       if (!fieldSymbols.isEmpty()) {
@@ -673,7 +675,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       } else{
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         if(!quiet) {
-          logError("0xA1306", expr.get_SourcePositionStart());
+          Log.error("0xA1306 The referenced type variable " + typeVar.getName() + " is not accessible.", expr.get_SourcePositionStart());
         }
       }
     } else if (typeSymbolOpt.isPresent()) {
@@ -687,13 +689,13 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       } else {
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         if(!quiet) {
-          logError("0xA1303", expr.get_SourcePositionStart());
+          Log.error("0xA1303 The referenced type " + typeSymbol.getName() + " is not accessible.", expr.get_SourcePositionStart());
         }
       }
     } else {
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       if(!quiet) {
-        logError("0xA1317", expr.get_SourcePositionStart());
+        Log.error("0xA1317 No matching symbol found for " + qualName, expr.get_SourcePositionStart());
       }
     }
   }
@@ -741,7 +743,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
 
     if (!fieldSymbols.isEmpty()) {
       if (fieldSymbols.size() != 1) {
-        logError("0xA1236", lastExpr.get_SourcePositionStart());
+        Log.error("0xA1237 Ambiguous: Found" + fieldSymbols.size() + " symbols for " + qualName, lastExpr.get_SourcePositionStart());
         getTypeCheckResult().reset();
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       } else {
@@ -928,7 +930,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     if(methodList.isEmpty()) {
       getTypeCheckResult().reset();
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      logError("0xA2239", expr.get_SourcePositionStart());
+      String qualName = methodOwnerExpr.getTypeInfo().getName() + "." + methodName;
+      Log.error("0xA2239 No matching method " + qualName + " found.", expr.get_SourcePositionStart());
     } else {
       calculateMethodReturnTypeBasedOnSignature(methodList, expr, args);
     }
@@ -978,7 +981,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
                                                                List<SymTypeExpression> argTypes,
                                                                Map<SymTypeOfFunction, FunctionSymbol> definingSymbols) {
     if(candidates.isEmpty()) {
-      logError("0xA1242", callExpr.get_SourcePositionStart());
+      Log.error("0xA1242 No matching function found.", callExpr.get_SourcePositionStart());
       getTypeCheckResult().reset();
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
     }
@@ -1007,7 +1010,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     } else {
       getTypeCheckResult().reset();
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      logError("0xA1241", callExpr.get_SourcePositionStart());
+      Log.error("0xA1241 No matching function with these arguments found.", callExpr.get_SourcePositionStart());
     }
   }
 
@@ -1062,7 +1065,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if (!returnType.deepEquals(function.getType())) {
         getTypeCheckResult().reset();
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-        logError("0xA1239", expr.get_SourcePositionStart());
+        Log.error("0xA1239 Found multiple functions with different return types.", expr.get_SourcePositionStart());
       }
     }
   }
