@@ -412,7 +412,7 @@ githubmirror:
     - mkdir -p ~/.ssh
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   script:
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fgithub-mirror-tools/repository/files/mirror.sh/raw\" --output mirror.sh"
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildinfstrtoken\" \"https://git.rwth-aachen.de/api/v4/projects/se%2Finfrastructure%2Fgithub-mirror-tools/repository/files/mirror.sh/raw\" --output mirror.sh"
     - sh mirror.sh
     - rm mirror.sh
     - git add --all
