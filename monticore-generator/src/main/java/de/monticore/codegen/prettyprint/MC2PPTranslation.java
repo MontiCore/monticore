@@ -81,8 +81,6 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     astcdDefinition.addCDElement(fullPrettyPrinterCDClass);
 
 
-    GrammarFamilyMill.init();
-
     List<MCGrammarSymbol> superGrammars = grammar.getSymbol().getAllSuperGrammars();
 
     GrammarTraverser traverser = GrammarFamilyMill.traverser();

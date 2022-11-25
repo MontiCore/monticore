@@ -33,8 +33,6 @@ public class PrettyPrinterGenerator {
     // instantiate converter
     Grammar2PPConverter converter = new Grammar2PPConverter();
 
-    CD4CodeMill.init();
-
     return converter.doConvert(astGrammar, glex);
   }
 }
