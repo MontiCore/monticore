@@ -412,6 +412,42 @@ public class TestPrettyPrinterTest {
     testPP("For ( Var VariableDeclaration In ExpressionSequence) Statement", TestPrettyPrintersMill.parser()::parse_StringIterationStatement);
   }
 
+  @Test
+  public void testLiterals() throws IOException {
+    testPP("null", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("true", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("false", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("'a'", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("'0'", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("\"a\"", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("\"ab\"", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("0", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("1", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("1l", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("1.0f", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+    testPP("1.0", TestPrettyPrintersMill.parser()::parse_StringLiteralProd);
+  }
+
+  @Test
+  public void testSignedLiterals() throws IOException {
+    testPP("null", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("true", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("false", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("'a'", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("'0'", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("\"a\"", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("\"ab\"", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("0", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("1", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("-1", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("1l", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("-1l", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("1.0f", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("-1.0f", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("1.0", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+    testPP("-1.0", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
+  }
+
 
   protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction) throws IOException {
     Optional<A> parsedOpt = parserFunction.parse(input);
