@@ -16,7 +16,7 @@ mlc JavaClassExpressions {
   export "$projectDir/src/main/java" {
     include "de/monticore/expressions/prettyprint/JavaClassExpressions*.java";
     include "de/monticore/expressions/exptojava/JavaClassExpressions*.java";
-    include "de/monticore/types/check/*JavaClassExpressions.java";
+    include "de/monticore/types/check/DeriveSymTypeOfJavaClassExpressions.java";
   }
 
   promote {

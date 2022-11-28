@@ -14,7 +14,7 @@ mlc MCJavaLiterals {
   export "$projectDir/src/main/java" {
     include "de/monticore/literals/mcjavaliterals/**.java";
     include "de/monticore/literals/prettyprint/MCJavaLiterals*.java";
-    include "de/monticore/types/check/*MCJavaLiterals.java";
+    include "de/monticore/types/check/DeriveSymTypeOfMCJavaLiterals.java";
   }
 
   promote {

@@ -16,7 +16,7 @@ mlc BitExpressions {
   export "$projectDir/src/main/java" {
     include "de/monticore/expressions/prettyprint/BitExpressions*.java";
     include "de/monticore/expressions/exptojava/BitExpressions*.java";
-    include "de/monticore/types/check/*BitExpressions.java";
+    include "de/monticore/types/check/DeriveSymTypeOfBitExpressions.java";
   }
 
   promote {

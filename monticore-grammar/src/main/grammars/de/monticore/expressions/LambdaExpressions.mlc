@@ -17,7 +17,7 @@ mlc LambdaExpressions {
     include "de/monticore/expressions/lambdaexpressions/**.java";
     include "de/monticore/expressions/prettyprint/LambdaExpressions*.java";
     include "de/monticore/expressions/exptojava/LambdaExpressions*.java";
-    include "de/monticore/types/check/*LambdaExpressions.java";
+    include "de/monticore/types/check/DeriveSymTypeOfLambdaExpressions.java";
   }
 
   promote {

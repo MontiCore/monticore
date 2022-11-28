@@ -16,7 +16,7 @@ mlc AssignmentExpressions {
   export "$projectDir/src/main/java" {
     include "de/monticore/expressions/prettyprint/AssignmentExpressions*.java";
     include "de/monticore/expressions/exptojava/AssignmentExpressions*.java";
-    include "de/monticore/types/check/*AssignmentExpressions.java";
+    include "de/monticore/types/check/DeriveSymTypeOfAssignmentExpressions.java";
   }
 
   promote {
