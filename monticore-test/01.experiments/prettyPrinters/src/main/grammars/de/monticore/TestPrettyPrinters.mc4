@@ -183,4 +183,8 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     		For "(" Expression In ExpressionSequence ")" Statement |
     		For "(" Var VariableDeclaration In ExpressionSequence ")" Statement
     	;
+
+    LiteralProd = Literal;
+    SignedLiteralProd = SignedLiteral;
+
 }
