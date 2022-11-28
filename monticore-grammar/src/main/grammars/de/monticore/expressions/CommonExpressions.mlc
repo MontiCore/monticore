@@ -14,7 +14,10 @@ mlc CommonExpressions {
 
   // export the prettyprinter
   export "$projectDir/src/main/java" {
+    include "de/monticore/expressions/commonexpressions/**.java";
     include "de/monticore/expressions/prettyprint/CommonExpressions*.java";
+    include "de/monticore/expressions/exptojava/CommonExpressions*.java";
+    include "de/monticore/types/check/*CommonExpressions.java";
   }
 
   promote {
