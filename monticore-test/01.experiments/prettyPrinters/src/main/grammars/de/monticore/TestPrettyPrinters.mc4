@@ -7,6 +7,7 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
   A = "A";
   B = "B";
   C = "C";
+  D = "D";
 
   CPName = "term" Name otherUsage:Name s:Name;
   CPNameOpt = "term" Name otherUsage:Name? s:Name?;
@@ -41,13 +42,13 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
   CPCGMulti1 = cg:["cg1" | "cg2"] ;
   CPCGMulti2 = cg:[u:"cg1" | v:"cg2"] ;
 
-  MultiCGPlus = (["a"]| ["b"] | ["c"])+;
-  MultiCGStar = (["a"] | ["b"] | ["c"])*;
-  SingleCGPlus = (cg:["a"| "b" | "c"])+;
-  SingleCGStar = (cg:["a"| "b" | "c"])*;
+  MultiCGPlus = (["a"]| ["b"] | ["c"])+ D?;
+  MultiCGStar = (["a"] | ["b"] | ["c"])* D?;
+  SingleCGPlus = (cg:["a"| "b" | "c"])+ D?;
+  SingleCGStar = (cg:["a"| "b" | "c"])* D?;
 
-  MultiCGPlusAlt = (["a"]| ["b"] | ["c"])+ | "empty";
-  MultiCGStarSkipAlt = (["a"]| ["b"] | ["c"])* | "empty";
+  MultiCGPlusAlt = (["a"]| ["b"] | ["c"])+ D? | "empty";
+  MultiCGStarSkipAlt = (["a"]| ["b"] | ["c"])* D? | "empty";
 
   // ConstantGroups in a repeated block => does not repeat endless
   CPCGRepBlock = (("<<" ["cg1"] ">>" ) | ("<<" ["cg2"] ">>" ))* ;
@@ -87,8 +88,8 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
          bla:Test*
          foo:String*;
    
-    D =  Name* "<" Test* ">";
-     astrule D =
+    ORD =  Name* "<" Test* ">";
+     astrule ORD =
          de.monticore.testprettyprinters._ast.ASTTest
          name:String;
    
@@ -183,6 +184,10 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     		For "(" Expression In ExpressionSequence ")" Statement |
     		For "(" Var VariableDeclaration In ExpressionSequence ")" Statement
     	;
+
+    OptEnd = A? "->" B (";" | C);
+
+    SDCall = [key("trigger")]? ["static"]? A B?;
 
     LiteralProd = Literal;
     SignedLiteralProd = SignedLiteral;

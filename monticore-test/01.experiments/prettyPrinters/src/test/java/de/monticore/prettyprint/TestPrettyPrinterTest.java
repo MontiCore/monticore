@@ -216,6 +216,14 @@ public class TestPrettyPrinterTest {
       testPP(input, TestPrettyPrintersMill.parser()::parse_StringMultiCGPlusAlt);
       testPP(input, TestPrettyPrintersMill.parser()::parse_StringMultiCGStarSkipAlt);
 
+      // And test with D
+      input = input + " D";
+      testPP(input, TestPrettyPrintersMill.parser()::parse_StringMultiCGPlus);
+      testPP(input, TestPrettyPrintersMill.parser()::parse_StringMultiCGStar);
+      testPP(input, TestPrettyPrintersMill.parser()::parse_StringSingleCGPlus);
+      testPP(input, TestPrettyPrintersMill.parser()::parse_StringSingleCGStar);
+      testPP(input, TestPrettyPrintersMill.parser()::parse_StringMultiCGPlusAlt);
+      testPP(input, TestPrettyPrintersMill.parser()::parse_StringMultiCGStarSkipAlt);
     }
     testPP("", TestPrettyPrintersMill.parser()::parse_StringMultiCGStar);
     testPP("", TestPrettyPrintersMill.parser()::parse_StringSingleCGStar);
@@ -326,8 +334,8 @@ public class TestPrettyPrinterTest {
   @Test
   public void testORD() throws IOException {
     // While the empty list is possible, we assume it is not desired by the ASTRule
-    testPP("n1 < test n2 >", TestPrettyPrintersMill.parser()::parse_StringD);
-    testPP("n1 n11 < test n2 test n22 >", TestPrettyPrintersMill.parser()::parse_StringD);
+    testPP("n1 < test n2 >", TestPrettyPrintersMill.parser()::parse_StringORD);
+    testPP("n1 n11 < test n2 test n22 >", TestPrettyPrintersMill.parser()::parse_StringORD);
   }
 
   @Test
@@ -448,6 +456,20 @@ public class TestPrettyPrinterTest {
     testPP("-1.0", TestPrettyPrintersMill.parser()::parse_StringSignedLiteralProd);
   }
 
+  @Test
+  public void testOptEnd() throws IOException {
+    testPP("A -> B;", TestPrettyPrintersMill.parser()::parse_StringOptEnd);
+    testPP("A -> B C", TestPrettyPrintersMill.parser()::parse_StringOptEnd);
+  }
+
+  @Test
+  public void testSDCall() throws IOException {
+    testPP("A", TestPrettyPrintersMill.parser()::parse_StringSDCall);
+    testPP("A B", TestPrettyPrintersMill.parser()::parse_StringSDCall);
+    testPP("static A B", TestPrettyPrintersMill.parser()::parse_StringSDCall);
+    testPP("trigger static A B", TestPrettyPrintersMill.parser()::parse_StringSDCall);
+    testPP("trigger A B", TestPrettyPrintersMill.parser()::parse_StringSDCall);
+  }
 
   protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction) throws IOException {
     Optional<A> parsedOpt = parserFunction.parse(input);

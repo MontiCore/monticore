@@ -100,18 +100,26 @@ public class AltData implements Comparable<AltData> {
       .setLiteral(MCCommonLiteralsMill.booleanLiteralBuilder().setSource(
           ASTConstantsMCCommonLiterals.TRUE).build()).build();
 
+  public final static ASTExpression FALSE_EXPRESSION = CommonExpressionsMill.literalExpressionBuilder()
+      .setLiteral(MCCommonLiteralsMill.booleanLiteralBuilder().setSource(
+          ASTConstantsMCCommonLiterals.FALSE).build()).build();
+
+
   public static ASTExpression reduceToAnd(Collection<ASTExpression> expressions) {
     return expressions.stream().reduce(TRUE_EXPRESSION, (expression, expression2) ->
-        expression == TRUE_EXPRESSION ? expression2 : CommonExpressionsMill.booleanAndOpExpressionBuilder().setLeft(expression).setRight(expression2)
-            .setOperator("&&")
-            .build());
+        expression == TRUE_EXPRESSION ? expression2 :
+            (expression2 == TRUE_EXPRESSION ? expression :
+                CommonExpressionsMill.booleanAndOpExpressionBuilder().setLeft(expression).setRight(expression2)
+                .setOperator("&&")
+                .build()));
   }
 
   public static ASTExpression reduceToOr(Collection<ASTExpression> expressions) {
-    return expressions.stream().reduce(TRUE_EXPRESSION, (expression, expression2) ->
-        expression == TRUE_EXPRESSION ? expression2 :
-            CommonExpressionsMill.booleanOrOpExpressionBuilder().setLeft(expression).setRight(expression2)
-                .setOperator("||")
-                .build());
+    return expressions.stream().reduce(FALSE_EXPRESSION, (expression, expression2) ->
+        expression == FALSE_EXPRESSION ? expression2 :
+            (expression2 == FALSE_EXPRESSION ? expression :
+                CommonExpressionsMill.booleanOrOpExpressionBuilder().setLeft(expression).setRight(expression2)
+                  .setOperator("||")
+                  .build()));
   }
 }
