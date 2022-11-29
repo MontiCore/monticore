@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static de.monticore.types.check.SymTypePrimitive.unbox;
 
 /**
@@ -171,6 +174,39 @@ public class TypeCheck {
       }
     }
     return subtype;
+  }
+
+  /**
+   * calculate the minimum inheritance distance from the specific type to the general type
+   * e.g. C extends B extends A => object of type C has distance of 2 to object of type A
+   * object of type B has distance of 1 to object of type A
+   * object of type A has distance of 0 to object of type A
+   * @param specific the specific type
+   * @param general the general type
+   * @return 0 if they are the same type, else their minimum inheritance distance
+   */
+  protected static int calculateInheritanceDistance(SymTypeExpression specific, SymTypeExpression general){
+    if(specific.deepEquals(general)) {
+      return 0;
+    } else if(!isSubtypeOf(specific, general)) {
+      return -1;
+    } else {
+      List<SymTypeExpression> superTypes = specific.getTypeInfo().getSuperTypesList();
+      List<Integer> superTypesSpecificity = superTypes.stream().map(s -> calculateInheritanceDistance(s, general)).collect(Collectors.toList());
+      int min = -1;
+      for (int specificity : superTypesSpecificity) {
+        if (min != -1 && specificity != -1 && specificity < min) {
+          min = specificity;
+        } else if (min == -1 && specificity != -1) {
+          min = specificity;
+        }
+      }
+      if(min == -1) {
+        return -1;
+      }else {
+        return min + 1;
+      }
+    }
   }
 
   public static boolean isBoolean(SymTypeExpression type) {
