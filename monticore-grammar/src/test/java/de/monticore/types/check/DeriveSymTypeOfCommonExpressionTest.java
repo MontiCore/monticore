@@ -1553,6 +1553,37 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     //TODO ND: complete when inner types are added
   }
 
+  /**
+   * test if we can use functions and variables
+   * as e.g. imported by Class2MC
+   */
+  @Test
+  public void testDoNotFilterBasicTypes() throws IOException{
+    TypeSymbol A = BasicSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
+        .setName("A")
+        .setEnclosingScope(scope)
+        .build();
+    A.addFunctionSymbol(function("func", _voidSymType));
+    A.addVariableSymbol(variable("var", _booleanSymType));
+    VariableSymbol a = BasicSymbolsMill.variableSymbolBuilder()
+        .setName("a")
+        .setType(SymTypeExpressionFactory.createTypeObject(A))
+        .setEnclosingScope(scope)
+        .build();
+    add2scope(scope, A);
+    add2scope(scope, a);
+    setFlatExpressionScopeSetter(scope);
+
+    // functions are available as if they were static
+    check("A.func()", "void");
+    check("a.func()", "void");
+
+    // variables are available as if they were non-static
+    checkError("A.var", "0xA0241");
+    check("a.var", "boolean");
+  }
+
   public void init_method_test(){
     //see MC Ticket #3298 for this example, use test instead of bar because bar is a keyword in CombineExpressions
     //create types A, B and C, B extends A, C extends B
