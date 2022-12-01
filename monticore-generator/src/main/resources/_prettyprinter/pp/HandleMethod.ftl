@@ -4,7 +4,7 @@
 -->
 ${tc.signature("blockData", "astName", "grammarName", "astPackage", "iterators")}
 if (this.isPrintComments()) {
-de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
+    de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
 }
 <#list iterators as it>
     ${it.getValue().getType()} iter_${it.getKey()?uncap_first} = node.${it.getValue().getGetter()}().iterator();
@@ -17,5 +17,5 @@ de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter(
 
 </#if>
 if (this.isPrintComments()) {
-de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
+    de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
 }
