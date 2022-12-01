@@ -7,9 +7,7 @@ ${tc.signature("glex", "altData", "grammarName", "astPackage")}
 <@alt glex altData grammarName astPackage/>
 <#macro alt glex altData grammarName astPackage>
 
-<#--/* Alt Condition: ${altData.getExpressionConj()} */-->
 <#list altData.getComponentList() as comp>
-<#--    /* Component: ${comp} */-->
     <#if comp.getType().name() == "T">  <#-- Terminal -->
         ${includeArgs("Terminal", ast, comp.getNameToUse())}
     <#elseif comp.getType().name() == "NT">  <#-- NonTerminal -->
@@ -43,7 +41,7 @@ ${tc.signature("glex", "altData", "grammarName", "astPackage")}
             node.get${comp.getNameToUse()?cap_first}(0).accept(getTraverser());
         </#if>
     <#elseif comp.getType().name() == "NT_ITERATED">  <#-- NonTerminal with Iterator usage* -->
-        <#if comp.isList()>   <#-- Name Name* -->
+        <#if comp.isList()>   <#-- e.g. Name Name* -->
             while(iter_${comp.getNameToUse()?uncap_first}.hasNext()) {
             <#if comp.isString() >
                 getPrinter().print(iter_${comp.getNameToUse()?uncap_first}.next() + " ");

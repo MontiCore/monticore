@@ -2,7 +2,6 @@
 package de.monticore.codegen.prettyprint;
 
 import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -22,7 +21,6 @@ public class PrettyPrinterGenerator {
           ASTMCGrammar astGrammar
   ) {
 
-    Log.enableFailQuick(false);
     glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     glex.setGlobalValue("grammarPrinter", new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter()));
 
