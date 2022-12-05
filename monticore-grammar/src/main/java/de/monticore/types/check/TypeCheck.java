@@ -186,7 +186,10 @@ public class TypeCheck {
    * @return 0 if they are the same type, else their minimum inheritance distance
    */
   protected static int calculateInheritanceDistance(SymTypeExpression specific, SymTypeExpression general){
-    if(specific.deepEquals(general)) {
+    if(specific.isPrimitive() && general.isPrimitive()) {
+      return calculateInheritanceDistance((SymTypePrimitive) specific, (SymTypePrimitive) general);
+    }
+    else if(specific.deepEquals(general)) {
       return 0;
     } else if(!isSubtypeOf(specific, general)) {
       return -1;
@@ -206,6 +209,58 @@ public class TypeCheck {
       }else {
         return min + 1;
       }
+    }
+  }
+
+  public static int calculateInheritanceDistance(SymTypePrimitive specific, SymTypePrimitive general) {
+    if (unbox(specific.print()).equals(unbox(general.print()))) {
+      return 0;
+    }
+    if (specific.isNumericType() && general.isNumericType()) {
+      if (isByte(specific)) {
+        if (isShort(general)) {
+          return 1;
+        } else if (isInt(general)) {
+          return 2;
+        } else if (isLong(general)) {
+          return 3;
+        } else if (isFloat(general)) {
+          return 4;
+        } else if (isDouble(general)) {
+          return 5;
+        }
+      } else if (isChar(specific) || isShort(specific)) {
+        if (isInt(general)) {
+          return 1;
+        } else if (isLong(general)) {
+          return 2;
+        } else if (isFloat(general)) {
+          return 3;
+        } else if (isDouble(general)) {
+          return 4;
+        }
+      } else if (isInt(specific)) {
+        if (isLong(general)) {
+          return 1;
+        } else if (isFloat(general)) {
+          return 2;
+        } else if (isDouble(general)) {
+          return 3;
+        }
+      } else if (isLong(specific)) {
+        if (isFloat(general)) {
+          return 1;
+        } else if (isDouble(general)) {
+          return 2;
+        }
+      } else if (isFloat(specific)) {
+        if (isDouble(general)) {
+          return 1;
+        }
+      }
+      return -1;
+    } else {
+      return -1;
     }
   }
 
