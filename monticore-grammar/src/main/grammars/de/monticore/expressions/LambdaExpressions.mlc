@@ -1,0 +1,28 @@
+package de.monticore.expressions;
+
+mlc LambdaExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/LambdaExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/lambdaexpressions/**.java";
+  }
+
+  // export the prettyprinter
+  export "$projectDir/src/main/java" {
+    include "de/monticore/expressions/lambdaexpressions/**.java";
+    include "de/monticore/expressions/prettyprint/LambdaExpressions*.java";
+    include "de/monticore/expressions/exptojava/LambdaExpressions*.java";
+    include "de/monticore/types/check/DeriveSymTypeOfLambdaExpressions.java";
+  }
+
+  promote {
+    mlc "de.monticore.symbols.BasicSymbols";
+    mlc "de.monticore.types.MCBasicTypes";
+    mlc "de.monticore.expressions.ExpressionsBasis";
+  }
+}

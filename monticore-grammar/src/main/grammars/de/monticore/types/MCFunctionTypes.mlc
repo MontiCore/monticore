@@ -1,0 +1,28 @@
+package de.monticore.types;
+
+mlc MCFunctionTypes {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/types/MCFunctionTypes.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/types/mcfunctiontypes/**.java";
+    include "de/monticore/types/prettyprint/MCFunctionTypes**.java";
+
+    include "de/monticore/types/check/FullSynthesizeFromMCFunctionTypes.java";
+    include "de/monticore/types/check/SynthesizeSymTypeFromMCFunctionTypes.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/types/mcfunctiontypes/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.types.MCBasicTypes";
+  }
+
+}
