@@ -1158,7 +1158,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
 
   private SymTypeOfFunction determineMoreSpecific(SymTypeOfFunction fun1, int[] spec1, SymTypeOfFunction fun2, int[] spec2) {
     for(int i = 0; i<spec1.length; i++) {
-      if(spec1[i] > spec2[i]){
+      if(spec1[i] > spec2[i] && spec2[i] != -1){
         return fun2;
       }
     }
