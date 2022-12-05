@@ -6,6 +6,7 @@ import de.monticore.expressions.streamexpressions._ast.ASTAppendStreamExpression
 import de.monticore.expressions.streamexpressions._ast.ASTConcatStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTEmptyStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTLengthStreamExpression;
+import de.monticore.expressions.streamexpressions._prettyprint.StreamExpressionsFullPrettyPrinter;
 import de.monticore.expressions.teststreamexpressions.TestStreamExpressionsMill;
 import de.monticore.expressions.teststreamexpressions._parser.TestStreamExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
@@ -63,9 +64,8 @@ public class StreamExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTExpression ast = result.get();
-    assertTrue(ast instanceof ASTAppendStreamExpression);
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = prettyPrinter.prettyprint((ASTAppendStreamExpression) ast);
 
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -83,9 +83,8 @@ public class StreamExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTExpression ast = result.get();
-    assertTrue(ast instanceof ASTConcatStreamExpression);
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = prettyPrinter.prettyprint((ASTConcatStreamExpression) ast);
 
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -102,7 +101,7 @@ public class StreamExpressionsPrettyPrinterTest {
 
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-    ASTExpression ast = result.get();
+    ASTLengthStreamExpression ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
