@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar CdLight extends de.monticore.types.MCBasicTypes, de.monticore.symbols.OOSymbols {
+
+  CdCompilationUnit =
+    MCPackageDeclaration?
+    imports:MCImportStatement*
+	CdDefinition;
+
+  CdDefinition implements Diagram = "classdiagram" Name "{"
+    CdElement*
+  "}";
+
+  interface CdElement;
+
+  symbol scope NestedPackage implements CdElement = "package" Name "{" CdElement* "}";
+
+  CdClass implements OOType, CdElement = "class" Name "{"
+    (CdAttribute | CdMethod)*
+  "}";
+
+  CdAttribute implements Field = MCType Name ";";
+
+  CdMethod implements Method = Name "(" ")" ";";
+  
+}
