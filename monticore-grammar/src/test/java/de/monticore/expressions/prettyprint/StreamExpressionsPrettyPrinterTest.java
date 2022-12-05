@@ -2,10 +2,7 @@
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTAppendStreamExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTConcatStreamExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTEmptyStreamExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTLengthStreamExpression;
+import de.monticore.expressions.streamexpressions._ast.*;
 import de.monticore.expressions.streamexpressions._prettyprint.StreamExpressionsFullPrettyPrinter;
 import de.monticore.expressions.teststreamexpressions.TestStreamExpressionsMill;
 import de.monticore.expressions.teststreamexpressions._parser.TestStreamExpressionsParser;
@@ -46,7 +43,7 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTEmptyStreamExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = prettyPrinter.prettyprint((ASTStreamExpressionsNode) ast);
 
     result = parser.parse_StringEmptyStreamExpression(output);
     assertFalse(parser.hasErrors());
@@ -65,7 +62,7 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint((ASTAppendStreamExpression) ast);
+    String output = prettyPrinter.prettyprint((ASTStreamExpressionsNode) ast);
 
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -84,7 +81,7 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint((ASTConcatStreamExpression) ast);
+    String output = prettyPrinter.prettyprint((ASTStreamExpressionsNode) ast);
 
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -103,7 +100,7 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTLengthStreamExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = prettyPrinter.prettyprint((ASTStreamExpressionsNode) ast);
 
     result = parser.parse_StringLengthStreamExpression(output);
     assertFalse(parser.hasErrors());
