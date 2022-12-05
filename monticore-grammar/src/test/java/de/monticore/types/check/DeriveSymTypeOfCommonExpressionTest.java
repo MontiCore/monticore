@@ -13,7 +13,9 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraver
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
@@ -1549,5 +1551,185 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
     assertTrue(sType.isPresent());
     //TODO ND: complete when inner types are added
+  }
+
+  /**
+   * test if we can use functions and variables
+   * as e.g. imported by Class2MC
+   */
+  @Test
+  public void testDoNotFilterBasicTypes() throws IOException{
+    TypeSymbol A = BasicSymbolsMill.typeSymbolBuilder()
+        .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
+        .setName("A")
+        .setEnclosingScope(scope)
+        .build();
+    A.addFunctionSymbol(function("func", _voidSymType));
+    A.addVariableSymbol(variable("var", _booleanSymType));
+    VariableSymbol a = BasicSymbolsMill.variableSymbolBuilder()
+        .setName("a")
+        .setType(SymTypeExpressionFactory.createTypeObject(A))
+        .setEnclosingScope(scope)
+        .build();
+    add2scope(scope, A);
+    add2scope(scope, a);
+    setFlatExpressionScopeSetter(scope);
+
+    // functions are available as if they were static
+    check("A.func()", "void");
+    check("a.func()", "void");
+
+    // variables are available as if they were non-static
+    checkError("A.var", "0xA0241");
+    check("a.var", "boolean");
+  }
+
+  public void init_method_test(){
+    //see MC Ticket #3298 for this example, use test instead of bar because bar is a keyword in CombineExpressions
+    //create types A, B and C, B extends A, C extends B
+    TypeSymbol a = type("A");
+    SymTypeExpression aSym = SymTypeExpressionFactory.createTypeObject(a);
+    TypeSymbol b = type("B", Lists.newArrayList(aSym));
+    SymTypeExpression bSym = SymTypeExpressionFactory.createTypeObject(b);
+    TypeSymbol c = type("C", Lists.newArrayList(bSym));
+    SymTypeExpression cSym = SymTypeExpressionFactory.createTypeObject(c);
+
+    scope.add(a);
+    scope.add(b);
+    scope.add(c);
+
+    //create method foo(A x)
+    MethodSymbol fooA = method("foo", aSym);
+    VariableSymbol fooAx = field("x", aSym);
+    fooA.getSpannedScope().add(fooAx);
+    scope.add(fooA);
+
+    //create method foo(B x)
+    MethodSymbol fooB = method("foo", bSym);
+    VariableSymbol fooBx = field("x", bSym);
+    fooB.getSpannedScope().add(fooBx);
+    scope.add(fooB);
+
+    //create method foo(C x)
+    MethodSymbol fooC = method("foo", cSym);
+    VariableSymbol fooCx = field("x", cSym);
+    fooC.getSpannedScope().add(fooCx);
+    scope.add(fooC);
+
+    //create method foo(A x, A y)
+    MethodSymbol fooAA = method("foo", aSym);
+    VariableSymbol fooAAx = field("x", aSym);
+    fooAA.getSpannedScope().add(fooAAx);
+    VariableSymbol fooAAy = field("y", aSym);
+    fooAA.getSpannedScope().add(fooAAy);
+    scope.add(fooAA);
+
+    //create method foo(A x, B y)
+    MethodSymbol fooAB = method("foo", bSym);
+    VariableSymbol fooABx = field("x", aSym);
+    fooAB.getSpannedScope().add(fooABx);
+    VariableSymbol fooABy = field("y", bSym);
+    fooAB.getSpannedScope().add(fooABy);
+    scope.add(fooAB);
+
+    //create method foo(A x, C y)
+    MethodSymbol fooAC = method("foo", cSym);
+    VariableSymbol fooACx = field("x", aSym);
+    fooAC.getSpannedScope().add(fooACx);
+    VariableSymbol fooACy = field("y", cSym);
+    fooAC.getSpannedScope().add(fooACy);
+    scope.add(fooAC);
+
+    //create method test(A x, B y, C z)
+    MethodSymbol testABC = method("test", aSym);
+    VariableSymbol testABCx = field("x", aSym);
+    testABC.getSpannedScope().add(testABCx);
+    VariableSymbol testABCy = field("y", bSym);
+    testABC.getSpannedScope().add(testABCy);
+    VariableSymbol testABCz = field("z", cSym);
+    testABC.getSpannedScope().add(testABCz);
+    scope.add(testABC);
+
+    //create method test(C x, C y, A z)
+    MethodSymbol testCCA = method("test", aSym);
+    VariableSymbol testCCAx = field("x", cSym);
+    testCCA.getSpannedScope().add(testCCAx);
+    VariableSymbol testCCAy = field("y", cSym);
+    testCCA.getSpannedScope().add(testCCAy);
+    VariableSymbol testCCAz = field("z", aSym);
+    testCCA.getSpannedScope().add(testCCAz);
+    scope.add(testCCA);
+
+    //create method test(A x, B y)
+    MethodSymbol testAB = method("test", bSym);
+    VariableSymbol testABx = field("x", aSym);
+    testAB.getSpannedScope().add(testABx);
+    VariableSymbol testABy = field("y", bSym);
+    testAB.getSpannedScope().add(testABy);
+    scope.add(testAB);
+
+    //create method test(C x, A y)
+    MethodSymbol testCA = method("test", cSym);
+    VariableSymbol testCAx = field("x", cSym);
+    testCA.getSpannedScope().add(testCAx);
+    VariableSymbol testCAy = field("y", aSym);
+    testCA.getSpannedScope().add(testCAy);
+    scope.add(testCA);
+
+    //create variables A a, B b and C c
+    VariableSymbol varA = field("a", aSym);
+    scope.add(varA);
+    VariableSymbol varB = field("b", bSym);
+    scope.add(varB);
+    VariableSymbol varC = field("c", cSym);
+    scope.add(varC);
+
+    setFlatExpressionScopeSetter(scope);
+  }
+
+  @Test
+  public void testCorrectMethodChosen() throws IOException {
+    init_method_test();
+
+    /*
+    available methods:
+    A foo(A x)
+    B foo(B x)
+    C foo(C x)
+    A foo(A x, A y)
+    B foo(A x, B y)
+    C foo(A x, C y)
+    A test(A x, B y, C z)
+    C test(C x, C y, A z)
+    B test(A x, B y)
+    C test(C x, A y)
+     */
+
+    check("foo(a)", "A");
+    check("foo(b)", "B");
+    check("foo(c)", "C");
+
+    check("foo(a, a)", "A");
+    check("foo(a, b)", "B");
+    check("foo(a, c)", "C");
+    check("foo(b, a)", "A");
+    check("foo(b, b)", "B");
+    check("foo(b, c)", "C");
+    check("foo(c, a)", "A");
+    check("foo(c, b)", "B");
+    check("foo(c, c)", "C");
+
+    checkError("test(c, c, c)", "0xA1243");
+
+    checkError("test(a, a)", "0xA1241");
+    checkError("test(b, a)", "0xA1241");
+    checkError("test(c, b)", "0xA1243");
+    checkError("test(c, c)", "0xA1243");
+
+    check("test(a, b)", "B");
+    check("test(a, c)", "B");
+    check("test(b, b)", "B");
+    check("test(b, c)", "B");
+    check("test(c, a)", "C");
   }
 }

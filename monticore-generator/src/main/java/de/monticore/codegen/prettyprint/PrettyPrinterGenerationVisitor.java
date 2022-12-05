@@ -16,16 +16,21 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTLogicalNotExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.Multiplicity;
+import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
+import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
+import de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals;
+import de.monticore.literals.mcliteralsbasis.MCLiteralsBasisMill;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
@@ -267,6 +272,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     PPGuardComponent component = PPGuardComponent.forT(node.getName(), node.getIteration());
 
     altDataStack.peek().getComponentList().add(component);
+    altDataStack.peek().getExpressionList().add(AltData.TRUE_EXPRESSION); // Push a true condition
   }
 
 
@@ -340,7 +346,6 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
   @Override
   public void visit(ASTKeyTerminal node) {
-//    this.failureMessage = "Unable to support KeyTerminals";
     if (blockDataStack.isEmpty()) return; // Only visit in CPs
     PPGuardComponent component = PPGuardComponent.forT(node.getName(), node.getIteration());
 
@@ -373,7 +378,20 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
     PPGuardComponent component = PPGuardComponent.forCG(getter, constants);
 
-    AltData altData = altDataStack.peek();
+    AltData altData;
+    Optional<BlockData> blockDataOpt = Optional.empty();
+    if (node.getIteration() == ASTConstantsGrammar.QUESTION || node.getIteration() == ASTConstantsGrammar.STAR) {
+      // Add a new block with alt for this ConstantGroup
+      BlockData outerBlock = blockDataStack.peek();
+      blockDataOpt = Optional.of(new BlockData(false, node.getIteration(), getEffectiveIteration(outerBlock.getInheritedIteration(), node.getIteration()), null));
+      altDataStack.peek().getComponentList().add(PPGuardComponent.forBlock(blockDataOpt.get(), node.getIteration()));
+      // And add one alt (without using the stack, as we will only use it in this method)
+      altData = new AltData();
+      blockDataOpt.get().getAltDataList().add(altData);
+    }else {
+      // If this is not an optional CG, skip the extra block
+      altData = altDataStack.peek();
+    }
     altData.getComponentList().add(component);
 
     // As exactly one constant occurs, a conditional-expression is necessary
@@ -398,6 +416,37 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       }
       // Reduce the list to a bunch of logical ORs
       altData.getExpressionList().add(AltData.reduceToOr(expressionList));
+    }
+
+    if (blockDataOpt.isPresent()) {
+      // Close the (opt) block
+      AltData outerAltData = altDataStack.peek();
+      int maxOpt = outerAltData.getOptional();
+      int maxReq = outerAltData.getRequired();
+
+      boolean isOpt = node.getIteration() == ASTConstantsGrammar.STAR || node.getIteration() == ASTConstantsGrammar.QUESTION;
+
+      List<ASTExpression> allAltExpressions = new ArrayList<>();
+
+      for (AltData innerAlt : blockDataOpt.get().getAltDataList()) {
+        if (isOpt) {
+          maxOpt = Math.max(maxOpt, innerAlt.getOptional() + innerAlt.getRequired());
+        } else {
+          // Non-optional block
+          maxOpt = Math.max(maxOpt, innerAlt.getOptional());
+          maxReq = Math.max(maxReq, innerAlt.getRequired());
+          if (!innerAlt.getExpressionList().isEmpty())
+            allAltExpressions.add(AltData.reduceToAnd(innerAlt.getExpressionList()));
+          else
+            allAltExpressions.add(AltData.TRUE_EXPRESSION);
+        }
+      }
+      outerAltData.setOptional(maxOpt);
+      outerAltData.setRequired(maxReq);
+
+      if (!allAltExpressions.isEmpty())
+        outerAltData.getExpressionList().add(AltData.reduceToOr(allAltExpressions));
+
     }
   }
 
@@ -469,7 +518,6 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     }
     return g1;
   }
-
 
   public ASTLogicalNotExpression negate(ASTExpression expression) {
     return CommonExpressionsMill.logicalNotExpressionBuilder().setExpression(expression).build();

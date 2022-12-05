@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
@@ -977,9 +978,9 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    *                        is set as the defining symbol, if applicable.
    */
   protected void calculateFunctionReturnTypeBasedOnSignature(List<SymTypeOfFunction> candidates,
-                                                               ASTCallExpression callExpr,
-                                                               List<SymTypeExpression> argTypes,
-                                                               Map<SymTypeOfFunction, FunctionSymbol> definingSymbols) {
+                                                             ASTCallExpression callExpr,
+                                                             List<SymTypeExpression> argTypes,
+                                                             Map<SymTypeOfFunction, FunctionSymbol> definingSymbols) {
     if(candidates.isEmpty()) {
       Log.error("0xA1242 No matching function found.", callExpr.get_SourcePositionStart());
       getTypeCheckResult().reset();
@@ -996,21 +997,25 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
 
     // Filter based on a compatible signature
     List<SymTypeOfFunction> fittingFunctions = getFittingFunctions(candidates, callExpr, argTypes);
+    List<SymTypeOfFunction> mostSpecific = chooseMostSpecificFunction(fittingFunctions, argTypes, callExpr);
     // There can only be one method with the correct arguments and return type
-    if (!fittingFunctions.isEmpty()) {
-      if (fittingFunctions.size() > 1) {
-        checkForReturnType(fittingFunctions, callExpr);
+    if (!mostSpecific.isEmpty()) {
+      if (mostSpecific.size() > 1) {
+        checkForReturnType(mostSpecific, callExpr);
       }
-      if(definingSymbols.containsKey(fittingFunctions.get(0))){
-        callExpr.setDefiningSymbol(definingSymbols.get(fittingFunctions.get(0)));
+      if(definingSymbols.containsKey(mostSpecific.get(0))){
+        callExpr.setDefiningSymbol(definingSymbols.get(mostSpecific.get(0)));
       }
-      SymTypeExpression wholeResult = fittingFunctions.get(0).getType();
+      SymTypeExpression wholeResult = mostSpecific.get(0).getType();
       getTypeCheckResult().setMethod();
       getTypeCheckResult().setResult(wholeResult);
     } else {
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA1241 No matching function with these arguments found.", callExpr.get_SourcePositionStart());
+      if(fittingFunctions.isEmpty()) {
+        getTypeCheckResult().reset();
+        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+        Log.error("0xA1241 Could not resolve method", callExpr.get_SourcePositionStart());
+      }
+      // else an error was already logged because of ambiguity
     }
   }
 
@@ -1065,7 +1070,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if (!returnType.deepEquals(function.getType())) {
         getTypeCheckResult().reset();
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-        Log.error("0xA1239 Found multiple functions with different return types.", expr.get_SourcePositionStart());
+        Log.error("0xA1239 Ambiguous method call, multiple matching functions with different return types", expr.get_SourcePositionStart());
       }
     }
   }
@@ -1082,15 +1087,15 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
                                                      List<SymTypeExpression> args) {
     List<SymTypeOfFunction> fittingFunctions = new ArrayList<>();
     for (SymTypeOfFunction function : candidates) {
-      //for every function check if the arguments are correct
+      // for every function check if the arguments are correct
       if ((!function.isElliptic() &&
           args.size() == function.getArgumentTypeList().size())
           || (function.isElliptic() &&
           args.size() >= function.getArgumentTypeList().size() - 1)) {
         boolean success = true;
         for (int i = 0; i < args.size(); i++) {
-          //test if every single argument is correct
-          //if an argument is void type then it could not be calculated correctly -> see calculateArguments
+          // test if every single argument is correct
+          // if an argument is void type then it could not be calculated correctly -> see calculateArguments
           SymTypeExpression paramType = function.getArgumentTypeList()
               .get(Math.min(i, function.getArgumentTypeList().size() - 1));
           if (!paramType.deepEquals(args.get(i)) &&
@@ -1100,7 +1105,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
           }
         }
         if (success) {
-          //function has the correct arguments and return type
+          // function has the correct arguments and return type
           fittingFunctions.add(function);
         }
       }
@@ -1108,14 +1113,56 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     return fittingFunctions;
   }
 
-  protected List<FunctionSymbol> getFittingMethods(List<FunctionSymbol> methodlist, ASTCallExpression expr, List<SymTypeExpression> args) {
-    List<FunctionSymbol> fittingMethods = new ArrayList<>();
-    for (FunctionSymbol method : methodlist) {
-      if (!getFittingFunctions(Collections.singletonList(method.getFunctionType()), expr, args).isEmpty()) {
-        fittingMethods.add(method);
+  protected List<SymTypeOfFunction> chooseMostSpecificFunction(List<SymTypeOfFunction> candidates, List<SymTypeExpression> args, ASTCallExpression expr) {
+    if(candidates.size() <= 1){
+      return candidates;
+    }
+    boolean ambiguous = false;
+    Map<SymTypeOfFunction, int[]> specificityMap = new HashMap<>();
+    List<SymTypeOfFunction> mostSpecific = Lists.newArrayList(candidates.get(0));
+    for(SymTypeOfFunction function: candidates) {
+      int[] specificity = new int[args.size()];
+      for(int i = 0; i<args.size(); i++){
+        specificity[i] = TypeCheck.calculateInheritanceDistance(args.get(i), function.getArgumentType(i));
+      }
+      specificityMap.put(function, specificity);
+      if(!function.equals(mostSpecific.get(0))) {
+        // compare their specificity
+        int[] mostSpecificSpecificity = specificityMap.get(mostSpecific.get(0));
+        SymTypeOfFunction res1 = determineMoreSpecific(function, specificity, mostSpecific.get(0), mostSpecificSpecificity);
+        SymTypeOfFunction res2 = determineMoreSpecific(mostSpecific.get(0), mostSpecificSpecificity, function, specificity);
+        if(!res1.equals(res2)){
+          boolean equalArgs = true;
+          for(int i = 0; i< Integer.max(res1.sizeArgumentTypes(), res2.sizeArgumentTypes()); i++) {
+            if(!res1.getArgumentType(i).deepEquals(res2.getArgumentType(i))){
+              equalArgs = false;
+            }
+          }
+          if(equalArgs){
+            mostSpecific = Lists.newArrayList(res1, res2);
+          }else{
+            ambiguous = true;
+          }
+        } else {
+          mostSpecific = Lists.newArrayList(res1);
+        }
       }
     }
-    return fittingMethods;
+    if(ambiguous){
+      Log.error("0xA1243 Ambiguous method call, multiple matching functions", expr.get_SourcePositionStart());
+      return Lists.newArrayList();
+    } else {
+      return mostSpecific;
+    }
+  }
+
+  private SymTypeOfFunction determineMoreSpecific(SymTypeOfFunction fun1, int[] spec1, SymTypeOfFunction fun2, int[] spec2) {
+    for(int i = 0; i<spec1.length; i++) {
+      if(spec1[i] > spec2[i]){
+        return fun2;
+      }
+    }
+    return fun1;
   }
 
   /**

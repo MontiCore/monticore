@@ -7,15 +7,10 @@ import automata._symboltable.AutomataSymbols2Json;
 import automata._symboltable.IAutomataArtifactScope;
 import automata._symboltable.IAutomataScope;
 import automata._symboltable.StateSymbol;
-import automata2.Automata2Mill;
-import automata2._parser.Automata2Parser;
-import automata2._symboltable.Automata2Symbols2Json;
-import automata2._symboltable.IAutomata2ArtifactScope;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -30,8 +25,6 @@ public class ResolveDeepTest {
 
   protected static AutomataParser parser = new AutomataParser();
 
-  protected static Automata2Parser parser2 = new Automata2Parser();
-
   @Before
   public void storeSymbols() throws IOException {
     LogStub.init();
@@ -40,15 +33,10 @@ public class ResolveDeepTest {
     //init global scopes with the model path and store symtab of test model
     String testmodel = "src/test/resources/example/HierarchyPingPong.aut";
 
-    ASTAutomaton ast1 = parser.parse(testmodel).get();
-    IAutomataArtifactScope as1 = AutomataMill.scopesGenitorDelegator().createFromAST(ast1);
+    ASTAutomaton ast = parser.parse(testmodel).get();
+    IAutomataArtifactScope as = AutomataMill.scopesGenitorDelegator().createFromAST(ast);
     AutomataSymbols2Json s2j = new AutomataSymbols2Json();
-    s2j.store(as1, "target/symbols/PingPong.autsym");
-
-    automata2._ast.ASTAutomaton ast2 = parser2.parse(testmodel).get();
-    IAutomata2ArtifactScope as2 = Automata2Mill.scopesGenitorDelegator().createFromAST(ast2);
-    Automata2Symbols2Json s2j2 = new Automata2Symbols2Json();
-    s2j2.store(as2, "target/symbols2/PingPong.autsym");
+    s2j.store(as, "target/symbols/PingPong.autsym");
   }
 
   @Test
@@ -110,18 +98,13 @@ public class ResolveDeepTest {
 
   private void reInitGlobalScopes(MCPath mp1, MCPath mp2) {
     AutomataMill.globalScope().clear();
-    Automata2Mill.globalScope().clear();
     AutomataMill.globalScope().setSymbolPath(mp1);
-    Automata2Mill.globalScope().setSymbolPath(mp2);
   }
 
   @Test
   public void testResolveFromGlobalScope() {
-    // this test shows that deeply nested symbols cannot be found by the default
-    // calculateModelNamesForState method (case: Automata language), but with a
-    // handritten adjustment (case Automata2 language)
-
-
+    // this test demonstrates that deeply nested symbols can now be found via
+    // the default calculateModelNamesForState method
 
     MCPath mp1 = new MCPath(Paths.get("target/symbols"));
     MCPath mp2 = new MCPath(Paths.get("target/symbols2"));
@@ -130,25 +113,21 @@ public class ResolveDeepTest {
 
     // resolve for automaton symbol
     assertTrue(AutomataMill.globalScope().resolveAutomaton("PingPong").isPresent());
-    assertTrue(Automata2Mill.globalScope().resolveAutomaton("PingPong").isPresent());
 
     reInitGlobalScopes(mp1, mp2);
 
     // resolve for top level state symbol
     assertTrue(AutomataMill.globalScope().resolveState("PingPong.very").isPresent());
-    assertTrue(Automata2Mill.globalScope().resolveState("PingPong.very").isPresent());
 
     reInitGlobalScopes(mp1, mp2);
 
     // resolve for nested state symbol
-    assertTrue(!AutomataMill.globalScope().resolveState("PingPong.very.deep").isPresent());
-    assertTrue(Automata2Mill.globalScope().resolveState("PingPong.very.deep").isPresent());
+    assertTrue(AutomataMill.globalScope().resolveState("PingPong.very.deep").isPresent());
 
     reInitGlobalScopes(mp1, mp2);
 
     // resolve for deeply nested state symbol
-    assertTrue(!AutomataMill.globalScope().resolveState("PingPong.very.deep.substate").isPresent());
-    assertTrue(Automata2Mill.globalScope().resolveState("PingPong.very.deep.substate").isPresent());
+    assertTrue(AutomataMill.globalScope().resolveState("PingPong.very.deep.substate").isPresent());
     assertTrue(Log.getFindings().isEmpty());
   }
 

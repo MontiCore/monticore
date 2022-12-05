@@ -228,6 +228,9 @@ public class SymTypeOfFunction extends SymTypeExpression {
   }
 
   public SymTypeExpression getArgumentType(int index) {
+    if(this.isElliptic() && index >= getArgumentTypeList().size()) {
+      return this.getArgumentTypeList().get(getArgumentTypeList().size()-1);
+    }
     return this.getArgumentTypeList().get(index);
   }
 

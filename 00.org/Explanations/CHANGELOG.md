@@ -1,6 +1,17 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 # Release Notes
+
+## MontiCore 7.5.0
+to be released
+
+### Additions
+* pretty-printer generator
+
+### Changes
+
+### Fixes
+
 ## MontiCore 7.4.0
 released: 14.11.2022
 
