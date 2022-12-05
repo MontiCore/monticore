@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cdlight;
+
+import cdlight.Simple.a.b.*;
+
+classdiagram UnqualifiedReferences {
+
+  package foo {
+    class Bar {
+      X myX;
+      Y myY;
+    }
+  }
+}

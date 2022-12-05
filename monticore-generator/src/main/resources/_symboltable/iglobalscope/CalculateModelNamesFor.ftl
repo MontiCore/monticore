@@ -2,8 +2,10 @@
   HashSet<String> names = new HashSet<>();
   names.add(name);
 
-  if (name.contains(".")) {
-    names.add(de.se_rwth.commons.Names.getQualifier(name));
+  // calculate all prefixes
+  while (name.contains(".")) {
+    name = de.se_rwth.commons.Names.getQualifier(name);
+    names.add(name);
   }
 
   return names;
