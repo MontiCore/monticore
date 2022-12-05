@@ -38,6 +38,7 @@ import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.constants.ASTConstantsDecorator.LITERALS_SUFFIX;
 import static de.monticore.codegen.cd2java.cli.CLIConstants.CLI_SUFFIX;
 import static de.monticore.codegen.cd2java.mill.MillConstants.MILL_SUFFIX;
+import static de.monticore.codegen.prettyprint.PrettyPrinterConstants.*;
 import static de.se_rwth.commons.Names.getQualifier;
 
 public class AbstractService<T extends AbstractService> {
@@ -595,5 +596,45 @@ public class AbstractService<T extends AbstractService> {
 
   public String getCliFullName() {
     return getCliFullName(getCDSymbol());
+  }
+
+  public String getPrettyPrinterSimpleName() {
+    return getPrettyPrinterSimpleName(getCDSymbol());
+  }
+
+  public String getPrettyPrinterSimpleName(DiagramSymbol cdSymbol) {
+    return cdSymbol.getName() + PRETTYPRINTER_SUFFIX;
+  }
+
+  public String getPrettyPrinterFullName() {
+    return getPrettyPrinterFullName(getCDSymbol());
+  }
+
+  public String getPrettyPrinterFullName(DiagramSymbol cdSymbol) {
+    if(cdSymbol.getPackageName().isEmpty()) {
+      return String.join(".", cdSymbol.getName().toLowerCase(), PRETTYPRINT_PACKAGE, getPrettyPrinterSimpleName(cdSymbol));
+    }else{
+      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName().toLowerCase(), PRETTYPRINT_PACKAGE, getPrettyPrinterSimpleName(cdSymbol));
+    }
+  }
+
+  public String getFullPrettyPrinterSimpleName(){
+    return getFullPrettyPrinterSimpleName(getCDSymbol());
+  }
+
+  public String getFullPrettyPrinterSimpleName(DiagramSymbol cdSymbol){
+    return cdSymbol.getName() + FULLPRETTYPRINTER_SUFFIX;
+  }
+
+  public String getFullPrettyPrinterFullName() {
+    return getFullPrettyPrinterFullName(getCDSymbol());
+  }
+
+  public String getFullPrettyPrinterFullName(DiagramSymbol cdSymbol) {
+    if(cdSymbol.getPackageName().isEmpty()) {
+      return String.join(".", cdSymbol.getName().toLowerCase(), PRETTYPRINT_PACKAGE, getFullPrettyPrinterSimpleName(cdSymbol));
+    }else{
+      return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName().toLowerCase(), PRETTYPRINT_PACKAGE, getFullPrettyPrinterSimpleName(cdSymbol));
+    }
   }
 }
