@@ -133,13 +133,9 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     fullPrettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(printer, true);"));
 
-    // Add all the AST${SuperGrammar}Node prettyprint methods
-    for (MCGrammarSymbol reference : grammar.getSymbol().getAllSuperGrammars()){
-      fullPrettyPrinterCDClass.addCDMember(createPrettyPrintNodeMethod(reference));
-    }
 
-    // Also add one for the AST${Grammar}Node
-    fullPrettyPrinterCDClass.addCDMember(createPrettyPrintNodeMethod(grammar.getSymbol()));
+    // Add a helper prettyprint Method - due to ambiguous method overlapping we use the ASTNode interface as the type
+    fullPrettyPrinterCDClass.addCDMember(createPrettyPrintNodeMethod());
 
     for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassesList()) {
       this.replaceTemplate(ANNOTATIONS, cdClass, CoreTemplates.createAnnotationsHookPoint(cdClass.getModifier()));
@@ -149,22 +145,14 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
   }
 
   /**
-   * Creates the PrettyPrint helper method for nodes of a given grammar symbol
-   * @param grammarSymbol the (super) grammar symbol a method should be created for
+   * Creates the PrettyPrint helper method for ASTNodes
    * @return the templated method
    */
-  protected ASTCDMethod createPrettyPrintNodeMethod(MCGrammarSymbol grammarSymbol) {
-    List<String> grammarAstFQN = new ArrayList<>();
-    if (!grammarSymbol.getPackageName().isEmpty())
-      grammarAstFQN.add(grammarSymbol.getPackageName());
-    grammarAstFQN.add(grammarSymbol.getEnclosingScope().getName().toLowerCase());
-    grammarAstFQN.add(ASTConstants.AST_PACKAGE);
-    grammarAstFQN.add(ASTConstants.AST_PREFIX + StringTransformations.capitalize(grammarSymbol.getName()) + "Node");
-
+  protected ASTCDMethod createPrettyPrintNodeMethod() {
     ASTCDMethod method = getCDMethodFacade().createMethod(CD4CodeMill.modifierBuilder().setPublic(true).build(),
             getMCTypeFacade().createStringType(),
             "prettyprint",
-            getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(Joiners.DOT.join(grammarAstFQN)), "node"));
+            getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("de.monticore.ast.ASTNode"), "node"));
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_prettyprinter.full.FullPrettyPrintMethod"));
     return method;
   }
