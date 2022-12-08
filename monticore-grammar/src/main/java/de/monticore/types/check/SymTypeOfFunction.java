@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -66,6 +67,8 @@ public class SymTypeOfFunction extends SymTypeExpression {
   public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes,
       boolean elliptic) {
     super.typeSymbol = new TypeSymbol(TYPESYMBOL_NAME);
+    super.typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
+    super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
     this.returnType = returnType;
     this.argumentTypes = argumentTypes;
     this.elliptic = elliptic;
