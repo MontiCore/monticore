@@ -138,7 +138,7 @@ featurediagram MyPhones {
 
 
 
-### [GUI DSL](https://git.rwth-aachen.de/monticore/languages/gui-dsl) (Alpha: Intention to become stable)
+### GUI DSL: (Alpha: Intention to become stable) - not publicly available
 * Language for textual definition of Graphical User Interfaces of Web
 Applications
 * GUI DSL covers GUI elements and relevant configuration, which include
@@ -469,7 +469,7 @@ statechart Door {
 * [*Detailed description*](https://github.com/MontiCore/statecharts/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
 
 
-### [SysML_2](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official) (Alpha: Intention to become stable)
+### SysML_2 (Alpha: Intention to become stable) - not publicly available
 * MontiCore languages for parsing artifacts of the SysML 2 language family. 
   Examples:
 ```
@@ -508,7 +508,7 @@ package 'Coffee' {                      // a SysML activity diagram
   [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/src/main/grammars/de/monticore/lang/sysml/sysml2.md)
 
 
-### [Tagging](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/Tagging) (Alpha: Intention to become stable)
+### Tagging (Alpha: Intention to become stable) - not publicly available
 * **Tags** are known e.g. from the UML and SysML and mainly used to add
   extra information to a model element. 
   Normally tags (and **stereotypes**) are inserted within the models,
@@ -621,7 +621,7 @@ public void print(String name) {
 
 
 
-### [Java](https://git.rwth-aachen.de/monticore/javaDSL) (Beta: In Stabilization) 
+### Java (Beta: In Stabilization) - not publicly available
 * This is the full Java' Language (as Opposed to JavaLight).
 * Main Grammar [`JavaDSL`](https://git.rwth-aachen.de/monticore/javaDSL/-/blob/dev/javaDSL/src/main/grammars/de/monticore/java/JavaDSL.mc4)
   and
