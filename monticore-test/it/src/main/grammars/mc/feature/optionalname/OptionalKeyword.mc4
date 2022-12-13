@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.optionalname;
+
+// Checks generation of optional keywords with usageName
+grammar OptionalKeyword extends mc.common.Basics {
+
+   B = uName:"foo"? Name;
+
+}
