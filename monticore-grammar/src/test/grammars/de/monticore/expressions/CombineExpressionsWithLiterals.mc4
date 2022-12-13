@@ -24,4 +24,7 @@ grammar CombineExpressionsWithLiterals extends
 
     @Override
     ExtTypeArgument = MCTypeArgument;
+
+    TModifier implements MCModifier = "private" | "static";
+
 }

@@ -149,7 +149,13 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     node.getExpression().accept(getTraverser());
     getPrinter().print(" instanceof ");
-    node.getExtType().accept(getTraverser());
+
+    if (node.isPresentExtType()) {
+      node.getExtType().accept(getTraverser());
+    } else {
+      node.getPattern().accept(getTraverser());
+    }
+
     CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
@@ -208,6 +214,13 @@ public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVi
     getPrinter().print(" new ");
     a.getCreator().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTTypePattern node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    node.getLocalVariableDeclaration().accept(getTraverser());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
   public IndentPrinter getPrinter() {
