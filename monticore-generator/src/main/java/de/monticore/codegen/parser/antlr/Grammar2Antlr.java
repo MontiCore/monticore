@@ -530,8 +530,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
     boolean isAttribute = ast.isPresentUsageName();
-    boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
-    if (isAttribute && isList) {
+    boolean isListOrOpt = ast.isPresentSymbol() && (ast.getSymbol().isIsList() || ast.getSymbol().isIsOptional());
+    if (isAttribute && isListOrOpt) {
       addToCodeSection("(");
     }
     if (grammarEntry.getReplacedKeywordsWithInherited().containsKey(ast.getName())) {
@@ -554,7 +554,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     if (embeddedJavaCode) {
       // Add Actions
       if (isAttribute) {
-        if (isList) {
+        if (ast.getSymbol().isIsList()) {
           addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
         } else {
           addToAction(astActions.getActionForTerminalNotIteratedAttribute(ast));
@@ -566,7 +566,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     addActionToCodeSection();
 
-    if (isAttribute && isList) {
+    if (isAttribute && isListOrOpt) {
       addToCodeSection(")");
     }
     addToCodeSection(printIteration(ast.getIteration()));
