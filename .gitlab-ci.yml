@@ -51,7 +51,7 @@ build:
 
 # Checks if the links in this repository's Markdown files are valid.
 #
-# For more information, visit: https://git.rwth-aachen.de/monticore/auxiliary-development-tools/mdlinkchecker (Available internally only)
+# For more information, visit: https://git.rwth-aachen.de/se/infrastructure/mdlinkchecker (Available internally only)
 check-links:
   # We need a JDK 17+ image for this job since the link checker requires Java 17.
   image: eclipse-temurin:17-jdk-alpine
@@ -408,7 +408,7 @@ pages:
 # Mirrors this repository's `dev` and `master` branches to GitHub.
 #
 # The mirror will always be at either HEAD or HEAD+1 (depending on whether cleanup is necessary).
-# For more information, visit: https://git.rwth-aachen.de/monticore/auxiliary-development-tools/github-mirror-tools (Available internally only)
+# For more information, visit: https://git.rwth-aachen.de/se/infrastructure/github-mirror-tools (Available internally only)
 githubmirror:
   # We need a JDK 17+ image for this job since the link checker requires Java 17.
   image: eclipse-temurin:17-jdk-alpine
