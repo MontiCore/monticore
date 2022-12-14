@@ -76,7 +76,7 @@ EnhancedForControl implements ForControl
     = FormalParameter ":" Expression;
 
 FormalParameter
-    =   JavaModifier* MCType DeclaratorId;
+    =   JavaModifier* MCType Declarator;
 
 WhileStatement implements MCStatement
     = "while" "(" condition:Expression ")" MCStatement ;
@@ -95,7 +95,7 @@ ExpressionStatement implements MCStatement
     = Expression ";" ;
 
 // Matches cases then statements, both of which are mandatory.
-// To handle empty cases at the end, SwitchLabel* is explicitely added
+// To handle empty cases at the end, SwitchLabel* is explicitly added
 // in  the statement body
 SwitchBlockStatementGroup
     =   SwitchLabel+ MCBlockStatement+ ;

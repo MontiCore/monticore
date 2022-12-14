@@ -14,7 +14,7 @@ public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisi
 
   @Override
   public void endVisit(ASTFormalParameter ast) {
-    FieldSymbol symbol = ast.getDeclaratorId().getSymbol();
+    FieldSymbol symbol = ast.getDeclarator().getSymbol();
     symbol.setType(createTypeLoader(ast.getMCType()));
   }
 
