@@ -63,7 +63,7 @@ check-links:
   before_script:
     - 'apk --no-cache add curl'
   script:
-    - 'curl --location --header "PRIVATE-TOKEN: $secibuildtoken" "https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build" --output MDLinkChecker.jar'
+    - 'curl --location --header "PRIVATE-TOKEN: $secibuildinfstrtoken" "https://git.rwth-aachen.de/api/v4/projects/se%2Finfrastructure%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build" --output MDLinkChecker.jar'
     - 'java -jar MDLinkChecker.jar -t "$secibuildtoken" -r . -p'
 
 test_01experiments:
