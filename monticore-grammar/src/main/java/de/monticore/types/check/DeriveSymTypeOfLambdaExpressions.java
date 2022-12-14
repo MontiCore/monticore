@@ -55,7 +55,7 @@ public class DeriveSymTypeOfLambdaExpressions extends AbstractDeriveFromExpressi
     if(!returnType.isObscureType() && checkNotObscure(parameters)) {
       SymTypeExpression wholeResult =
         SymTypeExpressionFactory.createFunction(returnType, parameters);
-      storeResultOrLogError(wholeResult, exp, "A0470");
+      storeResultOrLogError(wholeResult, exp, "0xA0470");
     } else {
       getTypeCheckResult().reset();
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());

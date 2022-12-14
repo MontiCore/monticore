@@ -1,0 +1,34 @@
+{
+   "generated-using":"www.MontiCore.de technology",
+   "name":"SimpleNoPkg",
+   "symbols":[
+      {
+         "kind":"cdlight._symboltable.NestedPackageSymbol",
+         "name":"a",
+         "spannedScope":{
+            "symbols":[
+               {
+                  "kind":"cdlight._symboltable.NestedPackageSymbol",
+                  "name":"b",
+                  "spannedScope":{
+                     "symbols":[
+                        {
+                           "kind":"de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol",
+                           "name":"X"
+                        },
+                        {
+                           "kind":"de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol",
+                           "name":"Y"
+                        }
+                     ]
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "kind":"de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol",
+         "name":"SimpleNoPkg"
+      }
+   ]
+}

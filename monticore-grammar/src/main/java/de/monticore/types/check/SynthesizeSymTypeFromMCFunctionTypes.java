@@ -32,19 +32,21 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
     this.traverser = traverser;
   }
 
+  @Override
   public void handle(ASTMCFunctionType functionType) {
-    SymTypeExpression symType = null;
+    SymTypeExpression symType;
 
     List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
-    for (ASTMCType arg : functionType.getMCFunctionParameters().getMCTypeList()) {
+    for (int i = 0; i<functionType.getMCFunctionParameters().sizeMCTypes(); i++) {
+      ASTMCType arg = functionType.getMCFunctionParameters().getMCType(i);
       getTypeCheckResult().reset();
       if (null != arg) {
         arg.accept(getTraverser());
       }
 
       if (!getTypeCheckResult().isPresentResult()) {
-        Log.error("0xE9BDC Internal Error: SymType argument missing for function type. "
-            + " Probably TypeCheck mis-configured.");
+        Log.error("0xE9BDC Type of argument number " + i+1 + " of the function type could not" +
+          "be synthesized.", functionType.get_SourcePositionStart());
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         return;
       }
@@ -58,8 +60,8 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
     }
 
     if (!getTypeCheckResult().isPresentResult()) {
-      Log.error("0xE9BDD Internal Error: SymType return argument missing for function type. "
-          + " Probably TypeCheck mis-configured.");
+      Log.error("0xE9BDD The return type of the function type could not be synthesized.",
+          functionType.get_SourcePositionStart());
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       return;
     }

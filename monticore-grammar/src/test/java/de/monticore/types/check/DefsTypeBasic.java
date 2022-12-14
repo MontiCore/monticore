@@ -180,6 +180,18 @@ public class DefsTypeBasic {
     return m;
   }
 
+  /**
+   * create VariableSymbols (some defaults apply)
+   */
+  public static VariableSymbol variable(String name, SymTypeExpression type) {
+    return BasicSymbolsMill.variableSymbolBuilder()
+        .setName(name)
+        .setFullName(name)  // can later be adapted, when fullname of Type is known
+        .setAccessModifier(AccessModifier.ALL_INCLUSION)
+        .setType(type)
+        .build();
+  }
+
   /** 
    * create FieldSymbols (some defaults apply)
    */
@@ -191,18 +203,34 @@ public class DefsTypeBasic {
             .setType(type)
             .build();
   }
+
+  /**
+   * add a Type to a Scope (bidirectional)
+   */
+  public static void add2scope(IOOSymbolsScope p, TypeSymbol s) {
+    s.setEnclosingScope(p);
+    p.add(s);
+  }
   
   /** 
-   * add a Type to a Scope (bidirectional)
+   * add an OOType to a Scope (bidirectional)
    */
   public static void add2scope(IOOSymbolsScope p, OOTypeSymbol s) {
     s.setEnclosingScope(p);
     p.add(s);
     p.add((TypeSymbol) s);
   }
-  
+
   /**
-   * add a Filed (e.g. a Variable) to a Scope (bidirectional)
+   * add a Variable to a Scope (bidirectional)
+   */
+  public static void add2scope(IOOSymbolsScope p, VariableSymbol s) {
+    s.setEnclosingScope(p);
+    p.add(s);
+  }
+
+  /**
+   * add a Field (e.g. a Variable) to a Scope (bidirectional)
    */
   public static void add2scope(IOOSymbolsScope p, FieldSymbol s) {
     s.setEnclosingScope(p);
@@ -227,7 +255,7 @@ public class DefsTypeBasic {
   }
 
   /**
-   * add a Method to a Scope (bidirectional)
+   * add a TypeVariable to a Scope (bidirectional)
    */
   public static void add2scope(IOOSymbolsScope p, TypeVarSymbol s) {
     s.setEnclosingScope(p);

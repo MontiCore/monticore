@@ -47,7 +47,7 @@ public abstract class MCParser extends Parser {
     if (token == null || token.getText() == null) {
       return SourcePosition.getDefaultSourcePosition();
     }
-    return computeEndPosition(new SourcePosition(token.getLine(), token.getCharPositionInLine()),
+    return computeEndPosition(new SourcePosition(token.getLine(), token.getCharPositionInLine(), getFilename()),
             token.getText());
   }
 
@@ -79,7 +79,7 @@ public abstract class MCParser extends Parser {
       // be 2...
       column = splitted[splitted.length - 1].length() + 1;
     }
-    return new de.se_rwth.commons.SourcePosition(line, column);
+    return new de.se_rwth.commons.SourcePosition(line, column, getFilename());
   }
 
   public boolean hasErrors() {
