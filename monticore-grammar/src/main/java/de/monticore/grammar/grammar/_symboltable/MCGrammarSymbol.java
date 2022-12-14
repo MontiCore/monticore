@@ -221,8 +221,13 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return  Maps.newHashMap(tokenModes);
   }
 
+  @Deprecated // Use getReplacedKeywords()
   public Map<String, Collection<String>> getAdditionalKeywords() {
-    return  Maps.newHashMap(replacedKeywords);
+    return Maps.newHashMap(replacedKeywords);
+  }
+
+  public Map<String, Collection<String>> getReplacedKeywords() {
+    return Maps.newHashMap(replacedKeywords);
   }
 
   public Optional<ASTMCGrammar> getAstGrammar() {

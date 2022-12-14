@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = 'Experiments: PrettyPrinters'
+
+task generate (type: MCTask) {
+  grammar = file "$projectDir/$grammarDir/de/monticore/TestPrettyPrinters.mc4"
+  outputDir = file outDir
+  def uptoDate = incCheck("de/monticore/TestPrettyPrinters.mc4")
+  outputs.upToDateWhen { uptoDate }
+}

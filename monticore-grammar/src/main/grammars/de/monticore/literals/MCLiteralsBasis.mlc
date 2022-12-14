@@ -10,6 +10,10 @@ mlc MCLiteralsBasis {
     include "de/monticore/literals/mcliteralsbasis/**.java";
   }
 
+  export "$projectDir/src/main/java" {
+      include "de/monticore/types/check/DeriveSymTypeOfLiterals.java";
+  }
+
   promote {
     mlc "de.monticore.MCBasics";
   }

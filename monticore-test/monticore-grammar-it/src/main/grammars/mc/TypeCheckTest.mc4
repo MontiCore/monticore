@@ -22,15 +22,10 @@ grammar TypeCheckTest extends de.monticore.types.MCSimpleGenericTypes,
 
   TCBlock = (TCVarDecl | Expression)*;
 
-  scope symbol TCMethod implements TCElement,Function = ["static"]? MCReturnType
+  scope symbol TCMethod implements TCElement,Method = ["static"]? MCReturnType
                                                          Name
                                                          FormalParameters
                                                          "{" TCBlock "}";
 
-  symbol TCVarDecl implements TCElement,Variable = ["static"]? MCType Name ("=" Expression)?;
-
-  symbolrule TCMethod = isStatic:boolean;
-
-  symbolrule TCVarDecl = isStatic:boolean;
-
+  symbol TCVarDecl implements TCElement,Field = ["static"]? MCType Name ("=" Expression)?;
 }

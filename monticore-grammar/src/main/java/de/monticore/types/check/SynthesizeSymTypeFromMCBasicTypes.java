@@ -31,7 +31,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
    * We use mainly endVisit, because the result is synthesized along the
    * tree, when walking upwards
    */
-
+  @Override
   public void endVisit(ASTMCPrimitiveType primitiveType) {
     String primName = primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
     Optional<TypeSymbol> prim = getScope(primitiveType.getEnclosingScope()).resolveType(primName);
@@ -42,14 +42,16 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
       primitiveType.setDefiningSymbol(typeConstant.getTypeInfo());
     }else{
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0111 The primitive type " + primName + " could not be resolved");
+      Log.error("0xA0111 The primitive type " + primName + " could not be resolved", primitiveType.get_SourcePositionStart());
     }
   }
-  
+
+  @Override
   public void endVisit(ASTMCVoidType voidType) {
     getTypeCheckResult().setResult(SymTypeExpressionFactory.createTypeVoid());
   }
-  
+
+  @Override
   public void endVisit(ASTMCReturnType rType) {
     // result is pushed upward (no change)
   }

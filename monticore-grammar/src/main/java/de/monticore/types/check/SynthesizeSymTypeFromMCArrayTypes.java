@@ -38,12 +38,13 @@ public class SynthesizeSymTypeFromMCArrayTypes extends AbstractSynthesizeFromTyp
    * We use mainly endVisit, because the result is synthesized along the
    * tree, when walking upwards
    */
-
+  @Override
   public void traverse(ASTMCArrayType arrayType) {
     arrayType.getMCType().accept(getTraverser());
     if (!getTypeCheckResult().isPresentResult()) {
-      Log.error("0xE9CDC Internal Error: SymType argument missing for generic type. "
-              + " Probably TypeCheck mis-configured.");
+      // should never happen, we expect results to be present
+      // indicates that the underlying type resolver is erroneous
+      Log.error("0xE9CDC The type of the array could not be synthesized" , arrayType.get_SourcePositionStart());
       getTypeCheckResult().reset();
       return;
     }

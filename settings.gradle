@@ -73,12 +73,13 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:01experiments:forConcSt')
   include(':monticore-test:01experiments:forEmfAst')
   include(':monticore-test:01experiments:forMill')
-  // TODO MB include(':monticore-test:01experiments:forParser')
+  include(':monticore-test:01experiments:forParser')
   include(':monticore-test:01experiments:forVisitors')
   include(':monticore-test:01experiments:generator')
   include(':monticore-test:01experiments:glex')
   include(':monticore-test:01experiments:lexicalModes')
   include(':monticore-test:01experiments:patternAccess')
+  include(':monticore-test:01experiments:prettyPrinters')
   include(':monticore-test:01experiments:questionnaire')
   include(':monticore-test:01experiments:S01_intro')
   include(':monticore-test:01experiments:scannerless')
@@ -112,6 +113,7 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:02experiments:forGradle')
   include(':monticore-test:02experiments:configTemplate')
   include(':monticore-test:02experiments:groovyHooks')
+  include(':monticore-test:02experiments:imports')
 
   include ':monticore-test:montitrans'
   project(':monticore-test:montitrans').projectDir = file("monticore-test/montitrans")

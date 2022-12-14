@@ -522,7 +522,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     if (ast.getName().isEmpty()) {
       rulename = "";
     } else if (grammarInfo.isKeyword(ast.getName(), grammarEntry) && grammarInfo.getKeywordRules().contains(ast.getName())) {
-        rulename = parserHelper.getKeyRuleName(ast.getName());
+      rulename = parserHelper.getKeyRuleName(ast.getName());
     } else {
       rulename = parserHelper.getLexSymbolName(ast.getName().intern());
     }
@@ -530,16 +530,31 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
     boolean isAttribute = ast.isPresentUsageName();
-    boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
-    if (isAttribute && isList) {
+    boolean isListOrOpt = ast.isPresentSymbol() && (ast.getSymbol().isIsList() || ast.getSymbol().isIsOptional());
+    if (isAttribute && isListOrOpt) {
       addToCodeSection("(");
     }
-    addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
+    if (grammarEntry.getReplacedKeywordsWithInherited().containsKey(ast.getName())) {
+      addToCodeSection("(");
+      String seperator = "";
+      for (String replaceString: grammarEntry.getAdditionalKeywords().get(ast.getName())) {
+        addToCodeSection(seperator);
+        if (grammarInfo.getKeywordRules().contains(replaceString)) {
+          addToCodeSection(parserHelper.getKeyRuleName(replaceString));
+        } else {
+          addToCodeSection(parserHelper.getLexSymbolName(replaceString));
+        }
+        seperator = " | ";
+      }
+      addToCodeSection(")");
+    } else {
+      addToCodeSection(rulename);
+    }
 
     if (embeddedJavaCode) {
       // Add Actions
       if (isAttribute) {
-        if (isList) {
+        if (ast.getSymbol().isIsList()) {
           addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
         } else {
           addToAction(astActions.getActionForTerminalNotIteratedAttribute(ast));
@@ -551,7 +566,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     addActionToCodeSection();
 
-    if (isAttribute && isList) {
+    if (isAttribute && isListOrOpt) {
       addToCodeSection(")");
     }
     addToCodeSection(printIteration(ast.getIteration()));
@@ -580,9 +595,22 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addToCodeSection("(");
     String rulename = createKeyPredicate(ast.getKeyConstant().getStringList());
 
-    // No actions in predicates
-    // Template engine cannot be used for substition in rare cases
-    addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
+    if (grammarEntry.getReplacedKeywordsWithInherited().containsKey(ast.getName())) {
+      addToCodeSection("(");
+      String seperator = "";
+      for (String replaceString: grammarEntry.getAdditionalKeywords().get(ast.getName())) {
+        addToCodeSection(seperator);
+        if (grammarInfo.getKeywordRules().contains(replaceString)) {
+          addToCodeSection(parserHelper.getKeyRuleName(replaceString));
+        } else {
+          addToCodeSection(parserHelper.getLexSymbolName(replaceString));
+        }
+        seperator = " | ";
+      }
+      addToCodeSection(")");
+    } else {
+      addToCodeSection(rulename);
+    }
 
     if (embeddedJavaCode) {
       boolean isAttribute = ast.isPresentUsageName();
@@ -611,7 +639,22 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     startCodeSection("ASTTokenTerminal " + ast.getName());
     addToCodeSection("(");
 
-    addToCodeSection(parserHelper.getLexSymbolName(ast.getTokenConstant().getString()));
+    if (grammarEntry.getReplacedKeywordsWithInherited().containsKey(ast.getName())) {
+      addToCodeSection("(");
+      String seperator = "";
+      for (String replaceString: grammarEntry.getAdditionalKeywords().get(ast.getName())) {
+        addToCodeSection(seperator);
+        if (grammarInfo.getKeywordRules().contains(replaceString)) {
+          addToCodeSection(parserHelper.getKeyRuleName(replaceString));
+        } else {
+          addToCodeSection(parserHelper.getLexSymbolName(replaceString));
+        }
+        seperator = " | ";
+      }
+      addToCodeSection(")");
+    } else {
+      addToCodeSection(parserHelper.getLexSymbolName(ast.getTokenConstant().getString()));
+    }
 
     if (embeddedJavaCode) {
       boolean isAttribute = ast.isPresentUsageName();
@@ -1146,7 +1189,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   }
 
   protected void addDummyRules(String rulenameInternal, String ruleName,
-                             String usageName) {
+                               String usageName) {
     Optional<ASTAlt> follow2 = parserHelper.getAlternativeForFollowOption(rulenameInternal);
     if (!follow2.isPresent()) {
       return;

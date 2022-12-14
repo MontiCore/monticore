@@ -24,7 +24,7 @@ However, we suggest some default arguments for standardized access.
 -modelpath <dirlist>         Sets the artifact path for imported models, space separated
 -pp,--prettyprint <file>     Prints the AST to stdout or the specified output 
                              file (optional)
--s, --symboltable <file>      Serializes and prints the symbol table to stdout 
+-s, --symboltable <file>     Serializes and prints the symbol table to stdout 
                              or the specified output file (optional) 
 -r,--report <dir>            Prints reports of the parsed artifact to the
                              specified directory (optional). Available reports

@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cdlight;
+
+import my.test.*;
+
+classdiagram Simple {
+
+  package a {
+    package b {
+      class X {
+        Y z;
+      }
+
+      class Y {
+        bar();
+      }
+    }
+  }
+}

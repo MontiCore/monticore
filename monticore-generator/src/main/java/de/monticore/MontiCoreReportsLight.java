@@ -5,7 +5,7 @@ package de.monticore;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.gradle.IncGenGradleReporterFix;
+import de.monticore.generating.templateengine.reporting.reporter.IncGenGradleReporter;
 import de.monticore.io.paths.MCPath;
 
 import java.nio.file.Path;
@@ -28,7 +28,7 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
   protected Function<Path, Path> reportPathOutput;
 
-  protected IncGenGradleReporterFix gradleReporter;
+  protected IncGenGradleReporter gradleReporter;
 
 
   /**
@@ -58,7 +58,7 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
 
     ReportManager reports = new ReportManager(this.outputDirectory);
     
-    gradleReporter = new IncGenGradleReporterFix(this.reportDirectory, reportPathOutput, modelName);
+    gradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput, modelName);
 
     //reports.addReportEventHandler(inputOutput); // 17_InputOutputFiles
     //reports.addReportEventHandler(incGenCheck); // IncGenCheck

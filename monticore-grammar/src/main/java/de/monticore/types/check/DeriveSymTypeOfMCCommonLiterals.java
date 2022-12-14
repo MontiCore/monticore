@@ -3,9 +3,10 @@ package de.monticore.types.check;
 
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
+import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -28,38 +29,45 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals imp
     return typeCheckResult;
   }
 
-  protected SymTypePrimitive getSymType(String type) {
-    return new SymTypePrimitive(BasicSymbolsMill.globalScope().resolveType(type).get());
+  protected SymTypeExpression getSymType(String type, SourcePosition pos) {
+    Optional<TypeSymbol> primitive = BasicSymbolsMill.globalScope().resolveType(type);
+    if(primitive.isPresent()){
+      return SymTypeExpressionFactory.createPrimitive(primitive.get());
+    }else{
+      Log.error("0xA0207 The primitive type " + type + " could not be resolved." +
+        "Did you add primitive types to your language?", pos);
+      return SymTypeExpressionFactory.createObscureType();
+    }
   }
 
   @Override
   public void visit(ASTNatLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.INT));
+    derivePrimitive(lit, BasicSymbolsMill.INT);
   }
 
   @Override
   public void visit(ASTCharLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.CHAR));
+    derivePrimitive((ASTLiteral) lit, BasicSymbolsMill.CHAR);
   }
 
   @Override
   public void visit(ASTBooleanLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.BOOLEAN));
+    derivePrimitive((ASTLiteral) lit, BasicSymbolsMill.BOOLEAN);
   }
 
   @Override
   public void visit(ASTBasicDoubleLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.DOUBLE));
+    derivePrimitive(lit, BasicSymbolsMill.DOUBLE);
   }
 
   @Override
   public void visit(ASTBasicFloatLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.FLOAT));
+    derivePrimitive(lit, BasicSymbolsMill.FLOAT);
   }
 
   @Override
   public void visit(ASTBasicLongLiteral lit){
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.LONG));
+    derivePrimitive(lit, BasicSymbolsMill.LONG);
   }
 
   @Override
@@ -70,28 +78,36 @@ public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals imp
     } else {
       getTypeCheckResult().reset();
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0238 The type String could not be found");
+      Log.error("0xA0238 The type String could not be resolved.");
     }
   }
 
   @Override
   public void visit(ASTSignedNatLiteral lit) {
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.INT));
+    derivePrimitive(lit, BasicSymbolsMill.INT);
   }
 
   @Override
   public void visit(ASTSignedBasicDoubleLiteral lit) {
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.DOUBLE));
+    derivePrimitive(lit, BasicSymbolsMill.DOUBLE);
   }
 
   @Override
   public void visit(ASTSignedBasicFloatLiteral lit) {
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.FLOAT));
+    derivePrimitive(lit, BasicSymbolsMill.FLOAT);
   }
 
   @Override
   public void visit(ASTSignedBasicLongLiteral lit) {
-    getTypeCheckResult().setResult(getSymType(BasicSymbolsMill.LONG));
+    derivePrimitive(lit, BasicSymbolsMill.LONG);
+  }
+
+  protected void derivePrimitive(ASTLiteral lit, String primitive){
+    getTypeCheckResult().setResult(getSymType(primitive, lit.get_SourcePositionStart()));
+  }
+
+  protected void derivePrimitive(ASTSignedLiteral lit, String primitive) {
+    getTypeCheckResult().setResult(getSymType(primitive, lit.get_SourcePositionStart()));
   }
 
   /**

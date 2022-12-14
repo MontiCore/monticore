@@ -1,0 +1,195 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
+
+  A = "A";
+  B = "B";
+  C = "C";
+  D = "D";
+
+  CPName = "term" Name otherUsage:Name s:Name;
+  CPNameOpt = "term" Name otherUsage:Name? s:Name?;
+
+  CPA = "term" A otherUsage:A s:A;
+  CPAOpt = "term" A? otherUsage:A? s:A?;
+  CPAList = "term" A* otherUsage:A* s:A*;
+
+  CPIteratorDef = A "term" A    Name "term" Name;
+  CPIteratorOpt = A "term" A?   Name "term" Name?;
+  CPIteratorStar = A "term" A*  Name "term" Name*;
+  CPIteratorPlus = A "term" A+  Name "term" Name+;
+  CPIteratorAlt = A "term" (A | Name);
+  CPIteratorAltName = Name "term" (Name | A);
+
+  CPNonSepS = "term" ( Name || ".")*;
+  CPNonSepP = "term" ( Name || ".")+;
+
+  // Allows As and Bs in any order => The empty ";" will be never printed
+  CPAltBlock = "term" ( ("{" (A | B)* "}") | ";") ;
+
+  CPAltBlockReversed = "term" (";" | ("{" (A | B)* "}")) ;
+
+  // Do not allow empty { } => Instead print the semicolon terminal
+  CPAltBlockOrEmpty = "term" ( ("{" (A | B)+ "}") | ";") ;
+
+  // ConstantGroups
+  CPCGSingle = ["cg1"] ;
+  CPCGSingleU1 = [u:"cg1"] ;
+  CPCGSingleU2 = u:["cg1"] ;
+
+  CPCGMulti1 = cg:["cg1" | "cg2"] ;
+  CPCGMulti2 = cg:[u:"cg1" | v:"cg2"] ;
+
+  MultiCGPlus = (["a"]| ["b"] | ["c"])+ D?;
+  MultiCGStar = (["a"] | ["b"] | ["c"])* D?;
+  SingleCGPlus = (cg:["a"| "b" | "c"])+ D?;
+  SingleCGStar = (cg:["a"| "b" | "c"])* D?;
+
+  MultiCGPlusAlt = (["a"]| ["b"] | ["c"])+ D? | "empty";
+  MultiCGStarSkipAlt = (["a"]| ["b"] | ["c"])* D? | "empty";
+
+  // ConstantGroups in a repeated block => does not repeat endless
+  CPCGRepBlock = (("<<" ["cg1"] ">>" ) | ("<<" ["cg2"] ">>" ))* ;
+
+  // Duplicate NonTerminal usagenames
+  DuplicateUsageName =  Name  ("=" value:Name |"=" value:String)? ;
+
+  CPAstList = (A | B | C)*;         // Unsupported
+  astrule CPAstList = a:A max=1;    // Unsupported
+
+  CPAltFailure = (["cg"] | A)*;     // Unsupported
+  CPAltF2 = ("t" | A)*;             // Unsupported
+
+  CPCGSup = complete:["(c)"];
+  CPCGUnsupName = ending:[".dot"|".jpg"];   // Unsupported due to constants name
+  CPCGUnsuppDup = (op:["*"]|op:["/"]);      // Unsupported
+
+  CPListInDList = B (B A*)*;
+  CPListInPList = B (B+ A*)*;
+
+   // OverwriteWithASTRule
+   Test = "test" Name;
+   
+    ORA =  Name "<" Test ">";
+     astrule ORA =
+         de.monticore.testprettyprinters._ast.ASTTest*
+         name:String*;
+   
+   
+    ORB =  foo:Name "<" Test ">";
+     astrule ORB =
+         Test*
+         foo:String*;
+   
+    ORC = foo:Name "<" bla:Test ">";
+     astrule ORC =
+         bla:Test*
+         foo:String*;
+   
+    ORD =  Name* "<" Test* ">";
+     astrule ORD =
+         de.monticore.testprettyprinters._ast.ASTTest
+         name:String;
+   
+    E =  foo:Name* "<" Test* ">";
+     astrule E =
+         Test
+         foo:String;
+   
+    F = foo:Name* "<" bla:Test* ">";
+     astrule F =
+         bla:Test
+         foo:String;
+   
+    G = foo:Name "<" bla:Test ">";
+     astrule G =
+         bla:de.monticore.testprettyprinters._ast.ASTTest*
+         foo:String*;
+   
+    H =  Name* "<" Test ">";
+     astrule H =
+         de.monticore.testprettyprinters._ast.ASTTest?
+         name:String?;
+   
+    I =  Name* "<" Test ">";
+     astrule I =
+         Test?
+         name:String;
+   
+    J =  Name* "<" Test* ">";
+     astrule J =
+         Test max = 1
+         name:String max = 1;
+   
+    K =  Name* "<" Test+ ">";
+     astrule K =
+         de.monticore.testprettyprinters._ast.ASTTest?
+         name:String;
+   
+    L =  Name* "<" Test+ ">";
+     astrule L =
+         Test?
+         name:String;
+   
+    M =  foo:Name* "<" Test* ">";
+     astrule M =
+         de.monticore.testprettyprinters._ast.ASTTest
+         foo:String;
+
+    // Special-cases: Nonterminals ending in "S" or "s"
+    NTEndingWithCS = "a"; // capital end S
+    NTEndingWithls = "a"; // lowercase end s
+
+    NTCaseS1 = NTEndingWithCS;
+    NTCaseS2 = NTEndingWithCS?;
+    NTCaseS3 = NTEndingWithCS*;
+    NTCaseS4 = NTEndingWithCS+;
+
+    NTCaseSU1 = US:NTEndingWithCS;
+    NTCaseSU2 = US:NTEndingWithCS?;
+    NTCaseSU3 = US:NTEndingWithCS*;
+    NTCaseSU4 = US:NTEndingWithCS+;
+
+    NTLCases1 = NTEndingWithls;
+    NTLCases2 = NTEndingWithls?;
+    NTLCases3 = NTEndingWithls*;
+    NTLCases4 = NTEndingWithls+;
+
+    NTLCasesU1 = us:NTEndingWithls;
+    NTLCasesU2 = us:NTEndingWithls?;
+    NTLCasesU3 = us:NTEndingWithls*;
+    NTLCasesU4 = us:NTEndingWithls+;
+
+    // Example from the JavaScript DSL (with a bunch of placeholders)
+
+	Do = "Do";
+	Statement = "Statement";
+	While = "While";
+	For = "For";
+	ExpressionSequence = "ExpressionSequence";
+	EOS = ";";
+	Var = "Var";
+	VariableDeclaration = "VariableDeclaration";
+	VariableDeclarations = VariableDeclaration ("," VariableDeclaration)*;
+	Expression = "Expression";
+    In = "In";
+
+    IterationStatement   =
+    		Do Statement While "(" ExpressionSequence ")" EOS |
+    		While "(" ExpressionSequence ")" Statement |
+    		For "(" ExpressionSequence? ";" ExpressionSequence? ";" ExpressionSequence? ")" Statement |
+    		For "(" Var VariableDeclarations? ";" ExpressionSequence? ";" ExpressionSequence? ")" Statement |
+    		For "(" Expression In ExpressionSequence ")" Statement |
+    		For "(" Var VariableDeclaration In ExpressionSequence ")" Statement
+    	;
+
+    OptEnd = A? "->" B (";" | C);
+
+    SDCall = [key("trigger")]? ["static"]? A B?;
+
+    LiteralProd = Literal;
+    SignedLiteralProd = SignedLiteral;
+
+}
