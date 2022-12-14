@@ -249,7 +249,6 @@ public class InsertIsPresentChecksVisitor implements CommonExpressionsVisitor2 {
         return CommonExpressionsMill.callExpressionBuilder()
                 .setExpression(isPresentExpr)
                 .setArguments(CommonExpressionsMill.argumentsBuilder().uncheckedBuild())
-                .setName("")
                 .build();
     }
 

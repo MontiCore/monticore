@@ -44,30 +44,14 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
   }
 
   @Override
-  public void traverse(ASTLiteralExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateLiteralExpression(expr);
-    storeResultOrLogError(wholeResult, expr, "0xA0250");
-  }
-
-  protected Optional<SymTypeExpression> calculateLiteralExpression(ASTLiteralExpression expr){
-    //get the type of the literal
-    Optional<SymTypeExpression> wholeResult = acceptThisAndReturnSymTypeExpression(expr.getLiteral());
-    if(!wholeResult.isPresent()){
-      getTypeCheckResult().reset();
-      return Optional.empty();
-    }
-    return wholeResult;
-  }
-
-  @Override
   public void traverse(ASTNameExpression expr) {
     Optional<SymTypeExpression> wholeResult = calculateNameExpression(expr);
     if(wholeResult.isPresent()){
       getTypeCheckResult().setResult(wholeResult.get());
     }else{
-     //name not found --> package or nothing
      getTypeCheckResult().reset();
-     Log.info("package expected", "DeriveSymTypeOfExpression");
+     getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+     logError("0xA0240", expr.get_SourcePositionStart());
     }
   }
 

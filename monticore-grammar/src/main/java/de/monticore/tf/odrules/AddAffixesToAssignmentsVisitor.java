@@ -133,7 +133,6 @@ public class AddAffixesToAssignmentsVisitor implements
                     ASTCallExpression callExpr = CommonExpressionsMill.callExpressionBuilder()
                             .setExpression(getExpr)
                             .setArguments(CommonExpressionsMill.argumentsBuilder().uncheckedBuild())
-                            .setName("")
                             .build();
 
                     return callExpr;

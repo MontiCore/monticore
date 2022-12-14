@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -29,6 +33,12 @@ import mc.feature.inheritence.inheritence._parser.InheritenceParser;
 
 public class InheritenceTest extends GeneratorIntegrationsTest {
   
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   // // Test1 : IG should parse all "a", "b", and "c"
   // A(IF) = "a" ;
   //
@@ -44,6 +54,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     Optional<ASTIG> ast = parser.parseIG(new StringReader("a"));
     
     assertTrue(ast.get() instanceof ASTA);
+    assertTrue(Log.getFindings().isEmpty());
     
   }
   
@@ -54,6 +65,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     Optional<ASTIG> ast = parser.parseIG(new StringReader("b"));
     
     assertTrue(ast.get() instanceof ASTB);
+    assertTrue(Log.getFindings().isEmpty());
     
   }
   
@@ -64,6 +76,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     Optional<ASTIG> ast = parser.parseIG(new StringReader("c"));
     
     assertTrue(ast.get() instanceof ASTC);
+    assertTrue(Log.getFindings().isEmpty());
     
   }
   
@@ -78,6 +91,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     InheritenceParser parser = new InheritenceParser();
     Optional<ASTIH> ast = parser.parseIH(new StringReader("d"));
     assertTrue(ast.get() instanceof ASTD);
+    assertTrue(Log.getFindings().isEmpty());
     
   }
   
@@ -93,6 +107,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     InheritenceParser parser = new InheritenceParser();
     Optional<ASTIM> ast = parser.parseIM(new StringReader("aa"));
     assertTrue(ast.get() instanceof ASTK);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -101,6 +116,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     InheritenceParser parser = new InheritenceParser();
     Optional<ASTIM> ast = parser.parseIM(new StringReader("bb"));
     assertTrue(ast.get() instanceof ASTK);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -109,6 +125,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     InheritenceParser parser = new InheritenceParser();
     Optional<ASTIM> ast = parser.parseIM(new StringReader("ab"));
     assertTrue(ast.get() instanceof ASTL);
+    assertTrue(Log.getFindings().isEmpty());
     
   }
   
@@ -120,6 +137,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     InheritenceParser parser = new InheritenceParser();
     Optional<ASTXAE> ast = parser.parseXAE(new StringReader("f"));
     assertTrue(ast.get() instanceof ASTXF);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // Test 5 : XAO should parse "p" but not "q" and return an XP
@@ -131,6 +149,7 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
     Optional<ASTXAO> ast = parser.parseXAO(new StringReader("p"));
     assertTrue(ast.get() instanceof ASTXP);
     assertFalse(parser.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
     
   }
   

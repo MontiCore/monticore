@@ -3,7 +3,9 @@
 package de.monticore;
 
 import com.google.common.collect.Sets;
+import de.monticore.gradle.UserJsonString;
 import de.monticore.io.paths.MCPath;
+import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -392,5 +394,38 @@ public final class MontiCoreConfiguration implements Configuration {
    */
   public CommandLine getConfig() {
     return cmdConfig;
+  }
+
+  /**
+   *
+   * @return JsonElement which contains selected information of the configuration
+   */
+  public JsonElement getStatJson() {
+    JsonObject result = new JsonObject();
+
+    // Grammar FileNames
+    {
+      JsonArray grammars = new JsonArray();
+      grammars.setValues(
+          this.getGrammars().getEntries().stream()
+              .map(p->p.getFileName().toString()) // For privacy we only want the name, not the absolute path
+              .map(UserJsonString::new)
+              .collect(Collectors.toList())
+      );
+      result.putMember(GRAMMAR_LONG, grammars);
+    }
+
+    // DSTLGen
+    {
+      JsonElement dstlGen = this.getDSTLGen()
+          .map(p-> (JsonElement) new JsonBoolean(p))
+          .orElse(new JsonNull());
+      result.putMember(DSTLGEN_LONG, dstlGen);
+    }
+
+    // Custom Script set?
+    result.putMember(SCRIPT_LONG, new JsonBoolean(cmdConfig.hasOption(SCRIPT)));
+
+    return result;
   }
 }

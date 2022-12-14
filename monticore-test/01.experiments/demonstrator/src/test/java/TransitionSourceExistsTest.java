@@ -28,11 +28,12 @@ public class TransitionSourceExistsTest {
   // setup the parser infrastructure
   AutomataParser parser = new AutomataParser() ;
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     // LogStub.initPlusLog();  // for manual testing purpose only
+    Log.enableFailQuick(false);
   }
   
  
@@ -51,6 +52,7 @@ public class TransitionSourceExistsTest {
     assertEquals("Simple", ast.getName());
     List<ASTState> st = ast.getStateList();
     assertEquals(2, st.size());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -71,6 +73,7 @@ public class TransitionSourceExistsTest {
     assertEquals("A", aSymbol.get().getName());
     ASTNode n = aSymbol.get().getAstNode();
     assertEquals("A", ((ASTState)n).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

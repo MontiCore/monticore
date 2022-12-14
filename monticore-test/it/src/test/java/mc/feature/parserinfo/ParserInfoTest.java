@@ -1,8 +1,10 @@
 package mc.feature.parserinfo;
 
+import de.se_rwth.commons.logging.LogStub;
 import mc.feature.parserinfo.parserinfosimpleinheritancetest._parser._auxiliary.ParserInfoSimpleInheritanceTestParserInfoForParserInfoTest;
 import mc.feature.parserinfo.parserinfotest._parser.ParserInfoTestParserInfo;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Test the generated ParserInfo classes.
@@ -44,7 +47,13 @@ public class ParserInfoTest {
             ParserInfoTestParserInfo.init();
         }
     }
-
+    
+    @Before
+    public void before() {
+        LogStub.init();
+        Log.enableFailQuick(false);
+    }
+    
     @Test
     public void testNoRef() {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
@@ -57,6 +66,7 @@ public class ParserInfoTest {
         int s = states.get(0);
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -71,6 +81,7 @@ public class ParserInfoTest {
         int s = states.get(0);
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -85,6 +96,7 @@ public class ParserInfoTest {
         int s = states.get(0);
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -99,6 +111,7 @@ public class ParserInfoTest {
         int s = states.get(0);
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -115,6 +128,7 @@ public class ParserInfoTest {
             assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
             assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
         }
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -130,6 +144,7 @@ public class ParserInfoTest {
             assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
             assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
         }
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -158,6 +173,7 @@ public class ParserInfoTest {
 
             assertTrue(states.isEmpty());
         }
+        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -182,6 +198,7 @@ public class ParserInfoTest {
             assertFalse(ParserInfoTestParserInfo.stateReferencesElementASymbol(state));
             assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(state));
         });
+        assertTrue(Log.getFindings().isEmpty());
     }
 
 }

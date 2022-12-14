@@ -94,6 +94,10 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  public boolean isObscureType(){
+    return false;
+  }
+
 
   public abstract SymTypeExpression deepClone();
 
@@ -133,7 +137,11 @@ public abstract class SymTypeExpression {
         List<FunctionSymbol> methodsWithoutStatic = methods.stream().filter(Objects::nonNull).map(m -> (MethodSymbol) m).filter(m -> !m.isIsStatic()).collect(Collectors.toList());
         methodsWithoutStatic.addAll(functions);
         if (getTypeInfo().getSpannedScope() instanceof IOOSymbolsScope) {
-          List<MethodSymbol> localStaticMethods = ((IOOSymbolsScope) getTypeInfo().getSpannedScope()).getLocalMethodSymbols().stream().filter(MethodSymbol::isIsStatic).collect(Collectors.toList());
+          List<MethodSymbol> localStaticMethods =
+            ((IOOSymbolsScope) getTypeInfo().getSpannedScope())
+              .getLocalMethodSymbols().stream()
+              .filter(MethodSymbol::isIsStatic)
+              .collect(Collectors.toList());
           methodsWithoutStatic.addAll(localStaticMethods);
         }
         return methodsWithoutStatic;

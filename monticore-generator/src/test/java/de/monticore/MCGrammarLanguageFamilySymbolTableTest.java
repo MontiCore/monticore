@@ -7,6 +7,8 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,13 +20,17 @@ import static org.junit.Assert.assertTrue;
 
 public class MCGrammarLanguageFamilySymbolTableTest {
 
-  @BeforeClass
-  public static void disableFailQuick() {
-    Log.init();
+  @Before
+  public void disableFailQuick() {
     Grammar_WithConceptsMill.init();
-    Log.enableFailQuick(false);
   }
 
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testSymbolTableOfGrammarStatechartDSL() {
     final IGrammar_WithConceptsGlobalScope globalScope = Grammar_WithConceptsMill.globalScope();
@@ -43,6 +49,8 @@ public class MCGrammarLanguageFamilySymbolTableTest {
 
     // 2 = Statechart grammar symbol and TestLexicals grammar symbol (super grammar of Statechart)
     assertEquals(1, globalScope.getSubScopes().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

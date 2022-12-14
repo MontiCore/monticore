@@ -49,6 +49,9 @@ public class TypeCheck {
   public static boolean compatible(SymTypeExpression left,
                                    SymTypeExpression right)
   {
+    if(left.isObscureType() || right.isObscureType()){
+      return true;
+    }
     if(left.isPrimitive()&&right.isPrimitive()){
       SymTypePrimitive leftType = (SymTypePrimitive) left;
       SymTypePrimitive rightType = (SymTypePrimitive) right;
@@ -70,7 +73,7 @@ public class TypeCheck {
       if(isChar(leftType)&& isChar(right)){
         return true;
       }
-      if(isShort(leftType)&& isShort(right)){
+      if(isShort(leftType)&& (isByte(right) || isShort(right))){
         return true;
       }
       if(isByte(leftType)&& isByte(right)){
@@ -98,6 +101,9 @@ public class TypeCheck {
    * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
    */
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
+    if(subType.isObscureType() || superType.isObscureType()){
+      return true;
+    }
     if(unbox(subType.printFullName()).equals(unbox(superType.printFullName()))){
       return true;
     }
@@ -168,43 +174,43 @@ public class TypeCheck {
   }
 
   public static boolean isBoolean(SymTypeExpression type) {
-    return "boolean".equals(unbox(type.print()));
+    return type.isObscureType() || "boolean".equals(unbox(type.print()));
   }
 
   public static boolean isInt(SymTypeExpression type) {
-    return "int".equals(unbox(type.print()));
+    return type.isObscureType() || "int".equals(unbox(type.print()));
   }
 
   public static boolean isDouble(SymTypeExpression type) {
-    return "double".equals(unbox(type.print()));
+    return type.isObscureType() || "double".equals(unbox(type.print()));
   }
 
   public static boolean isFloat(SymTypeExpression type) {
-    return "float".equals(unbox(type.print()));
+    return type.isObscureType() || "float".equals(unbox(type.print()));
   }
 
   public static boolean isLong(SymTypeExpression type) {
-    return "long".equals(unbox(type.print()));
+    return type.isObscureType() || "long".equals(unbox(type.print()));
   }
 
   public static boolean isChar(SymTypeExpression type) {
-    return "char".equals(unbox(type.print()));
+    return type.isObscureType() || "char".equals(unbox(type.print()));
   }
 
   public static boolean isShort(SymTypeExpression type) {
-    return "short".equals(unbox(type.print()));
+    return type.isObscureType() || "short".equals(unbox(type.print()));
   }
 
   public static boolean isByte(SymTypeExpression type) {
-    return "byte".equals(unbox(type.print()));
+    return type.isObscureType() || "byte".equals(unbox(type.print()));
   }
 
   public static boolean isVoid(SymTypeExpression type) {
-    return "void".equals(unbox(type.print()));
+    return type.isObscureType() || "void".equals(unbox(type.print()));
   }
 
   public static boolean isString(SymTypeExpression type) {
-    return "String".equals(type.print());
+    return type.isObscureType() || "String".equals(type.print());
   }
 }
 

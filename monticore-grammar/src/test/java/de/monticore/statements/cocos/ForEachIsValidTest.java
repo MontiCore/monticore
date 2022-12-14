@@ -12,6 +12,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,11 +26,14 @@ public class ForEachIsValidTest {
 
   private static final TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
   
-  @BeforeClass
-  public static void disableFailQuick(){
-
+  @Before
+  public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+  
+  @BeforeClass
+  public static void disableFailQuick(){
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -55,6 +59,7 @@ public class ForEachIsValidTest {
     traverser.add4MCBasicTypes(flatExpressionScopeSetter);
     traverser.add4MCCollectionTypes(flatExpressionScopeSetter);
     traverser.add4MCArrayTypes(flatExpressionScopeSetter);
+    traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
   }
   
   private TestMCCommonStatementsTraverser flatExpressionScopeSetterTraverser;

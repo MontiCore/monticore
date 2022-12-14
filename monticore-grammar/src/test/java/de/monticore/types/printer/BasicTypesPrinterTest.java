@@ -6,6 +6,9 @@ import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,7 +17,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class BasicTypesPrinterTest {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testPrintType() throws IOException{
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
@@ -41,5 +50,7 @@ public class BasicTypesPrinterTest {
     assertEquals("void", printer.prettyprint(astmcVoidType.get()));
     assertEquals("int", printer.prettyprint(astmcPrimitiveType.get()));
     assertEquals("java.util.List", printer.prettyprint(astmcQualifiedType.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

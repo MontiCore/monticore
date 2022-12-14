@@ -5,11 +5,12 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.codegen.cd2java.CDModifier;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,8 +25,8 @@ public class CDSymbolTranslationTest {
 
   private ASTCDCompilationUnit compilationUnit;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     Log.init();
     Log.enableFailQuick(false);
     GrammarFamilyMill.init();
@@ -40,6 +41,8 @@ public class CDSymbolTranslationTest {
   @Test
   public void testDefinitionName() {
     assertEquals("SymbolRuleSymbols", compilationUnit.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -47,11 +50,15 @@ public class CDSymbolTranslationTest {
     assertEquals(2, compilationUnit.getCDPackageList().size());
     assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
     assertEquals("symbolTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCount() {
     assertEquals(4, compilationUnit.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -82,6 +89,8 @@ public class CDSymbolTranslationTest {
 
     ASTMCObjectType superclass = symbolClassSymbol.getCDExtendUsage().getSuperclass(0);
     assertDeepEquals("de.monticore.symboltable.Symbol", superclass);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -97,11 +106,15 @@ public class CDSymbolTranslationTest {
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCount() {
     assertTrue(compilationUnit.getCDDefinition().getCDInterfacesList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
 
   }
 
@@ -116,6 +129,8 @@ public class CDSymbolTranslationTest {
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -129,6 +144,8 @@ public class CDSymbolTranslationTest {
     assertEquals("extraString", cdAttribute.getName());
     assertDeepEquals(String.class, cdAttribute.getMCType());
     assertDeepEquals(CDModifier.PROTECTED, cdAttribute.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }
 

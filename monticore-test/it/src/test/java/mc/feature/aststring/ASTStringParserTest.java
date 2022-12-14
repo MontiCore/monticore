@@ -7,6 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -14,6 +18,12 @@ import mc.feature.aststring.aststring._ast.ASTStart;
 import mc.feature.aststring.aststring._parser.AststringParser;
 
 public class ASTStringParserTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testParser() throws IOException {
@@ -43,7 +53,8 @@ public class ASTStringParserTest extends GeneratorIntegrationsTest {
     
     // Test toString method
     assertEquals("ef", ast.getDList().get(2).toString());
-    
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

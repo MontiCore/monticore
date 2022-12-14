@@ -7,11 +7,22 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RemoveRedundantReferencesManipulationTest {
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testGenericList() {
@@ -25,6 +36,8 @@ public class RemoveRedundantReferencesManipulationTest {
         .removeRedundantAttributes(cdClass.getCDAttributeList()));
     
     assertEquals(1, cdClass.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTCDClass setupCDClass(String firstReferenceName, ASTMCType firstReferenceType,

@@ -33,7 +33,6 @@ public class HookTest {
   
   @BeforeClass
   public static void init() throws IOException{
-    LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     HierAutomataParser parser = new HierAutomataParser() ;
     String model = "src/test/resources/example/HierarchyPingPong.aut";
@@ -43,6 +42,12 @@ public class HookTest {
     	throw new IOException();
     }
     ast = optStateMachine.get();
+  }
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
   
   @Before
@@ -66,6 +71,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("TA ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -80,6 +86,8 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A /* Hookpoint: HP1 */ /* Hookpoint: HP2 */ B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -95,6 +103,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A St /* Hookpoint: HP2 */ B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -111,6 +120,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A StA StB B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -126,6 +136,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A St /* Hookpoint: HP2 */ B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -141,6 +152,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A 38 /* Hookpoint: HP2 */ B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -156,6 +168,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A PingPong /* Hookpoint: HP2 */ B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -171,6 +184,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A R PingPong /* Hookpoint: HP3 */ T /* Hookpoint: HP2 */ B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -187,6 +201,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A R PingPong tpl4/Hook1.ftl T /* Hookpoint: HP2 */ B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -214,6 +229,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A C1 C2 B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -241,6 +257,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A PingPong1 PingPong2 B ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -276,6 +293,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" PingPong:3318 PingPong:3323 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -292,6 +310,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" PingPong:18 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -305,6 +324,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 /* Hookpoint: P */ B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -320,6 +340,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
     // Only three variants of template names work
@@ -339,6 +360,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -354,6 +376,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -369,6 +392,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 /* Hookpoint: P */ E1 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -384,6 +408,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 /* Hookpoint: P */ F1 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -403,6 +428,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 /* Hookpoint: P */ G1 F1 G1 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -421,6 +447,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 /* Hookpoint: P */ E1 F1 E1 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -439,6 +466,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" FH1:FH2:18:FH2 ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -457,6 +485,7 @@ public class HookTest {
     // System.out.println(res.toString());
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" HookPoint filled " + "Hook empty ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -473,6 +502,7 @@ public class HookTest {
     assertEquals(" // Content of (c) template"
     		 + " // Content of (c) template"
 		 + " // Developed by SE RWTH ", res.toString().replaceAll(REGEXP, REPLACE));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -486,6 +516,7 @@ public class HookTest {
     } catch (Exception e) {
       assertNotNull(e);
     }
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -505,6 +536,7 @@ public class HookTest {
     assertTrue(res.contains("HookPoint1 filled"));
     assertTrue(res.contains("HookPoint2 filled:p2a, p2a"));
     assertTrue(res.contains("HookPoint3 filled:p3"));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

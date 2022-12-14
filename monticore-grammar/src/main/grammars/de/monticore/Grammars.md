@@ -191,6 +191,7 @@ Some snipets for operators defined in expressions:
     SetExp:        .isin.  .in.  union  intersect  setand  setor
                    { item | specifier }
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
+    LambdaExp:     i->i   (a,b)->a+b
     SIUnits:       5km  3,2m/s  22l  2.400J  
     JavaClass:     this  .[.]  (.).  super  .instanceof.
 
@@ -245,9 +246,19 @@ as they allow math oriented style of specification.
 ### [OptionalOperators.mc4][OCL-OptionalOperators] (stable)
 * This grammar defines nine operators dealing with optional values, e.g. defined by 
   `java.lang.Optional`. The operators are also called *Elvis operators*.
-* E.g.: `val ?: 0W`     equals to   `val.isPresent ? val.get : 0W`
-* `x ?>= y` equals `x.isPresent && x.get >= y` 
+* E.g.: `val ?: 42`     equals to   `val.isPresent() ? val.get() : 42`
+* `x ?>= y` equals `x.isPresent() ? x.get() >= y : false` 
 * This grammar resides in the [MontiCore/OCL][OCL] project.
+
+
+### [LambdaExpressions.mc4](expressions/LambdaExpressions.mc4) (beta)
+* This grammar defines lambda expressions.
+  Lambda expression define anonymous functions that can be passed around 
+  as values e.g. to higher-order functions 
+  and that can be evaluated on arguments of appropriate types.
+* Lambda expressions are fully typed (see e.g. in Haskell) and can be nested.
+* This is only the subset of Java's lambda expressions that allows to define 
+  a functional programming style (thus preventing side effects).
 
 
 ### [SIUnits.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)

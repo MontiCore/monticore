@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
@@ -16,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 
 public class DataDecorator extends AbstractTransformer<ASTCDClass> {
 
@@ -43,7 +44,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
 
   @Override
   public ASTCDClass decorate(final ASTCDClass originalClass, ASTCDClass changedClass) {
-    this.clazzName = originalClass.deepClone().getName();
+    this.clazzName = originalClass.getName();
     changedClass.addCDMember(createDefaultConstructor(originalClass));
     if (originalClass.isPresentCDExtendUsage()) {
       changedClass.setCDExtendUsage(CD4AnalysisMill.cDExtendUsageBuilder().build());
@@ -53,13 +54,20 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
       changedClass.setCDInterfaceUsage(CD4AnalysisMill.cDInterfaceUsageBuilder().build());
       changedClass.getCDInterfaceUsage().setInterfaceList(originalClass.getInterfaceList());
     }
-    changedClass.addAllCDMembers(originalClass.getCDMethodList());
+    for (ASTCDMethod meth: originalClass.getCDMethodList()) {
+      ASTCDMethod newMethod = meth.deepClone();
+      changedClass.addCDMember(newMethod);
+      if (service.isMethodBodyPresent(newMethod)) {
+        glex.replaceTemplate(EMPTY_BODY, newMethod, new StringHookPoint(service.getMethodBody(newMethod)));
+      }
+    }
 
     //remove inherited attributes, because these are already defined in superclass
-    List<ASTCDAttribute> ownAttributes = originalClass.deepClone().getCDAttributeList()
-        .stream()
-        .filter(a -> !service.isInheritedAttribute(a))
-        .collect(Collectors.toList());
+    List<ASTCDAttribute> ownAttributes = originalClass.getCDAttributeList()
+            .stream()
+            .filter(a -> !service.isInheritedAttribute(a))
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
 
     changedClass.addAllCDMembers(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
     // no Inherited attributes only, because inherited once are cloned through super.deepClone()

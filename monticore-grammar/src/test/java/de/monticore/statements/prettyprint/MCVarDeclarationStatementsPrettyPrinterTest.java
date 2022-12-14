@@ -22,8 +22,8 @@ public class MCVarDeclarationStatementsPrettyPrinterTest {
 
   private MCVarDeclarationStatementsFullPrettyPrinter prettyPrinter = new MCVarDeclarationStatementsFullPrettyPrinter(new IndentPrinter());
 
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void setUp() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -49,6 +49,8 @@ public class MCVarDeclarationStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import de.se_rwth.commons.logging.Log;
 
 public class PingPongTest {
   
@@ -45,6 +47,7 @@ public class PingPongTest {
     // assert we are in state NoGame
     assertTrue(String.format(message,"NoGame"), pingpong.currentState instanceof NoGameState);
   
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

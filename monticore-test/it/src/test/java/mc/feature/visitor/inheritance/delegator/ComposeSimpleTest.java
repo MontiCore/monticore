@@ -3,8 +3,11 @@
 package mc.feature.visitor.inheritance.delegator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mc.feature.visitor.inheritance.a.AMill;
@@ -21,6 +24,7 @@ import mc.feature.visitor.inheritance.c._ast.ASTYC;
 import mc.feature.visitor.inheritance.c._visitor.CHandler;
 import mc.feature.visitor.inheritance.c._visitor.CTraverser;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor2;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Tests composing simple visiors using the traverser visitor. The
@@ -29,6 +33,12 @@ import mc.feature.visitor.inheritance.c._visitor.CVisitor2;
  * TODO NJ,DA replace Visitors by traverser/handler 
  */
 public class ComposeSimpleTest extends CommonVisitorTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   // the composer
   private CTraverser traverser = CMill.traverser();
@@ -63,6 +73,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     traverser.handle(AMill.xABuilder().build());
     assertEquals("SimpleAVisitor.hXASimpleAVisitor.vXASimpleAVisitor.tXASimpleAVisitor.eXA",
         run.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -70,6 +81,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     traverser.handle(BMill.xBBuilder().build());
     assertEquals("SimpleBVisitor.hXBSimpleBVisitor.vXBSimpleBVisitor.tXBSimpleBVisitor.eXB",
         run.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -77,6 +89,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     traverser.handle(mc.feature.visitor.inheritance.c.CMill.xCBuilder().build());
     assertEquals("SimpleCVisitor.hXCSimpleCVisitor.vXCSimpleCVisitor.tXCSimpleCVisitor.eXC",
         run.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -93,6 +106,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     // rest of yc
     expectedRun.append("SimpleCVisitor.eYC");
     assertEquals(expectedRun.toString(), run.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -114,6 +128,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     // rest of zb
     expectedRun.append("SimpleBVisitor.eZB");
     assertEquals(expectedRun.toString(), run.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

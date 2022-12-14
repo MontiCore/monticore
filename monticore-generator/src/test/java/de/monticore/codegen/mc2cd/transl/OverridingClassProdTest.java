@@ -6,6 +6,9 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,9 +22,11 @@ public class OverridingClassProdTest {
   
   private ASTCDClass astX;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
   
   public OverridingClassProdTest() {
@@ -39,5 +44,7 @@ public class OverridingClassProdTest {
     assertTrue(astX.isPresentCDExtendUsage());
     String name = typeToString(astX.getCDExtendUsage().getSuperclass(0));
     assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

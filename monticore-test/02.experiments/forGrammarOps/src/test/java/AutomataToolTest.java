@@ -14,8 +14,8 @@ import static org.junit.Assert.assertEquals;
 
 public class AutomataToolTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -35,6 +35,7 @@ public class AutomataToolTest {
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(6, p.size());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

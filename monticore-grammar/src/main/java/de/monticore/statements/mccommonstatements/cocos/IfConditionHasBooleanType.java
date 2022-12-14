@@ -14,7 +14,7 @@ public class IfConditionHasBooleanType implements MCCommonStatementsASTIfStateme
   
   public static final String ERROR_CODE = "0xA0909";
   
-  public static final String ERROR_MSG_FORMAT = "Condition in if-statement must be a boolean expression.";
+  public static final String ERROR_MSG_FORMAT = " Condition in if-statement must be a boolean expression.";
   
   public IfConditionHasBooleanType(TypeCalculator typeCheck){
     this.typeCheck = typeCheck;

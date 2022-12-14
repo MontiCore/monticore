@@ -4,24 +4,26 @@ package de.monticore.codegen.cd2java.cli;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC_STATIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static junit.framework.TestCase.assertTrue;
@@ -38,7 +40,7 @@ public class CLIDecoratorTest extends DecoratorTestCase {
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
@@ -50,21 +52,29 @@ public class CLIDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethodCount() {
     assertEquals(17, cliClass.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoAttribute() {
     assertTrue(cliClass.getCDAttributeList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoConstructor() {
     assertTrue(cliClass.getCDConstructorList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassName() {
     assertEquals("AutomatonTool", cliClass.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -75,6 +85,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals("String[]", method.getCDParameter(0).getMCType());
     assertEquals("args", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,6 +99,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
     assertEquals("node", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -98,6 +112,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
     assertEquals("node", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -110,6 +126,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals("String", method.getCDParameter(0).getMCType());
     assertEquals("model", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -120,6 +138,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals("String[]", method.getCDParameter(0).getMCType());
     assertEquals("args", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -128,7 +148,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertTrue(method.isEmptyCDParameters());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -141,7 +162,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("String", method.getCDParameter(1).getMCType());
     assertEquals("ast", method.getCDParameter(0).getName());
     assertEquals("file", method.getCDParameter(1).getName());
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -154,6 +176,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("String", method.getCDParameter(1).getMCType());
     assertEquals("content", method.getCDParameter(0).getName());
     assertEquals("path", method.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -164,6 +188,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(CLI_OPTIONS, method.getCDParameter(0).getMCType());
     assertEquals("options", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -176,6 +202,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("String", method.getCDParameter(1).getMCType());
     assertEquals("ast", method.getCDParameter(0).getName());
     assertEquals("path", method.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -186,6 +214,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
     assertEquals("ast", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -196,6 +226,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.getCDParameterList().size());
     assertDeepEquals(AST_AUTOMATON, method.getCDParameter(0).getMCType());
     assertEquals("ast", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -208,6 +240,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("String", method.getCDParameter(1).getMCType());
     assertEquals("scope", method.getCDParameter(0).getName());
     assertEquals("path", method.getCDParameter(1).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -217,6 +251,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(CLI_OPTIONS, method.getMCReturnType().getMCType());
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -228,6 +264,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertEquals("options", method.getCDParameter(0).getName());
     assertDeepEquals(CLI_OPTIONS, method.getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -239,6 +277,8 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertEquals("options", method.getCDParameter(0).getName());
     assertDeepEquals(CLI_OPTIONS, method.getCDParameter(0).getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -246,11 +286,14 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, cliClass, cliClass);
+    CD4C.init(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, cliClass, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

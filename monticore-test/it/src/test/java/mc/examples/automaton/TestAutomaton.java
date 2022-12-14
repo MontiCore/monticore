@@ -5,12 +5,16 @@ package mc.examples.automaton;
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.examples.automaton.automaton.AutomatonMill;
 import mc.examples.automaton.automaton._ast.ASTAutomaton;
 import mc.examples.automaton.automaton._od.Automaton2OD;
 import mc.examples.automaton.automaton._parser.AutomatonParser;
 import mc.examples.automaton.automaton._visitor.AutomatonTraverser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,7 +28,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TestAutomaton extends GeneratorIntegrationsTest {
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   private ASTAutomaton parse() throws IOException {
     AutomatonParser parser = new AutomatonParser();
     Optional<ASTAutomaton> optAutomaton;
@@ -53,6 +63,7 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
   public void test() throws IOException {
     ASTAutomaton ast = parse();
     printOD(ast, "Testautomat");
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   protected String readFile(String path, Charset encoding)

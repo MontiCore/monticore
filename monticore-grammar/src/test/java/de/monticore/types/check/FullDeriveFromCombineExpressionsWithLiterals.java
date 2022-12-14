@@ -19,6 +19,8 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
 
   private DeriveSymTypeOfJavaClassExpressions deriveSymTypeOfJavaClassExpressions;
 
+  private DeriveSymTypeOfLambdaExpressions deriveSymTypeOfLambdaExpressions;
+
   private DeriveSymTypeOfLiterals deriveSymTypeOfLiterals;
 
   private DeriveSymTypeOfMCCommonLiterals deriveSymTypeOfMCCommonLiterals;
@@ -47,6 +49,7 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
     deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfBitExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfJavaClassExpressions.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfLambdaExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfCombineExpressions.setTypeCheckResult(typeCheckResult);
   }
 
@@ -62,6 +65,8 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
     deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
     synthesizer = new FullSynthesizeFromCombineExpressionsWithLiterals();
+    deriveSymTypeOfLambdaExpressions = new DeriveSymTypeOfLambdaExpressions();
+    deriveSymTypeOfLambdaExpressions.setSynthesize(synthesizer);
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(synthesizer);
     setTypeCheckResult(getTypeCheckResult());
 
@@ -76,6 +81,8 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
     traverser.add4BitExpressions(deriveSymTypeOfBitExpressions);
     traverser.setBitExpressionsHandler(deriveSymTypeOfBitExpressions);
     traverser.add4JavaClassExpressions(deriveSymTypeOfJavaClassExpressions);
+    traverser.setLambdaExpressionsHandler(deriveSymTypeOfLambdaExpressions);
+    traverser.add4LambdaExpressions(deriveSymTypeOfLambdaExpressions);
     traverser.setJavaClassExpressionsHandler(deriveSymTypeOfJavaClassExpressions);
     traverser.add4CombineExpressionsWithLiterals(deriveSymTypeOfCombineExpressions);
     traverser.setCombineExpressionsWithLiteralsHandler(deriveSymTypeOfCombineExpressions);

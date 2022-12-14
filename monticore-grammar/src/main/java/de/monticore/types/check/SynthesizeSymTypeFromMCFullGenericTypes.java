@@ -45,8 +45,8 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeF
       wildcardType.getLowerBound().accept(getTraverser());
       if (!getTypeCheckResult().isPresentResult()) {
         Log.error("0xE9CDD Internal Error: SymType argument missing for generic type. "
-                + " Probably TypeCheck mis-configured.");
-        getTypeCheckResult().reset();
+          + " Probably TypeCheck mis-configured.");
+        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         return;
       }
       tex = SymTypeExpressionFactory.createWildcard(false, getTypeCheckResult().getResult());
@@ -54,8 +54,8 @@ public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeF
       wildcardType.getUpperBound().accept(getTraverser());
       if (!getTypeCheckResult().isPresentResult()) {
         Log.error("0xE9CDA Internal Error: SymType argument missing for generic type. "
-                + " Probably TypeCheck mis-configured.");
-        getTypeCheckResult().reset();
+          + " Probably TypeCheck mis-configured.");
+        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         return;
       }
       tex = SymTypeExpressionFactory.createWildcard(true, getTypeCheckResult().getResult());

@@ -6,6 +6,8 @@ import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,22 +18,25 @@ import static org.junit.Assert.*;
 
 public class SignedNatLiteralsTest {
   
-  @BeforeClass
-  public static void disableFailQuick() {
+  @Before
+  public void initLog() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   private void checkNatLiteral(int i, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTSignedNatLiteral> ast = parser.parse_StringSignedNatLiteral(s);
     assertTrue(!parser.hasErrors());
     assertEquals(i, ast.get().getValue());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private void checkFailingNatLiteral(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     parser.parse_StringSignedNatLiteral(s);
-    assertTrue(parser.hasErrors());    
+    assertTrue(parser.hasErrors());
   }
 
   @Test

@@ -15,18 +15,21 @@ import foo._ast.ASTFooArtifact;
 import foo._parser.FooParser;
 import foo._symboltable.FooSymbols2Json;
 import foo._symboltable.IFooArtifactScope;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import de.se_rwth.commons.logging.Log;
 
 public class UnknownScopeDeSerTests {
 
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Test

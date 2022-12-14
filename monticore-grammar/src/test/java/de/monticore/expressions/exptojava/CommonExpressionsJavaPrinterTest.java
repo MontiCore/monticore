@@ -25,8 +25,8 @@ public class CommonExpressionsJavaPrinterTest {
   
   private CommonExpressionsFullJavaPrinter javaPrinter = new CommonExpressionsFullJavaPrinter(new IndentPrinter());
   
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -50,6 +50,8 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -66,6 +68,8 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testBooleanNotExpression() throws IOException {
@@ -81,6 +85,8 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -97,6 +103,8 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   
@@ -114,6 +122,8 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   
@@ -131,6 +141,8 @@ public class CommonExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(ast.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -143,12 +155,13 @@ public class CommonExpressionsJavaPrinterTest {
     ASTCallExpression result = CommonExpressionsMill.callExpressionBuilder()
       .setExpression(a.get())
       .setArguments(arguments.get())
-      .setName("a")
       .build();
     
     String output = javaPrinter.print(result);
     
     assertEquals("a(b,c)", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -164,6 +177,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a.getFoo()", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -182,6 +197,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a * b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -200,6 +217,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a / b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -218,6 +237,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a % b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -236,6 +257,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a + b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -254,6 +277,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a - b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -272,6 +297,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a <= b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -290,6 +317,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a >= b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -308,6 +337,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a < b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -326,6 +357,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a > b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -344,6 +377,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a == b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -362,6 +397,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a != b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -380,6 +417,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a && b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -398,6 +437,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a || b", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -418,6 +459,8 @@ public class CommonExpressionsJavaPrinterTest {
     String output = javaPrinter.print(result);
     
     assertEquals("a ? b : c", output);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -11,8 +11,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 
 public class CheckSpaceOnOffTest {
@@ -20,8 +19,8 @@ public class CheckSpaceOnOffTest {
   // setup the language infrastructure
   SpaceOnOffParser parser = new SpaceOnOffParser() ;
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -42,6 +41,7 @@ public class CheckSpaceOnOffTest {
   public void testType1() throws IOException {
     ASTType ast = parser.parse_StringType( " Theo " ).get();
     assertEquals("Theo", ast.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -51,6 +51,7 @@ public class CheckSpaceOnOffTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getTypeList().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -60,6 +61,7 @@ public class CheckSpaceOnOffTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getTypeList().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -71,6 +73,7 @@ public class CheckSpaceOnOffTest {
     assertEquals("Set", ta.getTypeList().get(0).getName());
     ASTTypeArguments ta2 = ta.getTypeList().get(0).getTypeArguments();
     assertEquals("Theo", ta2.getTypeList().get(0).getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -83,6 +86,7 @@ public class CheckSpaceOnOffTest {
   public void testExpr1() throws IOException {
     ASTExpression ast = parser.parse_StringExpression( " theo + theo " ).get();
     assertEquals(ASTAddExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -91,6 +95,7 @@ public class CheckSpaceOnOffTest {
     ASTExpression ast = parser.parse_StringExpression(
     	" (theo < ox) > theo " ).get();
     assertEquals(ASTComparisonExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -99,6 +104,7 @@ public class CheckSpaceOnOffTest {
     ASTExpression ast = parser.parse_StringExpression(
     	" theo :!>>!: theo " ).get();
     assertEquals(ASTShiftExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -107,6 +113,7 @@ public class CheckSpaceOnOffTest {
     ASTExpression ast = parser.parse_StringExpression(
     	"theo > theo :!>>!: theo :!>>>!: theo :!>=!: theo" ).get();
     assertEquals(ASTComparisonExpression.class, ast.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -135,6 +142,7 @@ public class CheckSpaceOnOffTest {
   public void testA() throws IOException {
     ASTA ast = parser.parse_StringA( "  Theo " ).get();
     assertEquals("Theo", ast.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -143,6 +151,7 @@ public class CheckSpaceOnOffTest {
     ASTB ast = parser.parse_StringB( "Otto \n Karo  " ).get();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -151,6 +160,7 @@ public class CheckSpaceOnOffTest {
     ASTC ast = parser.parse_StringC( "    :!Otto,Karo!:" ).get();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------

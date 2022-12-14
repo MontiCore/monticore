@@ -50,7 +50,11 @@ public class SymTypeExpressionFactory {
     if (!type.isPresent()) {
       Log.error("0x893F62 Internal Error: Non primitive type " + name + " stored as constant.");
     }
-    return new SymTypePrimitive(type.get());
+    return createPrimitive(type.get());
+  }
+
+  public static SymTypePrimitive createPrimitive(TypeSymbol type) {
+    return new SymTypePrimitive(type);
   }
 
   /**
@@ -76,6 +80,10 @@ public class SymTypeExpressionFactory {
    */
   public static SymTypeVoid createTypeVoid() {
     return new SymTypeVoid();
+  }
+
+  public static SymTypeObscure createObscureType() {
+    return new SymTypeObscure();
   }
 
   /**
@@ -132,11 +140,10 @@ public class SymTypeExpressionFactory {
    */
   public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
-    if (PRIMITIVE_LIST.contains(name)) {
-      o = createPrimitive(name);
-    }
-    else if ("void".equals(name)) {
+    if ("void".equals(name)) {
       o = createTypeVoid();
+    } else if (PRIMITIVE_LIST.contains(name)) {
+      o = createPrimitive(name);
     } else if ("null".equals(name)) {
       o = createTypeOfNull();
     }else if(name.endsWith("[]")) {

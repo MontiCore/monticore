@@ -10,6 +10,8 @@ import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -88,8 +90,6 @@ public class SymTypeExpressionTest {
 
   @BeforeClass
   public static void setUpScope(){
-//    LogStub.init();
-    Log.enableFailQuick(false);
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -159,7 +159,13 @@ public class SymTypeExpressionTest {
     teFunc4 = createFunction(teVoid, Lists.newArrayList(teDouble, teInt), true);
 
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void printTest() {
     assertEquals("double", teDouble.print());
@@ -176,14 +182,14 @@ public class SymTypeExpressionTest {
     assertEquals("x.Foo<de.x.Person,double,int,Human>", teFoo.printFullName());
     assertEquals("java.util.Set<Map<int,de.x.Person>>", teDeep1.printFullName());
     assertEquals("java.util.Map2<int,java.util.Set<Map<int,de.x.Person>>>", teDeep2.printFullName());
-    assertEquals("? super int", teUpperBound.print());
-    assertEquals("? extends Human", teLowerBound.print());
+    assertEquals("? extends int", teUpperBound.print());
+    assertEquals("? super Human", teLowerBound.print());
     assertEquals("?",teWildcard.print());
-    assertEquals("java.util.Map<? super int,?>", teMap3.printFullName());
-    assertEquals("(void)", teFunc1.print());
-    assertEquals("(double -> int -> int)", teFunc2.print());
-    assertEquals("((double -> int -> int) -> (void))", teFunc3.print());
-    assertEquals("(double -> int... -> void)", teFunc4.print());
+    assertEquals("java.util.Map<? extends int,?>", teMap3.printFullName());
+    assertEquals("() -> void", teFunc1.print());
+    assertEquals("(double, int) -> int", teFunc2.print());
+    assertEquals("((double, int) -> int) -> () -> void", teFunc3.print());
+    assertEquals("(double, int...) -> void", teFunc4.print());
   }
 
   @Test
@@ -348,9 +354,9 @@ public class SymTypeExpressionTest {
     assertTrue(result.isJsonObject());
     JsonObject teFunc2Json = result.getAsJsonObject();
     assertEquals("de.monticore.types.check.SymTypeOfFunction",teFunc2Json.getStringMember("kind"));
-    JsonObject func2returnValue = teFunc2Json.getObjectMember("returnValue");
-    assertEquals("de.monticore.types.check.SymTypePrimitive", func2returnValue.getStringMember( "kind"));
-    assertEquals("int", func2returnValue.getStringMember( "primitiveName"));
+    JsonObject func2returnType = teFunc2Json.getObjectMember("returnType");
+    assertEquals("de.monticore.types.check.SymTypePrimitive", func2returnType.getStringMember( "kind"));
+    assertEquals("int", func2returnType.getStringMember( "primitiveName"));
     List<JsonElement> func2Arguments = teFunc2Json.getArrayMember("argumentTypes");
     assertEquals(2, func2Arguments.size());
     assertEquals("de.monticore.types.check.SymTypePrimitive", func2Arguments.get(0).getAsJsonObject().getStringMember( "kind"));
@@ -504,16 +510,16 @@ public class SymTypeExpressionTest {
     assertEquals("void",tExpr.print());
 
     SymTypeOfFunction tFunc1 = SymTypeExpressionFactory.createFunction(tVoid);
-    assertEquals("(void)", tFunc1.print());
+    assertEquals("() -> void", tFunc1.print());
 
     SymTypeOfFunction tFunc2 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(tFunc1, tFunc1));
-    assertEquals("((void) -> (void) -> void)", tFunc2.print());
+    assertEquals("(() -> void, () -> void) -> void", tFunc2.print());
 
     SymTypeOfFunction tFunc3 = SymTypeExpressionFactory.createFunction(tVoid, tFunc1, tFunc1);
-    assertEquals("((void) -> (void) -> void)", tFunc3.print());
+    assertEquals("(() -> void, () -> void) -> void", tFunc3.print());
 
     SymTypeOfFunction tFunc4 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(teDouble, teInt), true);
-    assertEquals("(double -> int... -> void)", tFunc4.print());
+    assertEquals("(double, int...) -> void", tFunc4.print());
   }
 
   @Test
@@ -722,7 +728,7 @@ public class SymTypeExpressionTest {
   @Test
   public void symTypeOfWildcardTest(){
     SymTypeOfWildcard upperBoundInt = (SymTypeOfWildcard) teUpperBound;
-    assertEquals("? super int", upperBoundInt.print());
+    assertEquals("? extends int", upperBoundInt.print());
     assertEquals("int", upperBoundInt.getBound().print());
     assertTrue(upperBoundInt.isUpper());
   }

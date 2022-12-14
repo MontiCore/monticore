@@ -10,6 +10,7 @@ import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesArtifactSc
 import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesGlobalScope;
 import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesScope;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,12 +27,15 @@ public class ScopeAttributesTest {
 
   private IScopeAttributesArtifactScope scope;
   private ASTStartProd startProd;
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Before
   public void setUp() throws IOException {
-    LogStub.init();         // replace log by a sideffect free variant
-        // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
     ScopeAttributesParser scopeAttributesParser = new ScopeAttributesParser();
     Optional<ASTStartProd> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/scopes/ScopeAttributesModel.sc");
     assertFalse(scopeAttributesParser.hasErrors());
@@ -57,6 +61,7 @@ public class ScopeAttributesTest {
     assertTrue(scopeShadowed.isShadowing());
     assertFalse(scopeShadowed.isOrdered());
     assertTrue(scopeShadowed.isExportingSymbols());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -66,6 +71,7 @@ public class ScopeAttributesTest {
     assertFalse(scopeShadowed.isShadowing());
     assertFalse(scopeShadowed.isOrdered());
     assertFalse(scopeShadowed.isExportingSymbols());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -75,6 +81,7 @@ public class ScopeAttributesTest {
     assertFalse(scopeShadowed.isShadowing());
     assertTrue(scopeShadowed.isOrdered());
     assertTrue(scopeShadowed.isExportingSymbols());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -87,6 +94,7 @@ public class ScopeAttributesTest {
     assertTrue(scopeShadowed.isShadowing());
     assertFalse(scopeShadowed.isOrdered());
     assertTrue(scopeShadowed.isExportingSymbols());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -96,6 +104,7 @@ public class ScopeAttributesTest {
     assertFalse(scopeShadowed.isShadowing());
     assertFalse(scopeShadowed.isOrdered());
     assertFalse(scopeShadowed.isExportingSymbols());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -105,6 +114,7 @@ public class ScopeAttributesTest {
     assertFalse(scopeShadowed.isShadowing());
     assertTrue(scopeShadowed.isOrdered());
     assertTrue(scopeShadowed.isExportingSymbols());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

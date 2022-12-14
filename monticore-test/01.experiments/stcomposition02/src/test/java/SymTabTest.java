@@ -8,6 +8,8 @@ import javaaut.JavaAutMill;
 import javaaut._parser.JavaAutParser;
 import javaaut._symboltable.*;
 import org.antlr.v4.runtime.RecognitionException;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,9 +21,10 @@ import static junit.framework.TestCase.assertTrue;
 
 public class SymTabTest {
 
-  @BeforeClass
-  public static void setUp(){
+  @Before
+  public void setUp(){
     LogStub.init();         // replace log by a sideffect free variant
+    Log.enableFailQuick(false);
     JavaAutMill.init();
     // LogStub.initPlusLog();  // for manual testing purpose only
   }
@@ -35,6 +38,7 @@ public class SymTabTest {
     assertTrue(symbol.isPresent());
     assertEquals("Game", symbol.get().getName());
     assertTrue(symbol.get() instanceof Automaton2MethodAdapter); //assure that an adapter was found
+    Assert.assertTrue(Log.getFindings().isEmpty());
   }
 
   /**

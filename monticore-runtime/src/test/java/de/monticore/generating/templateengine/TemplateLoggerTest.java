@@ -3,15 +3,17 @@
 package de.monticore.generating.templateengine;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileReader;
 
 import de.monticore.io.FileReaderWriter;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.generating.GeneratorSetup;
@@ -31,6 +33,12 @@ public class TemplateLoggerTest {
   private GlobalExtensionManagement glex;
     
   private FileReaderWriterMock fileHandler;
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   /**
    * Sets up the template controller for this 'test'. This is copied entirely

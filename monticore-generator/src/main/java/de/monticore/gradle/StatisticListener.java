@@ -39,7 +39,13 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
     }
   }
 
+  // buildStarted was replaced by beforeSettings in Gradle 7.
+  // To ensure compatibility with both Gradle 6 and 7 both methods are overridden without an Annotation.
   public void buildStarted(Gradle gradle) {
+
+  }
+
+  public void beforeSettings(Settings settings){
 
   }
 
@@ -56,13 +62,6 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
   @Override
   public void projectsEvaluated(Gradle gradle) {
     Log.debug("projectsEvaluated", this.getClass().getName());
-    System.out.println("Performance statistic of this build are tracked by the Software-Engineering Chair at RWTH Aachen. \n" +
-        "The data will help to improve Monticore. \n\n" +
-        "You can Opt-Out by setting \n" +
-        "\t de.monticore.gradle.performance_statistic=false\n" +
-        "in <gradle.properties>"
-    );
-
     this.data = new StatisticData();
     this.data.setProject(gradle.getRootProject());
     this.data.setGradle(gradle);
@@ -73,13 +72,19 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
   @Override
   public void buildFinished(BuildResult buildResult) {
     Log.debug("buildFinished", this.getClass().getName());
-    data.setExecutionTime(Duration.between(projectStartTime, Instant.now()));
     alreadyRegistered.set(false);   // Reset is necessary, otherwise Listener is not used in next build
 
-    if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
-      System.out.println(data.toString());
+    if(projectStartTime != null) {
+      data.setExecutionTime(Duration.between(projectStartTime, Instant.now()));
+
+
+      if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
+        System.out.println(data.toString());
+      }
+      StatisticsHandler.storeReport(data.toString(), StatisticsHandler.ReportType.GradleReport);
+    } else{
+      Log.info("<projectStartTime> was null. ", this.getClass().getName());
     }
-    NetworkHandler.sendReport(data.toString());
   }
 
   @Override

@@ -4,12 +4,13 @@ package de.monticore.codegen.cd2java._ast.ast_new;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
@@ -32,7 +33,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.se_rwth.commons.logging.LogStub;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,16 +54,15 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    this.decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
-    this.originalCompilationUnit = decoratedCompilationUnit.deepClone();
-    this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));
+    this.originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
+    this.glex.setGlobalValue("service", new AbstractService(originalCompilationUnit));
 
-    ASTService astService = new ASTService(decoratedCompilationUnit);
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
-    VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
+    ASTService astService = new ASTService(originalCompilationUnit);
+    SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
+    VisitorService visitorService = new VisitorService(originalCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, astService);
     DataDecorator dataDecorator = new DataDecorator(glex, methodDecorator, astService, new DataDecoratorUtil());
     ASTSymbolDecorator astSymbolDecorator = new ASTSymbolDecorator(glex, symbolTableService);
@@ -75,7 +75,7 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
 
-    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(decoratedCompilationUnit));
+    BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), new ASTService(originalCompilationUnit));
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
 
 
@@ -90,25 +90,20 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     ASTCDDecorator astcdDecorator = new ASTCDDecorator(glex, fullDecorator, astLanguageInterfaceDecorator, astBuilderDecorator,
           astConstantsDecorator, enumDecorator, fullASTInterfaceDecorator);
-    this.decoratedCompilationUnit = astcdDecorator.decorate(decoratedCompilationUnit);
+    this.decoratedCompilationUnit = astcdDecorator.decorate(originalCompilationUnit);
   }
 
   @Test
   public void testCompilationCopy() {
     assertNotEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
-
-  @Test
-  public void testPackageChanged() {
-    String packageName = decoratedCompilationUnit.getCDPackageList().stream().reduce((a, b) -> a + "." + b).get();
-    assertEquals("de.monticore.codegen.ast.ast._ast", packageName);
-  }
-
 
   @Test
   public void testPackage() {
-    List<String> expectedPackage = Arrays.asList("de", "monticore", "codegen", "ast", "ast", "_ast");
-    assertEquals(expectedPackage, decoratedCompilationUnit.getCDPackageList());
+    assertTrue (decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.codegen.ast.ast._ast").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -119,6 +114,8 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
     assertNotEquals(originalClass.getModifier().toString(), decoratedClass.getModifier().toString());
     assertNotEquals(originalClass.getModifier(), decoratedClass.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -126,13 +123,16 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    CD4C.init(generatorSetup);
     for (ASTCDClass clazz : decoratedCompilationUnit.getCDDefinition().getCDClassesList()) {
-      StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
+      StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, clazz, packageDir);
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();
       JavaParser parser = new JavaParser(configuration);
       ParseResult parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

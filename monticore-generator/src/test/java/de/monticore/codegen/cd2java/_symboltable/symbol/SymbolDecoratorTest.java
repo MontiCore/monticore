@@ -4,12 +4,18 @@ package de.monticore.codegen.cd2java._symboltable.symbol;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.codegen.cd2java.*;
+import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.DecorationHelper;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -17,13 +23,18 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
@@ -91,6 +102,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // ScopeSpanningSymbol
@@ -98,27 +111,37 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassNameAutomatonSymbol() {
     assertEquals("AutomatonSymbol", symbolClassAutomaton.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesCountAutomatonSymbol() {
     assertEquals(2, symbolClassAutomaton.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesAutomatonSymbol() {
     assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol", symbolClassAutomaton.getCDInterfaceUsage().getInterface(0));
     assertDeepEquals("de.monticore.symboltable.IScopeSpanningSymbol", symbolClassAutomaton.getCDInterfaceUsage().getInterface(1));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoSuperClass() {
     assertFalse(symbolClassAutomaton.isPresentCDExtendUsage());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertEquals(1, symbolClassAutomaton.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -132,11 +155,15 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals("name", cdConstructor.getCDParameter(0).getName());
 
     assertFalse(cdConstructor.isPresentCDThrowsDeclaration());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(7, symbolClassAutomaton.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -151,6 +178,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("fullName", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -159,6 +188,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(mcTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
         astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,6 +197,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("astNode", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE_OPT), astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -173,6 +206,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("packageName", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(String.class, astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -180,6 +215,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("accessModifier", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(mcTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE), astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -187,6 +224,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute astcdAttribute = getAttributeBy("spannedScope", symbolClassAutomaton);
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE), astcdAttribute.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -202,11 +241,13 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute extraAtt = getAttributeBy("extraAttribute", symbolClassFoo);
     assertDeepEquals(PROTECTED, extraAtt.getModifier());
     assertBoolean(extraAtt.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethods() {
-    assertEquals(19, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(20, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -219,6 +260,30 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType(AUTOMATON_TRAVERSER),
         method.getCDParameter(0).getMCType());
     assertEquals("visitor", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testAcceptSuperMethod() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", 1, symbolClassAutomaton);
+    ASTMCType visitorType = mcTypeFacade.createQualifiedType("de.monticore.visitor.ITraverser");
+
+    methods = methods.stream().filter(m -> visitorType.deepEquals(m.getCDParameter(0).getMCType())).collect(Collectors.toList());
+    assertEquals(1, methods.size());
+
+    ASTCDMethod method = methods.get(0);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertFalse(method.isEmptyCDParameters());
+    assertEquals(1, method.sizeCDParameters());
+
+    ASTCDParameter parameter = method.getCDParameter(0);
+    assertDeepEquals(visitorType, parameter.getMCType());
+    assertEquals("visitor", parameter.getName());
+
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -228,6 +293,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -237,6 +304,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -246,6 +315,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -255,6 +326,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -264,6 +337,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -274,6 +349,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -284,6 +361,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -293,6 +372,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(A_NODE_TYPE, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -303,6 +384,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -314,6 +397,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
         , method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -325,6 +410,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("name", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -336,6 +423,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("fullName", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -347,6 +436,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(String.class, method.getCDParameter(0).getMCType());
     assertEquals("packageName", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -359,6 +450,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType(ENCLOSING_SCOPE_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("enclosingScope", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -371,6 +464,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType(A_NODE_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("astNode", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -380,6 +475,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -392,6 +489,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType(ACCESS_MODIFIER_TYPE),
         method.getCDParameter(0).getMCType());
     assertEquals("accessModifier", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -404,6 +503,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE),
         method.getCDParameter(0).getMCType());
     assertEquals("scope", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -411,12 +512,15 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassAutomaton, symbolClassAutomaton);
+    CD4C.init(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, symbolClassAutomaton, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   //normal Symbol
@@ -424,41 +528,57 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   @Test
   public void testClassNameStateSymbol() {
     assertEquals("StateSymbol", symbolClassState.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesCountStateSymbol() {
     assertEquals(1, symbolClassState.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfacesStateSymbol() {
     assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol", symbolClassState.getCDInterfaceUsage().getInterface(0));
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCountStateSymbol() {
     assertEquals(6, symbolClassState.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test(expected = AssertionError.class)
   public void testSpannedScopeAttributeStateSymbol() {
     getAttributeBy("spannedScope", symbolClassState);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(17, symbolClassState.getCDMethodList().size());
+    assertEquals(18, symbolClassState.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test(expected = AssertionError.class)
   public void testGetSpannedScopeMethodStateSymbol() {
     getMethodBy("getSpannedScope", symbolClassState);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test(expected = AssertionError.class)
   public void testSetSpannedScopeMethodStateSymbol() {
     getMethodBy("setSpannedScope", symbolClassState);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -466,6 +586,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   public void testFooSymbolSuperClass() {
     assertTrue(symbolClassFoo.isPresentCDExtendUsage());
     assertDeepEquals("NotASymbol", symbolClassFoo.getCDExtendUsage().getSuperclass(0));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -474,7 +596,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals("de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.ICommonAutomatonSymbolCDSymbol",
         symbolClassFoo.getCDInterfaceUsage().getInterface(0));
     assertDeepEquals("de.monticore.codegen.ast.Lexicals.ASTLexicalsNode", symbolClassFoo.getCDInterfaceUsage().getInterface(1));
-
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -485,6 +608,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertBoolean(method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -496,6 +621,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertBoolean(method.getCDParameter(0).getMCType());
     assertEquals("extraAttribute", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -506,6 +633,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertListOf(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -517,6 +646,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertListOf(String.class, method.getCDParameter(0).getMCType());
     assertEquals("foo", method.getCDParameter(0).getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -527,6 +658,8 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -534,11 +667,14 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, symbolClassState, symbolClassState);
+    CD4C.init(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, symbolClassState, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

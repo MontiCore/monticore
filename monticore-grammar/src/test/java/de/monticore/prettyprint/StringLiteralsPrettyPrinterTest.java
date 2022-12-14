@@ -21,8 +21,8 @@ import static org.junit.Assert.assertTrue;
 
 public class StringLiteralsPrettyPrinterTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
@@ -50,6 +50,8 @@ public class StringLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(cliteral.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -69,6 +71,8 @@ public class StringLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(cliteral.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -88,6 +92,8 @@ public class StringLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(sliteral.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -8,6 +8,7 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,9 +20,10 @@ public class KeywordAlternativeNameTest extends CocoTest {
   
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4019.A4019";
   
-  @BeforeClass
-  public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
   
   @Test

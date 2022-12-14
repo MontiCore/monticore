@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
@@ -28,8 +29,8 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
@@ -86,17 +87,19 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     String scopeInterfaceName = INTERFACE_PREFIX + symbolTableService.getCDName() + SCOPE_SUFFIX;
 
     // get scope rule attributes and methods
-    List<ASTCDAttribute> scopeRuleAttributes = scopeInput.deepClone().getCDDefinition().getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getCDAttributeList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTCDAttribute> scopeRuleAttributes = scopeInput.getCDDefinition().getCDClassesList()
+            .stream()
+            .map(ASTCDClass::getCDAttributeList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getCDMethodList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+            .stream()
+            .map(ASTCDClass::getCDMethodList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     scopeRuleMethodList.forEach(m -> m.getModifier().setAbstract(true));
 
     List<ASTCDMethod> scopeRuleAttributeMethods = scopeRuleAttributes
@@ -115,30 +118,32 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       superScopeInterfaces.add(getMCTypeFacade().createQualifiedType(I_SCOPE));
     }
 
-    List<ASTMCObjectType> scopeRuleInterfaces = scopeInput.deepClone().getCDDefinition().getCDClassesList()
-        .stream()
-        .map(ASTCDClass::getInterfaceList)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<ASTMCObjectType> scopeRuleInterfaces = scopeInput.getCDDefinition().getCDClassesList()
+            .stream()
+            .map(ASTCDClass::getInterfaceList)
+            .flatMap(List::stream)
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
 
     Set<String> symbolAttributes = createSymbolAttributesNames(symbolInput.getCDDefinition().getCDClassesList(), symbolTableService.getCDSymbol());
     symbolAttributes.addAll(getSuperSymbolAttributesNames());
-
-    return CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(scopeInterfaceName)
-        .setModifier(PUBLIC.build())
-        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
-                .addAllSuperclass(superScopeInterfaces)
-                .addAllSuperclass(scopeRuleInterfaces).build())
-        .addAllCDMembers(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDClassesList()))
-        .addAllCDMembers(createScopeInterfaceMethodsForSymbols(symbolInput.getCDDefinition().getCDClassesList()))
-        .addAllCDMembers(createSubScopesMethods(scopeInterfaceName))
-        .addAllCDMembers(createEnclosingScopeMethods(scopeInterfaceName))
-        .addAllCDMembers(scopeRuleMethodList)
-        .addAllCDMembers(scopeRuleAttributeMethods)
-        .addCDMember(createAcceptTraverserMethod())
-        .addCDMember(createSymbolsSizeMethod(symbolAttributes))
-        .build();
+    ASTCDInterface clazz = CD4AnalysisMill.cDInterfaceBuilder()
+            .setName(scopeInterfaceName)
+            .setModifier(PUBLIC.build())
+            .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+                    .addAllSuperclass(superScopeInterfaces)
+                    .addAllSuperclass(scopeRuleInterfaces).build())
+            .addAllCDMembers(createAlreadyResolvedMethods(symbolInput.getCDDefinition().getCDClassesList()))
+            .addAllCDMembers(createScopeInterfaceMethodsForSymbols(symbolInput.getCDDefinition().getCDClassesList()))
+            .addAllCDMembers(createSubScopesMethods(scopeInterfaceName))
+            .addAllCDMembers(createEnclosingScopeMethods(scopeInterfaceName))
+            .addAllCDMembers(scopeRuleMethodList)
+            .addAllCDMembers(scopeRuleAttributeMethods)
+            .addCDMember(createAcceptTraverserMethod())
+            .addCDMember(createSymbolsSizeMethod(symbolAttributes))
+            .build();
+    CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
+    return clazz;
   }
 
   protected List<ASTCDMethod> createAlreadyResolvedMethods(List<? extends ASTCDType> symbolProds) {

@@ -6,12 +6,14 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import de.se_rwth.commons.logging.Log;
 
 public class BuiltInJavaTypesTest {
 
@@ -19,14 +21,19 @@ public class BuiltInJavaTypesTest {
 
   @BeforeClass
   public static void setup(){
-    LogStub.init();
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
     //use OOSymbolsGlobalScope to test if it also works for grammars that extend the BasicSymbols grammar
     gs = OOSymbolsMill.globalScope();
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void testBuiltInPrimitiveJavaTypes(){
     //assert that the primitive types can be resolved in the scope

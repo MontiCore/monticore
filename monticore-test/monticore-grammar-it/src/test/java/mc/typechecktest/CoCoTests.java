@@ -38,13 +38,14 @@ public class CoCoTests {
 
   @BeforeClass
   public static void init(){
-    LogStub.init();
-    LogStub.enableFailQuick(false);
     TypeCheckTestMill.init();
   }
 
   @Before
   public void setup() throws IOException {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    
     TypeCheckTestMill.globalScope().clear();
     BasicSymbolsMill.initializePrimitives();
     TypeSymbol string = TypeCheckTestMill
@@ -149,7 +150,7 @@ public class CoCoTests {
   @Test
   public void testStaticAbstractOOFields(){
     testValidAbstract(staticAbstractOOFields);
-    testInvalidOO("0xA1236", staticAbstractOOFields);
+    testInvalidOO("0xA0241", staticAbstractOOFields);
   }
 
   @Test
@@ -166,8 +167,8 @@ public class CoCoTests {
 
   @Test
   public void testComplicatedWrongAssignment(){
-    testInvalidAbstract("0xA0211",complicatedWrongAssignment);
-    testInvalidOO("0xA0211", complicatedWrongAssignment);
+    testInvalidAbstract("0xA0168",complicatedWrongAssignment);
+    testInvalidOO("0xA0168", complicatedWrongAssignment);
   }
 
   @Test

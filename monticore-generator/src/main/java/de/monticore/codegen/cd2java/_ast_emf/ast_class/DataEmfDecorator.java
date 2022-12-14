@@ -17,7 +17,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.E_DATA_TYPE_E_LIST;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.E_OBJECT_CONTAINMENT_E_LIST;
 

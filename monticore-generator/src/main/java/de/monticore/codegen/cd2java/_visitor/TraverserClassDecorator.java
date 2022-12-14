@@ -5,9 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -23,9 +21,9 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -68,6 +66,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
         .addAllCDMembers(addVisitorMethods(cDsTransitive))
         .addAllCDMembers(addHandlerMethods(cDsTransitive))
         .addAllCDMembers(addDefaultMethods())
+        .addAllCDMembers(addTraversedElementsControl())
         .build();
   }
 
@@ -123,6 +122,39 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
     methodList.add(getVisitorMethod);
 
     return methodList;
+  }
+
+  /**
+   * Adds a hashset as well as implementations for getting and setting it
+   *
+   * @return The attribute and two methods
+   */
+  protected List<ASTCDMember> addTraversedElementsControl() {
+    List<ASTCDMember> cdElements = Lists.newArrayList();
+
+    // create traversed elements hash set
+    ASTCDAttribute traversedElementsAttr = getCDAttributeFacade().createAttribute(
+            PROTECTED.build(), TRAVERSED_ELEMS_TYPE, TRAVERSED_ELEMS_NAME);
+    this.replaceTemplate(VALUE, traversedElementsAttr,
+            new StringHookPoint("= new " + TRAVERSED_ELEMS_INSTANCE_TYPE + "()"));
+    cdElements.add(traversedElementsAttr);
+
+    // create getter
+    ASTCDMethod getMethod = getCDMethodFacade().createMethod(PUBLIC.build(),
+            TRAVERSED_ELEMS_TYPE, "get" + StringTransformations.capitalize(TRAVERSED_ELEMS_NAME));
+    this.replaceTemplate(EMPTY_BODY, getMethod, new StringHookPoint("return " + TRAVERSED_ELEMS_NAME + ";"));
+    cdElements.add(getMethod);
+
+    // create setter
+    // ASTMCListType listVisitorType = getMCTypeFacade().createListTypeOf(visitorType);
+    ASTCDParameter setParam = getCDParameterFacade().createParameter(TRAVERSED_ELEMS_TYPE, TRAVERSED_ELEMS_NAME);
+    ASTCDMethod setMethod = getCDMethodFacade().createMethod(PUBLIC.build(),
+            "set" + StringTransformations.capitalize(TRAVERSED_ELEMS_NAME), setParam);
+    this.replaceTemplate(EMPTY_BODY, setMethod,
+            new StringHookPoint("this." + TRAVERSED_ELEMS_NAME + " = " + TRAVERSED_ELEMS_NAME  + ";"));
+    cdElements.add(setMethod);
+
+    return cdElements;
   }
 
   /**

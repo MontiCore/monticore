@@ -6,9 +6,12 @@ import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfObject;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class MethodFormalParametersDifferentNameTest extends JavaLightCocoTest {
 
@@ -35,6 +38,8 @@ public class MethodFormalParametersDifferentNameTest extends JavaLightCocoTest {
   @Test
   public void testCorrect() {
     testValid("de.monticore.javalight.cocos.valid.MethodDecl", "meth1", checker);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

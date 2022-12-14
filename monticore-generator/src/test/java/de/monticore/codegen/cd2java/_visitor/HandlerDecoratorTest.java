@@ -4,12 +4,13 @@ package de.monticore.codegen.cd2java._visitor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -18,6 +19,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +27,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -58,7 +60,7 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
@@ -78,26 +80,36 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testVisitorName() {
     assertEquals("AutomatonHandler", handler.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(0, handler.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
     assertEquals(20, handler.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test 
   public void testInterfaceCount() {
     assertEquals(1, handler.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -107,7 +119,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     assertTrue(astcdMethod.getMCReturnType().isPresentMCType());
     assertEquals(0, astcdMethod.sizeCDParameters());
     assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser", astcdMethod.getMCReturnType().getMCType());
-
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -119,6 +132,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDParameter astcdParameter = astcdMethod.getCDParameter(0);
     assertEquals("traverser", astcdParameter.getName());
     assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser", astcdParameter.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -131,6 +146,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -143,6 +160,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -155,6 +174,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -167,6 +188,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -179,6 +202,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -191,6 +216,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -203,6 +230,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -215,6 +244,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -227,6 +258,8 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     ASTCDMethod method = methods.get(0);
     assertEquals("node", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -234,12 +267,15 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CoreTemplates.INTERFACE, handler, handler);
+    CD4C.init(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.INTERFACE, handler, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

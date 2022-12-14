@@ -10,13 +10,15 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
@@ -44,6 +46,8 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
   public void testAttributes() {
     assertFalse(attributes.isEmpty());
     assertEquals(1, attributes.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -52,5 +56,7 @@ public class ASTSymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
     assertOptionalOf("de.monticore.codegen.ast.ast._symboltable.ASymbol", symbolAttribute.get().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

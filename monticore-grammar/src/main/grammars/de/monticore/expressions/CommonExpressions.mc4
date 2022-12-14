@@ -26,8 +26,10 @@ import de.monticore.expressions.*;
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/OptionalExpressions.mc4
  * * --  expressions/AssignmentExpressions.mc4
  * * --  expressions/BitExpressions.mc4
+ * * --  expressions/LambdaExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
  * * --  expressions/SetExpressions.mc4
  *
@@ -47,21 +49,14 @@ component grammar CommonExpressions
 
   /*=================================================================*/
   /** CallExpression is a Method-Call like foo()
-  * Method name must be a name (nothing like f()() or a[0]())
   * Expression on the left can be an expression, like:
   * a Class-Name: A.f(), variable-Name a.f(),
   * BracketExpression ("foo"+"Bar").toLowerCase()
+  * an expression with value of type function: f()() or a[0]()
   * or other Method Calls: * c.getA().getB()
-  *
-  * After parsing a normal method call, the method name is 
-  * stored as if it was parsed as:
-  *    CallExpression = Name Arguments;
-  *  i.e. the tree is then restructured (in a separate pass)
   */
   CallExpression implements Expression <240> =
     Expression Arguments;
-
-  astrule CallExpression = Name;
 
   /*=================================================================*/
 

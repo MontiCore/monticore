@@ -4,14 +4,15 @@ package de.monticore.codegen.cd2java._symboltable.serialization;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.facade.CDModifier;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CDModifier;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -27,7 +28,8 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.*;
 
 public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
@@ -78,31 +80,43 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassNameAutomatonSymbol() {
     assertEquals("AutomatonSymbolDeSer", symbolClassAutomaton.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperInterfaceCount() {
     assertEquals(1, symbolClassAutomaton.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCount() {
     assertEquals(0, symbolClassAutomaton.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
     assertEquals(0, symbolClassAutomaton.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount(){
     assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -113,6 +127,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -129,6 +145,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(AUTOMATON_SYMBOLS_2_JSON, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -140,6 +158,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -154,31 +174,43 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertEquals("symbolJson", parameterList.get(1).getName());
     assertDeepEquals(JSON_OBJECT, parameterList.get(1).getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassNameFooSymbol() {
     assertEquals("FooSymbolDeSer", symbolClassFoo.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoSuperInterfaceFoo() {
     assertEquals(1, symbolClassFoo.getInterfaceList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testConstructorCountFoo() {
     assertEquals(0, symbolClassFoo.getCDConstructorList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCountFoo() {
     assertEquals(0, symbolClassFoo.getCDAttributeList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCountFoo() {
     assertEquals(11, symbolClassFoo.getCDMethodList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -189,6 +221,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertEquals(0, method.sizeCDParameters());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -205,6 +239,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(AUTOMATON_SYMBOLS_2_JSON, parameter.getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -216,6 +252,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(FOO_SYMBOL, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -230,6 +268,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertEquals("symbolJson", parameterList.get(1).getName());
     assertDeepEquals(JSON_OBJECT, parameterList.get(1).getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -244,6 +284,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertEquals("s2j", parameterList.get(1).getName());
     assertDeepEquals(AUTOMATON_SYMBOLS_2_JSON, parameterList.get(1).getMCType());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -257,6 +299,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameterList.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertBoolean(method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -270,6 +314,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameterList.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertListOf(String.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -283,6 +329,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameterList.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -290,13 +338,16 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    CD4C.init(generatorSetup);
     StringBuilder sb = generatorEngine
-        .generate(CoreTemplates.CLASS, symbolClassAutomaton, symbolClassAutomaton);
+        .generate(CD2JavaTemplates.CLASS, symbolClassAutomaton, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -304,12 +355,15 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    CD4C.init(generatorSetup);
     StringBuilder sb = generatorEngine
-        .generate(CoreTemplates.CLASS, symbolClassFoo, symbolClassFoo);
+        .generate(CD2JavaTemplates.CLASS, symbolClassFoo, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
     ParseResult parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

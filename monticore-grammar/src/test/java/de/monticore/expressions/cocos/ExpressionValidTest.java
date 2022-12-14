@@ -11,6 +11,7 @@ import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,9 +24,14 @@ public class ExpressionValidTest extends CocoTest {
 
   private static final ExpressionsBasisCoCoChecker checker = new ExpressionsBasisCoCoChecker();
 
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -40,7 +46,7 @@ public class ExpressionValidTest extends CocoTest {
     assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().toString(), Log.getFindings().isEmpty());
   }
 
   public void checkInvalid(String expressionString) throws IOException {
@@ -59,47 +65,15 @@ public class ExpressionValidTest extends CocoTest {
     checkValid("(5<6)&&(1<=1)");
     checkValid("!true||false&&(5>=0)");
     checkValid("5.0/2.5%2");
-    checkValid("5++--");
   }
 
   @Test
   public void testInvalid() throws IOException {
-    try {
-      checkInvalid("5+false");
-      fail();
-    } catch (Exception e) {
-      // Ok
-    }
-    try {
-      checkInvalid("true-true");
-      fail();
-    } catch (Exception e) {
-      // Ok
-    }
-    try {
-      checkInvalid("!false!=5");
-      fail();
-    } catch (Exception e) {
-      // Ok
-    }
-    try {
-      checkInvalid("5||7");
-      fail();
-    } catch (Exception e) {
-      // Ok
-    }
-    try {
-      checkInvalid("true++");
-      fail();
-    } catch (Exception e) {
-      // Ok
-    }
-    try {
-      checkInvalid("(true&&6)||(false>=37)");
-      fail();
-    } catch (Exception e) {
-      // Ok
-    }
-
+    checkInvalid("5+false");
+    checkInvalid("true-true");
+    checkInvalid("!false!=5");
+    checkInvalid("5||7");
+    checkInvalid("true++");
+    checkInvalid("(true&&6)||(false>=37)");
   }
 }

@@ -5,11 +5,14 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfLiteralsTest {
   
@@ -20,13 +23,18 @@ public class DeriveSymTypeOfLiteralsTest {
   
   @BeforeClass
   public static void setup() {
-    LogStub.init();
-    LogStub.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
   }
-
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
+  
   // This is the core Visitor under Test (but rather empty)
   IDerive derLit = new FullDeriveFromCombineExpressionsWithLiterals();
   
@@ -41,6 +49,8 @@ public class DeriveSymTypeOfLiteralsTest {
   public void deriveTFromLiteral1(){
     ASTLiteral lit = MCCommonLiteralsMill.natLiteralBuilder().setDigits("17").build();
     assertEquals("int",tc.typeOf(lit).print());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   

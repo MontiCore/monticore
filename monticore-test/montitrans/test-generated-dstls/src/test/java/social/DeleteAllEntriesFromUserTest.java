@@ -3,8 +3,10 @@ package social;
 
 import de.monticore.tf.DeleteAllEntriesFromUser;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.social.socialnetwork._ast.ASTNetwork;
 import mc.testcases.social.socialnetwork._parser.SocialNetworkParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -14,12 +16,13 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class DeleteAllEntriesFromUserTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testNetwork1() throws IOException {
     SocialNetworkParser parser = new SocialNetworkParser();
@@ -42,6 +45,7 @@ public class DeleteAllEntriesFromUserTest {
     assertEquals(0, astNetwork.get().getUser(0).sizePhotoEntrys());
 
     assertEquals(0,Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -61,6 +65,7 @@ public class DeleteAllEntriesFromUserTest {
     assertEquals(0, astNetwork.get().getUser(0).sizePhotoEntrys());
 
     assertEquals(0,Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -80,6 +85,7 @@ public class DeleteAllEntriesFromUserTest {
     assertEquals(0, astNetwork.get().getUser(0).sizePhotoEntrys());
 
     assertEquals(0,Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -102,5 +108,6 @@ public class DeleteAllEntriesFromUserTest {
     assertEquals(0, astNetwork.get().getUser(1).sizePhotoEntrys());
 
     assertEquals(0,Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

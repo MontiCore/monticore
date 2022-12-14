@@ -7,6 +7,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,8 +19,8 @@ import static org.junit.Assert.*;
 
 public class FloatCommonLiteralsTest {
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -31,6 +32,8 @@ public class FloatCommonLiteralsTest {
     assertTrue(lit.get() instanceof ASTBasicFloatLiteral);
     assertEquals(f, ((ASTBasicFloatLiteral) lit.get()).getValue(), 0);
     assertTrue(true);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkFalse(String s) throws IOException {

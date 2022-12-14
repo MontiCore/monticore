@@ -21,8 +21,8 @@ import de.se_rwth.commons.logging.LogStub;
 
 public class CompletenessPrettyPrinterTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
@@ -49,6 +49,8 @@ public class CompletenessPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(completeness.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -67,6 +69,8 @@ public class CompletenessPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(completeness.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -85,6 +89,8 @@ public class CompletenessPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(completeness.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -103,5 +109,7 @@ public class CompletenessPrettyPrinterTest {
     assertTrue(result.isPresent());
     
     assertTrue(completeness.deepEquals(result.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

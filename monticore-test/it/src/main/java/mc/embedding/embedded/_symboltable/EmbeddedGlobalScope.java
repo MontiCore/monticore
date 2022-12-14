@@ -2,6 +2,7 @@
 
 package mc.embedding.embedded._symboltable;
 
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -11,6 +12,7 @@ import mc.embedding.embedded._parser.EmbeddedParser;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -37,7 +39,7 @@ public class EmbeddedGlobalScope extends EmbeddedGlobalScopeTOP {
     if (!isFileLoaded(filePath)) {
       addLoadedFile(filePath);
       if (location.isPresent()) {
-        ASTText parse = parse(location.get().getPath());
+        ASTText parse = parse(location.get());
         EmbeddedMill.scopesGenitorDelegator().createFromAST(parse);
       }
     }
@@ -48,9 +50,9 @@ public class EmbeddedGlobalScope extends EmbeddedGlobalScopeTOP {
     }
   }
 
-  private ASTText parse(String model) {
-    try {
-      Optional<ASTText> ast = new EmbeddedParser().parse(new FileReader(model));
+  private ASTText parse(URL model) {
+    try (Reader reader = FileReaderWriter.getReader(model)){
+      Optional<ASTText> ast = new EmbeddedParser().parse(reader);
       if (ast.isPresent()) {
         return ast.get();
       }

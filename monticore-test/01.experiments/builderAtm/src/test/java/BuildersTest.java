@@ -3,6 +3,7 @@
 import automata.AutomataMill;
 import automata._ast.*;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,16 +12,14 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BuildersTest {
 
-  @BeforeClass
-  public static void init() {
-    Log.enableFailQuick(false);
-  }
-
   @Before
   public void setUp() throws RecognitionException, IOException {
+    LogStub.init();
+    Log.enableFailQuick(false);
     Log.getFindings().clear();
   }
 
@@ -34,6 +33,7 @@ public class BuildersTest {
         .setInput("xxxx")
         .setTo("setByGenBuilder").build();
     assertEquals("xxxxSuf2", transition.getInput());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests whether handcoded subclass of Builder is used
@@ -51,6 +51,7 @@ public class BuildersTest {
     ASTActTransition transition = b.build();
     assertEquals("xxxx", transition.getInput());
     assertEquals("Boom", transition.getAction());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,6 +60,7 @@ public class BuildersTest {
         .automatonBuilder()
         .setName("setByGeneratedBuilder").build();
     assertEquals("setByGeneratedBuilder", aut.getName());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests whether handcoded subclass of Builder is used
@@ -71,6 +73,7 @@ public class BuildersTest {
         .setFinal(true)
         .setName("state1").build();
     assertEquals(state.getName(), "state1Suf1");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // tests whether handcoded subclass of Builder is used
@@ -87,6 +90,7 @@ public class BuildersTest {
     assertEquals(state.isFinal(), true);
     assertEquals(state.getName(), "state1Suf1");
     assertEquals(state.getEntry(), "Blubb");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -100,6 +104,7 @@ public class BuildersTest {
         .setName("state1");
     assertEquals(sb.isFinal(), true);
     assertEquals(sb.getName(), "state1Suf1");
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

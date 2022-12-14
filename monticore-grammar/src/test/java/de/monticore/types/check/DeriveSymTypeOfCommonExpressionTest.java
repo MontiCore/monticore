@@ -12,18 +12,21 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTest {
@@ -93,7 +96,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @Test
   public void testInvalidPlusExpression() throws IOException {
-    checkError("3+true", "0xA0210");
+    checkError("3+true", "0xA0168");
   }
 
   /**
@@ -110,7 +113,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @Test
   public void testInvalidMinusExpression() throws IOException {
-    checkError("3-true", "0xA0213");
+    checkError("3-true", "0xA0168");
   }
 
   /**
@@ -122,12 +125,12 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     check("2*19", "int");
 
     //example with long and char
-    check("\'a\'*3L", "long");
+    check("'a'*3L", "long");
   }
 
   @Test
   public void testInvalidMultExpression() throws IOException {
-    checkError("3*true", "0xA0211");
+    checkError("3*true", "0xA0168");
   }
 
   /**
@@ -144,7 +147,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @Test
   public void testInvalidDivideExpression() throws IOException {
-    checkError("3/true", "0xA0212");
+    checkError("3/true", "0xA0168");
   }
 
   /**
@@ -161,7 +164,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @Test
   public void testInvalidModuloExpression() throws IOException {
-    checkError("3%true", "0xA0214");
+    checkError("3%true", "0xA0168");
   }
 
   /**
@@ -178,7 +181,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @Test
   public void testInvalidLessEqualExpression() throws IOException {
-    checkError("3<=true", "0xA0215");
+    checkError("3<=true", "0xA0167");
   }
 
   /**
@@ -190,12 +193,12 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     check("7>=2", "boolean");
 
     //example with two other numeric types
-    check("2.5>=\'d\'", "boolean");
+    check("2.5>='d'", "boolean");
   }
 
   @Test
   public void testInvalidGreaterEqualExpression() throws IOException {
-    checkError("3>=true", "0xA0216");
+    checkError("3>=true", "0xA0167");
   }
 
   /**
@@ -212,7 +215,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
   @Test
   public void testInvalidLessThanExpression() throws IOException {
-    checkError("3<true", "0xA0217");
+    checkError("3<true", "0xA0167");
   }
 
   /**
@@ -224,12 +227,12 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     check("7>2", "boolean");
 
     //example with two other numeric types
-    check("2.5>\'d\'", "boolean");
+    check("2.5>'d'", "boolean");
   }
 
   @Test
   public void testInvalidGreaterThanExpression() throws IOException {
-    checkError("3>true", "0xA0218");
+    checkError("3>true", "0xA0167");
   }
 
   /**
@@ -259,6 +262,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("foo2", _IntegerSymType));
     add2scope(scope, field("bar2", _booleanSymType));
+    add2scope(scope, field("byteF", _byteSymType));
+    add2scope(scope, field("shortF", _shortSymType));
+    add2scope(scope, field("longF", _longSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
     add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
@@ -267,6 +273,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         createTypeObject("FirstSemesterStudent", scope)));
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
+
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
 
     setFlatExpressionScopeSetter(scope);
   }
@@ -293,7 +302,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidEqualsExpression() throws IOException {
     init_basic();
 
-    checkError("3==true", "0xA0219");
+    checkError("3==true", "0xA0166");
   }
 
   @Test
@@ -301,7 +310,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     init_basic();
 
     //person1 has the type Person, foo is a boolean
-    checkError("person1==foo", "0xA0219");
+    checkError("person1==foo", "0xA0166");
   }
 
   /**
@@ -326,14 +335,14 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidNotEqualsExpression() throws IOException {
     init_basic();
 
-    checkError("3!=true", "0xA0220");
+    checkError("3!=true", "0xA0166");
   }
 
   @Test
   public void testInvalidNotEqualsExpression2() throws IOException{
     init_basic();
     //person1 is a Person, foo is a boolean
-    checkError("person1!=foo", "0xA0220");
+    checkError("person1!=foo", "0xA0166");
   }
 
   /**
@@ -350,7 +359,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidAndOpExpression() throws IOException {
     //only possible with two booleans
-    checkError("3&&true", "0xA0223");
+    checkError("3&&true", "0xA0167");
   }
 
   /**
@@ -367,7 +376,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidOrOpExpression() throws IOException {
     //only possible with two booleans
-    checkError("3||true", "0xA0226");
+    checkError("3||true", "0xA0167");
   }
 
   /**
@@ -384,7 +393,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidLogicalNotExpression() throws IOException {
     //only possible with a boolean as inner expression
-    checkError("!4", "0xA0228");
+    checkError("!4", "0xA0171");
   }
 
   /**
@@ -409,7 +418,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidBracketExpression() throws IOException {
     //a cannot be resolved -> a has no type
     init_basic();
-    checkError("(a)", "0xA0229");
+    checkError("(a)", "0xA0240");
   }
 
   /**
@@ -419,6 +428,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void deriveFromConditionalExpression() throws IOException {
     //initialize symbol table
     init_basic();
+
+    //test with byte and short
+    check("bar2 ? byteF : shortF", "short");
 
     //test with two ints as true and false expression
     check("3<4?9:10", "int");
@@ -436,29 +448,39 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   @Test
   public void testInvalidConditionalExpression() throws IOException {
     //true and 7 are not of the same type
-    checkError("3<4?true:7", "0xA0234");
+    checkError("3<4?true:7", "0xA0164");
   }
 
   @Test
   public void testInvalidConditionalExpression2() throws IOException {
-    //3 is not a boolean condition
-    checkError("3?true:false", "0xA0234");
+    setupTypeCheck();
+    ASTExpression astex = parseExpression("3?true:false");
+    setFlatExpressionScope(astex);
+
+    Log.getFindings().clear();
+    getTypeCalculator().typeOf(astex);
+    assertEquals("0xA0165", getFirstErrorCode());
   }
+
   /**
    * test BooleanNotExpression
    */
   @Test
   public void deriveFromBooleanNotExpression() throws IOException {
+    init_basic();
+
     //test with a int
     check("~3", "int");
     //test with a char
-    check("~\'a\'", "int");
+    check("~'a'", "int");
+    //test with a long
+    check("~longF", "long");
   }
 
   @Test
   public void testInvalidBooleanNotExpression() throws IOException {
     //only possible with an integral type (int, long, char, short, byte)
-    checkError("~3.4", "0xA0236");
+    checkError("~3.4", "0xA0173");
   }
 
   /**
@@ -484,6 +506,18 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     artifactScope4.setImportsList(Lists.newArrayList());
     artifactScope4.setName("types3");
     artifactScope4.setPackageName("types3");
+
+    ICombineExpressionsWithLiteralsArtifactScope artifactScope5 = CombineExpressionsWithLiteralsMill.artifactScope();
+    artifactScope5.setEnclosingScope(globalScope);
+    artifactScope5.setImportsList(Lists.newArrayList());
+    artifactScope5.setName("functions1");
+    artifactScope5.setPackageName("functions1");
+
+    ICombineExpressionsWithLiteralsArtifactScope artifactScope6 = CombineExpressionsWithLiteralsMill.artifactScope();
+    artifactScope6.setEnclosingScope(globalScope);
+    artifactScope6.setImportsList(Lists.newArrayList());
+    artifactScope6.setName("functions2");
+    artifactScope6.setPackageName("functions2");
 
     scope = globalScope;
     // No enclosing Scope: Search ending here
@@ -511,6 +545,12 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
         .setEnclosingScope(scope)
         .build();
+    OOTypeSymbol selfReflectiveStudent = OOSymbolsMill.oOTypeSymbolBuilder()
+      .setName("SelfReflectiveStudent")
+      .setSpannedScope(OOSymbolsMill.scope())
+      .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
+      .setEnclosingScope(scope)
+      .build();
     add2scope(artifactScope2, person);
     add2scope(scope3, person);
     add2scope(scope, person);
@@ -523,6 +563,21 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope3, firstsemesterstudent);
     add2scope(scope, firstsemesterstudent);
 
+    add2scope(artifactScope2, selfReflectiveStudent);
+    add2scope(scope, selfReflectiveStudent);
+
+    MethodSymbol studentSelfReflection = OOSymbolsMill.methodSymbolBuilder()
+      .setName("self")
+      .setType(SymTypeExpressionFactory.createTypeExpression(selfReflectiveStudent))
+      .setSpannedScope(OOSymbolsMill.scope())
+      .build();
+    selfReflectiveStudent.addMethodSymbol(studentSelfReflection);
+
+    FieldSymbol studentSelfReflectionField = field("selfField",
+        SymTypeExpressionFactory.createFunction(SymTypeExpressionFactory.createTypeExpression(selfReflectiveStudent))
+    );
+    selfReflectiveStudent.addFieldSymbol(studentSelfReflectionField);
+
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
@@ -532,11 +587,17 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope, field("firstsemester",
         SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope))
     );
-    add2scope(scope, method("isInt", _booleanSymType));
+    add2scope(scope, field("selfReflectiveStudent",
+      SymTypeExpressionFactory.createTypeObject("SelfReflectiveStudent", scope))
+    );
+    MethodSymbol ms2 = method("isInt", _booleanSymType);
+    add2scope(scope, ms2);
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
     MethodSymbol ms0 = add(method("areInt", _booleanSymType), field("values", _intSymType));
     ms0.setIsElliptic(true);
     add2scope(scope, ms0);
+    add2scope(scope, method("getIsInt", ms2.getFunctionType()));
+    add2scope(scope, method("getAreInt", ms0.getFunctionType()));
     FieldSymbol fs = field("variable", _intSymType);
     fs.setIsStatic(true);
     MethodSymbol ms = method("store", _doubleSymType);
@@ -585,6 +646,25 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope3, testType3);
     add2scope(scope,testType);
 
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
+
+    FunctionSymbol funcs = function("getPi", _floatSymType);
+    add2scope(artifactScope5, funcs);
+    add2scope(artifactScope6, funcs);
+
+    // Creating types for legal access on "types.DeepNesting.firstLayer.onlyMember", where firstLayer and onlyMember are fields
+    OOTypeSymbol oneFieldMember = type("OneFieldMember", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, oneFieldMember);
+    FieldSymbol onlyMember = field("onlyMember", _intSymType);
+    add2scope(oneFieldMember.getSpannedScope(), onlyMember);
+
+    OOTypeSymbol deepNesting = type("DeepNesting", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(artifactScope2, deepNesting);
+    FieldSymbol firstLayer = field("firstLayer", SymTypeExpressionFactory.createTypeExpression(oneFieldMember));
+    firstLayer.setIsStatic(true);
+    add2scope(deepNesting.getSpannedScope(), firstLayer);
+
     setFlatExpressionScopeSetter(scope);
   }
 
@@ -612,6 +692,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     //test for variable in inner type
     check("types3.types2.Test.TestInnerType.testVariable", "short");
+
+    // test for nested field access ("firstLayer" is a static member, "onlyMember" is an instance member)
+    check("types.DeepNesting.firstLayer.onlyMember", "int");
   }
 
   /**
@@ -642,6 +725,28 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     //test for method with qualified name with parameters
     check("types.Test.pay(4)", "void");
+
+    //test for function with that exists in another scope with
+    //the same name but different qualified name
+    check("functions1.functions1.getPi()", "float");
+
+    // test method chaining
+    check("selfReflectiveStudent.self().self()", "SelfReflectiveStudent");
+
+    // test function chaining
+    check("getIsInt()()", "boolean");
+
+    // test indirect function chaining
+    //todo enable after fix of
+    //https://git.rwth-aachen.de/monticore/monticore/-/issues/3282
+    //check("(getIsInt())()", "boolean");
+
+    // test function chaining with varargs
+    check("getAreInt()()", "boolean");
+    check("getAreInt()(1,2)", "boolean");
+
+    // test function chaining using fields
+    check("selfReflectiveStudent.selfField().selfField()", "SelfReflectiveStudent");
   }
 
   @Test
@@ -652,30 +757,46 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   }
 
   @Test
+  public void testInvalidCallExpressionWithMissingNameAndNotComposedOfCallback() throws IOException {
+    // Expression (2 + 3)() and all other Expressions in front of brackets are parsable
+    init_advanced();
+    checkError("(2 + 3)()", "0xA2239");
+  }
+
+  @Test
+  public void testInvalidCallExpressionWithInvalidQualifiedName() throws IOException {
+    //method isInt() is not in the specified scope -> method cannot be resolved
+    init_advanced();
+    checkError("notAScope.isInt()", "0xA1242");
+  }
+
+  @Test
+  public void testInvalidCallExpressionWithFunctionChaining() throws IOException {
+    //function isNot() is part of the return type of getIsInt() -> function cannot be resolved
+    init_advanced();
+    checkError("getIsInt.isNot()", "0xA1242");
+  }
+
+  @Test
   public void testInvalidCallExpressionWithInvalidArgument() throws IOException {
-    String divideError = "0xA0212";
-    String argumentError = "0xA0237";
-    String noMethodError = "0xA1242";
+    String divideError = "0xA0168";
 
     init_advanced();
-    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError, argumentError, noMethodError);
+    checkErrorsAndFailOnException("isInt(\"foo\" / 2)", divideError);
   }
 
   @Test
   public void testRegularAssignmentWithTwoMissingFields() throws IOException {
-    String assignmentLeftError = "0xA0198";
-    String assignmentRightError = "0xA0199";
-    String regularAssignmentError = "0xA0182";
+    String[] regularAssignmentError = new String[] {"0xA0240", "0xA0240"};
     init_advanced();
-    checkErrorsAndFailOnException("missingField = missingField2", assignmentLeftError, assignmentRightError, regularAssignmentError);
+    checkErrorsAndFailOnException("missingField = missingField2", regularAssignmentError);
   }
 
   @Test
   public void testMissingMethodWithMissingArgs() throws IOException {
-    String functionArgError = "0xA0237";
-    String functionError = "0xA1242";
+    String[] errors = new String[] {"0xA0240", "0xA0240", "0xA1242"};
     init_advanced();
-    checkErrorsAndFailOnException("missingMethod(missing1, missing2)", functionArgError, functionArgError, functionError);
+    checkErrorsAndFailOnException("missingMethod(missing1, missing2)", errors);
   }
 
   /**
@@ -721,6 +842,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
     FieldSymbol mySubList = field("mySubList", subsub);
     add2scope(scope, mySubList);
+
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
 
     setFlatExpressionScopeSetter(scope);
   }
@@ -876,6 +1000,8 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     FieldSymbol genSubSubVar = field("genSubSubVar", genSubSubType);
     add2scope(scope, genSubSubVar);
 
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
 
     setFlatExpressionScopeSetter(scope);
 
@@ -1258,6 +1384,9 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     FieldSymbol mySubList = field("mySubList", subsub);
     add2scope(scope, mySubList);
 
+    OOTypeSymbol str = type("String", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), scope);
+    add2scope(scope, str);
+
     //set scope of method myAdd as standard resolving scope
     setFlatExpressionScopeSetter((CombineExpressionsWithLiteralsScope) myAdd.getSpannedScope());
 
@@ -1340,7 +1469,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidStaticType() throws IOException {
     init_static_example();
 
-    checkError("B.D", "0xA1303");
+    checkError("B.D", "0xA0241");
   }
 
   @Test
@@ -1354,7 +1483,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testInvalidStaticField() throws IOException {
     init_static_example();
 
-    checkError("B.field", "0xA1236");
+    checkError("B.field", "0xA0241");
   }
 
   @Test
@@ -1372,6 +1501,34 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   }
 
   @Test
+  public void testMissingTypeQualified() throws IOException {
+    init_basic();
+
+    checkError("pac.kage.not.present.Type", "0xA0241");
+  }
+
+  @Test
+  public void testMissingFieldQualified() throws IOException {
+    init_static_example();
+
+    checkError("B.notPresentField", "0xA0241");
+  }
+
+  @Test
+  public void testMissingFieldUnqualified() throws IOException {
+    init_basic();
+
+    checkError("notPresentField", "0xA0240");
+  }
+
+  @Test
+  public void testMissingMethodQualified() throws IOException {
+    init_basic();
+
+    checkError("pac.kage.not.present.Type.method()", "0xA1242");
+  }
+
+  @Test
   public void testSubClassesDoNotKnowStaticMethodsOfSuperClasses() throws IOException{
     init_static_example();
 
@@ -1382,7 +1539,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
   public void testSubClassesDoNotKnowStaticFieldsOfSuperClasses() throws IOException{
     init_static_example();
 
-    checkError("C.field", "0xA1317");
+    checkError("C.field", "0xA0241");
   }
 
   @Test

@@ -21,12 +21,14 @@ import de.monticore.*;
  * the reuse of type structures in languages similar to Java
  *
  *
- * This grammar is part of a hierarchy of expressions, namely
+  * This grammar is part of a hierarchy of expressions, namely
  * * expressions/ExpressionsBasis.mc4
  * * --  expressions/CommonExpressions.mc4
  * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/OptionalExpressions.mc4
  * * --  expressions/AssignmentExpressions.mc4
  * * --  expressions/BitExpressions.mc4
+ * * --  expressions/LambdaExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
  * * --  expressions/SetExpressions.mc4
  *

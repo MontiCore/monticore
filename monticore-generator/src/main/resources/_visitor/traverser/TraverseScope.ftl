@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("symbols", "handler", "topCast")}
+${tc.signature("symbols", "handler", "scopeType" "topCast")}
   if (get${handler}().isPresent()) {
     get${handler}().get().traverse(node);
   } else {
@@ -13,4 +13,8 @@ ${tc.signature("symbols", "handler", "topCast")}
     s.accept(${topCast}this);
   }
 </#list>
+  // traverse sub-scopes
+  for (${scopeType} scope : node.getSubScopes()) {
+    scope.accept(${topCast}this);
+  }
 }

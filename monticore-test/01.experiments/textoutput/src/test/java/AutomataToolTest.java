@@ -15,8 +15,8 @@ import static org.junit.Assert.assertTrue;
 
 public class AutomataToolTest {
   
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
@@ -53,6 +53,7 @@ public class AutomataToolTest {
                     || res.matches(".*State Pong and input stopGame map to new state NoGame.*")
                     || res.matches(".*Processing stopGame the object transitions from state Pong to NoGame.*")
             );
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -63,6 +64,7 @@ public class AutomataToolTest {
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(5, p.size());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -73,6 +75,7 @@ public class AutomataToolTest {
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(5, p.size());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

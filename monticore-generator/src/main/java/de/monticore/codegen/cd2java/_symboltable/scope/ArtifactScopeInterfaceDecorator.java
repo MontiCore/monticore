@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
@@ -27,8 +28,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 
 /**
@@ -58,21 +59,22 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
   public ASTCDInterface decorate(ASTCDCompilationUnit input) {
     String artifactScopeInterfaceSimpleName = symbolTableService.getArtifactScopeInterfaceSimpleName();
     List<ASTCDType> symbolProds = symbolTableService.getSymbolDefiningProds(input.getCDDefinition());
-
-    return CD4AnalysisMill.cDInterfaceBuilder()
-        .setName(artifactScopeInterfaceSimpleName)
-        .setModifier(PUBLIC.build())
-        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
-                .addAllSuperclass(getSuperArtifactScopeInterfaces())
-                .addSuperclass(symbolTableService.getScopeInterfaceType()).build())
-        .addAllCDMembers(createImportsAttributeMethods())
-        .addCDMember(createGetTopLevelSymbolMethod(symbolProds))
-        .addCDMember(createCheckIfContinueAsSubScopeMethod())
-        .addCDMember(createGetRemainingNameForResolveDownMethod())
-        .addCDMember(createGetFullNameMethod())
-        .addAllCDMembers(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
-        .addAllCDMembers(createSuperContinueWithEnclosingScopeMethods())
-        .build();
+    ASTCDInterface clazz = CD4AnalysisMill.cDInterfaceBuilder()
+            .setName(artifactScopeInterfaceSimpleName)
+            .setModifier(PUBLIC.build())
+            .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
+                    .addAllSuperclass(getSuperArtifactScopeInterfaces())
+                    .addSuperclass(symbolTableService.getScopeInterfaceType()).build())
+            .addAllCDMembers(createImportsAttributeMethods())
+            .addCDMember(createGetTopLevelSymbolMethod(symbolProds))
+            .addCDMember(createCheckIfContinueAsSubScopeMethod())
+            .addCDMember(createGetRemainingNameForResolveDownMethod())
+            .addCDMember(createGetFullNameMethod())
+            .addAllCDMembers(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
+            .addAllCDMembers(createSuperContinueWithEnclosingScopeMethods())
+            .build();
+    CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
+    return clazz;
   }
 
   protected List<ASTMCObjectType> getSuperArtifactScopeInterfaces(){

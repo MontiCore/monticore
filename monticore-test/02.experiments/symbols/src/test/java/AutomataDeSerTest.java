@@ -10,18 +10,24 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class AutomataDeSerTest {
 
   // setup the language infrastructure
   AutomataParser parser = new AutomataParser() ;
   AutomataSymbols2Json s2j = new AutomataSymbols2Json() ;
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
 
   @Before
   public void init(){
@@ -43,5 +49,6 @@ public class AutomataDeSerTest {
     IAutomataArtifactScope loaded = s2j.load("target/PingPong.autsym");
     assertEquals(0, Log.getErrorCount());
     assertNotNull(loaded);
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

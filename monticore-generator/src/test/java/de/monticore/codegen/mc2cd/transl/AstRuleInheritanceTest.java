@@ -9,6 +9,7 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,10 +41,10 @@ public class AstRuleInheritanceTest {
 
   private ASTCDClass astF;
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -96,6 +97,8 @@ public class AstRuleInheritanceTest {
     assertTrue(astF.isPresentCDExtendUsage());
     name = typeToString(astF.getCDExtendUsage().getSuperclass(0));
     assertEquals("java.util.Observable", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -125,6 +128,8 @@ public class AstRuleInheritanceTest {
         MC2CDStereotypes.EXTERNAL_TYPE.toString());
     assertFalse(astD.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
     assertEquals(astD.getModifier().getStereotype().getValuesList().get(0).getValue(), "java.io.Serializable");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -143,6 +148,8 @@ public class AstRuleInheritanceTest {
         MC2CDStereotypes.EXTERNAL_TYPE.toString());
     assertFalse(astE.getModifier().getStereotype().getValuesList().get(1).getValue().isEmpty());
     assertEquals(astE.getModifier().getStereotype().getValuesList().get(1).getValue(), "java.io.Serializable");
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -159,6 +166,8 @@ public class AstRuleInheritanceTest {
     assertEquals("mc2cdtransformation.Supergrammar.ASTSuperInterface", name);
     name = typeToString(superInterfaces.get(2));
     assertEquals("java.io.Serializable", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -177,6 +186,8 @@ public class AstRuleInheritanceTest {
     assertEquals("ASTExternalInterface", name);
     name = typeToString(superInterfaces.get(3));
     assertEquals("java.io.Serializable", name);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

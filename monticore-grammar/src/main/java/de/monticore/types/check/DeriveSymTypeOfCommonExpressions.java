@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This Visitor can calculate a SymTypeExpression (type) for the expressions in CommonExpressions
+ * This Visitor can calculate a SymTypeExpression (type) for the expressions in CommonExpressions.
+ * It is the OO extension of the class {@link de.monticore.types.check.DeriveSymTypeOfBSCommonExpressions} and adds OO
+ * functionalities like modifiers to the derivation of a SymTypeExpression.
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
  */
 public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExpressions {

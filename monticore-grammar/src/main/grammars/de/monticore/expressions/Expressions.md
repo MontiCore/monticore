@@ -10,12 +10,13 @@ pluggable grammar parts are developed.
 
 ### Given Expression languages in MontiCore
 
-Currently, there are five expression languages. These are
+Currently, there are six expression languages. These are
 
 * [ExpressionsBasis](ExpressionsBasis.mc4) (basis for all of the expression languages, supports names and literals)
 * [AssignmentExpressions](AssignmentExpressions.mc4) (extends ExpressionsBasis, basic assignments)
 * [CommonExpressions](CommonExpressions.mc4) (extends ExpressionsBasis, common expressions like + and -)
 * [BitExpressions](BitExpressions.mc4) (extends ExpressionsBasis, bit expressions like & or <<)
+* [LambdaExpressions](LambdaExpressions.mc4) (extends ExpressionBasis, lambda expressions like a -> a + 2)
 * [JavaClassExpressions](JavaClassExpressions.mc4) (extends CommonExpressions, adds Java expressions like new)
 
 Two further expression languages are defined in the OCL project:

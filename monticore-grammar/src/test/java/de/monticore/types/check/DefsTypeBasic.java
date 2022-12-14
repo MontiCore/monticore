@@ -55,7 +55,8 @@ public class DefsTypeBasic {
     return type(name,name);
   }
   
-  /** create TypeSymbols (some defaults apply)
+  /** 
+   * create TypeSymbols (some defaults apply)
    */
   public static OOTypeSymbol type(String name, String fullName) {
     return OOSymbolsMill.oOTypeSymbolBuilder()
@@ -143,8 +144,24 @@ public class DefsTypeBasic {
     t.addMethodSymbol(m);
     return t;
   }
+
+  /** 
+   * create FunctionSymbols (some defaults apply)
+   */
+  public static FunctionSymbol function(String name, SymTypeExpression returnType) {
+    FunctionSymbol f = BasicSymbolsMill.functionSymbolBuilder()
+        .setSpannedScope(BasicSymbolsMill.scope())
+        .setName(name)
+        .setFullName(name)  // can later be adapted, when fullname of Type is known
+        .setAccessModifier(AccessModifier.ALL_INCLUSION)
+        .setType(returnType)
+        .build();
+    f.setSpannedScope(BasicSymbolsMill.scope());
+    return f;
+  }
   
-  /** create MethodSymbols (some defaults apply)
+  /**
+   * create MethodSymbols (some defaults apply)
    */
   public static MethodSymbol method(String name, SymTypeExpression returnType) {
     MethodSymbol m = OOSymbolsMill.methodSymbolBuilder()
@@ -163,7 +180,8 @@ public class DefsTypeBasic {
     return m;
   }
 
-  /** create FieldSymbols (some defaults apply)
+  /** 
+   * create FieldSymbols (some defaults apply)
    */
   public static FieldSymbol field(String name, SymTypeExpression type) {
     return OOSymbolsMill.fieldSymbolBuilder()
@@ -174,7 +192,8 @@ public class DefsTypeBasic {
             .build();
   }
   
-  /** add a Type to a Scope (bidirectional)
+  /** 
+   * add a Type to a Scope (bidirectional)
    */
   public static void add2scope(IOOSymbolsScope p, OOTypeSymbol s) {
     s.setEnclosingScope(p);
@@ -182,19 +201,29 @@ public class DefsTypeBasic {
     p.add((TypeSymbol) s);
   }
   
-  /** add a Filed (e.g. a Variable) to a Scope (bidirectional)
+  /**
+   * add a Filed (e.g. a Variable) to a Scope (bidirectional)
    */
   public static void add2scope(IOOSymbolsScope p, FieldSymbol s) {
     s.setEnclosingScope(p);
     p.add(s);
   }
 
-  /** add a Method to a Scope (bidirectional)
+  /**
+   * add a Method to a Scope (bidirectional)
    */
   public static void add2scope(IOOSymbolsScope p, MethodSymbol s){
     s.setEnclosingScope(p);
     p.add(s);
     p.add((FunctionSymbol) s);
+  }
+
+  /** 
+   * add a Function to a Scope (bidirectional)
+   */
+  public static void add2scope(IOOSymbolsScope p, FunctionSymbol s) {
+    s.setEnclosingScope(p);
+    p.add(s);
   }
 
   /**

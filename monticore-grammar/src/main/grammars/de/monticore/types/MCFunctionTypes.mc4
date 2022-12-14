@@ -1,0 +1,41 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.types.*;
+
+/**
+ * This grammar introduces function types
+ * such as int -> int, (String -> int) -> void, (boolean, int) -> int
+ * 
+ * This grammar is part of a hierarchy of types, namely
+ * * types.MCBasicTypes.mc4       
+ *   * types/MCFunctionTypes.mc4
+ *
+*/
+
+component grammar MCFunctionTypes
+          extends MCBasicTypes {
+
+
+  /*=================================================================*/
+
+  /** ASTMCFunctionTypesType represents function types.
+   * 
+   *  Any number of arguments is possible.
+  */
+  MCFunctionParameters =
+    "(" (
+    (MCType || ",")+
+    (isElliptic:"...")?
+    )? ")"
+  ;
+
+  MCFunctionType implements MCType =
+    <rightassoc>
+    MCFunctionParameters "->"
+    MCReturnType
+  ;
+
+}

@@ -8,7 +8,9 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -18,6 +20,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
@@ -27,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java.CoreTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -82,16 +85,25 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTModifier modifier = symbolTableService.createModifierPublicModifier(symbolInput.getModifier());
 
     // uses symbol rule methods and attributes
-    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.deepClone().getCDAttributeList()
-            .stream().filter(attr -> !symbolTableService.isInheritedAttribute(attr)).collect(Collectors.toList());
+    List<ASTCDAttribute> symbolRuleAttributes = symbolInput.getCDAttributeList()
+            .stream()
+            .filter(attr -> !symbolTableService.isInheritedAttribute(attr))
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
     symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
             .stream()
             .map(methodDecorator::decorate)
             .flatMap(List::stream)
             .collect(Collectors.toList());
-    List<ASTCDMethod> symbolRuleMethods = symbolInput.deepClone().getCDMethodList();
-
+    List<ASTCDMethod> symbolRuleMethods = symbolInput.getCDMethodList().stream()
+            .map(a -> a.deepClone())
+            .collect(Collectors.toList());
+    for (ASTCDMethod meth: symbolRuleMethods) {
+      if (symbolTableService.isMethodBodyPresent(meth)) {
+        glex.replaceTemplate(EMPTY_BODY, meth, new StringHookPoint(symbolTableService.getMethodBody(meth)));
+      }
+    }
     List<ASTCDAttribute> symbolAttributes = Lists.newArrayList();
     List<ASTCDMethod> symbolMethods = Lists.newArrayList();
     List<ASTCDAttribute> symbolNameAttributes = Lists.newArrayList();
@@ -136,6 +148,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .addAllCDMembers(symbolMethods)
             .addAllCDMembers(symbolNameMethods)
             .addCDMember(createAcceptTraverserMethod(symbolName))
+            .addAllCDMembers(createAcceptTraverserSuperMethods(symbolInput))
             .addCDMember(createDeterminePackageName(scopeInterface))
             .addCDMember(createDetermineFullName(scopeInterface))
             .build();
@@ -262,6 +275,25 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
               "_symboltable.AcceptTop", symbolName, errorCode));
     }
     return acceptMethod;
+  }
+
+  protected List<ASTCDMethod> createAcceptTraverserSuperMethods(ASTCDClass symbolInput) {
+    List<ASTCDMethod> result = new ArrayList<>();
+    // accept methods for super visitors
+    List<ASTMCQualifiedType> l = this.visitorService.getAllTraverserInterfacesTypesInHierarchy();
+    l.add(getMCTypeFacade().createQualifiedType(VisitorConstants.ITRAVERSER_FULL_NAME));
+    for (ASTMCType superVisitorType : l) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+
+      ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
+      String errorCode = symbolTableService.getGeneratedErrorCode(symbolInput.getName()+
+              superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_symboltable.AcceptSuper",
+              this.visitorService.getTraverserInterfaceFullName(), errorCode, symbolInput.getName(),
+              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType)));
+      result.add(superAccept);
+    }
+    return result;
   }
 
   protected ASTCDMethod createDeterminePackageName(String scopeInterface) {

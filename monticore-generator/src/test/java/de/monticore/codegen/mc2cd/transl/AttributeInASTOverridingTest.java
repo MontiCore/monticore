@@ -8,13 +8,18 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.spi.LocaleServiceProvider;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests that attributes that are redefined in ASTRules correctly override their counterparts in the
@@ -26,9 +31,11 @@ public class AttributeInASTOverridingTest {
   
   private ASTCDClass astB;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   public AttributeInASTOverridingTest() {
@@ -36,6 +43,8 @@ public class AttributeInASTOverridingTest {
         .get("src/test/resources/mc2cdtransformation/AttributeInASTOverridingGrammar.mc4")).get();
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
     astB = TestHelper.getCDClass(cdCompilationUnit, "ASTB").get();
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -44,11 +53,15 @@ public class AttributeInASTOverridingTest {
     assertEquals(1, attributes.size());
     assertEquals("mc2cdtransformation.AttributeInASTOverridingGrammar.ASTY",
         TransformationHelper.typeToString(attributes.get(0).getMCType()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testAttributeNotOverridden() {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
     assertEquals(2, attributes.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

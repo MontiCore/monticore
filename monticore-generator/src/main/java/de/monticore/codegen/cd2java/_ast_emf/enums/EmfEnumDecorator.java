@@ -5,14 +5,14 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.codegen.cd2java.CDModifier;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.ENUMERATOR;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.TO_STRING_CALL;
 

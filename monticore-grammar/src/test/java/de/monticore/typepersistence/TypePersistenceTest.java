@@ -8,6 +8,10 @@ import de.monticore.typepersistence.variable._parser.VariableParser;
 import de.monticore.typepersistence.variable._symboltable.IVariableGlobalScope;
 import de.monticore.typepersistence.variable._symboltable.IVariableScope;
 import de.monticore.typepersistence.variable._symboltable.VariableScopesGenitorDelegator;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,7 +20,13 @@ import java.util.Optional;
 import static org.junit.Assert.assertTrue;
 
 public class TypePersistenceTest {
-
+  
+  @Before
+  public void initLog() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @Test
   public void test() throws IOException {
 
@@ -41,5 +51,7 @@ public class TypePersistenceTest {
     VariableScopesGenitorDelegator varSymbolTableCreator = VariableMill.scopesGenitorDelegator();
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
     assertTrue(varModel.isPresent());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

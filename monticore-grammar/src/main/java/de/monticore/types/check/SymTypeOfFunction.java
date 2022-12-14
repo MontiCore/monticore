@@ -23,11 +23,11 @@ import java.util.stream.Stream;
  */
 public class SymTypeOfFunction extends SymTypeExpression {
 
-  protected static final String TYPESYMBOL_NAME = "function";
+  public static final String TYPESYMBOL_NAME = "function";
 
   protected static final String JSON_KIND = "de.monticore.types.check.SymTypeOfFunction";
 
-  protected static final String JSON_RETURNTYPE = "returnValue";
+  protected static final String JSON_RETURNTYPE = "returnType";
 
   protected static final String JSON_ARGUMENTTYPES = "argumentTypes";
 
@@ -80,28 +80,33 @@ public class SymTypeOfFunction extends SymTypeExpression {
     r.append("(");
     for (int i = 0; i < argumentTypes.size(); i++) {
       r.append(argumentTypes.get(i).print());
-      if (i == argumentTypes.size() - 1 && isElliptic()) {
+      if(i < argumentTypes.size() - 1){
+        r.append(", ");
+      } else if (isElliptic()) {
         r.append("...");
       }
-      r.append(" -> ");
     }
-    r.append(returnType.print());
     r.append(")");
+    r.append(" -> ");
+    r.append(returnType.print());
     return r.toString();
   }
 
   @Override
   public String printFullName() {
     final StringBuilder r = new StringBuilder();
+    r.append("(");
     for (int i = 0; i < argumentTypes.size(); i++) {
       r.append(argumentTypes.get(i).printFullName());
-      if (i == argumentTypes.size() - 1 && isElliptic()) {
+      if(i < argumentTypes.size() - 1){
+        r.append(", ");
+      } else if (isElliptic()) {
         r.append("...");
       }
-      r.append(" -> ");
     }
-    r.append(returnType.printFullName());
     r.append(")");
+    r.append(" -> ");
+    r.append(returnType.printFullName());
     return r.toString();
   }
 

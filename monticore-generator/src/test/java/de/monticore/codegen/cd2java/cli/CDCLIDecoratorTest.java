@@ -4,17 +4,19 @@ package de.monticore.codegen.cd2java.cli;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,80 +27,96 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CDCLIDecoratorTest extends DecoratorTestCase {
-  private ASTCDCompilationUnit cliCD;
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private ASTCDCompilationUnit decoratedCD;
  
   private ASTCDCompilationUnit originalCD;
+
+  private ASTCDCompilationUnit clonedCD;
   
  
   @Before
   public void setup() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
-    decoratedCD = parse("de", "monticore", "codegen", "ast", "Automaton");
-    originalCD = decoratedCD.deepClone();
-    this.glex.setGlobalValue("service", new AbstractService(decoratedCD));
+    Log.enableFailQuick(false);
+    originalCD = parse("de", "monticore", "codegen", "ast", "Automaton");
+    clonedCD = originalCD.deepClone();
+    decoratedCD = createEmptyCompilationUnit(originalCD);
+    this.glex.setGlobalValue("service", new AbstractService(originalCD));
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    SymbolTableService symbolTableService = new SymbolTableService(decoratedCD);
-    ParserService parserService = new ParserService(decoratedCD);
+    SymbolTableService symbolTableService = new SymbolTableService(originalCD);
+    ParserService parserService = new ParserService(originalCD);
     CLIDecorator cliDecorator = new CLIDecorator(glex, parserService,symbolTableService);
     CDCLIDecorator cdcliDecorator = new CDCLIDecorator(glex ,cliDecorator,parserService);
-    this.cliCD = cdcliDecorator.decorate(decoratedCD);
+    cdcliDecorator.decorate(originalCD, decoratedCD);
   }
   @Test
   public void testCompilationUnitNotChanged() {
-    assertDeepEquals(decoratedCD,originalCD);
+    assertDeepEquals(clonedCD,originalCD);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testCDName() {
-    assertEquals("Automaton", cliCD.getCDDefinition().getName());
+    assertEquals("Automaton", decoratedCD.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testClassCount() {
-    assertEquals(1, cliCD.getCDDefinition().getCDClassesList().size());
+    assertEquals(1, decoratedCD.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testClassNames() {
-    ASTCDClass automatonCli = getClassBy("AutomatonTool", cliCD);
+    ASTCDClass automatonCli = getClassBy("AutomatonTool", decoratedCD);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testNoInterface() {
-    assertTrue( cliCD.getCDDefinition().getCDInterfacesList().isEmpty());
+    assertTrue( decoratedCD.getCDDefinition().getCDInterfacesList().isEmpty());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoEnum() {
-    assertTrue(cliCD.getCDDefinition().getCDEnumsList().isEmpty());
+    assertTrue(decoratedCD.getCDDefinition().getCDEnumsList().isEmpty());
+
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testPackage() {
-    assertEquals(5, cliCD.getCDPackageList().size());
-    assertEquals("de", cliCD.getCDPackageList().get(0));
-    assertEquals("monticore", cliCD.getCDPackageList().get(1));
-    assertEquals("codegen", cliCD.getCDPackageList().get(2));
-    assertEquals("ast", cliCD.getCDPackageList().get(3));
-    assertEquals("automaton", cliCD.getCDPackageList().get(4));
+    assertTrue (decoratedCD.getCDDefinition().getPackageWithName("de.monticore.codegen.ast.automaton").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testImports() {
-    assertEquals(0, cliCD.getMCImportStatementList().size());
+    assertEquals(0, decoratedCD.getMCImportStatementList().size());
+
+    assertTrue(Log.getFindings().isEmpty());
   }
+  
   @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    for (ASTCDClass clazz : cliCD.getCDDefinition().getCDClassesList()) {
-      StringBuilder sb = generatorEngine.generate(CoreTemplates.CLASS, clazz, clazz);
+    CD4C.init(generatorSetup);
+    for (ASTCDClass clazz : decoratedCD.getCDDefinition().getCDClassesList()) {
+      StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, clazz, packageDir);
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();
       JavaParser parser = new JavaParser(configuration);
       ParseResult parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

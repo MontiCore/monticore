@@ -13,6 +13,8 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.*;
@@ -51,6 +53,8 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
   public void testAttributes() {
     assertFalse(attributes.isEmpty());
     assertEquals(3, attributes.size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,6 +63,8 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
     assertDeepEquals(AST_I_SCOPE, symbolAttribute.get().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -67,6 +73,8 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     assertTrue(symbolAttribute.isPresent());
     assertDeepEquals(PROTECTED, symbolAttribute.get().getModifier());
     assertDeepEquals(AST_I_SCOPE, symbolAttribute.get().getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -79,6 +87,8 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     TransformationHelper.addStereotypeValue(astModifier, MC2CDStereotypes.INHERITED.toString());
     assertDeepEquals(astModifier, scope.getModifier());
     assertDeepEquals(SUPER_I_SCOPE, scope.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -89,5 +99,7 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute scope = enclosingScope.get(0);
     assertDeepEquals(PROTECTED, scope.getModifier());
     assertDeepEquals(AST_I_SCOPE, scope.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

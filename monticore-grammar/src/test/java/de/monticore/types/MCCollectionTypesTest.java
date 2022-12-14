@@ -13,6 +13,7 @@ import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestPar
 import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCCollectionTypesWithoutPrimitivesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,8 +24,8 @@ import static org.junit.Assert.*;
 
 public class MCCollectionTypesTest {
 
-  @BeforeClass
-  public static void disableFailQuick() {
+  @Before
+  public void disableFailQuick() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -50,6 +51,8 @@ public class MCCollectionTypesTest {
       traverser.add4MCCollectionTypes(new CheckTypeVisitor());
       t.accept(traverser);
     }
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private class CheckTypeVisitor implements MCCollectionTypesVisitor2 {
@@ -82,6 +85,8 @@ public class MCCollectionTypesTest {
     assertFalse(parser.hasErrors());
     assertTrue(argument2.isPresent());
     assertTrue(argument.deepEquals(argument2.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -114,6 +119,8 @@ public class MCCollectionTypesTest {
     assertFalse(parser.hasErrors());
     assertTrue(argument2.isPresent());
     assertTrue(argument.deepEquals(argument2.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -147,6 +154,8 @@ public class MCCollectionTypesTest {
     assertFalse(parser.hasErrors());
     assertTrue(argument2.isPresent());
     assertTrue(argument.deepEquals(argument2.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -180,6 +189,8 @@ public class MCCollectionTypesTest {
     assertFalse(parser.hasErrors());
     assertTrue(argument2.isPresent());
     assertTrue(argument.deepEquals(argument2.get()));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -198,6 +209,8 @@ public class MCCollectionTypesTest {
     assertNotNull(type);
     assertTrue(type.isPresent());
     assertTrue(type.get() instanceof ASTMCBasicTypeArgument);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -216,6 +229,8 @@ public class MCCollectionTypesTest {
     assertTrue(type.isPresent());
     assertEquals("List", type.get().printWithoutTypeArguments());
     assertTrue(type.get().getMCTypeArgumentList().get(0) instanceof ASTMCPrimitiveTypeArgument);
+  
+    assertTrue(Log.getFindings().isEmpty());
 
   }
 
@@ -246,5 +261,7 @@ public class MCCollectionTypesTest {
     assertEquals("Map", genericType.get().printWithoutTypeArguments());
     assertEquals("Map", genericType.get().printWithoutTypeArguments());
     assertFalse(parser.hasErrors());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -2,17 +2,27 @@
 
 package mc.feature.semanticpredicate;
 
+import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 
 import mc.feature.semanticpredicate.predefinedsempred._parser.PredefinedSemPredParser;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 
 import static org.junit.Assert.*;
+import de.se_rwth.commons.logging.Log;
 
 public class PredefinedSemPredTest extends GeneratorIntegrationsTest {
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
   
   @Test
   public void testParse() throws IOException {
@@ -77,7 +87,6 @@ public class PredefinedSemPredTest extends GeneratorIntegrationsTest {
     assertFalse(p.hasErrors());
     p.parse_StringJ("FOO1 :");
     assertTrue(p.hasErrors());
-
   }
   
 }

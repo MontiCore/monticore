@@ -8,14 +8,16 @@ import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
@@ -24,11 +26,11 @@ import static org.junit.Assert.assertTrue;
 public class MandatoryAccessorDecoratorTest {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
-
+  
   @Before
-  public void setup() {
+  public void initLog() {
     LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -44,6 +46,8 @@ public class MandatoryAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -58,5 +62,7 @@ public class MandatoryAccessorDecoratorTest {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

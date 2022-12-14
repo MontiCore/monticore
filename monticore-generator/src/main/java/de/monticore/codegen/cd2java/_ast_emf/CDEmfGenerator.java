@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast_emf;
 
+import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.codegen.cd2java.CDGenerator;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.generating.GeneratorSetup;
 
 import java.nio.file.Path;
@@ -36,7 +37,7 @@ public class CDEmfGenerator extends CDGenerator {
    * method has to be overwritten because special template for the Package class has to be added
    */
   @Override
-  protected void generateCDInterfaces(String packageAsPath, List<ASTCDInterface> astcdInterfaceList) {
+  protected void generateCDInterfaces(String packageAsPath, ASTCDPackage astcdPackage, List<ASTCDInterface> astcdInterfaceList) {
     for (ASTCDInterface cdInterface : astcdInterfaceList) {
       Path filePath = getAsPath(packageAsPath, cdInterface.getName());
       if (cdInterface.getName().equals(getOriginalDefinition().getName() + PACKAGE_SUFFIX) && originalDefinition != null) {
@@ -44,10 +45,10 @@ public class CDEmfGenerator extends CDGenerator {
         //which cannot be described in CD4A (needs inner classes)
         //otherwise do not hide logic in templates
         this.generatorEngine.generate("_ast_emf.emf_package.EmfPackage", filePath, cdInterface, cdInterface,
-            getOriginalDefinition());
+            getOriginalDefinition(), astcdPackage);
       } else {
         // all other interfaces use the normal template
-        this.generatorEngine.generate(CoreTemplates.INTERFACE, filePath, cdInterface, cdInterface);
+        this.generatorEngine.generate(CD2JavaTemplates.INTERFACE, filePath, cdInterface, astcdPackage);
       }
     }
   }

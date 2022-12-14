@@ -2,9 +2,11 @@
 package de.monticore.tf;
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,12 +16,13 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 public class SetInitialToFalseTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testDoAll() throws IOException {
     AutomatonParser parser = new AutomatonParser();
@@ -34,6 +37,8 @@ public class SetInitialToFalseTest {
     sitf.doAll();
 
     assertFalse(s.isInitial());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -56,6 +61,7 @@ public class SetInitialToFalseTest {
     sitf.doReplacement();
     ASTState match_2 = sitf.get_state_1();
     assertNotSame(match_1, match_2);
-
+  
+    assertTrue(Log.getFindings().isEmpty());
     }
 }

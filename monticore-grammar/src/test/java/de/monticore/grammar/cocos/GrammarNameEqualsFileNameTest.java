@@ -6,6 +6,7 @@ import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsPar
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,12 +16,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class GrammarNameEqualsFileNameTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
+  
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
-
+  
   @Test
   public void testInvalidFilename() throws IOException {
     Log.getFindings().clear();

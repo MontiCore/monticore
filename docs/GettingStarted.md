@@ -4,7 +4,7 @@
 This page describes the technical installation and usage of MontiCore for
 language developers. This page further inspects a simple example grammar and the
 Java classes and other artifacts generated from this grammar. After installing
-MontiCore as described on this page, it can be used to develop new modelling
+MontiCore as described on this page, it can be used to develop new modeling
 languages and generators as described in subsequent chapters.
 
 MontiCore provides a command line interface (CLI) tool and can easily be used
@@ -69,7 +69,7 @@ https://www.monticore.de/download/monticore.tar.gz
 ```
 * Unzip the archive. The unzipped files include a directory called
     `mc-workspace` containing the executable MontiCore tool
-    `monticore-cli.jar` along with a directory `src` containing
+    `monticore.jar` along with a directory `src` containing
     handwritten `Automata` DSL infrastructure, a directory `hwc`
     containing handwritten code that is incorporated into the generated
     code, and a directory `example` containing an example model of the
@@ -77,7 +77,7 @@ https://www.monticore.de/download/monticore.tar.gz
 ```
 // MontiCore zip distribution content in directory mc-workspace
 Automata.mc4
-monticore-cli.jar
+monticore.jar
 monticore-rt.jar
 src/automata/AutomataTool.java
 src/automata/visitors/CountStates.java
@@ -169,7 +169,7 @@ Grammars can also have a package and import other grammars. If a grammar
 has a package, then the package declaration must be the first statement
 in the grammar and is of the form `package` *QualifiedName* where
 `package` is a keyword and *QualifiedName* is an arbitrary qualified
-name (e.g., `de.monticore`). The optional grammar imports follow the
+name (e.g. `de.monticore`). The optional grammar imports follow the
 package definition. Every import is of the form `import`
 *QualifiedName*. The `Automata` example grammar file does neither
 contain a package declaration nor imports. The grammar extended by the
@@ -344,7 +344,7 @@ executing of the following steps:
         table (cf. [Chapter 6 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out/automata/_visitor` containing the infrastructure for visitors
         (cf. [Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
-    -   `out//automata` containing reports created during the
+    -   `out/reports/automata` containing reports created during the
         processing of the grammar.
 3.  The output directory also contains a log file of the executed
     generation process with the generation time in its name.
@@ -805,17 +805,17 @@ from a MontiCore grammar. For these Java classes, generated for the
 
 **With Powershell on Windows**
 ```powershell
-javac -cp monticore.jar -sourcepath "src/;out/;hwc/" `
+javac -cp monticore-rt.jar -sourcepath "src/;out/;hwc/" `
                                   src/automata/AutomataTool.java
 ```
 **With Bash on Unix**
 ```bash
-javac -cp monticore.jar -sourcepath "src/:out/:hwc/" \
+javac -cp monticore-rt.jar -sourcepath "src/:out/:hwc/" \
                                   src/automata/AutomataTool.java
 ```
 **With cmd on Windows**
 ```batch
-javac -cp monticore.jar -sourcepath "src/;out/;hwc/" ^
+javac -cp monticore-rt.jar -sourcepath "src/;out/;hwc/" ^
                                   src/automata/AutomataTool.java
 ```
 

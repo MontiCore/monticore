@@ -5,15 +5,16 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.CdUtilsPrinter;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.codegen.cd2java.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
@@ -30,7 +31,7 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     LogStub.init();
-    LogStub.enableFailQuick(false);
+    Log.enableFailQuick(false);
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
 
     originalClass = getClassBy("A", cd).deepClone();
@@ -50,11 +51,15 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute lists = getAttributeBy("list", originalClass);
     assertTrue(lists.getModifier().isProtected());
     assertDeepEquals("List<String>", lists.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test(expected = AssertionError.class)
   public void testWithSSBefore() {
     getAttributeBy("lists", originalClass);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -62,11 +67,15 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute lists = getAttributeBy("lists", classWithS);
     assertTrue(lists.getModifier().isProtected());
     assertDeepEquals("List<String>", lists.getMCType());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test(expected = AssertionError.class)
   public void testNoSAfter() {
     getAttributeBy("list", classWithS);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -75,5 +84,7 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
     getAttributeBy("s", classWithS);
     getAttributeBy("opt", classWithS);
     getAttributeBy("b", classWithS);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

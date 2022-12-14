@@ -7,8 +7,8 @@ ${tc.signature("grammarName", "astClassName", "parseRuleNameJavaCompatible")}
     setError(true);
     return Optional.empty();
   }
-  parser.mc_eof();
-  if (parser.hasErrors()) {
+  // Check for EOF
+  if (parser.getCurrentToken() != null && parser.getCurrentToken().getType() != -1) {
     setError(true);
     return Optional.empty();
   }

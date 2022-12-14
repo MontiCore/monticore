@@ -8,12 +8,16 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UsageNameTest {
   
@@ -21,9 +25,11 @@ public class UsageNameTest {
   
   private ASTCDClass astB;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
   
   public UsageNameTest() {
@@ -37,11 +43,15 @@ public class UsageNameTest {
   public void testNonTerminal() {
     ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributeList());
     assertEquals("nonTerminalUsageName", cdAttribute.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testConstant() {
     ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astB.getCDAttributeList());
     assertEquals("constantUsageName", cdAttribute.getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

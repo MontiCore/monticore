@@ -10,7 +10,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 public class ListAccessorDecorator extends ListMethodDecorator {
 

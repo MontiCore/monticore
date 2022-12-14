@@ -2,6 +2,7 @@ site_name: MontiCore
 theme:
   name: 'material'
   favicon: 'img/favicon.ico'
+  custom_dir: docs/overrides
   icon:
     logo: 'fontawesome/solid/desktop'
 
@@ -22,7 +23,9 @@ nav:
       - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions.md'
       - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/Literals.md'
       - 'Types': 'monticore-grammar/src/main/grammars/de/monticore/types/Types.md'
-  - Languages: 'docs/DevelopedLanguages.md'
+  - Languages: 
+      - 'Languages and Language Components': 'docs/DevelopedLanguages.md'
+      - 'List of Languages': 'docs/Languages.md'
   - 'Best Practices': 'docs/BestPractices.md'
   - Changelog: '00.org/Explanations/CHANGELOG.md'
   - Downloads: 'docs/Download.md'

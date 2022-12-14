@@ -66,35 +66,38 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
       arguments.add(getTypeCheckResult().getResult());
     }
-    Optional<TypeVarSymbol> typeVar = getScope(genericType.getEnclosingScope()).resolveTypeVar(genericType.printWithoutTypeArguments());
-    if(typeVar.isPresent()){
-      Log.error("0xA0320 The generic type " + genericType.printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter()) +
-          " cannot have a generic parameter because " + genericType.getName(genericType.getNameList().size()-1) + " is a type variable",
+
+    if(checkNotObscure(arguments)) {
+      Optional<TypeVarSymbol> typeVar = getScope(genericType.getEnclosingScope()).resolveTypeVar(genericType.printWithoutTypeArguments());
+      if (typeVar.isPresent()) {
+        Log.error("0xA0320 The generic type " + genericType.printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter()) +
+            " cannot have a generic parameter because " + genericType.getName(genericType.getNameList().size() - 1) + " is a type variable",
           genericType.get_SourcePositionStart());
-    }else{
-      Optional<TypeSymbol> type = getScope(genericType.getEnclosingScope()).resolveType(genericType.printWithoutTypeArguments());
-      if(type.isPresent()){
-        symType = SymTypeExpressionFactory.createGenerics(type.get(), arguments);
-      }else{
-        Optional<SymTypeExpression> optSym = handleIfNotFound(genericType, arguments);
-        if(optSym.isPresent()){
-          symType = optSym.get();
+        getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      } else {
+        Optional<TypeSymbol> type = getScope(genericType.getEnclosingScope()).resolveType(genericType.printWithoutTypeArguments());
+        if (type.isPresent()) {
+          symType = SymTypeExpressionFactory.createGenerics(type.get(), arguments);
+        } else {
+          symType = handleIfNotFound(genericType, arguments);
         }
       }
-    }
-    if(null != symType) {
-      getTypeCheckResult().setResult(symType);
-      genericType.setDefiningSymbol(symType.getTypeInfo());
+      if (null != symType) {
+        getTypeCheckResult().setResult(symType);
+        genericType.setDefiningSymbol(symType.getTypeInfo());
+      }
+    }else{
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
     }
   }
 
   /**
    * extension method for error handling
    */
-  protected Optional<SymTypeExpression> handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments){
+  protected SymTypeExpression handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments){
     Log.error("0xA0323 The generic type " + type.printWithoutTypeArguments() +
         "cannot be found", type.get_SourcePositionStart());
-    return Optional.empty();
+    return SymTypeExpressionFactory.createObscureType();
   }
 
 }

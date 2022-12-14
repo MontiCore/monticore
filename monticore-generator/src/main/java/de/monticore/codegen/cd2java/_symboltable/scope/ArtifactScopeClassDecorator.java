@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
@@ -19,8 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.cd2java.CDModifier.*;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
@@ -64,22 +65,23 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
 
     ASTCDAttribute packageNameAttribute = createPackageNameAttribute();
     ASTCDAttribute importsAttribute = createImportsAttribute();
-
-    return CD4AnalysisMill.cDClassBuilder()
-        .setName(artifactScopeSimpleName)
-        .setModifier(PUBLIC.build())
-        .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName)).build())
-        .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(symbolTableService.getArtifactScopeInterfaceType()).build())
-        .addAllCDMembers(createConstructors(artifactScopeSimpleName))
-        .addCDMember(packageNameAttribute)
-        .addAllCDMembers(createPackageNameAttributeMethods(packageNameAttribute))
-        .addCDMember(importsAttribute)
-        .addAllCDMembers(createImportsAttributeMethods(importsAttribute))
-        .addCDMember(createIsPresentNameMethod())
-        .addCDMember(createGetNameMethod())
-        .addCDMember(createSetEnclosingScopeMethod(scopeInterfaceFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
-        .addCDMember(createAcceptTraverserMethod(artifactScopeSimpleName))
-        .build();
+    ASTCDClass clazz = CD4AnalysisMill.cDClassBuilder()
+            .setName(artifactScopeSimpleName)
+            .setModifier(PUBLIC.build())
+            .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(scopeClassFullName)).build())
+            .setCDInterfaceUsage(CD4CodeMill.cDInterfaceUsageBuilder().addInterface(symbolTableService.getArtifactScopeInterfaceType()).build())
+            .addAllCDMembers(createConstructors(artifactScopeSimpleName))
+            .addCDMember(packageNameAttribute)
+            .addAllCDMembers(createPackageNameAttributeMethods(packageNameAttribute))
+            .addCDMember(importsAttribute)
+            .addAllCDMembers(createImportsAttributeMethods(importsAttribute))
+            .addCDMember(createIsPresentNameMethod())
+            .addCDMember(createGetNameMethod())
+            .addCDMember(createSetEnclosingScopeMethod(scopeInterfaceFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
+            .addCDMember(createAcceptTraverserMethod(artifactScopeSimpleName))
+            .build();
+    CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
+    return clazz;
   }
 
   protected List<ASTCDConstructor> createConstructors(String artifactScopeName) {

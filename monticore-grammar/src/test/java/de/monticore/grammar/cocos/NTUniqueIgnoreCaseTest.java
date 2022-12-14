@@ -6,6 +6,7 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,9 +21,14 @@ public class NTUniqueIgnoreCaseTest extends CocoTest {
   
   private final String grammar = "de.monticore.grammar.cocos.invalid.A2026.A2026";
   
+  @Before
+  public void before() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+  
   @BeforeClass
   public static void disableFailQuick() {
-    LogStub.enableFailQuick(false);
     checker.addCoCo(new NTUniqueIgnoreCase());
   }
   

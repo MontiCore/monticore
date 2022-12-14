@@ -1,5 +1,6 @@
 package de.monticore.gradle;
 
+import de.monticore.symboltable.serialization.json.*;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.invocation.Gradle;
@@ -42,94 +43,74 @@ public class StatisticData {
   }
 
   public String toString() {
-    Map<String, Object> result = new LinkedHashMap<>();
+    JsonObject result = new JsonObject();
 
+    {
+      JsonArray tasks = new JsonArray();
+      tasks.addAll(this.tasks.stream()
+          .map(TaskData::getGradleStatisticData)
+          .collect(Collectors.toList()));
+      result.putMember("Tasks", tasks);
+    }
 
-    result.put("Tasks", this.tasks.stream()
-        .map(TaskData::toString)
-        .collect(Collectors.joining()));
-
-
-    result.put("ProjectName", '"' + this.project.getName() + '"');
-    result.put("Duration", this.executionTime.toMillis());
-
-    result.put("GradleVersion", '"' + this.gradle.getGradleVersion() + '"');
-    result.put("JavaVersion", '"' + System.getProperty("java.version") + '"');
+    result.putMember("ProjectName", new UserJsonString(project.getName()));
+    result.putMember("Duration", new JsonNumber(""+executionTime.toMillis()));
+    result.putMember("GradleVersion", new UserJsonString(this.gradle.getGradleVersion()));
+    result.putMember("JavaVersion", new UserJsonString(System.getProperty("java.version")));
 
     try {
       Properties localProperties = new Properties();
       localProperties.load(this.getClass().getResourceAsStream("/buildInfo.properties"));
 
-      result.put("MCVersion", '"' + localProperties.getProperty("version") + '"');
+      result.putMember("MCVersion", new UserJsonString(localProperties.getProperty("version")));
     }catch(IOException ignored){}
 
+    result.putMember("TotalMemory", new JsonNumber(""+Runtime.getRuntime().totalMemory()));
+    result.putMember("FreeMemory", new JsonNumber(""+Runtime.getRuntime().freeMemory()));
+    result.putMember("MaxMemory", new JsonNumber(""+Runtime.getRuntime().maxMemory()));
+    result.putMember("AvailableProcessors", new JsonNumber(""+Runtime.getRuntime().availableProcessors()));
 
-    result.put("TotalMemory", Runtime.getRuntime().totalMemory());
-    result.put("FreeMemory", Runtime.getRuntime().freeMemory());
-    result.put("MaxMemory", Runtime.getRuntime().maxMemory());
-    result.put("AvailableProcessors", Runtime.getRuntime().availableProcessors());
+    result.putMember("GradleParallel", new JsonBoolean( Boolean.parseBoolean(getGradleProperty("org.gradle.parallel", "false"))));
+    result.putMember("GradleCache", new JsonBoolean( Boolean.parseBoolean(getGradleProperty("org.gradle.caching", "false"))));
+    result.putMember("HasBuildCacheURL", new JsonBoolean( gradle.getRootProject().getProperties().containsKey("buildCacheURL")));
+    result.putMember("IsCi", new JsonBoolean( System.getenv().containsKey("CI")));
 
+    result.putMember("Tags", new UserJsonString(getGradleProperty("de.monticore.gradle.tags", "")));
 
-    result.put("GradleParallel", getGradleProperty("org.gradle.parallel", "false"));
-    result.put("GradleCache", getGradleProperty("org.gradle.caching", "false"));
-    result.put("HasBuildCacheURL", gradle.getRootProject().getProperties().containsKey("buildCacheURL"));
-    result.put("IsCi", System.getenv().containsKey("CI"));
-
-    result.put("Tags", '"' + getGradleProperty("de.monticore.gradle.tags", "") + '"');
-
-    return result.entrySet().stream()
-        .map(e -> e.getKey() + ": " + e.getValue())
-        .map(s -> s + "\n")
-        .collect(Collectors.joining());
+    return result.toString();
   }
 
-  public static class TaskData {
-    protected String name;
-    protected String projectName;
-    protected Class<? extends Task> type;
-    protected boolean cacheEnabled;
-    protected boolean isUpToDate;
-    protected boolean isCached;
-    protected boolean skipped;
-    protected boolean didWork;
-    protected boolean hasError;
-    protected Duration executionTime;
+  public static class TaskData implements GradleTaskStatistic{
+    protected final JsonObject data;
 
     public TaskData(Task task, TaskState taskState, Duration executionTime) {
-      this.name = task.getName();
-      this.projectName = task.getProject().getDisplayName();
-      this.type = task.getClass();
+      data = new JsonObject();
+      data.putMember("Name", new UserJsonString(task.getName()));
+      data.putMember("ProjectName", new UserJsonString(task.getProject().getDisplayName()));
+      data.putMember("Type", new UserJsonString(task.getClass().getName()));
 
-      this.executionTime = executionTime;
+      data.putMember("Duration", new JsonNumber(""+executionTime.toMillis()));
+      data.putMember("UpToDate", new JsonBoolean(taskState.getUpToDate()));
+      data.putMember("Cached", new JsonBoolean(Objects.equals(taskState.getSkipMessage(), "FROM CACHE")));
+      data.putMember("DidWork", new JsonBoolean(taskState.getDidWork()));
+      data.putMember("hasError", new JsonBoolean(taskState.getFailure() != null));
 
-      this.skipped = taskState.getSkipped();
-      this.didWork = taskState.getDidWork();
-      this.hasError = taskState.getFailure() != null;
-      this.isUpToDate = taskState.getUpToDate();
-      this.isCached = Objects.equals(taskState.getSkipMessage(), "FROM CACHE");
+      {
+        JsonElement taskStats;
+        if(task instanceof GradleTaskStatistic){
+          taskStats = ((GradleTaskStatistic) task).getGradleStatisticData();
+        } else{
+          taskStats = new JsonNull();
+        }
+        data.putMember("TaskStatistik", taskStats);
+      }
+
     }
 
-    public String toString() {
-      Map<String, Object> result = new LinkedHashMap<>();
-
-      result.put("Name", '"' + this.name + '"');
-      result.put("ProjektName", '"' + this.projectName + '"');
-      result.put("Type", '"' + this.type.getName() + '"');
-      result.put("Duration", this.executionTime.toMillis());
-      result.put("UpToDate", this.isUpToDate);
-      result.put("Cached", this.isCached);
-      result.put("Skipped", this.skipped);
-      result.put("DidWork", this.didWork);
-      result.put("hasError", this.hasError);
-
-      return "\n-" +
-          result.entrySet().stream()
-          .map(e -> e.getKey() + ": " + e.getValue())
-          .map(s -> "    " + s + "\n")
-          .collect(Collectors.joining())
-          .substring(1);
+    @Override
+    public JsonElement getGradleStatisticData() {
+      return data;
     }
   }
-
 }
 

@@ -13,13 +13,12 @@ import static org.junit.Assert.assertEquals;
 
 public class AutomataToolTest {
   
-  @BeforeClass
-  public static void init() {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
+  @Before
+  public void before() {
+    LogStub.init();
     Log.enableFailQuick(false);
   }
-  
+
   @Before
   public void setUp() {
     Log.clearFindings();
@@ -46,6 +45,7 @@ public class AutomataToolTest {
     assertTrue(res, res.matches(".*state.*"));
     assertTrue(res, res.matches(".*state NoGame <<initial>>.*"));
     assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -56,6 +56,7 @@ public class AutomataToolTest {
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(7, p.size());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -66,6 +67,7 @@ public class AutomataToolTest {
     // LogStub.printPrints();
     List<String> p = LogStub.getPrints();
     assertEquals(7, p.size());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

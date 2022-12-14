@@ -24,8 +24,8 @@ import de.se_rwth.commons.Joiners;
 
 import java.util.*;
 
-import static de.monticore.codegen.cd2java.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -302,9 +302,10 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
     DiagramSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
+    String scopeTypeAsString = scopeType.getMCQualifiedName().getQName();
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
     
-    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(HANDLER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive());
+    TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(HANDLER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), scopeTypeAsString);
     StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
         + symbolTableService.getScopeInterfaceFullName() + ") node);");
     

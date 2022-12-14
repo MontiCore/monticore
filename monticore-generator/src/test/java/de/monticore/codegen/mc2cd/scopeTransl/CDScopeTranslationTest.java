@@ -5,10 +5,12 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.codegen.cd2java.CDModifier;
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,9 +26,11 @@ public class CDScopeTranslationTest {
 
   private ASTCDCompilationUnit compilationUnit;
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     GrammarFamilyMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Before
@@ -38,6 +42,8 @@ public class CDScopeTranslationTest {
   @Test
   public void testDefinitionName() {
     assertEquals("ScopeRuleScope", compilationUnit.getCDDefinition().getName());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -45,11 +51,15 @@ public class CDScopeTranslationTest {
     assertEquals(2, compilationUnit.getCDPackageList().size());
     assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
     assertEquals("scopeTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCount() {
     assertEquals(1, compilationUnit.getCDDefinition().getCDClassesList().size());
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -81,6 +91,8 @@ public class CDScopeTranslationTest {
 
     ASTMCObjectType superclass = scopeClass.getCDExtendUsage().getSuperclass(0);
     assertDeepEquals("de.monticore.mcbasics._symboltable.IMCBasicsScope", superclass);
+  
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

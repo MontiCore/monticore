@@ -93,6 +93,7 @@ public class SymbolWithScopeOfUnknownKind implements IScopeSpanningSymbol {
     return this.packageName;
   }
 
+  @Override
   public void accept(ITraverser visitor) {
     visitor.handle(this);
   }
