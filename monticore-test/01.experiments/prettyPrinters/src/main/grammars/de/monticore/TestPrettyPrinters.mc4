@@ -192,4 +192,38 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     LiteralProd = Literal;
     SignedLiteralProd = SignedLiteral;
 
+    // The following productions should all result in no space between the "::" tokens
+
+    NoSpacePredA = "foo" ":" ":" {noSpace()}? "bar";
+
+    NoSpacePredB = "foo" ":" ":" "bar" {noSpace(-2)}?;
+
+    NoSpacePredC = {noSpace(3)}? "foo" ":" ":" "bar";
+
+    NoSpacePredD = {noSpace(3)}? "foo" ":" ":" "bar" | "abc" Name;
+
+    NoSpacePredE = "yes"? ("abc" Name |  {noSpace(3)}? "foo" ":" ":" "bar");
+
+    NoSpacePredF = {noSpace(3, 4)}? "foo" ":" ":" ":" "bar";
+
+    NoSpacePredG = {noSpace(3)}? "foo" ":" ":" ":" "bar" {noSpace(-2)}?;
+
+    // Example from the 2017 reference manual
+
+    NoWhiteSpaceA2017 = Name "." NoWSLast2 Name NoWSLast2 ;
+
+    NoWSLast2 = {noSpace()}? ;
+
+    NoSpaceAlts = {noSpace(2)}? (negative:["-"] | positive:["+"]) Name;
+    NoSpaceAltsO = NoSpaceAlts Name;
+    NoSpaceAlts2 = {noSpace(2)}? (negative:["-"] | "a" "+") Name;
+
+    NoSpaceAltsOpt = {noSpace(2)}? (negative:["-"])? Name (positive:["+"]);
+    NoSpaceAltsOverflow = {noSpace(3)}? (negative:["-"] | "a" "b") Name "." Name;
+
+    // The following expressions will be ignored due to simplicity
+    NoSpaceExpOrT = {noSpace(3) || true}? "foo" ":" ":" "bar";
+    NoSpaceExpOrF = {noSpace(3) || false}? "foo" ":" ":" "bar";
+    NoSpaceExpAndT = {noSpace(3) && true}? "foo" ":" ":" "bar";
+    NoSpaceExpAndF = {noSpace(3) && false}? "foo" ":" ":" "bar";
 }

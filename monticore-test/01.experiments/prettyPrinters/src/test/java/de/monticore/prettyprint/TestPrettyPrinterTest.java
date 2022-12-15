@@ -11,6 +11,7 @@ import org.junit.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Test the PrettyPrinter Generation
@@ -471,7 +472,79 @@ public class TestPrettyPrinterTest {
     testPP("trigger A B", TestPrettyPrintersMill.parser()::parse_StringSDCall);
   }
 
-  protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction) throws IOException {
+  @Test
+  public void testNoSpace() throws IOException {
+    testPP("foo::bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredA, s -> s.contains("::"));
+    testPP("foo :: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredA, s -> s.contains("::"));
+    testPP("foo::bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredB, s -> s.contains("::"));
+    testPP("foo :: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredB, s -> s.contains("::"));
+    testPP("foo::bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredC, s -> s.contains("::"));
+    testPP("foo :: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredC, s -> s.contains("::"));
+    testPP("foo :: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredD, s -> s.contains("::"));
+    testPP("yes foo :: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredE, s -> s.contains("::"));
+    testPP("foo:::bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredF, s -> s.contains(":::"));
+    testPP("foo ::: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredF, s -> s.contains(":::"));
+    testPP("foo:::bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredG, s -> s.contains(":::"));
+    testPP("foo ::: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpacePredG, s -> s.contains(":::"));
+  }
+
+  @Test
+  public void testNoSpace2017() throws IOException {
+    try {
+      testPP("  n1.n2", TestPrettyPrintersMill.parser()::parse_StringNoWhiteSpaceA2017);
+      Assert.fail();
+    } catch (IllegalStateException expected) {
+      Assert.assertEquals("Unable to target the previous token using the noSpace control directive. You may also need to override the printing methods of productions using this NonTerminal", expected.getMessage());
+    }
+  }
+
+  @Test
+  public void testNoSpaceAlts() throws IOException {
+    testPP("-n1", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAlts, s -> s.contains("-n1"));
+    testPP("+n1", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAlts, s -> s.contains("+n1"));
+    testPP("-n1 n2", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsO, s -> s.contains("-n1 "));
+    testPP("-n1", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAlts2, s -> s.contains("-n1"));
+    testPP("a+ n1", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAlts2, s -> s.contains("a+ n1"));
+  }
+
+  @Test
+  public void testNoSpaceAltsOpt() throws IOException {
+    try {
+      testPP("-n1 +", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOpt);
+      Assert.fail();
+    } catch (IllegalStateException expected) {
+      Assert.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
+    }
+    try {
+      testPP("n1+", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOpt);
+      Assert.fail();
+    } catch (IllegalStateException expected) {
+      Assert.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
+    }
+  }
+  @Test
+  public void testNoSpaceAltsOverflow() throws IOException {
+    try {
+      testPP("-n1.n2", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOverflow);
+      Assert.fail();
+    } catch (IllegalStateException expected) {
+      Assert.assertEquals("Unable to handle noSpace control directive for block with multiple alts of different length", expected.getMessage());
+    }
+  }
+
+  @Test
+  public void testNoSpaceExp() throws IOException {
+    // Due to us ignoring any expression for simplicity, all productions will use the noSpace control directive
+    testPP("foo::bar", TestPrettyPrintersMill.parser()::parse_StringNoSpaceExpOrT, s -> s.contains("::"));
+    testPP("foo :: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpaceExpOrT, s -> s.contains("::"));
+    testPP("foo::bar", TestPrettyPrintersMill.parser()::parse_StringNoSpaceExpOrF, s -> s.contains("::"));
+    testPP("foo :: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpaceExpOrF, s -> s.contains("::"));
+    testPP("foo::bar", TestPrettyPrintersMill.parser()::parse_StringNoSpaceExpAndT, s -> s.contains("::"));
+    testPP("foo :: bar", TestPrettyPrintersMill.parser()::parse_StringNoSpaceExpAndT, s -> s.contains("::"));
+    // NoSpaceExpAndF: && false will never parse
+  }
+
+  protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction, Function<String, Boolean> additionalCheck) throws IOException {
     Optional<A> parsedOpt = parserFunction.parse(input);
     Assert.assertTrue("Failed to parse input", parsedOpt.isPresent());
     String prettyInput = (new TestPrettyPrintersFullPrettyPrinter(new IndentPrinter())).prettyprint(parsedOpt.get());
@@ -481,6 +554,12 @@ public class TestPrettyPrinterTest {
       Assert.assertEquals("Failed to parse pretty: " + findings, input, prettyInput);
     if (!parsedOpt.get().deepEquals(parsedPrettyOpt.get()))
       Assert.assertEquals("Not deep equals: " + findings, input, prettyInput);
+    if (!additionalCheck.apply(prettyInput))
+      Assert.fail("Failed check, got pp-output: " + prettyInput);
+  }
+
+  protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction) throws IOException {
+    testPP(input, parserFunction, s -> true);
   }
 
   @FunctionalInterface
