@@ -431,10 +431,10 @@ githubmirror:
     - mkdir -p ~/.ssh
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   script:
-    - 'curl --location --header "PRIVATE-TOKEN: secibuildinfstrtoken" "https://git.rwth-aachen.de/api/v4/projects/se%2Finfrastructure%2Fgithub-mirror-tools/repository/files/mirror.sh/raw" --output mirror.sh'
+    - 'curl --location --header "PRIVATE-TOKEN: $secibuildinfstrtoken" "https://git.rwth-aachen.de/api/v4/projects/se%2Finfrastructure%2Fgithub-mirror-tools/repository/files/mirror.sh/raw" --output mirror.sh'
     - sh mirror.sh
     - rm mirror.sh
-    - 'curl --location --header "PRIVATE-TOKEN: secibuildinfstrtoken" "https://git.rwth-aachen.de/api/v4/projects/se%2Finfrastructure%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build" --output MDLinkChecker.jar'
+    - 'curl --location --header "PRIVATE-TOKEN: $secibuildinfstrtoken" "https://git.rwth-aachen.de/api/v4/projects/se%2Finfrastructure%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build" --output MDLinkChecker.jar'
     - 'java -jar MDLinkChecker.jar -t "$secibuildtoken" -r . -p -c -i'
     - 'rm MDLinkChecker.jar'
     - git add --all
