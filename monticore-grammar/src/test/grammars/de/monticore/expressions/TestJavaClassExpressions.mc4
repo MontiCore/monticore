@@ -12,4 +12,7 @@ grammar TestJavaClassExpressions extends de.monticore.expressions.JavaClassExpre
    ExtReturnType = MCReturnType;
 
    ExtTypeArgument = MCTypeArgument;
+
+  TModifier implements MCModifier = "private" | "static";
+
 }

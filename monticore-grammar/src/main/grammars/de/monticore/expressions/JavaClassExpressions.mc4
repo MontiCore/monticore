@@ -5,6 +5,7 @@ package de.monticore.expressions;
  * Adaptations -- if any -- are conservative. */
 
 import de.monticore.expressions.*;
+import de.monticore.statements.*;
 
 /**
  * This grammar defines Java specific class expressions like super,
@@ -15,7 +16,7 @@ import de.monticore.expressions.*;
  * modelling language.
  *
  * There are also other kinds of expressions defined in the
- * grammars mentioned below. These expression definitions can savely be
+ * grammars mentioned below. These expression definitions can safely be
  * composed if desired.
  *
  * The grammar has several extension points for types to be filled when used.
@@ -34,7 +35,7 @@ import de.monticore.expressions.*;
 */
 
 component grammar JavaClassExpressions
-          extends CommonExpressions {
+          extends CommonExpressions, MCVarDeclarationStatements {
 
 
   /*=================================================================*/
@@ -119,9 +120,12 @@ component grammar JavaClassExpressions
 
   /*=================================================================*/
 
-  // instance of needs a type as argument
+  // instance of needs a type or pattern as argument
   InstanceofExpression implements Expression <140> =
-    Expression "instanceof" ExtType;
+    Expression "instanceof" (ExtType | Pattern);
 
+  interface Pattern;
+
+  TypePattern implements Pattern = LocalVariableDeclaration;
 
 }

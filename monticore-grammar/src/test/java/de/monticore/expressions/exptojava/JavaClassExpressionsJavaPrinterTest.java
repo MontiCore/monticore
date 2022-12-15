@@ -177,5 +177,23 @@ public class JavaClassExpressionsJavaPrinterTest {
   
     assertTrue(Log.getFindings().isEmpty());
   }
-  
+
+  @Test
+  public void testTypePattern() throws IOException {
+    Optional<ASTTypePattern> result = parser.parse_StringTypePattern("String s");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTTypePattern ast = result.get();
+
+    String output = javaPrinter.print(ast);
+
+    result = parser.parse_StringTypePattern(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
 }

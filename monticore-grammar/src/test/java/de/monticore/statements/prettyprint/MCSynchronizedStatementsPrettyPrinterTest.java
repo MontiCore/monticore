@@ -35,7 +35,7 @@ public class MCSynchronizedStatementsPrettyPrinterTest {
 
   @Test
   public void testReturnStatement() throws IOException {
-    Optional<ASTSynchronizedStatement> result = parser.parse_StringSynchronizedStatement("synchronized (foo) { private Integer foo = a ;}");
+    Optional<ASTSynchronizedStatement> result = parser.parse_StringSynchronizedStatement("synchronized (foo) { final Integer foo = a ;}");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTSynchronizedStatement ast = result.get();
