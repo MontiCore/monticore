@@ -34,7 +34,7 @@ public class JavaLightPrettyPrinterTest {
   
   @Test
   public void testMethodDeclaration() throws IOException {
-    Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("private static final int foo(String s, boolean b)[][][] throws e.Exception { private Integer foo = a; }");
+    Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("private static final int foo(String s[], boolean b)[][][] throws e.Exception { private Integer foo = a; }");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMethodDeclaration ast = result.get();

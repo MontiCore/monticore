@@ -163,7 +163,7 @@ public class MCCommonStatementsPrettyPrinter implements
     printSeparated(a.getJavaModifierList().iterator(), " ");
     a.getMCType().accept(getTraverser());
     getPrinter().print(" ");
-    a.getDeclaratorId().accept(getTraverser());
+    a.getDeclarator().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(a, getPrinter());
   }
 

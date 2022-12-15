@@ -25,12 +25,12 @@ public class ConstructorFormalParametersDifferentName implements JavaLightASTCon
         }
         for (ASTFormalParameter formalParameter : node.getFormalParameters()
             .getFormalParameterListing().getFormalParameterList()) {
-          if (names.contains(formalParameter.getDeclaratorId().getName())) {
-            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, formalParameter.getDeclaratorId().getName(), node.getName()),
+          if (names.contains(formalParameter.getDeclarator().getName())) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, formalParameter.getDeclarator().getName(), node.getName()),
                 node.get_SourcePositionStart());
           }
           else {
-            names.add(formalParameter.getDeclaratorId().getName());
+            names.add(formalParameter.getDeclarator().getName());
           }
         }
       }
