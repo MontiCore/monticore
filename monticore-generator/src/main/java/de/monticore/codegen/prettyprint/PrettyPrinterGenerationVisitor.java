@@ -16,21 +16,18 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTLogicalNotExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.Multiplicity;
-import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
-import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
-import de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals;
-import de.monticore.literals.mcliteralsbasis.MCLiteralsBasisMill;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
@@ -68,10 +65,18 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
   protected String grammarName;
 
+  protected NoSpacePredicateVisitor noSpacePredicateVisitor = new NoSpacePredicateVisitor();
+  protected GrammarFamilyTraverser noSpacePredicateTraverser;
+
   public PrettyPrinterGenerationVisitor(GlobalExtensionManagement glex, ASTCDClass ppClass, Map<String, NonTermAccessorVisitor.ClassProdNonTermPrettyPrintData> classProds) {
     this.glex = glex;
     this.ppClass = ppClass;
     this.classProds = classProds;
+    // Setup NoSpacePredicate detection
+    this.noSpacePredicateTraverser = GrammarFamilyMill.traverser();
+    this.noSpacePredicateTraverser.add4MCCommonLiterals(this.noSpacePredicateVisitor);
+    this.noSpacePredicateTraverser.add4ExpressionsBasis(this.noSpacePredicateVisitor);
+    this.noSpacePredicateTraverser.add4CommonExpressions(this.noSpacePredicateVisitor);
   }
 
 
@@ -181,7 +186,42 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   @Override
   public void endVisit(ASTAlt node) {
     if (blockDataStack.isEmpty()) return; // Only visit in CPs
-    altDataStack.pop();
+    AltData altData = altDataStack.pop();
+    if (!altData.getNoSpaceTokens().isEmpty()) {
+      // Mark components with noSpace
+      for (int i : altData.getNoSpaceTokens())
+        markNoSpaceToken(altData, i);
+    }
+  }
+
+  /**
+   * Mark the correct token with the noSpace directive
+   */
+  protected int markNoSpaceToken(AltData altData, int index) {
+    for (PPGuardComponent component : altData.getComponentList()) {
+      if (component.getType() == PPGuardComponent.PPGuardType.BLOCK) {
+        if (component.getBlockData().getIteration() != ASTConstantsGrammar.DEFAULT) {
+          this.failureMessage = "Unable to handle noSpace control directive for block of non-default iteration";
+          return -1;
+        }else if (component.getBlockData().getAltDataList().size() != 1) {
+          int ret_index0 = markNoSpaceToken(component.getBlockData().getAltDataList().get(0), index);
+          for (int ia = 1; ia < component.getBlockData().getAltDataList().size(); ia++) {
+            int ret_index = markNoSpaceToken(component.getBlockData().getAltDataList().get(ia), index);
+            if (ret_index != ret_index0) {
+              this.failureMessage = "Unable to handle noSpace control directive for block with multiple alts of different length";
+              return -1;
+            }
+          }
+          index = ret_index0;
+        } else {
+          index = markNoSpaceToken(component.getBlockData().getAltDataList().get(0), index);
+        }
+      } else if (index-- == 0) {
+        component.setHasNoSpace(true);
+        return -1;
+      }
+    }
+    return index;
   }
 
   @Override
@@ -365,7 +405,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
         nodeAttrName = node.getConstant(0).getHumanName();
       // The getter for booleans is using the "is"-prefix
       getter = "is" + StringTransformations.capitalize(nodeAttrName);
-      if (node.getEnclosingScope().resolveRuleComponentMany(humanName).size() > 1)
+      if (!humanName.isEmpty() && node.getEnclosingScope().resolveRuleComponentMany(humanName).size() > 1)
         this.failureMessage = "Unable to handle ConstantGroup with size of 1, but multiple elements named " + humanName + " present";
     }
 
@@ -448,6 +488,39 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
         outerAltData.getExpressionList().add(AltData.reduceToOr(allAltExpressions));
 
     }
+  }
+
+  @Override
+  public void visit(ASTSemanticpredicateOrAction node){
+    if (blockDataStack.isEmpty() || altDataStack.isEmpty()) return; // Only visit in CP RuleComponents
+    if (node.isPredicate() && node.isPresentExpressionPredicate()) {
+        // Handle noSpace control directives, by first trying to detect them
+        noSpacePredicateVisitor.reset();
+        node.getExpressionPredicate().accept(noSpacePredicateTraverser);
+
+        if (noSpacePredicateVisitor.isNoSpaceDirective()) {
+          AltData currentAltData = altDataStack.peek();
+          int currentTokenIndex = currentAltData.getComponentList().size() -1 ;
+          if (noSpacePredicateVisitor.getTokenIndexes().isEmpty()) {
+            if (currentTokenIndex < 0) {
+              this.failureMessage = "Unable to target the previous token using the noSpace control directive. " +
+                      "You may also need to override the printing methods of productions using this NonTerminal";
+              // An example is "CP = {noSpace()}? ;", an example from the 2017 reference manual or the SpaceFreeChecks test grammar
+              return;
+            }
+            // Target the last token
+            currentAltData.getNoSpaceTokens().add(currentTokenIndex - 2 + 1);
+          }else{
+            // Target the nth token to the right/left
+            for (Integer i : noSpacePredicateVisitor.getTokenIndexes()) {
+              if (i < 0)
+                currentAltData.getNoSpaceTokens().add(currentTokenIndex + i - 1 + 1);
+              else
+                currentAltData.getNoSpaceTokens().add(currentTokenIndex + i - 2 + 1);
+            }
+          }
+        }
+      }
   }
 
   public List<String> getASTPackage(RuleComponentSymbol symbol) {

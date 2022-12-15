@@ -24,6 +24,8 @@ public class PPGuardComponent {
   protected final Set<Map.Entry<String, String>> constants;
   protected final int iteration;
 
+  protected boolean hasNoSpace = false;
+
   public PPGuardComponent(PPGuardType type, BlockData blockData, String name, String nameToUse,
                           String separator, Set<Map.Entry<String, String>> constants, int iteration) {
     this.type = type;
@@ -76,6 +78,14 @@ public class PPGuardComponent {
 
   public boolean isOpt() {
     return getIteration() == ASTConstantsGrammar.QUESTION;
+  }
+
+  public boolean isHasNoSpace() {
+    return this.hasNoSpace;
+  }
+
+  public void setHasNoSpace(boolean hasNoSpace) {
+    this.hasNoSpace = hasNoSpace;
   }
 
   public enum PPGuardType {
