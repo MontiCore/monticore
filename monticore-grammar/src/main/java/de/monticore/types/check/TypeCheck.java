@@ -1,307 +1,74 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static de.monticore.types.check.SymTypePrimitive.unbox;
-
 /**
- * This class is intended to provide typeChecking functionality.
- * It is designed as functional class (no state), allowing to
- * plug-in the appropriate implementation through subclasses,
- * Those subclasses can deal with variants of Expression, Literal
- * and Type-classes that are used in the respective project.
- * (It is thus configure along three dimensions:
- *    Literals
- *    Expressions
- *    Types)
- * This class only knows about the thre top Level grammars:
- * MCBasicTypes, ExpressionsBasis and MCLiteralsBasis, because it includes their
- * main NonTerminals in the signature.
+ * Deprecated due to static methods
+ * use {@link ITypeRelations} instead,
+ * preferably provided by {@link TypeCalculator}
  */
+@Deprecated
 public class TypeCheck {
   
   /**
-   * Function 3:
-   * Given two SymTypeExpressions super, sub:
-   * This function answers, whether the right type is a subtype of the left type in an assignment.
-   * (This allows to store/use values of type "sub" at all positions of type "super".
-   * Compatibility examples:
-   *      compatible("int", "long")       (in all directions)
-   *      compatible("long", "int")       (in all directions)
-   *      compatible("double", "float")   (in all directions)
-   *      compatible("Person", "Student") (uni-directional)
-   *
-   * Incompatible:
-   *     !compatible("double", "int")   (in all directions)
-   *
-   * The concrete Typechecker has to decide on further issues, like
-   *     !compatible("List<double>", "List<int>") 
-   *     where e.g. Java and OCL/P differ in their answers
-   *
-   * @param left  Super-Type
-   * @param right  Sub-Type (assignment-compatible to supertype?)
-   *
-   * TODO: Probably needs to be extended for free type-variable assignments
-   * (because it may be that they get unified over time: e.g. Map<a,List<c>> and Map<long,b>
-   * are compatible, by refining the assignments a-> long, b->List<c>
-   *
-   * TODO: remove "static" keyword
+   * only used to provide deprecated static methods
    */
+  protected static TypeRelations typeRelations = new TypeRelations();
+
   public static boolean compatible(SymTypeExpression left,
-                                   SymTypeExpression right)
-  {
-    if(left.isObscureType() || right.isObscureType()){
-      return true;
-    }
-    if(left.isPrimitive()&&right.isPrimitive()){
-      SymTypePrimitive leftType = (SymTypePrimitive) left;
-      SymTypePrimitive rightType = (SymTypePrimitive) right;
-      if(isBoolean(leftType)&& isBoolean(rightType)){
-        return true;
-      }
-      if(isDouble(leftType)&&rightType.isNumericType()){
-        return true;
-      }
-      if(isFloat(leftType)&&((rightType.isIntegralType())|| isFloat(right))){
-        return true;
-      }
-      if(isLong(leftType)&&rightType.isIntegralType()){
-        return true;
-      }
-      if(isInt(leftType)&&rightType.isIntegralType()&&!isLong(right)){
-        return true;
-      }
-      if(isChar(leftType)&& isChar(right)){
-        return true;
-      }
-      if(isShort(leftType)&& (isByte(right) || isShort(right))){
-        return true;
-      }
-      if(isByte(leftType)&& isByte(right)){
-        return true;
-      }
-      return false;
-    } else if (!left.isPrimitive() && right.isNullType()){
-      return true;
-    } else if(unbox(left.printFullName()).equals(unbox(right.printFullName()))) {
-      return true;
-    } else if(isSubtypeOf(right,left)) {
-      return true;
-    } else if (right.printFullName().equals(left.printFullName())) {
-      return true;
-    } else if (left.deepEquals(right) || right.deepEquals(left)) {
-      return true;
-    }
-    return false;
+                                   SymTypeExpression right) {
+    return typeRelations.compatible(left, right);
   }
 
-
-  /**
-   * determines if one SymTypeExpression is a subtype of another SymTypeExpression
-   * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
-   * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
-   */
   public static boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType){
-    if(subType.isObscureType() || superType.isObscureType()){
-      return true;
-    }
-    if(unbox(subType.printFullName()).equals(unbox(superType.printFullName()))){
-      return true;
-    }
-    if(subType.isPrimitive()&&superType.isPrimitive()) {
-      SymTypePrimitive sub = (SymTypePrimitive) subType;
-      SymTypePrimitive supert = (SymTypePrimitive) superType;
-      if (isDouble(supert) && sub.isNumericType() &&!isDouble(sub)) {
-        return true;
-      }
-      if (isFloat(supert) && sub.isIntegralType()) {
-        return true;
-      }
-      if (isLong(supert) && sub.isIntegralType() && !isLong(subType)) {
-        return true;
-      }
-      if (isInt(supert) && sub.isIntegralType() && !isLong(subType) && !isInt(subType)) {
-        return true;
-      }
-      return false;
-    }else if((subType.isPrimitive() && !superType.isPrimitive()) ||
-        (superType.isPrimitive() && !subType.isPrimitive())){
-      return false;
-    }
-    return isSubtypeOfRec(subType,superType);
+    return typeRelations.isSubtypeOf(subType, superType);
   }
 
-
-  /**
-   * private recursive helper method for the method isSubTypeOf
-   * @param subType the SymTypeExpression that could be a subtype of the other SymTypeExpression
-   * @param superType the SymTypeExpression that could be a supertype of the other SymTypeExpression
-   */
-  protected static boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType){
-    if (!subType.getTypeInfo().getSuperTypesList().isEmpty()) {
-      for (SymTypeExpression type : subType.getTypeInfo().getSuperTypesList()) {
-        if(type.print().equals(superType.print())){
-          return true;
-        }
-        if(type.isGenericType() && superType.isGenericType()){
-          //TODO check recursively, this is only a hotfix, see #2977
-          SymTypeOfGenerics typeGen = (SymTypeOfGenerics) type;
-          SymTypeOfGenerics supTypeGen = (SymTypeOfGenerics) superType;
-          if(typeGen.printTypeWithoutTypeArgument().equals(supTypeGen.printTypeWithoutTypeArgument())
-          && typeGen.sizeArguments() == supTypeGen.sizeArguments()){
-            boolean success = true;
-            for(int i = 0; i<typeGen.sizeArguments(); i++){
-              if(!typeGen.getArgument(i).isTypeVariable()){
-                if(!typeGen.getArgument(i).print().equals(supTypeGen.getArgument(i).print())){
-                  success = false;
-                }
-              }
-            }
-            if(success){
-              return true;
-            }
-          }
-        }
-      }
-    }
-    boolean subtype = false;
-    for (int i = 0; i < subType.getTypeInfo().getSuperTypesList().size(); i++) {
-      if (isSubtypeOf(subType.getTypeInfo().getSuperTypesList().get(i), superType)) {
-        subtype=true;
-        break;
-      }
-    }
-    return subtype;
-  }
-
-  /**
-   * calculate the minimum inheritance distance from the specific type to the general type
-   * e.g. C extends B extends A => object of type C has distance of 2 to object of type A
-   * object of type B has distance of 1 to object of type A
-   * object of type A has distance of 0 to object of type A
-   * @param specific the specific type
-   * @param general the general type
-   * @return 0 if they are the same type, else their minimum inheritance distance
-   */
   protected static int calculateInheritanceDistance(SymTypeExpression specific, SymTypeExpression general){
-    if(specific.isPrimitive() && general.isPrimitive()) {
-      return calculateInheritanceDistance((SymTypePrimitive) specific, (SymTypePrimitive) general);
-    }
-    else if(specific.deepEquals(general)) {
-      return 0;
-    } else if(!isSubtypeOf(specific, general)) {
-      return -1;
-    } else {
-      List<SymTypeExpression> superTypes = specific.getTypeInfo().getSuperTypesList();
-      List<Integer> superTypesSpecificity = superTypes.stream().map(s -> calculateInheritanceDistance(s, general)).collect(Collectors.toList());
-      int min = -1;
-      for (int specificity : superTypesSpecificity) {
-        if (min != -1 && specificity != -1 && specificity < min) {
-          min = specificity;
-        } else if (min == -1 && specificity != -1) {
-          min = specificity;
-        }
-      }
-      if(min == -1) {
-        return -1;
-      }else {
-        return min + 1;
-      }
-    }
+    return typeRelations.calculateInheritanceDistance(specific, general);
   }
 
   public static int calculateInheritanceDistance(SymTypePrimitive specific, SymTypePrimitive general) {
-    if (unbox(specific.print()).equals(unbox(general.print()))) {
-      return 0;
-    }
-    if (specific.isNumericType() && general.isNumericType()) {
-      if (isByte(specific)) {
-        if (isShort(general)) {
-          return 1;
-        } else if (isInt(general)) {
-          return 2;
-        } else if (isLong(general)) {
-          return 3;
-        } else if (isFloat(general)) {
-          return 4;
-        } else if (isDouble(general)) {
-          return 5;
-        }
-      } else if (isChar(specific) || isShort(specific)) {
-        if (isInt(general)) {
-          return 1;
-        } else if (isLong(general)) {
-          return 2;
-        } else if (isFloat(general)) {
-          return 3;
-        } else if (isDouble(general)) {
-          return 4;
-        }
-      } else if (isInt(specific)) {
-        if (isLong(general)) {
-          return 1;
-        } else if (isFloat(general)) {
-          return 2;
-        } else if (isDouble(general)) {
-          return 3;
-        }
-      } else if (isLong(specific)) {
-        if (isFloat(general)) {
-          return 1;
-        } else if (isDouble(general)) {
-          return 2;
-        }
-      } else if (isFloat(specific)) {
-        if (isDouble(general)) {
-          return 1;
-        }
-      }
-      return -1;
-    } else {
-      return -1;
-    }
+    return typeRelations.calculateInheritanceDistance(specific, general);
   }
 
   public static boolean isBoolean(SymTypeExpression type) {
-    return type.isObscureType() || "boolean".equals(unbox(type.print()));
+    return typeRelations.isBoolean(type);
   }
 
   public static boolean isInt(SymTypeExpression type) {
-    return type.isObscureType() || "int".equals(unbox(type.print()));
+    return typeRelations.isInt(type);
   }
 
   public static boolean isDouble(SymTypeExpression type) {
-    return type.isObscureType() || "double".equals(unbox(type.print()));
+    return typeRelations.isDouble(type);
   }
 
   public static boolean isFloat(SymTypeExpression type) {
-    return type.isObscureType() || "float".equals(unbox(type.print()));
+    return typeRelations.isFloat(type);
   }
 
   public static boolean isLong(SymTypeExpression type) {
-    return type.isObscureType() || "long".equals(unbox(type.print()));
+    return typeRelations.isLong(type);
   }
 
   public static boolean isChar(SymTypeExpression type) {
-    return type.isObscureType() || "char".equals(unbox(type.print()));
+    return typeRelations.isChar(type);
   }
 
   public static boolean isShort(SymTypeExpression type) {
-    return type.isObscureType() || "short".equals(unbox(type.print()));
+    return typeRelations.isShort(type);
   }
 
   public static boolean isByte(SymTypeExpression type) {
-    return type.isObscureType() || "byte".equals(unbox(type.print()));
+    return typeRelations.isByte(type);
   }
 
   public static boolean isVoid(SymTypeExpression type) {
-    return type.isObscureType() || "void".equals(unbox(type.print()));
+    return typeRelations.isVoid(type);
   }
 
   public static boolean isString(SymTypeExpression type) {
-    return type.isObscureType() || "String".equals(type.print());
+    return typeRelations.isString(type);
   }
 }
 
