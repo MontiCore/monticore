@@ -42,7 +42,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
       primitiveType.setDefiningSymbol(typeConstant.getTypeInfo());
     }else{
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0111 The primitive type " + primName + " could not be resolved", primitiveType.get_SourcePositionStart());
+      Log.error("0xA0111 Cannot find symbol " + primName, primitiveType.get_SourcePositionStart());
     }
   }
 

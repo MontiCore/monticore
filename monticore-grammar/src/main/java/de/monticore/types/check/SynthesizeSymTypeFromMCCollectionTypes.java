@@ -69,15 +69,18 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
           getTypeCheckResult().setResult(typeExpression);
           type.setDefiningSymbol(typeExpression.getTypeInfo());
         } else {
-          Log.error(String.format("0xE9FD0 %s matching types were found for '" + name +"'. However, exactly one " +
-            "should match.", symbols.size()), type.get_SourcePositionStart(), type.get_SourcePositionEnd());
+          if(symbols.size() > 1) {
+            Log.error(String.format("0xE9FD6 %s matching types were found for %s.", symbols.size(), name), type.get_SourcePositionStart());
+          }else{
+            Log.error(String.format("0xE9FD0 Cannot find symbol %s", name), type.get_SourcePositionStart());
+          }
           getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         }
       }
     } else {
       // should never happen, we expect results to be present
       // indicates that the underlying type resolver is erroneous
-      Log.error("0xE9FD1 The type '" + name + "' could not be resolved", type.get_SourcePositionStart());
+      Log.error("0xE9FD1 One of the type arguments of '" + name + "' could not be resolved", type.get_SourcePositionStart());
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
     }
   }
@@ -120,8 +123,11 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
           getTypeCheckResult().setResult(typeExpression);
           node.setDefiningSymbol(typeExpression.getTypeInfo());
         } else {
-          Log.error(String.format("0xE9FDC %s matching types were found for 'Map'. However, exactly " +
-            "one should match.", mapSyms.size()), node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+          if(mapSyms.size() > 1) {
+            Log.error(String.format("0xE9FDC %s matching types were found for Map.", mapSyms.size()), node.get_SourcePositionStart());
+          }else{
+            Log.error("0xE9FD7 Cannot find symbol Map", node.get_SourcePositionStart());
+          }
           getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         }
       }else{

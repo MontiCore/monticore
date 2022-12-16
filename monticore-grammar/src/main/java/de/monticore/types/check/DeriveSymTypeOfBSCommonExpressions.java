@@ -655,7 +655,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if (fieldSymbols.size() != 1) {
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
         if(!quiet) {
-          Log.error("0xA1236 Ambiguous: Found" + fieldSymbols.size() + " symbols for " + qualName, expr.get_SourcePositionStart());
+          Log.error("0xA1236 Ambiguous: Found " + fieldSymbols.size() + " symbols for " + qualName, expr.get_SourcePositionStart());
         }
       }
       if (!fieldSymbols.isEmpty()) {
@@ -696,7 +696,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     } else {
       getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       if(!quiet) {
-        Log.error("0xA1317 No matching symbol found for " + qualName, expr.get_SourcePositionStart());
+        Log.error("0xA1317 Cannot find symbol " + qualName, expr.get_SourcePositionStart());
       }
     }
   }
@@ -744,7 +744,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
 
     if (!fieldSymbols.isEmpty()) {
       if (fieldSymbols.size() != 1) {
-        Log.error("0xA1237 Ambiguous: Found" + fieldSymbols.size() + " symbols for " + qualName, lastExpr.get_SourcePositionStart());
+        Log.error("0xA1237 Ambiguous: Found " + fieldSymbols.size() + " symbols for " + qualName, lastExpr.get_SourcePositionStart());
         getTypeCheckResult().reset();
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       } else {
