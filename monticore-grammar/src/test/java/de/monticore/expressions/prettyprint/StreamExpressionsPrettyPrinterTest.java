@@ -43,7 +43,7 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTEmptyStreamExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint((ASTStreamExpressionsNode) ast);
+    String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringEmptyStreamExpression(output);
     assertFalse(parser.hasErrors());
@@ -62,7 +62,7 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint((ASTStreamExpressionsNode) ast);
+    String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -81,7 +81,7 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint((ASTStreamExpressionsNode) ast);
+    String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringExpression(output);
     assertFalse(parser.hasErrors());
@@ -100,7 +100,7 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTLengthStreamExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint((ASTStreamExpressionsNode) ast);
+    String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringLengthStreamExpression(output);
     assertFalse(parser.hasErrors());

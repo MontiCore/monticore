@@ -235,15 +235,14 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
    * @return the decorated PrettyPrint method
    */
   protected ASTCDMethod createPrettyPrintMethod() {
-    DiagramSymbol cdsymbol = symbolTableService.getCDSymbol();
-    String generatedError = symbolTableService.getGeneratedErrorCode(cdsymbol.getName() + "prettyPrint");
     Optional<String> startProd = parserService.getStartProdASTFullName();
     ASTMCType startProdType = getMCTypeFacade().createQualifiedType(startProd.get());
     ASTMCType stringType = getMCTypeFacade().createStringType();
     ASTCDParameter fileParameter = getCDParameterFacade().createParameter(stringType, "file");
     ASTCDParameter astParameter = getCDParameterFacade().createParameter(startProdType, "ast");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "prettyPrint", astParameter, fileParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("Log.warn(\"0xA1052" + generatedError + " PrettyPrinting is not implemented yet.\");"));
+    String fullPrettyPrinterFQN = symbolTableService.getFullPrettyPrinterFullName();
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrettyPrint", fullPrettyPrinterFQN));
     return method;
   }
 
