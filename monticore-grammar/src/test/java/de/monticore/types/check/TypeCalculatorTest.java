@@ -25,19 +25,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static de.monticore.types.check.TypeCheck.isSubtypeOf;
-import static de.monticore.types.check.TypeCheck.compatible;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test Class for {@link TypeCheck}
+ * Test Class for {@link TypeCalculator}
  */
-public class TypeCheckTest {
+public class TypeCalculatorTest {
 
   private ICombineExpressionsWithLiteralsScope scope;
-  private TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals());
+  private TypeCalculator tc = new TypeCalculator(
+      new FullSynthesizeFromCombineExpressionsWithLiterals(),
+      new FullDeriveFromCombineExpressionsWithLiterals(),
+      new TypeRelations()
+  );
   private CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
@@ -160,16 +162,16 @@ public class TypeCheckTest {
     char1.accept(traverser);
 
 
-    assertTrue(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
-    assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(double1)));
-    assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(bool1)));
-    assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
-    assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(long1)));
-    assertTrue(isSubtypeOf(tc.typeOf(char1), tc.typeOf(char1)));
-    assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(char1)));
-    assertFalse(isSubtypeOf(tc.typeOf(bool1), tc.typeOf(double1)));
-    assertFalse(isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
-    assertTrue(isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(double1)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(bool1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(long1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(char1), tc.typeOf(char1)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(char1)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(bool1), tc.typeOf(double1)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
@@ -179,15 +181,15 @@ public class TypeCheckTest {
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
     fstud.accept(traverser);
 
-    assertTrue(isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
-    assertTrue(isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));
-    assertTrue(isSubtypeOf(tc.typeOf(fstud), tc.typeOf(stud)));
-    assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(stud)));
-    assertFalse(isSubtypeOf(tc.typeOf(pers), tc.typeOf(fstud)));
-    assertFalse(isSubtypeOf(tc.typeOf(stud), tc.typeOf(fstud)));
-    assertTrue(isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(fstud), tc.typeOf(stud)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(stud)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(fstud)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(stud), tc.typeOf(fstud)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
 
-    assertFalse(isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
   }
 
   @Test
@@ -201,33 +203,33 @@ public class TypeCheckTest {
     SymTypeExpression floatT = createPrimitive(BasicSymbolsMill.FLOAT);
     SymTypeExpression doubleT = createPrimitive(BasicSymbolsMill.DOUBLE);
 
-    assertTrue(compatible(booleanT, booleanT));
-    assertTrue(compatible(byteT, byteT));
-    assertTrue(compatible(shortT, byteT));
-    assertTrue(compatible(shortT, shortT));
-    assertTrue(compatible(charT, charT));
-    assertTrue(compatible(intT, byteT));
-    assertTrue(compatible(intT, shortT));
-    assertTrue(compatible(intT, charT));
-    assertTrue(compatible(intT, intT));
-    assertTrue(compatible(longT, byteT));
-    assertTrue(compatible(longT, shortT));
-    assertTrue(compatible(longT, charT));
-    assertTrue(compatible(longT, intT));
-    assertTrue(compatible(longT, longT));
-    assertTrue(compatible(floatT, byteT));
-    assertTrue(compatible(floatT, shortT));
-    assertTrue(compatible(floatT, charT));
-    assertTrue(compatible(floatT, intT));
-    assertTrue(compatible(floatT, longT));
-    assertTrue(compatible(floatT, floatT));
-    assertTrue(compatible(doubleT, byteT));
-    assertTrue(compatible(doubleT, shortT));
-    assertTrue(compatible(doubleT, charT));
-    assertTrue(compatible(doubleT, intT));
-    assertTrue(compatible(doubleT, longT));
-    assertTrue(compatible(doubleT, floatT));
-    assertTrue(compatible(doubleT, doubleT));
+    assertTrue(tc.compatible(booleanT, booleanT));
+    assertTrue(tc.compatible(byteT, byteT));
+    assertTrue(tc.compatible(shortT, byteT));
+    assertTrue(tc.compatible(shortT, shortT));
+    assertTrue(tc.compatible(charT, charT));
+    assertTrue(tc.compatible(intT, byteT));
+    assertTrue(tc.compatible(intT, shortT));
+    assertTrue(tc.compatible(intT, charT));
+    assertTrue(tc.compatible(intT, intT));
+    assertTrue(tc.compatible(longT, byteT));
+    assertTrue(tc.compatible(longT, shortT));
+    assertTrue(tc.compatible(longT, charT));
+    assertTrue(tc.compatible(longT, intT));
+    assertTrue(tc.compatible(longT, longT));
+    assertTrue(tc.compatible(floatT, byteT));
+    assertTrue(tc.compatible(floatT, shortT));
+    assertTrue(tc.compatible(floatT, charT));
+    assertTrue(tc.compatible(floatT, intT));
+    assertTrue(tc.compatible(floatT, longT));
+    assertTrue(tc.compatible(floatT, floatT));
+    assertTrue(tc.compatible(doubleT, byteT));
+    assertTrue(tc.compatible(doubleT, shortT));
+    assertTrue(tc.compatible(doubleT, charT));
+    assertTrue(tc.compatible(doubleT, intT));
+    assertTrue(tc.compatible(doubleT, longT));
+    assertTrue(tc.compatible(doubleT, floatT));
+    assertTrue(tc.compatible(doubleT, doubleT));
   }
 
   @Test
@@ -241,43 +243,43 @@ public class TypeCheckTest {
     SymTypeExpression floatT = createPrimitive(BasicSymbolsMill.FLOAT);
     SymTypeExpression doubleT = createPrimitive(BasicSymbolsMill.DOUBLE);
 
-    assertFalse(compatible(booleanT, byteT));
-    assertFalse(compatible(booleanT, shortT));
-    assertFalse(compatible(booleanT, charT));
-    assertFalse(compatible(booleanT, intT));
-    assertFalse(compatible(booleanT, longT));
-    assertFalse(compatible(booleanT, floatT));
-    assertFalse(compatible(booleanT, doubleT));
-    assertFalse(compatible(byteT, booleanT));
-    assertFalse(compatible(byteT, shortT));
-    assertFalse(compatible(byteT, charT));
-    assertFalse(compatible(byteT, intT));
-    assertFalse(compatible(byteT, longT));
-    assertFalse(compatible(byteT, floatT));
-    assertFalse(compatible(byteT, doubleT));
-    assertFalse(compatible(shortT, booleanT));
-    assertFalse(compatible(shortT, charT));
-    assertFalse(compatible(shortT, intT));
-    assertFalse(compatible(shortT, longT));
-    assertFalse(compatible(shortT, floatT));
-    assertFalse(compatible(shortT, doubleT));
-    assertFalse(compatible(charT, booleanT));
-    assertFalse(compatible(charT, byteT));
-    assertFalse(compatible(charT, shortT));
-    assertFalse(compatible(charT, intT));
-    assertFalse(compatible(charT, longT));
-    assertFalse(compatible(charT, floatT));
-    assertFalse(compatible(charT, doubleT));
-    assertFalse(compatible(intT, booleanT));
-    assertFalse(compatible(intT, longT));
-    assertFalse(compatible(intT, floatT));
-    assertFalse(compatible(intT, doubleT));
-    assertFalse(compatible(longT, booleanT));
-    assertFalse(compatible(longT, floatT));
-    assertFalse(compatible(longT, doubleT));
-    assertFalse(compatible(floatT, booleanT));
-    assertFalse(compatible(floatT, doubleT));
-    assertFalse(compatible(doubleT, booleanT));
+    assertFalse(tc.compatible(booleanT, byteT));
+    assertFalse(tc.compatible(booleanT, shortT));
+    assertFalse(tc.compatible(booleanT, charT));
+    assertFalse(tc.compatible(booleanT, intT));
+    assertFalse(tc.compatible(booleanT, longT));
+    assertFalse(tc.compatible(booleanT, floatT));
+    assertFalse(tc.compatible(booleanT, doubleT));
+    assertFalse(tc.compatible(byteT, booleanT));
+    assertFalse(tc.compatible(byteT, shortT));
+    assertFalse(tc.compatible(byteT, charT));
+    assertFalse(tc.compatible(byteT, intT));
+    assertFalse(tc.compatible(byteT, longT));
+    assertFalse(tc.compatible(byteT, floatT));
+    assertFalse(tc.compatible(byteT, doubleT));
+    assertFalse(tc.compatible(shortT, booleanT));
+    assertFalse(tc.compatible(shortT, charT));
+    assertFalse(tc.compatible(shortT, intT));
+    assertFalse(tc.compatible(shortT, longT));
+    assertFalse(tc.compatible(shortT, floatT));
+    assertFalse(tc.compatible(shortT, doubleT));
+    assertFalse(tc.compatible(charT, booleanT));
+    assertFalse(tc.compatible(charT, byteT));
+    assertFalse(tc.compatible(charT, shortT));
+    assertFalse(tc.compatible(charT, intT));
+    assertFalse(tc.compatible(charT, longT));
+    assertFalse(tc.compatible(charT, floatT));
+    assertFalse(tc.compatible(charT, doubleT));
+    assertFalse(tc.compatible(intT, booleanT));
+    assertFalse(tc.compatible(intT, longT));
+    assertFalse(tc.compatible(intT, floatT));
+    assertFalse(tc.compatible(intT, doubleT));
+    assertFalse(tc.compatible(longT, booleanT));
+    assertFalse(tc.compatible(longT, floatT));
+    assertFalse(tc.compatible(longT, doubleT));
+    assertFalse(tc.compatible(floatT, booleanT));
+    assertFalse(tc.compatible(floatT, doubleT));
+    assertFalse(tc.compatible(doubleT, booleanT));
   }
 
   @Test
@@ -307,9 +309,9 @@ public class TypeCheckTest {
     SymTypeExpression linkedlistOfPersonExpr = SymTypeExpressionFactory.createGenerics(linkedListSym, personExpr);
 
     // When & Then
-    Assert.assertTrue(TypeCheck.compatible(listOfPersonExpr, listOfPersonExpr));
-    Assert.assertTrue(TypeCheck.compatible(listOfPersonExpr, personListExpr));
-    Assert.assertTrue(TypeCheck.compatible(listOfPersonExpr, linkedlistOfPersonExpr));
+    Assert.assertTrue(tc.compatible(listOfPersonExpr, listOfPersonExpr));
+    Assert.assertTrue(tc.compatible(listOfPersonExpr, personListExpr));
+    Assert.assertTrue(tc.compatible(listOfPersonExpr, linkedlistOfPersonExpr));
   }
 
   @Test
@@ -332,13 +334,13 @@ public class TypeCheckTest {
     SymTypeExpression personListExpr = SymTypeExpressionFactory.createTypeObject(personListSym);
 
     // When & Then
-    Assert.assertFalse(TypeCheck.compatible(listOfIntExpr, _intSymType));
-    Assert.assertFalse(TypeCheck.compatible(listOfIntExpr, listOfBoolExpr));
-    Assert.assertFalse(TypeCheck.compatible(listOfBoolExpr, listOfIntExpr));
-    Assert.assertFalse(TypeCheck.compatible(listOfBoolExpr, listOfPersonExpr));
-    Assert.assertFalse(TypeCheck.compatible(listOfPersonExpr, listOfBoolExpr));
-    Assert.assertFalse(TypeCheck.compatible(listOfBoolExpr, personListExpr));
-    Assert.assertFalse(TypeCheck.compatible(personListExpr, listOfBoolExpr));
+    Assert.assertFalse(tc.compatible(listOfIntExpr, _intSymType));
+    Assert.assertFalse(tc.compatible(listOfIntExpr, listOfBoolExpr));
+    Assert.assertFalse(tc.compatible(listOfBoolExpr, listOfIntExpr));
+    Assert.assertFalse(tc.compatible(listOfBoolExpr, listOfPersonExpr));
+    Assert.assertFalse(tc.compatible(listOfPersonExpr, listOfBoolExpr));
+    Assert.assertFalse(tc.compatible(listOfBoolExpr, personListExpr));
+    Assert.assertFalse(tc.compatible(personListExpr, listOfBoolExpr));
   }
 
   public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){
