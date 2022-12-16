@@ -1,7 +1,6 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.prettyprint;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -37,7 +36,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-
+// Note: We can't use symbol-table information for multiplicities due to GrammarTransformer#removeNonTerminalSeparators, etc
 public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
   protected static final String HANDLE = "public void handle(%s.AST%s node);";
@@ -65,6 +64,8 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
   protected String grammarName;
 
+  protected boolean isMCCommonLiteralsSuper;
+
   protected NoSpacePredicateVisitor noSpacePredicateVisitor = new NoSpacePredicateVisitor();
   protected GrammarFamilyTraverser noSpacePredicateTraverser;
 
@@ -83,6 +84,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   @Override
   public void visit(ASTMCGrammar node) {
     this.grammarName = node.getName();
+    this.isMCCommonLiteralsSuper = node.getSymbol().getAllSuperGrammars().stream().anyMatch(x->x.getFullName().equals("de.monticore.literals.MCCommonLiterals"));
   }
 
   @Override
@@ -107,39 +109,42 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     Map<String, IteratorData> iterators = new HashMap<>();
     for (String refName : currentClassProdData.getNonTerminals().keySet()) {
       if (!currentClassProdData.isIteratorNeeded(refName)) continue;
-      ASTNode itNode = currentClassProdData.getNonTerminalNodes().get(refName);
+      ASTRuleComponent itNode = currentClassProdData.getNonTerminalNodes().get(refName);
 
       Multiplicity multiplicity = currentClassProdData.getMultiplicity(StringTransformations.uncapitalize(refName));
 
       String getter = getPlainGetterSymbol(refName, multiplicity);
-
-      // Resolve the production to derive the concrete type
-      Optional<ProdSymbol> refProd = node.getSymbol().getEnclosingScope().resolveProd(((ASTNonTerminal) itNode).getSymbol().getReferencedType());
-
-      if (refProd.isEmpty()) {
-        Log.error("Unable to resolve referenced production during PPGen");
-        return;
-      }
-
       String type;
-      if (refProd.get().isIsLexerProd()) {
-        // Lexer types will be represented by Strings
+      if (itNode.getSymbol().isIsTerminal()) {
         type = "String";
-      } else {
-        // Apply TypeCD2JavaVisitor-equivalent by introducing the _ast package
+      }else {
+        // Resolve the production to derive the concrete type
+        Optional<ProdSymbol> refProd = node.getSymbol().getEnclosingScope().resolveProd(itNode.getSymbol().getReferencedType());
 
-        List<String> sTypes = new ArrayList<>();
-        if (!refProd.get().getPackageName().isEmpty())
-          sTypes.add(refProd.get().getPackageName());
+        if (refProd.isEmpty()) {
+          Log.error("Unable to resolve referenced production during PPGen");
+          return;
+        }
 
-        sTypes.add(refProd.get().getEnclosingScope().getName().toLowerCase());
+        if (refProd.get().isIsLexerProd()) {
+          // Lexer types will be represented by Strings
+          type = "String";
+        } else {
+          // Apply TypeCD2JavaVisitor-equivalent by introducing the _ast package
 
-        sTypes.add(ASTConstants.AST_PACKAGE);
-        String refProdName = StringTransformations.capitalize(refProd.get().getName());
-        if (refProd.get().isIsExternal())
-          refProdName += "Ext";
-        sTypes.add(ASTConstants.AST_PREFIX + refProdName);
-        type = Joiners.DOT.join(sTypes);
+          List<String> sTypes = new ArrayList<>();
+          if (!refProd.get().getPackageName().isEmpty())
+            sTypes.add(refProd.get().getPackageName());
+
+          sTypes.add(refProd.get().getEnclosingScope().getName().toLowerCase());
+
+          sTypes.add(ASTConstants.AST_PACKAGE);
+          String refProdName = StringTransformations.capitalize(refProd.get().getName());
+          if (refProd.get().isIsExternal())
+            refProdName += "Ext";
+          sTypes.add(ASTConstants.AST_PREFIX + refProdName);
+          type = Joiners.DOT.join(sTypes);
+        }
       }
 
       if (multiplicity == Multiplicity.LIST) {
@@ -258,9 +263,10 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       iteration = ASTConstantsGrammar.QUESTION; // Force overwrite in case of ASTRule shenanigans
 
     if (multiplicity == Multiplicity.LIST && node.getIteration() == ASTConstantsGrammar.DEFAULT && !isIteratorUsed) {
-      PPGuardComponent component = PPGuardComponent.forNTSingle(isLexType(node) ? "String" : node.getName(),
+      PPGuardComponent component = PPGuardComponent.forNTSingle(isLexType(node) ? substituteLexProdType(node.getName()) : node.getName(),
               refName,
-              iteration
+              iteration,
+              isMCCommonLiteralsSuper
       );
 
       altData.getComponentList().add(component);
@@ -273,14 +279,14 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       altData.setRequired(altData.getRequired() + 1);
       altData.setOptional(altData.getOptional() + 1);
 
-      ASTExpression exp = getExp(node, refName, multiplicity);
+      ASTExpression exp = getExp(node.getSymbol().getName(), refName, multiplicity);
       if (exp != null) {
         altData.getExpressionList().add(exp);
       }
     } else if (node.getIteration() == ASTConstantsGrammar.DEFAULT) {
       altData.setRequired(altData.getRequired() + 1);
 
-      ASTExpression exp = getExp(node, refName, multiplicity);
+      ASTExpression exp = getExp(node.getSymbol().getName(), refName, multiplicity);
       if (exp != null) {
         altData.getExpressionList().add(exp);
       }
@@ -291,13 +297,22 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       altData.markListReady();
     }
 
-    PPGuardComponent component = PPGuardComponent.forNT(isLexType(node) ? "String" : node.getName(),
+    PPGuardComponent component = PPGuardComponent.forNT(isLexType(node) ? substituteLexProdType(node.getName()) : node.getName(),
             refName,
             iteration,
-            isIteratorUsed
+            isIteratorUsed,
+            isMCCommonLiteralsSuper
     );
 
     altData.getComponentList().add(component);
+  }
+
+  protected String substituteLexProdType(String type){
+    if (this.isMCCommonLiteralsSuper && (type.equals("String") || type.equals("Char"))) {
+      // Tokens using {setText(getText().substring(...} from MCCommonLiterals
+      return type;
+    }
+    return "Name";
   }
 
   @Override
@@ -308,11 +323,56 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
   @Override
   public void visit(ASTTerminal node) {
-    if (blockDataStack.isEmpty()) return; // Only visit in CPs
-    PPGuardComponent component = PPGuardComponent.forT(node.getName(), node.getIteration());
+    visitTerminals(node, node.getIteration());
+  }
 
-    altDataStack.peek().getComponentList().add(component);
-    altDataStack.peek().getExpressionList().add(AltData.TRUE_EXPRESSION); // Push a true condition
+  @Override
+  public void visit(ASTKeyTerminal node) {
+    visitTerminals(node, node.getIteration());
+  }
+
+  protected void visitTerminals(ASTITerminal node, int nodeIteration){
+    if (blockDataStack.isEmpty()) return; // Only visit in CPs
+    AltData altData = altDataStack.peek();
+    if (node.isPresentUsageName()) {
+      String usageName = node.getUsageName();
+
+      if (currentClassProdData.isIteratorNeeded(usageName)) {
+        // In case an iterator is required and the terminal is named, we can handle it like a lexed NonTerminal
+        altData.getComponentList().add(PPGuardComponent.forNT("Name", usageName, nodeIteration, true, isMCCommonLiteralsSuper));
+        blockDataStack.peek().markListReady(); // Mark that an iterator was used => while can be used
+        altData.markListReady();
+      } else {
+        altData.getComponentList().add(PPGuardComponent.forT(node.getName(), usageName, nodeIteration));
+      }
+
+
+      int iteration = getEffectiveIteration(blockDataStack.peek().getInheritedIteration(), nodeIteration);
+
+      Multiplicity multiplicity = currentClassProdData.getMultiplicity(StringTransformations.uncapitalize(usageName));
+
+      if (nodeIteration == ASTConstantsGrammar.DEFAULT || iteration == ASTConstantsGrammar.PLUS) {
+        if (nodeIteration == ASTConstantsGrammar.PLUS)
+          altData.setOptional(altData.getOptional() + 1);
+        altData.setRequired(altData.getRequired() + 1);
+        // Requirement for a terminal to be present
+        ASTExpression astExpression = getExp(usageName, usageName, multiplicity);
+        if (astExpression != null)
+          altData.getExpressionList().add(astExpression);
+        else
+          altData.getExpressionList().add(AltData.TRUE_EXPRESSION); // Push a true condition otherwise (as the attribute is a String)
+      } else {
+        if (nodeIteration == ASTConstantsGrammar.QUESTION)
+          altData.setOptional(altData.getOptional() + 1);
+        altData.getExpressionList().add(AltData.TRUE_EXPRESSION); // Push a true condition, as the terminal may be absent
+      }
+    }else {
+      // Always use default iteration 0, as we have no control otherwise
+      PPGuardComponent component = PPGuardComponent.forT(node.getName());
+
+      altData.getComponentList().add(component);
+      altData.getExpressionList().add(AltData.TRUE_EXPRESSION); // Push a true condition
+    }
   }
 
 
@@ -382,14 +442,6 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
     blockData.getAltDataList().sort(Collections.reverseOrder());
 
-  }
-
-  @Override
-  public void visit(ASTKeyTerminal node) {
-    if (blockDataStack.isEmpty()) return; // Only visit in CPs
-    PPGuardComponent component = PPGuardComponent.forT(node.getName(), node.getIteration());
-
-    altDataStack.peek().getComponentList().add(component);
   }
 
   @Override
@@ -546,32 +598,25 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     return prodSymbol.get().isIsLexerProd();
   }
 
-  public boolean isLexType(ASTNonTerminalSeparator node) {
-    Optional<ProdSymbol> prodSymbol = currentClassProd.getSpannedScope().resolveProd(node.getName());
-    return prodSymbol.get().isIsLexerProd();
-  }
-
-
   /**
-   * Get the expression to ensure a NonTerminal is present
-   * Uses the Link from the {@link de.monticore.codegen.mc2cd.transl.MC2CDTranslation} to decide between types
+   * Get the expression to ensure a named RuleComponent (such as NonTerminal or some Terminals) is present
    *
-   * @param node         the ASTNode of the NonTerminal, etc.
+   * @param nodeName     the name of the symbol of the NonTerminal, Terminal, etc.
    * @param refName      the usage name (if present), otherwise the name
    * @param multiplicity the multiplicity of the Node
    * @return the expression for optionals or lists, or null otherwise
    */
   @Nullable
-  public ASTExpression getExp(@Nonnull ASTNonTerminal node, String refName, Multiplicity multiplicity) {
+  public ASTExpression getExp(@Nonnull String nodeName, String refName, Multiplicity multiplicity) {
     if (multiplicity == Multiplicity.OPTIONAL) {
-      return getNodeCallExp("isPresent" + StringTransformations.capitalize(node.getSymbol().getName()));
+      return getNodeCallExp("isPresent" + StringTransformations.capitalize(nodeName));
     } else if (currentClassProdData.isIteratorNeeded(refName)) {
       ASTExpression it = getNameExpression(ITERATOR_PREFIX + StringTransformations.uncapitalize(refName));
-      return getCallExp(getFieldExp(it, "hasNext"), "hasNext");
+      return getCallExp(getFieldExp(it, "hasNext"));
     } else if (multiplicity == Multiplicity.LIST) {
       String getter = getPlainGetterSymbol(refName, multiplicity);
       ASTExpression getList = getNodeCallExp(getter);
-      return negate(getCallExp(getFieldExp(getList, "isEmpty"), "isEmpty")); //s
+      return negate(getCallExp(getFieldExp(getList, "isEmpty"))); //s
     }
 
     return null;
@@ -618,7 +663,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
             .setName(name).build();
   }
 
-  public ASTCallExpression getCallExp(ASTExpression n, String name) {
+  public ASTCallExpression getCallExp(ASTExpression n) {
     return CommonExpressionsMill.callExpressionBuilder().setExpression(n)
             .setArguments(CommonExpressionsMill.argumentsBuilder().build())
             .build();

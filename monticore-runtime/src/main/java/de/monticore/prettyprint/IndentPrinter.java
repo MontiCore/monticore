@@ -386,4 +386,13 @@ public class IndentPrinter {
     flushBuffer();
     writtenbuffer.setLength(0);
   }
+
+  /**
+   * Removes all trailing {@linkplain Character#isWhitespace(int) white spaces} on the current line
+   */
+  public void stripTrailing() {
+    while (linebuffer.length() > 0 && Character.isWhitespace(linebuffer.charAt(linebuffer.length() - 1))) {
+      linebuffer.deleteCharAt(linebuffer.length() - 1);
+    }
+  }
 }

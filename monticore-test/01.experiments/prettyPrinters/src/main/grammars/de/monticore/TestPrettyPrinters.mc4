@@ -226,4 +226,33 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     NoSpaceExpOrF = {noSpace(3) || false}? "foo" ":" ":" "bar";
     NoSpaceExpAndT = {noSpace(3) && true}? "foo" ":" ":" "bar";
     NoSpaceExpAndF = {noSpace(3) && false}? "foo" ":" ":" "bar";
+
+
+    UsedTerminalD = un:"a"  "b";
+    UsedTerminalQ = un:"a"? "b";
+    UsedTerminalP = un:"a"+ "b";
+    UsedTerminalS = un:"a"* "b";
+
+    UsedTerminalBD = (un:"a")  "b";
+    UsedTerminalBQ = (un:"a")? "b";
+    UsedTerminalBP = (un:"a")+ "b";
+    UsedTerminalBS = (un:"a")* "b";
+
+    UsedTerminalB2D = (un:"a" "c")  "b";
+    UsedTerminalB2Q = (un:"a" "c")? "b";
+    UsedTerminalB2P = (un:"a" "c")+ "b";
+    UsedTerminalB2S = (un:"a" "c")* "b";
+
+    UsedTerminalAlt = A | parenthesis:"(" (A || ",")* ")";
+
+    MethodDeclarationStub = "MCReturnType" Name "FormalParameters" (dim:"[" "]")*  ";";
+
+    TokenString = "a" String;
+    TokenName = "a" Name;
+    TokenChar = "a" Char;
+    TokenDigits = "a" Digits;
+
+    GuessSpace1 = A "a" A;
+    GuessSpace2 = A "*" A;
+
 }
