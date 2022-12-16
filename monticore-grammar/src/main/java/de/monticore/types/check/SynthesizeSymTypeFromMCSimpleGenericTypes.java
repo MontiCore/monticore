@@ -96,8 +96,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
    * extension method for error handling
    */
   protected SymTypeExpression handleIfNotFound(ASTMCGenericType type, List<SymTypeExpression> arguments){
-    Log.error("0xA0323 The generic type " + type.printWithoutTypeArguments() +
-        "could not be resolved", type.get_SourcePositionStart());
+    Log.error("0xA0323 Cannot find symbol " + type.printWithoutTypeArguments(), type.get_SourcePositionStart());
     return SymTypeExpressionFactory.createObscureType();
   }
 

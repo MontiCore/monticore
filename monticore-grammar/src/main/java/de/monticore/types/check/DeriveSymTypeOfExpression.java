@@ -51,7 +51,7 @@ public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression impl
     }else{
      getTypeCheckResult().reset();
      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-     Log.error("0xA0240 No matching symbol found for " + expr.getName(), expr.get_SourcePositionStart());
+     Log.error("0xA0240 Cannot find symbol " + expr.getName(), expr.get_SourcePositionStart());
     }
   }
 
