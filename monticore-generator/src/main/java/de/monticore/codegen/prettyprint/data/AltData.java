@@ -105,6 +105,7 @@ public class AltData implements Comparable<AltData> {
             "componentList=" + componentList +
             ", required=" + required +
             ", optional=" + optional +
+            ", isListReady=" + isListReady +
             ", #expressionList=" + expressionList.size() +
             '}';
   }

@@ -504,7 +504,7 @@ public class TestPrettyPrinterTest {
     testPP("+n1", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAlts, s -> s.contains("+n1"));
     testPP("-n1 n2", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsO, s -> s.contains("-n1 "));
     testPP("-n1", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAlts2, s -> s.contains("-n1"));
-    testPP("a+ n1", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAlts2, s -> s.contains("a+ n1"));
+    testPP("a+ n1", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAlts2, s -> s.contains("a+n1"));
   }
 
   @Test
@@ -522,6 +522,7 @@ public class TestPrettyPrinterTest {
       Assert.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
     }
   }
+
   @Test
   public void testNoSpaceAltsOverflow() throws IOException {
     try {
@@ -555,8 +556,87 @@ public class TestPrettyPrinterTest {
     if (!parsedOpt.get().deepEquals(parsedPrettyOpt.get()))
       Assert.assertEquals("Not deep equals: " + findings, input, prettyInput);
     if (!additionalCheck.apply(prettyInput))
-      Assert.fail("Failed check, got pp-output: " + prettyInput);
+      Assert.fail("Failed check, got pp-output: '" + prettyInput + "'");
   }
+
+  @Test
+  public void testUsedTerminal() throws IOException {
+    testPP("a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalD);
+    testPP("a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalQ);
+    testPP("  b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalQ);
+    testPP("a   b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalP);
+    testPP("a a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalP);
+    testPP("    b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalS);
+    testPP("a   b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalS);
+    testPP("a a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalS);
+  }
+
+  @Test
+  public void testUsedTerminalBlocks() throws IOException {
+    testPP("a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalBD);
+    testPP("a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalBQ);
+    testPP("  b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalBQ);
+    testPP("a   b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalBP);
+    testPP("a a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalBP);
+    testPP("    b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalBS);
+    testPP("a   b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalBS);
+    testPP("a a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalBS);
+
+    testPP("a c b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalB2D);
+    testPP("a c b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalB2Q);
+    testPP("    b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalB2Q);
+    testPP("a c     b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalB2P);
+    testPP("a c a c b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalB2P);
+    testPP("        b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalB2S);
+    testPP("a c     b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalB2S);
+    testPP("a c a c b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalB2S);
+  }
+
+  @Test
+  public void testUsedTerminalAlt() throws IOException {
+    testPP("A", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalAlt);
+    testPP("( A )", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalAlt);
+    testPP("(A)", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalAlt);
+  }
+
+  @Test
+  public void testMethodDeclarationStub() throws IOException {
+    testPP("MCReturnType foob FormalParameters ;", TestPrettyPrintersMill.parser()::parse_StringMethodDeclarationStub);
+    testPP("MCReturnType foob FormalParameters [ ] ;", TestPrettyPrintersMill.parser()::parse_StringMethodDeclarationStub);
+  }
+
+  @Test
+  public void testTokens() throws IOException {
+    testPP("a \"foob\"", TestPrettyPrintersMill.parser()::parse_StringTokenString);
+    testPP("a foob", TestPrettyPrintersMill.parser()::parse_StringTokenName);
+    testPP("a 'f'", TestPrettyPrintersMill.parser()::parse_StringTokenChar);
+    testPP("a 12", TestPrettyPrintersMill.parser()::parse_StringTokenDigits);
+  }
+
+  @Test
+  public void testGuessSpace() throws IOException {
+    testPP("A a A", TestPrettyPrintersMill.parser()::parse_StringGuessSpace1, s -> s.equals("A a A"));
+    testPP("A * A", TestPrettyPrintersMill.parser()::parse_StringGuessSpace2, s -> s.equals("A*A"));
+    testPP("A*A", TestPrettyPrintersMill.parser()::parse_StringGuessSpace2, s -> s.equals("A*A"));
+  }
+
+
+  @Test
+  public void testTrimRight() {
+    IndentPrinter printer = new IndentPrinter();
+    printer.stripTrailing();
+    Assert.assertEquals("", printer.getContent());
+    printer.print("Hello world");
+    printer.stripTrailing();
+    Assert.assertEquals("Hello world", printer.getContent());
+    printer.print(" ");
+    printer.stripTrailing();
+    Assert.assertEquals("Hello world", printer.getContent());
+    printer.println();
+    printer.stripTrailing();
+    Assert.assertEquals("Hello world\n", printer.getContent());
+  }
+
 
   protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction) throws IOException {
     testPP(input, parserFunction, s -> true);

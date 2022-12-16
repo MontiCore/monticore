@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("glex", "terminal", "hasNoSpace")}
+${tc.signature("terminal", "hasNoSpace", "nonAlphabeticNoSpace")}
 <#--
   Print a terminal (or constant)
   In case of the noSpace directive no space-suffix is appended
@@ -8,6 +8,9 @@ ${tc.signature("glex", "terminal", "hasNoSpace")}
 <#if terminal == ";">
 <#if hasNoSpace>
     getPrinter().print("${terminal}");
+<#elseif nonAlphabeticNoSpace>
+    getPrinter().stripTrailing();
+    getPrinter().println("${terminal}");
 <#else>
     getPrinter().println("${terminal} ");
 </#if>
@@ -28,6 +31,9 @@ ${tc.signature("glex", "terminal", "hasNoSpace")}
 </#if>
 <#else >
 <#if hasNoSpace>
+    getPrinter().print("${terminal}");
+<#elseif nonAlphabeticNoSpace>
+    getPrinter().stripTrailing();
     getPrinter().print("${terminal}");
 <#else>
     getPrinter().print("${terminal} ");

@@ -4,4 +4,4 @@
 -->
 getPrinter().clearBuffer();
 node.accept(getTraverser());
-return getPrinter().getContent();
+return getPrinter().getContent().stripTrailing();
