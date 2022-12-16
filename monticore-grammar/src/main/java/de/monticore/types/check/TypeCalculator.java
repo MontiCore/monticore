@@ -10,9 +10,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
-import static de.monticore.types.check.TypeCheck.compatible;
-
-public class TypeCalculator {
+public class TypeCalculator implements ITypeRelations {
 
   /**
    * Configuration: Visitor for Function 1:
@@ -28,17 +26,35 @@ public class TypeCalculator {
    */
   protected IDerive iDerive;
 
+  /**
+   * Configuration: Implementation for Function 4:
+   * Delegatee for ITypeRelations
+   * Calculate relations of types.
+   */
+  protected ITypeRelations iTypeRelations;
+
 
   /**
    * Configuration as state:
    * @param synthesizeSymType defines, which AST Types are mapped (and how)
    * @param  iDerive defines, which AST Literals are handled
    *                               through the Expression type recognition
+   * @param iTypeRelations defines, what the relations of types are,
+   *                       this is delegated to, to provide the {@link ITypeRelations}
    */
   public TypeCalculator(ISynthesize synthesizeSymType,
-                        IDerive iDerive) {
+                        IDerive iDerive,
+                        ITypeRelations iTypeRelations) {
     this.iSynthesize = synthesizeSymType;
     this.iDerive = iDerive;
+    this.iTypeRelations = iTypeRelations;
+  }
+
+  // only providing the old constructor to not break downstream languages
+  // it is recommended to always provide the ITypeRelations implementation
+  @Deprecated
+  public TypeCalculator(ISynthesize iSynthesize, IDerive iDerive) {
+    this(iSynthesize, iDerive, new TypeRelations());
   }
 
   /*************************************************************************/
@@ -168,5 +184,73 @@ public class TypeCalculator {
     // that is all what is needed
   }
 
+  @Override
+  public boolean compatible(SymTypeExpression left, SymTypeExpression right) {
+    return iTypeRelations.compatible(left, right);
+  }
 
+  @Override
+  public boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType) {
+    return iTypeRelations.isSubtypeOf(subType, superType);
+  }
+
+  @Override
+  public int calculateInheritanceDistance(SymTypeExpression specific, SymTypeExpression general) {
+    return iTypeRelations.calculateInheritanceDistance(specific, general);
+  }
+
+  @Override
+  public int calculateInheritanceDistance(SymTypePrimitive specific, SymTypePrimitive general) {
+    return iTypeRelations.calculateInheritanceDistance(specific, general);
+  }
+
+  @Override
+  public boolean isBoolean(SymTypeExpression type) {
+    return iTypeRelations.isBoolean(type);
+  }
+
+  @Override
+  public boolean isInt(SymTypeExpression type) {
+    return iTypeRelations.isInt(type);
+  }
+
+  @Override
+  public boolean isDouble(SymTypeExpression type) {
+    return iTypeRelations.isDouble(type);
+  }
+
+  @Override
+  public boolean isFloat(SymTypeExpression type) {
+    return iTypeRelations.isFloat(type);
+  }
+
+  @Override
+  public boolean isLong(SymTypeExpression type) {
+    return iTypeRelations.isLong(type);
+  }
+
+  @Override
+  public boolean isChar(SymTypeExpression type) {
+    return iTypeRelations.isChar(type);
+  }
+
+  @Override
+  public boolean isShort(SymTypeExpression type) {
+    return iTypeRelations.isShort(type);
+  }
+
+  @Override
+  public boolean isByte(SymTypeExpression type) {
+    return iTypeRelations.isByte(type);
+  }
+
+  @Override
+  public boolean isVoid(SymTypeExpression type) {
+    return iTypeRelations.isVoid(type);
+  }
+
+  @Override
+  public boolean isString(SymTypeExpression type) {
+    return iTypeRelations.isString(type);
+  }
 }
