@@ -545,6 +545,12 @@ public class TestPrettyPrinterTest {
     // NoSpaceExpAndF: && false will never parse
   }
 
+  @Test
+  public void testNoSpaceSpecial() throws IOException {
+    testPP("{a}", TestPrettyPrintersMill.parser()::parse_StringNoSpaceSpecialB, s -> s.equals("{a}"));
+    testPP(";a;", TestPrettyPrintersMill.parser()::parse_StringNoSpaceSpecialS, s -> s.equals(";a;"));
+  }
+
   protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction, Function<String, Boolean> additionalCheck) throws IOException {
     Optional<A> parsedOpt = parserFunction.parse(input);
     Assert.assertTrue("Failed to parse input", parsedOpt.isPresent());

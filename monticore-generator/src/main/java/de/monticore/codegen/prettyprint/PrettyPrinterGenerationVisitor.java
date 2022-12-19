@@ -203,7 +203,9 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
    * Mark the correct token with the noSpace directive
    */
   protected int markNoSpaceToken(AltData altData, int index) {
-    for (PPGuardComponent component : altData.getComponentList()) {
+    Iterator<PPGuardComponent> componentIterator = altData.getComponentList().iterator();
+    while (componentIterator.hasNext()) {
+      PPGuardComponent component = componentIterator.next();
       if (component.getType() == PPGuardComponent.PPGuardType.BLOCK) {
         if (component.getBlockData().getIteration() != ASTConstantsGrammar.DEFAULT) {
           this.failureMessage = "Unable to handle noSpace control directive for block of non-default iteration";
@@ -223,10 +225,22 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
         }
       } else if (index-- == 0) {
         component.setHasNoSpace(true);
+        if (componentIterator.hasNext())
+          markNextTerminalComponentAsNoSyntaxFlavour(componentIterator.next());
         return -1;
       }
     }
     return index;
+  }
+
+  protected void markNextTerminalComponentAsNoSyntaxFlavour(PPGuardComponent component) {
+    // Normally we add syntatic flavouring (such as linebreaks or indentation) for terminals such as {,},;
+    // In case the previous component is targeted by a noSpace directive, we must not add a linebreak
+    if (component.getType() != PPGuardComponent.PPGuardType.T)
+      return;
+    if (component.getName().equals("{") || component.getName().equals("}") || component.getName().equals(";"))
+      component.setHasNoSpace(true);
+    // We currently do not print a following space in this case, which could be added
   }
 
   @Override
