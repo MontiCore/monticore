@@ -29,5 +29,7 @@ echo "[INFO] Moved *.md files to 'docs' folder"
 for file in $(find ./docs -type f -name "*.md")
 do 
   sed -i 's/\[\[_TOC_\]\]//' $file
+  perl -pi -e 's/\[([^\[\]\(\)]*)\]\([^\[\]\(\)]*git.rwth-aachen.de[^\[\]\(\)]*?\)/$1/g' $file
 done
-echo "[INFO] Removed all occureneces of '[[_TOC_]]' in *.md files"
+echo "[INFO] Removed all occurrences of '[[_TOC_]]' in *.md files"
+echo "[INFO] Removed all links to https://git.rwth-aachen.de in *.md files"
