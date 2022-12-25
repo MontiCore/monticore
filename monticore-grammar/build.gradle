@@ -137,7 +137,6 @@ task showArtifacts {}
 task checkArtifacts {}
 configurations { MLC }
 dependencies {
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.6'
     MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
 }
 StringJoiner joiner = new StringJoiner(" ")
@@ -164,7 +163,7 @@ fileTree("src").matching { include '**/*.mlc' }.each {
         classpath = configurations.MLC
         group = 'MLC'
         mainClass = 'de.monticore.mlc.MLCTool'
-        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${grammarOutDir}/reports", "-noFQ"
+        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${grammarOutDir}/reports"
         dependsOn("generateGrammar${mlcName}")
         checkArtifacts.dependsOn("checkArtifacts${mlcName}")
     }
