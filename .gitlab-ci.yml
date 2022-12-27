@@ -161,6 +161,7 @@ checkMLCs:
   script:
     - "gradle checkArtifacts"
   artifacts:
+    name: mlcreports
     when: always
     paths:
       - "*/target/**/generated-sources/**/reports/"
