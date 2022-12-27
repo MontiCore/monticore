@@ -10,8 +10,8 @@ mlc Grammar_WithConcepts {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/grammar/grammar_withconcepts/**.java";
-
-    include "de/monticore/grammar/prettyprint/Grammar_WithConcepts*.java";
+    include "de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
+    include "de/monticore/grammar/prettyprint/Grammar_WithConceptsPrettyPrinter.java";
 
     // CoCos
     include "de/monticore/grammar/cocos/**.java";

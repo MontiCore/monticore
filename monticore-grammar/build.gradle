@@ -136,13 +136,16 @@ processGrammarsResources.dependsOn(generateTR)
 task showArtifacts {}
 task checkArtifacts {}
 configurations { MLC }
-dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version") }
+dependencies {
+    MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
+}
 StringJoiner joiner = new StringJoiner(" ")
 configurations.compileClasspath.resolve().each{joiner.add(it.toString()) }
 joiner.add "$projectDir/target/symbols"
 String mp = joiner.toString()
 
 // two tasks per MLC file
+// each task needs to depend on all internally promoted MLCs
 fileTree("src").matching { include '**/*.mlc' }.each {
     def f = it
     def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
@@ -151,7 +154,7 @@ fileTree("src").matching { include '**/*.mlc' }.each {
         classpath = configurations.MLC
         group = 'MLC'
         mainClass = 'de.monticore.mlc.MLCTool'
-        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${grammarOutDir}/reports", "-a"
+        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${grammarOutDir}/reports", "-a", "-noFQ"
         dependsOn("generateGrammar${mlcName}")
         showArtifacts.dependsOn("showArtifacts${mlcName}")
     }
@@ -228,6 +231,7 @@ checkArtifactsTFCommons.dependsOn(checkArtifactsTFBasisExts)
 
 checkArtifactsMCArrayTypes.dependsOn(checkArtifactsMCBasicTypes)
 checkArtifactsMCBasicTypes.dependsOn(checkArtifactsMCBasics)
+checkArtifactsMCBasicTypes.dependsOn(checkArtifactsOOSymbols)
 checkArtifactsMCCollectionTypes.dependsOn(checkArtifactsMCBasicTypes)
 checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
 checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
@@ -238,6 +242,7 @@ checkArtifactsJavaLight.dependsOn(checkArtifactsAssignmentExpressions)
 checkArtifactsJavaLight.dependsOn(checkArtifactsJavaClassExpressions)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCCommonStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCArrayStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsMCReturnStatements)
 checkArtifactsMCCommon.dependsOn(checkArtifactsCardinality)
 checkArtifactsMCCommon.dependsOn(checkArtifactsCompleteness)
 checkArtifactsMCCommon.dependsOn(checkArtifactsUMLModifier)

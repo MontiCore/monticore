@@ -25,7 +25,6 @@ mlc Grammar {
     include "de/monticore/grammar/grammar/**.java";
   }
 
-
   promote {
     mlc "de.monticore.literals.MCCommonLiterals";
     mlc "de.monticore.types.MCSimpleGenericTypes";
