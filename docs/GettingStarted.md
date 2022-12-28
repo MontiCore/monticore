@@ -181,23 +181,24 @@ annotated name of a nonterminal. The left-hand side is followed by the
 terminal `=` and the right-hand side. Nonterminal names start with an
 upper-case letter. For instance, the `Automata` grammar contains the
 nonterminals `Automaton`, `State`, and `Transition`. A single
-nonterminal can be annotated with the `start` keyword. Then, the
+nonterminal can be provided with the `start` keyword. Then, the
 nonterminal is the starting symbol of the grammar. If no nonterminal is
-annotated with `start`, then the first nonterminal of the grammar
+marked with `start`, then the first nonterminal of the grammar
 becomes the starting symbol by default. In the `Automata` grammar, the
 `Automaton` nonterminal is the starting symbol.
 
-The other possible annotations for nonterminals influence the generated
+The other possible keywords for nonterminals influence the generated
 classes for the abstract syntax tree as well as the generated symbol
 table infrastructure. Details can be found in 
 [Chapter 4 and Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf). 
 For example, the
-`Automaton` nonterminal is annotated with `symbol` and `scope`. The
-annotation `symbol` makes the MontiCore generator generate a symbol
-class for the nonterminal. Intuitively stated, the annotation `scope`
-instructs MontiCore to construct a symbol table infrastructure that
+`Automaton` nonterminal is marked with `symbol` and `scope`. The
+keyword `symbol` makes the MontiCore generator generate a symbol
+class for the nonterminal. Intuitively stated, the keyword `scope`
+instructs the MontiCore generator to construct a symbol table
+infrastructure that
 opens a scope when the production is processed. The following sections
-explain the effects of annotating the `Automaton` nonterminal with the
+explain the effects of specifying the `Automaton` nonterminal with the
 keywords `symbol` and `scope` in more detail. Terminals are surrounded
 by quotation marks. The `Automata` grammar, for example, inter alia
 contains the terminals `automaton`, `state`, `{`, `}`, and `;`.
@@ -240,7 +241,17 @@ automaton PingPong {
 <figcaption>Listing 2.4: A model conforming to the Automata grammar.</figcaption>
 
 Listing 2.4 depicts an example model conforming to the `Automata` grammar in its
-concrete syntax. You can find the model in the file `PingPong.aut`
+concrete syntax. 
+It depicts a simple game of Ping Pong. The automaton consists of three states: 
+the initial state `NoGame`, such as the states `Ping` and `Pong`, for 
+identifying on which side the ball is located. 
+Initially, the automaton starts in the state `NoGame`. 
+The game starts at the corresponding event. 
+During a run, the automaton switches states by returning the ball from one 
+side to the other. 
+Additionally, it can be stopped at each stage of the game, resulting in the 
+initial configuration.
+You can find the model in the file `PingPong.aut`
 contained in the `example` directory of the unzipped `mc-workspace`
 directory.
 
@@ -280,7 +291,9 @@ includes:
     the model.</li>
 <li> a <em>mill infrastructure</em> for retrieving objects for language
     processing, such as parsers, builders for abstract syntax trees,
-    visitors and objects for the symbol tables of the language. The
+    visitors and objects for the symbol tables of the language. 
+    A mill serves as a dynamic factory, adapting to the current 
+    modeling language. The
     possibility to configure the mills is crucial for reusing the
     functionality implemented for a sublanguage (cf. Section 5.9, 
     Section 5.10.2, and Section 11.5 for details).</li>
@@ -313,6 +326,7 @@ For example, this enables developers to extend generated abstract
 syntax classes as detailedly described in 
 (cf. [Section 5.10 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
 Passing the argument `-mp` enables specifying the paths to directories 
+or archives 
 containing paths to grammars and Java classes that are imported by the 
 processed grammar and the related tooling. In this case, the archive 
 `monticore-rt.jar` contains the grammars and handwritten extensions
@@ -433,7 +447,7 @@ analogously.
 <div class="tip">
 <div class="tip-header">
 <img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
-Tip 2.7 Generated Symbols and Scopes in the AST
+Tip 2.8 Handwritten AST Class Extensions
 </div>
 <p>If the generator detects that an <code>AST</code> class for a nonterminal is
 already implemented in the handwritten code, then it produces a
@@ -799,9 +813,10 @@ scope, and builder instances and (2) how to call these methods.
 
 ### Compile the Target
 
-Section 2.2.3 describes how to generate the desired Java code
+[Section 2.2.3 of the MontiCore handbook](https://www.monticore.de/handbook.pdf) 
+describes how to generate the desired Java code
 from a MontiCore grammar. For these Java classes, generated for the
-`Automata` DSL, execute the following command:
+`Automata` DSL, execute the following command in the mc-workspace:
 
 **With Powershell on Windows**
 ```powershell
@@ -1233,10 +1248,13 @@ by adjusting the grammar and the handwritten Java sources and rerunning
 MontiCore as described in Section 2.4.3. To import the example, perform the following
 steps:
 
-1.  Download and unzip the `Automata` example (cf. Listing 2.3)
+1.  Download and unzip the `Automata` example:
+```
+http://www.monticore.de/download/Automaton.zip
+```
 2.  Open Eclipse and select
     -   File \> Import \> Gradle (if you are required to choose a Gradle
-        version, then choose version 6.7.1) \> Existing Gradle
+        version, then choose version 7.4.1) \> Existing Gradle
         Projects \> Next.
     -   Click on the *Browse..* button and import the directory that
         contains the file `build.gradle` from the `Automata` example.
@@ -1249,7 +1267,8 @@ To execute the MontiCore Gradle plugin, perform the following steps:
     your installed Eclipse version).
 -   There select automaton \> build \> build (double click).
 
-This makes Eclipse execute the MontiCore Gradle plugin as described in Section 2.3.
+This makes Eclipse execute the MontiCore Gradle plugin as described in 
+[Section 2.3 of the MontiCore handbook](https://www.monticore.de/handbook.pdf) .
 After installing and executing MontiCore in Eclipse, your workspace
 should look similar to Figure 2.27.
 
@@ -1280,7 +1299,10 @@ own DSL by adjusting the grammar and the handwritten Java sources and
 rerunning MontiCore as described in Section 2.5.3. For importing the example, perform
 the following steps:
 
-1.  Download and unzip the `Automata` Example (cf. Listing 2.3).
+1.  Download and unzip the `Automata` example:
+```
+http://www.monticore.de/download/Automaton.zip
+```
 2.  In the IDE select: File \> Open.
 3.  Select the directory containing the build.gradle (if you are
     required to choose a Gradle version, then choose version 6.7.1).
