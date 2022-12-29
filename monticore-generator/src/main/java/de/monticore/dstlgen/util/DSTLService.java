@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.dstlgen.util;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;

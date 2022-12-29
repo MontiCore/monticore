@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.parserinfo;
 
 import mc.feature.parserinfo.parserinfocomponentgrammartest._parser.ParserInfoComponentGrammarTestParserInfo;

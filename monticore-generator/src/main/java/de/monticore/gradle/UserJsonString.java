@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.gradle;
 
 import de.monticore.prettyprint.IndentPrinter;

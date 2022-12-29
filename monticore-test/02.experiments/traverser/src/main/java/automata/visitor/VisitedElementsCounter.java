@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package automata.visitor;
 
 import de.monticore.ast.ASTNode;

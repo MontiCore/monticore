@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.cli;
 
 import de.monticore.cli.updateChecker.HttpGetter;

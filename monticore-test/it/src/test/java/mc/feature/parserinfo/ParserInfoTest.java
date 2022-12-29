@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package mc.feature.parserinfo;
 
 import de.se_rwth.commons.logging.LogStub;

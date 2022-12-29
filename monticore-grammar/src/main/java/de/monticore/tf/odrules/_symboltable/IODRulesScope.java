@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules._symboltable;
 
 import de.monticore.symboltable.modifiers.AccessModifier;
