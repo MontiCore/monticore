@@ -17,6 +17,7 @@ The following tools for MontiCore can be used from the command line and thus e.g
 * The [OD4Report tool](https://www.monticore.de/download/MCOD4Report.jar) for an [Object Diagram language](https://github.com/MontiCore/object-diagram)
 * The [SD4Development tool](https://www.monticore.de/download/MCSD4Development.jar) for a [Sequence Diagram language](https://github.com/MontiCore/sequence-diagram)
 * The [Statecharts tool](https://www.monticore.de/download/MCStatecharts.jar) for a [Statechart language](https://github.com/MontiCore/statecharts)
+* The [JSON tool](https://www.monticore.de/download/MCJSON.jar) for a [JSON language](https://github.com/MontiCore/json)
 * The [XML tool](https://www.monticore.de/download/MCXML.jar) for an [XML language](https://github.com/MontiCore/xml)
 
 Please note the [MontiCore 3-Level License](../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) of these tools.
