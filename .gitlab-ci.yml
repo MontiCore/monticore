@@ -238,6 +238,7 @@ trigger-ma-dev:
   trigger:
     project: monticore/montiarc/core
     branch: develop
+    strategy: depend
   only:
     - dev
 
@@ -286,6 +287,7 @@ trigger-umlp-dev:
   trigger:
     project: monticore/umlp
     branch: dev
+    strategy: depend
   only:
     - dev
 
