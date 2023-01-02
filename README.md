@@ -156,6 +156,14 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
   the MontiCore language workbench according to the rules described
   in the [**licensing section**](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 
+* **Contributing to MontiCore:** MontiCore is developed and maintained by the 
+  Chair of Software Engineering at RWTH in a private GitLab repository and 
+  publicly mirrored to [GitHub](https://github.com/MontiCore/monticore). 
+  If you want to contribute to MontiCore, please create a 
+  [fork](https://github.com/MontiCore/monticore/fork) 
+  with a corresponding pull request. 
+  Our development team will review and merge your changes.
+
 * If questions appear e.g. on building an interpreter, please contact 
   monticore@se-rwth.de. 
     
