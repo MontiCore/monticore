@@ -55,12 +55,14 @@ public class TemplateControllerHookPointsTest {
   
   @Test
   public void testUndefinedHook() {
+    tc.getGeneratorSetup().setTracing(true);
     assertEquals("/* Hookpoint: hp1 */", glex.defineHookPoint(tc, "hp1"));
     assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testDefaultHook() {
+    tc.getGeneratorSetup().setTracing(false);
     String hpValue;
     hpValue = glex.defineHookPointWithDefault(tc, "hp1", "default");
     assertEquals("default", hpValue);
