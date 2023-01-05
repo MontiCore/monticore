@@ -81,6 +81,12 @@ public class GrammarCoCos {
     checker.addCoCo(new LexProdModeNameUpperCase());
     checker.addCoCo(new NoTokenModeInComponentGrammar());
     checker.addCoCo(new InheritedModiOverwrite());
+    checker.addCoCo(new NoForbiddenGrammarName());
+    checker.addCoCo(new NoForbiddenProdName());
+    checker.addCoCo(new NoForbiddenProdAndSymbolName());
+    checker.addCoCo(new NoForbiddenProdNameAddon());
+    checker.addCoCo(new NoForbiddenSymbolName());
+    checker.addCoCo(new NoForbiddenSymbolNameAddon());
 
     return checker;
   }

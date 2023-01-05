@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.grammar.cocos;
+package de.monticore.grammar;
 
 import com.google.common.collect.Lists;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -11,7 +11,9 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Collection;
 import java.util.List;
 
-public class NoForbiddenProdName implements GrammarASTMCGrammarCoCo {
+// TODO Delete after release 7.5.0
+@Deprecated
+public class NoForbiddenProdNameFix implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA4096";
 

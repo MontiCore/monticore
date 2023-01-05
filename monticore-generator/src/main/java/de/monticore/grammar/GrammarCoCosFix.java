@@ -5,7 +5,7 @@ package de.monticore.grammar;
 import de.monticore.grammar.cocos.*;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 
-// TODO Delete after release 7.4.0
+// TODO Delete after release 7.5.0
 @Deprecated
 public class GrammarCoCosFix {
   public Grammar_WithConceptsCoCoChecker getCoCoChecker() {
@@ -79,11 +79,17 @@ public class GrammarCoCosFix {
     checker.addCoCo(new KeyRuleWithoutName());
     checker.addCoCo(new SymbolWithManyNames());
     checker.addCoCo(new OverridingAdditionalAttributes());
-    checker.addCoCo(new NoExtensionOfSymbolThatOnlySpansScopeFix());
+    checker.addCoCo(new NoExtensionOfSymbolThatOnlySpansScope());
     // checker.addCoCo(new NoNTInheritanceCycle());
     checker.addCoCo(new LexProdModeNameUpperCase());
     checker.addCoCo(new NoTokenModeInComponentGrammar());
     checker.addCoCo(new InheritedModiOverwrite());
+    checker.addCoCo(new NoForbiddenGrammarName());
+    checker.addCoCo(new NoForbiddenProdNameFix());
+    checker.addCoCo(new NoForbiddenProdAndSymbolName());
+    checker.addCoCo(new NoForbiddenProdNameAddon());
+    checker.addCoCo(new NoForbiddenSymbolName());
+    checker.addCoCo(new NoForbiddenSymbolNameAddon());
 
     return checker;
   }
