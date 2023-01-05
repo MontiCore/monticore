@@ -5,7 +5,7 @@ package mc.feature.sourcepositions;
 
 component grammar SourcePosition extends mc.common.Basics { 
 	
-    Parser =
+    PParser =
     	start:Name "{" embed:Extern "}" end:Name;
     	
     external Extern;

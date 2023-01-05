@@ -18,7 +18,7 @@ grammar Tagging1 extends mc.grammar.types.ItTestTypes {
 	// b/c the symbol table needs a name
 	// and we need the symbol table for coco checks
 	// maybe later for convience we make the optional
-	TagBody = "tags" Name? ("for" targetModel: Scope)? "{"
+	TagBody = "tags" Name? ("for" targetModel: Scope_)? "{"
 	   TagElement+ "}";
 	   
 	interface TagElement;
@@ -26,14 +26,14 @@ grammar Tagging1 extends mc.grammar.types.ItTestTypes {
 	// use Scope to add tags for Model, e.g.
 	// grammar ComponentTags extends MontiArc, Tagging {
 	//   ComponentScope implements Scope = Component; }
-	interface Scope;
-	astrule Scope =
+	interface Scope_;
+	astrule Scope_ =
 	  method public String getScopeKind() {
 	    return "undefined";
 	  };
 
 	// this one is only defined here, to get Parser Tags
-	NameScope implements Scope = QualifiedName;
+	NameScope implements Scope_ = QualifiedName;
 	astrule NameScope =  
 	  method public String getScopeKind() {
   	  return "NameScope";
@@ -49,7 +49,7 @@ grammar Tagging1 extends mc.grammar.types.ItTestTypes {
 	  TagElement+ "}";
 	
 	// the name from ML's tagging language
-	TargetElement implements TagElement = "tag" (Scope || ",")+ "with" (Tag || ",")+ ";" ;
+	TargetElement implements TagElement = "tag" (Scope_ || ",")+ "with" (Tag || ",")+ ";" ;
 	
 	interface Tag;
 /*	astrule Tag =
