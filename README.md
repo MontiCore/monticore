@@ -165,6 +165,7 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
   The RWTH and the Stuttgart development teams will review and merge changes. 
   (A more open process for common development is currently in discussion and 
   depends on interests from further people/groups.)
+  You may also ask to become a member of the project.
 
 * If questions appear e.g. on building an interpreter, please contact 
   monticore@se-rwth.de. 
