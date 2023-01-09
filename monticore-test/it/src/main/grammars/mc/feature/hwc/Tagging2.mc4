@@ -18,12 +18,12 @@ grammar Tagging2 extends mc.grammar.types.ItTestTypes {
 	// b/c the symbol table needs a name
 	// and we need the symbol table for coco checks
 	// maybe later for convience we make the optional
-	TagBody = "tags" Name? ("for" targetModel: Scope)? "{"
+	TagBody = "tags" Name? ("for" targetModel: Scope_)? "{"
 	   Tag+ "}";
 	   
 //	interface TagElement;
 	
-  Tag = "tag" (Scope || ",")+ "with" TagElement+;
+  Tag = "tag" (Scope_ || ",")+ "with" TagElement+;
   TagElement = Name (TagValue | ";");
 
  fragment token WSS = (' ' | '\t' | '\r' | '\n');
@@ -33,7 +33,7 @@ grammar Tagging2 extends mc.grammar.types.ItTestTypes {
  fragment token Recursion = '{' (~('{' | '}' | '"') | String | Recursion)+ '}';
  fragment token TagToken = (~('"' | '{' | '}' | ';'))+;
 
- interface Scope;
- NameScope implements Scope = QualifiedName;
- ConnectorScope implements Scope = source:QualifiedName "->" QualifiedName;
+ interface Scope_;
+ NameScope implements Scope_ = QualifiedName;
+ ConnectorScope implements Scope_ = source:QualifiedName "->" QualifiedName;
 }

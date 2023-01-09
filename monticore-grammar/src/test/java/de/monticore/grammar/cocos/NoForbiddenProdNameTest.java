@@ -67,6 +67,13 @@ public class NoForbiddenProdNameTest extends CocoTest{
   }
 
   @Test
+  public void testInvalid7(){
+    String grammar = "de.monticore.grammar.cocos.invalid.A4096.A4096g";
+    String message = String.format(MESSAGE, "Mode", "A4096g");
+    testInvalidGrammar(grammar, NoForbiddenProdName.ERROR_CODE, message, checker);
+  }
+
+  @Test
   public void testValid1(){
     testValidGrammar("de.monticore.grammar.cocos.valid.ExtendNTs",checker);
   }
