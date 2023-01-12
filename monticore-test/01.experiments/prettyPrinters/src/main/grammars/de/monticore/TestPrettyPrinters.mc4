@@ -227,6 +227,9 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     NoSpaceExpAndT = {noSpace(3) && true}? "foo" ":" ":" "bar";
     NoSpaceExpAndF = {noSpace(3) && false}? "foo" ":" ":" "bar";
 
+    NoSpaceSpecialB = {noSpace(2,3)}? "{" "a" "}";
+    NoSpaceSpecialS = {noSpace(2,3)}? ";" "a" ";";
+
 
     UsedTerminalD = un:"a"  "b";
     UsedTerminalQ = un:"a"? "b";
@@ -254,5 +257,6 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
 
     GuessSpace1 = A "a" A;
     GuessSpace2 = A "*" A;
+
 
 }
