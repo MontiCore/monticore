@@ -86,8 +86,7 @@ public interface IScope {
   boolean isPresentName();
 
   default List<String> getRemainingNameForResolveDown(String symbolName) {
-    final FluentIterable<String> nameParts = getNameParts(symbolName);
-    return Lists.newArrayList((nameParts.size() > 1) ? DOT.join(nameParts.skip(1)) : symbolName);
+    return Lists.newArrayList(symbolName.startsWith(getName()) && !getName().isEmpty() ? symbolName.substring(getName().length() + 1) : symbolName);
   }
 
   default FluentIterable<String> getNameParts(String symbolName) {
@@ -108,7 +107,7 @@ public interface IScope {
         final String firstNamePart = nameParts.get(0);
         // A scope that exports symbols usually has a name.
         if (this.isPresentName()) {
-          return firstNamePart.equals(this.getName());
+          return symbolName.startsWith(getName());
         }
         else {
           return firstNamePart.equals("");
