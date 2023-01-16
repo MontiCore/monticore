@@ -13,8 +13,6 @@ import de.se_rwth.commons.logging.Log;
 public class PrettyPrinterGenerator {
 
   public static final String LOG = "PrettyPrinterGenerator";
-  public static final String PACKAGE_NAME = "_prettyprint";
-
 
   public static ASTCDCompilationUnit generatePrettyPrinter(
           GlobalExtensionManagement glex,
