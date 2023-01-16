@@ -86,7 +86,7 @@ public interface IScope {
   boolean isPresentName();
 
   default List<String> getRemainingNameForResolveDown(String symbolName) {
-    Lists.newArrayList(isPresentName() && !getName().isEmpty() && symbolName.startsWith(getName()) ? symbolName.substring(getName().length() + 1) : symbolName);
+    return Lists.newArrayList(isPresentName() && !getName().isEmpty() && symbolName.startsWith(getName()) ? symbolName.substring(getName().length() + 1) : symbolName);
   }
 
   default FluentIterable<String> getNameParts(String symbolName) {
