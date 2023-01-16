@@ -11,11 +11,13 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDMember;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.prettyprint.PrettyPrinterConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -42,6 +44,7 @@ import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 import static de.monticore.codegen.cd2java.mill.MillConstants.*;
+import static de.monticore.codegen.prettyprint.PrettyPrinterConstants.*;
 
 /**
  * created mill class for a grammar
@@ -127,6 +130,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       for (String attributeName : getAttributeNameList(classList)) {
         attributeList.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, MILL_INFIX + attributeName));
       }
+      // add pretty printer functionality
+      List<ASTCDMember> prettyPrinterMembersList = new ArrayList<>();
+      Optional<ASTCDClass> fullPrettyPrinterCandidate = classList.stream().filter(c -> c.getName().endsWith(FULLPRETTYPRINTER_SUFFIX)).findFirst();
+      fullPrettyPrinterCandidate.ifPresent(astcdClass -> prettyPrinterMembersList.addAll(addPrettyPrinterMembers(astcdClass, cd)));
 
       //remove the methods that are generated in the code below the for-loop
       classList = classList.stream().filter(this::checkNotGeneratedSpecifically).collect(Collectors.toList());
@@ -134,6 +141,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
       millClass.addAllCDMembers(attributeList);
       millClass.addAllCDMembers(builderMethodsList);
+      millClass.addAllCDMembers(prettyPrinterMembersList);
     }
     
     // decorate for traverser
@@ -206,6 +214,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         || name.endsWith(SCOPES_GENITOR_SUFFIX)
         || name.endsWith(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX)
         || name.endsWith(TRAVERSER_CLASS_SUFFIX)
+        || name.endsWith(FULLPRETTYPRINTER_SUFFIX)
         || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX));
   }
 
@@ -226,7 +235,8 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         || name.endsWith(SCOPES_GENITOR_SUFFIX)
         || name.endsWith(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX)
         || name.endsWith(TRAVERSER_CLASS_SUFFIX)
-        || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX);
+        || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX)
+        || name.endsWith(FULLPRETTYPRINTER_SUFFIX);
   }
 
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
@@ -287,6 +297,34 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     }
 
     return builderMethodsList;
+  }
+
+  protected List<ASTCDMember> addPrettyPrinterMembers(ASTCDClass astcdClass, ASTCDPackage cd) {
+    // Similar to addBuilderMethods, just for FullPrettyPrinters (with the additional printComments parameter)
+    List<ASTCDMember> prettyPrintMembersList = new ArrayList<>();
+
+    String astName = astcdClass.getName();
+    String packageDef = cd.getName();
+    ASTMCQualifiedType fullPrettyPrinterType = this.getMCTypeFacade().createQualifiedType(packageDef + "." + astName);
+
+    ASTCDParameter node = this.getCDParameterFacade().createParameter(visitorService.getLanguageInterfaceName(), "node");
+    ASTCDParameter printComments = this.getCDParameterFacade().createParameter(
+            this.getMCTypeFacade().createBooleanType(), "printComments");
+
+    // add public static Method for pretty printing
+    ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), getMCTypeFacade().createStringType(), "prettyPrint",node, printComments);
+    prettyPrintMembersList.add(builderMethod);
+    this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.PrettyPrintBuilderMethod", astName));
+
+    // add protected Method for pretty printing
+    ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), getMCTypeFacade().createStringType(), "_prettyPrint", node, printComments);
+    prettyPrintMembersList.add(protectedMethod);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.PrettyPrintProtectedBuilderMethod", fullPrettyPrinterType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
+
+    // attribute for caching the full pretty printer
+    prettyPrintMembersList.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), fullPrettyPrinterType, "fullPrettyPrinter"));
+
+    return prettyPrintMembersList;
   }
 
   /**

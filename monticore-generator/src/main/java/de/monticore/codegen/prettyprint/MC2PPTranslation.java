@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.prettyprint;
 
+import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -52,7 +53,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
             .build();
 
     List<String> prettyPrintPackageName = new ArrayList<>(packageName);
-    prettyPrintPackageName.add(PrettyPrinterGenerator.PACKAGE_NAME);
+    prettyPrintPackageName.add(PrettyPrinterConstants.PRETTYPRINT_PACKAGE);
     astcdDefinition.setDefaultPackageName(Joiners.DOT.join(prettyPrintPackageName));
     ASTMCPackageDeclaration packageDecl = CD4CodeMill.mCPackageDeclarationBuilder().setMCQualifiedName(
             CD4CodeMill.mCQualifiedNameBuilder().setPartsList(prettyPrintPackageName).build()).build();
@@ -64,14 +65,14 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
 
     // The PrettyPrinter class
     ASTCDClass prettyPrinterCDClass = CDBasisMill.cDClassBuilder().setName(grammar.getName() + "PrettyPrinter")
-            .setModifier(CDBasisMill.modifierBuilder().setPublic(true).build())
+            .setModifier(CDModifier.PUBLIC.build())
             .build();
     astcdDefinition.addCDElement(prettyPrinterCDClass);
 
     // The FullPrettyPrinter class
     ASTCDClass fullPrettyPrinterCDClass = CDBasisMill.cDClassBuilder()
             .setName(grammar.getName() + "FullPrettyPrinter")
-            .setModifier(CDBasisMill.modifierBuilder().setPublic(true).build())
+            .setModifier(CDModifier.PUBLIC.build())
             .build();
     astcdDefinition.addCDElement(fullPrettyPrinterCDClass);
 
@@ -113,7 +114,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     ASTCDAttribute ppPrintCommentsAttribute = addAttribute(prettyPrinterCDClass, true, true, getMCTypeFacade().createBooleanType(), "printComments");
     addAttribute(prettyPrinterCDClass, true, true, Joiners.DOT.join(packageName) + "._visitor." + grammar.getName() + VisitorConstants.TRAVERSER_SUFFIX, "traverser");
 
-    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(CD4CodeMill.modifierBuilder().setPublic(true).build(), prettyPrinterCDClass.getName(),
+    ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), prettyPrinterCDClass.getName(),
             getCDParameterFacade().createParameters(ppPrinterAttribute, ppPrintCommentsAttribute));
     prettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.printer=printer; this.printComments=printComments;"));
@@ -122,17 +123,29 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     ASTCDAttribute fPPPrinter = addAttribute(fullPrettyPrinterCDClass, true, false, "de.monticore.prettyprint.IndentPrinter", "printer");
     addAttribute(fullPrettyPrinterCDClass, true, true, Joiners.DOT.join(packageName) + "._visitor." + grammar.getName() + VisitorConstants.TRAVERSER_SUFFIX, "traverser");
 
-    constructor = this.getCDConstructorFacade().createConstructor(CD4CodeMill.modifierBuilder().setPublic(true).build(), fullPrettyPrinterCDClass.getName(),
+    constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), fullPrettyPrinterCDClass.getName(),
             getCDParameterFacade().createParameters(ppPrinterAttribute, ppPrintCommentsAttribute));
     fullPrettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_prettyprinter.full.FPPConstructor",
-            grammar.getName(), Joiners.DOT.join(packageName), superGrammars));
+            grammar.getName(), Joiners.DOT.join(packageName)));
 
-    constructor = this.getCDConstructorFacade().createConstructor(CD4CodeMill.modifierBuilder().setPublic(true).build(), fullPrettyPrinterCDClass.getName(),
+    constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), fullPrettyPrinterCDClass.getName(),
             getCDParameterFacade().createParameters(fPPPrinter));
     fullPrettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(printer, true);"));
 
+    // Dedicated (overrideable) method for setting all the pretty printers
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PROTECTED.build(), "initializeTraverser", getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), "printComments"));
+    fullPrettyPrinterCDClass.addCDMember(method);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_prettyprinter.full.FPPTraverserInit",
+        grammar.getName(), superGrammars));
+
+    // Method to toggle printComments
+    method = getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), "setPrintComments",
+        getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), "printComments"));
+    fullPrettyPrinterCDClass.addCDMember(method);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_prettyprinter.full.FPPSetPrintComments",
+        grammar.getName(), superGrammars));
 
     // Add a helper prettyprint Method - due to ambiguous method overlapping we use the ASTNode interface as the type
     fullPrettyPrinterCDClass.addCDMember(createPrettyPrintNodeMethod());
@@ -149,7 +162,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
    * @return the templated method
    */
   protected ASTCDMethod createPrettyPrintNodeMethod() {
-    ASTCDMethod method = getCDMethodFacade().createMethod(CD4CodeMill.modifierBuilder().setPublic(true).build(),
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(),
             getMCTypeFacade().createStringType(),
             "prettyprint",
             getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("de.monticore.ast.ASTNode"), "node"));
@@ -178,18 +191,18 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
    * @return the generated attribute
    */
   protected ASTCDAttribute addAttribute(ASTCDClass astcdClass, boolean getter, boolean setter, ASTMCType type, String name) {
-    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(CD4CodeMill.modifierBuilder().setProtected(true).build(), type, name);
+    ASTCDAttribute attribute = this.getCDAttributeFacade().createAttribute(CDModifier.PROTECTED.build(), type, name);
     astcdClass.addCDMember(attribute);
     if (getter) {
       String getterName = getMCTypeFacade().isBooleanType(type) ? "is" : "get";
       getterName += StringTransformations.capitalize(name);
-      ASTCDMethod method = this.getCDMethodFacade().createMethod(CD4CodeMill.modifierBuilder().setPublic(true).build(), type, getterName);
+      ASTCDMethod method = this.getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), type, getterName);
       this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(String.format("return this.%s;", name)));
       astcdClass.addCDMember(method);
     }
     if (setter) {
       String setterName = "set" + StringTransformations.capitalize(name);
-      ASTCDMethod method = this.getCDMethodFacade().createMethod(CD4CodeMill.modifierBuilder().setPublic(true).build(), setterName, getCDParameterFacade().createParameter(type, name));
+      ASTCDMethod method = this.getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), setterName, getCDParameterFacade().createParameter(type, name));
       this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(String.format("this.%s = %s;", name, name)));
       astcdClass.addCDMember(method);
     }

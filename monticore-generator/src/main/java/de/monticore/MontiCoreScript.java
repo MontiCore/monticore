@@ -683,10 +683,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateForCoCoPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateForODPackage(glex, cdScope, cds.get(0), decoratedCD,handCodedPath);
+    decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     decorateMill(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateCLI(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateAuxiliary(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
-    decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     return decoratedCD;
   }
 
@@ -995,10 +995,10 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateForCoCoPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateForODPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
+    decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     decorateMill(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateCLI(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateAuxiliary(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
-    decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     return decoratedCD;
   }
 
