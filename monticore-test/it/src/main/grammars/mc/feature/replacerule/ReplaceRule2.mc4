@@ -21,4 +21,6 @@ grammar ReplaceRule2 extends mc.feature.replacerule.ReplaceRule {
    // Add keyword in combination with token
    replacekeyword "<<": "<<", "{{";
 
+   X = "something" Name;
+
 }
