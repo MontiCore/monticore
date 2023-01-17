@@ -6,11 +6,8 @@ import de.monticore.expressions.bitexpressions._ast.*;
 import de.monticore.expressions.bitexpressions._visitor.BitExpressionsHandler;
 import de.monticore.expressions.bitexpressions._visitor.BitExpressionsTraverser;
 import de.monticore.expressions.bitexpressions._visitor.BitExpressionsVisitor2;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.List;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in BitExpressions
@@ -128,7 +125,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   @Override
   public void traverse(ASTBinaryAndExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveBinary(expr.getLeft(), expr.getRight(), "&");
+    SymTypeExpression symType = this.deriveBinary(expr, expr.getOperator());
 
     this.getTypeCheckResult().reset();
     this.getTypeCheckResult().setResult(symType);
@@ -137,7 +134,7 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   @Override
   public void traverse(ASTBinaryOrOpExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveBinary(expr.getLeft(), expr.getRight(), "|");
+    SymTypeExpression symType = this.deriveBinary(expr, expr.getOperator());
 
     this.getTypeCheckResult().reset();
     this.getTypeCheckResult().setResult(symType);
@@ -146,32 +143,32 @@ public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression 
   @Override
   public void traverse(ASTBinaryXorExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveBinary(expr.getLeft(), expr.getRight(), "^");
+    SymTypeExpression symType = this.deriveBinary(expr, expr.getOperator());
 
     this.getTypeCheckResult().reset();
     this.getTypeCheckResult().setResult(symType);
   }
 
-  protected SymTypeExpression deriveBinary(ASTExpression left, ASTExpression right, String operator) {
+  protected SymTypeExpression deriveBinary(ASTBinaryExpression expr, String operator) {
     // calculate the type of inner expressions
     this.getTypeCheckResult().reset();
-    left.accept(this.getTraverser());
+    expr.getLeft().accept(this.getTraverser());
     TypeCheckResult leftRes = this.getTypeCheckResult().copy();
     this.getTypeCheckResult().reset();
-    right.accept(this.getTraverser());
+    expr.getRight().accept(this.getTraverser());
     TypeCheckResult rightRes = this.getTypeCheckResult().copy();
 
     // result of inner type computation should be present
     if (!leftRes.isPresentResult() || !rightRes.isPresentResult()) {
       // should never happen, we expect results to be present
       // indicates that the underlying type resolver is erroneous
-      this.logError("0xA0202", left.get_SourcePositionStart());
+      this.logError("0xA0202", expr.get_SourcePositionStart());
       return SymTypeExpressionFactory.createObscureType();
     } else if (leftRes.getResult().isObscureType() || rightRes.getResult().isObscureType()) {
       // if left or right obscure then error already logged
       return SymTypeExpressionFactory.createObscureType();
     } else {
-      return calculateTypeBinary(leftRes.getResult(), rightRes.getResult(), operator, left.get_SourcePositionStart());
+      return calculateTypeBinary(leftRes.getResult(), rightRes.getResult(), operator, expr.get_SourcePositionStart());
     }
   }
 
