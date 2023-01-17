@@ -7,6 +7,7 @@ import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
@@ -696,9 +697,9 @@ public class ProductionFactory {
   }
 
   protected ASTMCType parseGenericType(String type) {
-    Grammar_WithConceptsParser ggtp = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
     try {
-      return ggtp.parse_StringMCType(type).get();
+      return p.parse_StringMCType(type).get();
     } catch (IOException e) {
       throw new RuntimeException(
               "0xF1002 Unable to create GenericType for " + type);
@@ -707,7 +708,7 @@ public class ProductionFactory {
 
   protected ASTInterfaceProd parseInterfaceProd(
           String tfReplacementRule) {
-    Grammar_WithConceptsParser p = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
     try {
       return p.parse_StringInterfaceProd(tfReplacementRule)
               .get();
@@ -719,7 +720,7 @@ public class ProductionFactory {
 
   protected ASTAbstractProd parseAbstractProd(
           String tfReplacementRule) {
-    Grammar_WithConceptsParser p = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
     try {
       return p.parse_StringAbstractProd(tfReplacementRule)
               .get();
@@ -730,7 +731,7 @@ public class ProductionFactory {
   }
 
   protected ASTClassProd parseClassProd(String input) {
-    Grammar_WithConceptsParser p = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
     try {
       return p.parse_StringClassProd(input).get();
     } catch (IOException e) {

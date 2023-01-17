@@ -4,7 +4,6 @@ package de.monticore.codegen.cd2java.method.accessor;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd.facade.CDAttributeFacade;
-import de.monticore.codegen.cd2java.CDTypeFactory;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
@@ -57,7 +56,7 @@ public class ListAccessorDecoratorTest {
   @Test
   public void testGetListMethod() {
     ASTCDMethod method = getMethodBy("getAList", 0, this.methods);
-    ASTMCType expectedReturnType = CDTypeFactory.create("List<String>");
+    ASTMCType expectedReturnType = MCTypeFacade.getInstance().createListTypeOf("String");
     assertDeepEquals(expectedReturnType, method.getMCReturnType().getMCType());
     assertDeepEquals(PUBLIC, method.getModifier());
   
@@ -88,7 +87,7 @@ public class ListAccessorDecoratorTest {
 
     assertEquals(1, method.getCDParameterList().size());
     ASTCDParameter parameter = method.getCDParameter(0);
-    ASTMCType expectedParameterType = CDTypeFactory.create("Collection<?>");
+    ASTMCType expectedParameterType = MCTypeFacade.getInstance().createCollectionTypeOf("?");
     assertDeepEquals(expectedParameterType, parameter.getMCType());
     assertEquals("collection", parameter.getName());
   

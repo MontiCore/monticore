@@ -5,7 +5,7 @@ package de.monticore.literals.tr;
   * Re-adds the literal related getValue ASTRules of literals for (MontiTrans) transformation grammars.
   * Patterns will return their value, other TF-production-types will fail (but compilation will proceed).
   */
-component grammar MCCommonLiteralsTR extends de.monticore.MCBasics, de.monticore.literals.tr.MCLiteralsBasisTR {
+component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.monticore.literals.tr.MCLiteralsBasisTR {
 
     astrule ITFBooleanLiteral =
         method public boolean getValue() {

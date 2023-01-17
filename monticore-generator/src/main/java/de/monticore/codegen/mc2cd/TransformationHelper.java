@@ -149,7 +149,7 @@ public final class TransformationHelper {
 
   public static ASTMCGenericType createType(
       String typeName, String generics) {
-    CD4CodeParser parser = new CD4CodeParser();
+    CD4CodeParser parser = CD4CodeMill.parser();
     Optional<ASTMCGenericType> optType = null;
     try {
       optType = parser.parse_StringMCGenericType(typeName + "<" + generics + ">");

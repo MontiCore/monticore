@@ -5,7 +5,7 @@
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
@@ -58,7 +58,7 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
 
   protected ASTMCGrammar parse(URL url){
     try (Reader reader = FileReaderWriter.getReader(url)){
-      Optional<ASTMCGrammar> optAST = new Grammar_WithConceptsParser().parse(reader);
+      Optional<ASTMCGrammar> optAST = Grammar_WithConceptsMill.parser().parse(reader);
       if(optAST.isPresent()){
         return optAST.get();
       }

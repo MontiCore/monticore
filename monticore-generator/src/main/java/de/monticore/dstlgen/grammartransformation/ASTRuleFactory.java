@@ -6,12 +6,12 @@ import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
@@ -278,20 +278,10 @@ public class ASTRuleFactory {
   }
 
 
-  protected ASTMCBasicGenericType parseGenericType(String type) {
-    Grammar_WithConceptsParser ggtp = new Grammar_WithConceptsParser();
-    try {
-      return ggtp.parseMCBasicGenericType(type).get();
-    }
-    catch (IOException e) {
-      throw new RuntimeException("0xF1006 Unable to create GenericType for " + type);
-    }
-  }
-
   protected ASTMCReturnType parseReturnType(String type) {
-    Grammar_WithConceptsParser ggtp = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
     try {
-      return ggtp.parse_StringMCReturnType(type).get();
+      return p.parse_StringMCReturnType(type).get();
     }
     catch (IOException e) {
       throw new RuntimeException("0xF1007 Unable to create GenericType for " + type);
@@ -299,7 +289,7 @@ public class ASTRuleFactory {
   }
 
   protected ASTASTRule parseASTRule(String tfAstElementProduction) {
-    Grammar_WithConceptsParser p = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
     try {
       return p.parse_StringASTRule(tfAstElementProduction).get();
     }
@@ -310,7 +300,7 @@ public class ASTRuleFactory {
 
 
   protected ASTAction parseAction(String methodBody) {
-    Grammar_WithConceptsParser p = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
     try {
       return p.parse_StringAction(methodBody).get();
     }
