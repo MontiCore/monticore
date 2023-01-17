@@ -123,7 +123,7 @@ public class GrammarTransformer {
     extendedList = extendedList.replaceAll("%terminal%", nonTerminalSep.getSeparator());
     extendedList = extendedList.replaceAll("%iterator%", iteration);
 
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTBlock> block = null;
     try {
       Log.debug("Create ast for " + extendedList, GrammarTransformer.class.getName());

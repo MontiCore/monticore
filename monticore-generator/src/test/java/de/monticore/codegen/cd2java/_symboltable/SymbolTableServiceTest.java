@@ -2,19 +2,18 @@
 package de.monticore.codegen.cd2java._symboltable;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4analysis._parser.CD4AnalysisParser;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.umlmodifier._ast.ASTModifier;
-import de.monticore.cd4analysis._parser.CD4AnalysisParser;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,7 +77,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testStartProdValue() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTModifier> astModifier = cd4AnalysisParser.parse_StringModifier("<<startProd=\"_ast.ASTFoo\">> public");
     assertTrue(astModifier.isPresent());
     assertFalse(cd4AnalysisParser.hasErrors());
@@ -92,7 +91,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testHasStartProdWithCDDefinitionStereotype() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         "<<startProd=\"_ast.ASTFoo\">> public classdiagram Bar {}");
     assertTrue(astcdDefinition.isPresent());
@@ -105,7 +104,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testHasStartProdFromClass() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         " public classdiagram Bar {" +
             "<<startProd>> public class ASTFoo{}" +
@@ -120,7 +119,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testHasStartProdFromInterface() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         " public classdiagram Bar {" +
             "<<startProd>> public interface ASTFoo{}" +
@@ -135,7 +134,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetStartProdWithCDDefinitionStereotype() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         "<<startProd=\"_ast.ASTFoo\">> public classdiagram Bar {}");
     assertTrue(astcdDefinition.isPresent());
@@ -150,7 +149,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetStartProdFromClass() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         " public classdiagram Bar {" +
             "<<startProd>> public class ASTFoo{}" +
@@ -167,7 +166,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetStartProdFromInterface() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         " public classdiagram Bar {" +
             "<<startProd>> public interface ASTFoo{}" +
@@ -198,7 +197,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testHasProdOnlyInterface() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         " public classdiagram Bar {" +
             "<<startProd>> public interface ASTFoo{}" +
@@ -213,7 +212,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testHasProdOnlyClass() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         " public classdiagram Bar {" +
             "<<startProd>> public class ASTFoo{}" +
@@ -228,7 +227,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testHasProdNoneOfBoth() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDDefinition> astcdDefinition = cd4AnalysisParser.parse_StringCDDefinition(
         " public classdiagram Bar {}");
     assertTrue(astcdDefinition.isPresent());
@@ -241,7 +240,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetSymbolTypeValueOfOwnSymbol() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTModifier> astcdDefinition = cd4AnalysisParser.parse_StringModifier(
         "<<symbol=\"FooSymbol\">> public");
     assertTrue(astcdDefinition.isPresent());
@@ -256,7 +255,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetSymbolTypeValueOfInherited() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTModifier> astcdDefinition = cd4AnalysisParser.parse_StringModifier(
         "<<inheritedSymbol=\"FooSymbol\">> public");
     assertTrue(astcdDefinition.isPresent());
@@ -271,7 +270,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetDefiningSymbolSimpleNameOnlyInheritedSymbol() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDClass> astcdClass = cd4AnalysisParser.parse_StringCDClass(
         "<<inheritedSymbol=\"FooSymbol\">> public class ASTFoo{}");
     assertTrue(astcdClass.isPresent());
@@ -285,7 +284,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetDefiningSymbolSimpleNameNoSymbol() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDClass> astcdClass = cd4AnalysisParser.parse_StringCDClass(
         "public class ASTFoo{}");
     assertTrue(astcdClass.isPresent());
@@ -299,7 +298,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetDefiningSymbolSimpleName() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
     Optional<ASTCDClass> astcdClass = cd4AnalysisParser.parse_StringCDClass(
         "<<symbol>> public class ASTFoo{}");
     assertTrue(astcdClass.isPresent());
@@ -315,7 +314,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
   @Test
   public void testGetSymbolFullName() throws IOException {
     DiagramSymbol bar = BasicSymbolsMill.diagramSymbolBuilder().setName("Bar").build();
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
 
     Optional<ASTCDClass> astcdClass = cd4AnalysisParser.parse_StringCDClass(
         "<<inheritedSymbol=\"a.b.FooSymbol\">> public class Faa {}");
@@ -329,7 +328,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   @Test
   public void testGetSymbolSimpleName() throws IOException {
-    CD4AnalysisParser cd4AnalysisParser = new CD4AnalysisParser();
+    CD4AnalysisParser cd4AnalysisParser = CD4AnalysisMill.parser();
 
     Optional<ASTCDClass> astcdClass = cd4AnalysisParser.parse_StringCDClass(
         "<<inheritedSymbol=\"a.b.c.FooSymbol\">> public class Faa {}");
