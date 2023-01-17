@@ -13,4 +13,6 @@ grammar ReplaceRule extends mc.common.Basics {
 
   E = token("<<") Name;
 
+  replacekeyword "something": "somethingelse";
+
 }

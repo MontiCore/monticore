@@ -534,10 +534,11 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     if (isAttribute && isListOrOpt) {
       addToCodeSection("(");
     }
-    if (grammarEntry.getReplacedKeywordsWithInherited().containsKey(ast.getName())) {
+    Map<String, Collection<String>> keywords = grammarEntry.getReplacedKeywordsWithInherited();
+    if (keywords.containsKey(ast.getName())) {
       addToCodeSection("(");
       String seperator = "";
-      for (String replaceString: grammarEntry.getAdditionalKeywords().get(ast.getName())) {
+      for (String replaceString: keywords.get(ast.getName())) {
         addToCodeSection(seperator);
         if (grammarInfo.getKeywordRules().contains(replaceString)) {
           addToCodeSection(parserHelper.getKeyRuleName(replaceString));
