@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -237,52 +239,52 @@ public class TypeRelations implements ITypeRelations {
 
   @Override
   public boolean isBoolean(SymTypeExpression type) {
-    return type.isObscureType() || "boolean".equals(unbox(type.print()));
+    return BasicSymbolsMill.BOOLEAN.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isInt(SymTypeExpression type) {
-    return type.isObscureType() || "int".equals(unbox(type.print()));
+    return BasicSymbolsMill.INT.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isDouble(SymTypeExpression type) {
-    return type.isObscureType() || "double".equals(unbox(type.print()));
+    return BasicSymbolsMill.DOUBLE.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isFloat(SymTypeExpression type) {
-    return type.isObscureType() || "float".equals(unbox(type.print()));
+    return BasicSymbolsMill.FLOAT.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isLong(SymTypeExpression type) {
-    return type.isObscureType() || "long".equals(unbox(type.print()));
+    return BasicSymbolsMill.LONG.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isChar(SymTypeExpression type) {
-    return type.isObscureType() || "char".equals(unbox(type.print()));
+    return BasicSymbolsMill.CHAR.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isShort(SymTypeExpression type) {
-    return type.isObscureType() || "short".equals(unbox(type.print()));
+    return BasicSymbolsMill.SHORT.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isByte(SymTypeExpression type) {
-    return type.isObscureType() || "byte".equals(unbox(type.print()));
+    return BasicSymbolsMill.BYTE.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isVoid(SymTypeExpression type) {
-    return type.isObscureType() || "void".equals(unbox(type.print()));
+    return BasicSymbolsMill.VOID.equals(unbox(type.print()));
   }
 
   @Override
   public boolean isString(SymTypeExpression type) {
-    return type.isObscureType() || "String".equals(type.print());
+    return "String".equals(type.print());
   }
 }
 
