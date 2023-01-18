@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 public class SymTypePrimitive extends SymTypeExpression {
 
@@ -64,13 +65,14 @@ public class SymTypePrimitive extends SymTypeExpression {
    * List of potential constants
    * (on purpose not implemented as enum)
    */
-  public static final List<String> primitiveTypes = Arrays
-      .asList("boolean", "byte", "char", "short", "int", "long", "float", "double", "void");
+  public static final List<String> primitiveTypes = Collections.unmodifiableList(Arrays
+      .asList("boolean", "byte", "char", "short", "int", "long", "float", "double", "void"));
 
   /**
    * Map for unboxing const types (e.g. "java.lang.Boolean" -> "boolean")
    */
   public static final Map<String, String> unboxMap;
+
 
   /**
    * Map for boxing const types (e.g. "boolean" -> "java.lang.Boolean")
@@ -79,39 +81,42 @@ public class SymTypePrimitive extends SymTypeExpression {
   public static final Map<String, String> boxMap;
 
 
+
   /**
    * initializing the maps
    */
   static {
-    unboxMap = new HashMap<String, String>();
-    unboxMap.put("java.lang.Boolean", "boolean");
-    unboxMap.put("java.lang.Byte", "byte");
-    unboxMap.put("java.lang.Character", "char");
-    unboxMap.put("java.lang.Short", "short");
-    unboxMap.put("java.lang.Integer", "int");
-    unboxMap.put("java.lang.Long", "long");
-    unboxMap.put("java.lang.Float", "float");
-    unboxMap.put("java.lang.Double", "double");
-    unboxMap.put("java.lang.String", "String");
-    unboxMap.put("Boolean", "boolean");
-    unboxMap.put("Byte", "byte");
-    unboxMap.put("Character", "char");
-    unboxMap.put("Short", "short");
-    unboxMap.put("Integer", "int");
-    unboxMap.put("Long", "long");
-    unboxMap.put("Float", "float");
-    unboxMap.put("Double", "double");
+    Map<String, String> unboxMap_temp = new HashMap<String, String>();
+    unboxMap_temp.put("java.lang.Boolean", "boolean");
+    unboxMap_temp.put("java.lang.Byte", "byte");
+    unboxMap_temp.put("java.lang.Character", "char");
+    unboxMap_temp.put("java.lang.Short", "short");
+    unboxMap_temp.put("java.lang.Integer", "int");
+    unboxMap_temp.put("java.lang.Long", "long");
+    unboxMap_temp.put("java.lang.Float", "float");
+    unboxMap_temp.put("java.lang.Double", "double");
+    unboxMap_temp.put("java.lang.String", "String");
+    unboxMap_temp.put("Boolean", "boolean");
+    unboxMap_temp.put("Byte", "byte");
+    unboxMap_temp.put("Character", "char");
+    unboxMap_temp.put("Short", "short");
+    unboxMap_temp.put("Integer", "int");
+    unboxMap_temp.put("Long", "long");
+    unboxMap_temp.put("Float", "float");
+    unboxMap_temp.put("Double", "double");
+    unboxMap = Collections.unmodifiableMap(unboxMap_temp);
 
-    boxMap = new HashMap<String, String>();
-    boxMap.put("boolean", "java.lang.Boolean");
-    boxMap.put("byte", "java.lang.Byte");
-    boxMap.put("char", "java.lang.Character");
-    boxMap.put("double", "java.lang.Double");
-    boxMap.put("float", "java.lang.Float");
-    boxMap.put("int", "java.lang.Integer");
-    boxMap.put("long", "java.lang.Long");
-    boxMap.put("short", "java.lang.Short");
-    boxMap.put("String", "java.lang.String");
+    Map<String, String> boxMap_temp = new HashMap<String, String>();
+    boxMap_temp.put("boolean", "java.lang.Boolean");
+    boxMap_temp.put("byte", "java.lang.Byte");
+    boxMap_temp.put("char", "java.lang.Character");
+    boxMap_temp.put("double", "java.lang.Double");
+    boxMap_temp.put("float", "java.lang.Float");
+    boxMap_temp.put("int", "java.lang.Integer");
+    boxMap_temp.put("long", "java.lang.Long");
+    boxMap_temp.put("short", "java.lang.Short");
+    boxMap_temp.put("String", "java.lang.String");
+    boxMap = Collections.unmodifiableMap(boxMap_temp);
   }
 
   /**

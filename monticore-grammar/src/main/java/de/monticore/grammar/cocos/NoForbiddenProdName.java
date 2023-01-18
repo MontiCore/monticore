@@ -9,6 +9,7 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class NoForbiddenProdName implements GrammarASTMCGrammarCoCo {
@@ -17,10 +18,10 @@ public class NoForbiddenProdName implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_MSG_FORMAT = " There must not exist a production with the name %s in the grammar %s.";
 
-  protected static final List<String> forbiddenNames = Lists.newArrayList("EnclosingScope", "SpannedScope", "Node", "CNode",
+  protected static final List<String> forbiddenNames = Collections.unmodifiableList(Lists.newArrayList("EnclosingScope", "SpannedScope", "Node", "CNode",
           "Class", "Traverser", "ScopesGenitor", "ScopesGenitorDelegator", "Scope", "ArtifactScope", "GlobalScope",
           // Antlr
-          "Mode", "Parser", "Lexer", "Options", "Returns");
+          "Mode", "Parser", "Lexer", "Options", "Returns"));
 
   protected static final String NODE = "Node";
 

@@ -27,27 +27,31 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    */
   public static final Map<String, String> unboxMap;
 
+
   /**
    * Map for boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    */
   public static final Map<String, String> boxMap;
 
+
   /**
    * initializing the maps
    */
   static {
-    unboxMap = new HashMap<>();
-    unboxMap.put("java.util.Optional", "Optional");
-    unboxMap.put("java.util.Set", "Set");
-    unboxMap.put("java.util.List", "List");
-    unboxMap.put("java.util.Map","Map");
+    Map<String, String> unboxMap_temp = new HashMap<String, String>();
+    unboxMap_temp.put("java.util.Optional", "Optional");
+    unboxMap_temp.put("java.util.Set", "Set");
+    unboxMap_temp.put("java.util.List", "List");
+    unboxMap_temp.put("java.util.Map","Map");
+    unboxMap = Collections.unmodifiableMap(unboxMap_temp);
 
-    boxMap = new HashMap<>();
-    boxMap.put("Optional", "java.util.Optional");
-    boxMap.put("Set", "java.util.Set");
-    boxMap.put("List", "java.util.List");
-    boxMap.put("Map","java.util.Map");
+    Map<String, String> boxMap_temp = new HashMap<String, String>();
+    boxMap_temp.put("Optional", "java.util.Optional");
+    boxMap_temp.put("Set", "java.util.Set");
+    boxMap_temp.put("List", "java.util.List");
+    boxMap_temp.put("Map","java.util.Map");
+    boxMap = Collections.unmodifiableMap(boxMap_temp);
   }
 
   /**
