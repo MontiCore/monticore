@@ -7,6 +7,7 @@ import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
+import java.util.Collections;
 
 public class NoForbiddenGrammarName implements GrammarASTMCGrammarCoCo {
 
@@ -14,7 +15,7 @@ public class NoForbiddenGrammarName implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_MSG_FORMAT = " There must not exist a grammar with the name %s.";
 
-  protected static final List<String> forbiddenNames = Lists.newArrayList("I");
+  protected static final List<String> forbiddenNames = Collections.unmodifiableList(Lists.newArrayList("I"));
 
   @Override
   public void check (ASTMCGrammar node){

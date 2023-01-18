@@ -6,6 +6,7 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 
 import java.util.List;
+import java.util.Collections;
 
 public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
@@ -36,7 +37,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
   public static final String VOID = "void";
 
-  public static final List<String> PRIMITIVE_LIST = Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR, NULL, VOID);
+  public static final List<String> PRIMITIVE_LIST = Collections.unmodifiableList(Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR, NULL, VOID));
 
 
   public static void initializePrimitives(){

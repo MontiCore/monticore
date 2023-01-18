@@ -14,9 +14,16 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import java.util.Set;
+import java.util.List;
+import java.util.Optional;
+import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Provides access to the aggregated configuration of a MontiCore instance
@@ -31,11 +38,11 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String FTL_EXTENSION = "ftl";
 
-  public static final Set<String> MC4_EXTENSIONS = Sets.newHashSet(MC4_EXTENSION);
+  public static final Set<String> MC4_EXTENSIONS = Collections.unmodifiableSet(Sets.newHashSet(MC4_EXTENSION));
 
-  public static final Set<String> HWC_EXTENSIONS = Sets.newHashSet(JAVA_EXTENSION);
+  public static final Set<String> HWC_EXTENSIONS = Collections.unmodifiableSet(Sets.newHashSet(JAVA_EXTENSION));
 
-  public static final Set<String> FTL_EXTENSIONS = Sets.newHashSet(FTL_EXTENSION);
+  public static final Set<String> FTL_EXTENSIONS = Collections.unmodifiableSet(Sets.newHashSet(FTL_EXTENSION));
 
   public static final String CONFIGURATION_PROPERTY = "_configuration";
 
