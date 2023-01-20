@@ -9,30 +9,30 @@ task generateSocialNetwork (type: MCTask) {
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/social/SocialNetwork.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = true
 }
 task generateSocialNetworkTR (type: MCTask, dependsOn: generateSocialNetwork) {
   grammar = file "$_outputDir/mc/testcases/social/tr/SocialNetworkTR.mc4"
   outputDir = file _outputDir
+  modelPath += file grammarsDir
   modelPath += file _outputDir
   def uptoDate = incCheck("mc/testcases/social/tr/SocialNetworkTR.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = false
+  isDSTL = true
 }
 task generateStatechart (type: MCTask) {
   grammar = file "$grammarsDir/mc/testcases/statechart/Statechart.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/statechart/Statechart.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = true
 }
 task generateStatechartTR (type: MCTask, dependsOn: generateStatechart) {
   grammar = file "$_outputDir/mc/testcases/statechart/tr/StatechartTR.mc4"
   outputDir = file _outputDir
+  modelPath += file grammarsDir
   modelPath += file _outputDir
   def uptoDate = incCheck("mc/testcases/statechart/tr/StatechartTR.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = false
+  isDSTL = true
 }
 
 task generateAutomaton (type: MCTask) {
@@ -40,15 +40,15 @@ task generateAutomaton (type: MCTask) {
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/automaton/Automaton.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = true
 }
 task generateAutomatonTR (type: MCTask, dependsOn: generateAutomaton) {
   grammar = file "$_outputDir/mc/testcases/automaton/tr/AutomatonTR.mc4"
   outputDir = file _outputDir
+  modelPath += file grammarsDir
   modelPath += file _outputDir
   def uptoDate = incCheck("mc/testcases/automaton/tr/AutomatonTR.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = false
+  isDSTL = true
 }
 
 task generatePropertiesAutomatonComponent (type: MCTask) {
@@ -56,15 +56,15 @@ task generatePropertiesAutomatonComponent (type: MCTask) {
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/DSLWithOtherPropertiesThanAutomatonComponent.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = true
 }
 task generatePropertiesAutomatonComponentTR (type: MCTask, dependsOn: generatePropertiesAutomatonComponent) {
   grammar = file "$_outputDir/mc/testcases/tr/DSLWithOtherPropertiesThanAutomatonComponentTR.mc4"
   outputDir = file _outputDir
+  modelPath += file grammarsDir
   modelPath += file _outputDir
   def uptoDate = incCheck("mc/testcases/tr/DSLWithOtherPropertiesThanAutomatonComponentTR.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = false
+  isDSTL = true
 }
 
 task generatePropertiesAutomaton (type: MCTask) {
@@ -72,15 +72,15 @@ task generatePropertiesAutomaton (type: MCTask) {
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/DSLWithOtherPropertiesThanAutomaton.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = true
 }
 task generatePropertiesAutomatonTR (type: MCTask, dependsOn: [generatePropertiesAutomaton, generatePropertiesAutomatonComponent, generateAutomaton]) {
   grammar = file "$_outputDir/mc/testcases/tr/DSLWithOtherPropertiesThanAutomatonTR.mc4"
   outputDir = file _outputDir
+  modelPath += file grammarsDir
   modelPath += file _outputDir
   def uptoDate = incCheck("mc/testcases/tr/DSLWithOtherPropertiesThanAutomatonTR.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = false
+  isDSTL = true
 }
 
 task generateGenericDSL (type: MCTask) {
@@ -88,15 +88,15 @@ task generateGenericDSL (type: MCTask) {
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/GenericDSL.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = true
 }
 task generateGenericDSLTR (type: MCTask, dependsOn: generateGenericDSL) {
   grammar = file "$_outputDir/mc/testcases/tr/GenericDSLTR.mc4"
   outputDir = file _outputDir
+  modelPath += file grammarsDir
   modelPath += file _outputDir
   def uptoDate = incCheck("mc/testcases/tr/GenericDSLTR.mc4")
   outputs.upToDateWhen { uptoDate }
-  dstlGen = false
+  isDSTL = true
 }
 if ("true".equals(getProperty('genTR'))) {
   task generateExpressionDSL(type: MCTask) {
@@ -104,15 +104,15 @@ if ("true".equals(getProperty('genTR'))) {
     outputDir = file _outputDir
     def uptoDate = incCheck("mc/testcases/ExpressionDSL.mc4")
     outputs.upToDateWhen { uptoDate }
-    dstlGen = true
   }
   task generateExpressionDSLTR(type: MCTask, dependsOn: generateExpressionDSL) {
     grammar = file "$_outputDir/mc/testcases/tr/ExpressionDSLTR.mc4"
     outputDir = file _outputDir
+    modelPath += file grammarsDir
     modelPath += file _outputDir
     def uptoDate = incCheck("mc/testcases/tr/ExpressionDSLTR.mc4")
     outputs.upToDateWhen { uptoDate }
-    dstlGen = false
+    isDSTL = true
   }
 }
 compileJava {

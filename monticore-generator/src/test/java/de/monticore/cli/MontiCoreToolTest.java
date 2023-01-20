@@ -193,7 +193,7 @@ public class MontiCoreToolTest {
         "-" + MODELPATH, "src/test/resources",
         "-" + OUT, reproOutDir1.toString(),
         "-" + HANDCODEDPATH, "src/test/java",
-        "-" + DSTLGEN_LONG, "true"};
+        "-" + GENDST_LONG, "false"};
 
     new MontiCoreTool().run(reproducableArgs1);
     FileUtils.deleteDirectory(reproOutDir2);

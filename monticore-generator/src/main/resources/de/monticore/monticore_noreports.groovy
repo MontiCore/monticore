@@ -92,9 +92,12 @@ while (grammarIterator.hasNext()) {
     // M8 Generate ast classes, symbol table, visitor, and context conditions
     generateFromCD(glex, cd, decoratedCD, out, handcodedPath, templatePath)
 
-    // DSTLGen part
-    if (dstlGen) {
-      generateDSTL(astGrammar, out, modelPathHC)
+    if (genDST) {
+      // Generate infrastructure for domain-specific transformation IFF this task is run on a TR grammar
+      generateDSTInfrastructure(astGrammar, out, modelPathHC)
+    } else {
+      // Generate a DSTL (ending in TR.mc4)
+      generateDSTLanguage(astGrammar, out, modelPathHC)
     }
 
     // M9: Write reports to files
