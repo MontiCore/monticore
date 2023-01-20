@@ -1243,17 +1243,38 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return scope;
   }
 
-  public void generateDSTL(ASTMCGrammar astGrammar, File out, MCPath modelPathHC) {
+  public void generateDSTLanguage(ASTMCGrammar astGrammar, File grammarOut, MCPath modelPathHC) {
+    DSTLGenScript dstlgenUtil = new DSTLGenScript();
+    // D1 Initialize glex and generator
+    GlobalExtensionManagement dstlGlex = dstlgenUtil.initGlex(astGrammar);
+
+    // D2 Parse TF grammar extension
+    Optional<ASTMCGrammar> gext = dstlgenUtil.parseGrammarHC(astGrammar, modelPathHC);
+
+    // D3 Generate grammar
+    dstlgenUtil.generateDSTL(astGrammar, gext, dstlGlex, grammarOut);
+  }
+
+  public void generateDSTInfrastructure(ASTMCGrammar astTRGrammar, File out, MCPath modelPathHC) {
+    if (!astTRGrammar.getSymbol().getName().endsWith("TR") || astTRGrammar.getPackageList().stream().noneMatch(p->p.equals("tr"))) {
+      Log.error("0xA1018 Unable to generate DST infrastructure on non-TR Grammar:" + astTRGrammar.getSymbol().getFullName());
+      return;
+    }
+    // a TR grammar has the fqn format: package.tr.NameTR, which we reverse here to result in package.Name
+    String originalGrammarName = astTRGrammar.getSymbol().getFullName().substring(0, astTRGrammar.getSymbol().getFullName().length() - 2).replace("tr.", "");
+    Optional<MCGrammarSymbol> originalGrammarOpt = GrammarFamilyMill.globalScope().resolveMCGrammar(originalGrammarName);
+    if (originalGrammarOpt.isEmpty()){
+      Log.error("0xA1026 Failed to resolve original grammar " + originalGrammarName + " of TRGrammar " + astTRGrammar.getSymbol().getFullName());
+      return;
+    }
+    ASTMCGrammar astGrammar = originalGrammarOpt.get().getAstNode();
     DSTLGenScript dstlgenUtil = new DSTLGenScript();
     // D1 Initialize glex and generator
     GlobalExtensionManagement dstlGlex = dstlgenUtil.initGlex(astGrammar);
 
     GeneratorEngine dstlGenerator = dstlgenUtil.initGenerator(dstlGlex, out);
-    // D2 Parse TF grammar extension
-    Optional<ASTMCGrammar> gext = dstlgenUtil.parseGrammarHC(astGrammar, modelPathHC);
 
-    // D3 Generate grammar
-    dstlgenUtil.generateDSTL(astGrammar, gext, dstlGlex, out);
+    // No D2, D3: TR Grammar is already present (see generateDSTLanguage)
 
     // D4 Generate context conditions
     dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, modelPathHC, dstlGlex);
@@ -1366,7 +1387,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(GRAMMAR_LONG + "s", grammarsPath);
           builder.addVariable(MODELPATH_LONG, modelPath);
           builder.addVariable(HANDCODEDMODELPATH_LONG, handcodedModelPath);
-          builder.addVariable(DSTLGEN_LONG, mcConfig.getDSTLGen().orElse(false)); // no DSTL generation by default
+          builder.addVariable(GENDST_LONG, mcConfig.getGenDST().orElse(false)); // no transformation infrastructure generation by default
           builder.addVariable(OUT_LONG, mcConfig.getOut());
           builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
           builder.addVariable(REPORT_LONG, mcConfig.getReport());

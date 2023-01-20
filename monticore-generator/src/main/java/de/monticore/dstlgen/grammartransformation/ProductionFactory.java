@@ -209,7 +209,9 @@ public class ProductionFactory {
     //ANTRL does not accept left recursion in blocks
     if (skipForSpecialRecursion) {
       if (srcNode.getAltList().size() != 1) {
-        Log.error("0xA5C05 pattern creation: More than one alt during detected left recursion - aborting");
+        Log.warn("0xA5C05 pattern creation: More than one alt during detected left recursion - unable to transform TR grammar due to production " + srcNode.getName());
+        result.add_PreComment(new Comment("/*0xA5C05 pattern creation: More than one alt during detected left recursion during " + srcNode.getName() + " */"));
+        return result;
       }
       ASTAlt aDeepClone = srcNode.getAltList().get(0).deepClone();
       aDeepClone.setRightAssoc(false); //TODO: Do i need the rightassoc?
@@ -602,11 +604,13 @@ public class ProductionFactory {
               .append(srcNode.getConstant(i).getName())
               .append("\"");
     }
+    // Sanitize the constant name (so special characters such as *,- are handled correctly)
+    String constantName = DSTLUtil.getNameForConstant(srcNode);
     String nameWithPrefix = grammarSymbol
-            .getName() + "_" + name;
+            .getName() + "_" + constantName;
     String rule = nameWithPrefix + "_Constant_Pat implements ITF" + nameWithPrefix
             + "_Constant astimplements de.monticore.tf.ast.IAttributePattern = "
-            + name + ":[" + constant.toString() + "];";
+            + constantName + ":[" + constant.toString() + "];";
 
     return parseClassProd(rule);
   }

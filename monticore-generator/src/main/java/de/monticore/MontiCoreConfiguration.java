@@ -93,7 +93,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String CUSTOMLOG_LONG = "customLog";
   public static final String REPORT_LONG = "report";
   public static final String REPORT_BASE_LONG = "report_base";
-  public static final String DSTLGEN_LONG = "dstlGen";
+  public static final String GENDST_LONG = "genDST";
   public static final String HELP_LONG = "help";
 
   protected final CommandLine cmdConfig;
@@ -379,12 +379,12 @@ public final class MontiCoreConfiguration implements Configuration {
   }
 
   /**
-   * Getter for the optional dstl generation.
+   * Getter for the optional dstl infrastructure generation.
    *
-   * @return Optional boolean for the dstl generation
+   * @return Optional boolean for the dstl infrastructure generation
    */
-  public Optional<Boolean> getDSTLGen() {
-    return getAsBoolean(DSTLGEN_LONG);
+  public Optional<Boolean> getGenDST() {
+    return getAsBoolean(GENDST_LONG);
   }
 
   /**
@@ -422,12 +422,12 @@ public final class MontiCoreConfiguration implements Configuration {
       result.putMember(GRAMMAR_LONG, grammars);
     }
 
-    // DSTLGen
+    // GenDST
     {
-      JsonElement dstlGen = this.getDSTLGen()
+      JsonElement dstlGen = this.getGenDST()
           .map(p-> (JsonElement) new JsonBoolean(p))
           .orElse(new JsonNull());
-      result.putMember(DSTLGEN_LONG, dstlGen);
+      result.putMember(GENDST_LONG, dstlGen);
     }
 
     // Custom Script set?

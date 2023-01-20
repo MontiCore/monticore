@@ -2,6 +2,7 @@
 package de.monticore.dstlgen.util;
 
 import de.monticore.dstlgen.ruletranslation.DSTLGenInheritanceHelper;
+import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -20,14 +21,21 @@ public class DSTLUtil {
 
   public static String getNameForConstant(ASTConstantGroup constantGroup){
     if (constantGroup.isPresentUsageName()) {
-      return capitalize(constantGroup.getUsageName());
+      return capitalizeOrLexerize(constantGroup.getUsageName());
     } else if(constantGroup.getConstant(0).isPresentUsageName()){
-      return capitalize(constantGroup.getConstant(0).getUsageName());
+      return capitalizeOrLexerize(constantGroup.getConstant(0).getUsageName());
     } else {
       // use the name of the first constant
-      return capitalize(constantGroup.getConstant(0).getName());
+      return capitalizeOrLexerize(constantGroup.getConstant(0).getName());
 
     }
+  }
+
+  public static String capitalizeOrLexerize(String name){
+    if (name.matches("[a-zA-Z][a-zA-Z_0-9]*"))
+      return capitalize(name);
+    // Use the LexNamer to get proper names for constants
+    return LexNamer.createSimpleGoodName(name);
   }
 
   public static boolean isEmptyProduction(ProdSymbol typeSymbol) {

@@ -63,7 +63,6 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
         def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
         def uptoDate = incCheck(grammarIncludingPackage)
         outputs.upToDateWhen { uptoDate }
-        dstlGen = withDSTLGen
     }
     generate.dependsOn("$taskname")
     if (withDSTLGen) {   // run MC on the TR grammar
@@ -79,7 +78,7 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
         def trGrammarIncludingPackage = file(grammarOutDir).toURI().relativize(file(grammar).toURI()).toString()
         outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
         outputs.upToDateWhen { incCheck(trGrammarIncludingPackage) }
-        dstlGen = false
+        isDSTL = true
         dependsOn(generate)
       }
       generateTR.dependsOn("${taskname}TR")

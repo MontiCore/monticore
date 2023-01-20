@@ -137,8 +137,6 @@ public class DSTLGenScript {
   }
 
   public void generateDSTL(ASTMCGrammar grammar, Optional<ASTMCGrammar> grammarExt, GlobalExtensionManagement glex, File outDirectory) {
-    glex.setGlobalValue("service", new DSTLService(grammar));
-    //    CommonVisitor.run(new RemoveCommentsVisitor(), dslAst);
     DSL2TransformationLanguageVisitor dsl2TfLang = new DSL2TransformationLanguageVisitor();
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
     traverser.add4Grammar(dsl2TfLang);
@@ -466,6 +464,7 @@ public class DSTLGenScript {
     glex.setGlobalValue("grammarNameLower", grammarSymbol.getName().toLowerCase());
     glex.setGlobalValue("grammarName", grammarSymbol.getName());
     glex.setGlobalValue("package", Joiners.DOT.join(grammarSymbol.getAstNode().getPackageList()));
+    glex.setGlobalValue("service", new DSTLService(grammarSymbol.getAstNode()));
   }
 
   private String getSimpleTypeNameToGenerate(String simpleName, String packageName, MCPath targetPath) {

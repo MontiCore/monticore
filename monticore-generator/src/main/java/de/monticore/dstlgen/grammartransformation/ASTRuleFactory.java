@@ -2,6 +2,7 @@
 package de.monticore.dstlgen.grammartransformation;
 
 import com.google.common.collect.Lists;
+import de.monticore.expressions.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -14,6 +15,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -164,9 +166,7 @@ public class ASTRuleFactory {
     ASTASTRule tfAstRule = parseASTRule(tfAstRuleDecl);
 
     // create method _getTFElementType
-    final String methodBody = "return " + grammarPackage +  "._ast.AST" + name + CLASS_SUFFIX;
-    
-    tfAstRule.getGrammarMethodList().add(createASTGrammarMethod("Class", "_getTFElementType", methodBody));
+    tfAstRule.getGrammarMethodList().add(buildASTGrammarMethodReturnFQNClass("Class", "_getTFElementType", grammarPackage +  "._ast.AST" + name));
 
     if (!type.equals(REPLACEMENT) && ! type.equals(PATTERN) && !overridden) {
       String packageName = "";
@@ -197,12 +197,45 @@ public class ASTRuleFactory {
     method.setPublic(true);
     method.setName(methodName);
 
-    ASTMCReturnType rType = parseReturnType(returnType);
+    ASTMCReturnType rType = buildQualifiedReturnType(returnType);
     method.setMCReturnType(rType);
 
     ASTAction retStatement = parseAction(methodBody);
     method.setBody(retStatement);
     return method;
+  }
+
+  /**
+   * Creates an ast method from the given method type and return type returning the fqn.class
+   *
+   * @param returnType return type of the ast method
+   * @param methodName name of the ast method
+   * @param typeFQN fqn of the ast method
+   * @return the ast method as an ASTGrammarMethod object
+   */
+  protected ASTGrammarMethod buildASTGrammarMethodReturnFQNClass(String returnType, String methodName, String typeFQN) {
+    ASTGrammarMethod method = GrammarMill.grammarMethodBuilder().uncheckedBuild();
+    method.setPublic(true);
+    method.setName(methodName);
+
+    ASTMCReturnType rType = buildQualifiedReturnType(returnType);
+    method.setMCReturnType(rType);
+
+    ASTAction retStatement = buildReturnActionReturnFQNClass(typeFQN);
+    method.setBody(retStatement);
+    return method;
+  }
+
+  protected ASTAction buildReturnActionReturnFQNClass(String typeFQN){
+    ASTClassExpression classExpression = Grammar_WithConceptsMill.classExpressionBuilder()
+        .setExtReturnType(Grammar_WithConceptsMill.extReturnTypeBuilder()
+            .setMCReturnType(buildQualifiedReturnType(typeFQN)).build())
+        .build();
+    return Grammar_WithConceptsMill.actionBuilder()
+        .addMCBlockStatement(Grammar_WithConceptsMill.returnStatementBuilder()
+            .setExpression(classExpression)
+            .build())
+        .build();
   }
 
 
@@ -278,14 +311,12 @@ public class ASTRuleFactory {
   }
 
 
-  protected ASTMCReturnType parseReturnType(String type) {
-    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
-    try {
-      return p.parse_StringMCReturnType(type).get();
-    }
-    catch (IOException e) {
-      throw new RuntimeException("0xF1007 Unable to create GenericType for " + type);
-    }
+  protected ASTMCReturnType buildQualifiedReturnType(String partsFQN) {
+    return Grammar_WithConceptsMill.mCReturnTypeBuilder()
+        .setMCType(Grammar_WithConceptsMill.mCQualifiedTypeBuilder()
+            .setMCQualifiedName(Grammar_WithConceptsMill.mCQualifiedNameBuilder().setPartsList(Splitters.DOT.splitToList(partsFQN)).build())
+            .build())
+        .build();
   }
 
   protected ASTASTRule parseASTRule(String tfAstElementProduction) {

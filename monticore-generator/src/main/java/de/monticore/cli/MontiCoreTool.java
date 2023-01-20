@@ -398,10 +398,10 @@ public class MontiCoreTool {
         .build());
 
     // toggle dstl generation
-    options.addOption(Option.builder(DSTLGEN_LONG)
+    options.addOption(Option.builder(GENDST_LONG)
             .argName("boolean")
             .hasArg(true)
-            .desc("Specifies the dstl generation.")
+            .desc("Specifies if transformation infrastructure should be generated for the given TR grammar.")
             .build());
 
     // help dialog

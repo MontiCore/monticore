@@ -118,8 +118,8 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
 
   public boolean dev = false;
 
-  public boolean dstlGen = false;
-
+  // Whether the grammar is a TR grammar and transformation related artifacts should be generated
+  public boolean isDSTL = false;
   
   @OutputDirectory
   public DirectoryProperty getOutputDir() {
@@ -241,8 +241,8 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
   }
 
   @Input
-  public boolean getDstlGen() {
-    return dstlGen;
+  public boolean isDSTL() {
+    return isDSTL;
   }
 
   public void handcodedPath(String... paths) {
@@ -380,8 +380,8 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
         params.add(printPath.apply(p.toFile()));
       }
     }
-    params.add("-dstlGen");
-    params.add(Boolean.toString(dstlGen));
+    params.add("-genDST");
+    params.add(Boolean.toString(isDSTL));
     if (configTemplate != null) {
       String cfgTemplateStr = configTemplate.toString();
       params.add("-ct");
