@@ -56,91 +56,91 @@ of the reference manual.
 ### **Extension** forms in a  component grammar
 A component grammar is meant for extension. MontiCore therefore provides five(!) 
   mechanisms that can be used when a sub-grammar shall extend a super-grammar.
-  The solutions are briefly discussed here: 
+  The solutions are briefly discussed here:
 1. Interface in the super-grammar
-  * Introduce an interface and allow building of sub-nonterminals in sub-grammars.
-  ```
-  component grammar A {  
-    interface X;
-    N = "bla" X "blubb";
-  }
-  grammar B extends A {
-    Y implements X = "specific" "thing"
-  }
-  ```
-  * Advantage: Multiple extensions are possible at the same time.
-            An NT `Y` can also implement multiple interfaces (like in Java). 
-  * Disadvantage: the designer of `A` explicitly has to design the *hole* 
-  (extension point) `X` and add it into the production.
+   * Introduce an interface and allow building of sub-nonterminals in sub-grammars.
+      ```
+      component grammar A {  
+        interface X;
+        N = "bla" X "blubb";
+      }
+      grammar B extends A {
+        Y implements X = "specific" "thing"
+      }
+      ```
+   * Advantage: Multiple extensions are possible at the same time.
+             An NT `Y` can also implement multiple interfaces (like in Java). 
+   * Disadvantage: the designer of `A` explicitly has to design the *hole* 
+   (extension point) `X` and add it into the production.
 2. Overriding (empty) nonterminal from the super-grammar
-  * Use a normal nonterminal `X` and override it in a sub-grammar.
-  ```
-  component grammar A {  
-    X = "";
-    N = "bla" X "blubb";
-  }
-  grammar B extends A {
-    @Override
-    X = "my" "thing";
-  }
-  ```
-  * Advantage: *Default* implementation "" exists, no explicit filling needed.
-  * Disadvantage: 
-    1. The designer of `A` explicitly has to design the *hole* (extension point) `X` 
-      and inject it into other places. 
-    2. Only one overriding alternative possible (i.e. multiple overriding in 
-       subgrammars are allowed, but only the most specific resides).
-3. Extending nonterminal from the super-grammar.
-  * Use an empty normal nonterminal `X` and extend it in a sub-grammar.
-  ```
-  component grammar A {  
-    X = ;
-    N = "bla" X "blubb";
-  }
-  grammar B extends A {
-    Y extends X = "this";
-  }
-  ```
-  * Advantage: *Default* implementation "" exists, no explicit filling needed.
-  * Disadvantage: 
-       The designer of `A` explicitly has to design the *hole* (extension point) `X` 
+   * Use a normal nonterminal `X` and override it in a sub-grammar.
+     ```
+     component grammar A {  
+       X = "";
+       N = "bla" X "blubb";
+     }
+     grammar B extends A {
+       @Override
+       X = "my" "thing";
+     }
+     ```
+   * Advantage: *Default* implementation "" exists, no explicit filling needed.
+   * Disadvantage: 
+     1. The designer of `A` explicitly has to design the *hole* (extension point) `X` 
        and inject it into other places. 
-  * Care: Extension still allows the (empty) alternative `X`.
+     2. Only one overriding alternative possible (i.e. multiple overriding in 
+        subgrammars are allowed, but only the most specific resides).
+3. Extending nonterminal from the super-grammar.
+   * Use an empty normal nonterminal `X` and extend it in a sub-grammar.
+     ```
+     component grammar A {  
+       X = ;
+       N = "bla" X "blubb";
+     }
+     grammar B extends A {
+       Y extends X = "this";
+     }
+     ```
+   * Advantage: *Default* implementation "" exists, no explicit filling needed.
+   * Disadvantage: 
+        The designer of `A` explicitly has to design the *hole* (extension point) `X` 
+        and inject it into other places. 
+   * Care: Extension still allows the (empty) alternative `X`.
 4. Using `external` nonterminals in the super-grammar.
-  * Mark nonterminal `X` as external.
-  ```
-  component grammar A {  
-    external X;
-    N = "bla" X "blubb";
-  }
-  grammar B extends A {
-    X = "your";
-  }
-  ```
-  * Advantage: Explicitely marks a nonterminal as *hole* (extension point) in the grammar.
-        Please observe that interface terminals may or not may be meant to be
-        extended in sub-grammars. `external` is clearer here.
-  * Disadvantage: 
-    1. Leads to more objects in the AST. Both classes `a.X` and `b.X` are 
-       instantiated and `a.X` only links to `b.X`.
-    2. Only one filling of the `hole` is possible.
+   * Mark nonterminal `X` as external.
+     ```
+     component grammar A {  
+       external X;
+       N = "bla" X "blubb";
+     }
+     grammar B extends A {
+       X = "your";
+     }
+     ```
+   * Advantage: Explicitely marks a nonterminal as *hole* (extension point) in the grammar. 
+     * Please observe that interface terminals may or not may be meant to be 
+     extended in sub-grammars. `external` is clearer here.
+   * Disadvantage: 
+     1. Leads to more objects in the AST. Both classes `a.X` and `b.X` are 
+        instantiated and `a.X` only links to `b.X`.
+     2. Only one filling of the `hole` is possible.
 
 5. Overriding the whole production.
-  * If you don't want to add a hole at any possible place of extension:
-  ```
-  component grammar A {  
-    N = "bla" "blubb";
-  }
-  grammar B extends A {
-    @Override
-    N = "bla" "my" "blubb" "now";
-  }
-  ```
-  * Advantage: Compact definition. No "*framework thinking*" needed (no need
-    to forecast all potential extension points)
-  * Disadvantage: 
-    1. The entire production is overriden (some redundancy). 
-    2. Only one overriding alternative possible. 
+   * If you don't want to add a hole at any possible place of extension:
+     ```
+     component grammar A {  
+       N = "bla" "blubb";
+     }
+     grammar B extends A {
+       @Override
+       N = "bla" "my" "blubb" "now";
+     }
+     ```
+   * Advantage: Compact definition. No "*framework thinking*" needed (no need
+     to forecast all potential extension points)
+   * Disadvantage: 
+     1. The entire production is overriden (some redundancy). 
+     2. Only one overriding alternative possible. 
 * Combinations are possible. Dependent on the anticipated forms of 
   adaptations option 1, 2, 3 and 5 are in use.
 * Defined by: BR
