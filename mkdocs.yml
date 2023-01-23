@@ -3,12 +3,6 @@ theme:
   name: 'material'
   favicon: 'img/favicon.ico'
   custom_dir: docs/overrides
-  hide:
-    - navigation
-  features:
-    - navigation.tabs
-    - toc.integrate
-    - toc.follow
   icon:
     logo: 'fontawesome/solid/desktop'
 
@@ -24,12 +18,12 @@ copyright: '(c) https://github.com/MontiCore/monticore'
 nav:
   - Home: 'README.md'
   - 'Getting Started': 'docs/GettingStarted.md'
-  - Grammars:
-      - 'General': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
+  - Core Grammars:
+      - 'Overview': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
       - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions.md'
       - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/Literals.md'
       - 'Types': 'monticore-grammar/src/main/grammars/de/monticore/types/Types.md'
-  - Languages: 
+  - Languages:
       - 'Languages and Language Components': 'docs/DevelopedLanguages.md'
       - 'List of Languages': 'docs/Languages.md'
   - 'Best Practices': 'docs/BestPractices.md'
@@ -38,6 +32,3 @@ nav:
   - Publications: 'docs/Publications.md'
   - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
   - Impressum: 'docs/further_docs/Impressum.md'
-
-
-

@@ -4,25 +4,38 @@
 
 # MontiCore - Expression-Language Modules
 
-MC-Expressions are used to formulate mathematical and programmatic 
-expressions of a set of literals. To achieve this, a system of modular and 
-pluggable grammar parts are developed. 
+MC Expressions can be used to formulate mathematical and programmatic
+expressions from a set of literals. MC Expressions are based on a system of
+modular and pluggable grammar parts.
 
 ### Given Expression languages in MontiCore
 
-Currently, there are six expression languages. These are
+Currently, MontiCore comprises the following expression languages:
 
-* [ExpressionsBasis](ExpressionsBasis.mc4) (basis for all of the expression languages, supports names and literals)
-* [AssignmentExpressions](AssignmentExpressions.mc4) (extends ExpressionsBasis, basic assignments)
-* [CommonExpressions](CommonExpressions.mc4) (extends ExpressionsBasis, common expressions like + and -)
-* [BitExpressions](BitExpressions.mc4) (extends ExpressionsBasis, bit expressions like & or <<)
-* [LambdaExpressions](LambdaExpressions.mc4) (extends ExpressionBasis, lambda expressions like a -> a + 2)
-* [JavaClassExpressions](JavaClassExpressions.mc4) (extends CommonExpressions, adds Java expressions like new)
+* [ExpressionsBasis](ExpressionsBasis.mc4): Basis for all other expression
+languages. Supports names and literals.
+* [AssignmentExpressions](AssignmentExpressions.mc4): Extends `ExpressionsBasis`
+with basic assignments.
+* [CommonExpressions](CommonExpressions.mc4): Extends `ExpressionsBasis` with
+**Florian: Can `+` and `-` be considered expressions or are they "(expression)
+operators" in this context?**
+common expressions like `+` and `-`.
+* [BitExpressions](BitExpressions.mc4): Extends `ExpressionsBasis` with bit
+**Florian: Ditto?**
+expressions like `&` or `<<`.
+* [LambdaExpressions](LambdaExpressions.mc4): Extends `ExpressionBasis` with
+lambda expressions like `a -> a + 2`)
+* [JavaClassExpressions](JavaClassExpressions.mc4): Extends `CommonExpressions`
+**Florian: Ditto (with the exception that `new` is a keyword rather than an
+operator)?**
+with Java expressions like `new`.
 
-Two further expression languages are defined in the OCL project:
+The OCL project defines additional expression languages:
 
-* [OCL-SetExpressions] (extends ExpressionsBasis, ideal for working with sets)
-* [OCL-OCLExpressions] (extends ExpressionsBasis, introduces OCL to MontiCore)
+* [OCL-OCLExpressions]: Extends `ExpressionsBasis` to introduce OCL to
+MontiCore.
+* [OCL-SetExpressions]: Extends `ExpressionsBasis` for working with sets using
+OCL.
 
 Furthermore, composite SI unit expressions are defined in the SI Units project:
 
@@ -35,19 +48,19 @@ And upcoming, Stream expressions are defined in the SpesML project:
 
 ### Using Expressions
 
-If you want to use one (or more) of the given expression languages in your
-language, then all you have to do is extend it (or them) in your grammar. 
-You are free to use any of them now.
+To use one or more of the existing expression languages in your MontiCore-based
+language its grammar needs to extend those expression languages.
 
 ### Creating your own Expression language
 
-There are some expressions you need desperately and that are not covered 
-in the given expression languages? <br/>
-Create a new grammar that extends at least ExpressionsBasis. In this 
-grammar, you can add your own expressions. These expressions must implement
-the interface Expression in the ExpressionsBasis grammar. 
-To include these expressions in your language, just extend the new grammar in your language.
-See [here](../../../../../test/grammars/de/monticore/expressions/CombineExpressionsWithLiterals.mc4) 
+There are some expressions you need desperately and that are not covered
+by the existing expression languages? <br/>
+In this case, you can create a new grammar that extends at least
+`ExpressionsBasis`. In the extending grammar, you are now free to add your own
+expressions which however must implement the `Expression` interface from
+`ExpressionsBasis` grammar. To then include the new expressions in a language
+let it extend the corresponding grammar.
+See [here](../../../../../test/grammars/de/monticore/expressions/CombineExpressionsWithLiterals.mc4)
 for an example.
 
 ## Further Information

@@ -6,26 +6,29 @@
 
 [[_TOC_]]
 
-[MontiCore](https://www.monticore.de) is a language workbench. It uses 
-grammars as primary mechanism to describe DSLs. The extended 
-grammar format allows to **compose language components** by
-(1) **inheriting**, (2) **extending**, (3) **embedding** 
-and (4) **aggregating** grammars (see the reference manual for details).
-From the grammars a lot of infrastructructure is generated, that is as well
-**composable**, can be **extended with handwrittten code**
-and most importandly, these
-extensions and the grammar composition are compatible, which
+[MontiCore](https://www.monticore.de) is a language workbench. It uses an
+extended grammar format as primary mechanism to describe DSLs. This format 
+allows to **compose language components** by grammar
+(1) **inheritance**, (2) **extension**, (3) **embedding** 
+and (4) **aggregating**. Please refer the
+[MontiCore handbook](https://www.monticore.de/handbook.pdf) for more details.
+
+MontiCore bundles a generator that can produce lots of infrastructure from
+MontiCore grammars. Like grammars, this infrastructure is **composable**. and
+can also be **extended with handwrittten code**. Most importantly, these
+extensions and the grammar composition are compatible which
 leads to optimal forms of **reuse**.
 
-The following is a library of language components
-that the core MontiCore project provides, mainly defined through a 
-primary grammar plus associated Java- and Template-Files. 
-These are available in the *MontiCore* core project 
-together with short descriptions and their status 
+This documentation presents a library of language components provided by the
+core of the MontiCore project together with short descriptions and status
+information
 ([Status of Grammars](../../../../../../00.org/Explanations/StatusOfGrammars.md)).
+The components are mainly defined by a primary grammar plus associated Java
+and template files.
 
-The list covers mainly the core grammars to be found in the `MontiCore/monticore` 
-project under `monticore-grammar/src/main/grammars/` in packages 
+The presented components are mainly based on the grammars in the
+`MontiCore/monticore` project. They are organized in the following
+packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
 
 * `de.monticore`
 * `de.monticore.expressions`
@@ -34,17 +37,17 @@ project under `monticore-grammar/src/main/grammars/` in packages
 * `de.monticore.symbols`
 * `de.monticore.types`
 
-and some expression/type related grammars in extending MontiCore projects.
-For [more langauges and language components, see here](../../../../../../docs/Languages.md).
+Additionally, the documentation presents some expression/type related language
+components in projects that extend MontiCore's core languages.
+For more languages and language components, follow
+[this link](../../../../../../docs/Languages.md).
 
 ## General: List of Grammars in package `de.monticore`
 
 ### [MCBasics.mc4](MCBasics.mc4)  (stable)
-* This grammar defines absolute basics, such as spaces, 
-Java-like comments and Names. 
-It should be useful in many languages.
+* This grammar defines basic rules for naming, spacing, and
+Java-like comments being useful in many languages.
   
-
 ## Types: List of Grammars in package `de.monticore.types`
 
 These grammars generally deal with type definitions and build on each 
@@ -68,45 +71,46 @@ other. Some snipets for type definitions:
   
 
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
-* This grammar defines basic types. This eases the reuse of type 
-structures in languages similar to Java, that are somewhat 
-simplified, e.g. without generics.
-* The grammar contains types from Java, e.g., primitives, void, 
-classes (also sometimes called "reference types").
-
+* This grammar defines basic types and thus eases the reuse of type
+structures in languages similar to Java. However, the type definitions in the
+grammar are somewhat simplified, e.g., they do not comprise generics.
+* The grammar contains types from Java, e.g., primitives, `void`, and
+classes (sometimes referred to as "reference types").
+* Example type definitions: `boolean`, `byte`, `short`, `int`, `long`, `char`,
+`float`, `double`, `void`, `Person`, `a.b.Person`, `import a.b.Foo.*;`.
 
 ### [MCCollectionTypes.mc4](types/MCCollectionTypes.mc4) (stable)
-* This grammar defines four generics: `List<A>`, `Map<A,B>`, `Set<A>` and 
+* This grammar defines four generic types: `List<A>`, `Map<A,B>`, `Set<A>` and
 `Optional<A>` on top of basic types.
-* These four generics correspond to a typical predefined set of generic 
-types for example used in connection with UML class diagrams or the
-OCL. UML associations typically have those association multiplicities and 
-therefore these types are of interest.
-* This eases the reuse of type structures in languages similar to Java,
-that are somewhat simplified, e.g. without general generics.
-
+* These four generic types correspond to a typical predefined set of generic
+types used, e.g., in connection with UML class diagrams or the
+OCL. UML associations typically have those association multiplicities which is
+why the generic types are of general interest.
+* The grammar eases the reuse of type structures in languages similar to Java
+that are somewhat simplified, e.g., by omitting general generics.
+* Example type definitions: `List<.>`, `Set<.>`, `Optional<.>`, `Map<.,.>`.
 
 ### [MCSimpleGenericTypes.mc4](types/MCSimpleGenericTypes.mc4) (stable)
-* This grammar introduces freely defined generic types
-such as `Blubb<A>`, `Bla<B,C>`, `Foo<Blubb<D>>`
-* These generics are covering a wide range of uses for generic types,
-although they don't cover type restrictions on the arguments, like in 
-Java. 
-
+* This grammar provides rules for the definition of custom generic types
+such as `Blubb<A>`, `Bla<B,C>`, `Foo<Blubb<D>>`.
+* The grammar covers a wide range of uses for generic types. Unlike Java, it
+does however not cover type restrictions on arguments.
+* Example type definitions: `Foo<.>`, `a.b.Bar<.,..,.>`.
 
 ### [MCFullGenericTypes.mc4](types/MCFullGenericTypes.mc4) (stable)
-* This grammar completes the type definitions to 
-support the full Java type system including wildcards Blubb<? extends A>
+* This grammar completes type definitions to support the full Java type system
+including wildcards on generic types like `Blubb<? extends A>`.
 * A general advice: When you are not sure that you need this kind of
-types, then use a simpler version from above. Type checking ist tricky.
+types, use a simpler version from above. Type checking is tricky.
+* Example type definitions: `Foo<? extends .>`, `Foo<? super .>`.
 
 
 ### [MCArrayTypes.mc4](types/MCArrayTypes.mc4) (stable)
 
-Arrays are orthogonal to the generic extensions and
-thus be combined with any of the above variants.
-Language component MCArrayTypes provides
-possibilities to add arrays, such as `Person[]` or `int[][]`.
+* The grammar provides means to define arrays.
+* Arrays are orthogonal to the generic extensions and may
+thus be combined with any of the above grammars.
+* Example type definitions: `Person[]`, `int[][]`.
 
 
 ### [SIUnitTypes4Math.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
@@ -120,6 +124,7 @@ e.g. stored in a `m/s`-based variable.
 
 The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
 
+* Example type definitions: `km/h`
 
 ### [SIUnitTypes4Computing.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
 
@@ -130,6 +135,7 @@ such as `int`, `long`, `double`, `float` as argument.
 
 The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
 
+* Example type definitions: `km/h<long>`
 
 ### [RegExType.mc4](https://git.rwth-aachen.de/monticore/languages/regex) (stable)
 
@@ -277,7 +283,7 @@ as they allow math oriented style of specification.
 this, type cast, etc.
 * This grammar should only be included, when a mapping to Java is
 intended and the full power of Java should be available in the 
-modelling language.
+modeling language.
 
 
 
@@ -424,7 +430,7 @@ several other grammars are also available:
   type the possible forms of tags.
 
 ### [MCCommon.mc4](MCCommon.mc4) (stable)
- * This grammar composes typical UML like grammar components.
+ * This grammar composes typical UML-like grammar components.
  * This includes Cardinality, Completeness, UMLModifier, and UMLStereotype.
 
 
@@ -446,28 +452,28 @@ public int print(String name, Set<Person> p) {
 
 * JavaLight is a subset of Java that MontiCore itself
   uses as intermediate language for the code generation process.
-* JavaLight doesn't provide all forms of classes (e.g. inner classes)
+* JavaLight doesn't provide all forms of classes (e.g., inner classes)
   and reduces the type system to normal generic types.  
-  However, that is sufficient for representation of all generated
-  pieces of code that MontiCore wants to make.
-* Included are: the full Java expressions (without anonymous classes),
-  the relevant Java statements, declaration of methods, constructors,
-  constants, interface methods, and annotations.
-* JavaLight composes from `CommonExpressions`,
+  However, that is sufficient for all code generated by MontiCore.
+* JavaLight supports Java expressions (including anonymous classes),
+  Java statements as relevant to MontiCore code generation, method declaration,
+  constructors, constants, interface methods, and annotations.
+* JavaLight composes the grammars `CommonExpressions`,
                                     `AssignmentExpressions`,
                                     `JavaClassExpressions`,
                                     `MCCommonStatements`,
                                     `MCBasicTypes`, and
                                     `OOSymbols`.
-* JavaLight can be used for other generator tools as well,
+* JavaLight can be used for other generator tools than MontiCore,
   especially as its core templates are reusable and new templates
-  for specific method bodies can be added using MontiCore's
+  for customized method bodies can be added using MontiCore's
   Hook-Mechanisms.
 
 
-## Examples for Grammars under `monticore-grammar/src/main/examples`
+## MontiCore Example Grammars for the Interested Reader
 
-These can also be used if someone is interested:
+The  `monticore-grammar/src/main/examples` folder hosts the following example
+grammars:
 
 * [StringLiterals.mc4](../../../examples/StringLiterals.mc4)
 * [MCHexNumbers.mc4](../../../examples/MCHexNumbers.mc4)
