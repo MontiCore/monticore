@@ -25,7 +25,7 @@ component grammar MCFunctionTypes
    * 
    *  Any number of arguments is possible.
   */
-  MCFunctionParameters =
+  MCFunctionParTypes =
     "(" (
     (MCType || ",")+
     (isElliptic:"...")?
@@ -34,7 +34,7 @@ component grammar MCFunctionTypes
 
   MCFunctionType implements MCType =
     <rightassoc>
-    MCFunctionParameters "->"
+    MCFunctionParTypes "->"
     MCReturnType
   ;
 
