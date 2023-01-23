@@ -2,6 +2,9 @@
 .md-header {
   background-color: #006BA5;
 }
+:root {
+  --md-primary-fg-color: #006BA5;
+}
 .tip {
   border: 2px solid grey;
   border-radius: 5px;
