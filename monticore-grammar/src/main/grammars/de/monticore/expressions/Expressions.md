@@ -14,20 +14,15 @@ Currently, MontiCore comprises the following expression languages:
 
 * [ExpressionsBasis](ExpressionsBasis.mc4): Basis for all other expression
 languages. Supports names and literals.
-* [AssignmentExpressions](AssignmentExpressions.mc4): Extends `ExpressionsBasis`
+* [AssignmentExpressions](AssignmentExpressions.mc4): Extends `ExpressionsBasis` 
 with basic assignments.
-* [CommonExpressions](CommonExpressions.mc4): Extends `ExpressionsBasis` with
-**Florian: Can `+` and `-` be considered expressions or are they "(expression)
-operators" in this context?**
-common expressions like `+` and `-`.
-* [BitExpressions](BitExpressions.mc4): Extends `ExpressionsBasis` with bit
-**Florian: Ditto?**
-expressions like `&` or `<<`.
-* [LambdaExpressions](LambdaExpressions.mc4): Extends `ExpressionBasis` with
-lambda expressions like `a -> a + 2`)
-* [JavaClassExpressions](JavaClassExpressions.mc4): Extends `CommonExpressions`
-**Florian: Ditto (with the exception that `new` is a keyword rather than an
-operator)?**
+* [CommonExpressions](CommonExpressions.mc4): Extends `ExpressionsBasis` 
+with common expressions like `+` and `-`.
+* [BitExpressions](BitExpressions.mc4): Extends `ExpressionsBasis` 
+with bit expressions like `&` or `<<`.
+* [LambdaExpressions](LambdaExpressions.mc4): Extends `ExpressionBasis` 
+with lambda expressions like `a -> a + 2`.
+* [JavaClassExpressions](JavaClassExpressions.mc4): Extends `CommonExpressions` 
 with Java expressions like `new`.
 
 The OCL project defines additional expression languages:
@@ -40,11 +35,6 @@ OCL.
 Furthermore, composite SI unit expressions are defined in the SI Units project:
 
 * [SI Units](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.mc4) (can be used to parse primitive units as well as their products, quotients, and powers)
-
-And upcoming, Stream expressions are defined in the SpesML project:
-
-* todo: add lingk to Stream expressions 
-
 
 ### Using Expressions
 
