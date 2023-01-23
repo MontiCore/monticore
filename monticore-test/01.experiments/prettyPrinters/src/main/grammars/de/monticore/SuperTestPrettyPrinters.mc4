@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar SuperTestPrettyPrinters extends TestPrettyPrinters {
+
+    @Override
+    ProductionFromTestPrettyPrintersA implements InterfaceI; //keep the original body
+
+    interface SuperInterfaceI;
+    @Override
+    ProductionFromTestPrettyPrintersB implements SuperInterfaceI; //keep the original body
+}

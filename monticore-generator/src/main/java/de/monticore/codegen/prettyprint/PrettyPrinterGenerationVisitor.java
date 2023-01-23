@@ -28,6 +28,7 @@ import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -102,7 +103,6 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   @Override
   public void endVisit(ASTClassProd node) {
     BlockData blockData = blockDataStack.pop();
-
     blockData.getAltDataList().sort(Collections.reverseOrder());
 
     // Prepare iterators (used instead of direct lists access)
@@ -164,11 +164,22 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     String signature = String.format(HANDLE, Joiners.DOT.join(astPackage), StringTransformations.capitalize(node.getName()));
     ASTCDMethod handle = CDMethodFacade.getInstance().createMethodByDefinition(signature);
 
-    TemplateHookPoint hookPoint;
+    TemplateHookPoint hookPoint = null;
     if (this.failureMessage == null) {
-      // Add the handle(node) method of the pretty printer with the collected BlockData
-      hookPoint = new TemplateHookPoint("_prettyprinter.pp.HandleMethod", blockData,
-              node.getName(), node.getEnclosingScope().getName(), Joiners.DOT.join(astPackage), iterators.entrySet());
+      if (this.altDataStack.isEmpty() && blockData.getAltDataList().isEmpty()) {
+        // We might override an existing production, e.g. by adding interfaces without touching the right side
+        Optional<ProdSymbol> superProd = node.getEnclosingScope().resolveInSuperGrammars(node.getName(), AccessModifier.ALL_INCLUSION);
+        if (superProd.isPresent()) {
+          // Add the handle(node) method of the pretty printer and call the handle method with the inherited node
+          String clazzName = Joiners.DOT.join(getASTPackage(superProd.get())) + "." + ASTConstants.AST_PREFIX + StringTransformations.capitalize(node.getName());
+          hookPoint = new TemplateHookPoint("_prettyprinter.pp.HandleInheritMethod", clazzName);
+        }
+      }
+      if (hookPoint == null) {
+        // Add the handle(node) method of the pretty printer with the collected BlockData
+        hookPoint = new TemplateHookPoint("_prettyprinter.pp.HandleMethod", blockData,
+                node.getName(), node.getEnclosingScope().getName(), Joiners.DOT.join(astPackage), iterators.entrySet());
+      }
     } else {
       // Add the handle(node) method of the pretty printer with the collected BlockData
       hookPoint = new TemplateHookPoint("_prettyprinter.pp.HandleMethodError", failureMessage, node.getName(), node, blockData);
@@ -602,7 +613,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     List<String> astPackage = new ArrayList<>();
     if (!symbol.getPackageName().isEmpty())
       astPackage.add(symbol.getPackageName());
-    astPackage.add(grammarName.toLowerCase());
+    astPackage.add(symbol.getEnclosingScope().getName().toLowerCase());
     astPackage.add(ASTConstants.AST_PACKAGE);
     return astPackage;
   }
