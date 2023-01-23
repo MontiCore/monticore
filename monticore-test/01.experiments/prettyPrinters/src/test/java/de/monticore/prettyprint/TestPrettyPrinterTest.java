@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.prettyprint;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.testprettyprinters.TestPrettyPrintersMill;
 import de.monticore.testprettyprinters._ast.ASTTestPrettyPrintersNode;
 import de.monticore.testprettyprinters._prettyprint.TestPrettyPrintersFullPrettyPrinter;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 /**
  * Test the PrettyPrinter Generation
  */
-public class TestPrettyPrinterTest {
+public class TestPrettyPrinterTest extends PPTestClass {
 
   @BeforeClass
   public static void setup() {
@@ -28,6 +29,11 @@ public class TestPrettyPrinterTest {
   @Before
   public void beforeEach() {
     Log.clearFindings();
+  }
+
+  @Override
+  protected String fullPrettyPrint(ASTNode astNode){
+    return  (new TestPrettyPrintersFullPrettyPrinter(new IndentPrinter())).prettyprint(astNode);
   }
 
   @Test
@@ -551,19 +557,6 @@ public class TestPrettyPrinterTest {
     testPP(";a;", TestPrettyPrintersMill.parser()::parse_StringNoSpaceSpecialS, s -> s.equals(";a;"));
   }
 
-  protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction, Function<String, Boolean> additionalCheck) throws IOException {
-    Optional<A> parsedOpt = parserFunction.parse(input);
-    Assert.assertTrue("Failed to parse input", parsedOpt.isPresent());
-    String prettyInput = (new TestPrettyPrintersFullPrettyPrinter(new IndentPrinter())).prettyprint(parsedOpt.get());
-    Optional<A> parsedPrettyOpt = parserFunction.parse(prettyInput);
-    String findings = Joiners.COMMA.join(Log.getFindings());
-    if (parsedPrettyOpt.isEmpty())
-      Assert.assertEquals("Failed to parse pretty: " + findings, input, prettyInput);
-    if (!parsedOpt.get().deepEquals(parsedPrettyOpt.get()))
-      Assert.assertEquals("Not deep equals: " + findings, input, prettyInput);
-    if (!additionalCheck.apply(prettyInput))
-      Assert.fail("Failed check, got pp-output: '" + prettyInput + "'");
-  }
 
   @Test
   public void testUsedTerminal() throws IOException {
@@ -643,13 +636,12 @@ public class TestPrettyPrinterTest {
     Assert.assertEquals("Hello world\n", printer.getContent());
   }
 
-
-  protected <A extends ASTTestPrettyPrintersNode> void testPP(String input, ParserFunction<String, Optional<A>> parserFunction) throws IOException {
-    testPP(input, parserFunction, s -> true);
+  @Test
+  public void testInterfaceI() throws IOException {
+    testPP("InterfaceImpl1", TestPrettyPrintersMill.parser()::parse_StringInterfaceImpl1);
+    testPP("InterfaceImpl2", TestPrettyPrintersMill.parser()::parse_StringInterfaceImpl2);
+    testPP("InterfaceImpl1", TestPrettyPrintersMill.parser()::parse_StringInterfaceI);
+    testPP("InterfaceImpl2", TestPrettyPrintersMill.parser()::parse_StringInterfaceI);
   }
 
-  @FunctionalInterface
-  interface ParserFunction<P, R> {
-    R parse(P a) throws IOException;
-  }
 }

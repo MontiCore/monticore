@@ -258,5 +258,11 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     GuessSpace1 = A "a" A;
     GuessSpace2 = A "*" A;
 
+    interface InterfaceI;
+    InterfaceImpl1 implements InterfaceI = "InterfaceImpl1";
+    InterfaceImpl2 implements InterfaceI = "InterfaceImpl2";
+    // Prepare for SuperTestPrettyPrinters
+    ProductionFromTestPrettyPrintersA = "a";
+    ProductionFromTestPrettyPrintersB = "b";
 
 }
