@@ -3,7 +3,7 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParameters;
+import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser;
@@ -38,7 +38,7 @@ public class MCFunctionTypesPrettyPrinter
     this.traverser = traverser;
   }
 
-  public void handle(ASTMCFunctionParameters node) {
+  public void handle(ASTMCFunctionParTypes node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     getPrinter().print("(");
     for (int i = 0; i < node.getMCTypeList().size(); i++) {
@@ -56,7 +56,7 @@ public class MCFunctionTypesPrettyPrinter
 
   public void handle(ASTMCFunctionType node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
-    node.getMCFunctionParameters().accept(getTraverser());
+    node.getMCFunctionParTypes().accept(getTraverser());
     getPrinter().print(" -> ");
     node.getMCReturnType().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(node, getPrinter());

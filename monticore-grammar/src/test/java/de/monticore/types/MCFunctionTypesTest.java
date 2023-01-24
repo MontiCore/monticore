@@ -33,8 +33,8 @@ public class MCFunctionTypesTest {
     assertEquals("void",
         type.getMCReturnType()
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
-    assertEquals(0, type.getMCFunctionParameters().getMCTypeList().size());
+    assertFalse(type.getMCFunctionParTypes().isPresentIsElliptic());
+    assertEquals(0, type.getMCFunctionParTypes().getMCTypeList().size());
   }
 
   @Test
@@ -43,8 +43,8 @@ public class MCFunctionTypesTest {
     assertEquals("int",
         type.getMCReturnType()
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
-    assertEquals(0, type.getMCFunctionParameters().getMCTypeList().size());
+    assertFalse(type.getMCFunctionParTypes().isPresentIsElliptic());
+    assertEquals(0, type.getMCFunctionParTypes().getMCTypeList().size());
   }
 
   @Test
@@ -53,13 +53,13 @@ public class MCFunctionTypesTest {
     assertEquals("void",
         type.getMCReturnType()
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
-    assertEquals(2, type.getMCFunctionParameters().getMCTypeList().size());
+    assertFalse(type.getMCFunctionParTypes().isPresentIsElliptic());
+    assertEquals(2, type.getMCFunctionParTypes().getMCTypeList().size());
     assertEquals("int",
-        type.getMCFunctionParameters().getMCType(0)
+        type.getMCFunctionParTypes().getMCType(0)
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
     assertEquals("long",
-        type.getMCFunctionParameters().getMCType(1)
+        type.getMCFunctionParTypes().getMCType(1)
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
   }
 
@@ -69,10 +69,10 @@ public class MCFunctionTypesTest {
     assertEquals("void",
         type.getMCReturnType()
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertTrue(type.getMCFunctionParameters().isPresentIsElliptic());
-    assertEquals(1, type.getMCFunctionParameters().getMCTypeList().size());
+    assertTrue(type.getMCFunctionParTypes().isPresentIsElliptic());
+    assertEquals(1, type.getMCFunctionParTypes().getMCTypeList().size());
     assertEquals("long",
-        type.getMCFunctionParameters().getMCType(0)
+        type.getMCFunctionParTypes().getMCType(0)
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
   }
 
@@ -82,28 +82,28 @@ public class MCFunctionTypesTest {
     assertEquals("long",
         type.getMCReturnType()
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-    assertTrue(type.getMCFunctionParameters().isPresentIsElliptic());
-    assertEquals(2, type.getMCFunctionParameters().getMCTypeList().size());
+    assertTrue(type.getMCFunctionParTypes().isPresentIsElliptic());
+    assertEquals(2, type.getMCFunctionParTypes().getMCTypeList().size());
     assertEquals("int",
-        type.getMCFunctionParameters().getMCType(0)
+        type.getMCFunctionParTypes().getMCType(0)
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
     assertEquals("long",
-        type.getMCFunctionParameters().getMCType(1)
+        type.getMCFunctionParTypes().getMCType(1)
             .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
   }
 
   @Test
   public void testHigherOrderFunctionType1() throws IOException {
     ASTMCFunctionType type = parse("() -> () -> void");
-    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
-    assertEquals(0, type.getMCFunctionParameters().getMCTypeList().size());
+    assertFalse(type.getMCFunctionParTypes().isPresentIsElliptic());
+    assertEquals(0, type.getMCFunctionParTypes().getMCTypeList().size());
   }
 
   @Test
   public void testHigherOrderFunctionType2() throws IOException {
     ASTMCFunctionType type = parse("((long) -> void) -> (int) -> long");
-    assertFalse(type.getMCFunctionParameters().isPresentIsElliptic());
-    assertEquals(1, type.getMCFunctionParameters().getMCTypeList().size());
+    assertFalse(type.getMCFunctionParTypes().isPresentIsElliptic());
+    assertEquals(1, type.getMCFunctionParTypes().getMCTypeList().size());
   }
 
   protected ASTMCFunctionType parse(String mcTypeStr) throws IOException {
