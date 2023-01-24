@@ -3,6 +3,12 @@ theme:
   name: 'material'
   favicon: 'img/favicon.ico'
   custom_dir: docs/overrides
+  hide:
+    - navigation
+  features:
+    - navigation.tabs
+    - toc.integrate
+    - toc.follow
   icon:
     logo: 'fontawesome/solid/desktop'
 
