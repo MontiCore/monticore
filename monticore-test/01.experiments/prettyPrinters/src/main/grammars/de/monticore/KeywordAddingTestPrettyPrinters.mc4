@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar KeywordAddingTestPrettyPrinters extends TestPrettyPrinters {
+
+    replacekeyword "A": "notquiteA", "A";
+
+    SomeProdWhichMightUsesReplacing = "A" "term" A;
+
+    // No test case for #3328 (replacing named terminals)
+}

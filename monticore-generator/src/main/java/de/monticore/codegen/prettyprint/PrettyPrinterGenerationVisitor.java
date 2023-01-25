@@ -64,6 +64,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   protected NonTermAccessorVisitor.ClassProdNonTermPrettyPrintData currentClassProdData;
 
   protected String grammarName;
+  protected Map<String, Collection<String>> replacedKeywords;
 
   protected boolean isMCCommonLiteralsSuper;
 
@@ -85,6 +86,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   @Override
   public void visit(ASTMCGrammar node) {
     this.grammarName = node.getName();
+    this.replacedKeywords = node.getSymbol().getReplacedKeywordsWithInherited();
     this.isMCCommonLiteralsSuper = node.getSymbol().getAllSuperGrammars().stream().anyMatch(x->x.getFullName().equals("de.monticore.literals.MCCommonLiterals"));
   }
 
@@ -359,11 +361,19 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   protected void visitTerminals(ASTITerminal node, int nodeIteration){
     if (blockDataStack.isEmpty()) return; // Only visit in CPs
     AltData altData = altDataStack.peek();
+
+    String string = node.getName();
+    if (this.replacedKeywords.containsKey(string)) {
+      // replacekeyword applied
+      string = this.replacedKeywords.get(string).iterator().next();
+    }
+
     if (node.isPresentUsageName()) {
       String usageName = node.getUsageName();
 
       if (currentClassProdData.isIteratorNeeded(usageName)) {
         // In case an iterator is required and the terminal is named, we can handle it like a lexed NonTerminal
+        // replacekeyword directive can be ignored here (as the parser handles it with an action)
         altData.getComponentList().add(PPGuardComponent.forNT("Name", usageName, nodeIteration, true, isMCCommonLiteralsSuper));
         blockDataStack.peek().markListReady(); // Mark that an iterator was used => while can be used
         altData.markListReady();
@@ -393,7 +403,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       }
     }else {
       // Always use default iteration 0, as we have no control otherwise
-      PPGuardComponent component = PPGuardComponent.forT(node.getName());
+      PPGuardComponent component = PPGuardComponent.forT(string);
 
       altData.getComponentList().add(component);
       altData.getExpressionList().add(AltData.TRUE_EXPRESSION); // Push a true condition

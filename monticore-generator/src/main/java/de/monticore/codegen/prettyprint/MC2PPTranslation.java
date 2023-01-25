@@ -9,16 +9,14 @@ import de.monticore.cdbasis.CDBasisMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.CoreTemplates;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
-import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -31,6 +29,9 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompilationUnit> {
 
@@ -137,8 +138,10 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     // Dedicated (overrideable) method for setting all the pretty printers
     ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PROTECTED.build(), "initializeTraverser", getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), "printComments"));
     fullPrettyPrinterCDClass.addCDMember(method);
+    Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> replacedKeywordGrammars = findReplacedKeywords(grammar.getSymbol());
+
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_prettyprinter.full.FPPTraverserInit",
-        grammar.getName(), superGrammars));
+        grammar.getSymbol(), superGrammars, replacedKeywordGrammars));
 
     // Method to toggle printComments
     method = getCDMethodFacade().createMethod(CDModifier.PUBLIC.build(), "setPrintComments",
@@ -207,6 +210,25 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
       astcdClass.addCDMember(method);
     }
     return attribute;
+  }
+
+  protected Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> findReplacedKeywords(MCGrammarSymbol grammarSymbol) {
+    PrettyPrinterReplaceKeywordFinder finder = new PrettyPrinterReplaceKeywordFinder(grammarSymbol.getReplacedKeywordsWithInherited());
+    Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> ret = new HashMap<>();
+
+    Map<ProdSymbol, Map<String, Collection<String>>> finds = finder.check(grammarSymbol.getAstNode());
+    if (!finds.isEmpty())
+      ret.put(grammarSymbol.getFullName(), finds);
+    for (MCGrammarSymbol superSymbol : grammarSymbol.getAllSuperGrammars()){
+      if (superSymbol.isPresentAstNode()) {
+        finds = finder.check(superSymbol.getAstNode());
+        if (!finds.isEmpty())
+          ret.put(superSymbol.getFullName(), finds);
+      }
+    }
+
+    return ret;
+
   }
 
 }

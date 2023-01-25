@@ -265,4 +265,21 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     ProductionFromTestPrettyPrintersA = "a";
     ProductionFromTestPrettyPrintersB = "b";
 
+    ToBeReplacedKeyword = "ToBeReplacedKeyword";
+    replacekeyword "ToBeReplacedKeyword": "ActuallyReplacedKeyword";
+    ProdUsingToBeReplacedKeywordA = ToBeReplacedKeyword;
+    ProdUsingToBeReplacedKeywordB = "other" "ToBeReplacedKeyword";
+    ProdUsingToBeReplacedKeywordC = "othercg" ["ToBeReplacedKeyword"];
+
+    ToBeAddedKeyword = "ToBeAddedKeyword";
+    replacekeyword "ToBeAddedKeyword": "ToBeAddedKeyword" , "ActuallyAddedKeyword";
+    ProdUsingToBeAddedKeywordA = ToBeAddedKeyword;
+    ProdUsingToBeAddedKeywordB = "other" "ToBeAddedKeyword";
+    ProdUsingToBeAddedKeywordC = "othercg" ["ToBeAddedKeyword"];
+
+    // Note: This production may have to be removed due to a CoCo
+    ProdNamedTerminal = term:"prodNamedTerminal";
+    replacekeyword "prodNamedTerminal": "newprodNamedTerminal", "prodNamedTerminal";
+
+
 }
