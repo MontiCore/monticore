@@ -2,8 +2,11 @@
 package de.monticore.prettyprint;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.keywordaddingtestprettyprinters.KeywordAddingTestPrettyPrintersMill;
 import de.monticore.testprettyprinters.TestPrettyPrintersMill;
-import de.monticore.testprettyprinters._ast.ASTTestPrettyPrintersNode;
+import de.monticore.testprettyprinters._ast.ASTProdNamedTerminal;
+import de.monticore.testprettyprinters._ast.ASTToBeReplacedKeyword;
+import de.monticore.testprettyprinters._parser.TestPrettyPrintersParser;
 import de.monticore.testprettyprinters._prettyprint.TestPrettyPrintersFullPrettyPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -557,7 +560,6 @@ public class TestPrettyPrinterTest extends PPTestClass {
     testPP(";a;", TestPrettyPrintersMill.parser()::parse_StringNoSpaceSpecialS, s -> s.equals(";a;"));
   }
 
-
   @Test
   public void testUsedTerminal() throws IOException {
     testPP("a b", TestPrettyPrintersMill.parser()::parse_StringUsedTerminalD);
@@ -644,4 +646,52 @@ public class TestPrettyPrinterTest extends PPTestClass {
     testPP("InterfaceImpl2", TestPrettyPrintersMill.parser()::parse_StringInterfaceI);
   }
 
+  @Test
+  public void testReplaceKeyword() throws IOException {
+    testPP("ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringToBeReplacedKeyword);
+    testPP("ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeReplacedKeywordA);
+    testPP("other ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeReplacedKeywordB);
+//    testPP("othercg ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeReplacedKeywordC); // See #3335
+  }
+
+  @Test
+  public void testReplaceKeywordFail() throws IOException {
+    TestPrettyPrintersParser parser = TestPrettyPrintersMill.parser();
+    Optional<ASTToBeReplacedKeyword> astOpt = parser.parse_StringToBeReplacedKeyword("ReplacedKeyword");
+    Assert.assertTrue(astOpt.isEmpty());
+  }
+
+  @Test
+  public void testAddReplaceKeyword() throws IOException {
+    // added keyword
+    testPP("ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringToBeAddedKeyword);
+    testPP("ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordA);
+    testPP("other ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordB);
+//    testPP("othercg ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordC); // #3335
+    // and the original
+    testPP("ToBeAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringToBeAddedKeyword);
+    testPP("ToBeAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordA);
+    testPP("other ToBeAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordB);
+    testPP("othercg ToBeAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordC);
+  }
+
+
+  @Test
+  @Ignore // Ignored - see #3328
+  public void testProdNamedTerminalParser() throws IOException {
+    Optional<ASTProdNamedTerminal> astOpt = KeywordAddingTestPrettyPrintersMill.parser().parse_StringProdNamedTerminal("newprodNamedTerminal");
+    Assert.assertTrue(astOpt.isPresent());
+    Assert.assertEquals("newprodNamedTerminal", astOpt.get().getTerm()); // Parser Action does otherwise
+  }
+
+  @Test
+  public void testAddingProdNamedTerminalOld() throws IOException {
+    testPP("prodNamedTerminal", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringProdNamedTerminal);
+  }
+
+  @Test
+  @Ignore // Ignored - see #3328
+  public void testAddingProdNamedTerminalNew() throws IOException {
+    testPP("newprodNamedTerminal", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringProdNamedTerminal);
+  }
 }
