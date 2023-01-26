@@ -10,4 +10,7 @@ grammar SuperTestPrettyPrinters extends TestPrettyPrinters {
     interface SuperInterfaceI;
     @Override
     ProductionFromTestPrettyPrintersB implements SuperInterfaceI; //keep the original body
+
+    SuperTestType implements TypeInterface = "SuperTestType";
+    SuperTestType2 implements TypeInterface2 = "STT2";
 }

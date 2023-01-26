@@ -281,5 +281,9 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     ProdNamedTerminal = term:"prodNamedTerminal";
     replacekeyword "prodNamedTerminal": "newprodNamedTerminal", "prodNamedTerminal";
 
-
+    interface TypeInterface;
+    interface TypeInterface2;
+    TestType implements TypeInterface = "TestType" TypeInterface2?;
+    UsingTestType = "abc" TypeInterface;
+    TestType2 implements TypeInterface2 = "TT2";
 }

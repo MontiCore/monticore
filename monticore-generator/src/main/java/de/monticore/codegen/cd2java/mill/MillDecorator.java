@@ -37,8 +37,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.TopDecorator.TOP_SUFFIX;
 import static de.monticore.cd.facade.CDModifier.*;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -307,12 +306,12 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     String packageDef = cd.getName();
     ASTMCQualifiedType fullPrettyPrinterType = this.getMCTypeFacade().createQualifiedType(packageDef + "." + astName);
 
-    ASTCDParameter node = this.getCDParameterFacade().createParameter(visitorService.getLanguageInterfaceName(), "node");
+    ASTCDParameter node = this.getCDParameterFacade().createParameter(AST_INTERFACE, "node");
     ASTCDParameter printComments = this.getCDParameterFacade().createParameter(
             this.getMCTypeFacade().createBooleanType(), "printComments");
 
     // add public static Method for pretty printing
-    ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), getMCTypeFacade().createStringType(), "prettyPrint",node, printComments);
+    ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), getMCTypeFacade().createStringType(), "prettyPrint", node, printComments);
     prettyPrintMembersList.add(builderMethod);
     this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.PrettyPrintBuilderMethod", astName));
 
