@@ -294,7 +294,7 @@ public class MontiCoreTool {
         .hasArg()
         .desc("Optional output directory for all generated artifacts.")
         .build());
-    
+
     // specify the tool jar's name
     options.addOption(Option.builder(TOOL_JAR_NAME)
         .longOpt(TOOL_JAR_NAME_LONG)

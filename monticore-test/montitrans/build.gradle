@@ -22,6 +22,7 @@ subprojects {
   dependencies {
     implementation project(':monticore-runtime')
     implementation project(':monticore-grammar')
+    implementation project(path: ':monticore-grammar', configuration: 'trafo')
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
     testImplementation group:'junit', name:'junit', version:junit_version
     grammar (project(path: ':monticore-grammar')){
