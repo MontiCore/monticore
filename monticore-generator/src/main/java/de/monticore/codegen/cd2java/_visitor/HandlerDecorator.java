@@ -25,6 +25,7 @@ import de.se_rwth.commons.Joiners;
 import java.util.*;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
@@ -72,12 +73,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return The decorated getRealThis method
    */
   protected ASTCDMethod addGetTraverserMethod(ASTMCType visitorType) {
-    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), visitorType, GET_TRAVERSER);
-    String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new MCBasicTypesFullPrettyPrinter(new IndentPrinter())) + GET_TRAVERSER);
-    this.replaceTemplate(EMPTY_BODY, getRealThisMethod, new StringHookPoint(
-        "    throw new UnsupportedOperationException(\"0xA7015" + generatedErrorCode + " The getter for the traverser is " +
-            "not implemented. You might want to implement a wrapper class to allow setting/getting the traverser.\");\n"));
+    ASTCDMethod getRealThisMethod = this.getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), visitorType, GET_TRAVERSER);
     return getRealThisMethod;
   }
 
@@ -89,12 +85,7 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    */
   protected ASTCDMethod addSetTraverserMethod(ASTMCType visitorType) {
     ASTCDParameter visitorParameter = getCDParameterFacade().createParameter(visitorType, TRAVERSER);
-    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC.build(), SET_TRAVERSER, visitorParameter);
-    String generatedErrorCode = visitorService.getGeneratedErrorCode(visitorType.printType(
-        new MCBasicTypesFullPrettyPrinter(new IndentPrinter())) + SET_TRAVERSER);
-    this.replaceTemplate(EMPTY_BODY, setRealThis, new StringHookPoint(
-        "    throw new UnsupportedOperationException(\"0xA7016" + generatedErrorCode + " The setter for the traverser is " +
-            "not implemented. You might want to implement a wrapper class to allow setting/getting the traverser.\");\n"));
+    ASTCDMethod setRealThis = this.getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), SET_TRAVERSER, visitorParameter);
     return setRealThis;
   }
 
