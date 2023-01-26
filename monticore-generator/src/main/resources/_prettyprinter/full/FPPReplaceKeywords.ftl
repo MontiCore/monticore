@@ -17,6 +17,4 @@ ${tc.signature("grammarSymbol", "replacedKeywordCurrentGrammar")}
 };
 <#if doGenerateReplKeywordError>
 Log.error("0xA1066${service.getGeneratedErrorCode(grammarSymbol)} replacekeyword requires HC effort for pretty printing");
-if(true)throw new IllegalStateException("replacekeyword requires HC effort for pretty printing");
-<#-- we throw an exception in case error handling is muted, but due to unreachable statements otherwise the if (true) is added-->
 </#if>

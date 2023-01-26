@@ -651,7 +651,8 @@ public class TestPrettyPrinterTest extends PPTestClass {
     testPP("ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringToBeReplacedKeyword);
     testPP("ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeReplacedKeywordA);
     testPP("other ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeReplacedKeywordB);
-//    testPP("othercg ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeReplacedKeywordC); // See #3335
+    // testPP("othercg ActuallyReplacedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeReplacedKeywordC); // See monticore/monticore#3335 - constant groups do not behave with replacekeyword
+    // The othercg test is skipped until replacekeyword with constant group behaviour is settled
   }
 
   @Test
@@ -667,7 +668,8 @@ public class TestPrettyPrinterTest extends PPTestClass {
     testPP("ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringToBeAddedKeyword);
     testPP("ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordA);
     testPP("other ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordB);
-//    testPP("othercg ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordC); // #3335
+    // testPP("othercg ActuallyAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordC); // See monticore/monticore#3335 - constant groups do not behave with replacekeyword
+    // The othercg test is skipped until replacekeyword with constant group behaviour is settled
     // and the original
     testPP("ToBeAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringToBeAddedKeyword);
     testPP("ToBeAddedKeyword", TestPrettyPrintersMill.parser()::parse_StringProdUsingToBeAddedKeywordA);
@@ -677,7 +679,8 @@ public class TestPrettyPrinterTest extends PPTestClass {
 
 
   @Test
-  @Ignore // Ignored - see #3328
+  @Ignore // Ignored - monticore/monticore#3328 - non-terminals with attributes do not behave with replacekeyword
+  // We can un-ignore this test once that behaviour is settled
   public void testProdNamedTerminalParser() throws IOException {
     Optional<ASTProdNamedTerminal> astOpt = KeywordAddingTestPrettyPrintersMill.parser().parse_StringProdNamedTerminal("newprodNamedTerminal");
     Assert.assertTrue(astOpt.isPresent());
@@ -690,7 +693,8 @@ public class TestPrettyPrinterTest extends PPTestClass {
   }
 
   @Test
-  @Ignore // Ignored - see #3328
+  @Ignore // Ignored - monticore/monticore#3328 - non-terminals with attributes do not behave with replacekeyword
+  // We can un-ignore this test once that behaviour is settled
   public void testAddingProdNamedTerminalNew() throws IOException {
     testPP("newprodNamedTerminal", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringProdNamedTerminal);
   }

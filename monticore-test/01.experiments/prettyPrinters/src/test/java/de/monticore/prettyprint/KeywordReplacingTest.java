@@ -32,14 +32,11 @@ public class KeywordReplacingTest extends PPTestClass {
   public void testSomeProdForException() throws IOException {
     Optional<ASTSomeProdWhichUsesReplacing> astOpt = KeywordReplacingTestPrettyPrintersMill.parser().parse_StringSomeProdWhichUsesReplacing("notquiteA term notquiteA");
     Assert.assertTrue(astOpt.isPresent());
-    try {
-      fullPrettyPrint(astOpt.get());
-      Assert.fail("Did not fail when printing");
-    }
-    catch (IllegalStateException expected) {
-      Assert.assertEquals("replacekeyword requires HC effort for pretty printing", expected.getMessage());
-      Assert.assertEquals(1, Log.getErrorCount());
-    }
+    fullPrettyPrint(astOpt.get());
+    Assert.assertEquals("Did not fail when printing", 1, Log.getErrorCount());
+    Assert.assertEquals(1, Log.getErrorCount());
+    Assert.assertEquals(1, Log.getFindingsCount());
+    Assert.assertTrue(Log.getFindings().get(0).getMsg().endsWith("replacekeyword requires HC effort for pretty printing"));
   }
 
   @Override

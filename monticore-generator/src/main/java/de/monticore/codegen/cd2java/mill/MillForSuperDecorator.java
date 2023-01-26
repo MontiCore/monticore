@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._parser.ParserConstants.FOR_SUFFIX;
 import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX;
@@ -90,6 +91,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
           .addAllCDMembers(correctScopeMethods)
           .addCDMember(getSuperTraverserMethod(superSymbol))
           .addCDMember(getSuperInheritanceTraverserMethod(superSymbol))
+          .addCDMember(getSuperPrettyPrintMethod(superSymbol))
           .build();
 
       if(!service.hasComponentStereotype(((ASTCDDefinition) superSymbol.getAstNode()).getModifier())){
@@ -244,6 +246,18 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   protected ASTCDMethod getSuperInheritanceTraverserMethod(DiagramSymbol cdSymbol) {
     String traverserInterfaceType = visitorService.getTraverserInterfaceFullName(cdSymbol);
     return getProtectedForSuperMethod(INHERITANCE_TRAVERSER, traverserInterfaceType);
+  }
+
+  protected ASTCDMethod getSuperPrettyPrintMethod(DiagramSymbol cdSymbol) {
+    ASTMCType returnType = getMCTypeFacade().createStringType();
+
+    ASTMCType nodeType = getMCTypeFacade().createQualifiedType(AST_INTERFACE);
+    ASTCDParameter nodeParameter = getCDParameterFacade().createParameter(nodeType, "node");
+    ASTCDParameter printCommentsParameter  = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), "printComments");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, "_prettyPrint", nodeParameter, printCommentsParameter);
+
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return " + service.getMillFullName() + ".prettyPrint(node, printComments);"));
+    return method;
   }
 
   /**

@@ -86,7 +86,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodSize() {
-    assertEquals(7, millClass.getCDMethodList().size());
+    assertEquals(8, millClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -100,6 +100,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
     getMethodBy("_traverser", millClass);
     getMethodBy("_inheritanceTraverser", millClass);
     getMethodBy("_parser", millClass);
+    getMethodBy("_prettyPrint", millClass);
   
     assertTrue(Log.getFindings().isEmpty());
   }
