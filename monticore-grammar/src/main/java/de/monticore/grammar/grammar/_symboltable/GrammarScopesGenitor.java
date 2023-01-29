@@ -309,7 +309,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
    */
   protected void addAttributeInAST(ProdSymbol mcProdSymbol, ASTAdditionalAttribute astAttribute, boolean isAstAttr) {
     AdditionalAttributeSymbol symbol = createAdditionalAttribute(astAttribute).setIsAstAttr(isAstAttr).build();
-    symbol.setType(astAttribute.getMCType().printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter()));
+    symbol.setType(astAttribute.getMCType().printType());
     mcProdSymbol.getSpannedScope().add(symbol);
     // symbol -> ast
     symbol.setAstNode(astAttribute);

@@ -53,6 +53,6 @@ public  class ASTMCPrimitiveType extends ASTMCPrimitiveTypeTOP {
    * @return
    */
   public String toString(){
-    return printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
+    return printType();
   }
 }

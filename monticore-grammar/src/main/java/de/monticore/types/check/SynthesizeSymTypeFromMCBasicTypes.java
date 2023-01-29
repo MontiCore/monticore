@@ -33,7 +33,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
    */
   @Override
   public void endVisit(ASTMCPrimitiveType primitiveType) {
-    String primName = primitiveType.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter());
+    String primName = primitiveType.printType();
     Optional<TypeSymbol> prim = getScope(primitiveType.getEnclosingScope()).resolveType(primName);
     if(prim.isPresent()){
       SymTypePrimitive typeConstant =

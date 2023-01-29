@@ -3,6 +3,7 @@
 package de.monticore.types.mcbasictypes._ast;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 public  class ASTMCImportStatement extends ASTMCImportStatementTOP {
@@ -19,9 +20,7 @@ public  class ASTMCImportStatement extends ASTMCImportStatementTOP {
   }
 
   public String printType() {
-    IndentPrinter printer = new IndentPrinter();
-    MCBasicTypesFullPrettyPrinter pp = new MCBasicTypesFullPrettyPrinter(printer);
-    return pp.prettyprint(this);
+    return MCBasicTypesMill.prettyPrint(this, false);
   }
 
 }

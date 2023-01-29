@@ -72,7 +72,7 @@ public class TypeCalculator implements ITypeRelations {
     TypeCheckResult result = iSynthesize.synthesizeType(ast);
     if(!result.isPresentResult()) {
       Log.error("0xE9FD4 Internal Error: No SymType for: "
-        + ast.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ". Probably TypeCheck mis-configured.");
+        + ast.printType() + ". Probably TypeCheck mis-configured.");
     }
     return result.getResult();
   }
@@ -100,7 +100,7 @@ public class TypeCalculator implements ITypeRelations {
     TypeCheckResult result = iSynthesize.synthesizeType(ast);
     if(!result.isPresentResult()) {
       Log.error("0xE9FD9 Internal Error: No SymType for return type: "
-        + ast.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
+        + ast.printType()
         + ". Probably TypeCheck mis-configured.");
     }
     return result.getResult();
