@@ -53,7 +53,7 @@ public class CollectGrammarInformationVisitor implements
   
   private Stack<ASTBlock> blockStack = new Stack<>();
   
-  private ASTClassProd classprod;
+  private Optional<ASTClassProd> classprodOpt = Optional.empty();
   
   public CollectGrammarInformationVisitor(MCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;
@@ -74,7 +74,7 @@ public class CollectGrammarInformationVisitor implements
     if (!prod.getName().equals("MCCompilationUnit")) {
       collectedParserProds.add(prod);
     }
-    classprod = prod;
+    classprodOpt = Optional.of(prod);
     stringAttrs.put(prod.getName(), Lists.newArrayList());
     stringListAttrs.put(prod.getName(), Lists.newArrayList());
     booleanAltAttrs.put(prod.getName(), Lists.newArrayList());
@@ -87,10 +87,16 @@ public class CollectGrammarInformationVisitor implements
   }
 
   @Override
+  public void endVisit(ASTClassProd prod) {
+    classprodOpt = Optional.empty();
+  }
+
+  @Override
   public void visit(ASTNonTerminal node) {
-    if (classprod != null &&
+    if (classprodOpt.isPresent() &&
             (node.getName().equals("Name") || node.getName().equals("String") || DSTLUtil
                     .isFromSupportedGrammar(node, grammarSymbol))) {
+      ASTClassProd classprod = classprodOpt.get();
       ProdSymbol type = grammarSymbol.getProdWithInherited(classprod.getName()).get();
       String attrName = node.isPresentUsageName() ? node.getUsageName() : node.getName();
       List<RuleComponentSymbol> prods = type.getProdComponents();
@@ -143,6 +149,8 @@ public class CollectGrammarInformationVisitor implements
 
   @Override
   public void visit(ASTConstantGroup node) {
+    if (classprodOpt.isEmpty()) return;
+    ASTClassProd classprod = classprodOpt.get();
     if (node.getConstantList().size() == 1) {
       String name = DSTLUtil.getNameForConstant(node);
 
