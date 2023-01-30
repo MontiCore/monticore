@@ -21,15 +21,21 @@ public interface ICDAutomataScope extends ICDAutomataScopeTOP {
     // resolve source kind
     List<CDClassSymbol> cdClasses = resolveCDClassLocallyMany(
         foundSymbols, name, m, x -> true);
+    List<StimulusSymbol> stimulusSymbols  = getLocalStimulusSymbols();
 
     List<StimulusSymbol> adapters = new ArrayList<>();
 
     for (CDClassSymbol s : cdClasses) {
       // instantiate adapter
-      CDClass2StimulusAdapter c2s = new CDClass2StimulusAdapter(s);
-      if (p.test(c2s)) { // check predicate
-        adapters.add(c2s);
-        this.add(c2s); // add adapter to scope
+      if (!stimulusSymbols.stream().filter(v -> v instanceof CDClass2StimulusAdapter).filter(v -> ((CDClass2StimulusAdapter) v).getAdaptee().equals(s)).findAny().isPresent()) {
+
+        CDClass2StimulusAdapter c2s = new CDClass2StimulusAdapter(s);
+        if (p.test(c2s)) { // check predicate
+          // add the adapter to the result
+          adapters.add(c2s);
+          // add the adapter to the scope
+          this.add(c2s); // add adapter to scope
+        }
       }
     }
     return adapters;
