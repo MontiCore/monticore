@@ -21,6 +21,6 @@ public class ASTMCArrayType extends ASTMCArrayTypeTOP {
   }
 
   public String printTypeWithoutBrackets() {
-    return this.getMCType().printType(MCArrayTypesMill.mcArrayTypesPrettyPrinter());
+    return this.getMCType().printType();
   }
 }

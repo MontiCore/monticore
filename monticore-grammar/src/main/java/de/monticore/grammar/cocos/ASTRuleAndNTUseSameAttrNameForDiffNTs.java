@@ -36,7 +36,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
       if (!rcs.isEmpty()) {
         RuleComponentSymbol rc = rcs.get(0);
         if (rc.isIsNonterminal()) {
-          String typeName = attr.getAstNode().getMCType().printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter());
+          String typeName = attr.getAstNode().getMCType().printType();
           if (!typeName
                   .endsWith(rc.getReferencedProd().get().getName())) {
             Optional<ProdSymbol> attrType = a.getEnclosingScope()

@@ -292,7 +292,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
 
   @Override
   public void visit(ASTMCType node) {
-    printer.append(node.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+    printer.append(node.printType());
   }
 
   /**
