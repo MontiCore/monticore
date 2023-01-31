@@ -27,7 +27,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -115,7 +115,7 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testGetTraverser() {
     ASTCDMethod astcdMethod = getMethodBy("getTraverser", handler);
-    assertDeepEquals(PUBLIC.build(), astcdMethod.getModifier());
+    assertDeepEquals(PUBLIC_ABSTRACT.build(), astcdMethod.getModifier());
     assertTrue(astcdMethod.getMCReturnType().isPresentMCType());
     assertEquals(0, astcdMethod.sizeCDParameters());
     assertDeepEquals("de.monticore.codegen.ast.automaton._visitor.AutomatonTraverser", astcdMethod.getMCReturnType().getMCType());
@@ -126,7 +126,7 @@ public class HandlerDecoratorTest extends DecoratorTestCase {
   @Test
   public void testSetTraverser() {
     ASTCDMethod astcdMethod = getMethodBy("setTraverser", handler);
-    assertDeepEquals(PUBLIC.build(), astcdMethod.getModifier());
+    assertDeepEquals(PUBLIC_ABSTRACT.build(), astcdMethod.getModifier());
     assertTrue(astcdMethod.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, astcdMethod.sizeCDParameters());
     ASTCDParameter astcdParameter = astcdMethod.getCDParameter(0);
