@@ -117,7 +117,7 @@ public class TemplateControllerSignatureUsageTest {
     assertTrue(Log.getFindings().isEmpty());
   }
     
-  /*@Test
+  @Test
   public void testParameterizedInclusionUsage() {
     StringBuilder templateOutput = tc.include(TEMPLATE_PACKAGE + "ParameterizedInclusionUsage");
     
@@ -127,5 +127,5 @@ public class TemplateControllerSignatureUsageTest {
         "Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends"
         , templateOutput.toString());
     assertTrue(Log.getFindings().isEmpty());
-  }*/
+  }
 }
