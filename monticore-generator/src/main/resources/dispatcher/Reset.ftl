@@ -1,10 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("booleans", "optionals")}
+${tc.signature("names")}
 
-<#list booleans as boolean>
-  ${boolean.getName()} = false;
-</#list>
-
-<#list optionals as optionals>
-    ${optionals.getName()} = Optional.empty();
+<#list names as name>
+  is${name} = false;
+  opt${name} = Optional.empty();
 </#list>

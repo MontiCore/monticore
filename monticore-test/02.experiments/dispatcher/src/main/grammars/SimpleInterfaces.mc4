@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar SimpleInterfaces {
+
+  A = B | E;
+
+  interface B;
+
+  C implements B = "c";
+
+  D implements B = "d";
+
+  E = "e";
+
+  F extends E = "f";
+
+}

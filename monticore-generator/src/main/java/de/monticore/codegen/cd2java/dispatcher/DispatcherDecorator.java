@@ -12,12 +12,13 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
+import de.monticore.types.check.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.*;
@@ -43,29 +44,27 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
 
     String visitorName = getInheritanceVisitorName(input.getCDDefinition().getName());
     ASTCDInterfaceUsage traverserInterface = getInterfaceUsage();
-    List<ASTCDAttribute> booleanAttributes = createBooleanAttributes();
-    List<ASTCDAttribute> optionalAttributes = createOptionalAttributes();
-    ASTCDMethod resetMethod = createResetMethod(booleanAttributes, optionalAttributes);
+    List<ASTCDAttribute> attributes = createAllAttributes();
+    ASTCDMethod resetMethod = createResetMethod();
     ASTCDConstructor constructor = createConstructor(resetMethod, visitorName);
     List<ASTCDMember> traverserElements = createTraverserElements();
-    List<ASTCDMember> methods = createIsASTMethods(booleanAttributes);
-    methods.addAll(createAsASTMethods(booleanAttributes, optionalAttributes));
-    methods.addAll(createHandleMethods(booleanAttributes, optionalAttributes));
+    List<ASTCDMember> methods = createIsASTMethods();
+    methods.addAll(createAsASTMethods());
+    methods.addAll(createHandleMethods());
+    methods.add(resetMethod);
 
     return CD4CodeMill.cDClassBuilder()
             .setName(visitorName)
             .setModifier(PUBLIC.build())
             .setCDInterfaceUsage(traverserInterface)
-            .addAllCDMembers(booleanAttributes)
-            .addAllCDMembers(optionalAttributes)
-            .addCDMember(resetMethod)
+            .addAllCDMembers(attributes)
             .addCDMember(constructor)
             .addAllCDMembers(traverserElements)
             .addAllCDMembers(methods)
             .build();
   }
 
-  public List<ASTCDAttribute> createBooleanAttributes() {
+  public List<ASTCDAttribute> createAllAttributes() {
     List<ASTCDAttribute> attributes = new ArrayList<>();
     for(CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
       attributes.add(CD4CodeMill.cDAttributeBuilder()
@@ -73,14 +72,7 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
               .setMCType(MCTypeFacade.getInstance().createBooleanType())
               .setName("is" + typeSymbol.getName())
               .build());
-    }
-    return attributes;
-  }
 
-  public List<ASTCDAttribute> createOptionalAttributes() {
-
-    List<ASTCDAttribute> attributes = new ArrayList<>();
-    for(CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
       attributes.add(CD4CodeMill.cDAttributeBuilder()
               .setModifier(PROTECTED.build())
               .setMCType(MCTypeFacade
@@ -92,7 +84,7 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return attributes;
   }
 
-  private ASTCDMethod createResetMethod(List<ASTCDAttribute> booleanAttributes, List<ASTCDAttribute> optionalAttributes) {
+  public ASTCDMethod createResetMethod() {
     ASTCDMethod resetMethod = CD4CodeMill.cDMethodBuilder()
             .setModifier(PUBLIC.build())
             .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
@@ -100,8 +92,10 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
                     .build())
             .setName("reset")
             .build();
+
     replaceTemplate(EMPTY_BODY, resetMethod,
-            new TemplateHookPoint("dispatcher.Reset", booleanAttributes, optionalAttributes));
+            new TemplateHookPoint("dispatcher.Reset",
+                    visitorService.getAllCDTypes(visitorService.getCDSymbol()).stream().map(CDTypeSymbol::getName).collect(Collectors.toList())));
 
     return resetMethod;
   }
@@ -161,15 +155,15 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return traverserElements;
   }
 
-  public List<ASTCDMember> createIsASTMethods(List<ASTCDAttribute> attributes) {
+  public List<ASTCDMember> createIsASTMethods() {
     List<ASTCDMember> methods = new ArrayList<>();
 
-    for(ASTCDAttribute attribute: attributes) {
-      String name = attribute.getName();
+    for(CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
+      String name = typeSymbol.getName();
 
       ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
               .setModifier(PUBLIC.build())
-              .setName(name)
+              .setName("is"+name)
               .addCDParameter(CD4CodeMill.cDParameterBuilder()
                       .setMCType(MCTypeFacade.getInstance().createQualifiedType("de.monticore.ast.ASTNode"))
                       .setName("node")
@@ -185,21 +179,19 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return methods;
   }
 
-  public List<ASTCDMember> createAsASTMethods(List<ASTCDAttribute> booleans, List<ASTCDAttribute> optionals) {
+  public List<ASTCDMember> createAsASTMethods() {
     List<ASTCDMember> methods = new ArrayList<>();
 
-    for(int i = 0; i < booleans.size(); ++i) {
-      String name = booleans.get(i).getName();
-
-      String returnType = optionals.get(i).getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+    for(CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
+      String name = typeSymbol.getName();
 
       ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
               .setModifier(PUBLIC.build())
               .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
                       .setMCType(MCTypeFacade.getInstance()
-                              .createQualifiedType(returnType))
+                              .createQualifiedType(visitorService.createASTFullName(typeSymbol)))
                       .build())
-              .setName("a" + name.substring(1))
+              .setName("as" + name)
               .addCDParameter(CD4CodeMill.cDParameterBuilder()
                       .setMCType(MCTypeFacade.getInstance().createQualifiedType("de.monticore.ast.ASTNode"))
                       .setName("node")
@@ -207,18 +199,22 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
               .build();
 
       replaceTemplate(EMPTY_BODY, method,
-              new TemplateHookPoint("dispatcher.AsAST", name.substring(2)));
+              new TemplateHookPoint("dispatcher.AsAST", name));
 
       methods.add(method);
     }
     return methods;
   }
 
-  public List<ASTCDMember> createHandleMethods(List<ASTCDAttribute> booleans, List<ASTCDAttribute> optionals) {
+  public List<ASTCDMember> createHandleMethods() {
     List<ASTCDMember> methods = new ArrayList<>();
-    for(int i = 0; i < booleans.size(); ++i) {
-
-      String parameterType = optionals.get(i).getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+    for(CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
+      List<String> superTypes = typeSymbol.getSuperTypesList()
+              .stream()
+              .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
+              .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
+              .map(s -> visitorService.createASTFullName((CDTypeSymbol) s))
+              .collect(Collectors.toList());
 
       ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
               .setModifier(PUBLIC.build())
@@ -226,13 +222,14 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
                       .setMCVoidType(MCTypeFacade.getInstance().createVoidType())
                       .build())
               .setName("handle")
-              .addCDParameter(CD4CodeMill.cDParameterBuilder().setMCType(MCTypeFacade.getInstance().createQualifiedType(parameterType))
+              .addCDParameter(CD4CodeMill.cDParameterBuilder().setMCType(MCTypeFacade.getInstance()
+                              .createQualifiedType(visitorService.createASTFullName(typeSymbol)))
                       .setName("node")
                       .build())
               .build();
 
       replaceTemplate(EMPTY_BODY, method,
-              new TemplateHookPoint("dispatcher.Handle", booleans.get(i).getName(), optionals.get(i).getName()));
+              new TemplateHookPoint("dispatcher.Handle", typeSymbol.getName(), superTypes));
 
       methods.add(method);
     }

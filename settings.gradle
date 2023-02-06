@@ -114,6 +114,7 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:02experiments:configTemplate')
   include(':monticore-test:02experiments:groovyHooks')
   include(':monticore-test:02experiments:imports')
+  include(':monticore-test:02experiments:dispatcher')
 
   include ':monticore-test:montitrans'
   project(':monticore-test:montitrans').projectDir = file("monticore-test/montitrans")

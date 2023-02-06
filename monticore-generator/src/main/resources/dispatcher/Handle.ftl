@@ -1,5 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("booleanName", "optionalName")}
+${tc.signature("name", "superTypes")}
 
-${booleanName} = true;
-${optionalName} = Optional.of(node);
+<#list superTypes as superType>
+  this.handle((${superType}) node);
+</#list>
+is${name} = true;
+opt${name} = Optional.of(node);
