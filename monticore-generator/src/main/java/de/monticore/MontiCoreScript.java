@@ -67,6 +67,7 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
+import de.monticore.codegen.cd2java.inheritancevisitor.InheritanceVisitorDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -682,6 +683,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         cds.get(1), cds.get(2), decoratedCD, handCodedPath);
     decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateForCoCoPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
+    decorateForInheritanceVisitor(glex, cds.get(0), decoratedCD);
     decorateForODPackage(glex, cdScope, cds.get(0), decoratedCD,handCodedPath);
     decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     decorateMill(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
@@ -823,6 +825,19 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     odcdDecorator.decorate(cd, decoratedCD);
   }
 
+  public void decorateForInheritanceVisitor(GlobalExtensionManagement glex,
+                                            ASTCDCompilationUnit cd,
+                                            ASTCDCompilationUnit decoratedCD) {
+    decorateWithInheritanceVisitor(cd, decoratedCD, glex);
+  }
+
+  protected void decorateWithInheritanceVisitor(ASTCDCompilationUnit cd,
+                                                ASTCDCompilationUnit decoratedCD,
+                                  GlobalExtensionManagement glex) {
+
+    InheritanceVisitorDecorator visitorDecorator = new InheritanceVisitorDecorator(glex, new VisitorService(cd));
+    visitorDecorator.decorate(cd, decoratedCD);
+  }
 
   public void decorateMill(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                            ASTCDCompilationUnit cd,
@@ -994,6 +1009,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         cds.get(1), cds.get(2), decoratedCD, handCodedPath);
     decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateForCoCoPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
+    decorateForInheritanceVisitor(glex, cds.get(0), decoratedCD);
     decorateForODPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     decorateMill(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);

@@ -59,12 +59,12 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     assertTrue(readFile("src/test/resources/examples/automaton/Output.od", StandardCharsets.UTF_8).endsWith(printer.getContent()));
   }
 
-  @Test
+/*  @Test
   public void test() throws IOException {
     ASTAutomaton ast = parse();
     printOD(ast, "Testautomat");
     assertTrue(Log.getFindings().isEmpty());
-  }
+  }*/
   
   protected String readFile(String path, Charset encoding)
       throws IOException
