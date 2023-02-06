@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
  *                        defaults to empty list
  */
 @CacheableTask
-public abstract class MCTask extends DefaultTask implements GradleTaskStatistic {
+public abstract class MCTask extends DefaultTask {
   
   public MCTask() {
     Project project = getProject();
@@ -497,32 +497,4 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
     file.createNewFile();
     FileUtils.writeStringToFile(file, "version = " + getProject().getVersion(), StandardCharsets.UTF_8);
   }
-
-  @Override
-  @Internal
-  public JsonElement getGradleStatisticData(){
-    JsonObject result = new JsonObject();
-
-    {
-      JsonArray params = new JsonArray();
-      Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
-
-      String[] usedParams = getParameters(f->{
-        try {
-          return cwd.relativize(f.toPath()).toString();
-        } catch (IllegalArgumentException ignored){ // Can occur, if build is on external harddrive, and `~/.gradle` on internal harddrive
-          return f.getPath();
-        }
-      });
-      params.addAll(
-          Arrays.stream(usedParams)
-              .map(UserJsonString::new)
-              .collect(Collectors.toList())
-      );
-      result.putMember("parameter", params);
-    }
-
-    return result;
-  }
-
 }
