@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java.inheritancevisitor;
+package de.monticore.codegen.cd2java.dispatcher;
 
 import de.monticore.cd.facade.CDInterfaceUsageFacade;
 import de.monticore.cd4code.CD4CodeMill;
@@ -23,12 +23,12 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.*;
 
 
-public class InheritanceVisitorDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final VisitorService visitorService;
 
-  public InheritanceVisitorDecorator(final GlobalExtensionManagement glex,
-                                     final VisitorService visitorService) {
+  public DispatcherDecorator(final GlobalExtensionManagement glex,
+                             final VisitorService visitorService) {
     super(glex);
     this.visitorService = visitorService;
   }
