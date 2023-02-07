@@ -446,7 +446,7 @@ public class DSTLGenScript {
   }
 
   protected void setUpDSTLUtils(GlobalExtensionManagement glex) {
-    glex.setGlobalValue("inheritanceHelper", new DSTLGenInheritanceHelper());
+    glex.setGlobalValue("inheritanceHelper", DSTLGenInheritanceHelper.getInstance());
     glex.setGlobalValue("attributeHelper", new DSTLGenAttributeHelper());
   }
 

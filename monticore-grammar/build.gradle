@@ -60,7 +60,7 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
     def g = it
     def taskname = "generateGrammar${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
     def withDSTLGen = ("true").equals(getProperty('genTR')) && !["ODRuleGeneration", "ODRules", "TFBasisExts", "TFCommons",  // Do not generate TR grammars for TR-component grammars
-            "MCJavaLiterals", "Grammar", "Grammar_WithConcepts"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
+           "Grammar", "Grammar_WithConcepts"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
     task "$taskname"(type: MCTask) {
         grammar = file g
         outputDir = file grammarOutDir
@@ -277,8 +277,16 @@ if (findProperty('ci') == null) {
 }
 
 // Bundle and publish the generated TR artifacts separately as monticore-grammar-trafo
-tasks.register('trafoJar', Jar) { from sourceSets.trafo.output }
-tasks.register('trafoSourcesJar', Jar) { from sourceSets.trafo.java }
+tasks.register('trafoJar', Jar) {
+  from sourceSets.trafo.output
+  classifier 'trafo'
+  group 'build'
+}
+tasks.register('trafoSourcesJar', Jar) {
+  from sourceSets.trafo.java
+  classifier 'trafo-sources'
+  group 'build'
+}
 publishing {
     publications {
         "trafo"(MavenPublication) {
@@ -288,11 +296,11 @@ publishing {
         }
     }
 }
-// And expose the trafo sourceset to other subprojects using a 'trafo' configuration
+// And expose the trafo jar artifact to other subprojects using a 'trafo' configuration
 configurations {
   trafo
 }
 artifacts {
-  trafo trafoJar
+  trafo(trafoJar)
 }
 

@@ -3,13 +3,27 @@ package de.monticore.tf;
 
 component grammar TFCommons extends de.monticore.tf.TFBasisExts {
 
+    // A specific identifier production, implementing TfIdentifier, will be derived for every lexical production
+    interface TfIdentifier = identifierSchema:TFSchema? newIdentifierSchema:TFSchema? ; // ASTRules are used to add components/attributes
+    // These productions will follow this format (for an exemplary lexical production LexProd):
+    //  identifierToken:LexProd   - only match the token
+    //   | ( "[[" identifierToken:LexProd ":-" (newIdentifierToken:LexProd | newIdentifierSchema:TFSchema )? "]]" ") - replace the token with either a new one, a schema-variable, or nothing
+    //   | ( "[[" (newIdentifierToken:LexProd | newIdentifier:TFSchema)? ":-" newIdentifierToken:LexProd  "]]" ") - replace a token, schema-variable, or nothing with a new token
+    //   | "LexProd" identifierSchema:TFSchema  ";"
+    // Extending rule 3a of [Hoe18], not only all Names (and Strings) are replaced, but now every lexical production with its specific tfidentifier
 
-    TfIdentifier =
-        (identifier:String | identifier:Name)
+
+    // Similar to Names, describes schema variables (either by name or dont-care), but requires the $
+   TFSchema = {noSpace(2)}? "$" Name;
+
+
+    // The replacement of TFSchema with another TFSchema MUST only be possible in the Name-identifier (as otherwise every literal pattern would match for a name)
+    TfIdentifierName implements TfIdentifier =
+        (identifierToken:Name)
              |
-            ("[[" (identifier:String |identifier:Name)? ":-" (newIdentifier:String | newIdentifier:Name)? "]]")
+            ("[[" (identifierToken:Name | identifierSchema: TFSchema )? ":-" (newIdentifierToken:Name  | newIdentifierSchema: TFSchema)? "]]")
              |
-            "Name" identifier:Name ";";
+            "Name" identifierToken:Name ";";
 
     TFFolding = "folding" "{" FoldingSet* "}";
 
@@ -53,6 +67,20 @@ component grammar TFCommons extends de.monticore.tf.TFBasisExts {
     ;
 
     astrule TfIdentifier =
+        identifierToken: String?
+        newIdentifierToken: String?
+        method public boolean isPresentIdentifier() {
+          return this.isPresentIdentifierSchema() || this.isPresentIdentifierToken();
+        }
+        method public String getIdentifier() {
+          return this.isPresentIdentifierSchema()? '$' + this.getIdentifierSchema().getName() : this.getIdentifierToken();
+        }
+        method public boolean isPresentNewIdentifier() {
+          return this.isPresentNewIdentifierSchema() || this.isPresentNewIdentifierToken();
+        }
+        method public String getNewIdentifier() {
+          return this.isPresentNewIdentifierSchema()? this.getNewIdentifierSchema().getName() : this.getNewIdentifierToken();
+        }
         method public boolean isNewIdentifierFix() {
           return isPresentNewIdentifier() && !getNewIdentifier().startsWith("$");
         }

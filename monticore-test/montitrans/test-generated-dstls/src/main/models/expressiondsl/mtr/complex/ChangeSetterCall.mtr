@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tf.complex;
+{
+    expr [[ a.$field = Expression $V  :- a.$setter(Expression $V) ]]
+    assign {
+        $setter = "set" + de.se_rwth.commons.StringTransformations.capitalize( $field );
+    }
+}

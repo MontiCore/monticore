@@ -31,7 +31,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTCharLiteral.class;
         }
         method public char getValue() {
-            return de.monticore.literals.MCLiteralsDecoder.decodeChar(getSource());
+            return de.monticore.literals.MCLiteralsDecoder.decodeChar(getSource().getIdentifier());
         }
     ;
     
@@ -62,7 +62,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTNatLiteral.class;
         }
         method public String getSource() {
-            return getDigits();
+            return getDigits().getIdentifier();
         }
     ;
     
@@ -79,7 +79,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral.class;
         }
         method public String getSource() {
-            return (isPresentNegative() && getNegative().isNegative()?"-":"") + getDigits();
+            return (isPresentNegative() && getNegative().isNegative()?"-":"") + getDigits().getIdentifier();
         }
     ;
 
@@ -96,7 +96,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral.class;
         }
         method public String getSource() {
-            return getDigits() + "L";
+            return getDigits().getIdentifier() + "L";
         }
     ;
 
@@ -113,7 +113,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral.class;
         }
         method public String getSource() {
-             return (isPresentNegative() && getNegative().isNegative()?"-":"") + getDigits() + "L";
+             return (isPresentNegative() && getNegative().isNegative()?"-":"") + getDigits().getIdentifier() + "L";
         }
     ;
 
@@ -130,7 +130,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral.class;
         }
         method public String getSource() {
-            return getPre() + "." + getPost() + "F";
+            return getPre().getIdentifier() + "." + getPost().getIdentifier() + "F";
         }
     ;
 
@@ -147,7 +147,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral.class;
         }
         method public String getSource() {
-             return  (isPresentNegative() && getNegative().isNegative()?"-":"") + getPre() + "." + getPost() + "F";
+             return  (isPresentNegative() && getNegative().isNegative()?"-":"") + getPre().getIdentifier() + "." + getPost().getIdentifier() + "F";
         }
     ;
     
@@ -165,7 +165,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral.class;
         }
         method public String getSource() {
-            return getPre() + "." + getPost();
+            return getPre().getIdentifier() + "." + getPost().getIdentifier();
         }
     ;
 
@@ -182,7 +182,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
           return de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral.class;
         }
         method public String getSource() {
-             return (isPresentNegative() && getNegative().isNegative()?"-":"") + getPre() + "." + getPost();
+             return (isPresentNegative() && getNegative().isNegative()?"-":"") + getPre().getIdentifier() + "." + getPost().getIdentifier();
         }
     ;
 

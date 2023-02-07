@@ -10,6 +10,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
@@ -78,10 +79,9 @@ public class DSL2TransformationLanguageVisitor implements
     Log.debug("Start producing grammar " + tfLang.getName(), LOG);
 
     // set supergrammars
-    DSTLGenInheritanceHelper inheritanceHelper = new DSTLGenInheritanceHelper();
     boolean noUncommenSupers = true;
     for (MCGrammarSymbol dslSuper : srcNode.getSymbol().getSuperGrammarSymbols()) {
-    if (inheritanceHelper.isCommonSuperGrammar(dslSuper.getName())){ 
+    if (DSTLGenInheritanceHelper.getInstance().isCommonSuperGrammar(dslSuper.getName())){
       tfLang.getSupergrammarList().add(GrammarMill.grammarReferenceBuilder()
               .addAllNames(Splitters.DOT.splitToList(dslSuper.getFullName())).build());
       } else {
@@ -107,8 +107,7 @@ public class DSL2TransformationLanguageVisitor implements
   }
 
   private int recursiveCalculateGrammarDepth(MCGrammarSymbol grammarSymbol) {
-    DSTLGenInheritanceHelper inheritanceHelper = new DSTLGenInheritanceHelper();
-    if (!inheritanceHelper.isCommonSuperGrammar(grammarSymbol.getName())) {
+    if (!DSTLGenInheritanceHelper.getInstance().isCommonSuperGrammar(grammarSymbol.getName())) {
       Optional<Integer> depth = grammarSymbol.getSuperGrammarSymbols().stream().map(this::recursiveCalculateGrammarDepth)
           .max(Integer::compare);
       return depth.isPresent() ? 1 + depth.get() : 1;
@@ -216,9 +215,9 @@ public class DSL2TransformationLanguageVisitor implements
       boolean overridden = false;
       boolean superExternal = false;
 
-      boolean isLeftRecursive = srcNode.getSymbol().isIsDirectLeftRecursive() || srcNode.getSymbol().isIsIndirectLeftRecursive() || srcNode.getSymbol().getSuperInterfaceProds()
-              .stream().map(s -> s.lazyLoadDelegate())
-              .anyMatch(x -> x.isIsDirectLeftRecursive() || x.isIsIndirectLeftRecursive());
+      // If this (and only this) production is left recursive
+      boolean isLeftRecursive = srcNode.getSymbol().isIsDirectLeftRecursive() || srcNode.getSymbol().isIsIndirectLeftRecursive();
+      // the recursiveness of super interface prods is not of importance here
 
       boolean isEmpty = DSTLUtil.isEmptyProduction(srcNode.getSymbol());
 
@@ -240,7 +239,7 @@ public class DSL2TransformationLanguageVisitor implements
         productionFactory.addInterfaces(
                 srcNode.getSuperInterfaceRuleList(), p);
       } else {
-        p.add_PreComment(new Comment(" /*Skipping supers due to empty prod or left recursiveness*/ "));
+        p.add_PreComment(new Comment(" /*Skipping supers due to empty prod*/ "));
       }
       targetClassProdList.add(0, p);
 
@@ -251,7 +250,7 @@ public class DSL2TransformationLanguageVisitor implements
         productionFactory.addInterfaces(
                 srcNode.getSuperInterfaceRuleList(), p);
       } else {
-        p.add_PreComment(new Comment(" /*Skipping supers due to empty prod or left recursiveness*/ "));
+        p.add_PreComment(new Comment(" /*Skipping supers due to " + (isEmpty ? "empty prod " : "") + (isLeftRecursive ? "left recursiveness " : "") + " */ "));
       }
       targetClassProdList.add(0, p);
 
@@ -262,7 +261,7 @@ public class DSL2TransformationLanguageVisitor implements
         productionFactory.addInterfaces(
                 srcNode.getSuperInterfaceRuleList(), p);
       }else{
-        p.add_PreComment(new Comment(" /*Skipping supers due to empty prod or left recursiveness*/ "));
+        p.add_PreComment(new Comment(" /*Skipping supers due to " + (isEmpty ? "empty prod " : "") + (isLeftRecursive ? "left recursiveness " : "") + " */ "));
       }
       targetClassProdList.add(0, p);
 
@@ -275,7 +274,7 @@ public class DSL2TransformationLanguageVisitor implements
         productionFactory.addInterfaces(srcNode.getSuperRuleList(),p);
         productionFactory.addInterfaces(srcNode.getSuperInterfaceRuleList(),p);
       }else{
-        p.add_PreComment(new Comment(" /*Skipping supers due to empty prod or left recursiveness*/ "));
+        p.add_PreComment(new Comment(" /*Skipping supers due to " + (isEmpty ? "empty prod " : "") + (isLeftRecursive ? "left recursiveness " : "") + " */ "));
       }
       targetClassProdList.add(0, p);
 
@@ -310,9 +309,8 @@ public class DSL2TransformationLanguageVisitor implements
   @Override
   public void visit(ASTLexProd srcNode) {
     Log.debug("Visiting lexical production " + srcNode.getName(), LOG);
-    ASTLexProd targetNode = srcNode.deepClone();
-    targetNode.setName("ITF" + targetNode.getName());
-    tfLang.getLexProdList().add(targetNode);
+    tfLang.getLexProdList().add(productionFactory.createLexProd(srcNode, grammarSymbol));
+    productionFactory.createLexIdentifier(srcNode, grammarSymbol, tfLang).ifPresent(tfLang.getClassProdList()::add);
   }
 
   @Override
