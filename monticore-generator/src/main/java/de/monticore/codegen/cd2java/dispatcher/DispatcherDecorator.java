@@ -213,6 +213,7 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
               .stream()
               .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
               .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
+              .filter(t -> t instanceof CDTypeSymbol)
               .map(s -> visitorService.createASTFullName((CDTypeSymbol) s))
               .collect(Collectors.toList());
 
