@@ -83,7 +83,9 @@ public abstract class MontiTransExec extends DefaultTask {
    * The
    */
   private int getHash(File f) throws IOException {
-    if (f.isDirectory()) {
+    if (!f.exists()) {
+      return 0;
+    } else if (f.isDirectory()) {
       int result = f.hashCode();
       for (File inner : f.listFiles())
         result = 31 * result + getHash(inner);
