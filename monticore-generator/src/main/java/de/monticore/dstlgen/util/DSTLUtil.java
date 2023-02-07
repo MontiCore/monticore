@@ -81,13 +81,11 @@ public class DSTLUtil {
   public static boolean isFromSupportedGrammar(ASTNonTerminal node, MCGrammarSymbol grammarSymbol) {
     if (node.isPresentSymbol() && node.getSymbol().getReferencedProd().isPresent()) {
       String grammarName = node.getSymbol().getReferencedProd().get().getEnclosingScope().getName();
-      DSTLGenInheritanceHelper inheritanceHelper = new DSTLGenInheritanceHelper();
-      return !inheritanceHelper.isCommonSuperGrammar(grammarName);
+      return !DSTLGenInheritanceHelper.getInstance().isCommonSuperGrammar(grammarName);
     } else {
       Optional<ProdSymbol> prod = grammarSymbol.getProdWithInherited(node.getName());
       if(prod.isPresent()){
-        DSTLGenInheritanceHelper inheritanceHelper = new DSTLGenInheritanceHelper();
-        return !inheritanceHelper.isCommonSuperGrammar(prod.get().getEnclosingScope().getName());
+        return !DSTLGenInheritanceHelper.getInstance().isCommonSuperGrammar(prod.get().getEnclosingScope().getName());
       }
     }
     return true;

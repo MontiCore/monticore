@@ -93,9 +93,11 @@ public class CollectGrammarInformationVisitor implements
 
   @Override
   public void visit(ASTNonTerminal node) {
+    if (classprodOpt.isEmpty()) return;
+    Optional<ProdSymbol> prodSymbol = classprodOpt.isPresent()? grammarSymbol.getProdWithInherited(node.getName()) : Optional.empty();
     if (classprodOpt.isPresent() &&
-            (node.getName().equals("Name") || node.getName().equals("String") || DSTLUtil
-                    .isFromSupportedGrammar(node, grammarSymbol))) {
+            ((node.getName().equals("Name") || (prodSymbol.isPresent() && prodSymbol.get().isIsLexerProd())
+                    || DSTLUtil.isFromSupportedGrammar(node, grammarSymbol)))) {
       ASTClassProd classprod = classprodOpt.get();
       ProdSymbol type = grammarSymbol.getProdWithInherited(classprod.getName()).get();
       String attrName = node.isPresentUsageName() ? node.getUsageName() : node.getName();
@@ -104,7 +106,7 @@ public class CollectGrammarInformationVisitor implements
               c -> c.getName().equals(attrName) || c.getName().equals(StringTransformations.uncapitalize(attrName))).findFirst();
       if (!att.isPresent()) {
         Log.warn("Missing " + classprod.getName() + "." + attrName + " in \n" + type.toString());
-      } else if (node.getName().equals("Name")|| node.getName().equals("String")) {
+      } else if (node.getName().equals("Name") || (prodSymbol.isPresent() && prodSymbol.get().isIsLexerProd())) { // handle all lexical productions like Names/Strings
         if (!knownAttributes.contains(att.get())) {
           if (!att.get().isIsList()) {
             stringAttrs.get(classprod.getName()).add(node);

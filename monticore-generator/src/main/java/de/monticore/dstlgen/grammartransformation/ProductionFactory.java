@@ -2,23 +2,29 @@
 package de.monticore.dstlgen.grammartransformation;
 
 import de.monticore.ast.Comment;
+import de.monticore.dstlgen.ruletranslation.DSTLGenInheritanceHelper;
 import de.monticore.dstlgen.util.DSTLUtil;
+import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
+import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.grammar.grammar._ast.ASTConstantsGrammar.DEFAULT;
 import static de.se_rwth.commons.StringTransformations.capitalize;
+import static de.se_rwth.commons.StringTransformations.uncapitalize;
 
 /**
  * This singleton generates several lexical and syntactical
@@ -35,10 +41,13 @@ public class ProductionFactory {
   private static final String PATTERN_SUFFIX = "_Pat";
   private static final String NAME = "Name";
   public static final String PSYM_TFIDENTIFIER = "TfIdentifier";
+  public static final String PSYM_TFTFSchema = "TFSchema";
   public static final String PSYM_TFOBJECTS = "TFRule";
   public static final String PSYM_SCHEMAVAR = "schemaVar";
   public static final String PSYM_PATTERN = "de.monticore.tf.ast.IPattern";
 
+  public static final String NONTERM_PREFIX = "ITF";
+  public static final String LEXPROD_PREFIX = "LexTF";
 
   private static ProductionFactory instance = null;
 
@@ -181,9 +190,60 @@ public class ProductionFactory {
                                         boolean isEmpty) {
     ASTClassProd result = GrammarMill.classProdBuilder().uncheckedBuild();
 
-    // three notations for a pattern
-    List<ASTAlt> patternAlts = new ArrayList<>();
+    // create "implements ... or extends ..."
+    result.getSuperInterfaceRuleList().clear();
 
+    ASTRuleReference superInterface = GrammarMill.ruleReferenceBuilder().uncheckedBuild();
+    superInterface.setName("ITF" + srcNode.getName());
+    if (!superExternal) {
+      result.getSuperInterfaceRuleList().add(superInterface);
+    } else {
+      result.getSuperRuleList().add(superInterface);
+    }
+
+    addInterfaces(srcNode.getSuperRuleList(), result);
+    addInterfaces(srcNode.getSuperInterfaceRuleList(),
+            result);
+    if (!isEmpty) {
+      superInterface = GrammarMill.ruleReferenceBuilder().uncheckedBuild();
+      superInterface.setName("I" + srcNode.getSymbol().getEnclosingScope().getName() + "TFPart");
+      result.getSuperInterfaceRuleList().add(superInterface);
+    } else {
+      result.add_PreComment(new Comment("/* No I?TFPart supers due to emptiness */"));
+    }
+
+    // prepare post-processing of the (cloned) original rules parts to modify them
+    GrammarTraverser postProcessingTraverser = GrammarMill.traverser();
+    postProcessingTraverser.add4Grammar(new PostprocessPatternAttributesVisitor(grammarSymbol));
+
+    // create "astimplements ..."
+    result.getASTSuperInterfaceList().add(parseGenericType(PSYM_PATTERN));
+
+    // change name
+    result.setName(srcNode.getName() + PATTERN_SUFFIX);
+    // add action
+    if (srcNode.isPresentAction()) {
+      result.setAction(srcNode.getAction().deepClone());
+      result.getAction().accept(postProcessingTraverser);
+      postProcessingTraverser.clearTraversedElements();
+    }
+
+    List<ASTAlt> patternAlts = createPatternAlternates(srcNode, postProcessingTraverser, skipForSpecialRecursion);
+    if (patternAlts == null) {
+      Log.warn("0xA5C05 pattern creation: More than one alt in combination with left recursion detected - unable to transform TR grammar due to production " + srcNode.getName());
+      result.add_PreComment(new Comment("/*0xA5C05 pattern creation: More than one alt in combination with left recursion detected during " + srcNode.getName() + " - unable to derive pattern production */"));
+      result.add_PreComment(new Comment("/*0xA5C05 pattern creation: If not overwritten, a 'rule tFRule contains a closure with at least one alternative that can match an empty string' error will be thrown by Antlr */"));
+    }else{
+      result.setAltList(patternAlts);
+    }
+
+    return result;
+  }
+
+  @Nullable
+  private static List<ASTAlt> createPatternAlternates(ASTClassProd srcNode, GrammarTraverser postProcessingTraverser,  boolean skipForSpecialRecursion) {
+    // three notations for a pattern (see Rule 3c of 6.2.3 [Hoe18])
+    List<ASTAlt> patternAlts = new ArrayList<>();
 
     ASTAlt origAlt = GrammarMill.altBuilder().uncheckedBuild();
     ASTAlt abstractAlt = GrammarMill.altBuilder().uncheckedBuild();
@@ -202,33 +262,35 @@ public class ProductionFactory {
     schemaVarName.setName(NAME);
     abstractAlt.getComponentList().add(schemaVarName);
 
-    // second notation: copy original production
+    // second notation: modified copy of original production
     patternAlts.add(origAlt);
 
     ASTBlock origBlock = GrammarMill.blockBuilder().uncheckedBuild();
     //ANTRL does not accept left recursion in blocks
     if (skipForSpecialRecursion) {
       if (srcNode.getAltList().size() != 1) {
-        Log.warn("0xA5C05 pattern creation: More than one alt during detected left recursion - unable to transform TR grammar due to production " + srcNode.getName());
-        result.add_PreComment(new Comment("/*0xA5C05 pattern creation: More than one alt during detected left recursion during " + srcNode.getName() + " */"));
-        return result;
+        return null;
       }
       ASTAlt aDeepClone = srcNode.getAltList().get(0).deepClone();
+      postProcessingTraverser.clearTraversedElements();
+      aDeepClone.accept(postProcessingTraverser);
       aDeepClone.setRightAssoc(false); //TODO: Do i need the rightassoc?
-      origAlt.getComponentList().addAll(aDeepClone.getComponentList());
-      origBlock.getAltList().add(aDeepClone);
+      origAlt.getComponentList().addAll(aDeepClone.getComponentList()); // origAlt = AcloneComp
+      origBlock.getAltList().add(aDeepClone); // origBlock = Aclone
       origAlt.add_PreComment(new Comment(" /* Avoid an extra block here */ "));
     } else {
-      origBlock.add_PreComment(new Comment(" /* Using an extra block here */ "));
+      // add an extra pair of brackets/a block around the original production
       origAlt.getComponentList().add(origBlock);
-      for (ASTAlt a : srcNode.getAltList()) {
+      for (ASTAlt a : srcNode.getAltList()) { // Injecting this body causes errors
         ASTAlt aDeepClone = a.deepClone();
+        postProcessingTraverser.clearTraversedElements();
+        aDeepClone.accept(postProcessingTraverser);
         aDeepClone.setRightAssoc(false);
         origBlock.getAltList().add(aDeepClone);
       }
     }
 
-    //third notation: variable and syntax
+    //third notation: combination of schema variable and concrete syntax
     patternAlts.add(mixedAlt);
 
     ASTBlock mixedBlock = GrammarMill.blockBuilder().uncheckedBuild();
@@ -241,7 +303,6 @@ public class ProductionFactory {
 
     ASTAlt varOptionalAlt = GrammarMill.altBuilder().uncheckedBuild();
     mixedBlockAlt.getComponentList().add(varBlock);
-
 
     // nonterminal is optional but variable is mandatory
     ASTAlt ntOptionalAlt = GrammarMill.altBuilder().uncheckedBuild();
@@ -263,7 +324,7 @@ public class ProductionFactory {
     varOptionalAlt.getComponentList().add(schemaVarNameOptional);
     varBlock.getAltList().add(varOptionalAlt);
 
-    // syntax in parenthesis
+    // include the (modified) concrete syntax/body again (similiar to notation 2)
     terminal = GrammarMill.terminalBuilder().uncheckedBuild();
     terminal.setName("[[");
     terminal.setIteration(DEFAULT);
@@ -274,45 +335,7 @@ public class ProductionFactory {
     terminal.setIteration(DEFAULT);
     mixedBlockAlt.getComponentList().add(terminal);
 
-    result.setAltList(patternAlts);
-
-    // create "implements ... or extends ..."
-    result.getSuperInterfaceRuleList().clear();
-
-    ASTRuleReference superInterface = GrammarMill.ruleReferenceBuilder().uncheckedBuild();
-    superInterface.setName("ITF" + srcNode.getName());
-    if (!superExternal) {
-      result.getSuperInterfaceRuleList().add(superInterface);
-    } else {
-      result.getSuperRuleList().add(superInterface);
-    }
-
-    addInterfaces(srcNode.getSuperRuleList(), result);
-    addInterfaces(srcNode.getSuperInterfaceRuleList(),
-                  result);
-    if (!isEmpty) {
-      superInterface = GrammarMill.ruleReferenceBuilder().uncheckedBuild();
-      superInterface.setName("I" + srcNode.getSymbol().getEnclosingScope().getName() + "TFPart");
-      result.getSuperInterfaceRuleList().add(superInterface);
-    } else {
-      result.add_PreComment(new Comment("/* No I?TFPart supers due to emptiness */"));
-    }
-
-
-    // create "astimplements ..."
-    result.getASTSuperInterfaceList().add(parseGenericType(PSYM_PATTERN));
-
-    // change name
-    result.setName(srcNode.getName() + PATTERN_SUFFIX);
-    // add action
-    if (srcNode.isPresentAction()) {
-      result.setAction(srcNode.getAction().deepClone());
-    }
-    GrammarTraverser grammarTraverser = GrammarMill.traverser();
-    grammarTraverser.add4Grammar(new PostprocessPatternAttributesVisitor(grammarSymbol));
-        result.accept(grammarTraverser);
-
-    return result;
+    return patternAlts;
   }
 
   protected void addInterfaces(List<ASTRuleReference> references, ASTClassProd result) {
@@ -347,9 +370,11 @@ public class ProductionFactory {
     if (srcNode.getSymbol().isIsInterface())
       result.add_PreComment(new Comment(" /* do not generate a builder for me */ "));
 
+    if (srcNode.getSymbol().isIsLexerProd())
+      result.add_PreComment(new Comment(" /* I am a lexer prod */ "));
+
     // three notations for a pattern
     List<ASTAlt> patternAlts = new ArrayList<>();
-
 
     ASTAlt abstractAlt = GrammarMill.altBuilder().uncheckedBuild();
     ASTAlt mixedAlt = GrammarMill.altBuilder().uncheckedBuild();
@@ -384,8 +409,8 @@ public class ProductionFactory {
     terminal.setIteration(DEFAULT);
     mixedAlt.getComponentList().add(terminal);
     ASTNonTerminal nonTerminal = GrammarMill.nonTerminalBuilder().uncheckedBuild();
-    nonTerminal.setUsageName(srcNode.getName());
-    nonTerminal.setName(srcNode.getName());
+    nonTerminal.setUsageName(uncapitalize(srcNode.getName()));
+    nonTerminal.setName(NONTERM_PREFIX + srcNode.getName());
     nonTerminal.setGenSymbol(false);
     nonTerminal.setPlusKeywords(false);
     nonTerminal.setIteration(DEFAULT);
@@ -413,9 +438,6 @@ public class ProductionFactory {
     // change name
     result.setName(srcNode.getName() + PATTERN_SUFFIX);
 
-    GrammarTraverser grammarTraverser = GrammarMill.traverser();
-    grammarTraverser.add4Grammar(new PostprocessPatternAttributesVisitor(grammarSymbol));
-    result.accept(grammarTraverser);
     return result;
   }
 
@@ -629,17 +651,6 @@ public class ProductionFactory {
     return parseAbstractProd(tfReplacementRule);
   }
 
-  public ASTClassProd createPatternProd(
-          ASTExternalProd srcNode) {
-    final String name = srcNode.getName();
-    final String tfPatternRule =
-            name + "_Pat implements ITF" + name + " astimplements de.monticore.tf.ast.IPattern ="
-                    + "(" + "\"" + name + "\"" + "((" + PSYM_SCHEMAVAR + NAME + COLON + NAME
-                    + "\";\") |(" + PSYM_SCHEMAVAR + NAME + COLON + NAME + "? \"[[\" " + name
-                    + "Content" + "\"]]\" )  ) );";
-
-    return parseClassProd(tfPatternRule);
-  }
 
   /**
    * creates class productions for replacements of external productions
@@ -697,6 +708,86 @@ public class ProductionFactory {
                       + StringTransformations.uncapitalize(
                       name) + ":" + name + "_Pat \"]]\";";
       return parseClassProd(classProdAsString);
+    }
+  }
+
+  protected ASTLexProd createLexProd(ASTLexProd srcNode, MCGrammarSymbol grammarSymbol) {
+    Log.debug("Creating lex prod for " + srcNode, DSL2TransformationLanguageVisitor.LOG);
+    ASTLexProd result = srcNode.deepClone();
+    if (DSTLGenInheritanceHelper.getInstance().isLexicalProdKnownInTFCommons(srcNode.getName())) {
+      result.add_PreComment(new Comment("/* Leaving this lexical productions name intact , as it (most likely) is overriding another one (or this grammar is a supergrammar of TFCommons) */"));
+    }else {
+      result.setName(LEXPROD_PREFIX + result.getName());
+    }
+
+    // post processing of the class prod
+    GrammarTraverser postProcessingTraverser = GrammarMill.traverser();
+    postProcessingTraverser.add4Grammar(new PostprocessPatternAttributesVisitor(grammarSymbol));
+    result.accept(postProcessingTraverser);
+
+    return result;
+  }
+
+  /**
+   * Creates an TFIdentifier for a lexical production with a specific structure to not clash with the
+   * TFidentifier for Names
+   */
+  protected Optional<ASTClassProd> createLexIdentifier(ASTLexProd srcNode, MCGrammarSymbol grammarSymbol, ASTMCGrammar tflang) {
+    Log.debug("Creating identifier prod for " + srcNode, DSL2TransformationLanguageVisitor.LOG);
+    String name = PSYM_TFIDENTIFIER + srcNode.getName();
+    String tokenName = DSTLGenInheritanceHelper.getInstance().isLexicalProdKnownInTFCommons(srcNode.getName()) ? srcNode.getName() : (LEXPROD_PREFIX + srcNode.getName());
+    if (DSTLGenInheritanceHelper.getInstance().isLexicalProdKnownInTFCommons(name)) {
+      // We still add a classprod, but mark it
+      tflang.add_PostComment(new Comment("/* Skipping (alreay known) identifier for lexprod " + srcNode.getName() + " */"));
+      return Optional.empty();
+    }else if (grammarSymbol.getName().equals("MCBasics")){
+      tflang.add_PostComment(new Comment("/* Skipping identifier for lexprod " + srcNode.getName() + " due to being declared in MCBasiscs */"));
+      return Optional.empty();
+    }else {
+
+      boolean isOverriding = grammarSymbol.getSuperGrammarSymbols().stream().anyMatch(x->x.getProd(srcNode.getName()).isPresent());
+      if (isOverriding) {
+        // This is a workaround for CoCo 0xA4025
+        tflang.add_PostComment(new Comment("/* Skipping identifier for lexprod " + srcNode.getName() + " as it overrides another one and CoCo 0xA4025 */"));
+        return Optional.empty();
+      }
+
+      // (identifier:X)
+      ASTAlt first = GrammarMill.altBuilder().addComponent(GrammarMill.nonTerminalBuilder().setUsageName("identifierToken").setName(tokenName).build()).build();
+      // "[[" identifier:X :- (newIdentifier:TFSchema | newIdentifier:X)? "]]"
+      ASTAlt second = GrammarMill.altBuilder()
+              .addComponent(GrammarMill.terminalBuilder().setName("[[").build())
+              .addComponent(GrammarMill.nonTerminalBuilder().setUsageName("identifierToken").setName(tokenName).build())
+              .addComponent(GrammarMill.terminalBuilder().setName(":-").build())
+              .addComponent(GrammarMill.blockBuilder()
+                      .addAlt(GrammarMill.altBuilder().addComponent(GrammarMill.nonTerminalBuilder().setUsageName("newIdentifierSchema").setName(PSYM_TFTFSchema).build()).build())
+                      .addAlt(GrammarMill.altBuilder().addComponent(GrammarMill.nonTerminalBuilder().setUsageName("newIdentifierToken").setName(tokenName).build()).build())
+                      .setIteration(ASTConstantsGrammar.QUESTION)
+                      .build())
+              .addComponent(GrammarMill.terminalBuilder().setName("]]").build())
+              .build();
+      // "[[" (identifier:TFSchema | identifier:X)? :-   newIdentifier:X "]]"
+      ASTAlt third = GrammarMill.altBuilder()
+              .addComponent(GrammarMill.terminalBuilder().setName("[[").build())
+              .addComponent(GrammarMill.blockBuilder()
+                      .addAlt(GrammarMill.altBuilder().addComponent(GrammarMill.nonTerminalBuilder().setUsageName("identifierSchema").setName(PSYM_TFTFSchema).build()).build())
+                      .addAlt(GrammarMill.altBuilder().addComponent(GrammarMill.nonTerminalBuilder().setUsageName("identifierToken").setName(tokenName).build()).build())
+                      .setIteration(ASTConstantsGrammar.QUESTION)
+                      .build())
+              .addComponent(GrammarMill.terminalBuilder().setName(":-").build())
+              .addComponent(GrammarMill.nonTerminalBuilder().setUsageName("newIdentifierToken").setName(tokenName).build())
+              .addComponent(GrammarMill.terminalBuilder().setName("]]").build())
+              .build();
+      //  "X" identifier:TFSchema ";"
+      ASTAlt fourth = GrammarMill.altBuilder()
+              .addComponent(GrammarMill.terminalBuilder().setName(srcNode.getName()).build())
+//              .addComponent(schemaPredicate())
+              .addComponent(GrammarMill.nonTerminalBuilder().setUsageName("identifierSchema").setName(PSYM_TFTFSchema).build())
+              .addComponent(GrammarMill.terminalBuilder().setName(";").build())
+              .build();
+      return Optional.of(GrammarMill.classProdBuilder().setName(name).addAlt(first).addAlt(second).addAlt(third).addAlt(fourth)
+              .addSuperInterfaceRule(GrammarMill.ruleReferenceBuilder().setName(PSYM_TFIDENTIFIER).build())
+              .build());
     }
   }
 

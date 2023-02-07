@@ -3,7 +3,7 @@ package de.monticore.dstlgen.ruletranslation;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import de.monticore.grammar.grammar._ast.ASTGrammarReference;
+import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.Names;
@@ -11,13 +11,57 @@ import de.se_rwth.commons.Names;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.Optional;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class DSTLGenInheritanceHelper {
+
+  private static DSTLGenInheritanceHelper instance = null;
+
+  /**
+   * Getter to get the only instance of the
+   * DSTLGenInheritanceHelper (singleton)
+   *
+   * @return the instance of the factory
+   */
+  public static synchronized DSTLGenInheritanceHelper getInstance() {
+    if (instance == null) {
+      instance = new DSTLGenInheritanceHelper();
+    }
+    return instance;
+  }
+
+  /**
+   * The names of all lexical productions known to TFCommons.
+   * Required, as the transformation languages are all extending TFCommons
+   */
+  protected final Collection<String> tfCommonLexProds = new HashSet<>();
+  /**
+   * FQN of TFCommons and all its super grammars
+   */
+  protected final Collection<String> tfCommonSuperFQNs = new HashSet<>();
 
   /**
    * Constructor for de.monticore.tf.ruletranslation.InheritanceHelper
    */
-  public DSTLGenInheritanceHelper() {
+  protected DSTLGenInheritanceHelper() {
+    // Populate information about TFCommon and its super grammars
+    Optional<MCGrammarSymbol> tfCommonsGrammarSymbol = GrammarMill.globalScope().resolveMCGrammar("de.monticore.tf.TFCommons");
+    if (tfCommonsGrammarSymbol.isPresent()) {
+      // modelPath appears to not contain TFCommons (e.g. when using the script tests)
+      // Thus, we do not have the problem of potentially overlapping tokens (and instead are unable to run monticore on the generated TR grammar)
+      tfCommonsGrammarSymbol.get().getSpannedScope().getLocalProdSymbols().stream().filter(ps -> ps.isIsLexerProd()).forEach(ps -> tfCommonLexProds.add(ps.getName()));
+      tfCommonSuperFQNs.add(tfCommonsGrammarSymbol.get().getFullName());
+      for (MCGrammarSymbol superGrammar : tfCommonsGrammarSymbol.get().getAllSuperGrammars()) {
+        superGrammar.getSpannedScope().getLocalProdSymbols().stream().filter(ps -> ps.isIsLexerProd()).forEach(ps -> tfCommonLexProds.add(ps.getName()));
+        tfCommonSuperFQNs.add(superGrammar.getFullName());
+      }
+    }
+  }
+
+  public boolean isLexicalProdKnownInTFCommons(String name) {
+    return tfCommonLexProds.contains(name);
   }
 
   public String getSuperGrammarPackage(ASTMCGrammar ast){
@@ -30,44 +74,28 @@ public class DSTLGenInheritanceHelper {
     return "";
   }
 
-  public String getSuperGrammarName(ASTMCGrammar ast){
-    if (!ast.getSupergrammarList().isEmpty()) {
-      List<String> result = ast.getSupergrammarList().stream()
-                                                 .filter(p -> !isCommonSuperGrammar(p.getNameList()))
-                                                 .findFirst().get().getNameList();
-      return  result.get(result.size() - 1);
-    }
-    return "";
-  }
-
-  public String getSuperGrammarNameLowerCased(ASTMCGrammar ast){
-    return getSuperGrammarName(ast).toLowerCase();
-  }
-
-
-  public boolean hasSupergrammar(ASTMCGrammar ast){
-    List<ASTGrammarReference> superGrammars = ast.getSupergrammarList();
-    return !superGrammars.isEmpty()
-           && !(superGrammars.size() == 1 && isCommonSuperGrammar(superGrammars.get(0).getNameList()));
-  }
 
   public boolean isCommonSuperGrammar(String grammar) {
     return isCommonSuperGrammar(Collections.singletonList(grammar));
   }
 
+  // Method to skip (language)TRHandler- setting of traversers, such as in the rule2od, cocos, etc.
   public boolean isCommonSuperGrammar(List<String> grammar) {
-    return grammar.contains("MCBasics") || grammar.contains("JavaDSL") || grammar.contains("OCL")
-            || grammar.contains("StringLiterals") || grammar.contains("MCNumbers") || grammar.contains("MCJavaLiterals");
+    // We only exclude MCBasics, as it only consists of lexical productions
+    // Once all(?) shared super grammars between the TFCommons and original DSL were skipped,
+    // leading to (among other) all lexical non-terminal references to their lexical productions to being absent,
+    // causing invalid TR grammars to be generated (this was required as otherwise tokens would be duplicate).
+
+    // That case is now handled by the #isLexicalProdKnownInTFCommons method
+
+    //TODO: Switch to the fully qualified name once we can be certain that the FQN of a super-grammar-symbol is correct
+    return grammar.contains("MCBasics");
   }
-  
-  public String getOwnSetMethodName(String _package, String grammar){
-    return "set_" +_package.replace('.', '_') + "_tr_" + grammar.toLowerCase()+"tr__visitor";
-  }
-  
+
+  // used by templates
+  @SuppressWarnings("unused")
   public List<MCGrammarSymbol> getSuperGrammars(ASTMCGrammar ast){
-    MCGrammarSymbol grammar = (MCGrammarSymbol) ast.getSymbol();
-    return getSuperGrammars(grammar);
-    
+    return getSuperGrammars(ast.getSymbol());
   }
   
   public List<MCGrammarSymbol> getSuperGrammars(MCGrammarSymbol ast){
@@ -81,12 +109,5 @@ public class DSTLGenInheritanceHelper {
     return Lists.newArrayList(supers);
   }
   
-  public String getGrammarSetter(MCGrammarSymbol grammar){
-    return "set_" + grammar.getPackageName().replace('.','_') + "_tr_" + grammar.getName().toLowerCase() + "tr__visitor";
-    
-  }
-  
-  
-  
-  
 }
+
