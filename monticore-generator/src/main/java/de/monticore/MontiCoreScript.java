@@ -683,7 +683,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         cds.get(1), cds.get(2), decoratedCD, handCodedPath);
     decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateForCoCoPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
-    decorateForInheritanceVisitor(glex, cds.get(0), decoratedCD);
+    decorateForUtilsPackage(glex, cds.get(0), decoratedCD);
     decorateForODPackage(glex, cdScope, cds.get(0), decoratedCD,handCodedPath);
     decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     decorateMill(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
@@ -825,13 +825,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     odcdDecorator.decorate(cd, decoratedCD);
   }
 
-  public void decorateForInheritanceVisitor(GlobalExtensionManagement glex,
+  public void decorateForUtilsPackage(GlobalExtensionManagement glex,
                                             ASTCDCompilationUnit cd,
                                             ASTCDCompilationUnit decoratedCD) {
-    decorateWithInheritanceVisitor(cd, decoratedCD, glex);
+    decorateWithDispatcher(cd, decoratedCD, glex);
   }
 
-  protected void decorateWithInheritanceVisitor(ASTCDCompilationUnit cd,
+  protected void decorateWithDispatcher(ASTCDCompilationUnit cd,
                                                 ASTCDCompilationUnit decoratedCD,
                                   GlobalExtensionManagement glex) {
 
@@ -1009,7 +1009,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         cds.get(1), cds.get(2), decoratedCD, handCodedPath);
     decorateTraverserForVisitorPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decorateForCoCoPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
-    decorateForInheritanceVisitor(glex, cds.get(0), decoratedCD);
+    decorateForUtilsPackage(glex, cds.get(0), decoratedCD);
     decorateForODPackage(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
     decoratePrettyPrinter(glex, cds.get(0), cdScope, cds.get(3), decoratedCD, handCodedPath);
     decorateMill(glex, cdScope, cds.get(0), decoratedCD, handCodedPath);
