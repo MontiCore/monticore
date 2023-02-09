@@ -93,7 +93,7 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
 }
 
 compileJava.dependsOn generate
-compileJava.dependsOn generateTR
+compileTrafoJava.dependsOn generateTR
 
 task generateTest {}
 
@@ -276,31 +276,30 @@ if (findProperty('ci') == null) {
     jar.dependsOn(shadowJar, testJar)
 }
 
-// Bundle and publish the generated TR artifacts separately as monticore-grammar-trafo
-tasks.register('trafoJar', Jar) {
-  from sourceSets.trafo.output
-  classifier 'trafo'
-  group 'build'
-}
-tasks.register('trafoSourcesJar', Jar) {
-  from sourceSets.trafo.java
-  classifier 'trafo-sources'
-  group 'build'
-}
-publishing {
+if (("true").equals(getProperty('genTR'))) {
+  // Bundle and publish the generated TR artifacts separately as monticore-grammar-trafo
+  tasks.register('trafoJar', Jar) {
+    from sourceSets.trafo.output
+    group 'build'
+  }
+  tasks.register('trafoSourcesJar', Jar) {
+    from sourceSets.trafo.java
+    group 'build'
+  }
+  publishing {
     publications {
-        "trafo"(MavenPublication) {
-          artifactId = project.name + "-trafo"
-          artifact tasks.trafoJar
-          artifact tasks.trafoSourcesJar { classifier 'source' }
-        }
+      "trafo"(MavenPublication) {
+        artifactId = project.name + "-trafo"
+        artifact tasks.trafoJar { appendix 'trafo' }
+        artifact tasks.trafoSourcesJar { appendix 'trafo'; classifier 'sources' }
+      }
     }
+  }
+  // And expose the trafo jar artifact to other subprojects using a 'trafo' configuration
+  configurations {
+    trafo
+  }
+  artifacts {
+    trafo(trafoJar)
+  }
 }
-// And expose the trafo jar artifact to other subprojects using a 'trafo' configuration
-configurations {
-  trafo
-}
-artifacts {
-  trafo(trafoJar)
-}
-
