@@ -211,7 +211,7 @@ public class TemplateAliasingTest {
             "bound\n" +
             "/* Hookpoint: WithAst */\n" +
             "/* Hookpoint: WithAlternativeAst */", templateOut.toString());
-   assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
