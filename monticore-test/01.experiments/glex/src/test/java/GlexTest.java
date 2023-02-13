@@ -158,7 +158,6 @@ public class GlexTest {
   }
 
 
-
   // --------------------------------------------------------------------
   @Test
   public void testVariables4() {
