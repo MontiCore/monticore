@@ -223,7 +223,7 @@ public class GlexTest {
     // System.out.println("****RES::\n" + res + "\n****--------");
     // System.out.println("++++LOG::\n" + Log.getFindings() + "\n++++--------");
     assertEquals("[]", Log.getFindings().toString());
-    assertEquals("###A:16,17,###B:23,25,27,###C:34,36,#", 
+    assertEquals("###A:16,17,###B:23,25,27,###C:34,36,#",
     	                                   res.toString().replaceAll(REGEXP, REPLACE));
     assertTrue(Log.getFindings().isEmpty());
   }
