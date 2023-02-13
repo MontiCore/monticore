@@ -104,6 +104,8 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addAllCDMembers(nameMethods)
       .addAllCDMembers(delegateSymbolRuleAttributeMethods)
       .addCDMember(createGetFullNameMethod())
+      .addCDMember(createOverridenDeterminePackageName())
+      .addCDMember(createOverridenDetermineFullName())
       .addAllCDMembers(delegateSymbolRuleMethods);
     return builder
       .addCDMember(delegateAttribute)
@@ -112,7 +114,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addCDMember(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName, scopeInterfaceType))
       .build();
   }
-  
+
   protected ASTCDMethod createSetEnclosingScopeMethod(ASTCDAttribute enclosingScopeAttribute, String scopeName) {
     ASTCDParameter param = getCDParameterFacade().createParameter(enclosingScopeAttribute.getMCType(), "enclosingScope");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "setEnclosingScope", param);
@@ -229,6 +231,18 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       overriddenDelegates.add(method);
     }
     return overriddenDelegates;
+  }
+
+  protected ASTCDMethod createOverridenDeterminePackageName() {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), getMCTypeFacade().createStringType(), "determinePackageName");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DeterminePackageName"));
+    return method;
+  }
+
+  protected ASTCDMethod createOverridenDetermineFullName() {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), getMCTypeFacade().createStringType(), "determineFullName");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DetermineFullName"));
+    return method;
   }
   
 }
