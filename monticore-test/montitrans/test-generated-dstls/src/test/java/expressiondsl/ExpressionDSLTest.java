@@ -132,7 +132,11 @@ public class ExpressionDSLTest {
 
   @Test
   public void testCDAttributeChangeTypeFull() throws IOException {
-    testCDAttribute("public String foo;", CDAttributeChangeTypeFull::new, "public boolean foo;");
+    // We expect this transformation to match and perform a replacement,
+    // but to NOT modify the given AST
+    // Reason being, that the outermost tfrule is a replacement operation not anchored anywhere (the root ASTNode is replaced)
+    // Thus, the replacement is not detectable
+    testCDAttribute("public String foo;", CDAttributeChangeTypeFull::new, "public String foo;");
   }
 
 

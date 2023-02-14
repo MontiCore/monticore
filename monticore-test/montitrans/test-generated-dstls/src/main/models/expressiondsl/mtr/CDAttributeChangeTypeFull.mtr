@@ -1,2 +1,3 @@
 /* (c) https://github.com/MontiCore/monticore */
-[[ public String foo; :- public boolean foo; ]]
+// Note: Replacing the root ASTNode leads to unexpected behaviour - see the test class for additional information
+[[ public String foo; :- private boolean bar; ]]
