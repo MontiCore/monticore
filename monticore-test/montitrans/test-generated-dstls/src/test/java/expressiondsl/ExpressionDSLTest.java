@@ -12,9 +12,9 @@ import de.monticore.tf.specificliterals.*;
 import de.monticore.tf.runtime.ODRule;
 import de.monticore.visitor.ITraverser;
 import de.monticore.visitor.IVisitor;
-import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import mc.testcases.expressiondsl.ExpressionDSLMill;
+import mc.testcases.expressiondsl._ast.ASTCDAttribute;
 import mc.testcases.expressiondsl._ast.ASTFoo;
 import mc.testcases.tr.expressiondsltr.ExpressionDSLTRMill;
 import org.junit.*;
@@ -125,6 +125,17 @@ public class ExpressionDSLTest {
   }
 
 
+  @Test
+  public void testCDAttributeChangeType() throws IOException {
+    testCDAttribute("public String foo;", CDAttributeChangeType::new, "public boolean foo;");
+  }
+
+  @Test
+  public void testCDAttributeChangeTypeFull() throws IOException {
+    testCDAttribute("public String foo;", CDAttributeChangeTypeFull::new, "public boolean foo;");
+  }
+
+
   protected void test(String input, Function<ASTFoo, ODRule> rule, String expected) throws IOException {
     Optional<ASTFoo> fooOpt = ExpressionDSLMill.parser().parse_String(input);
     Assert.assertTrue(fooOpt.isPresent());
@@ -133,16 +144,36 @@ public class ExpressionDSLTest {
     assertTrue("Failed to match pattern", trafo.doPatternMatching());
     trafo.doReplacement();
 
-    testDeepEquals(fooOpt.get(), expected);
+    testDeepEqualsFoo(fooOpt.get(), expected);
   }
 
-  protected void testDeepEquals(ASTFoo ast, String expected) throws IOException {
+  protected void testCDAttribute(String input, Function<ASTCDAttribute, ODRule> rule, String expected) throws IOException {
+    Optional<ASTCDAttribute> fooOpt = ExpressionDSLMill.parser().parse_StringCDAttribute(input);
+    Assert.assertTrue(fooOpt.isPresent());
+
+    ODRule trafo = rule.apply(fooOpt.get());
+    assertTrue("Failed to match pattern", trafo.doPatternMatching());
+    trafo.doReplacement();
+
+    testDeepEqualsCDAttribute(fooOpt.get(), expected);
+  }
+
+  protected void testDeepEqualsFoo(ASTFoo ast, String expected) throws IOException {
     Optional<ASTFoo> fooOpt = ExpressionDSLMill.parser().parse_String(expected);
+    testDeepEquals(ast, expected, fooOpt);
+  }
+
+  protected void testDeepEqualsCDAttribute(ASTCDAttribute ast, String expected) throws IOException {
+    Optional<ASTCDAttribute> fooOpt = ExpressionDSLMill.parser().parse_StringCDAttribute(expected);
+    testDeepEquals(ast, expected, fooOpt);
+  }
+
+  private void testDeepEquals(ASTNode ast, String expected, Optional<? extends ASTNode> fooOpt) {
     Assert.assertTrue("Failed to parse expected", fooOpt.isPresent());
     if (!fooOpt.get().deepEquals(ast)) {
       Assert.assertEquals(ExpressionDSLMill.prettyPrint(fooOpt.get(), false), ExpressionDSLMill.prettyPrint(ast, false));
       Assert.assertEquals(astPrinter(fooOpt.get(), ExpressionDSLMill.inheritanceTraverser()),
-              astPrinter(ast, ExpressionDSLMill.inheritanceTraverser()));
+          astPrinter(ast, ExpressionDSLMill.inheritanceTraverser()));
 
       Assert.fail("Failed to deep equal: " + ExpressionDSLMill.prettyPrint(fooOpt.get(), false) + ", expected " + expected);
     }

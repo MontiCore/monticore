@@ -193,6 +193,22 @@ public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
   }
 
   @Override
+  public void handle(ASTKeywordRule a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    print("nokeyword ");
+    String sep = "";
+    for (String s: a.getStringList()) {
+      print(sep);
+      sep = ", ";
+      print("\"");
+      print(s);
+      print("\"");
+    }
+    println (";");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+  }
+
+  @Override
   public void handle(ASTTerminal a) {
     CommentPrettyPrinter.printPreComments(a, getPrinter());
     // output("ASTTerminal Iteration " + a.getIteration());
