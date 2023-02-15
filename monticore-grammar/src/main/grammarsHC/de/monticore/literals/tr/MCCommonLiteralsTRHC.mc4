@@ -11,7 +11,7 @@ component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.montico
         identifierToken:String
         | "[[" identifierToken:String ":-" (newIdentifierSchema:TFSchema| newIdentifierToken:String)? "]]"
         | "[[" (identifierSchema:TFSchema| identifierToken:String)? ":-" newIdentifierToken:String "]]"
-        // | "String" identifierSchema:TFSchema ";" // - no abstract syntax matching for string literals
+        // | "String" identifierSchema:TFSchema ";" // no abstract syntax matching for string literals - this (automatically derived) alternative is removed using the TRHC mechanism
         ;
 
 
