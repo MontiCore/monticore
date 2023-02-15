@@ -67,7 +67,7 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
-import de.monticore.codegen.cd2java.dispatcher.DispatcherDecorator;
+import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -828,14 +828,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void decorateForUtilsPackage(GlobalExtensionManagement glex,
                                             ASTCDCompilationUnit cd,
                                             ASTCDCompilationUnit decoratedCD) {
-    decorateWithDispatcher(cd, decoratedCD, glex);
+    decorateWithTypeDispatcher(cd, decoratedCD, glex);
   }
 
-  protected void decorateWithDispatcher(ASTCDCompilationUnit cd,
-                                                ASTCDCompilationUnit decoratedCD,
-                                  GlobalExtensionManagement glex) {
+  protected void decorateWithTypeDispatcher(ASTCDCompilationUnit cd,
+                                            ASTCDCompilationUnit decoratedCD,
+                                            GlobalExtensionManagement glex) {
 
-    DispatcherDecorator visitorDecorator = new DispatcherDecorator(glex, new VisitorService(cd));
+    TypeDispatcherDecorator visitorDecorator = new TypeDispatcherDecorator(glex, new VisitorService(cd));
     visitorDecorator.decorate(cd, decoratedCD);
   }
 

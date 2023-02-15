@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java.dispatcher;
+package de.monticore.codegen.cd2java.typedispatcher;
 
 import de.monticore.cd.facade.CDInterfaceUsageFacade;
 import de.monticore.cd4code.CD4CodeMill;
@@ -14,7 +14,6 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.check.SymTypeExpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +23,12 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.*;
 
 
-public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final VisitorService visitorService;
 
-  public DispatcherDecorator(final GlobalExtensionManagement glex,
-                             final VisitorService visitorService) {
+  public TypeDispatcherDecorator(final GlobalExtensionManagement glex,
+                                 final VisitorService visitorService) {
     super(glex);
     this.visitorService = visitorService;
   }
@@ -42,7 +41,7 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
 
-    String visitorName = getInheritanceVisitorName(input.getCDDefinition().getName());
+    String visitorName = getTypeDispatcherName(input.getCDDefinition().getName());
     ASTCDInterfaceUsage traverserInterface = getInterfaceUsage();
     List<ASTCDAttribute> attributes = createAllAttributes();
     ASTCDMethod resetMethod = createResetMethod();
@@ -237,8 +236,8 @@ public class DispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, A
     return methods;
   }
 
-  public String getInheritanceVisitorName(String name) {
-    return name + "Dispatcher";
+  public String getTypeDispatcherName(String name) {
+    return name + "TypeDispatcher";
   }
 
 }
