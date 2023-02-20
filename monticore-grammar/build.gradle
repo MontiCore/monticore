@@ -92,6 +92,7 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
 		}
 }
 
+// grammar dependencies without generated TR grammars
 def grammarDependencies = ext {
 	// no dependencies
 	MCBasics = []
@@ -153,7 +154,7 @@ def grammarDependencies = ext {
 }
 
 compileJava {
-	tasks.findAll { task -> task.name.startsWith("generateGrammar") }.each {
+	tasks.findAll { task -> task.name.startsWith("generateGrammar") && !task.name.contains("TR") }.each {
 		def grammarName = it.getName().substring('generateGrammar'.length())
 		def dependsOnGrammars = grammarDependencies[grammarName].collect { name -> tasks["generateGrammar${name}"] }
 		it.dependsOn dependsOnGrammars
