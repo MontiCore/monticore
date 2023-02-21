@@ -236,23 +236,23 @@ fileTree("src").matching { include '**/*.mlc' }.each {
   def f = it
   def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
 
-    task "showArtifacts${mlcName}"(type: JavaExec) {
-        classpath = configurations.MLC
-        group = 'MLC'
-        mainClass = 'de.monticore.mlc.MLCTool'
-        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"
-        dependsOn("generateGrammar${mlcName}")
-        showArtifacts.dependsOn("showArtifacts${mlcName}")
-    }
+  task "showArtifacts${mlcName}"(type: JavaExec) {
+    classpath = configurations.MLC
+    group = 'MLC'
+    mainClass = 'de.monticore.mlc.MLCTool'
+    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"
+    dependsOn("generateGrammar${mlcName}")
+    showArtifacts.dependsOn("showArtifacts${mlcName}")
+  }
 
-    task "checkArtifacts${mlcName}"(type: JavaExec) {
-        classpath = configurations.MLC
-        group = 'MLC'
-        mainClass = 'de.monticore.mlc.MLCTool'
-			args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${buildDir}/reports"
-        dependsOn("generateGrammar${mlcName}")
-        checkArtifacts.dependsOn("checkArtifacts${mlcName}")
-    }
+  task "checkArtifacts${mlcName}"(type: JavaExec) {
+    classpath = configurations.MLC
+    group = 'MLC'
+    mainClass = 'de.monticore.mlc.MLCTool'
+    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${buildDir}/reports"
+    dependsOn("generateGrammar${mlcName}")
+    checkArtifacts.dependsOn("checkArtifacts${mlcName}")
+  }
 }
 
 ///////////// dependencies between check artifacts tasks ///////////////////////
