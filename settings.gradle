@@ -116,11 +116,13 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:02experiments:imports')
   include(':monticore-test:02experiments:dispatcher')
 
-  include ':monticore-test:montitrans'
-  project(':monticore-test:montitrans').projectDir = file("monticore-test/montitrans")
-  include(':monticore-test:montitrans:test-dstl-gen')
-  include(':monticore-test:montitrans:test-odrules')
-  include(':monticore-test:montitrans:test-generated-dstls')
+  if ("true".equals(getProperty('genTR'))) { // Only test MontiTrans if the flag is set
+    include ':monticore-test:montitrans'
+    project(':monticore-test:montitrans').projectDir = file("monticore-test/montitrans")
+    include(':monticore-test:montitrans:test-dstl-gen')
+    include(':monticore-test:montitrans:test-odrules')
+    include(':monticore-test:montitrans:test-generated-dstls')
+  }
 
  // include 'example'
  // project(':example').projectDir = file("monticore-test/example")
