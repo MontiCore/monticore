@@ -118,4 +118,9 @@ public class TFLanguageOverrideVisitor implements
     public void visit(ASTGrammarOption srcNode) {
         tFGrammar.setGrammarOption(srcNode);
     }
+
+  @Override
+    public void visit(ASTKeywordRule srcNode) {
+      tFGrammar.addKeywordRule(srcNode);
+    }
 }

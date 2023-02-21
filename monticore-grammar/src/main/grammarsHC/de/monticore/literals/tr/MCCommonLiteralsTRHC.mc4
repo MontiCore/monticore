@@ -7,6 +7,14 @@ package de.monticore.literals.tr;
   */
 component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.monticore.literals.tr.MCLiteralsBasisTR {
 
+    TfIdentifierString implements TfIdentifier =
+        identifierToken:String
+        | "[[" identifierToken:String ":-" (newIdentifierSchema:TFSchema| newIdentifierToken:String)? "]]"
+        | "[[" (identifierSchema:TFSchema| identifierToken:String)? ":-" newIdentifierToken:String "]]"
+        // | "String" identifierSchema:TFSchema ";" // no abstract syntax matching for string literals - this (automatically derived) alternative is removed using the TRHC mechanism
+        ;
+
+
     astrule ITFBooleanLiteral =
         method public boolean getValue() {
             throw new UnsupportedOperationException("0xD7761 Method not implemented for non patterns");

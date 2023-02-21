@@ -781,7 +781,6 @@ public class ProductionFactory {
       //  "X" identifier:TFSchema ";"
       ASTAlt fourth = GrammarMill.altBuilder()
               .addComponent(GrammarMill.terminalBuilder().setName(srcNode.getName()).build())
-//              .addComponent(schemaPredicate())
               .addComponent(GrammarMill.nonTerminalBuilder().setUsageName("identifierSchema").setName(PSYM_TFTFSchema).build())
               .addComponent(GrammarMill.terminalBuilder().setName(";").build())
               .build();

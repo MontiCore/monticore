@@ -6,7 +6,11 @@ package mc.testcases;
 grammar ExpressionDSL extends
     de.monticore.expressions.CommonExpressions,
     de.monticore.expressions.AssignmentExpressions,
-    de.monticore.literals.MCCommonLiterals {
+    de.monticore.literals.MCCommonLiterals,
+    de.monticore.types.MCBasicTypes,
+    de.monticore.UMLModifier {
 
     Foo = "expr" Expression;
+
+    CDAttribute = Modifier MCType Name ("=" initial:Expression)? ";";
 }

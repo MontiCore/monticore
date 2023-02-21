@@ -125,25 +125,32 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
     
     this.getPrinter().print("=");
     this.printList(a.getAltList().iterator(), "|");
-    if (a.isPresentVariable()) {
+    if (a.isPresentVariable() || a.isPresentEndAction()) {
       this.getPrinter().print(" : ");
-      this.getPrinter().print(a.getVariable());
-      if (!a.getTypeList().isEmpty()) {
-        this.getPrinter().print("->");
-        this.getPrinter().print(Names.getQualifiedName(a.getTypeList()));
-        if (a.isPresentBlock() || a.isPresentEndAction()) {
-          this.getPrinter().print(":");
-          if (a.isPresentEndAction()) {
-            this.print(" {");
-            this.getPrinter().println();
-            this.getPrinter().indent();
-            a.getEndAction().accept(this.getTraverser());
-            this.getPrinter().unindent();
-            this.print("}");
-          }
-          
-          if (a.isPresentBlock()) {
-            a.getBlock().accept(this.getTraverser());
+      if (a.isPresentEndAction()) {
+        this.getPrinter().print(" { ");
+        a.getEndAction().accept(getTraverser());
+        this.getPrinter().print(" } ");
+      }
+      if (a.isPresentVariable()) {
+        this.getPrinter().print(a.getVariable());
+        if (!a.getTypeList().isEmpty()) {
+          this.getPrinter().print("->");
+          this.getPrinter().print(Names.getQualifiedName(a.getTypeList()));
+          if (a.isPresentBlock() || a.isPresentEndAction()) {
+            this.getPrinter().print(":");
+            if (a.isPresentEndAction()) {
+              this.print(" {");
+              this.getPrinter().println();
+              this.getPrinter().indent();
+              a.getEndAction().accept(this.getTraverser());
+              this.getPrinter().unindent();
+              this.print("}");
+            }
+
+            if (a.isPresentBlock()) {
+              a.getBlock().accept(this.getTraverser());
+            }
           }
         }
       }
