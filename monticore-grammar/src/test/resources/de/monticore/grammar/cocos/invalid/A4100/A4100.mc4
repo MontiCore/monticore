@@ -2,7 +2,7 @@
 
 package  de.monticore.grammar.cocos.invalid.A4100;
 
-grammar A4100 extends mc.grammars.types.TestTypes{
+grammar A4100 extends de.monticore.common.TestTypes {
 
   symbol A = "a" Name;
 

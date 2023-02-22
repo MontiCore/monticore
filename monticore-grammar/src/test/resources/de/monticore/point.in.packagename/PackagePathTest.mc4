@@ -2,7 +2,7 @@
 package point.in.packagename;
 
 // grammar used to checked if points are within a packeagename the package is wrong
-grammar PackagePathTest extends mc.grammars.lexicals.TestLexicals {
+grammar PackagePathTest extends de.monticore.common.TestLexicals {
 
     Test = Name;
 

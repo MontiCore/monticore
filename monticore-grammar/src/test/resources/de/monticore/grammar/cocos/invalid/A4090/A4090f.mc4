@@ -2,7 +2,7 @@
 
 package  de.monticore.grammar.cocos.invalid.A4090;
 
-grammar A4090f extends mc.grammars.types.TestTypes{
+grammar A4090f extends de.monticore.common.TestTypes{
 
   A = "a";
   B = (who:Name | who:A)*;

@@ -2,7 +2,7 @@
 
 package  de.monticore.grammar.cocos.invalid.A4150;
 
-grammar A4150 extends mc.grammars.types.TestTypes, mc.grammars.types.TestTypes {
+grammar A4150 extends de.monticore.common.TestTypes, de.monticore.common.TestTypes {
 
   A = "foo";
 
