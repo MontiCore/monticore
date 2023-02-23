@@ -42,6 +42,11 @@ public class SymTypeObscure extends SymTypeExpression {
   }
 
   @Override
+  public boolean isValidType() {
+    return false;
+  }
+
+  @Override
   public boolean isObscureType() {
     return true;
   }

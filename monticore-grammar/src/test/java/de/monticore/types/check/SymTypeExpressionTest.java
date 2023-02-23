@@ -88,6 +88,8 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teFunc4;
 
+  static SymTypeExpression teObscure;
+
   @BeforeClass
   public static void setUpScope(){
     OOSymbolsMill.reset();
@@ -158,12 +160,48 @@ public class SymTypeExpressionTest {
 
     teFunc4 = createFunction(teVoid, Lists.newArrayList(teDouble, teInt), true);
 
+    teObscure = createObscureType();
+
   }
   
   @Before
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+
+  @Test
+  public void subTypeTest() {
+    assertTrue(teInt.isPrimitive());
+    assertTrue(teInt.isValidType());
+    assertFalse(teInt.isGenericType());
+    assertFalse(teInt.isTypeVariable());
+    assertFalse(teInt.isArrayType());
+    assertFalse(teInt.isVoidType());
+    assertFalse(teInt.isNullType());
+    assertFalse(teInt.isObjectType());
+    assertFalse(teInt.isFunctionType());
+    assertFalse(teInt.isObscureType());
+    assertFalse(teInt.isWildcard());
+
+    assertTrue(teVarA.isTypeVariable());
+    assertFalse(teVarA.isValidType());
+    assertTrue(teP.isObjectType());
+    assertTrue(teP.isValidType());
+    assertTrue(teVoid.isVoidType());
+    assertTrue(teVoid.isValidType());
+    assertTrue(teNull.isNullType());
+    assertTrue(teNull.isValidType());
+    assertTrue(teArr1.isArrayType());
+    assertTrue(teArr1.isValidType());
+    assertTrue(teSet.isGenericType());
+    assertTrue(teSet.isValidType());
+    assertTrue(teUpperBound.isWildcard());
+    assertFalse(teUpperBound.isValidType());
+    assertTrue(teFunc1.isFunctionType());
+    assertTrue(teFunc1.isValidType());
+    assertTrue(teObscure.isObscureType());
+    assertFalse(teObscure.isValidType());
   }
   
   @Test

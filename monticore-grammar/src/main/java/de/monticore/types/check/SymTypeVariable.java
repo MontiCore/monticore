@@ -63,6 +63,15 @@ public class SymTypeVariable extends SymTypeExpression {
      */
   }
 
+  @Override
+  public boolean isValidType() {
+    return false;
+    /**
+     *     Please note that the var itself is not a type,
+     *     but it might be instantiated into a type
+     */
+  }
+
   public boolean isTypeVariable() {
     return true;
   }

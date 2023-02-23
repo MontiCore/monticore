@@ -71,6 +71,16 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   }
 
   @Override
+  public boolean isValidType() {
+    return false;
+  }
+
+  @Override
+  public boolean isWildcard() {
+    return true;
+  }
+
+  @Override
   public boolean deepEquals(SymTypeExpression sym){
     if(!(sym instanceof SymTypeOfWildcard)){
       return false;
