@@ -7,7 +7,6 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -21,8 +20,14 @@ public class SymTypeOfUnionDeSer {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     jp.member(JsonDeSers.KIND, SERIALIZED_KIND);
-    SymTypeExpressionDeSer.serializeMember(jp, SERIALIZED_TYPES,
-        new ArrayList<>(toSerialize.getUnionizedTypeSet()));
+
+    jp.beginArray(SERIALIZED_TYPES);
+    toSerialize.getUnionizedTypeSet().stream()
+        .map(SymTypeExpression::printAsJson)
+        .sorted()
+        .forEach(jp::valueJson);
+    jp.endArray();
+
     jp.endObject();
     return jp.getContent();
   }
