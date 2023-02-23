@@ -33,6 +33,8 @@ public class SymTypeExpressionDeSer {
 
   protected SymTypeOfObjectDeSer symTypeOfObjectDeSer;
 
+  protected SymTypeOfUnionDeSer symTypeOfUnionDeSer;
+
   protected SymTypeVariableDeSer symTypeVariableDeSer;
 
   protected SymTypeOfWildcardDeSer symTypeOfWildcardDeSer;
@@ -45,6 +47,7 @@ public class SymTypeExpressionDeSer {
     this.symTypePrimitiveDeSer = new SymTypePrimitiveDeSer();
     this.symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
     this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+    this.symTypeOfUnionDeSer = new SymTypeOfUnionDeSer();
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
     this.symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
     this.symTypeOfFunctionDeSer = new SymTypeOfFunctionDeSer();
@@ -134,6 +137,9 @@ public class SymTypeExpressionDeSer {
     if(toSerialize.isObjectType()) {
       return symTypeOfObjectDeSer.serialize((SymTypeOfObject) toSerialize);
     }
+    if(toSerialize.isUnionType()) {
+      return symTypeOfUnionDeSer.serialize((SymTypeOfUnion)toSerialize);
+    }
     if(toSerialize.isPrimitive()) {
       return symTypePrimitiveDeSer.serialize((SymTypePrimitive)toSerialize);
     }
@@ -190,6 +196,8 @@ public class SymTypeExpressionDeSer {
           return symTypeOfGenericsDeSer.deserialize(o);
         case SymTypeOfObjectDeSer.SERIALIZED_KIND:
           return symTypeOfObjectDeSer.deserialize(o);
+        case SymTypeOfUnionDeSer.SERIALIZED_KIND:
+          return symTypeOfUnionDeSer.deserialize(o);
         case SymTypeVariableDeSer.SERIALIZED_KIND:
           return symTypeVariableDeSer.deserialize(o);
         case SymTypeOfWildcardDeSer.SERIALIZED_KIND:

@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -87,6 +88,8 @@ public class SymTypeExpressionTest {
   static SymTypeExpression teFunc3;
 
   static SymTypeExpression teFunc4;
+
+  static SymTypeExpression teUnion1;
 
   static SymTypeExpression teObscure;
 
@@ -160,6 +163,8 @@ public class SymTypeExpressionTest {
 
     teFunc4 = createFunction(teVoid, Lists.newArrayList(teDouble, teInt), true);
 
+    teUnion1 = createUnion(teInt, teDouble);
+
     teObscure = createObscureType();
 
   }
@@ -183,6 +188,7 @@ public class SymTypeExpressionTest {
     assertFalse(teInt.isFunctionType());
     assertFalse(teInt.isObscureType());
     assertFalse(teInt.isWildcard());
+    assertFalse(teInt.isUnionType());
 
     assertTrue(teVarA.isTypeVariable());
     assertFalse(teVarA.isValidType());
@@ -200,6 +206,8 @@ public class SymTypeExpressionTest {
     assertFalse(teUpperBound.isValidType());
     assertTrue(teFunc1.isFunctionType());
     assertTrue(teFunc1.isValidType());
+    assertTrue(teUnion1.isUnionType());
+    assertTrue(teUnion1.isValidType());
     assertTrue(teObscure.isObscureType());
     assertFalse(teObscure.isValidType());
   }
@@ -228,6 +236,7 @@ public class SymTypeExpressionTest {
     assertEquals("(double, int) -> int", teFunc2.print());
     assertEquals("((double, int) -> int) -> () -> void", teFunc3.print());
     assertEquals("(double, int...) -> void", teFunc4.print());
+    assertEquals("(double | int)", teUnion1.print());
   }
 
   @Test
@@ -407,6 +416,25 @@ public class SymTypeExpressionTest {
     assertTrue(result.isJsonObject());
     JsonObject teFunc4Json = result.getAsJsonObject();
     assertTrue(teFunc4Json.getBooleanMember("elliptic"));
+
+    result = JsonParser.parse(teUnion1.printAsJson());
+    assertTrue(result.isJsonObject());
+    JsonObject teUnion1Json = result.getAsJsonObject();
+    assertEquals("de.monticore.types.check.SymTypeOfUnion",
+        teUnion1Json.getStringMember("kind"));
+    assertEquals(2, teUnion1Json.getArrayMember("unionizedTypes").size());
+    List<JsonElement> union1Types = teUnion1Json.getArrayMember("unionizedTypes");
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
+        union1Types.get(0).getAsJsonObject().getStringMember("kind"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
+        union1Types.get(1).getAsJsonObject().getStringMember("kind"));
+    String teUnionType0 = union1Types.get(0).getAsJsonObject().getStringMember("primitiveName");
+    String teUnionType1 = union1Types.get(1).getAsJsonObject().getStringMember("primitiveName");
+    assertTrue((teUnionType0.equals("int") && teUnionType1.equals("double"))
+    || (teUnionType0.equals("double") && teUnionType1.equals("int")));
+
+    assertEquals("double",
+        union1Types.get(1).getAsJsonObject().getStringMember("primitiveName"));
   }
 
   @Test
@@ -483,6 +511,11 @@ public class SymTypeExpressionTest {
     assertTrue(teFunc3.deepClone() instanceof SymTypeOfFunction);
     assertTrue(teFunc3.deepClone().isFunctionType());
     assertEquals(teFunc3.print(), teFunc3.deepClone().print());
+
+    //SymTypeOfUnion
+    assertTrue(teUnion1.deepClone() instanceof SymTypeOfUnion);
+    assertTrue(teUnion1.deepClone().isUnionType());
+    assertEquals(teUnion1.print(), teUnion1.deepClone().print());
   }
 
   @Test
@@ -558,6 +591,12 @@ public class SymTypeExpressionTest {
 
     SymTypeOfFunction tFunc4 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(teDouble, teInt), true);
     assertEquals("(double, int...) -> void", tFunc4.print());
+
+    SymTypeOfUnion tUnion1 = createUnion(teInt, teDouble);
+    assertEquals("(double | int)", tUnion1.print());
+
+    SymTypeOfUnion tUnion2 = createUnion(Set.of(teInt, teDouble, teArr1));
+    assertEquals("(Human[] | double | int)", tUnion2.print());
   }
 
   @Test

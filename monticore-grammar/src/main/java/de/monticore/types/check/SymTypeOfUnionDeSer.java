@@ -1,0 +1,47 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types.check;
+
+import de.monticore.symboltable.serialization.JsonDeSers;
+import de.monticore.symboltable.serialization.JsonParser;
+import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+public class SymTypeOfUnionDeSer {
+
+  // Care: the following String needs to be adapted if the package was renamed
+  public static final String SERIALIZED_KIND = "de.monticore.types.check.SymTypeOfUnion";
+  protected static final String SERIALIZED_TYPES = "unionizedTypes";
+
+  public String serialize(SymTypeOfUnion toSerialize) {
+    JsonPrinter jp = new JsonPrinter();
+    jp.beginObject();
+    jp.member(JsonDeSers.KIND, SERIALIZED_KIND);
+    SymTypeExpressionDeSer.serializeMember(jp, SERIALIZED_TYPES,
+        new ArrayList<>(toSerialize.getUnionizedTypeSet()));
+    jp.endObject();
+    return jp.getContent();
+  }
+
+  public SymTypeOfUnion deserialize(String serialized) {
+    return deserialize(JsonParser.parseJsonObject(serialized));
+  }
+
+  public SymTypeOfUnion deserialize(JsonObject serialized) {
+    if (serialized.hasMember(SERIALIZED_TYPES)) {
+      List<SymTypeExpression> unionizedTypesList =
+          SymTypeExpressionDeSer.deserializeListMember(SERIALIZED_TYPES, serialized);
+      return SymTypeExpressionFactory.createUnion(new HashSet<>(unionizedTypesList));
+    }
+    Log.error(
+        "0x9E2F7 Internal error: Loading ill-structured SymTab: missing "
+            + SERIALIZED_TYPES
+            + "of SymTypeOfUnion "
+            + serialized);
+    return null;
+  }
+}

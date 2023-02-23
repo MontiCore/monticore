@@ -75,6 +75,8 @@ public class SymTypeExpressionDeSerTest {
 
   SymTypeOfFunction teFun4;
 
+  SymTypeOfUnion teUnion1;
+
   @Before
   public void initLog() {
     LogStub.init();
@@ -144,6 +146,8 @@ public class SymTypeExpressionDeSerTest {
 
     teFun4 = createFunction(teInt, List.of(teInt), true);
 
+    teUnion1 = createUnion(teInt, teDouble);
+
     scope.add(new OOTypeSymbol("A"));
     scope.add(new OOTypeSymbol("B"));
     scope.add(new OOTypeSymbol("Human"));
@@ -188,6 +192,7 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerialization(teFun2);
     performRoundTripSerialization(teFun3);
     performRoundTripSerialization(teFun4);
+    performRoundTripSerialization(teUnion1);
 
     performRoundTripSerializationSymTypePrimitive(teDouble);
     performRoundTripSerializationSymTypePrimitive(teInt);
@@ -208,6 +213,7 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerializationSymTypeOfFunction(teFun2);
     performRoundTripSerializationSymTypeOfFunction(teFun3);
     performRoundTripSerializationSymTypeOfFunction(teFun4);
+    performRoundTripSerializationSymTypeOfUnion(teUnion1);
   }
 
   protected void performRoundTripSerialization(SymTypeExpression expr) {
@@ -319,6 +325,21 @@ public class SymTypeExpressionDeSerTest {
     assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
+  protected void performRoundTripSerializationSymTypeOfUnion(SymTypeOfUnion expr) {
+    SymTypeOfUnionDeSer deser = new SymTypeOfUnionDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized);
+    assertNotNull(deserialized);
+
+    assertTrue(expr.deepEquals(deserialized));
+    assertEquals(deser.serialize(expr), deser.serialize((SymTypeOfUnion) deserialized));
+    TypeSymbol expectedTS = deserialized.getTypeInfo();
+    TypeSymbol actualTS = deserialized.getTypeInfo();
+    assertEquals(expectedTS.getName(), actualTS.getName());
+  }
+
   @Test
   public void testRoundtrip2() {
     performRoundtrip2(teDouble);
@@ -345,6 +366,7 @@ public class SymTypeExpressionDeSerTest {
     performRoundtrip2(teFun2);
     performRoundtrip2(teFun3);
     performRoundtrip2(teFun4);
+    performRoundtrip2(teUnion1);
   }
 
   protected void performRoundtrip2(SymTypeExpression expr) {
@@ -456,6 +478,10 @@ public class SymTypeExpressionDeSerTest {
     SymTypePrimitiveDeSer symTypePrimitiveDeser = new SymTypePrimitiveDeSer();
     symTypePrimitiveDeser.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F1"));
+
+    SymTypeOfUnionDeSer symTypeOfUnionDeser = new SymTypeOfUnionDeSer();
+    symTypeOfUnionDeser.deserialize(invalidJsonForSerializing2);
+    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x9E2F7"));
   }
 
 }
