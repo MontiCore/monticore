@@ -14,4 +14,9 @@ grammar ProdAndOverriddenProdUseSameAttrNameForDiffNTs_super{
   State =
   "state" Name
   ( ("{" (State)* "}") | ";") ;
+
+  Prod4 = u:Digit | u:Char;
+  token Digit = '0'..'9';
+  token Char = 'a'..'z';
+
 }

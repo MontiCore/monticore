@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.grammar.cocos;
+package de.monticore.grammar;
 
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -22,7 +21,9 @@ import java.util.stream.Collectors;
  * non-terminals of that interface.
  * 
  */
-public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
+// TODO Delete after release 7.5.0
+@Deprecated
+public class SubrulesUseInterfaceNTsFix implements GrammarASTMCGrammarCoCo {
 
   public static final String ERROR_CODE = "0xA4047";
 

@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.grammar.cocos;
+package de.monticore.grammar;
 
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -17,7 +16,9 @@ import java.util.Optional;
 /**
  * Checks that an attribute name is not used twice for different nonterminals.
  */
-public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarASTNonTerminalCoCo {
+// TODO Delete after release 7.5.0
+@Deprecated
+public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsFix implements GrammarASTNonTerminalCoCo {
 
   public static final String ERROR_CODE = "0xA4025";
 
@@ -48,6 +49,7 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
               logError(rule.get(), attributename, componentSymbol, "production of a lexer nonterminal", a);
             } else if (rcs.get(0).isIsNonterminal() && rcs.get(0).getReferencedProd().isPresent()
                     && (rcs.get(0).getReferencedProd().get().isIsLexerProd() && componentSymbol.getReferencedProd().get().isIsLexerProd()) || !rcs.get(0).getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
+
               if (!(rcs.get(0).getReferencedProd().get().isIsLexerProd() && componentSymbol.getReferencedProd().get().isIsLexerProd())) {
                 logError(rule.get(), attributename, componentSymbol, "nonterminal " + rcs.get(0).getReferencedProd().get().getName(), a);
               }

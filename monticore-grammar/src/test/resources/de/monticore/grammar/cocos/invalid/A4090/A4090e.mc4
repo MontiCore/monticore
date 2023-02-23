@@ -4,6 +4,6 @@ package  de.monticore.grammar.cocos.invalid.A4090;
 
 grammar A4090e extends de.monticore.common.TestLiterals{
 
-  B = (who:Num_Int | who:"Tom")*;
+  B = (who:["T1" | "T2"] | who:"Tom")*;
 
 }

@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.grammar.cocos;
+package de.monticore.grammar;
 
 import com.google.common.collect.Lists;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTNonTerminalCoCo;
@@ -19,7 +18,9 @@ import java.util.Optional;
 /**
  * Checks that an attribute name is not used twice for different nonterminals.
  */
-public class ProdAndExtendedProdUseSameAttrNameForDiffNTs implements GrammarASTNonTerminalCoCo {
+// TODO Delete after release 7.5.0
+@Deprecated
+public class ProdAndExtendedProdUseSameAttrNameForDiffNTsFix implements GrammarASTNonTerminalCoCo {
 
   public static final String ERROR_CODE = "0xA4024";
 

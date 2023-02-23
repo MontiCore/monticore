@@ -87,6 +87,7 @@ public class GrammarCoCos {
     checker.addCoCo(new NoForbiddenProdNameAddon());
     checker.addCoCo(new NoForbiddenSymbolName());
     checker.addCoCo(new NoForbiddenSymbolNameAddon());
+    checker.addCoCo(new RuleComponentsCompatible());
 
     return checker;
   }
