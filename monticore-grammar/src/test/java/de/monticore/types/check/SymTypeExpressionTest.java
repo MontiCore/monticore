@@ -425,16 +425,13 @@ public class SymTypeExpressionTest {
     assertEquals(2, teUnion1Json.getArrayMember("unionizedTypes").size());
     List<JsonElement> union1Types = teUnion1Json.getArrayMember("unionizedTypes");
     assertEquals("de.monticore.types.check.SymTypePrimitive",
-        union1Types.get(0).getAsJsonObject().getStringMember("kind"));
-    assertEquals("de.monticore.types.check.SymTypePrimitive",
-        union1Types.get(1).getAsJsonObject().getStringMember("kind"));
-    String teUnionType0 = union1Types.get(0).getAsJsonObject().getStringMember("primitiveName");
-    String teUnionType1 = union1Types.get(1).getAsJsonObject().getStringMember("primitiveName");
-    assertTrue((teUnionType0.equals("int") && teUnionType1.equals("double"))
-    || (teUnionType0.equals("double") && teUnionType1.equals("int")));
-
+        union1Types.get(0).getAsJsonObject().getStringMember( "kind"));
     assertEquals("double",
-        union1Types.get(1).getAsJsonObject().getStringMember("primitiveName"));
+        union1Types.get(0).getAsJsonObject().getStringMember( "primitiveName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
+        union1Types.get(1).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("int",
+        union1Types.get(1).getAsJsonObject().getStringMember( "primitiveName"));
   }
 
   @Test
