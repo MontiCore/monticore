@@ -3,8 +3,6 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,16 +17,6 @@ public class SymTypeObscure extends SymTypeExpression {
   @Override
   public String printFullName() {
     return "Obscure";
-  }
-
-  @Override
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeObscure");
-    jp.endObject();
-    return jp.getContent();
   }
 
   @Override

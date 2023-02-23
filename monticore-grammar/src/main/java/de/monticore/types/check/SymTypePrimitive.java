@@ -2,8 +2,6 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,19 +43,6 @@ public class SymTypePrimitive extends SymTypeExpression {
   @Override
   public String printFullName(){
     return print();
-  }
-
-  /**
-   * printAsJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypePrimitive");
-    jp.member("primitiveName", getPrimitiveName());
-    jp.endObject();
-    return jp.getContent();
   }
 
 
