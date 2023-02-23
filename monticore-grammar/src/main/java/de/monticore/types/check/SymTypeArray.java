@@ -3,8 +3,6 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -78,20 +76,6 @@ public class SymTypeArray extends SymTypeExpression {
       r.append("[]");
     }
     return r.toString();
-  }
-
-  /**
-   * printToJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeArray");
-    jp.memberJson("argument", argument.printAsJson());
-    jp.member("dim", dim);
-    jp.endObject();
-    return jp.getContent();
   }
 
   @Override

@@ -2,8 +2,6 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
 
 
 public class SymTypeVariable extends SymTypeExpression {
@@ -34,19 +32,6 @@ public class SymTypeVariable extends SymTypeExpression {
   @Override
   public String printFullName() {
     return getVarName();
-  }
-
-  /**
-   * printAsJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeVariable");
-    jp.member("varName", getVarName());
-    jp.endObject();
-    return jp.getContent();
   }
 
   /**

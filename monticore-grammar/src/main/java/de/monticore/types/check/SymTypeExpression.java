@@ -35,7 +35,9 @@ public abstract class SymTypeExpression {
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
-  protected abstract String printAsJson();
+  protected String printAsJson() {
+    return SymTypeExpressionDeSer.getInstance().serialize(this);
+  }
 
   /**
    * Am I a not valid type?

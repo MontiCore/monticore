@@ -34,13 +34,6 @@ public class SymTypeOfNull extends SymTypeExpression {
     return print();
   }
 
-  /**
-   * printAsJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    return "\""+BasicSymbolsMill.NULL +"\"";
-  }
-
   @Override
   public SymTypeOfNull deepClone() {
     return new SymTypeOfNull();
