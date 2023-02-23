@@ -107,6 +107,13 @@ public abstract class SymTypeExpression {
   }
 
   /**
+   * Am I an union type (e.g. "(A|B)")?
+   */
+  public boolean isUnionType() {
+    return false;
+  }
+
+  /**
    * Can I not have a type derived from (e.g. "1 - student")?
    */
   public boolean isObscureType(){
