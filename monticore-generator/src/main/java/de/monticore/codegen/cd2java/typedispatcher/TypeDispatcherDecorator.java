@@ -14,7 +14,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
@@ -24,7 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 
 public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
@@ -89,6 +89,11 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     optionalAttribute(attributes, symbolTableService.getArtifactScopeFullName(), symbolTableService.getArtifactScopeSimpleName());
     booleanAttribute(attributes, symbolTableService.getGlobalScopeSimpleName());
     optionalAttribute(attributes, symbolTableService.getGlobalScopeFullName(), symbolTableService.getGlobalScopeSimpleName());
+
+    for(String symbol: symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
+      booleanAttribute(attributes, symbolTableService.getSimpleNameFromSymbolName(symbol));
+      optionalAttribute(attributes, symbol, symbolTableService.getSimpleNameFromSymbolName(symbol));
+    }
 
     return attributes;
   }
@@ -262,9 +267,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     replaceTemplate(EMPTY_BODY, handleArtifactScope,
             new TemplateHookPoint("dispatcher.Handle",
                     symbolTableService.getArtifactScopeSimpleName(),
-                    symbolTableService.getSuperCDsTransitive().stream()
-                            .map(symbolTableService::getArtifactScopeFullName)
-                            .collect(Collectors.toList())));
+                    List.of(symbolTableService.getArtifactScopeInterfaceFullName())));
 
     methods.add(handleArtifactScope);
 
@@ -288,6 +291,27 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
                             .collect(Collectors.toList())));
 
     methods.add(handleInterfaceScope);
+
+    for(String symbol: symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
+      ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
+              .setModifier(PUBLIC.build())
+              .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
+                      .setMCVoidType(MCTypeFacade.getInstance().createVoidType())
+                      .build())
+              .setName("handle")
+              .addCDParameter(CD4CodeMill.cDParameterBuilder()
+                      .setMCType(MCTypeFacade.getInstance().createQualifiedType(symbol))
+                      .setName("node")
+                      .build())
+              .build();
+
+      replaceTemplate(EMPTY_BODY, method,
+              new TemplateHookPoint("dispatcher.Handle",
+                      symbolTableService.getSimpleNameFromSymbolName(symbol),
+                      List.of(symbolTableService.getCommonSymbolInterfaceFullName(), "de.monticore.symboltable.ISymbol")));
+
+      symbolTableService.getCommonSymbolInterfaceFullName();
+    }
 
     for(CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
       List<String> superTypes = typeSymbol.getSuperTypesList()
