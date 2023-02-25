@@ -28,7 +28,7 @@ public class SymTypeArray extends SymTypeExpression {
    * @param argument Argument Type
    * @param typeSymbol loader for the Type-Symbol that defines this type
    */
-  //todo: TypeSymbul UND Expression: da ist was doppelt?
+  //todo: TypeSymbol UND Expression: da ist was doppelt?
   public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
     this.typeSymbol = typeSymbol;
     this.dim = dim;

@@ -347,7 +347,7 @@ public abstract class SymTypeExpression {
         variables.addAll(fields);
         return variables;
       }
-    }else{
+    } else {
       return getTypeInfo().getSpannedScope().resolveVariableMany(fieldName);
     }
   }
@@ -413,7 +413,8 @@ public abstract class SymTypeExpression {
    * an associated TypeSymbol, where all available Fields, Methods, 
    * etc. can be found.
    * <p>
-   * These may, however, be empty, e.g. for primitive Types.
+   * These may, however, be null, e.g. for primitive Types.
+   * This is, because primitive Types have their available Information built in.
    * <p>
    * Furthermore, each SymTypeExpression knows this TypeSymbol (i.e. the
    * TypeSymbols are loaded (or created) upon creation of the SymType.
