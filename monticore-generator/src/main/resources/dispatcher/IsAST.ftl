@@ -3,4 +3,4 @@ ${tc.signature("name")}
 
 reset();
 node.accept(this);
-return is${name};
+return ${name};
