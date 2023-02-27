@@ -21,7 +21,7 @@ public class MCSimpleGenericTypesNodeIdentHelper extends MCCollectionTypesNodeId
   }
 
   public String getIdent(ASTMCCustomTypeArgument a){
-    return format(a.getMCType().printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter()),Layouter.nodeName(a));
+    return format(a.getMCType().printType(),Layouter.nodeName(a));
   }
 
 

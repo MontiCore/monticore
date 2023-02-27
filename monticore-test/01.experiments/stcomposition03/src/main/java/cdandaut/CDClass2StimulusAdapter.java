@@ -9,6 +9,10 @@ public class CDClass2StimulusAdapter extends StimulusSymbol {
 
   protected CDClassSymbol original;
 
+  public CDClassSymbol getAdaptee() {
+    return original;
+  }
+
   public CDClass2StimulusAdapter(CDClassSymbol o){
     super(o.getName());
     this.original = o;

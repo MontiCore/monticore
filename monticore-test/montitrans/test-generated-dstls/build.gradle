@@ -37,8 +37,24 @@ fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').ea
   generateSocialNetworkTRRules.dependsOn("$taskname")
 }
 
+task generateExpressionDSLTRRules {
+  group = "montitrans"
+}
+fileTree(dir: "$projectDir/src/main/models/expressiondsl/mtr", include: '**/**.mtr').each {
+  def g = it
+  def taskname = "generateExpressionDSLTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+  task "$taskname"(type: MontiTransExec) {
+    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
+    TFGenTool = 'mc.testcases.tr.ExpressionDSLTFGenTool'
+    input = file(g)
+    outputDir = file("$buildDir/generated-sources")
+  }
+  generateExpressionDSLTRRules.dependsOn("$taskname")
+}
+
+
 compileJava {
-  dependsOn "generateStatechartTRRules", "generateSocialNetworkTRRules"
+  dependsOn "generateStatechartTRRules", "generateSocialNetworkTRRules", "generateExpressionDSLTRRules"
 }
 
 sourceSets {

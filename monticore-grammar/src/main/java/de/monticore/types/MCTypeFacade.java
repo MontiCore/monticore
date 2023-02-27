@@ -95,14 +95,14 @@ public class MCTypeFacade {
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCType type) {
-    return createOptionalTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
+    return createOptionalTypeOf(type.printType());
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCTypeArgument type) {
     if (!type.getMCTypeOpt().isPresent()) {
       return  createOptionalTypeOf("?");
     }
-    return createOptionalTypeOf(type.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
+    return createOptionalTypeOf(type.getMCTypeOpt().get().printType());
   }
 
   /**
@@ -120,7 +120,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCListType createListTypeOf(final ASTMCType type) {
-    return createListTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
+    return createListTypeOf(type.printType());
   }
 
   public ASTMCListType createListTypeOf(final ASTMCTypeArgument type) {
@@ -145,14 +145,14 @@ public class MCTypeFacade {
   }
 
   public ASTMCSetType createSetTypeOf(final ASTMCType type) {
-    return createSetTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
+    return createSetTypeOf(type.printType());
   }
 
   public ASTMCSetType createSetTypeOf(final ASTMCTypeArgument type) {
     if (!type.getMCTypeOpt().isPresent()) {
       return  createSetTypeOf("?");
     }
-    return createSetTypeOf(type.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
+    return createSetTypeOf(type.getMCTypeOpt().get().printType());
   }
 
   /**
@@ -171,7 +171,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCGenericType createCollectionTypeOf(final ASTMCType type) {
-    return createCollectionTypeOf(type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
+    return createCollectionTypeOf(type.printType());
   }
 
   /**
@@ -190,12 +190,12 @@ public class MCTypeFacade {
   }
 
   public ASTMCMapType createMapTypeOf(final ASTMCType firstType, final ASTMCType secondType) {
-    return createMapTypeOf(firstType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), secondType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()));
+    return createMapTypeOf(firstType.printType(), secondType.printType());
   }
 
   public ASTMCMapType createMapTypeOf(final ASTMCTypeArgument firstType, final ASTMCTypeArgument secondType) {
-    String first = firstType.getMCTypeOpt().isPresent()?firstType.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()):"?";
-    String second = secondType.getMCTypeOpt().isPresent()?secondType.getMCTypeOpt().get().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()):"?";
+    String first = firstType.getMCTypeOpt().isPresent()?firstType.getMCTypeOpt().get().printType():"?";
+    String second = secondType.getMCTypeOpt().isPresent()?secondType.getMCTypeOpt().get().printType():"?";
     return createMapTypeOf(first, second);
   }
 

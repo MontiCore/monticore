@@ -18,10 +18,9 @@ ${tc.signature("simpleName", "symbolFullName")}
   List<${symbolFullName}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
   filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
 
-  // if no symbols found try to find adapted one
-  if (filteredSymbols.isEmpty()) {
-    filteredSymbols.addAll(resolveAdapted${simpleName}LocallyMany(foundSymbols, name, modifier, predicate));
-    filteredSymbols = filterSymbolsByAccessModifier(modifier, filteredSymbols);
-    filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
-  }
+  //try to find adapted one
+  filteredSymbols.addAll(resolveAdapted${simpleName}LocallyMany(foundSymbols, name, modifier, predicate));
+  filteredSymbols = filterSymbolsByAccessModifier(modifier, filteredSymbols);
+  filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
+
   return filteredSymbols;

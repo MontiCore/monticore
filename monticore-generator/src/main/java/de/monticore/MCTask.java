@@ -23,6 +23,7 @@ import org.gradle.api.tasks.*;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -63,7 +64,7 @@ import java.util.stream.Collectors;
  *                        defaults to empty list
  */
 @CacheableTask
-public abstract class MCTask extends DefaultTask implements GradleTaskStatistic {
+public abstract class MCTask extends DefaultTask {
   
   public MCTask() {
     Project project = getProject();
@@ -128,7 +129,6 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
 
   @OutputDirectory
   public abstract DirectoryProperty getReportDir();
-
 
   @OutputFile
   public RegularFileProperty getBuildInfoFile() {
@@ -471,10 +471,11 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
    * Returns the path to the TR grammar.
    * Please ensure that the outputDir is previously set
    * @param originalGrammar the original grammar file
+   * @param outputDir the output dir of the TR generating task, defaults to the current tasks output dir
    * @return the TR grammar
    */
-  public File getTRFile(File originalGrammar) {
-    return new File(outputDir.get().getAsFile().toString()
+  public File getTRFile(File originalGrammar, @Nullable File outputDir) {
+    return new File((outputDir == null ? this.outputDir.get().getAsFile() : outputDir.toString())
             + "/"
             + DSTLPathUtil.getTRGrammar(
             modelPath.isEmpty() ? List.of(getProject().getLayout().getProjectDirectory().file("src/main/grammars").toString()) : modelPath,
@@ -496,32 +497,4 @@ public abstract class MCTask extends DefaultTask implements GradleTaskStatistic 
     file.createNewFile();
     FileUtils.writeStringToFile(file, "version = " + getProject().getVersion(), StandardCharsets.UTF_8);
   }
-
-  @Override
-  @Internal
-  public JsonElement getGradleStatisticData(){
-    JsonObject result = new JsonObject();
-
-    {
-      JsonArray params = new JsonArray();
-      Path cwd = getProject().getProjectDir().toPath().toAbsolutePath();
-
-      String[] usedParams = getParameters(f->{
-        try {
-          return cwd.relativize(f.toPath()).toString();
-        } catch (IllegalArgumentException ignored){ // Can occur, if build is on external harddrive, and `~/.gradle` on internal harddrive
-          return f.getPath();
-        }
-      });
-      params.addAll(
-          Arrays.stream(usedParams)
-              .map(UserJsonString::new)
-              .collect(Collectors.toList())
-      );
-      result.putMember("parameter", params);
-    }
-
-    return result;
-  }
-
 }

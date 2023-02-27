@@ -65,7 +65,7 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
     if (type instanceof ASTMCGenericType) {
       name = ((ASTMCGenericType) type).printWithoutTypeArguments();
     } else {
-      name = type.printType(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter());
+      name = type.printType();
     }
     return Names.getSimpleName(name);
   }

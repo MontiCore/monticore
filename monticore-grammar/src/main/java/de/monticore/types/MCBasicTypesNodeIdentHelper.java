@@ -12,11 +12,11 @@ import de.monticore.types.mcbasictypes._ast.*;
 public class MCBasicTypesNodeIdentHelper extends ASTNodeIdentHelper {
 
   public String getIdent(ASTMCPrimitiveType a) {
-    return format(a.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), Layouter.nodeName(a));
+    return format(a.printType(), Layouter.nodeName(a));
   }
 
   public String getIdent(ASTMCType a) {
-    return format(a.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), Layouter.nodeName(a));
+    return format(a.printType(), Layouter.nodeName(a));
   }
 
   public String getIdent(ASTMCQualifiedName a) {

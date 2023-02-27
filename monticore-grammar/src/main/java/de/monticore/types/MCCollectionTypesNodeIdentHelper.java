@@ -31,7 +31,7 @@ public class MCCollectionTypesNodeIdentHelper extends MCBasicTypesNodeIdentHelpe
     if (a instanceof ASTMCGenericType) {
       return format(((ASTMCGenericType) a).printWithoutTypeArguments(), Layouter.nodeName(a));
     } else {
-      return format(a.printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()), Layouter.nodeName(a));
+      return format(a.printType(), Layouter.nodeName(a));
     }
   }
 
@@ -56,7 +56,7 @@ public class MCCollectionTypesNodeIdentHelper extends MCBasicTypesNodeIdentHelpe
   }
 
   public String getIdent(ASTMCPrimitiveTypeArgument a){
-    return format(a.getMCPrimitiveType().printType(MCBasicTypesMill.mcBasicTypesPrettyPrinter()),Layouter.nodeName(a));
+    return format(a.getMCPrimitiveType().printType(),Layouter.nodeName(a));
   }
 
 }
