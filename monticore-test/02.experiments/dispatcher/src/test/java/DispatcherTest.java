@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Test;
 import simpleinterfaces._ast.*;
 import simpleinterfaces._parser.SimpleInterfacesParser;
-import simpleinterfaces._util.SimpleInterfacesDispatcher;
+import simpleinterfaces._util.SimpleInterfacesTypeDispatcher;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -20,7 +20,7 @@ public class DispatcherTest {
   public void testIsA() throws IOException {
 
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     final Optional<ASTA> optAST = parser.parse_StringA("c");
     assertTrue(optAST.isPresent());
@@ -39,7 +39,7 @@ public class DispatcherTest {
   public void testIsC() throws IOException {
 
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     final Optional<ASTC> optAST = parser.parse_StringC("c");
     assertTrue(optAST.isPresent());
@@ -57,7 +57,7 @@ public class DispatcherTest {
   public void testIsD() throws IOException {
 
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     final Optional<ASTD> optAST = parser.parse_StringD("d");
     assertTrue(optAST.isPresent());
@@ -75,7 +75,7 @@ public class DispatcherTest {
   public void testIsE() throws IOException {
 
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     final Optional<ASTE> optAST = parser.parse_StringE("e");
     assertTrue(optAST.isPresent());
@@ -93,7 +93,7 @@ public class DispatcherTest {
   public void testIsF() throws IOException {
 
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     final Optional<ASTF> optAST = parser.parse_StringF("f");
     assertTrue(optAST.isPresent());
@@ -110,7 +110,7 @@ public class DispatcherTest {
   @Test
   public void testAsA() throws IOException {
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     Log.enableFailQuick(false);
 
@@ -160,7 +160,7 @@ public class DispatcherTest {
   @Test
   public void testAsB() throws IOException {
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     Log.enableFailQuick(false);
 
@@ -212,7 +212,7 @@ public class DispatcherTest {
   @Test
   public void testAsC() throws IOException {
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     Log.enableFailQuick(false);
 
@@ -265,7 +265,7 @@ public class DispatcherTest {
   @Test
   public void testAsD() throws IOException {
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     Log.enableFailQuick(false);
 
@@ -318,7 +318,7 @@ public class DispatcherTest {
   @Test
   public void testAsE() throws IOException {
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     Log.enableFailQuick(false);
 
@@ -371,7 +371,7 @@ public class DispatcherTest {
   @Test
   public void testAsF() throws IOException {
     SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesDispatcher dispatcher = new SimpleInterfacesDispatcher();
+    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
 
     Log.enableFailQuick(false);
 
