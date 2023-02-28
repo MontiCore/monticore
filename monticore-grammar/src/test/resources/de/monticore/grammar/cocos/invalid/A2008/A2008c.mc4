@@ -3,7 +3,7 @@
 
 package  de.monticore.grammar.cocos.invalid.A2008;
 
-grammar A2008c extends mc.grammars.types.TestTypes{
+grammar A2008c extends de.monticore.common.TestTypes {
 
     B = Name* names:Name*;
 }

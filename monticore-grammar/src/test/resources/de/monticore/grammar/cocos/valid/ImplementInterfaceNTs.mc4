@@ -28,5 +28,11 @@ grammar ImplementInterfaceNTs {
   interface ITerminal = bracketOpen:"{"  bracketClosed:"}";
 
   TerminalImpl implements ITerminal = bracketOpen:"{" bracketClosed:"}";
+
+  interface I = u:Digit;
+  P1 implements I = u:Char;
+  token Digit = '0'..'9';
+  token Char = 'a'..'z';
+
 }
 

@@ -2,7 +2,7 @@
 
 package  de.monticore.grammar.cocos.valid;
 
-grammar ConservativeExtensionSuper extends mc.grammars.types.TestTypes {
+grammar ConservativeExtensionSuper extends de.monticore.common.TestTypes {
 
     M = Name;
 

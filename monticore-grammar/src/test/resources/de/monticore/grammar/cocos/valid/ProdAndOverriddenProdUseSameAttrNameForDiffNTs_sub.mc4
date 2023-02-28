@@ -16,4 +16,7 @@ grammar ProdAndOverriddenProdUseSameAttrNameForDiffNTs_sub extends
   "state" Name
   ("entry:" entry:Name)?
   ( ("{" (State)* "}") | ";") ;
+
+  Prod4 = u:Digit | u:Char;
+
 }

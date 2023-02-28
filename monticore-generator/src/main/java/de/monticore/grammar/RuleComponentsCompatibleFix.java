@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.grammar.cocos;
+package de.monticore.grammar;
 
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
@@ -13,12 +13,14 @@ import de.se_rwth.commons.logging.Log;
  * -> one NonTerminal and one Terminal
  * -> two different NonTerminal types
  */
-public class RuleComponentsCompatible implements GrammarASTProdCoCo {
+// TODO Delete after release 7.5.0
+@Deprecated
+public class RuleComponentsCompatibleFix implements GrammarASTProdCoCo {
 
   public static final String ERROR_CODE = "0xA4090";
 
   public static final String ERROR_MSG_FORMAT = " The prod: '%s' contains different rule components with the same name: " +
-          "'%s' with incompatible types.";
+      "'%s' with incompatible types.";
 
   @Override
   public void check(ASTProd node) {
@@ -37,7 +39,7 @@ public class RuleComponentsCompatible implements GrammarASTProdCoCo {
   }
 
   protected boolean areTypesCompatible(RuleComponentSymbol firstSymbol, RuleComponentSymbol secondSymbol,
-                                       String prodName) {
+                                     String prodName) {
     if (firstSymbol.isIsTerminal()) {
       if (secondSymbol.isIsTerminal() || (secondSymbol.isIsNonterminal() && secondSymbol.getReferencedProd().get().isIsLexerProd())) {
         return true;

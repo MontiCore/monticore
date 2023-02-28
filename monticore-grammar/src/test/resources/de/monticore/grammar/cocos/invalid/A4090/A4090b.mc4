@@ -2,8 +2,8 @@
 
 package  de.monticore.grammar.cocos.invalid.A4090;
 
-grammar A4090b extends mc.grammars.types.TestTypes{
+grammar A4090b extends de.monticore.common.TestTypes {
 
-  B = (who:Name | who:"Tom")*;
+  B = (who:["Tom"] | who:"Tom")*;
 
 }

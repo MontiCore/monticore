@@ -28,7 +28,7 @@ public class GrammarCoCosFix {
     checker.addCoCo(new InterfaceNTWithoutImplementationOnlyInComponentGrammar());
     checker.addCoCo(new ExternalNTOnlyInComponentGrammar());
     checker.addCoCo(new AbstractNTWithoutExtensionOnlyInComponentGrammar());
-    checker.addCoCo(new ProdAndExtendedProdUseSameAttrNameForDiffNTs());
+    checker.addCoCo(new ProdAndExtendedProdUseSameAttrNameForDiffNTsFix());
     checker.addCoCo(new GrammarNameUpperCase());
     checker.addCoCo(new GrammarExtensionOnce());
     checker.addCoCo(new AbstractNTNotExtendInterfaceOrExternalNTs());
@@ -43,14 +43,14 @@ public class GrammarCoCosFix {
     checker.addCoCo(new NTOnlyExtendsOneNTOrClass());
     checker.addCoCo(new NTOnlyImplementInterfaceNTs());
     checker.addCoCo(new ProdStartsWithCapital());
-    checker.addCoCo(new ProdAndOverriddenProdUseSameAttrNameForDiffNTs());
+    checker.addCoCo(new ProdAndOverriddenProdUseSameAttrNameForDiffNTsFix());
     checker.addCoCo(new ProdWithExtensionMustNotBeOverridden());
     checker.addCoCo(new ASTRuleAndNTUseSameAttrNameForDiffNTs());
     checker.addCoCo(new OverridingLexNTs());
     checker.addCoCo(new GrammarInheritanceCycle());
     checker.addCoCo(new LeftRecursiveRulesInBlock());
     checker.addCoCo(new DuplicatedSymbolDefinitionInProd());
-    checker.addCoCo(new SubrulesUseInterfaceNTs());
+    checker.addCoCo(new SubrulesUseInterfaceNTsFix());
     checker.addCoCo(new ReferenceSymbolSameAttribute());
     checker.addCoCo(new ReferenceSymbolNotName());
     checker.addCoCo(new ReferencedSymbolExists());
@@ -90,6 +90,7 @@ public class GrammarCoCosFix {
     checker.addCoCo(new NoForbiddenProdNameAddon());
     checker.addCoCo(new NoForbiddenSymbolName());
     checker.addCoCo(new NoForbiddenSymbolNameAddon());
+    checker.addCoCo(new RuleComponentsCompatibleFix());
 
     return checker;
   }
