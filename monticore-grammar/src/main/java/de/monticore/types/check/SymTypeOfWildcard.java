@@ -1,9 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
-
 public class SymTypeOfWildcard extends SymTypeExpression {
 
   protected SymTypeExpression bound;
@@ -41,20 +38,6 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   }
 
   @Override
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeOfWildcard");
-    jp.member("isUpper", isUpper);
-    if(bound!=null){
-      jp.memberJson("bound", bound.printAsJson());
-    }
-    jp.endObject();
-    return jp.getContent();
-  }
-
-  @Override
   public SymTypeOfWildcard deepClone() {
     SymTypeOfWildcard clone = new SymTypeOfWildcard(this.isUpper, this.bound);
     clone.typeSymbol = this.typeSymbol;
@@ -68,6 +51,16 @@ public class SymTypeOfWildcard extends SymTypeExpression {
 
   public SymTypeExpression getBound() {
     return bound;
+  }
+
+  @Override
+  public boolean isValidType() {
+    return false;
+  }
+
+  @Override
+  public boolean isWildcard() {
+    return true;
   }
 
   @Override

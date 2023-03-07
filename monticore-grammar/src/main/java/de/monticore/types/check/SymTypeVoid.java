@@ -24,13 +24,6 @@ public class SymTypeVoid extends SymTypeExpression {
   public String printFullName() {
     return print();
   }
-  
-  /**
-   * printAsJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    return "\""+BasicSymbolsMill.VOID + "\"";
-  }
 
   @Override
   public SymTypeVoid deepClone() {

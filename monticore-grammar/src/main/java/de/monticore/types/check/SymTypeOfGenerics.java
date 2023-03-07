@@ -161,25 +161,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
   
   /**
-   * printAsJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeOfGenerics");
-    jp.member("typeConstructorFullName", getTypeConstructorFullName());
-    jp.beginArray("arguments");
-    for(SymTypeExpression exp : getArgumentList()) {
-      jp.valueJson(exp.printAsJson());
-    }
-    jp.endArray();
-    jp.endObject();
-    return jp.getContent();
-  }
-  
-  
-  /**
    * getFullName: get the Qualified Name including Package
    */
   public String getFullName() {

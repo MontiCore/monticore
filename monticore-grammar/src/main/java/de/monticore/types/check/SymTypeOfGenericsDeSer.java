@@ -3,21 +3,29 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
-import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SymTypeOfGenericsDeSer {
 
   // Care: the following String needs to be adapted if the package was renamed
   public static final String SERIALIZED_KIND = "de.monticore.types.check.SymTypeOfGenerics";
+  protected static final String SERIALIZED_TYPE_CONSTRUCTOR = "typeConstructorFullName";
+  protected static final String SERIALIZED_ARGUMENTS = "arguments";
 
   public String serialize(SymTypeOfGenerics toSerialize) {
-    return toSerialize.printAsJson();
+    JsonPrinter jp = new JsonPrinter();
+    jp.beginObject();
+    jp.member(JsonDeSers.KIND, SERIALIZED_KIND);
+    jp.member(SERIALIZED_TYPE_CONSTRUCTOR, toSerialize.getTypeConstructorFullName());
+    SymTypeExpressionDeSer.serializeMember(jp, SERIALIZED_ARGUMENTS, toSerialize.getArgumentList());
+    jp.endObject();
+    return jp.getContent();
   }
 
   public SymTypeOfGenerics deserialize(String serialized) {
@@ -25,15 +33,13 @@ public class SymTypeOfGenericsDeSer {
   }
 
   public SymTypeOfGenerics deserialize(JsonObject serialized) {
-    if (serialized.hasStringMember("typeConstructorFullName") && serialized
-        .hasArrayMember("arguments")) {
-      String typeConstructorFullName = serialized.getStringMember("typeConstructorFullName");
+    if (serialized.hasStringMember(SERIALIZED_TYPE_CONSTRUCTOR) &&
+        serialized.hasArrayMember(SERIALIZED_ARGUMENTS)) {
+      String typeConstructorFullName = serialized.getStringMember(SERIALIZED_TYPE_CONSTRUCTOR);
       IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
 
-      List<SymTypeExpression> arguments = new ArrayList<>();
-      for (JsonElement e : serialized.getMember("arguments").getAsJsonArray().getValues()) {
-        arguments.add(SymTypeExpressionDeSer.getInstance().deserialize(e));
-      }
+      List<SymTypeExpression> arguments = SymTypeExpressionDeSer
+          .deserializeListMember(SERIALIZED_ARGUMENTS, serialized);
 
       return SymTypeExpressionFactory
           .createGenerics(typeConstructorFullName, gs, arguments);

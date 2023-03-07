@@ -2,9 +2,6 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
 
 /**
  * An objectType is a full qualified class name.
@@ -40,20 +37,6 @@ public class SymTypeOfObject extends SymTypeExpression {
   @Override
   public String print(){
     return typeSymbol.getName();
-  }
-
-  
-  /**
-   * printAsJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    // Care: the following String needs to be adapted if the package was renamed
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeOfObject");
-    jp.member("objName", getObjName());
-    jp.endObject();
-    return jp.getContent();
   }
 
   @Override

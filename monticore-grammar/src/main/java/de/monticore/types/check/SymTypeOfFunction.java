@@ -26,14 +26,6 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   public static final String TYPESYMBOL_NAME = "function";
 
-  protected static final String JSON_KIND = "de.monticore.types.check.SymTypeOfFunction";
-
-  protected static final String JSON_RETURNTYPE = "returnType";
-
-  protected static final String JSON_ARGUMENTTYPES = "argumentTypes";
-
-  protected static final String JSON_ELLIPTIC = "elliptic";
-
   /**
    * Type of return value
    * returned when the function is called
@@ -111,24 +103,6 @@ public class SymTypeOfFunction extends SymTypeExpression {
     r.append(" -> ");
     r.append(returnType.printFullName());
     return r.toString();
-  }
-
-  /**
-   * printAsJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    jp.member(JsonDeSers.KIND, JSON_KIND);
-    jp.memberJson(JSON_RETURNTYPE, getType().printAsJson());
-    jp.beginArray(JSON_ARGUMENTTYPES);
-    for (SymTypeExpression exp : getArgumentTypeList()) {
-      jp.valueJson(exp.printAsJson());
-    }
-    jp.endArray();
-    jp.member(JSON_ELLIPTIC, isElliptic());
-    jp.endObject();
-    return jp.getContent();
   }
 
   @Override

@@ -11,6 +11,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
@@ -290,5 +291,13 @@ public class SymTypeExpressionFactory {
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
       List<SymTypeExpression> argumentTypes, boolean elliptic) {
     return new SymTypeOfFunction(returnType, argumentTypes, elliptic);
+  }
+
+  public static SymTypeOfUnion createUnion(Set<SymTypeExpression> unionizedTypes) {
+    return new SymTypeOfUnion(unionizedTypes);
+  }
+
+  public static SymTypeOfUnion createUnion(SymTypeExpression... unionizedTypes) {
+    return createUnion(Set.of(unionizedTypes));
   }
 }

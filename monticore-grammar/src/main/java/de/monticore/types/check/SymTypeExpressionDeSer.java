@@ -33,6 +33,8 @@ public class SymTypeExpressionDeSer {
 
   protected SymTypeOfObjectDeSer symTypeOfObjectDeSer;
 
+  protected SymTypeOfUnionDeSer symTypeOfUnionDeSer;
+
   protected SymTypeVariableDeSer symTypeVariableDeSer;
 
   protected SymTypeOfWildcardDeSer symTypeOfWildcardDeSer;
@@ -45,6 +47,7 @@ public class SymTypeExpressionDeSer {
     this.symTypePrimitiveDeSer = new SymTypePrimitiveDeSer();
     this.symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
     this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+    this.symTypeOfUnionDeSer = new SymTypeOfUnionDeSer();
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
     this.symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
     this.symTypeOfFunctionDeSer = new SymTypeOfFunctionDeSer();
@@ -113,7 +116,41 @@ public class SymTypeExpressionDeSer {
   }
 
   public String serialize(SymTypeExpression toSerialize) {
-    return toSerialize.printAsJson();
+    // this may not be the most optimal implementation,
+    // however, we currently do not need more
+    // void and null are stored as strings
+    if(toSerialize.isNullType()) {
+      return "\""+BasicSymbolsMill.NULL +"\"";
+    }
+    if(toSerialize.isVoidType()) {
+      return "\""+BasicSymbolsMill.VOID +"\"";
+    }
+    if(toSerialize.isArrayType()) {
+      return symTypeArrayDeSer.serialize((SymTypeArray)toSerialize);
+    }
+    if(toSerialize.isFunctionType()) {
+      return symTypeOfFunctionDeSer.serialize((SymTypeOfFunction) toSerialize);
+    }
+    if(toSerialize.isGenericType()) {
+      return symTypeOfGenericsDeSer.serialize((SymTypeOfGenerics) toSerialize);
+    }
+    if(toSerialize.isObjectType()) {
+      return symTypeOfObjectDeSer.serialize((SymTypeOfObject) toSerialize);
+    }
+    if(toSerialize.isUnionType()) {
+      return symTypeOfUnionDeSer.serialize((SymTypeOfUnion)toSerialize);
+    }
+    if(toSerialize.isPrimitive()) {
+      return symTypePrimitiveDeSer.serialize((SymTypePrimitive)toSerialize);
+    }
+    if(toSerialize.isTypeVariable()) {
+      return symTypeVariableDeSer.serialize((SymTypeVariable) toSerialize);
+    }
+    if(toSerialize.isWildcard()) {
+      return symTypeOfWildcardDeSer.serialize((SymTypeOfWildcard) toSerialize);
+    }
+    Log.error("0x823FD Internal error: Loading ill-structured SymTab: No way to serialize SymType;");
+    return null;
   }
 
   /**
@@ -144,8 +181,6 @@ public class SymTypeExpressionDeSer {
           return SymTypeExpressionFactory.createTypeOfNull();
         case BasicSymbolsMill.VOID:
           return SymTypeExpressionFactory.createTypeVoid();
-        case "Obscure":
-          return SymTypeExpressionFactory.createObscureType();
       }
     }
 
@@ -161,6 +196,8 @@ public class SymTypeExpressionDeSer {
           return symTypeOfGenericsDeSer.deserialize(o);
         case SymTypeOfObjectDeSer.SERIALIZED_KIND:
           return symTypeOfObjectDeSer.deserialize(o);
+        case SymTypeOfUnionDeSer.SERIALIZED_KIND:
+          return symTypeOfUnionDeSer.deserialize(o);
         case SymTypeVariableDeSer.SERIALIZED_KIND:
           return symTypeVariableDeSer.deserialize(o);
         case SymTypeOfWildcardDeSer.SERIALIZED_KIND:

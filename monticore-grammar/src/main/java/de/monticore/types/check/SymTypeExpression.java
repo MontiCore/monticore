@@ -35,8 +35,20 @@ public abstract class SymTypeExpression {
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
    */
-  protected abstract String printAsJson();
-  
+  protected String printAsJson() {
+    return SymTypeExpressionDeSer.getInstance().serialize(this);
+  }
+
+  /**
+   * Am I a not valid type?
+   * e.g. unknown type,
+   * not all type variables set,
+   * pseudo types like typeVariables
+   */
+  public boolean isValidType() {
+    return true;
+  }
+
   /**
    * Am I primitive? (such as "int")
    * (default: no)
@@ -94,10 +106,26 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  /**
+   * Am I an union type (e.g. "(A|B)")?
+   */
+  public boolean isUnionType() {
+    return false;
+  }
+
+  /**
+   * Can I not have a type derived from (e.g. "1 - student")?
+   */
   public boolean isObscureType(){
     return false;
   }
 
+  /**
+   * Am I a wildcard (s. generics)?
+   */
+  public boolean isWildcard() {
+    return false;
+  }
 
   public abstract SymTypeExpression deepClone();
 

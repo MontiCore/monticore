@@ -3,8 +3,6 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -28,7 +26,7 @@ public class SymTypeArray extends SymTypeExpression {
    * @param argument Argument Type
    * @param typeSymbol loader for the Type-Symbol that defines this type
    */
-  //todo: TypeSymbol UND Expression: da ist was doppelt?
+  //todo: TypeSymbul UND Expression: da ist was doppelt?
   public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
     this.typeSymbol = typeSymbol;
     this.dim = dim;
@@ -60,7 +58,7 @@ public class SymTypeArray extends SymTypeExpression {
   }
 
   /**
-   * print: Umwandlung in einen kompakten String, zB Person[][]
+   * print: Umwandlung in einen kompakten String
    */
   @Override
   public String print() {
@@ -71,10 +69,6 @@ public class SymTypeArray extends SymTypeExpression {
     return r.toString();
   }
 
-  /**
-   * print: Umwandlung in einen String mit Full Name, 
-   * zB de.mypackage.Person[][]
-   */
   @Override
   public String printFullName(){
     StringBuffer r = new StringBuffer(getArgument().printFullName());
@@ -82,22 +76,6 @@ public class SymTypeArray extends SymTypeExpression {
       r.append("[]");
     }
     return r.toString();
-  }
-
-  /**
-   * printToJson: Umwandlung in einen kompakten Json String
-   */
-  protected String printAsJson() {
-    JsonPrinter jp = new JsonPrinter();
-    jp.beginObject();
-    // Care: the following String needs to be adapted if this(!) package is renamed
-    // (yes we do hate reflection, but the loader otherwise doesn't know what to
-    // instantiate)
-    jp.member(JsonDeSers.KIND, "de.monticore.types.check.SymTypeArray");
-    jp.memberJson("argument", argument.printAsJson());
-    jp.member("dim", dim);
-    jp.endObject();
-    return jp.getContent();
   }
 
   @Override
@@ -117,11 +95,10 @@ public class SymTypeArray extends SymTypeExpression {
     if(this.dim!=symArr.dim){
       return false;
     }
-    if(this.typeSymbol == null ||symArr.typeSymbol == null){
+    if(this.typeSymbol == null ||symArr.typeSymbol ==null){
       return false;
     }
-    if(!this.typeSymbol.getEnclosingScope()
-                  .equals(symArr.typeSymbol.getEnclosingScope())){
+    if(!this.typeSymbol.getEnclosingScope().equals(symArr.typeSymbol.getEnclosingScope())){
       return false;
     }
     if(!this.typeSymbol.getName().equals(symArr.typeSymbol.getName())){

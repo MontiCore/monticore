@@ -1,19 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
-import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.se_rwth.commons.logging.Log;
 
 public class SymTypeOfWildcardDeSer {
 
   // Care: the following String needs to be adapted if the package was renamed
   public static final String SERIALIZED_KIND = "de.monticore.types.check.SymTypeOfWildcard";
+  protected static final String SERIALIZED_ISUPPER = "isUpper";
+  protected static final String SERIALIZED_BOUND = "bound";
 
   public String serialize(SymTypeOfWildcard toSerialize) {
-    return toSerialize.printAsJson();
+    JsonPrinter jp = new JsonPrinter();
+    jp.beginObject();
+    jp.member(JsonDeSers.KIND, SERIALIZED_KIND);
+    if(toSerialize.getBound() != null) {
+      jp.member(SERIALIZED_ISUPPER, toSerialize.isUpper);
+      SymTypeExpressionDeSer.serializeMember(jp, SERIALIZED_BOUND, toSerialize.bound);
+    }
+    jp.endObject();
+    return jp.getContent();
   }
 
   public SymTypeOfWildcard deserialize(String serialized) {
@@ -21,14 +30,14 @@ public class SymTypeOfWildcardDeSer {
   }
 
   public SymTypeOfWildcard deserialize(JsonObject serialized) {
+    if (serialized.hasMember(SERIALIZED_BOUND)) {
       // isUpper == false iff. value is not serialized
-      boolean isUpper = serialized.hasBooleanMember("isUpper");
-      JsonElement boundString = serialized.getMember("bound");
-      if (boundString != null) {
-        SymTypeExpression bound = SymTypeExpressionDeSer.getInstance().deserialize(boundString);
-        return SymTypeExpressionFactory.createWildcard(isUpper, bound);
-      }
-      return SymTypeExpressionFactory.createWildcard();
+      boolean isUpper = serialized.hasBooleanMember(SERIALIZED_ISUPPER);
+      SymTypeExpression bound = SymTypeExpressionDeSer
+          .deserializeMember(SERIALIZED_BOUND, serialized);
+      return SymTypeExpressionFactory.createWildcard(isUpper, bound);
+    }
+    return SymTypeExpressionFactory.createWildcard();
   }
 
 }
