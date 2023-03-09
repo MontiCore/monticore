@@ -1,56 +1,86 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import java.util.Optional;
+
 public class SymTypeOfWildcard extends SymTypeExpression {
 
-  protected SymTypeExpression bound;
+  protected Optional<SymTypeExpression> bound;
   protected boolean isUpper;
 
+  /**
+   * @deprecated use the Factory,
+   * the Factory uses the constructor below
+   */
+  @Deprecated
   public SymTypeOfWildcard(){
 
   }
 
-  public SymTypeOfWildcard(boolean isUpper, SymTypeExpression bound){
+  public SymTypeOfWildcard(Optional<SymTypeExpression> bound, boolean isUpper){
     this.bound = bound;
     this.isUpper = isUpper;
   }
 
-  @Override
-  public String print() {
-    if(bound==null){
-      return "?";
-    }else if(isUpper){
-      return "? extends "+bound.print();
-    }else{
-      return "? super "+bound.print();
-    }
+  public boolean hasBound() {
+    return !bound.isEmpty();
   }
 
-  @Override
-  public String printFullName() {
-    if(bound==null){
-      return "?";
-    }else if(isUpper){
-      return "? extends "+bound.printFullName();
-    }else{
-      return "? super "+bound.printFullName();
+  public SymTypeExpression getBound() {
+    if(hasBound()){
+      return bound.get();
     }
-  }
-
-  @Override
-  public SymTypeOfWildcard deepClone() {
-    SymTypeOfWildcard clone = new SymTypeOfWildcard(this.isUpper, this.bound);
-    clone.typeSymbol = this.typeSymbol;
-    clone.functionList = this.functionList;
-    return clone;
+    else {
+      // deprecated behaviour -> reduce null-checks in code
+      // this behaviour seems unused in our main projects (except tests)
+      // later: replace with log.error
+      return null;
+    }
   }
 
   public boolean isUpper() {
     return isUpper;
   }
 
-  public SymTypeExpression getBound() {
-    return bound;
+  @Override
+  public String print() {
+    if (!hasBound()) {
+      return "?";
+    }
+    else if (isUpper()) {
+      return "? extends " + getBound().print();
+    }
+    else {
+      return "? super " + getBound().print();
+    }
+  }
+
+  @Override
+  public String printFullName() {
+    if (!hasBound()) {
+      return "?";
+    }
+    else if (isUpper()) {
+      return "? extends " + getBound().printFullName();
+    }
+    else {
+      return "? super " + getBound().printFullName();
+    }
+  }
+
+  @Override
+  public SymTypeOfWildcard deepClone() {
+    SymTypeOfWildcard clone;
+    if (hasBound()) {
+      clone = new SymTypeOfWildcard(
+          Optional.of(getBound().deepClone()), isUpper());
+    }
+    else {
+      clone = new SymTypeOfWildcard(Optional.empty(), false);
+    }
+    clone.typeSymbol = this.typeSymbol;
+    clone.functionList = this.functionList;
+    return clone;
   }
 
   @Override
@@ -65,6 +95,8 @@ public class SymTypeOfWildcard extends SymTypeExpression {
 
   @Override
   public boolean deepEquals(SymTypeExpression sym){
+    //supporting deprecated code:
+    if(typeSymbol != null) {
     if(!(sym instanceof SymTypeOfWildcard)){
       return false;
     }
@@ -79,5 +111,22 @@ public class SymTypeOfWildcard extends SymTypeExpression {
       return false;
     }
     return this.print().equals(symWil.print());
+    }
+    if (!sym.isWildcard()) {
+      return false;
+    }
+    SymTypeOfWildcard symWil = (SymTypeOfWildcard) sym;
+    if (hasBound() != symWil.hasBound()) {
+      return false;
+    }
+    if (hasBound()) {
+      if (!getBound().deepEquals(symWil.getBound())) {
+        return false;
+      }
+      if (isUpper() != symWil.isUpper()) {
+        return false;
+      }
+    }
+    return true;
   }
 }

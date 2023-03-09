@@ -2,36 +2,70 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 
 public class SymTypeVariable extends SymTypeExpression {
+
+  protected TypeVarSymbol typeVarSymbol;
 
   /**
    * Constructor:
    */
+  public SymTypeVariable(TypeVarSymbol typeSymbol) {
+    this.typeVarSymbol = typeSymbol;
+  }
+
+  @Deprecated
   public SymTypeVariable(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
   }
 
-  public String getVarName() {
-    return typeSymbol.getFullName();
+  public TypeVarSymbol getTypeVarSymbol() {
+    return typeVarSymbol;
   }
 
+  @Override
+  @Deprecated
+  public TypeSymbol getTypeInfo() {
+    if(typeSymbol != null) {
+      return typeSymbol;
+    }
+    return getTypeVarSymbol();
+  }
+
+  /**
+   * @deprecated unused in main projects
+   * also: getter and setter do something different, questionable
+   */
+  @Deprecated
+  public String getVarName() {
+    return getTypeInfo().getFullName();
+  }
+
+  /**
+   * @deprecated unused in main projects
+   */
+  @Deprecated
   public void setVarName(String name) {
     typeSymbol.setName(name);
   }
 
-  /**
-   * print: Umwandlung in einen kompakten String
-   */
   @Override
   public String print() {
+    //support deprecated code:
+    if(typeSymbol != null) {
     return typeSymbol.getName();
+    }
+    return getTypeVarSymbol().getName();
   }
 
   @Override
   public String printFullName() {
+    //support deprecated code:
+    if(typeSymbol != null) {
     return getVarName();
+    }
+    return getTypeVarSymbol().getFullName();
   }
 
   /**
@@ -57,17 +91,24 @@ public class SymTypeVariable extends SymTypeExpression {
      */
   }
 
+  @Override
   public boolean isTypeVariable() {
     return true;
   }
 
   @Override
   public SymTypeVariable deepClone() {
+    //support deprecated code:
+    if(typeSymbol != null) {
     return new SymTypeVariable(this.typeSymbol);
+    }
+    return new SymTypeVariable(getTypeVarSymbol());
   }
 
   @Override
   public boolean deepEquals(SymTypeExpression sym){
+    //support deprecated code:
+    if(typeSymbol != null) {
     if(!(sym instanceof SymTypeVariable)){
       return false;
     }
@@ -82,7 +123,23 @@ public class SymTypeVariable extends SymTypeExpression {
       return false;
     }
     return this.print().equals(symVar.print());
+    }
+    if (!sym.isTypeVariable()) {
+      return false;
+    }
+    SymTypeVariable symVar = (SymTypeVariable) sym;
+    if (getTypeVarSymbol().getFullName().equals(
+        symVar.getTypeVarSymbol().getFullName())) {
+      return false;
+    }
+    if (!getTypeVarSymbol().getEnclosingScope().equals(
+        symVar.getTypeVarSymbol().getEnclosingScope())) {
+      return false;
+    }
+    if (!getTypeVarSymbol().getSpannedScope().equals(
+        symVar.getTypeVarSymbol().getSpannedScope())) {
+      return false;
+    }
+    return true;
   }
-
-  // --------------------------------------------------------------------------
 }

@@ -6,6 +6,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -33,11 +34,16 @@ public class SymTypeExpressionFactory {
    * createTypeVariable vor Variables
    */
   public static SymTypeVariable createTypeVariable(String name, IBasicSymbolsScope scope) {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
+    TypeVarSymbol typeSymbol = new TypeVarSymbol(name);
     typeSymbol.setEnclosingScope(scope);
+    return createTypeVariable(typeSymbol);
+  }
+
+  public static SymTypeVariable createTypeVariable(TypeVarSymbol typeSymbol) {
     return new SymTypeVariable(typeSymbol);
   }
 
+  @Deprecated
   public static SymTypeVariable createTypeVariable(TypeSymbol typeSymbol) {
     return new SymTypeVariable(typeSymbol);
   }
@@ -96,22 +102,31 @@ public class SymTypeExpressionFactory {
 
   /**
    * creates an array-Type Expression
-   *
+   * @deprecated arrays do not have an type symbol
    * @param typeSymbol
    * @param dim        the dimension of the array
    * @param argument   the argument type (of the elements)
    * @return
    */
+  @Deprecated
   public static SymTypeArray createTypeArray(TypeSymbol typeSymbol, int dim,
                                              SymTypeExpression argument) {
     return new SymTypeArray(typeSymbol, dim, argument);
   }
 
+  /**
+   * @deprecated arrays do not have a name
+   */
+  @Deprecated
   public static SymTypeArray createTypeArray(String name, IBasicSymbolsScope typeSymbolsScope,
                                              int dim, SymTypeExpression argument) {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(typeSymbolsScope);
     return new SymTypeArray(typeSymbol, dim, argument);
+  }
+
+  public static SymTypeArray createTypeArray(SymTypeExpression argument, int dim) {
+    return new SymTypeArray(argument, dim);
   }
 
   public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol) {
@@ -258,7 +273,7 @@ public class SymTypeExpressionFactory {
                                                  List<SymTypeExpression> arguments) {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(enclosingScope);
-    return new SymTypeOfGenerics(typeSymbol, arguments);
+    return createGenerics(typeSymbol, arguments);
   }
 
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
@@ -267,11 +282,11 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeOfWildcard createWildcard(boolean isUpper, SymTypeExpression bound) {
-    return new SymTypeOfWildcard(isUpper, bound);
+    return new SymTypeOfWildcard(Optional.of(bound), isUpper);
   }
 
   public static SymTypeOfWildcard createWildcard() {
-    return new SymTypeOfWildcard();
+    return new SymTypeOfWildcard(Optional.empty(), false);
   }
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType) {
