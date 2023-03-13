@@ -56,7 +56,7 @@ public class StreamExpressionsPrettyPrinterTest {
 
   @Test
   public void testAppendStream() throws IOException {
-    Optional<ASTExpression> result = parser.parse_StringExpression("stream1 :~ stream2");
+    Optional<ASTExpression> result = parser.parse_StringExpression("stream1 : stream2");
 
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -75,7 +75,7 @@ public class StreamExpressionsPrettyPrinterTest {
 
   @Test
   public void testConcatStream() throws IOException {
-    Optional<ASTExpression> result = parser.parse_StringExpression("stream1 ^~ stream2");
+    Optional<ASTExpression> result = parser.parse_StringExpression("stream1 ^^ stream2");
 
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
