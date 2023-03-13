@@ -22,11 +22,12 @@ public class SymTypeArray extends SymTypeExpression {
   /**
    * Constructor
    *
+   * @deprecated TypeSymbul UND Expression: da ist was doppelt?
+   *
    * @param dim      dimension
    * @param argument Argument Type
    * @param typeSymbol loader for the Type-Symbol that defines this type
    */
-  //todo: TypeSymbul UND Expression: da ist was doppelt?
   @Deprecated
   public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
     this.typeSymbol = typeSymbol;
