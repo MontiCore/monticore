@@ -1,21 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.cdbasis._symboltable;
+package de.monticore.simplecd._symboltable;
 
-import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.simplecd._ast.ASTCDDefinition;
 
 /**
  * Extends the generated genitor to set the name of the created artifact scope to the name of the
  * class diagram.
  */
-public class CDBasisScopesGenitor extends CDBasisScopesGenitorTOP {
+public class SimpleCDScopesGenitor extends SimpleCDScopesGenitorTOP {
 
-  public CDBasisScopesGenitor() {
+  public SimpleCDScopesGenitor() {
     super();
   }
 
   @Override
   public void visit(ASTCDDefinition node) {
-    final ICDBasisScope artifactScope = scopeStack.peekLast();
+    final ISimpleCDScope artifactScope = scopeStack.peekLast();
     assert artifactScope != null;
     artifactScope.setName(node.getName());
     super.visit(node);

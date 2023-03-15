@@ -1,5 +1,0 @@
-package de.monticore.cdbasis.valid;
-
-classdiagram B {
-  class Bar;
-}

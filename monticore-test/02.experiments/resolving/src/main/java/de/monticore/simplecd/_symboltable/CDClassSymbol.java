@@ -1,20 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.cdbasis._symboltable;
+package de.monticore.simplecd._symboltable;
 
+import com.google.common.collect.Lists;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symboltable.IArtifactScope;
 import de.monticore.symboltable.IScope;
 
-public class CDPackageSymbol extends CDPackageSymbolTOP {
+import java.util.List;
 
-  public CDPackageSymbol(String name) {
+public class CDClassSymbol extends CDClassSymbolTOP {
+  public CDClassSymbol(String name) {
     super(name);
   }
 
+
+  /** search in the scope for methods with a specific name */
   @Override
   protected String determinePackageName() {
     IScope optCurrentScope = enclosingScope;
     while (optCurrentScope != null) {
-      final de.monticore.symboltable.IScope currentScope = optCurrentScope;
+      final IScope currentScope = optCurrentScope;
       if (currentScope.isPresentSpanningSymbol()) {
         // If one of the enclosing scope(s) is spanned by a symbol, take its
         // package name. This check is important, since the package name of the
@@ -28,17 +34,4 @@ public class CDPackageSymbol extends CDPackageSymbolTOP {
     return "";
   }
 
-  public String getInternalQualifiedName() {
-    String internalName = getFullName();
-    IScope as = getEnclosingScope();
-    while (!(as instanceof IArtifactScope)) {
-      as = as.getEnclosingScope();
-    }
-    String artifactName = ((IArtifactScope) as).getFullName();
-    if (!artifactName.isEmpty()) {
-      internalName = internalName.substring(artifactName.length() + 1);
-    }
-    return internalName;
-  }
 }
-

@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.cdbasis._symboltable;
+package de.monticore.simplecd._symboltable;
 
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._visitor.CDBasisTraverser;
-import de.monticore.cdbasis._visitor.CDBasisVisitor2;
-import de.monticore.cdbasis._prettyprint.CDBasisFullPrettyPrinter;
+import de.monticore.simplecd._ast.ASTCDAttribute;
+import de.monticore.simplecd._ast.ASTCDClass;
+import de.monticore.simplecd._ast.ASTCDCompilationUnit;
+import de.monticore.simplecd._visitor.SimpleCDTraverser;
+import de.monticore.simplecd._visitor.SimpleCDVisitor2;
+import de.monticore.simplecd._prettyprint.SimpleCDFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.FullSynthesizeFromMCSimpleGenericTypes;
@@ -17,27 +18,27 @@ import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
 import java.util.stream.Collectors;
 
-public class CDBasisSymbolTableCompleter implements CDBasisVisitor2 {
+public class SimpleCDSymbolTableCompleter implements SimpleCDVisitor2 {
 
-  protected CDBasisTraverser traverser;
+  protected SimpleCDTraverser traverser;
 
   protected ISynthesize typeSynthesizer;
-  protected CDBasisFullPrettyPrinter prettyPrinter;
+  protected SimpleCDFullPrettyPrinter prettyPrinter;
 
-  public CDBasisSymbolTableCompleter(ISynthesize typeSynthesizer) {
+  public SimpleCDSymbolTableCompleter(ISynthesize typeSynthesizer) {
     this.typeSynthesizer = typeSynthesizer;
-    prettyPrinter = new CDBasisFullPrettyPrinter(new IndentPrinter());
+    prettyPrinter = new SimpleCDFullPrettyPrinter(new IndentPrinter());
   }
 
-  public CDBasisSymbolTableCompleter() {
+  public SimpleCDSymbolTableCompleter() {
     this(new FullSynthesizeFromMCSimpleGenericTypes());
   }
 
   @Override
   public void visit(ASTCDCompilationUnit node) {
-    final ICDBasisScope artifactScope = node.getCDDefinition().getEnclosingScope();
-    if (artifactScope instanceof ICDBasisArtifactScope) {
-      ((ICDBasisArtifactScope) artifactScope)
+    final ISimpleCDScope artifactScope = node.getCDDefinition().getEnclosingScope();
+    if (artifactScope instanceof ISimpleCDArtifactScope) {
+      ((ISimpleCDArtifactScope) artifactScope)
         .addAllImports(
           node.getMCImportStatementList().stream()
             .map(i -> new ImportStatement(i.getQName(), i.isStar()))
@@ -49,18 +50,16 @@ public class CDBasisSymbolTableCompleter implements CDBasisVisitor2 {
   public void endVisit(ASTCDClass node) {
     assert node.getSymbol() != null;
     initialize_CDClass(node);
-    CDBasisVisitor2.super.endVisit(node);
+    SimpleCDVisitor2.super.endVisit(node);
   }
 
   protected void initialize_CDClass(ASTCDClass ast) {
-    CDTypeSymbol symbol = ast.getSymbol();
-    symbol.setIsClass(true);
-    setupModifiers(ast.getModifier(), symbol);
+    CDClassSymbol symbol = ast.getSymbol();
   }
 
   @Override
   public void visit(ASTCDAttribute node) {
-    final FieldSymbol symbol = node.getSymbol();
+    final VariableSymbol symbol = node.getSymbol();
 
     // Compute the !final! SymTypeExpression for the type of the field
     final TypeCheckResult typeResult = getTypeSynthesizer().synthesizeType(node.getMCType());
@@ -79,29 +78,11 @@ public class CDBasisSymbolTableCompleter implements CDBasisVisitor2 {
   public void endVisit(ASTCDAttribute node) {
     assert node.getSymbol() != null;
     initialize_CDAttribute(node);
-    CDBasisVisitor2.super.endVisit(node);
+    SimpleCDVisitor2.super.endVisit(node);
   }
 
   protected void initialize_CDAttribute(ASTCDAttribute ast) {
-    FieldSymbol symbol = ast.getSymbol();
-    setupModifiers(ast.getModifier(), symbol);
-  }
-
-  public void setupModifiers(ASTModifier modifier, CDTypeSymbol typeSymbol) {
-    typeSymbol.setIsPublic(modifier.isPublic());
-    typeSymbol.setIsPrivate(modifier.isPrivate());
-    typeSymbol.setIsProtected(modifier.isProtected());
-    typeSymbol.setIsStatic(modifier.isStatic());
-    typeSymbol.setIsAbstract(modifier.isAbstract());
-  }
-
-  public void setupModifiers(ASTModifier modifier, FieldSymbol fieldSymbol) {
-    fieldSymbol.setIsPublic(modifier.isPublic());
-    fieldSymbol.setIsPrivate(modifier.isPrivate());
-    fieldSymbol.setIsProtected(modifier.isProtected());
-    fieldSymbol.setIsStatic(modifier.isStatic());
-    fieldSymbol.setIsFinal(modifier.isFinal());
-    fieldSymbol.setIsDerived(modifier.isDerived());
+    VariableSymbol symbol = ast.getSymbol();
   }
 
   public ISynthesize getTypeSynthesizer() {
@@ -112,19 +93,19 @@ public class CDBasisSymbolTableCompleter implements CDBasisVisitor2 {
     this.typeSynthesizer = typeSynthesizer;
   }
 
-  public CDBasisFullPrettyPrinter getPrettyPrinter() {
+  public SimpleCDFullPrettyPrinter getPrettyPrinter() {
     return prettyPrinter;
   }
 
-  public void setPrettyPrinter(CDBasisFullPrettyPrinter prettyPrinter) {
+  public void setPrettyPrinter(SimpleCDFullPrettyPrinter prettyPrinter) {
     this.prettyPrinter = prettyPrinter;
   }
 
-  public CDBasisTraverser getTraverser() {
+  public SimpleCDTraverser getTraverser() {
     return traverser;
   }
 
-  public void setTraverser(CDBasisTraverser traverser) {
+  public void setTraverser(SimpleCDTraverser traverser) {
     this.traverser = traverser;
   }
 }

@@ -1,4 +1,4 @@
-package de.monticore.cdbasis.valid;
+package de.monticore.simplecd.invalid;
 
 import B.*;
 
@@ -6,4 +6,6 @@ classdiagram A {
   class Foo {
     Bar bar;
   }
+
+  class Bar;
 }
