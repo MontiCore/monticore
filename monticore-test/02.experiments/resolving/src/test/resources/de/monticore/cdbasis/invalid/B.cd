@@ -1,0 +1,5 @@
+package de.monticore.cdbasis.invalid;
+
+classdiagram B {
+  class Bar;
+}

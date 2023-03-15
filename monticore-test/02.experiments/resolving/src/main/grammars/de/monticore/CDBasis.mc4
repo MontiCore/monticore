@@ -1,0 +1,93 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+   This is the basis language component for CD4Analysis and CD4Code.
+
+   It contains class structures with attributes, but omits
+   interfaces, enums, modifiers, methods.
+
+   It uses
+   * ExpressionsBasis, MCLiteralsBasis  (for the Expressions)
+   * MCBasicTypes (for the types in CS and AST) and
+   * TypesSymbols (for imported/exported TypeSymbols)
+   as holes that shall be filled in concrete, complete languages
+   by a variety of available grammars.
+*/
+
+grammar CDBasis extends
+    de.monticore.literals.MCLiteralsBasis,
+    de.monticore.expressions.ExpressionsBasis,
+    de.monticore.types.MCBasicTypes,
+    de.monticore.symbols.OOSymbols,
+    de.monticore.UMLStereotype,
+    de.monticore.UMLModifier {
+
+  /* ==== General ==== */
+  /** The artifact header:
+      import statements, package definition
+  */
+  CDCompilationUnit =
+    MCPackageDeclaration?
+    MCImportStatement*
+    CDDefinition;
+
+  /** The class diagram: defines a set of elements
+  */
+  CDDefinition implements Diagram =
+    Modifier "classdiagram" Name "{" CDElement* "}";
+
+  /* ==== CDElement ==== */
+  /** CDElement denotes the basic elements of a class diagram.
+      This includes Classes, Interfaces, Enums, Associations
+      and is meant for extension if needed.
+  */
+  interface CDElement;
+
+  /** CDPackage span a scope which can contain any CDElement.
+      The name of the package is a flat name and can not create
+      a hierarchical package structure.
+  */
+  scope symbol CDPackage implements CDElement =
+    "package" MCQualifiedName "{"
+      CDElement*
+    "}";
+
+  /** CDType are all of the CDElements, which can be used to describe a
+      type for e.g. variables, method arguments, ...
+  */
+  interface symbol scope CDType extends CDElement, OOType;
+
+  /*  Remark:
+      Because people that know Java also know interface implementation,
+      we decide to add "implements" already here
+      and restrict the grammar to classes only through a CoCo.
+      Advantage: better explanation of the error if someone
+      actually uses "implement" with the base grammar .
+      This CoCo restriction will be switched off in the
+      CDInterfaceAndEnum extension.
+  */
+
+  /** CDClass defines a class including extensions and its body.
+   */
+  scope CDClass implements CDType =
+    Modifier "class" Name
+    ( "{"
+        CDMember*
+      "}"
+    | ";" );
+
+  /* ==== Attributes ==== */
+  /** The CDMember interface is for all possible members of class.
+   *  This grammar only uses it for CDAttribute.
+   */
+  interface CDMember;
+
+  /** An attribute has a type, a name and an optional initializing expression.
+   */
+  CDAttribute implements CDMember, Field =
+    Modifier MCType Name ("=" initial:Expression)? ";";
+}

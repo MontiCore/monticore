@@ -1,0 +1,9 @@
+package de.monticore.cdbasis.valid;
+
+import B.*;
+
+classdiagram A {
+  class Foo {
+    Bar bar;
+  }
+}
