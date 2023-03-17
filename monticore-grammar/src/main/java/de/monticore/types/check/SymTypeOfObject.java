@@ -20,14 +20,8 @@ public class SymTypeOfObject extends SymTypeExpression {
     this.typeSymbol = typeSymbol;
   }
 
-  public TypeSymbol getTypeSymbol() {
-    return typeSymbol;
-  }
-
-  @Override
-  @Deprecated
   public TypeSymbol getTypeInfo() {
-    return getTypeSymbol();
+    return typeSymbol;
   }
 
   /**

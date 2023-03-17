@@ -133,14 +133,9 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     this.arguments = arguments;
   }
 
-  public TypeSymbol getTypeSymbol() {
-    return typeSymbol;
-  }
-
   @Override
-  @Deprecated
   public TypeSymbol getTypeInfo() {
-    return getTypeSymbol();
+    return typeSymbol;
   }
 
   @Override
@@ -164,7 +159,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   public String getTypeConstructorFullName() {
-    return getTypeSymbol().getFullName();
+    return getTypeInfo().getFullName();
   }
 
   /**

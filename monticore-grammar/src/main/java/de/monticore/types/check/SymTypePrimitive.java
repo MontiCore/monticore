@@ -12,8 +12,15 @@ import java.util.Collections;
 
 public class SymTypePrimitive extends SymTypeExpression {
 
+  protected TypeSymbol typeSymbol;
+
   public SymTypePrimitive(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
+  }
+
+  @Override
+  public TypeSymbol getTypeInfo() {
+    return typeSymbol;
   }
 
   public String getPrimitiveName() {
@@ -187,19 +194,14 @@ public class SymTypePrimitive extends SymTypeExpression {
 
   @Override
   public boolean deepEquals(SymTypeExpression sym){
-    if(!(sym instanceof SymTypePrimitive)){
+    if(!sym.isPrimitive()){
       return false;
     }
     SymTypePrimitive symPrim = (SymTypePrimitive) sym;
-    if(this.typeSymbol == null ||symPrim.typeSymbol ==null){
-      return false;
-    }
     if(!this.typeSymbol.getName().equals(symPrim.typeSymbol.getName())){
       return false;
     }
     return this.print().equals(symPrim.print());
   }
 
-
-  // --------------------------------------------------------------------------
 }
