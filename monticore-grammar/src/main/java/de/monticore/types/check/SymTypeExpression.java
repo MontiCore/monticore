@@ -443,8 +443,24 @@ public abstract class SymTypeExpression {
   @Deprecated
   protected TypeSymbol typeSymbol;
 
-  @Deprecated
+  /**
+   * Whether we can call getTypeInfo
+   */
+  public boolean hasTypeInfo() {
+    return false;
+  }
+
+  /**
+   * Returns an TypeSymbol representing the type
+   * Only to be called according to {@link SymTypeExpression::hasTypeInfo}
+   */
   public TypeSymbol getTypeInfo() {
-    return typeSymbol;
+    //support deprecated behaviour
+    if(typeSymbol != null) {
+      return typeSymbol;
+    }
+    Log.error("0xFDFDF internal error: getTypeInfo called,"
+        + "but no typeinfo available");
+    return null;
   }
 }
