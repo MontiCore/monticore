@@ -14,4 +14,4 @@
     this.packageName = "";
   }
 
-  this.imports = Collections.unmodifiableList(new ArrayList<>(imports));
+  this.imports = java.util.List.copyOf(imports);
