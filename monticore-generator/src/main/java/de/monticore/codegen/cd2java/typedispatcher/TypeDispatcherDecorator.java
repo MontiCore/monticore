@@ -164,7 +164,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
               .setModifier(PUBLIC.build())
               .setName(name)
               .addCDParameter(CD4CodeMill.cDParameterBuilder()
-                      .setMCType(MCTypeFacade.getInstance().createQualifiedType("de.monticore.ast.ASTNode"))
+                      .setMCType(MCTypeFacade.getInstance().createQualifiedType(getParameterType(name)))
                       .setName("node")
                       .build())
               .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
@@ -195,7 +195,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
                       .build())
               .setName("as" + name)
               .addCDParameter(CD4CodeMill.cDParameterBuilder()
-                      .setMCType(MCTypeFacade.getInstance().createQualifiedType("de.monticore.ast.ASTNode"))
+                      .setMCType(MCTypeFacade.getInstance().createQualifiedType(getParameterType(name)))
                       .setName("node")
                       .build())
               .build();
@@ -329,4 +329,17 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     return CDInterfaceUsageFacade.getInstance()
             .createCDInterfaceUsage(visitorService.getTraverserInterfaceFullName());
   }
+
+  public static String getParameterType(String name) {
+    String parameterType;
+    if (name.contains("Scope")) {
+      parameterType = "de.monticore.symboltable.IScope";
+    } else if (name.contains("Symbol")) {
+      parameterType = "de.monticore.symboltable.ISymbol";
+    } else {
+      parameterType = "de.monticore.ast.ASTNode";
+    }
+    return parameterType;
+  }
+
 }
