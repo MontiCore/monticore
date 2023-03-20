@@ -8,6 +8,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.IncludesAccessModifierSymbolPredicate;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
+import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.Splitters;
 
 import java.util.ArrayList;
@@ -148,6 +149,10 @@ public interface IScope {
 
   default void remove(SymbolWithScopeOfUnknownKind symbol) {
     throw new UnsupportedOperationException("This operation is not implemented.");
+  }
+
+  default void accept(ITraverser visitor)  {
+    visitor.handle(this);
   }
 
 }
