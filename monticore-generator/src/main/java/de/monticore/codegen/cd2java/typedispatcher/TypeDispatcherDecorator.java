@@ -52,72 +52,132 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
 
     String visitorName = getTypeDispatcherName(visitorService.getCDName());
 
-    List<ASTCDAttribute> attributes = createAllAttributes();
+    List<ASTCDAttribute> optASTAttributes = createOptASTAttributes();
+    List<ASTCDAttribute> boolASTAttributes = createBoolASTAttributes();
+    List<ASTCDAttribute> optScopeAttributes = createOptScopeAttributes();
+    List<ASTCDAttribute> boolScopeAttributes = createBoolScopeAttributes();
+    List<ASTCDAttribute> optSymbolAttributes = createOptSymbolAttributes();
+    List<ASTCDAttribute> boolSymbolAttributes = createBoolSymbolAttributes();
 
     List<ASTCDMember> methods = new ArrayList<>();
-    methods.add(createResetMethod(new ArrayList<>(attributes)));
-    methods.addAll(createIsASTMethods(new ArrayList<>(attributes)));
-    methods.addAll(createAsASTMethods(new ArrayList<>(attributes)));
+
+    methods.add(createResetMethod(optASTAttributes,
+            boolASTAttributes,
+            optScopeAttributes,
+            boolScopeAttributes,
+            optSymbolAttributes,
+            boolSymbolAttributes));
+
+    methods.addAll(createIsMethods(boolASTAttributes, "de.monticore.ast.ASTNode", "node"));
+    methods.addAll(createIsMethods(boolScopeAttributes, "de.monticore.symboltable.IScope", "scope"));
+    methods.addAll(createIsMethods(boolSymbolAttributes, "de.monticore.symboltable.ISymbol", "symbol"));
+
+    methods.addAll(createAsMethods(optASTAttributes, "de.monticore.ast.ASTNode", "node"));
+    methods.addAll(createAsMethods(optScopeAttributes, "de.monticore.symboltable.IScope", "scope"));
+    methods.addAll(createAsMethods(optSymbolAttributes, "de.monticore.symboltable.ISymbol", "symbol"));
+
     methods.addAll(createHandleMethods());
 
     return CD4CodeMill.cDClassBuilder()
             .setName(visitorName)
             .setModifier(PUBLIC.build())
             .setCDInterfaceUsage(getInterfaceUsage())
-            .addAllCDMembers(attributes)
+            .addAllCDMembers(optASTAttributes)
+            .addAllCDMembers(boolASTAttributes)
+            .addAllCDMembers(optScopeAttributes)
+            .addAllCDMembers(boolScopeAttributes)
+            .addAllCDMembers(optSymbolAttributes)
+            .addAllCDMembers(boolSymbolAttributes)
             .addCDMember(createConstructor(visitorName))
             .addAllCDMembers(createTraverserElements())
             .addAllCDMembers(methods)
             .build();
   }
 
-  public List<ASTCDAttribute> createAllAttributes() {
+  protected List<ASTCDAttribute> createOptASTAttributes() {
+    List<ASTCDAttribute> attributes = new ArrayList<>();
+    for (CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
+      attributes.add(createOptional(visitorService.createASTFullName(typeSymbol), typeSymbol.getName()));
+    }
+    return attributes;
+  }
+
+  protected List<ASTCDAttribute> createBoolASTAttributes() {
+    List<ASTCDAttribute> attributes = new ArrayList<>();
+    for (CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
+      attributes.add(createBoolean(typeSymbol.getName()));
+    }
+    return attributes;
+  }
+
+  protected List<ASTCDAttribute> createOptScopeAttributes() {
     List<ASTCDAttribute> attributes = new ArrayList<>();
 
-    for(CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
-      booleanAttributes(attributes, typeSymbol.getName());
-      optionalAttributes(attributes, visitorService.createASTFullName(typeSymbol), typeSymbol.getName());
-    }
+    attributes.add(createOptional(symbolTableService.getArtifactScopeInterfaceFullName(), symbolTableService.getArtifactScopeInterfaceSimpleName()));
+    attributes.add(createOptional(symbolTableService.getGlobalScopeInterfaceFullName(), symbolTableService.getGlobalScopeInterfaceSimpleName()));
+    attributes.add(createOptional(symbolTableService.getScopeInterfaceFullName(), symbolTableService.getScopeInterfaceSimpleName()));
 
-    booleanAttributes(attributes, symbolTableService.getArtifactScopeInterfaceSimpleName());
-    optionalAttributes(attributes, symbolTableService.getArtifactScopeInterfaceFullName(), symbolTableService.getArtifactScopeInterfaceSimpleName());
-    booleanAttributes(attributes, symbolTableService.getGlobalScopeInterfaceSimpleName());
-    optionalAttributes(attributes, symbolTableService.getGlobalScopeInterfaceFullName(), symbolTableService.getGlobalScopeInterfaceSimpleName());
-    booleanAttributes(attributes, symbolTableService.getScopeInterfaceSimpleName());
-    optionalAttributes(attributes, symbolTableService.getScopeInterfaceFullName(), symbolTableService.getScopeInterfaceSimpleName());
-
-    booleanAttributes(attributes, symbolTableService.getArtifactScopeSimpleName());
-    optionalAttributes(attributes, symbolTableService.getArtifactScopeFullName(), symbolTableService.getArtifactScopeSimpleName());
-    booleanAttributes(attributes, symbolTableService.getGlobalScopeSimpleName());
-    optionalAttributes(attributes, symbolTableService.getGlobalScopeFullName(), symbolTableService.getGlobalScopeSimpleName());
-
-    for(String symbol: symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
-      booleanAttributes(attributes, symbolTableService.getSimpleNameFromSymbolName(symbol));
-      optionalAttributes(attributes, symbol, symbolTableService.getSimpleNameFromSymbolName(symbol));
-    }
+    attributes.add(createOptional(symbolTableService.getScopeClassFullName(), symbolTableService.getScopeClassSimpleName()));
+    attributes.add(createOptional(symbolTableService.getArtifactScopeFullName(), symbolTableService.getArtifactScopeSimpleName()));
+    attributes.add(createOptional(symbolTableService.getGlobalScopeFullName(), symbolTableService.getGlobalScopeSimpleName()));
 
     return attributes;
   }
 
-  protected void optionalAttributes(List<ASTCDAttribute> attributes, String type, String name) {
-    attributes.add(CD4CodeMill.cDAttributeBuilder()
+  protected List<ASTCDAttribute> createBoolScopeAttributes() {
+    List<ASTCDAttribute> attributes = new ArrayList<>();
+
+    attributes.add(createBoolean(symbolTableService.getArtifactScopeInterfaceSimpleName()));
+    attributes.add(createBoolean(symbolTableService.getGlobalScopeInterfaceSimpleName()));
+    attributes.add(createBoolean(symbolTableService.getScopeInterfaceSimpleName()));
+
+    attributes.add(createBoolean(symbolTableService.getScopeClassSimpleName()));
+    attributes.add(createBoolean(symbolTableService.getArtifactScopeSimpleName()));
+    attributes.add(createBoolean(symbolTableService.getGlobalScopeSimpleName()));
+
+    return attributes;
+  }
+
+  protected List<ASTCDAttribute> createOptSymbolAttributes() {
+    List<ASTCDAttribute> attributes = new ArrayList<>();
+    for (String symbol: symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
+      attributes.add(createOptional(symbol, symbolTableService.getSimpleNameFromSymbolName(symbol)));
+    }
+    return attributes;
+  }
+
+  protected List<ASTCDAttribute> createBoolSymbolAttributes() {
+    List<ASTCDAttribute> attributes = new ArrayList<>();
+    for (String symbol: symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
+      attributes.add(createBoolean(symbolTableService.getSimpleNameFromSymbolName(symbol)));
+    }
+    return attributes;
+  }
+
+  protected ASTCDAttribute createOptional(String type, String name) {
+    return CD4CodeMill.cDAttributeBuilder()
             .setModifier(PROTECTED.build())
             .setMCType(MCTypeFacade
                     .getInstance()
                     .createOptionalTypeOf(type))
             .setName("opt" + name)
-            .build());
+            .build();
   }
 
-  protected void booleanAttributes(List<ASTCDAttribute> attributes, String type) {
-    attributes.add(CD4CodeMill.cDAttributeBuilder()
+  protected ASTCDAttribute createBoolean(String type) {
+    return CD4CodeMill.cDAttributeBuilder()
             .setModifier(PROTECTED.build())
             .setMCType(MCTypeFacade.getInstance().createBooleanType())
             .setName("is" + type)
-            .build());
+            .build();
   }
 
-  public ASTCDMethod createResetMethod(List<ASTCDAttribute> attributes) {
+  protected ASTCDMethod createResetMethod(List<ASTCDAttribute> optASTAttributes,
+                                       List<ASTCDAttribute> boolASTAttributes,
+                                       List<ASTCDAttribute> optScopeAttributes,
+                                       List<ASTCDAttribute> boolScopeAttributes,
+                                       List<ASTCDAttribute> optSymbolAttributes,
+                                       List<ASTCDAttribute> boolSymbolAttributes) {
     ASTCDMethod resetMethod = CD4CodeMill.cDMethodBuilder()
             .setModifier(PUBLIC.build())
             .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
@@ -126,15 +186,16 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
             .setName("reset")
             .build();
 
-    List<String> booleans = attributes.stream()
-            .map(ASTCDAttribute::getName)
-            .filter(s -> s.startsWith("is"))
-            .collect(Collectors.toList());
+    List<ASTCDAttribute> optionals = new ArrayList<>();
+    List<ASTCDAttribute> booleans = new ArrayList<>();
 
-    List<String> optionals = attributes.stream()
-            .map(ASTCDAttribute::getName)
-            .filter(s -> s.startsWith("opt"))
-            .collect(Collectors.toList());
+    optionals.addAll(optASTAttributes);
+    optionals.addAll(optScopeAttributes);
+    optionals.addAll(optSymbolAttributes);
+
+    booleans.addAll(boolASTAttributes);
+    booleans.addAll(boolScopeAttributes);
+    booleans.addAll(boolSymbolAttributes);
 
     replaceTemplate(EMPTY_BODY, resetMethod,
             new TemplateHookPoint("dispatcher.Reset",
@@ -143,46 +204,31 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     return resetMethod;
   }
 
-  public ASTCDConstructor createConstructor(String name) {
-    ASTCDConstructor constructor = CD4CodeMill.cDConstructorBuilder()
-            .setModifier(PUBLIC.build())
-            .setName(name)
-            .build();
-    replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("reset();"));
-    return constructor;
-  }
 
-  public List<ASTCDMember> createIsASTMethods(List<ASTCDAttribute> attributes) {
+  protected List<ASTCDMember> createIsMethods(List<ASTCDAttribute> attributes, String parameterType, String parameterName) {
     List<ASTCDMember> methods = new ArrayList<>();
-    List<String> names = attributes.stream()
-            .map(ASTCDAttribute::getName)
-            .filter(s -> s.startsWith("is"))
-            .collect(Collectors.toList());
-
-    for(String name: names) {
+    List<String> names = attributes.stream().map(ASTCDAttribute::getName).collect(Collectors.toList());
+    for (String name: names) {
       ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
               .setModifier(PUBLIC.build())
               .setName(name)
               .addCDParameter(CD4CodeMill.cDParameterBuilder()
-                      .setMCType(MCTypeFacade.getInstance().createQualifiedType(getParameterType(name)))
-                      .setName("node")
+                      .setMCType(MCTypeFacade.getInstance().createQualifiedType(parameterType))
+                      .setName(parameterName)
                       .build())
               .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
                       .setMCType(MCTypeFacade.getInstance().createBooleanType())
                       .build())
               .build();
-
-      replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("dispatcher.IsAST", name));
+      replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("dispatcher.IsAST", name, parameterName));
       methods.add(method);
     }
     return methods;
   }
 
-  public List<ASTCDMember> createAsASTMethods(List<ASTCDAttribute> attributes) {
+  protected List<ASTCDMember> createAsMethods(List<ASTCDAttribute> attributes, String parameterType, String parameterName) {
     List<ASTCDMember> methods = new ArrayList<>();
-    attributes.removeIf(a -> !a.getName().startsWith("opt"));
-
-    for(ASTCDAttribute attribute: attributes) {
+    for (ASTCDAttribute attribute: attributes) {
       String name = attribute.getName();
       name = name.substring(name.indexOf("opt") + 3);
 
@@ -195,20 +241,20 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
                       .build())
               .setName("as" + name)
               .addCDParameter(CD4CodeMill.cDParameterBuilder()
-                      .setMCType(MCTypeFacade.getInstance().createQualifiedType(getParameterType(name)))
-                      .setName("node")
+                      .setMCType(MCTypeFacade.getInstance().createQualifiedType(parameterType))
+                      .setName(parameterName)
                       .build())
               .build();
 
       replaceTemplate(EMPTY_BODY, method,
-              new TemplateHookPoint("dispatcher.AsAST", name));
+              new TemplateHookPoint("dispatcher.AsAST", name, parameterName));
 
       methods.add(method);
     }
     return methods;
   }
 
-  public List<ASTCDMember> createHandleMethods() {
+  protected List<ASTCDMember> createHandleMethods() {
     List<ASTCDMember> methods = new ArrayList<>();
 
     handleMethod(methods,
@@ -237,14 +283,14 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
             symbolTableService.getArtifactScopeType(),
             List.of(symbolTableService.getArtifactScopeInterfaceFullName()));
 
-    for(String symbol: symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
+    for (String symbol: symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
       handleMethod(methods,
               symbolTableService.getSimpleNameFromSymbolName(symbol),
               MCTypeFacade.getInstance().createQualifiedType(symbol),
               List.of(symbolTableService.getCommonSymbolInterfaceFullName(), "de.monticore.symboltable.ISymbol"));
     }
 
-    for(CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
+    for (CDTypeSymbol typeSymbol: visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
       List<String> superTypes = typeSymbol.getSuperTypesList()
               .stream()
               .filter(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).checkLazyLoadDelegate())
@@ -280,7 +326,16 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     methods.add(method);
   }
 
-  public List<ASTCDMember> createTraverserElements() {
+  protected ASTCDConstructor createConstructor(String name) {
+    ASTCDConstructor constructor = CD4CodeMill.cDConstructorBuilder()
+            .setModifier(PUBLIC.build())
+            .setName(name)
+            .build();
+    replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("reset();"));
+    return constructor;
+  }
+
+  protected List<ASTCDMember> createTraverserElements() {
     List<ASTCDMember> traverserElements = new ArrayList<>();
 
     traverserElements.add(CD4CodeMill.cDAttributeBuilder()
@@ -321,25 +376,13 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     return traverserElements;
   }
 
-  public String getTypeDispatcherName(String name) {
+  protected String getTypeDispatcherName(String name) {
     return name + "TypeDispatcher";
   }
 
-  public ASTCDInterfaceUsage getInterfaceUsage() {
+  protected ASTCDInterfaceUsage getInterfaceUsage() {
     return CDInterfaceUsageFacade.getInstance()
             .createCDInterfaceUsage(visitorService.getTraverserInterfaceFullName());
-  }
-
-  public static String getParameterType(String name) {
-    String parameterType;
-    if (name.contains("Scope")) {
-      parameterType = "de.monticore.symboltable.IScope";
-    } else if (name.contains("Symbol")) {
-      parameterType = "de.monticore.symboltable.ISymbol";
-    } else {
-      parameterType = "de.monticore.ast.ASTNode";
-    }
-    return parameterType;
   }
 
 }
