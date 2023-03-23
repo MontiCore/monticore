@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+grammar SimpleCD extends
+    de.monticore.expressions.ExpressionsBasis,
+    de.monticore.literals.MCCommonLiterals,
+    de.monticore.types.MCBasicTypes,
+    de.monticore.symbols.BasicSymbols {
+
+  CDCompilationUnit =
+    MCPackageDeclaration?
+    MCImportStatement*
+    CDDefinition;
+
+  CDDefinition implements Diagram =
+    "classdiagram" Name "{" CDClass* "}";
+
+  symbol scope CDClass implements Type =
+    "class" Name
+    ( "{"
+        CDAttribute*
+      "}"
+    | ";" );
+
+  CDAttribute implements Variable =
+    MCType Name ("=" initial:Expression)? ";";
+}

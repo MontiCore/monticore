@@ -115,6 +115,7 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:02experiments:groovyHooks')
   include(':monticore-test:02experiments:imports')
   include(':monticore-test:02experiments:dispatcher')
+  include(':monticore-test:02experiments:resolving')
 
   if ("true".equals(getProperty('genTR'))) { // Only test MontiTrans if the flag is set
     include ':monticore-test:montitrans'

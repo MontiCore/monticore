@@ -11,10 +11,7 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolExcepti
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.Splitters;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.google.common.collect.FluentIterable.from;
 import static de.se_rwth.commons.Joiners.DOT;
@@ -120,12 +117,14 @@ public interface IScope {
   }
 
   default <T extends ISymbol> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
-    if (resolved.size() == 1) {
-      return Optional.of(resolved.iterator().next());
-    } else if (resolved.size() > 1) {
-      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolved.size()
-          + " symbols: " + resolved.iterator().next().getFullName(),
-          resolved);
+    Set<T> resolvedSet = new HashSet<>(resolved);
+
+    if (resolvedSet.size() == 1) {
+      return Optional.of(resolvedSet.iterator().next());
+    } else if (resolvedSet.size() > 1) {
+      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolvedSet.size()
+          + " symbols: " + resolvedSet.iterator().next().getFullName(),
+          resolvedSet);
     }
 
     return Optional.empty();

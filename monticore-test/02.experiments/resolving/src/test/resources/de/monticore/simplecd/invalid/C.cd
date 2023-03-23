@@ -1,0 +1,12 @@
+package de.monticore.simplecd.invalid;
+
+
+classdiagram C {
+  class Foo {
+    Bar bar;
+  }
+
+  class Bar;
+
+  class Bar;
+}

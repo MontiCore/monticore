@@ -1,0 +1,5 @@
+package de.monticore.simplecd.valid;
+
+classdiagram B {
+  class Bar;
+}
