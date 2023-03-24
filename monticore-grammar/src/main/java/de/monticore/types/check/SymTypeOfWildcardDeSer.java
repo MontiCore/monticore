@@ -17,9 +17,9 @@ public class SymTypeOfWildcardDeSer {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     jp.member(JsonDeSers.KIND, SERIALIZED_KIND);
-    if(toSerialize.getBound() != null) {
-      jp.member(SERIALIZED_ISUPPER, toSerialize.isUpper);
-      SymTypeExpressionDeSer.serializeMember(jp, SERIALIZED_BOUND, toSerialize.bound);
+    if(toSerialize.hasBound()) {
+      jp.member(SERIALIZED_ISUPPER, toSerialize.isUpper());
+      SymTypeExpressionDeSer.serializeMember(jp, SERIALIZED_BOUND, toSerialize.getBound());
     }
     jp.endObject();
     return jp.getContent();

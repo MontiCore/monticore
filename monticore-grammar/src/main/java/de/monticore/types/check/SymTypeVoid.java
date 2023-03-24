@@ -6,18 +6,19 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 
 public class SymTypeVoid extends SymTypeExpression {
-  
+
+  /**
+   * @deprecated no logic that is not deprecated
+   */
+  @Deprecated
   public SymTypeVoid() {
     typeSymbol = new TypeSymbolSurrogate(BasicSymbolsMill.VOID);
     typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
   }
   
-  /**
-     * print: Umwandlung in einen kompakten String
-     */
   @Override
   public String print() {
-    return "void";
+    return BasicSymbolsMill.VOID;
   }
 
   @Override
@@ -37,6 +38,6 @@ public class SymTypeVoid extends SymTypeExpression {
 
   @Override
   public boolean deepEquals(SymTypeExpression sym){
-    return sym instanceof SymTypeVoid;
+    return sym.isVoidType();
   }
 }

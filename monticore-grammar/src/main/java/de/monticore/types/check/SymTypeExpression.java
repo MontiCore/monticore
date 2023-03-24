@@ -131,6 +131,7 @@ public abstract class SymTypeExpression {
 
   public abstract boolean deepEquals(SymTypeExpression sym);
 
+  @Deprecated
   protected List<FunctionSymbol> functionList = new ArrayList<>();
 
   /**
@@ -436,22 +437,30 @@ public abstract class SymTypeExpression {
   }
 
   /**
-   * Constraint:
-   * We assume that each(!) and really each SymTypeExpression has
-   * an associated TypeSymbol, where all available Fields, Methods, 
-   * etc. can be found.
-   * <p>
-   * These may, however, be null, e.g. for primitive Types.
-   * This is, because primitive Types have their available Information built in.
-   * <p>
-   * Furthermore, each SymTypeExpression knows this TypeSymbol (i.e. the
-   * TypeSymbols are loaded (or created) upon creation of the SymType.
+   * @deprecated TypeSymbols are to be found in the corresponding subclasses,
+   * however, not every subclass will have a type symbol
    */
+  @Deprecated
   protected TypeSymbol typeSymbol;
 
-  public TypeSymbol getTypeInfo() {
-    return typeSymbol;
+  /**
+   * Whether we can call getTypeInfo
+   */
+  public boolean hasTypeInfo() {
+    return false;
   }
 
-  // --------------------------------------------------------------------------
+  /**
+   * Returns an TypeSymbol representing the type
+   * Only to be called according to {@link SymTypeExpression::hasTypeInfo}
+   */
+  public TypeSymbol getTypeInfo() {
+    //support deprecated behaviour
+    if(typeSymbol != null) {
+      return typeSymbol;
+    }
+    Log.error("0xFDFDF internal error: getTypeInfo called,"
+        + "but no typeinfo available");
+    return null;
+  }
 }

@@ -32,7 +32,7 @@ public class SymTypeOfUnion extends SymTypeExpression {
 
   @Override
   public boolean isValidType() {
-    return true;
+    return streamUnionizedTypes().allMatch(SymTypeExpression::isValidType);
   }
 
   @Override
