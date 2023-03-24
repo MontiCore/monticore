@@ -20,6 +20,12 @@ public class SymTypeOfObject extends SymTypeExpression {
     this.typeSymbol = typeSymbol;
   }
 
+  @Override
+  public boolean hasTypeInfo() {
+    return typeSymbol != null;
+  }
+
+  @Override
   public TypeSymbol getTypeInfo() {
     return typeSymbol;
   }
