@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name")}
+${tc.signature("name", "parameterName")}
 
 reset();
-node.accept(this);
+${parameterName}.accept(this);
 return ${name};

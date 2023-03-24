@@ -282,11 +282,11 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeOfWildcard createWildcard(boolean isUpper, SymTypeExpression bound) {
-    return new SymTypeOfWildcard(Optional.of(bound), isUpper);
+    return new SymTypeOfWildcard(bound, isUpper);
   }
 
   public static SymTypeOfWildcard createWildcard() {
-    return new SymTypeOfWildcard(Optional.empty(), false);
+    return createWildcard(false, null);
   }
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType) {

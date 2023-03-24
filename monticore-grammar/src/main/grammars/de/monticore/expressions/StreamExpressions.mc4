@@ -39,7 +39,6 @@ import de.monticore.expressions.ExpressionsBasis;
  *
 */
 
-
 component grammar StreamExpressions extends CommonExpressions {
 
   /*=================================================================*/
@@ -51,26 +50,22 @@ component grammar StreamExpressions extends CommonExpressions {
    */
   EmptyStreamExpression implements Expression = "<>";
 
-// ":" Beisst sich mit dem gleichnamigen Operator in ConditionalExpression!
-// ":~" temporary stand-in
   /* 
    * Append first element 
    * a:b:c  is equal to  a:(b:c), hence <rightassoc>
-   * a:b^c  is equal to  a:(b^c)
+   * a:b^^c  is equal to  a:(b^^c)
    * a+b:c  is equal to  (a+b):c, and
    * a <= b:c  is equal to  a <= (b:c), hence the priority 154, 156
    */
   AppendStreamExpression implements Expression <154>, InfixExpression = <rightassoc>
-    left:Expression operator:":~" right:Expression;
+    left:Expression operator:":" right:Expression;
 
-// "^" Beisst sich mit dem gleichnamigen Operator in BitExpressions.mc4!
-// "^~" temporary stand-in
   /*
    * Concatenation of streams 
-   * a^b^c  is equal to  a^(b^c),  hence <rightassoc>
+   * a^^b^^c  is equal to  a^^(b^^c),  hence <rightassoc>
    */
   ConcatStreamExpression implements Expression <156>, InfixExpression = <rightassoc>
-    left:Expression operator:"^~" right:Expression;
+    left:Expression operator:"^^" right:Expression;
 
   /* 
    * Length of stream 

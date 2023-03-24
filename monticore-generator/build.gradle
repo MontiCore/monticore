@@ -59,7 +59,7 @@ dependencies {
   grammar "de.monticore.lang.bs:cd4analysis:$cd4a_version:grammars"
   implementation "org.antlr:antlr4:$antlr_version"
   implementation 'org.apache.groovy:groovy:4.0.2'
-  implementation ("com.google.guava:guava:$guava_version!!")
+  implementation ("com.google.guava:guava:$guava_version")
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
   testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.24.2'
   testImplementation "junit:junit:$junit_version"

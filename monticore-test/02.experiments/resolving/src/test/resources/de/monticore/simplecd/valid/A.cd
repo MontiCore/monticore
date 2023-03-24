@@ -1,0 +1,9 @@
+package de.monticore.simplecd.valid;
+
+import B.*;
+
+classdiagram A {
+  class Foo {
+    Bar bar;
+  }
+}

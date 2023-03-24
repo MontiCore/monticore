@@ -2,8 +2,8 @@
 ${tc.signature("booleans", "optionals")}
 
 <#list booleans as boolean>
-  ${boolean} = false;
+  ${boolean.getName()} = false;
 </#list>
 <#list optionals as optionals>
-    ${optionals} = Optional.empty();
+    ${optionals.getName()} = Optional.empty();
 </#list>

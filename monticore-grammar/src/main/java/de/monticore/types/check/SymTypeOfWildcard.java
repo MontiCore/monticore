@@ -14,11 +14,13 @@ public class SymTypeOfWildcard extends SymTypeExpression {
    */
   @Deprecated
   public SymTypeOfWildcard(){
-
   }
 
-  public SymTypeOfWildcard(Optional<SymTypeExpression> bound, boolean isUpper){
-    this.bound = bound;
+  /**
+   * To be used by the SymTypeExpressionFactory
+   */
+  public SymTypeOfWildcard(SymTypeExpression bound, boolean isUpper){
+    this.bound = Optional.ofNullable(bound);
     this.isUpper = isUpper;
   }
 
@@ -72,11 +74,10 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   public SymTypeOfWildcard deepClone() {
     SymTypeOfWildcard clone;
     if (hasBound()) {
-      clone = new SymTypeOfWildcard(
-          Optional.of(getBound().deepClone()), isUpper());
+      clone = new SymTypeOfWildcard(getBound().deepClone(), isUpper());
     }
     else {
-      clone = new SymTypeOfWildcard(Optional.empty(), false);
+      clone = new SymTypeOfWildcard(null, false);
     }
     clone.typeSymbol = this.typeSymbol;
     clone.functionList = this.functionList;
