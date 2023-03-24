@@ -10,6 +10,8 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
  */
 public class SymTypeOfObject extends SymTypeExpression {
 
+  protected TypeSymbol typeSymbol;
+
   /**
    * Constructor: with a TypeSymbolSurrogate that contains the name and enclosingScope
    */
@@ -18,10 +20,24 @@ public class SymTypeOfObject extends SymTypeExpression {
     this.typeSymbol = typeSymbol;
   }
 
+  public TypeSymbol getTypeInfo() {
+    return typeSymbol;
+  }
+
+  /**
+   * @deprecated questionable name: getter and setter do different things.
+   * one may add a getObjFullName() or similar if required
+   * also, seems unused in our main projects
+   */
+  @Deprecated
   public String getObjName() {
     return typeSymbol.getFullName();
   }
-  
+
+  /**
+   * @deprecated unused in main projects
+   */
+  @Deprecated
   public void setObjName(String objname) {
     this.typeSymbol.setName(objname);
   }
@@ -31,7 +47,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   @Override
   public String printFullName() {
-    return getObjName();
+    return typeSymbol.getFullName();
   }
 
   @Override
@@ -43,10 +59,12 @@ public class SymTypeOfObject extends SymTypeExpression {
   public SymTypeOfObject deepClone() {
     return  new SymTypeOfObject(this.typeSymbol);
   }
-  
+
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
+   * @deprecated unused outside of tests, but not required for tests
    */
+  @Deprecated
   public String getBaseName() {
     String[] parts = getObjName().split("\\.");
     return parts[parts.length - 1];
@@ -57,10 +75,9 @@ public class SymTypeOfObject extends SymTypeExpression {
     return true;
   }
 
-
   @Override
   public boolean deepEquals(SymTypeExpression sym){
-    if(!(sym instanceof SymTypeOfObject)){
+    if(!sym.isObjectType()){
       return false;
     }
     SymTypeOfObject symCon = (SymTypeOfObject) sym;
@@ -73,7 +90,7 @@ public class SymTypeOfObject extends SymTypeExpression {
     if(!this.typeSymbol.getName().equals(symCon.typeSymbol.getName())){
       return false;
     }
-    return this.print().equals(symCon.print());
+    return true;
   }
 
   // --------------------------------------------------------------------------

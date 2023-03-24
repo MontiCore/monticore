@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 
 import java.util.Arrays;
@@ -11,8 +12,15 @@ import java.util.Collections;
 
 public class SymTypePrimitive extends SymTypeExpression {
 
+  protected TypeSymbol typeSymbol;
+
   public SymTypePrimitive(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
+  }
+
+  @Override
+  public TypeSymbol getTypeInfo() {
+    return typeSymbol;
   }
 
   public String getPrimitiveName() {
@@ -23,18 +31,23 @@ public class SymTypePrimitive extends SymTypeExpression {
     return box(typeSymbol.getName());
   }
 
+  /**
+   * @deprecated only used in 1 test ONCE... in our main projects
+   */
+  @Deprecated
   public String getBaseOfBoxedName() {
     String[] parts = box(typeSymbol.getName()).split("\\.");
     return parts[parts.length - 1];
   }
 
+  /**
+   * @deprecated only used in tests in our main projects
+   */
+  @Deprecated
   public void setPrimitiveName(String constName){
     typeSymbol.setName(constName);
   }
 
-  /**
-   * print: Umwandlung in einen kompakten String
-   */
   @Override
   public String print() {
     return getPrimitiveName();
@@ -45,27 +58,34 @@ public class SymTypePrimitive extends SymTypeExpression {
     return print();
   }
 
-
   /**
    * List of potential constants
    * (on purpose not implemented as enum)
    */
-  public static final List<String> primitiveTypes = Collections.unmodifiableList(Arrays
-      .asList("boolean", "byte", "char", "short", "int", "long", "float", "double", "void"));
+  public static final List<String> primitiveTypes =
+      Collections.unmodifiableList(Arrays.asList(
+          BasicSymbolsMill.BOOLEAN,
+          BasicSymbolsMill.BYTE,
+          BasicSymbolsMill.CHAR,
+          BasicSymbolsMill.SHORT,
+          BasicSymbolsMill.INT,
+          BasicSymbolsMill.LONG,
+          BasicSymbolsMill.FLOAT,
+          BasicSymbolsMill.DOUBLE,
+          //deprecated: use SymTypeOfVoid
+          BasicSymbolsMill.VOID
+      ));
 
   /**
    * Map for unboxing const types (e.g. "java.lang.Boolean" -> "boolean")
    */
   public static final Map<String, String> unboxMap;
 
-
   /**
    * Map for boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
    */
   public static final Map<String, String> boxMap;
-
-
 
   /**
    * initializing the maps
@@ -80,6 +100,7 @@ public class SymTypePrimitive extends SymTypeExpression {
     unboxMap_temp.put("java.lang.Long", "long");
     unboxMap_temp.put("java.lang.Float", "float");
     unboxMap_temp.put("java.lang.Double", "double");
+    //deprecated: String is not expected
     unboxMap_temp.put("java.lang.String", "String");
     unboxMap_temp.put("Boolean", "boolean");
     unboxMap_temp.put("Byte", "byte");
@@ -100,6 +121,7 @@ public class SymTypePrimitive extends SymTypeExpression {
     boxMap_temp.put("int", "java.lang.Integer");
     boxMap_temp.put("long", "java.lang.Long");
     boxMap_temp.put("short", "java.lang.Short");
+    //deprecated: String is not expected
     boxMap_temp.put("String", "java.lang.String");
     boxMap = Collections.unmodifiableMap(boxMap_temp);
   }
@@ -118,7 +140,6 @@ public class SymTypePrimitive extends SymTypeExpression {
       return boxedName;
   }
 
-
   /**
    * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
@@ -134,18 +155,17 @@ public class SymTypePrimitive extends SymTypeExpression {
       return unboxedName;
   }
 
-
   /**
    * Checks whether it is an integer type (incl. byte, long, char)
    *
    * @return true if the given type is an integral type
    */
   public boolean isIntegralType() {
-    return "int".equals(getPrimitiveName()) ||
-        "byte".equals(getPrimitiveName()) ||
-        "short".equals(getPrimitiveName()) ||
-        "long".equals(getPrimitiveName()) ||
-        "char".equals(getPrimitiveName());
+    return BasicSymbolsMill.INT.equals(getPrimitiveName()) ||
+        BasicSymbolsMill.BYTE.equals(getPrimitiveName()) ||
+        BasicSymbolsMill.SHORT.equals(getPrimitiveName()) ||
+        BasicSymbolsMill.LONG.equals(getPrimitiveName()) ||
+        BasicSymbolsMill.CHAR.equals(getPrimitiveName());
   }
 
   /**
@@ -154,8 +174,8 @@ public class SymTypePrimitive extends SymTypeExpression {
    * @return true if the given type is a numeric type
    */
   public boolean isNumericType() {
-    return "float".equals(getPrimitiveName()) ||
-        "double".equals(getPrimitiveName()) ||
+    return BasicSymbolsMill.FLOAT.equals(getPrimitiveName()) ||
+        BasicSymbolsMill.DOUBLE.equals(getPrimitiveName()) ||
         isIntegralType();
   }
 
@@ -174,19 +194,14 @@ public class SymTypePrimitive extends SymTypeExpression {
 
   @Override
   public boolean deepEquals(SymTypeExpression sym){
-    if(!(sym instanceof SymTypePrimitive)){
+    if(!sym.isPrimitive()){
       return false;
     }
     SymTypePrimitive symPrim = (SymTypePrimitive) sym;
-    if(this.typeSymbol == null ||symPrim.typeSymbol ==null){
-      return false;
-    }
     if(!this.typeSymbol.getName().equals(symPrim.typeSymbol.getName())){
       return false;
     }
     return this.print().equals(symPrim.print());
   }
 
-
-  // --------------------------------------------------------------------------
 }
