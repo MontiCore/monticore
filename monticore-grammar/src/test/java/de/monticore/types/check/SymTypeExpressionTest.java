@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -458,6 +459,41 @@ public class SymTypeExpressionTest {
     assertEquals("java.util.Set<A>", SymTypeOfGenerics.box((SymTypeOfGenerics) teSetA));
     assertEquals("java.util.Map<java.lang.Integer,de.x.Person>", SymTypeOfGenerics.box((SymTypeOfGenerics)teMap));
     assertEquals("java.util.Map<java.util.Set<java.lang.Integer>,x.Foo<de.x.Person,java.lang.Double,java.lang.Integer,Human>>",SymTypeOfGenerics.box((SymTypeOfGenerics)teMap2));
+  }
+
+  @Test
+  public void testHasTypeInfo() {
+    assertTrue(teInt.hasTypeInfo());
+    assertFalse(SymTypeExpressionFactory.createPrimitive((TypeSymbol) null).hasTypeInfo());
+    assertFalse(teVarA.hasTypeInfo());
+    assertFalse(teVarB.hasTypeInfo());
+    assertTrue(teIntA.hasTypeInfo());
+    assertFalse(SymTypeExpressionFactory.createTypeObject(null).hasTypeInfo());
+    assertTrue(teP.hasTypeInfo());
+    assertTrue(teH.hasTypeInfo());
+    assertFalse(teVoid.hasTypeInfo());
+    assertFalse(teNull.hasTypeInfo());
+    assertFalse(teArr1.hasTypeInfo());
+    assertFalse(teArr3.hasTypeInfo());
+    assertTrue(teSetA.hasTypeInfo());
+    assertTrue(teSetB.hasTypeInfo());
+    assertTrue(teSetC.hasTypeInfo());
+    assertTrue(teMap.hasTypeInfo());
+    assertTrue(teMapA.hasTypeInfo());
+    assertTrue(teMap3.hasTypeInfo());
+    assertTrue(teFoo.hasTypeInfo());
+    assertTrue(teDeep1.hasTypeInfo());
+    assertTrue(teDeep2.hasTypeInfo());
+    assertFalse(SymTypeExpressionFactory.createGenerics(null).hasTypeInfo());
+    assertFalse(teUpperBound.hasTypeInfo());
+    assertFalse(teLowerBound.hasTypeInfo());
+    assertFalse(teWildcard.hasTypeInfo());
+    assertFalse(teFunc1.hasTypeInfo());
+    assertFalse(teFunc2.hasTypeInfo());
+    assertFalse(teFunc3.hasTypeInfo());
+    assertFalse(teFunc4.hasTypeInfo());
+    assertFalse(teUnion1.hasTypeInfo());
+    assertFalse(teObscure.hasTypeInfo());
   }
 
   @Test

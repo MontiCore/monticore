@@ -134,6 +134,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   @Override
+  public boolean hasTypeInfo() {
+    return typeSymbol != null;
+  }
+
+  @Override
   public TypeSymbol getTypeInfo() {
     return typeSymbol;
   }
