@@ -54,16 +54,16 @@ public class StatisticData {
       result.putMember("Tasks", tasks);
     }
 
-    result.putMember("ProjectName", new UserJsonString(project.getName()));
+    result.putMember("ProjectName", new UserJsonStringFix(project.getName()));
     result.putMember("Duration", new JsonNumber(""+executionTime.toMillis()));
-    result.putMember("GradleVersion", new UserJsonString(this.gradle.getGradleVersion()));
-    result.putMember("JavaVersion", new UserJsonString(System.getProperty("java.version")));
+    result.putMember("GradleVersion", new UserJsonStringFix(this.gradle.getGradleVersion()));
+    result.putMember("JavaVersion", new UserJsonStringFix(System.getProperty("java.version")));
 
     try {
       Properties localProperties = new Properties();
       localProperties.load(this.getClass().getResourceAsStream("/buildInfo.properties"));
 
-      result.putMember("MCVersion", new UserJsonString(localProperties.getProperty("version")));
+      result.putMember("MCVersion", new UserJsonStringFix(localProperties.getProperty("version")));
     }catch(IOException ignored){}
 
     result.putMember("TotalMemory", new JsonNumber(""+Runtime.getRuntime().totalMemory()));
@@ -76,7 +76,7 @@ public class StatisticData {
     result.putMember("HasBuildCacheURL", new JsonBoolean( gradle.getRootProject().getProperties().containsKey("buildCacheURL")));
     result.putMember("IsCi", new JsonBoolean( System.getenv().containsKey("CI")));
 
-    result.putMember("Tags", new UserJsonString(getGradleProperty("de.monticore.gradle.tags", "")));
+    result.putMember("Tags", new UserJsonStringFix(getGradleProperty("de.monticore.gradle.tags", "")));
 
     return result.toString();
   }
@@ -86,9 +86,9 @@ public class StatisticData {
 
     public TaskData(Task task, TaskState taskState, Duration executionTime) {
       data = new JsonObject();
-      data.putMember("Name", new UserJsonString(task.getName()));
-      data.putMember("ProjectName", new UserJsonString(task.getProject().getDisplayName()));
-      data.putMember("Type", new UserJsonString(task.getClass().getName()));
+      data.putMember("Name", new UserJsonStringFix(task.getName()));
+      data.putMember("ProjectName", new UserJsonStringFix(task.getProject().getDisplayName()));
+      data.putMember("Type", new UserJsonStringFix(task.getClass().getName()));
 
       data.putMember("Duration", new JsonNumber(""+executionTime.toMillis()));
       data.putMember("UpToDate", new JsonBoolean(taskState.getUpToDate()));

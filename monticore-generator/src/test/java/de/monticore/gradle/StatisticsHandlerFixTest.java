@@ -4,21 +4,21 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class StatisticsHandlerTest {
+public class StatisticsHandlerFixTest {
   @Test
   public void validSHash() {
     String content = "SomeString with many characters? + ?+._ü1^^";
-    String SHASH = StatisticsHandler.getSHASH(content);
+    String SHASH = StatisticsHandlerFix.getSHASH(content);
 
-    assertTrue(StatisticsHandler.isValidSHASH(SHASH, content));
+    assertTrue(StatisticsHandlerFix.isValidSHASH(SHASH, content));
   }
   @Test
   public void invalidSHash() {
     String content = "SomeString with many characters? + ?+._ü1^^";
-    String SHASH = StatisticsHandler.getSHASH(content);
+    String SHASH = StatisticsHandlerFix.getSHASH(content);
 
     String differentContent = "AnotjherString";
-    assertFalse(StatisticsHandler.isValidSHASH(SHASH, differentContent));
+    assertFalse(StatisticsHandlerFix.isValidSHASH(SHASH, differentContent));
   }
 
 }

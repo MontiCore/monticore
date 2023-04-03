@@ -5,39 +5,33 @@ import com.google.common.hash.Hashing;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class StatisticsHandler {
-  public enum ReportType { GradleReport, JarReport }
 
-  protected static String getStatType(ReportType type){
-    String result = "";
-    switch(type){
-      case GradleReport:
-        result = "MC_GRADLE_JSON";
-        break;
-      case JarReport:
-        result = "MC_JAR_JSON";
-        break;
-    }
-    return result;
+// Remove once MC 7.5.0 is released
+public class StatisticsHandlerFix {
+
+  private static void sendRequest(URI url, String data, String type) throws IOException, InterruptedException {
+    HttpURLConnection connection = (HttpURLConnection) url.toURL().openConnection();
+    connection.setRequestMethod("POST");
+    connection.setRequestProperty("STAT_TYPE", type);
+    connection.setRequestProperty("SHASH", getSHASH(data) );
+    connection.setRequestProperty("Content-Type", "text/html");
+
+    connection.setDoOutput(true);
+    connection.setRequestProperty("Content-Length", Integer.toString(data.length()));
+    connection.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
+    connection.setConnectTimeout(200);
+
+    connection.connect();
+    connection.getResponseCode();
   }
 
-  private static void sendRequest(URL url, String data, ReportType type) throws IOException {
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestMethod("POST");
-      connection.setRequestProperty("STAT_TYPE", getStatType(type));
-      connection.setRequestProperty("SHASH", getSHASH(data) );
-      connection.setRequestProperty("Content-Type", "text/html");
-
-      connection.setDoOutput(true);
-      connection.setRequestProperty("Content-Length", Integer.toString(data.length()));
-      connection.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
-      connection.setConnectTimeout(200);
-
-      connection.connect();
+  // Check that content matches shash-code.
+  public static boolean isValidSHASH(String shash, String content) {
+    return Objects.equals(shash, getSHASH(content));
   }
 
   protected static String getSString(){
@@ -50,14 +44,9 @@ public class StatisticsHandler {
         .toString();
   }
 
-  // Check that content matches shash-code.
-  public static boolean isValidSHASH(String shash, String content){
-    return Objects.equals(shash, getSHASH(content));
-  }
-
-  public static void storeReport(String report, ReportType type) {
+  public static void storeReport(String report, String type) {
     try {
-      sendRequest(new URL("https://" + "build.se.rwth-aachen.de" + ":8844"), report, type);
+      sendRequest(new URI("https://" + "build.se.rwth-aachen.de" + ":8844"), report, type);
     } catch (Exception ignored) {
     }
   }
