@@ -258,7 +258,9 @@ public class MCTypeFacade {
   }
 
   public boolean isBooleanType(ASTMCType type) {
-    return type instanceof ASTMCPrimitiveType && ((ASTMCPrimitiveType) type).isBoolean();
+    return (type instanceof ASTMCPrimitiveType && ((ASTMCPrimitiveType) type).isBoolean()) ||
+            "Boolean".equals(MCBasicTypesMill.mcBasicTypesPrettyPrinter().prettyprint(type)) ||
+            "java.lang.Boolean".equals((MCBasicTypesMill.mcBasicTypesPrettyPrinter().prettyprint(type)));
   }
 
   public ASTMCPrimitiveType createIntType() {
