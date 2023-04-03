@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.gradle;
+package de.monticore.symboltable.serialization.json;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.serialization.json.JsonString;
 import org.apache.commons.text.StringEscapeUtils;
 
-@Deprecated
 public class UserJsonString extends JsonString {
 
   public UserJsonString(String value) {

@@ -3,7 +3,7 @@
 package de.monticore;
 
 import com.google.common.collect.Sets;
-import de.monticore.gradle.UserJsonString;
+import de.monticore.gradle.UserJsonStringFix;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.configuration.Configuration;
@@ -416,7 +416,7 @@ public final class MontiCoreConfiguration implements Configuration {
       grammars.setValues(
           this.getGrammars().getEntries().stream()
               .map(p->p.getFileName().toString()) // For privacy we only want the name, not the absolute path
-              .map(UserJsonString::new)
+              .map(UserJsonStringFix::new)
               .collect(Collectors.toList())
       );
       result.putMember(GRAMMAR_LONG, grammars);
