@@ -31,6 +31,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * Map for boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    */
+  @Deprecated
   public static final Map<String, String> boxMap;
 
   /**
@@ -84,10 +85,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * Boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    * Otherwise return is unchanged
-   *
+   * @deprecated use SymtypeBoxingVisitor
    * @param type
    * @return
    */
+  @Deprecated
   public static String box(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
@@ -193,15 +195,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return true;
   }
   
-  @Override
-  public SymTypeOfGenerics deepClone() {
-    List<SymTypeExpression> clonedArguments = new LinkedList<>();
-    for(SymTypeExpression argument: getArgumentList()) {
-      clonedArguments.add(argument.deepClone());
-    }
-    return new SymTypeOfGenerics(this.typeSymbol, clonedArguments);
-  }
-
   @Override
   public boolean deepEquals(SymTypeExpression sym){
     if(!sym.isGenericType()){

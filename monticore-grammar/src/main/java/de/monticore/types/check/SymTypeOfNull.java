@@ -37,11 +37,6 @@ public class SymTypeOfNull extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfNull deepClone() {
-    return new SymTypeOfNull();
-  }
-
-  @Override
   public boolean isNullType() {
     return true;
   }

@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
@@ -57,15 +56,6 @@ public class SymTypeOfIntersection extends SymTypeExpression {
     );
     r.append(")");
     return r.toString();
-  }
-
-  @Override
-  public SymTypeOfIntersection deepClone() {
-    Set<SymTypeExpression> clonedIntersectedTypes = new HashSet<>();
-    for (SymTypeExpression exp : getIntersectedTypeSet()) {
-      clonedIntersectedTypes.add(exp.deepClone());
-    }
-    return SymTypeExpressionFactory.createIntersection(clonedIntersectedTypes);
   }
 
   @Override

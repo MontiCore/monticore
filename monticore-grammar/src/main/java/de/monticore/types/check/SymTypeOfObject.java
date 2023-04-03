@@ -55,11 +55,6 @@ public class SymTypeOfObject extends SymTypeExpression {
     return typeSymbol.getName();
   }
 
-  @Override
-  public SymTypeOfObject deepClone() {
-    return  new SymTypeOfObject(this.typeSymbol);
-  }
-
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    * @deprecated unused outside of tests, but not required for tests

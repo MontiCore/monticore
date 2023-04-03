@@ -85,6 +85,7 @@ public class SymTypePrimitive extends SymTypeExpression {
    * Map for boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
    */
+  @Deprecated
   public static final Map<String, String> boxMap;
 
   /**
@@ -144,10 +145,11 @@ public class SymTypePrimitive extends SymTypeExpression {
    * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
    * Otherwise return is unchanged
-   *
+   * @deprecated use SymTypeBoxingVisitor
    * @param unboxedName
    * @return
    */
+  @Deprecated
   public static String box(String unboxedName) {
     if (boxMap.containsKey(unboxedName))
       return boxMap.get(unboxedName);
@@ -185,12 +187,6 @@ public class SymTypePrimitive extends SymTypeExpression {
   public boolean isPrimitive() {
     return true;
   }
-
-  @Override
-  public SymTypePrimitive deepClone() {
-    return new SymTypePrimitive(this.typeSymbol);
-  }
-
 
   @Override
   public boolean deepEquals(SymTypeExpression sym){

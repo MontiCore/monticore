@@ -5,7 +5,6 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
@@ -66,15 +65,6 @@ public class SymTypeOfUnion extends SymTypeExpression {
     );
     r.append(")");
     return r.toString();
-  }
-
-  @Override
-  public SymTypeOfUnion deepClone() {
-    Set<SymTypeExpression> clonedUnionizedTypes = new HashSet<>();
-    for (SymTypeExpression exp : getUnionizedTypeSet()) {
-      clonedUnionizedTypes.add(exp.deepClone());
-    }
-    return SymTypeExpressionFactory.createUnion(clonedUnionizedTypes);
   }
 
   @Override

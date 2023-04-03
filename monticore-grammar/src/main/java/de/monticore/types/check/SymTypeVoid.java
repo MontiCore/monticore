@@ -27,11 +27,6 @@ public class SymTypeVoid extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeVoid deepClone() {
-    return new SymTypeVoid();
-  }
-
-  @Override
   public boolean isVoidType() {
     return true;
   }

@@ -105,16 +105,6 @@ public class SymTypeOfFunction extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfFunction deepClone() {
-    List<SymTypeExpression> clonedArgTypes = new LinkedList<>();
-    for (SymTypeExpression exp : getArgumentTypeList()) {
-      clonedArgTypes.add(exp.deepClone());
-    }
-    return new SymTypeOfFunction(this.returnType.deepClone(), clonedArgTypes,
-        isElliptic());
-  }
-
-  @Override
   public boolean deepEquals(SymTypeExpression sym) {
     if (!sym.isFunctionType()) {
       return false;
