@@ -98,14 +98,9 @@ public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
     final String name = symType.printFullName();
     Optional<TypeSymbol> typeSymbolOpt =
         resolveBoxedSymType(name, getObjectBoxMap());
-    if (typeSymbolOpt.isPresent()) {
-      pushTransformedSymType(
-          SymTypeExpressionFactory.createTypeObject(typeSymbolOpt.get())
-      );
-    }
-    else {
-      pushTransformedSymType(symType);
-    }
+    pushTransformedSymType(SymTypeExpressionFactory.createTypeObject(
+        typeSymbolOpt.orElse(symType.getTypeInfo())
+    ));
   }
 
   @Override
@@ -119,7 +114,9 @@ public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
       );
     }
     else {
-      pushTransformedSymType(symType);
+      pushTransformedSymType(
+          SymTypeExpressionFactory.createPrimitive(symType.getTypeInfo())
+      );
     }
   }
 
