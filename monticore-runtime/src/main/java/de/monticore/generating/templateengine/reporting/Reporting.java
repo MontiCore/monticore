@@ -17,6 +17,7 @@ import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -95,6 +96,17 @@ public class Reporting extends Log {
     super.doWarn(msg);
   }
 
+  @Override
+  public void doWarn(String msg, SourcePosition position) {
+    this.doWarn(msg);
+  }
+
+  @Override
+  public void doWarn(String msg, SourcePosition start, SourcePosition end) {
+    this.doWarn(msg);
+  }
+
+
   /**
    * @see de.se_rwth.commons.logging.Log#warn(java.lang.String,
    * java.lang.Throwable)
@@ -111,6 +123,16 @@ public class Reporting extends Log {
   @Override
   public void doError(String msg) {
     this.doError(msg, Optional.empty());
+  }
+
+  @Override
+  public void doError(String msg, SourcePosition position) {
+    this.doError(msg);
+  }
+
+  @Override
+  public void doError(String msg, SourcePosition start, SourcePosition end) {
+    this.doError(msg);
   }
 
   /**
