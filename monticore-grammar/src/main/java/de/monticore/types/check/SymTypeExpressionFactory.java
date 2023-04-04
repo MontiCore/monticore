@@ -315,4 +315,12 @@ public class SymTypeExpressionFactory {
   public static SymTypeOfUnion createUnion(SymTypeExpression... unionizedTypes) {
     return createUnion(Set.of(unionizedTypes));
   }
+
+  public static SymTypeOfIntersection createIntersection(Set<SymTypeExpression> intersectedTypes) {
+    return new SymTypeOfIntersection(intersectedTypes);
+  }
+
+  public static SymTypeOfIntersection createIntersection(SymTypeExpression... intersectedTypes) {
+    return createIntersection(Set.of(intersectedTypes));
+  }
 }

@@ -114,6 +114,13 @@ public abstract class SymTypeExpression {
   }
 
   /**
+   * Am I an intersection type (e.g. "(A&B)")
+   */
+  public boolean isIntersectionType() {
+    return false;
+  }
+
+  /**
    * Can I not have a type derived from (e.g. "1 - student")?
    */
   public boolean isObscureType(){
