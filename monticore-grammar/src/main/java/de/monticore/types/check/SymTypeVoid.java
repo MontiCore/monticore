@@ -4,6 +4,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.types2.ISymTypeVisitor;
 
 public class SymTypeVoid extends SymTypeExpression {
 
@@ -35,4 +36,10 @@ public class SymTypeVoid extends SymTypeExpression {
   public boolean deepEquals(SymTypeExpression sym){
     return sym.isVoidType();
   }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
+  }
+
 }

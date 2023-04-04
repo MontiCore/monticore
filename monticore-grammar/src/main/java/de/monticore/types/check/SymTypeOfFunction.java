@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -144,6 +145,11 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   public void setElliptic(boolean elliptic) {
     this.elliptic = elliptic;
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 
   // --------------------------------------------------------------------------

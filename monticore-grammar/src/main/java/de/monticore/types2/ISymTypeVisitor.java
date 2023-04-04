@@ -16,40 +16,40 @@ import de.monticore.types.check.SymTypeVoid;
 
 public interface ISymTypeVisitor {
 
-  default void visit(SymTypeArray symType) {
+  default void visit(SymTypeArray array) {
   }
 
-  default void visit(SymTypeObscure symType) {
+  default void visit(SymTypeObscure obscure) {
   }
 
-  default void visit(SymTypeOfFunction symType) {
+  default void visit(SymTypeOfFunction function) {
   }
 
-  default void visit(SymTypeOfGenerics symType) {
+  default void visit(SymTypeOfGenerics generic) {
   }
 
-  default void visit(SymTypeOfIntersection symType) {
+  default void visit(SymTypeOfIntersection intersection) {
   }
 
-  default void visit(SymTypeOfNull symType) {
+  default void visit(SymTypeOfNull nullSymType) {
   }
 
-  default void visit(SymTypeOfObject symType) {
+  default void visit(SymTypeOfObject object) {
   }
 
-  default void visit(SymTypeOfUnion symType) {
+  default void visit(SymTypeOfUnion union) {
   }
 
-  default void visit(SymTypePrimitive symType) {
+  default void visit(SymTypePrimitive primitive) {
   }
 
-  default void visit(SymTypeVariable symType) {
+  default void visit(SymTypeVariable typeVar) {
   }
 
-  default void visit(SymTypeVoid symType) {
+  default void visit(SymTypeVoid voidSymType) {
   }
 
-  default void visit(SymTypeOfWildcard symType) {
+  default void visit(SymTypeOfWildcard wildcard) {
   }
 
 }

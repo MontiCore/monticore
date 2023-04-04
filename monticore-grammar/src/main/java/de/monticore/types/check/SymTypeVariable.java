@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.types2.ISymTypeVisitor;
 
 public class SymTypeVariable extends SymTypeExpression {
 
@@ -142,4 +143,10 @@ public class SymTypeVariable extends SymTypeExpression {
     }
     return true;
   }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
+  }
+
 }

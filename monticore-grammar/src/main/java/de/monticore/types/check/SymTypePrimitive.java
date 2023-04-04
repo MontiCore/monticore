@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -198,6 +199,11 @@ public class SymTypePrimitive extends SymTypeExpression {
       return false;
     }
     return this.print().equals(symPrim.print());
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 
 }

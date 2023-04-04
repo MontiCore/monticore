@@ -6,6 +6,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -241,6 +242,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
         type.replaceTypeVariables(replaceMap);
       }
     }
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 
   // --------------------------------------------------------------------------

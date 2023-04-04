@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.types2.ISymTypeVisitor;
+
 import java.util.Optional;
 
 public class SymTypeOfWildcard extends SymTypeExpression {
@@ -130,4 +132,10 @@ public class SymTypeOfWildcard extends SymTypeExpression {
     }
     return true;
   }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
+  }
+
 }

@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.types2.ISymTypeVisitor;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -73,6 +75,11 @@ public class SymTypeOfIntersection extends SymTypeExpression {
       }
     }
     return true;
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 
   // --------------------------------------------------------------------------
