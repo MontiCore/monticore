@@ -26,6 +26,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Map for unboxing generic types (e.g. "java.util.Collection" -> "Collection")
    */
+  @Deprecated
   public static final Map<String, String> unboxMap;
 
   /**
@@ -57,10 +58,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * unboxing generic types (e.g. "java.util.Collection" -> "Collection").
    * otherwise return is unchanged
-   *
+   * @deprecated use SymTypeUnboxingVisitor
    * @param type
    * @return
    */
+  @Deprecated
   public static String unbox(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
