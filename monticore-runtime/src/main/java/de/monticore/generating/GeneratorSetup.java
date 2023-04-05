@@ -129,7 +129,7 @@ public class GeneratorSetup {
           loaders.add(new MontiCoreFileTemplateLoader(file));
         }
         catch (IOException e) {
-          Log.error("0xA1020 Unable to load templates from path " + file.getPath(), e);
+          Log.warn("0xA1020 Unable to load templates from non-existent path " + file.getPath(), e);
         }
       }
 
