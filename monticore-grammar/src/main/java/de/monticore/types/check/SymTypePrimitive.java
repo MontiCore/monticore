@@ -85,6 +85,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * Map for unboxing const types (e.g. "java.lang.Boolean" -> "boolean")
    */
+  @Deprecated
   public static final Map<String, String> unboxMap;
 
   /**
@@ -136,10 +137,11 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * unboxing const types (e.g. "java.lang.Boolean" -> "boolean").
    * otherwise return is unchanged
-   *
+   * @deprecated use SymTypeUnboxingVisitor
    * @param boxedName
    * @return
    */
+  @Deprecated
   public static String unbox(String boxedName) {
     if (unboxMap.containsKey(boxedName))
       return unboxMap.get(boxedName);

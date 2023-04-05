@@ -250,7 +250,7 @@ public class DefsTypeBasic {
 
   public static SymTypeOfObject _IntegerSymType;
 
-  public static SymTypeOfObject _CharSymType;
+  public static SymTypeOfObject _CharacterSymType;
 
   public static SymTypeOfObject _BooleanSymType;
 
@@ -272,7 +272,7 @@ public class DefsTypeBasic {
     // create boxed primitives
     _IntegerSymType =
         createTypeObject(inScope(langScope, type("Integer")));
-    _CharSymType =
+    _CharacterSymType =
         createTypeObject(inScope(langScope, type("Character")));
     _BooleanSymType =
         createTypeObject(inScope(langScope, type("Boolean")));
@@ -313,7 +313,7 @@ public class DefsTypeBasic {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     IBasicSymbolsScope javaScope = inScope(gs, scope("java"));
     IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
-    _unboxedString = createTypeObject(inScope(langScope, type("String")));
+    _boxedString = createTypeObject(inScope(langScope, type("String")));
   }
 
   /*********************************************************************/
