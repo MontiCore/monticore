@@ -8,6 +8,8 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
+import de.monticore.types2.ISymTypeVisitor;
+import de.monticore.types2.SymTypeDeepCloneVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -134,7 +136,9 @@ public abstract class SymTypeExpression {
     return false;
   }
 
-  public abstract SymTypeExpression deepClone();
+  public SymTypeExpression deepClone() {
+    return new SymTypeDeepCloneVisitor().calculate(this);
+  }
 
   public abstract boolean deepEquals(SymTypeExpression sym);
 
@@ -469,5 +473,9 @@ public abstract class SymTypeExpression {
     Log.error("0xFDFDF internal error: getTypeInfo called,"
         + "but no typeinfo available");
     return null;
+  }
+
+  public void accept(ISymTypeVisitor visitor) {
+    // not abstract to support legacy typecheck subclasses
   }
 }

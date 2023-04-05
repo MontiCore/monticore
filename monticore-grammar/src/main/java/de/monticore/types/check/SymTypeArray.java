@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.types2.ISymTypeVisitor;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -135,5 +136,10 @@ public class SymTypeArray extends SymTypeExpression {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 }

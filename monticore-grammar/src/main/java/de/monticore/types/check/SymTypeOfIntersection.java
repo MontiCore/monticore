@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.types2.ISymTypeVisitor;
+
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
@@ -60,15 +61,6 @@ public class SymTypeOfIntersection extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfIntersection deepClone() {
-    Set<SymTypeExpression> clonedIntersectedTypes = new HashSet<>();
-    for (SymTypeExpression exp : getIntersectedTypeSet()) {
-      clonedIntersectedTypes.add(exp.deepClone());
-    }
-    return SymTypeExpressionFactory.createIntersection(clonedIntersectedTypes);
-  }
-
-  @Override
   public boolean deepEquals(SymTypeExpression sym) {
     if (!sym.isIntersectionType()) {
       return false;
@@ -83,6 +75,11 @@ public class SymTypeOfIntersection extends SymTypeExpression {
       }
     }
     return true;
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 
   // --------------------------------------------------------------------------

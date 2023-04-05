@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.types2.ISymTypeVisitor;
 
 /**
  * An objectType is a full qualified class name.
@@ -61,11 +62,6 @@ public class SymTypeOfObject extends SymTypeExpression {
     return typeSymbol.getName();
   }
 
-  @Override
-  public SymTypeOfObject deepClone() {
-    return  new SymTypeOfObject(this.typeSymbol);
-  }
-
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    * @deprecated unused outside of tests, but not required for tests
@@ -99,5 +95,8 @@ public class SymTypeOfObject extends SymTypeExpression {
     return true;
   }
 
-  // --------------------------------------------------------------------------
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
+  }
 }

@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.Collections;
 import java.util.List;
@@ -70,5 +71,10 @@ public class SymTypeObscure extends SymTypeExpression {
                                                   boolean outerIsType,
                                                   boolean abstractTc) {
     return Collections.emptyList();
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 }
