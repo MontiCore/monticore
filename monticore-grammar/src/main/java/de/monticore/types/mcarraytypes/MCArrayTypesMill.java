@@ -15,6 +15,7 @@ public class MCArrayTypesMill extends MCArrayTypesMillTOP {
    * Only one pretty printer object is created and reused.
    * @return the pretty printer instance
    */
+  @Deprecated(forRemoval = true)
   public  static MCArrayTypesFullPrettyPrinter mcArrayTypesPrettyPrinter ()  {
 
     if (mcArrayTypesPrettyPrinter == null) {

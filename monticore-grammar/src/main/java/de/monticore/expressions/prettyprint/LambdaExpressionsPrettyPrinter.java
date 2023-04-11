@@ -12,6 +12,7 @@ import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsVisi
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class LambdaExpressionsPrettyPrinter
     implements LambdaExpressionsVisitor2, LambdaExpressionsHandler {
 

@@ -19,6 +19,7 @@ import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatementsBasisNode;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 
 
+@Deprecated(forRemoval = true)
 public class Grammar_WithConceptsPrettyPrinter implements Grammar_WithConceptsVisitor2,
         Grammar_WithConceptsHandler {
     

@@ -3,6 +3,7 @@ package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcexceptionstatements._ast.*;
+import de.monticore.statements.mcexceptionstatements._prettyprint.MCExceptionStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

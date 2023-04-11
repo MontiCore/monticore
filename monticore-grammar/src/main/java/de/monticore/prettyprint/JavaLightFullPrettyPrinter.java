@@ -13,6 +13,7 @@ import de.monticore.statements.prettyprint.MCReturnStatementsPrettyPrinter;
 import de.monticore.statements.prettyprint.MCVarDeclarationStatementsPrettyPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class JavaLightFullPrettyPrinter {
 
   protected JavaLightTraverser traverser;

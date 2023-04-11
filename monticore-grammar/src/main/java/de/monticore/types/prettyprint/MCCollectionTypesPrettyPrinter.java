@@ -7,6 +7,7 @@ import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesHandler;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCCollectionTypesPrettyPrinter implements MCCollectionTypesVisitor2, MCCollectionTypesHandler {
 
   protected IndentPrinter printer;

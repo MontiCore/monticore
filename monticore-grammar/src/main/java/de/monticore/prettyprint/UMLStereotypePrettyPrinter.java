@@ -8,6 +8,7 @@ import de.monticore.umlstereotype._visitor.UMLStereotypeHandler;
 import de.monticore.umlstereotype._visitor.UMLStereotypeTraverser;
 import de.monticore.umlstereotype._visitor.UMLStereotypeVisitor2;
 
+@Deprecated(forRemoval = true)
 public class UMLStereotypePrettyPrinter implements UMLStereotypeVisitor2, UMLStereotypeHandler {
 
   protected UMLStereotypeTraverser traverser;

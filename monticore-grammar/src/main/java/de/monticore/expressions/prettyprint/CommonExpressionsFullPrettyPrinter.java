@@ -6,6 +6,7 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTrav
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class CommonExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
   protected CommonExpressionsTraverser traverser;
 

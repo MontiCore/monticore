@@ -6,6 +6,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.types.mcarraytypes.MCArrayTypesMill;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCArrayTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter {
 
   protected MCArrayTypesTraverser traverser;

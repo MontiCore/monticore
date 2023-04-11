@@ -4,6 +4,7 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayDeclaratorId;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
+import de.monticore.statements.mcarraystatements._prettyprint.MCArrayStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcarraystatements._parser.TestMCArrayStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

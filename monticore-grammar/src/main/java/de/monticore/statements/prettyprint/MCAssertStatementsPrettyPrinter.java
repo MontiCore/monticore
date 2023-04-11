@@ -9,6 +9,7 @@ import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsHan
 import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsTraverser;
 import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCAssertStatementsPrettyPrinter implements MCAssertStatementsVisitor2, MCAssertStatementsHandler {
 
   protected MCAssertStatementsTraverser traverser;

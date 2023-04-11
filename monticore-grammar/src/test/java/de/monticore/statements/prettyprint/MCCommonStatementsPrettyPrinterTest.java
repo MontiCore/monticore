@@ -3,6 +3,7 @@ package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mccommonstatements._ast.*;
+import de.monticore.statements.mccommonstatements._prettyprint.MCCommonStatementsFullPrettyPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;

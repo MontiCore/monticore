@@ -3,6 +3,7 @@ package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
+import de.monticore.statements.mcassertstatements._prettyprint.MCAssertStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcassertstatements._parser.TestMCAssertStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

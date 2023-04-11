@@ -4,6 +4,7 @@ package de.monticore.expressions.exptojava;/* (c) https://github.com/MontiCore/m
 import de.monticore.expressions.prettyprint.BitExpressionsPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class BitExpressionsJavaPrinter extends BitExpressionsPrettyPrinter {
   
   public BitExpressionsJavaPrinter(IndentPrinter printer) {

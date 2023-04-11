@@ -8,9 +8,9 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import prettyprint.StringLiteralsFullPrettyPrinter;
 import stringliterals._ast.ASTCharLiteral;
 import stringliterals._ast.ASTStringLiteral;
+import stringliterals._prettyprint.StringLiteralsFullPrettyPrinter;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -46,7 +46,7 @@ public class StringLiteralsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(cliteral);
     
     result = parser.parseCharLiteral(new StringReader(output));
-    assertFalse(parser.hasErrors());
+    assertFalse(output, parser.hasErrors());
     assertTrue(result.isPresent());
     
     assertTrue(cliteral.deepEquals(result.get()));
@@ -67,7 +67,7 @@ public class StringLiteralsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(cliteral);
     
     result = parser.parseCharLiteral(new StringReader(output));
-    assertFalse(parser.hasErrors());
+    assertFalse(output, parser.hasErrors());
     assertTrue(result.isPresent());
     
     assertTrue(cliteral.deepEquals(result.get()));
@@ -88,7 +88,7 @@ public class StringLiteralsPrettyPrinterTest {
         new IndentPrinter());
     String output = prettyPrinter.prettyprint(sliteral);
     result = parser.parseStringLiteral(new StringReader(output));
-    assertFalse(parser.hasErrors());
+    assertFalse(output, parser.hasErrors());
     assertTrue(result.isPresent());
     
     assertTrue(sliteral.deepEquals(result.get()));

@@ -4,7 +4,6 @@ package de.monticore.types.mcbasictypes._ast;
 
 
 import de.monticore.symboltable.ISymbol;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 
 import java.util.Optional;
 

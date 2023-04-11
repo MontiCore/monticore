@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
+import de.monticore.grammar.grammar_withconcepts._prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.Names;
@@ -216,7 +216,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     if (ast.isPresentName()) {
       symbolName = ast.getName();
     } else {
-      String typeName = MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter().prettyprint(ast.getMCType());
+      String typeName = MCSimpleGenericTypesMill.prettyPrint(ast.getMCType(), false);
       symbolName = StringTransformations.uncapitalize(Names.getSimpleName(typeName));
     }
     return new AdditionalAttributeSymbolBuilder().setName(symbolName);

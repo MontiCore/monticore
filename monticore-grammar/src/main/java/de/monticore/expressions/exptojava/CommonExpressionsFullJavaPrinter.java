@@ -5,6 +5,7 @@ import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class CommonExpressionsFullJavaPrinter extends ExpressionsBasisFullJavaPrinter {
   
   protected CommonExpressionsTraverser traverser;
@@ -21,7 +22,7 @@ public class CommonExpressionsFullJavaPrinter extends ExpressionsBasisFullJavaPr
     super(printer);
     this.traverser = CommonExpressionsMill.traverser();
     
-    CommonExpressionsJavaPrinter commonExpressions = new CommonExpressionsJavaPrinter(printer);
+    LegacyCommonExpressionsJavaPrinter commonExpressions = new LegacyCommonExpressionsJavaPrinter(printer);
     traverser.setCommonExpressionsHandler(commonExpressions);
     traverser.add4CommonExpressions(commonExpressions);
     ExpressionsBasisJavaPrinter basicExpression = new ExpressionsBasisJavaPrinter(printer);

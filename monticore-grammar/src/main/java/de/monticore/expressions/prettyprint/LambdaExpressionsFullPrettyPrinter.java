@@ -10,6 +10,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class LambdaExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
 
   protected LambdaExpressionsTraverser traverser;

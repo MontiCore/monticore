@@ -3,6 +3,7 @@ package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcsynchronizedstatements._ast.ASTSynchronizedStatement;
+import de.monticore.statements.mcsynchronizedstatements._prettyprint.MCSynchronizedStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcsynchronizedstatements._parser.TestMCSynchronizedStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

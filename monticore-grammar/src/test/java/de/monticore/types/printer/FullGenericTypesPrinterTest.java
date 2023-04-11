@@ -5,8 +5,6 @@ import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
-import de.monticore.types.prettyprint.MCFullGenericTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -44,11 +42,10 @@ public class FullGenericTypesPrinterTest {
 //    assertTrue(astmcTypeVariableDeclaration.isPresent());
 //    assertTrue(astmcTypeParameters.isPresent());
 
-    MCFullGenericTypesFullPrettyPrinter printer = MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter();
-    assertEquals("?", printer.prettyprint(astmcWildcardTypeArgument.get()));
-    assertEquals("? extends List", printer.prettyprint(astmcWildcardTypeArgument1.get()));
-    assertEquals("? super Stream", printer.prettyprint(astmcWildcardTypeArgument2.get()));
-    assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", printer.prettyprint(astmcMultipleGenericType.get()));
+    assertEquals("?", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument.get(), true));
+    assertEquals("? extends List", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument1.get(), true));
+    assertEquals("? super Stream", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument2.get(), true));
+    assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", MCFullGenericTypesMill.prettyPrint(astmcMultipleGenericType.get(), true));
 //    assertEquals("<a extends b &c &d, e extends f &g>", FullGenericTypesPrinter.printType(astmcTypeParameters.get()));
 //    assertEquals("a extends b &c &d", FullGenericTypesPrinter.printType(astmcTypeVariableDeclaration.get()));
   

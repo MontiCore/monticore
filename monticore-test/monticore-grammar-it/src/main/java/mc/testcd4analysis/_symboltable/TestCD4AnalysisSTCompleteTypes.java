@@ -5,7 +5,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
+import de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesFullPrettyPrinter;
 import mc.testcd4analysis._ast.*;
 import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor2;
 
@@ -29,7 +29,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
     if (astType instanceof ASTMCGenericType) {
       typeName = ((ASTMCGenericType) astType).printWithoutTypeArguments();
     } else {
-      typeName = astAttribute.getMCType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
+      typeName = astAttribute.getMCType().printType();
     }
 
     final CDTypeSymbolSurrogate typeReference;
@@ -71,7 +71,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
   }
 
   public void setTypeOfMethod(final CDMethOrConstrSymbol methodSymbol, ASTCDMethod astMethod) {
-    String typeName = astMethod.getMCReturnType().printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
+    String typeName = astMethod.getMCReturnType().printType();
     final CDTypeSymbolSurrogate typeReference;
     Optional<CDTypeSymbol> typeSymbol = astMethod.getEnclosingScope().resolveCDType(typeName);
     if (typeSymbol.isPresent()) {
@@ -107,7 +107,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
   }
 
   CDTypeSymbolSurrogate createCDTypeSymbolFromReference(final ASTMCObjectType astmcObjectType) {
-    String typeName = astmcObjectType.printType(new MCCollectionTypesFullPrettyPrinter(new IndentPrinter()));
+    String typeName = astmcObjectType.printType();
     final CDTypeSymbolSurrogate typeReference;
     Optional<CDTypeSymbol> typeSymbol =((ITestCD4AnalysisScope) astmcObjectType.getEnclosingScope()).resolveCDType(typeName);
     if (typeSymbol.isPresent()) {

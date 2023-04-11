@@ -222,7 +222,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     // A astextends B
     for (ASTMCType astSuperClass : astSuperClasses) {
       ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(
-          MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter().prettyprint(astSuperClass));
+          MCSimpleGenericTypesMill.prettyPrint(astSuperClass, false));
       superClass.setEnclosingScope(enclosingScope);
       prodSymbol.addAstSuperClass(superClass);
     }
@@ -236,7 +236,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
 
     // A astimplements B
     for (ASTMCType astInterface : astSuperInterfaces) {
-      ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter().prettyprint(astInterface));
+      ProdSymbolSurrogate superClass = new ProdSymbolSurrogate(MCSimpleGenericTypesMill.prettyPrint(astInterface, false));
       superClass.setEnclosingScope(enclosingScope);
       prodSymbol.addAstSuperInterface(superClass);
     }

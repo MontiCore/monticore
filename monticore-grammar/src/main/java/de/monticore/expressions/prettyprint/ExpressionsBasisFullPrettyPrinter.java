@@ -7,6 +7,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraver
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class ExpressionsBasisFullPrettyPrinter {
   protected ExpressionsBasisTraverser traverser;
 

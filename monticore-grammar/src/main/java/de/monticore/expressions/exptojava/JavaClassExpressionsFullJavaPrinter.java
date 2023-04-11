@@ -10,6 +10,7 @@ import de.monticore.statements.mcstatementsbasis._prettyprint.MCStatementsBasisP
 import de.monticore.statements.prettyprint.MCVarDeclarationStatementsPrettyPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class JavaClassExpressionsFullJavaPrinter extends CommonExpressionsFullJavaPrinter {
   
   protected JavaClassExpressionsTraverser traverser;
@@ -27,7 +28,7 @@ public class JavaClassExpressionsFullJavaPrinter extends CommonExpressionsFullJa
     super(printer);
     this.traverser = JavaClassExpressionsMill.traverser();
     
-    CommonExpressionsJavaPrinter commonExpression = new CommonExpressionsJavaPrinter(printer);
+    LegacyCommonExpressionsJavaPrinter commonExpression = new LegacyCommonExpressionsJavaPrinter(printer);
     traverser.setCommonExpressionsHandler(commonExpression);
     traverser.add4CommonExpressions(commonExpression);
     ExpressionsBasisJavaPrinter expressionBasis = new ExpressionsBasisJavaPrinter(printer);

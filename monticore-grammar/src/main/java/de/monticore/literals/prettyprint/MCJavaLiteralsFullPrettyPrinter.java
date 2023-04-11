@@ -6,6 +6,7 @@ import de.monticore.literals.mcjavaliterals._visitor.MCJavaLiteralsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class MCJavaLiteralsFullPrettyPrinter extends MCCommonLiteralsFullPrettyPrinter {
 
   protected MCJavaLiteralsTraverser traverser;

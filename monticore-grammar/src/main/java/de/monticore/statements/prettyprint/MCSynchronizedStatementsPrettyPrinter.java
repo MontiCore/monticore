@@ -9,6 +9,7 @@ import de.monticore.statements.mcsynchronizedstatements._visitor.MCSynchronizedS
 import de.monticore.statements.mcsynchronizedstatements._visitor.MCSynchronizedStatementsTraverser;
 import de.monticore.statements.mcsynchronizedstatements._visitor.MCSynchronizedStatementsVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCSynchronizedStatementsPrettyPrinter implements MCSynchronizedStatementsVisitor2, MCSynchronizedStatementsHandler {
 
   protected MCSynchronizedStatementsTraverser traverser;

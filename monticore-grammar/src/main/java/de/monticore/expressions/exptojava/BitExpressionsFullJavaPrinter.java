@@ -8,6 +8,7 @@ import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class BitExpressionsFullJavaPrinter extends ExpressionsBasisFullJavaPrinter {
   
   protected BitExpressionsTraverser traverser;

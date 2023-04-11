@@ -14,6 +14,7 @@ public class MCCommonLiteralsPrettyPrinter
     super(printer, printComments);
   }
 
+  @Override
   public void handle(de.monticore.literals.mccommonliterals._ast.ASTCharLiteral node) {
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
@@ -24,6 +25,7 @@ public class MCCommonLiteralsPrettyPrinter
     }
   }
 
+  @Override
   public void handle(de.monticore.literals.mccommonliterals._ast.ASTStringLiteral node) {
     if (this.isPrintComments()) {
       de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());

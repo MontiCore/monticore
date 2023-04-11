@@ -9,6 +9,7 @@ import mchexnumbers._visitor.MCHexNumbersHandler;
 import mchexnumbers._visitor.MCHexNumbersTraverser;
 import mchexnumbers._visitor.MCHexNumbersVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCHexNumbersPrettyPrinter implements MCHexNumbersVisitor2, MCHexNumbersHandler {
 
   protected MCHexNumbersTraverser traverser;

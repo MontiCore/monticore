@@ -9,6 +9,7 @@ import de.monticore.statements.mcassertstatements.MCAssertStatementsMill;
 import de.monticore.statements.mcassertstatements._ast.ASTMCAssertStatementsNode;
 import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCAssertStatementsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
 
   protected MCAssertStatementsTraverser traverser;

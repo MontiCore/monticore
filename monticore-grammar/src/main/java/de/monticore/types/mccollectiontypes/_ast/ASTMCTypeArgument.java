@@ -4,7 +4,6 @@ package de.monticore.types.mccollectiontypes._ast;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 
 import java.util.Optional;
 
@@ -16,7 +15,7 @@ public interface ASTMCTypeArgument extends ASTMCTypeArgumentTOP {
    */
   @Deprecated(forRemoval = true)
   default String printType(MCCollectionTypesFullPrettyPrinter pp) {
-    return pp.prettyprint(this);
+    return this.printType();
   }
 
   /**

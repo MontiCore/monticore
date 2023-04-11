@@ -13,6 +13,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Iterator;
 
+@Deprecated(forRemoval = true)
 public class MCCommonStatementsPrettyPrinter implements
     MCCommonStatementsVisitor2, MCCommonStatementsHandler {
   

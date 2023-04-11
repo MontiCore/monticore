@@ -10,6 +10,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class CommonExpressionsPrettyPrinter implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
   protected CommonExpressionsTraverser traverser;

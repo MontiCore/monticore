@@ -9,6 +9,7 @@ import de.monticore.statements.mcvardeclarationstatements._ast.ASTMCVarDeclarati
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsTraverser;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class MCVarDeclarationStatementsFullPrettyPrinter {
 
   protected MCVarDeclarationStatementsTraverser traverser;

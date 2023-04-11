@@ -7,6 +7,7 @@ import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCCollectionTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter {
 
   protected MCCollectionTypesTraverser traverser;

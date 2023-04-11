@@ -10,6 +10,7 @@ import de.monticore.statements.mccommonstatements._ast.ASTMCCommonStatementsNode
 
 import java.util.Iterator;
 
+@Deprecated(forRemoval = true)
 public class JavaLightPrettyPrinter implements
     JavaLightVisitor2, JavaLightHandler {
 

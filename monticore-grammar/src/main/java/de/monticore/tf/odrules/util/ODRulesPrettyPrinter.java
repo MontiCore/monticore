@@ -5,8 +5,9 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
+import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.monticore.umlstereotype._visitor.UMLStereotypeVisitor2;
@@ -118,10 +119,8 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
       printer.append("  " + node.getName());
     }
     if (node.isPresentType()) {
-      MCSimpleGenericTypesFullPrettyPrinter prettyPrinter = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
-      node.getType().accept(prettyPrinter.getTraverser());
       printer.append(":")
-          .append(prettyPrinter.getPrinter().getContent());
+          .append(MCSimpleGenericTypesMill.prettyPrint(node.getType(), false));
     }
     // print object body
     if (node.getAttributesList().isEmpty() && node.getInnerLinksList().isEmpty() ) {
@@ -163,9 +162,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
     node.getModifier().get().accept(this);*/
     // print type
     if (node.isPresentMCType()) {
-      MCSimpleGenericTypesFullPrettyPrinter prettyPrinter = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
-      node.getMCType().accept(prettyPrinter.getTraverser());
-      printer.append(prettyPrinter.getPrinter().getContent());
+      printer.append(MCSimpleGenericTypesMill.prettyPrint(node.getMCType(), false));
       printer.append(" ");
     }
     // print name

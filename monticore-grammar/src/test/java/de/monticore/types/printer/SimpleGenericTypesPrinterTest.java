@@ -5,8 +5,6 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -35,9 +33,8 @@ public class SimpleGenericTypesPrinterTest {
     assertTrue(astmcBasicGenericType.isPresent());
     assertTrue(astmcCustomTypeArgument.isPresent());
 
-    MCSimpleGenericTypesFullPrettyPrinter printer = MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter();
-    assertEquals("List<String>", printer.prettyprint(astmcCustomTypeArgument.get()));
-    assertEquals("java.util.List<List<String>>", printer.prettyprint(astmcBasicGenericType.get()));
+    assertEquals("List<String>", MCSimpleGenericTypesMill.prettyPrint(astmcCustomTypeArgument.get(), false));
+    assertEquals("java.util.List<List<String>>", MCSimpleGenericTypesMill.prettyPrint(astmcBasicGenericType.get(), false));
   
     assertTrue(Log.getFindings().isEmpty());
   }

@@ -7,10 +7,10 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mchexnumbers._ast.ASTHexInteger;
 import mchexnumbers._ast.ASTHexadecimal;
+import mchexnumbers._prettyprint.MCHexNumbersFullPrettyPrinter;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import prettyprint.MCHexNumbersFullPrettyPrinter;
 
 import java.io.IOException;
 import java.io.StringReader;
