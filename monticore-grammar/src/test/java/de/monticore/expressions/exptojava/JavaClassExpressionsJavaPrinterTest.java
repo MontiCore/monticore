@@ -4,6 +4,7 @@ package de.monticore.expressions.exptojava;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
+import de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsFullPrettyPrinter;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -21,7 +22,7 @@ public class JavaClassExpressionsJavaPrinterTest {
   
   private TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
   
-  private JavaClassExpressionsFullJavaPrinter javaPrinter= new JavaClassExpressionsFullJavaPrinter(new IndentPrinter());
+  private JavaClassExpressionsFullPrettyPrinter javaPrinter= new JavaClassExpressionsFullPrettyPrinter(new IndentPrinter());
   
   @Before
   public void initLog() {
@@ -41,7 +42,7 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTPrimaryThisExpression ast = result.get();
     
-    String output = javaPrinter.print(ast);
+    String output = javaPrinter.prettyprint(ast);
     
     result = parser.parse_StringPrimaryThisExpression(output);
     assertFalse(parser.hasErrors());
@@ -59,7 +60,7 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTPrimarySuperExpression ast = result.get();
     
-    String output = javaPrinter.print(ast);
+    String output = javaPrinter.prettyprint(ast);
     
     result = parser.parse_StringPrimarySuperExpression(output);
     assertFalse(parser.hasErrors());
@@ -79,7 +80,7 @@ public class JavaClassExpressionsJavaPrinterTest {
       .setExpression(a.get())
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a.this", output);
   
@@ -98,7 +99,7 @@ public class JavaClassExpressionsJavaPrinterTest {
       .setIndexExpression(b.get())
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a[b]", output);
   
@@ -117,7 +118,7 @@ public class JavaClassExpressionsJavaPrinterTest {
       .setSuperSuffix(b.get())
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a.super(b)", output);
   
@@ -131,7 +132,7 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTGenericInvocationSuffix ast = result.get();
     
-    String output = javaPrinter.print(ast);
+    String output = javaPrinter.prettyprint(ast);
     
     result = parser.parse_StringGenericInvocationSuffix(output);
     assertFalse(parser.hasErrors());
@@ -149,7 +150,7 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTGenericInvocationSuffix ast = result.get();
     
-    String output = javaPrinter.print(ast);
+    String output = javaPrinter.prettyprint(ast);
     
     result = parser.parse_StringGenericInvocationSuffix(output);
     assertFalse(parser.hasErrors());
@@ -167,7 +168,7 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTGenericInvocationSuffix ast = result.get();
     
-    String output = javaPrinter.print(ast);
+    String output = javaPrinter.prettyprint(ast);
     
     result = parser.parse_StringGenericInvocationSuffix(output);
     assertFalse(parser.hasErrors());
@@ -185,7 +186,7 @@ public class JavaClassExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTTypePattern ast = result.get();
 
-    String output = javaPrinter.print(ast);
+    String output = javaPrinter.prettyprint(ast);
 
     result = parser.parse_StringTypePattern(output);
     assertFalse(parser.hasErrors());

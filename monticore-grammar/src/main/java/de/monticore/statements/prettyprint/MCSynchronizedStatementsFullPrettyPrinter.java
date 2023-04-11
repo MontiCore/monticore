@@ -9,6 +9,7 @@ import de.monticore.statements.mcsynchronizedstatements._ast.ASTMCSynchronizedSt
 import de.monticore.statements.mcsynchronizedstatements._visitor.MCSynchronizedStatementsTraverser;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class MCSynchronizedStatementsFullPrettyPrinter extends MCCommonStatementsFullPrettyPrinter {
 
   protected MCSynchronizedStatementsTraverser traverser;

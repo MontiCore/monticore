@@ -2,7 +2,7 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
@@ -181,9 +181,8 @@ public class MCBasicTypesPrettyPrinterTest {
         // .parseType(primitive);
 
         Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCPrimitiveType(primitive);
-        type.get().accept(prettyprinter.getTraverser());
         assertTrue(type.isPresent());
-        assertEquals(primitive,prettyprinter.getPrinter().getContent());
+        assertEquals(primitive,prettyprinter.prettyprint(type.get()));
         assertTrue(type.get() instanceof ASTMCPrimitiveType);
       }
     } catch (IOException e) {
@@ -200,9 +199,8 @@ public class MCBasicTypesPrettyPrinterTest {
     try{
       MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
       Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCQualifiedType(simpleReference);
-      type.get().accept(prettyprinter.getTraverser());
       assertTrue(type.isPresent());
-      assertEquals(simpleReference,prettyprinter.getPrinter().getContent());
+      assertEquals(simpleReference,prettyprinter.prettyprint(type.get()));
       assertTrue(type.get() instanceof ASTMCQualifiedType);
     }catch(IOException e){
       e.printStackTrace();

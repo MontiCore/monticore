@@ -6,6 +6,7 @@ import de.monticore.umlmodifier.UMLModifierMill;
 import de.monticore.umlmodifier._ast.ASTUMLModifierNode;
 import de.monticore.umlmodifier._visitor.UMLModifierTraverser;
 
+@Deprecated(forRemoval = true)
 public class UMLModifierFullPrettyPrinter {
 
   protected UMLModifierTraverser traverser;

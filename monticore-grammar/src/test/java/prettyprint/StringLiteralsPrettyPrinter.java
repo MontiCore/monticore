@@ -9,6 +9,7 @@ import stringliterals._visitor.StringLiteralsHandler;
 import stringliterals._visitor.StringLiteralsTraverser;
 import stringliterals._visitor.StringLiteralsVisitor2;
 
+@Deprecated(forRemoval = true)
 public class StringLiteralsPrettyPrinter implements StringLiteralsVisitor2, StringLiteralsHandler {
 
   protected StringLiteralsTraverser traverser;

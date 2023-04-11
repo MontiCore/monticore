@@ -7,6 +7,7 @@ import de.monticore.umlmodifier._visitor.UMLModifierHandler;
 import de.monticore.umlmodifier._visitor.UMLModifierTraverser;
 import de.monticore.umlmodifier._visitor.UMLModifierVisitor2;
 
+@Deprecated(forRemoval = true)
 public class UMLModifierPrettyPrinter implements UMLModifierVisitor2, UMLModifierHandler {
 
   protected UMLModifierTraverser traverser;

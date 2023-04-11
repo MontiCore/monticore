@@ -99,7 +99,7 @@ fileTree(exampleGrammars).matching { include '**/*.mc4'}.each {
     grammar = file g
     outputDir = file testGrammarOutDir
     script = "de/monticore/monticore_emf.groovy"
-    handcodedPath srcDir
+    handcodedPath srcDir, testDir
     modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/main/examples"
     def grammarIncludingPackage = file(exampleGrammars).toURI().relativize(g.toURI()).toString()
     def uptoDate = incCheck(grammarIncludingPackage)

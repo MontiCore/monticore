@@ -11,6 +11,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class ExpressionsBasisPrettyPrinter implements ExpressionsBasisVisitor2, ExpressionsBasisHandler {
 
   protected ExpressionsBasisTraverser traverser;

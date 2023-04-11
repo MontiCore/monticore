@@ -8,6 +8,7 @@ import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.expressions.bitexpressions._ast.*;
 
+@Deprecated(forRemoval = true)
 public class BitExpressionsPrettyPrinter implements BitExpressionsVisitor2, BitExpressionsHandler {
 
   protected BitExpressionsTraverser traverser;

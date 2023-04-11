@@ -7,6 +7,7 @@ import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCBasicTypesNode;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCBasicTypesFullPrettyPrinter {
 
   protected MCBasicTypesTraverser traverser;

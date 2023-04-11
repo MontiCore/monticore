@@ -8,6 +8,7 @@ import de.monticore.statements.mcreturnstatements.MCReturnStatementsMill;
 import de.monticore.statements.mcreturnstatements._ast.ASTMCReturnStatementsNode;
 import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCReturnStatementsFullPrettyPrinter {
 
   protected MCReturnStatementsTraverser traverser;

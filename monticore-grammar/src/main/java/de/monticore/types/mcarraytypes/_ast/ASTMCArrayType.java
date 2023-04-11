@@ -2,7 +2,6 @@
 package de.monticore.types.mcarraytypes._ast;
 
 import de.monticore.symboltable.ISymbol;
-import de.monticore.types.mcarraytypes.MCArrayTypesMill;
 
 import java.util.Optional;
 

@@ -3,8 +3,8 @@ package de.monticore.tf.odrules._ast;
 
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
 import de.monticore.tf.odrules.util.TFExpressionFullPrettyPrinter;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 
 public class ASTODAttribute extends ASTODAttributeTOP {
 
@@ -34,9 +34,7 @@ public class ASTODAttribute extends ASTODAttributeTOP {
     // lazy calculation from ast
     if (sType == null) {
       if (isPresentMCType()) {
-        MCSimpleGenericTypesFullPrettyPrinter printer = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
-        getMCType().accept(printer.getTraverser());
-        sType = printer.getPrinter().getContent();
+        sType = MCSimpleGenericTypesMill.prettyPrint(getMCType(), false);
         if(sType.endsWith("<>")) {
           sType = sType.substring(0, sType.length()-2);
         }

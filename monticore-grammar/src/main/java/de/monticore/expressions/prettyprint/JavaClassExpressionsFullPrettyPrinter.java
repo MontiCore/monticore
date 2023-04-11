@@ -7,6 +7,7 @@ import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressio
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class JavaClassExpressionsFullPrettyPrinter extends CommonExpressionsFullPrettyPrinter {
 
   protected JavaClassExpressionsTraverser traverser;

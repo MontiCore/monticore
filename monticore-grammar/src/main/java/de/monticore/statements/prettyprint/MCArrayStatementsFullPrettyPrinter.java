@@ -8,6 +8,7 @@ import de.monticore.statements.mcarraystatements.MCArrayStatementsMill;
 import de.monticore.statements.mcarraystatements._visitor.MCArrayStatementsTraverser;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class MCArrayStatementsFullPrettyPrinter extends MCVarDeclarationStatementsFullPrettyPrinter {
 
   protected MCArrayStatementsTraverser traverser;

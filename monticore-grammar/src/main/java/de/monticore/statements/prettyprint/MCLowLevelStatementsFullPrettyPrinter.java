@@ -7,6 +7,7 @@ import de.monticore.statements.mclowlevelstatements.MCLowLevelStatementsMill;
 import de.monticore.statements.mclowlevelstatements._ast.ASTMCLowLevelStatementsNode;
 import de.monticore.statements.mclowlevelstatements._visitor.MCLowLevelStatementsTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCLowLevelStatementsFullPrettyPrinter {
 
   protected MCLowLevelStatementsTraverser traverser;

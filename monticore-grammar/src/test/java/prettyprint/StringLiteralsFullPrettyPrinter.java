@@ -7,6 +7,7 @@ import stringliterals.StringLiteralsMill;
 import stringliterals._ast.ASTStringLiteralsNode;
 import stringliterals._visitor.StringLiteralsTraverser;
 
+@Deprecated(forRemoval = true)
 public class StringLiteralsFullPrettyPrinter {
 
   private StringLiteralsTraverser traverser;

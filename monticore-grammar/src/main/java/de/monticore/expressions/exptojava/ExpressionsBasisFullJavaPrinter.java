@@ -5,6 +5,8 @@ import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.prettyprint.IndentPrinter;
+
+@Deprecated(forRemoval = true)
 public class ExpressionsBasisFullJavaPrinter {
   
   protected ExpressionsBasisTraverser traverser;

@@ -9,6 +9,7 @@ import mcnumbers._visitor.MCNumbersHandler;
 import mcnumbers._visitor.MCNumbersTraverser;
 import mcnumbers._visitor.MCNumbersVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCNumbersPrettyPrinter implements MCNumbersVisitor2, MCNumbersHandler {
 
   protected MCNumbersTraverser traverser;

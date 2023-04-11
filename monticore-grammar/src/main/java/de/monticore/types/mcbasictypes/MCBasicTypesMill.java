@@ -15,12 +15,13 @@ public  class MCBasicTypesMill extends MCBasicTypesMillTOP {
   protected static MCBasicTypesMill mcBasicTypesPrettyPrinter;
   
   protected static MCBasicTypesFullPrettyPrinter prettyPrinter;
-  
+
   /**
    * Static getter for the pretty printer that delegates to the non static implementation.
    * Only one pretty printer object is created and reused.
    * @return the pretty printer instance
    */
+  @Deprecated(forRemoval = true)
   public  static MCBasicTypesFullPrettyPrinter mcBasicTypesPrettyPrinter ()  {
     
     if (mcBasicTypesPrettyPrinter == null) {
@@ -45,7 +46,7 @@ public  class MCBasicTypesMill extends MCBasicTypesMillTOP {
     prettyPrinter.getPrinter().clearBuffer();
     return prettyPrinter;
   }
-  
+
   protected static MCBasicTypesFullPrettyPrinter getPrettyPrinter() {
     return new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
   }

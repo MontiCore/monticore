@@ -37,7 +37,7 @@ public class OverridingAbstractNTsHaveNoSuperRules implements GrammarASTAbstract
       }
       else{
         extendedType = MCSimpleGenericTypesMill
-            .mcSimpleGenericTypesPrettyPrinter().prettyprint(a.getASTSuperClassList().get(0));
+            .prettyPrint(a.getASTSuperClassList().get(0), false).trim();
       }
       
       for (MCGrammarSymbol s : grammarSymbols) {

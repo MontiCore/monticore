@@ -10,6 +10,7 @@ import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
+@Deprecated(forRemoval = true)
 public class AssignmentExpressionsPrettyPrinter implements AssignmentExpressionsVisitor2, AssignmentExpressionsHandler {
 
   protected AssignmentExpressionsTraverser traverser;

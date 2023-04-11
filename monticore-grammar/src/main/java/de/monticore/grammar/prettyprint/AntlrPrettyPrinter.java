@@ -11,6 +11,7 @@ import de.monticore.grammar.concepts.antlr.antlr._visitor.AntlrVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class AntlrPrettyPrinter implements AntlrVisitor2, AntlrHandler {
     
   // printer to use

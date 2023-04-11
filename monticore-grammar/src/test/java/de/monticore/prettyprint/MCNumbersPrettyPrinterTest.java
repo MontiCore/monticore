@@ -7,10 +7,9 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mcnumbers._ast.ASTDecimal;
 import mcnumbers._ast.ASTInteger;
+import mcnumbers._prettyprint.MCNumbersFullPrettyPrinter;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import prettyprint.MCNumbersFullPrettyPrinter;
 
 import java.io.IOException;
 import java.io.StringReader;

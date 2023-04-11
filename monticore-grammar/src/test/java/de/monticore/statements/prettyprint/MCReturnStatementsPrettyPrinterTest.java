@@ -3,6 +3,7 @@ package de.monticore.statements.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
+import de.monticore.statements.mcreturnstatements._prettyprint.MCReturnStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcreturnstatements._parser.TestMCReturnStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

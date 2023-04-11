@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.UMLStereotypeFullPrettyPrinter;
+import de.monticore.umlstereotype._prettyprint.UMLStereotypeFullPrettyPrinter;
 import de.monticore.testumlstereotype._parser.TestUMLStereotypeParser;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;

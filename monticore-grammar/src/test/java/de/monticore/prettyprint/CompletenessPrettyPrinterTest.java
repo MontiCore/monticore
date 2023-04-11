@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import de.monticore.completeness._ast.ASTCompleteness;
-import de.monticore.prettyprint.CompletenessFullPrettyPrinter;
+import de.monticore.completeness._prettyprint.CompletenessFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.testcompleteness._parser.TestCompletenessParser;
 import de.se_rwth.commons.logging.Log;

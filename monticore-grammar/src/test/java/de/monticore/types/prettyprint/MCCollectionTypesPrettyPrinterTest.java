@@ -4,6 +4,7 @@ package de.monticore.types.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;

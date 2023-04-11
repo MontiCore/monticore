@@ -104,7 +104,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
     if (astAdditionalAttribute.isPresentName()) {
       attribute += astAdditionalAttribute.getName() + ":";
     }
-    attribute += MCSimpleGenericTypesMill.mcSimpleGenericTypesPrettyPrinter().prettyprint(astAdditionalAttribute.getMCType());
+    attribute += MCSimpleGenericTypesMill.prettyPrint(astAdditionalAttribute.getMCType(), false).trim();
     if (astAdditionalAttribute.isPresentCard()) {
       ASTCard card = astAdditionalAttribute.getCard();
       if (card.getIteration() == STAR) {

@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules._ast;
 
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.se_rwth.commons.Names;
 
@@ -92,9 +91,7 @@ public class ASTODObject extends ASTODObjectTOP {
     if (sType == null) {
       if (type.isPresent()) {
         // lazy calculation from ast
-        MCSimpleGenericTypesFullPrettyPrinter printer = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
-        type.get().accept(printer.getTraverser());
-        sType = printer.getPrinter().getContent().intern();
+        sType = MCSimpleGenericTypesMill.prettyPrint(type.get(), false).intern();
         if(sType.endsWith("<>")) {
           sType = sType.substring(0, sType.length()-2);
         }

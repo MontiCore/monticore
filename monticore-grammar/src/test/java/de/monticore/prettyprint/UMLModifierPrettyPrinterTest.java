@@ -14,7 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.UMLModifierFullPrettyPrinter;
+import de.monticore.umlmodifier._prettyprint.UMLModifierFullPrettyPrinter;
 import de.monticore.testumlmodifier._parser.TestUMLModifierParser;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;

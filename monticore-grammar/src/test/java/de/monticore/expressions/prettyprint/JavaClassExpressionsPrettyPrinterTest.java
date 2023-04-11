@@ -4,6 +4,7 @@ package de.monticore.expressions.prettyprint;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
+import de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsFullPrettyPrinter;
 import de.monticore.expressions.testjavaclassexpressions._ast.ASTExtType;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
@@ -110,7 +111,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     // does not print 'Integer' because functionality for type printing has to be added over delegation form
     // prettyprinter of langauge that fills the external
-    assertEquals("<> super(a)", output);
+    assertEquals("<>super(a)", output);
   }
 
   @Test
@@ -128,7 +129,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     // does not print 'Integer' because functionality for type printing has to be added over delegation form
     // prettyprinter of langauge that fills the external
-    assertEquals("a instanceof ", output);
+    assertEquals("a instanceof", output);
   }
 
   @Test
@@ -200,7 +201,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     // does not print 'd' because functionality for type printing has to be added over delegation form
     // prettyprinter of langauge that fills the external
-    assertEquals("a.<> c(b)", output);
+    assertEquals("a.<>c(b)", output);
   }
 
   @Test
@@ -268,7 +269,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     // does not print 'Integer' because functionality for type printing has to be added over delegation from
     // prettyprinter of language that fills the external
-    assertEquals(" new (a,b)", output);
+    assertEquals("new(a,b)", output);
   }
 
   @Test
@@ -280,6 +281,6 @@ public class JavaClassExpressionsPrettyPrinterTest {
     String output = prettyPrinter.prettyprint(ast);
     // does not print 'double' because functionality for type printing has to be added over delegation from
     // prettyprinter of language that fills the external
-    assertEquals(" new [a][]", output);
+    assertEquals("new[a][]", output);
   }
 }
