@@ -11,7 +11,7 @@ grammar format which defines the DSL and generates Java components for processin
 the DSL documents. Examples for these components are parsers, 
 AST classes, symboltables or pretty printers.
 This enables a user to rapidly define a language and use it together 
-with the MontiCore-framework to build domain specific tools. 
+with the MontiCore-framework to build domain-specific tools. 
 
 Some MontiCore advantages are the reusability of predefined language 
 components, conservative extension and composition mechanisms, and an 
