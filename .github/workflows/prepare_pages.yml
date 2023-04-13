@@ -1,0 +1,42 @@
+# .github/workflows/prepare_pages.yml
+name: Prepare And Deploy Pages
+
+# Preprocess the docs, build a site directory and push its contents to the gh-pages branch
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Push
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+
+      - name: Preprocess the docs
+        run: sh docs/scripts/preprocessing.sh
+
+      - name: Build the docs into a site directory
+        run: mkdocs build --verbose --clean --strict
+
+      - name: Push
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: gh-pages # The branch name where you want to push the assets
+          FOLDER: site # The directory where your assets are generated
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Deploy contents of GitHub pages to gh-pages branch" # The commit message
