@@ -38,5 +38,6 @@ jobs:
           REPO: self
           BRANCH: gh-pages # The branch name where you want to push the assets
           FOLDER: site # The directory where your assets are generated
+          SQUASH_HISTORY: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Deploy contents of GitHub pages to gh-pages branch" # The commit message
