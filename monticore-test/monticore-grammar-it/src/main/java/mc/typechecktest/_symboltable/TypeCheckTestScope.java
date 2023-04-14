@@ -46,7 +46,7 @@ public class TypeCheckTestScope extends TypeCheckTestScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol);
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          set.addAll(t.getMethodList(name, false));
+          set.addAll(t.getMethodList(name, false, modifier));
         }
       }
     }
@@ -69,7 +69,7 @@ public class TypeCheckTestScope extends TypeCheckTestScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-          result.addAll(superType.getFieldList(name, false));
+          result.addAll(superType.getFieldList(name, false, modifier));
         }
       }
     }
