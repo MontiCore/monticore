@@ -333,7 +333,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType
   }
 
 @Deprecated
-public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc, AccessModifier modifier){
+public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
   return getFieldList(fieldName, abstractTc, AccessModifier.ALL_INCLUSION);
 }
 
@@ -348,7 +348,7 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc, A
   }
 
 @Deprecated
-public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, boolean abstractTc, AccessModifier modifier){
+public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, boolean abstractTc){
   return getFieldList(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
 
@@ -369,7 +369,7 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, 
   }
 
   @Deprecated
-public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsType, boolean abstractTc, AccessModifier modifier){
+public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsType, boolean abstractTc){
   return getCorrectFields(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
 
