@@ -146,6 +146,11 @@ public abstract class SymTypeExpression {
   @Deprecated
   protected List<FunctionSymbol> functionList = new ArrayList<>();
 
+@Deprecated
+public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc) {
+  return getMethodList(methodName, abstractTc, AccessModifier.ALL_INCLUSION);
+}
+
   /**
    * returns the list of methods the SymTypeExpression can access and 
    * filters these for a method with specific name
@@ -157,6 +162,11 @@ public abstract class SymTypeExpression {
     List<FunctionSymbol> methods = getCorrectMethods(methodname,false, abstractTc, modifier);
     return transformMethodList(methodname,methods);
   }
+
+@Deprecated
+public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIsType, boolean abstractTc) {
+  return getCorrectMethods(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
+}
 
   /**
    * return the correct methods for the two situations:
@@ -300,6 +310,11 @@ public abstract class SymTypeExpression {
     //empty so it only needs to be overridden by some SymTypeExpressions
   }
 
+@Deprecated
+public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType, boolean abstractTc) {
+  return getMethodList(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
+}
+
   /**
    * returns the correct methods in both cases: 
    * 1) the last result was a type, 
@@ -317,6 +332,11 @@ public abstract class SymTypeExpression {
     return transformMethodList(methodName,methods);
   }
 
+@Deprecated
+public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
+  return getFieldList(fieldName, abstractTc, AccessModifier.ALL_INCLUSION);
+}
+
   /**
    * returns the list of fields the SymTypeExpression can access 
    * and filters these for a field with specific name
@@ -326,6 +346,11 @@ public abstract class SymTypeExpression {
     List<VariableSymbol> fields = getCorrectFields(fieldName,false, abstractTc, modifier);
     return transformFieldList(fieldName,fields);
   }
+
+@Deprecated
+public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, boolean abstractTc){
+  return getFieldList(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
+}
 
   /**
    * returns the correct fields in both cases: 
@@ -342,6 +367,11 @@ public abstract class SymTypeExpression {
                                     outerIsType, abstractTc, modifier);
     return transformFieldList(fieldName,fields);
   }
+
+  @Deprecated
+public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsType, boolean abstractTc){
+  return getCorrectFields(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
+}
 
   /**
    * return the correct fields for the two situations:
