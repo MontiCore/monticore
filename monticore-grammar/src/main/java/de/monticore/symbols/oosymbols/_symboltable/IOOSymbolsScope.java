@@ -27,7 +27,7 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
       if(spanningSymbol instanceof OOTypeSymbol){
         OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          t.getMethodList(name, false).stream().
+          t.getMethodList(name, false, modifier).stream().
                   filter(m -> m instanceof MethodSymbol).forEach(m -> set.add((MethodSymbol) m));
         }
       }
@@ -51,7 +51,7 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
       if(spanningSymbol instanceof OOTypeSymbol){
         OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-         superType.getFieldList(name, false).stream().
+         superType.getFieldList(name, false, modifier).stream().
                  filter(f -> f instanceof FieldSymbol).forEach(f -> result.add((FieldSymbol) f));
         }
       }

@@ -5,9 +5,11 @@ import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.modifiers.*;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,5 +113,32 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
       .filter(type -> type.getTypeInfo() instanceof OOTypeSymbol)
       .filter(type -> ((OOTypeSymbol) type.getTypeInfo()).isIsInterface())
       .collect(Collectors.toList());
+  }
+
+  @Override
+  public AccessModifier getAccessModifier() {
+    List<AccessModifier> modifiers = new ArrayList<>();
+    if(isIsPublic()){
+      modifiers.add(BasicAccessModifier.PUBLIC);
+    }else if(isIsProtected()){
+      modifiers.add(BasicAccessModifier.PROTECTED);
+    }else if(isIsPrivate()){
+      modifiers.add(BasicAccessModifier.PRIVATE);
+    }else{
+      modifiers.add(BasicAccessModifier.PACKAGE_LOCAL);
+    }
+
+    if(isIsStatic()){
+      modifiers.add(StaticAccessModifier.STATIC);
+    }else{
+      modifiers.add(StaticAccessModifier.NON_STATIC);
+    }
+
+    if(isIsFinal()){
+      modifiers.add(WritableAccessModifier.NON_WRITABLE);
+    }else{
+      modifiers.add(WritableAccessModifier.WRITABLE);
+    }
+    return new CompoundAccessModifier(modifiers);
   }
 }

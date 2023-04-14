@@ -2,7 +2,9 @@
 package de.monticore.symbols.oosymbols._symboltable;
 
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.modifiers.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MethodSymbol extends MethodSymbolTOP {
@@ -42,5 +44,31 @@ public class MethodSymbol extends MethodSymbolTOP {
     List<VariableSymbol> params = super.getParameterList();
     params.addAll(getSpannedScope().getLocalFieldSymbols());
     return params;
+  }
+
+  @Override
+  public AccessModifier getAccessModifier() {
+    List<AccessModifier> modifiers = new ArrayList<>();
+    if(isIsPublic()){
+      modifiers.add(BasicAccessModifier.PUBLIC);
+    }else if(isIsProtected()){
+      modifiers.add(BasicAccessModifier.PROTECTED);
+    }else if(isIsPrivate()){
+      modifiers.add(BasicAccessModifier.PRIVATE);
+    }else{
+      modifiers.add(BasicAccessModifier.PACKAGE_LOCAL);
+    }
+
+    if(isIsStatic()){
+      modifiers.add(StaticAccessModifier.STATIC);
+    }else{
+      modifiers.add(StaticAccessModifier.NON_STATIC);
+    }
+    if(isIsFinal()){
+      modifiers.add(WritableAccessModifier.NON_WRITABLE);
+    }else{
+      modifiers.add(WritableAccessModifier.WRITABLE);
+    }
+    return new CompoundAccessModifier(modifiers);
   }
 }

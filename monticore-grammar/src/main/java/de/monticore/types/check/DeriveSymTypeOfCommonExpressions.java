@@ -8,6 +8,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symboltable.modifiers.AccessModifier;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,11 +42,11 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExp
 
   @Override
   protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
-    return innerResult.getMethodList(name, getTypeCheckResult().isType(), false);
+    return innerResult.getMethodList(name, getTypeCheckResult().isType(), false, AccessModifier.ALL_INCLUSION);
   }
 
   @Override
   protected List<VariableSymbol> getCorrectFieldsFromInnerType(SymTypeExpression innerResult, ASTFieldAccessExpression expr) {
-    return innerResult.getFieldList(expr.getName(), getTypeCheckResult().isType(), false);
+    return innerResult.getFieldList(expr.getName(), getTypeCheckResult().isType(), false, AccessModifier.ALL_INCLUSION);
   }
 }

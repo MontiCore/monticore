@@ -8,6 +8,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types2.ISymTypeVisitor;
 import de.monticore.types2.SymTypeDeepCloneVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -150,10 +151,10 @@ public abstract class SymTypeExpression {
    * filters these for a method with specific name
    * the last calculated type in the type check was no type
    */
-  public List<FunctionSymbol> getMethodList(String methodname, boolean abstractTc){
+  public List<FunctionSymbol> getMethodList(String methodname, boolean abstractTc, AccessModifier modifier){
     functionList.clear();
     //get methods from the typesymbol
-    List<FunctionSymbol> methods = getCorrectMethods(methodname,false, abstractTc);
+    List<FunctionSymbol> methods = getCorrectMethods(methodname,false, abstractTc, modifier);
     return transformMethodList(methodname,methods);
   }
 
@@ -171,16 +172,16 @@ public abstract class SymTypeExpression {
    * @return the correct methods for the specific case
    */
   protected List<FunctionSymbol> getCorrectMethods(String methodName, 
-                    boolean outerIsType, boolean abstractTc){
+                    boolean outerIsType, boolean abstractTc, AccessModifier modifier){
     if(!abstractTc) {
       List<FunctionSymbol> functions = getTypeInfo().getSpannedScope()
-            .resolveFunctionMany(methodName).stream()
+            .resolveFunctionMany(methodName, modifier).stream()
             .filter(f -> !(f instanceof MethodSymbol))
             .collect(Collectors.toList());
       List<FunctionSymbol> methods = Lists.newArrayList();
       if (getTypeInfo().getSpannedScope() instanceof IOOSymbolsScope) {
         methods.addAll(((IOOSymbolsScope) getTypeInfo()
-            .getSpannedScope()).resolveFunctionMany(methodName)
+            .getSpannedScope()).resolveFunctionMany(methodName, modifier)
             .stream().filter(f -> f instanceof MethodSymbol)
             .collect(Collectors.toList()));
       }
@@ -205,7 +206,7 @@ public abstract class SymTypeExpression {
         return functions;
       }
     }else{
-      return getTypeInfo().getSpannedScope().resolveFunctionMany(methodName);
+      return getTypeInfo().getSpannedScope().resolveFunctionMany(methodName, modifier);
     }
   }
 
@@ -308,11 +309,11 @@ public abstract class SymTypeExpression {
    *    if it was an instance
    * @return the correct methods for the specific case
    */
-  public List<FunctionSymbol> getMethodList(String methodName, 
-                    boolean outerIsType, boolean abstractTc) {
+  public List<FunctionSymbol> getMethodList(String methodName,
+                                            boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     functionList.clear();
     List<FunctionSymbol> methods = 
-        getCorrectMethods(methodName,outerIsType, abstractTc);
+        getCorrectMethods(methodName,outerIsType, abstractTc, modifier);
     return transformMethodList(methodName,methods);
   }
 
@@ -320,9 +321,9 @@ public abstract class SymTypeExpression {
    * returns the list of fields the SymTypeExpression can access 
    * and filters these for a field with specific name
    */
-  public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
+  public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc, AccessModifier modifier){
     //get methods from the typesymbol
-    List<VariableSymbol> fields = getCorrectFields(fieldName,false, abstractTc);
+    List<VariableSymbol> fields = getCorrectFields(fieldName,false, abstractTc, modifier);
     return transformFieldList(fieldName,fields);
   }
 
@@ -336,9 +337,9 @@ public abstract class SymTypeExpression {
    * @return the correct fields for the specific case
    */
   public List<VariableSymbol> getFieldList(String fieldName, 
-                    boolean outerIsType, boolean abstractTc) {
+                    boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     List<VariableSymbol> fields = getCorrectFields(fieldName, 
-                                    outerIsType, abstractTc);
+                                    outerIsType, abstractTc, modifier);
     return transformFieldList(fieldName,fields);
   }
 
@@ -355,16 +356,16 @@ public abstract class SymTypeExpression {
    * @return the correct fields for the specific case
    */
   protected List<VariableSymbol> getCorrectFields(String fieldName, 
-                        boolean outerIsType, boolean abstractTc) {
+                        boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     if(!abstractTc) {
       List<VariableSymbol> variables = getTypeInfo().getSpannedScope()
-            .resolveVariableMany(fieldName).stream()
+            .resolveVariableMany(fieldName, modifier).stream()
             .filter(v -> !(v instanceof FieldSymbol))
             .collect(Collectors.toList());
       List<VariableSymbol> fields = Lists.newArrayList();
       if (getTypeInfo().getSpannedScope() instanceof IOOSymbolsScope) {
         fields.addAll((getTypeInfo().getSpannedScope())
-            .resolveVariableMany(fieldName).stream()
+            .resolveVariableMany(fieldName, modifier).stream()
             .filter(v -> v instanceof FieldSymbol)
             .collect(Collectors.toList()));
       }
@@ -388,7 +389,7 @@ public abstract class SymTypeExpression {
         return variables;
       }
     } else {
-      return getTypeInfo().getSpannedScope().resolveVariableMany(fieldName);
+      return getTypeInfo().getSpannedScope().resolveVariableMany(fieldName, modifier);
     }
   }
 
