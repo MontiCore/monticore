@@ -134,11 +134,6 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
       modifiers.add(StaticAccessModifier.NON_STATIC);
     }
 
-    if(isIsFinal()){
-      modifiers.add(WritableAccessModifier.NON_WRITABLE);
-    }else{
-      modifiers.add(WritableAccessModifier.WRITABLE);
-    }
     return new CompoundAccessModifier(modifiers);
   }
 }
