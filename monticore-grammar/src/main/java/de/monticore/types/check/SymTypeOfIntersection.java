@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
@@ -20,7 +21,7 @@ public class SymTypeOfIntersection extends SymTypeExpression {
   protected Set<SymTypeExpression> intersectedTypes;
 
   public SymTypeOfIntersection(Set<SymTypeExpression> types) {
-    this.intersectedTypes = types;
+    this.intersectedTypes = new HashSet<>(types);
   }
 
   @Override
