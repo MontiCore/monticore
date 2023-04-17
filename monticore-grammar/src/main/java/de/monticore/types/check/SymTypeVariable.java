@@ -26,8 +26,15 @@ public class SymTypeVariable extends SymTypeExpression {
   }
 
   @Override
+  public boolean hasTypeInfo() {
+    // support deprecated behavior
+    return typeVarSymbol != null || typeSymbol != null;
+  }
+
+  @Override
   @Deprecated
   public TypeSymbol getTypeInfo() {
+    //support deprecated behavior
     if(typeSymbol != null) {
       return typeSymbol;
     }
@@ -69,9 +76,6 @@ public class SymTypeVariable extends SymTypeExpression {
     return getTypeVarSymbol().getFullName();
   }
 
-  /**
-   * Am I primitive? (such as "int")
-   */
   public boolean isPrimitive() {
     return false;
     /**
