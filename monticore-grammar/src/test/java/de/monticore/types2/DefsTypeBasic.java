@@ -33,19 +33,20 @@ public class DefsTypeBasic {
    */
   public static void setup() {
     set_thePrimitives();
-    set_BoxedPrimitives();
+    set_boxedPrimitives();
     set_unboxedObjects();
     set_boxedObjects();
     set_unboxedCollections();
     set_boxedCollections();
+    set_objectTypes();
+    set_generics();
   }
 
   /*********************************************************************/
 
-  /**
+  /*
    * Helpers that efficiently create Scopes
    */
-
   public static IBasicSymbolsScope scope(String name) {
     return scope(name, true);
   }
@@ -264,7 +265,7 @@ public class DefsTypeBasic {
 
   public static SymTypeOfObject _ShortSymType;
 
-  public static void set_BoxedPrimitives() {
+  public static void set_boxedPrimitives() {
     // add java.lang scope
     IBasicSymbolsScope javaScope = scope("java");
     IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
@@ -393,6 +394,73 @@ public class DefsTypeBasic {
     _boxedMapSymType = createGenerics(
         inScope(utilScope, type("Map", List.of(), List.of(mapVar1, mapVar2))),
         createTypeVariable(mapVar1), createTypeVariable(mapVar2)
+    );
+  }
+
+  /*********************************************************************/
+
+  /*
+   * These are some predefined Symbols for Object Types
+   */
+
+  public static SymTypeOfObject _personSymType;
+
+  public static SymTypeOfObject _teachableSymType;
+
+  // student is a subtype of person, teachable
+  public static SymTypeOfObject _studentSymType;
+
+  // computer science student is a subtype of student;
+  public static SymTypeOfObject _csStudentSymType;
+
+  // child is a subtype of person, teachable
+  public static SymTypeOfObject _childSymType;
+
+  // teacher is a subtype of person
+  public static SymTypeOfObject _teacherSymType;
+
+  public static SymTypeOfObject _carSymType;
+
+  public static SymTypeOfObject _schoolSymType;
+
+  public static void set_objectTypes() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    _personSymType = createTypeObject(inScope(gs, type("Person")));
+    _teachableSymType = createTypeObject(inScope(gs, type("Teachable")));
+    _studentSymType = createTypeObject(inScope(gs,
+        type("Student", List.of(_personSymType, _teachableSymType)))
+    );
+    _csStudentSymType = createTypeObject(inScope(gs,
+        type("CsStudent", List.of(_studentSymType)))
+    );
+    _childSymType = createTypeObject(inScope(gs,
+        type("Child", List.of(_personSymType, _teachableSymType)))
+    );
+    _teacherSymType = createTypeObject(inScope(gs,
+        type("Teacher", List.of(_personSymType)))
+    );
+    _carSymType = createTypeObject(inScope(gs, type("Car")));
+    _schoolSymType = createTypeObject(inScope(gs, type("School")));
+  }
+
+  /*********************************************************************/
+
+  /*
+   * These are the predefined Symbol for further generics
+   * in most cases, the collections ought to be enough
+   */
+
+  public static SymTypeOfGenerics _linkedListSymType;
+
+  public static void set_generics() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    TypeVarSymbol listVar = typeVariable("T");
+    _linkedListSymType = createGenerics(
+        inScope(gs, type("LinkedList",
+            List.of(createGenerics(_boxedListSymType.getTypeInfo(),
+                createTypeVariable(listVar))),
+            List.of(listVar))),
+        createTypeVariable(listVar)
     );
   }
 
