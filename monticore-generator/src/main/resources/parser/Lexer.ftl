@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("antlrGenerator")}
+${tc.signature("antlrGenerator","suffix")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
-lexer grammar ${ast.getName()}AntlrLexer;
+lexer grammar ${ast.getName()}AntlrLexer${suffix};
 
 @lexer::header {
 <#if genHelper.isJava()>
