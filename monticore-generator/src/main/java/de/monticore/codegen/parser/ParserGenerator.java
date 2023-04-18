@@ -143,14 +143,18 @@ public class ParserGenerator {
     traverser.add4Grammar(grammar2Antlr);
     traverser.setGrammarHandler(grammar2Antlr);
     // 1. Parser: Don't change order
+    String suffix  = GeneratorEngine.existsHandwrittenClass(handcodedPath,
+            genHelper.getParserPackage()+"."+astGrammar.getName()+"AntlrParser")?"TOP":"";
     final Path parserPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
-        astGrammar.getName() + "AntlrParser.g4");
-    new GeneratorEngine(setup).generate("parser.Parser", parserPath, astGrammar, grammar2Antlr);
+        astGrammar.getName() + "AntlrParser" + suffix + ".g4");
+    new GeneratorEngine(setup).generate("parser.Parser", parserPath, astGrammar, grammar2Antlr, suffix);
 
     // 2. Lexer
+    suffix  = GeneratorEngine.existsHandwrittenClass(handcodedPath,
+            genHelper.getParserPackage()+"."+astGrammar.getName()+"AntlrLexer")?"TOP":"";
     final Path lexerPath = Paths.get(Names.getPathFromPackage(genHelper.getParserPackage()),
-            astGrammar.getName() + "AntlrLexer.g4");
-    new GeneratorEngine(setup).generate("parser.Lexer", lexerPath, astGrammar, grammar2Antlr);
+            astGrammar.getName() + "AntlrLexer" + suffix + ".g4");
+    new GeneratorEngine(setup).generate("parser.Lexer", lexerPath, astGrammar, grammar2Antlr, suffix);
 
     Log.debug("Start Antlr generation for the antlr file " + astGrammar.getName(), LOG);
     // construct parser, lexer, ... (antlr),
