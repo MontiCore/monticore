@@ -35,8 +35,6 @@ build:
   script:
     - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
     - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -PgenTR=true -i"
-  tags:
-    - gradle
   artifacts:
     paths:
       - ".gradle"
