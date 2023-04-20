@@ -41,7 +41,7 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
   }
 
   public void reset() {
-    getTransformedSymTypes().clear();
+    this.transformedSymTypes = new Stack<>();
   }
 
   /**
@@ -80,7 +80,6 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeObscure symType) {
-    Log.warn("0xFD825 internal warning: transforming obscure type");
     pushTransformedSymType(SymTypeExpressionFactory.createObscureType());
   }
 
@@ -176,9 +175,14 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
    * uses this visitor with the provided symType and returns the result
    */
   public SymTypeExpression calculate(SymTypeExpression symType) {
+    // save stack to allow for recursive calling
+    Stack<SymTypeExpression> oldStack = this.transformedSymTypes;
     reset();
     symType.accept(this);
-    return getTransformedSymType();
+    SymTypeExpression result = getTransformedSymType();
+    // restore stack
+    this.transformedSymTypes = oldStack;
+    return result;
   }
 
   protected List<SymTypeExpression> applyToCollection(

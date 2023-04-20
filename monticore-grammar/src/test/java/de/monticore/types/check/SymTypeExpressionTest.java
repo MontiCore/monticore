@@ -488,8 +488,8 @@ public class SymTypeExpressionTest {
   public void testHasTypeInfo() {
     assertTrue(teInt.hasTypeInfo());
     assertFalse(SymTypeExpressionFactory.createPrimitive((TypeSymbol) null).hasTypeInfo());
-    assertFalse(teVarA.hasTypeInfo());
-    assertFalse(teVarB.hasTypeInfo());
+    assertTrue(teVarA.hasTypeInfo());
+    assertTrue(teVarB.hasTypeInfo());
     assertTrue(teIntA.hasTypeInfo());
     assertFalse(SymTypeExpressionFactory.createTypeObject(null).hasTypeInfo());
     assertTrue(teP.hasTypeInfo());

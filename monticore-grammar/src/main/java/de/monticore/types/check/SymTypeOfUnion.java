@@ -6,6 +6,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
@@ -27,7 +28,7 @@ public class SymTypeOfUnion extends SymTypeExpression {
     super.typeSymbol = new TypeSymbol(DEFAULT_TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.globalScope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
-    this.unionizedTypes = types;
+    this.unionizedTypes = new HashSet<>(types);
   }
 
   @Override
