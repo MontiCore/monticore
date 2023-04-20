@@ -9,4 +9,5 @@ ${tc.signature("symtabMill", "artifactScope", "symboltableCreator", "generatedEr
   initArtifactScopeHP1(artifactScope);
   rootNode.accept(getTraverser());
   initArtifactScopeHP2(artifactScope);
+  scopeStack.remove(artifactScope);
   return artifactScope;
