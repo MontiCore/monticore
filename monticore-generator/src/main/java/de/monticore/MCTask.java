@@ -72,6 +72,9 @@ public abstract class MCTask extends DefaultTask {
 
     getBuildInfoFile().convention(project.getLayout().getBuildDirectory().file("resources/main/buildInfo.properties"));
     getReportDir().convention(project.getLayout().getBuildDirectory().dir("reports"));
+
+    // Only one task using MontiCore Mills at the same time
+    usesService(project.getGradle().getSharedServices().getRegistrations().findByName(MCPlugin.MC_MILL_BUILD_SERVICE).getService());
   }
   
   public final RegularFileProperty grammar = getProject().getObjects().fileProperty();
