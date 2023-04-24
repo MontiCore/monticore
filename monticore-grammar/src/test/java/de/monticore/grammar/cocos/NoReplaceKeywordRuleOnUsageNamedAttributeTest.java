@@ -15,8 +15,7 @@ public class NoReplaceKeywordRuleOnUsageNamedAttributeTest extends CocoTest {
   
   @Before
   public void before() {
-//    LogStub.init();
-    Log.initDEBUG();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
   
