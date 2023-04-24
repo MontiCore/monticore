@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.Log;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.After;
 import org.junit.Test;
 import simpleinterfaces._ast.*;
@@ -9,7 +8,6 @@ import simpleinterfaces._parser.SimpleInterfacesParser;
 import simpleinterfaces._util.SimpleInterfacesTypeDispatcher;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -140,21 +138,21 @@ public class DispatcherTest {
 
     try {
       ASTA castB = dispatcher.asASTA(astB);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
     try {
       ASTA castC = dispatcher.asASTA(astC);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
     try {
       ASTA castD = dispatcher.asASTA(astD);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
     try {
       ASTA castE = dispatcher.asASTA(astE);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
     try {
       ASTA castF = dispatcher.asASTA(astF);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
-    assertEquals(Log.getFindings().size(), 5);
+    assertEquals(Log.getFindings().size(), 10);
   }
 
   @Test
@@ -187,7 +185,7 @@ public class DispatcherTest {
 
     try {
       ASTB castA = dispatcher.asASTB(astA);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     ASTB castB = dispatcher.asASTB(astB);
     assertEquals(castB, astB);
@@ -200,13 +198,13 @@ public class DispatcherTest {
 
     try {
       ASTB castE = dispatcher.asASTB(astE);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
       ASTB castF = dispatcher.asASTB(astF);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
-    assertEquals(Log.getFindings().size(), 3);
+    assertEquals(Log.getFindings().size(), 6);
   }
 
   @Test
@@ -239,7 +237,7 @@ public class DispatcherTest {
 
     try {
       ASTC castA = dispatcher.asASTC(astA);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     ASTC castB = dispatcher.asASTC(astB);
     assertEquals(castB, astB);
@@ -249,17 +247,17 @@ public class DispatcherTest {
 
     try {
       ASTC castD = dispatcher.asASTC(astD);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
       ASTC castE = dispatcher.asASTC(astE);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
       ASTC castF = dispatcher.asASTC(astF);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
-    assertEquals(Log.getFindings().size(), 4);
+    assertEquals(Log.getFindings().size(), 8);
   }
 
   @Test
@@ -292,27 +290,27 @@ public class DispatcherTest {
 
     try {
       ASTD castA = dispatcher.asASTD(astA);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     ASTD castB = dispatcher.asASTD(astB);
     assertEquals(castB, astB);
 
     try {
       ASTD castC = dispatcher.asASTD(astC);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     ASTD castD = dispatcher.asASTD(astD);
     assertEquals(castD, astD);
 
     try {
       ASTD castE = dispatcher.asASTD(astE);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
       ASTD castF = dispatcher.asASTD(astF);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
-    assertEquals(Log.getFindings().size(), 4);
+    assertEquals(Log.getFindings().size(), 8);
   }
 
   @Test
@@ -345,19 +343,19 @@ public class DispatcherTest {
 
     try {
       ASTE castA = dispatcher.asASTE(astA);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
       ASTE castB = dispatcher.asASTE(astB);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
       ASTE castC = dispatcher.asASTE(astC);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
       ASTE castD = dispatcher.asASTE(astD);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     ASTE castE = dispatcher.asASTE(astE);
     assertEquals(castE, astE);
@@ -365,7 +363,7 @@ public class DispatcherTest {
     ASTE castF = dispatcher.asASTE(astF);
     assertEquals(castF, astF);
 
-    assertEquals(Log.getFindings().size(), 4);
+    assertEquals(Log.getFindings().size(), 8);
   }
 
   @Test
@@ -398,28 +396,28 @@ public class DispatcherTest {
 
     try {
       ASTF castA = dispatcher.asASTF(astA);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try{
     ASTF castB = dispatcher.asASTF(astB);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
     ASTF castC = dispatcher.asASTF(astC);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try {
     ASTF castD = dispatcher.asASTF(astD);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     try{
     ASTF castE = dispatcher.asASTF(astE);
-    } catch(NoSuchElementException ignored) {}
+    } catch(IllegalStateException ignored) {}
 
     ASTF castF = dispatcher.asASTF(astF);
     assertEquals(castF, astF);
 
-    assertEquals(Log.getFindings().size(), 5);
+    assertEquals(Log.getFindings().size(), 10);
   }
 
   @After
