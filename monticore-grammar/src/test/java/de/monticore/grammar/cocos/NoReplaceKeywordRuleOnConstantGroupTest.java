@@ -20,7 +20,7 @@ public class NoReplaceKeywordRuleOnConstantGroupTest extends CocoTest {
   }
   
   @BeforeClass
-  public static void disableFailQuick() {
+  public static void addCoCoToChecker() {
     checker.addCoCo(new NoReplaceKeywordRuleOnConstantGroup());
   }
 
