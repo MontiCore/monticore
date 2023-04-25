@@ -25,6 +25,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class  Grammar_WithConceptsFullPrettyPrinter {
 
 

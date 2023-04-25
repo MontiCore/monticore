@@ -95,8 +95,8 @@ public class GeneratorEngineTest {
     setup.setAdditionalTemplatePaths(Lists.newArrayList(file));
     setup.setFileHandler(fileHandler);
     FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock(setup.getConfig());
-    assertEquals(1, Log.getErrorCount());
-    assertEquals("0xA1020 Unable to load templates from path doesnotexist", Log.getFindings().get(0).getMsg());
+    assertEquals(1, Log.getFindingsCount());
+    assertEquals("0xA1020 Unable to load templates from non-existent path doesnotexist", Log.getFindings().get(0).getMsg());
   }
 
   @Test

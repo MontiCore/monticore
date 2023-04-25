@@ -49,7 +49,7 @@ dependencies {
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
   implementation "org.freemarker:freemarker:$freemarker_version"
   implementation "commons-cli:commons-cli:$commons_cli_version"
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
 //  implementation 'org.slf4j:slf4j-api:1.7.10'
   implementation 'ch.qos.logback:logback-classic:1.2.0'

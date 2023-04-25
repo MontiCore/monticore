@@ -12,6 +12,7 @@ import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarat
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsTraverser;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCVarDeclarationStatementsPrettyPrinter implements
     MCVarDeclarationStatementsVisitor2, MCVarDeclarationStatementsHandler {
 

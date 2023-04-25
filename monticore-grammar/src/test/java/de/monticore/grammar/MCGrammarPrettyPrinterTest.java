@@ -5,8 +5,9 @@ package de.monticore.grammar;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
+import de.monticore.grammar.grammar_withconcepts._prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -24,8 +25,10 @@ public class MCGrammarPrettyPrinterTest {
   
   @Before
   public void before() {
-    LogStub.init();
+//    LogStub.init();
+    Log.initDEBUG();
     Log.enableFailQuick(false);
+    Log.clearFindings();
   }
   
   @BeforeClass
@@ -54,7 +57,7 @@ public class MCGrammarPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    assertTrue("Failed to deep equals: \n" + output, grammar.deepEquals(result.get()));
     
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -80,7 +83,7 @@ public class MCGrammarPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    assertTrue("Failed to deep equals: \n" + output, grammar.deepEquals(result.get()));
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -106,7 +109,7 @@ public class MCGrammarPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    assertTrue("Failed to deep equals: \n" + output, grammar.deepEquals(result.get()));
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -158,7 +161,7 @@ public class MCGrammarPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    assertTrue("Failed to deep equals: \n" + output, grammar.deepEquals(result.get()));
   
     assertTrue(Log.getFindings().isEmpty());
   }

@@ -93,7 +93,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, lowerCaseName);
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
-    StatisticsReporter statistics = new StatisticsReporter(mcConfig, this.reportDirectory, lowerCaseName, repository, traverserSummary);
+    StatisticsReporterFix statistics = new StatisticsReporterFix(mcConfig, "MC_JAR_JSON", this.reportDirectory, lowerCaseName, repository, traverserSummary);
     IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary

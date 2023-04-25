@@ -14,6 +14,7 @@ import de.se_rwth.commons.Names;
 
 import java.util.Iterator;
 
+@Deprecated(forRemoval = true)
 public class GrammarPrettyPrinter implements GrammarVisitor2, GrammarHandler {
 
   protected static final String QUOTE = "\"";

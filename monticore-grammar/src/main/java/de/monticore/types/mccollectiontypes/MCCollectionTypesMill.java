@@ -13,16 +13,17 @@ import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
 public  class MCCollectionTypesMill extends MCCollectionTypesMillTOP {
   
   protected static MCCollectionTypesMill mcCollectionTypesPrettyPrinter;
-  
+
   protected static MCCollectionTypesFullPrettyPrinter prettyPrinter;
-  
+
   /**
    * Static getter for the pretty printer that delegates to the non static implementation.
    * Only one pretty printer object is created and reused.
    * @return the pretty printer instance
    */
+  @Deprecated(forRemoval = true)
   public  static MCCollectionTypesFullPrettyPrinter mcCollectionTypesPrettyPrinter ()  {
-    
+
     if (mcCollectionTypesPrettyPrinter == null) {
       mcCollectionTypesPrettyPrinter = getMill();
     }
@@ -30,11 +31,11 @@ public  class MCCollectionTypesMill extends MCCollectionTypesMillTOP {
       prettyPrinter = getPrettyPrinter();
     }
     return mcCollectionTypesPrettyPrinter._mcCollectionTypesPrettyPrinter();
-    
+
   }
-  
+
   protected MCCollectionTypesFullPrettyPrinter _mcCollectionTypesPrettyPrinter () {
-    
+
     if (mcCollectionTypesPrettyPrinter == null) {
       mcCollectionTypesPrettyPrinter = getMill();
     }
@@ -45,7 +46,7 @@ public  class MCCollectionTypesMill extends MCCollectionTypesMillTOP {
     prettyPrinter.getPrinter().clearBuffer();
     return prettyPrinter;
   }
-  
+
   protected static MCCollectionTypesFullPrettyPrinter getPrettyPrinter() {
     return new MCCollectionTypesFullPrettyPrinter(new IndentPrinter());
   }

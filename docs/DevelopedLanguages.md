@@ -114,7 +114,7 @@ development. See language definition and usage method in
     sensors. This languages are part of the Darpa Urban Challenge 2007.
     [[BR12b,BR12,Ber10,BR09]](https://www.se-rwth.de/publications/).
 
-* **ProcEd** a Web-based Editing Solution for Domain Specific 
+* **ProcEd** a Web-based Editing Solution for Domain-Specific 
     Process-Engineering
     [[BGR09]](https://www.se-rwth.de/publications/).
 

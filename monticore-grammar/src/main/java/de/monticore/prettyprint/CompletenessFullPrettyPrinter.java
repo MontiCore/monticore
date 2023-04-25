@@ -5,6 +5,7 @@ import de.monticore.completeness.CompletenessMill;
 import de.monticore.completeness._ast.ASTCompletenessNode;
 import de.monticore.completeness._visitor.CompletenessTraverser;
 
+@Deprecated(forRemoval = true)
 public class CompletenessFullPrettyPrinter {
 
   protected CompletenessTraverser traverser;

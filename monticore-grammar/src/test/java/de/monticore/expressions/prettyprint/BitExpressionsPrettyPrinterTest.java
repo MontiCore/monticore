@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
+import de.monticore.expressions.bitexpressions._prettyprint.BitExpressionsFullPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testbitexpressions._parser.TestBitExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;

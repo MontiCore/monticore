@@ -199,8 +199,8 @@ fileTree("src/main/examples").matching { include '**/*.mc4' }.each {
   task "generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}"(type: MCTask) {
     grammar = file g
     outputDir = file testGrammarOutDir
-    handcodedPath "$projectDir/src/main/java"
-    modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples"
+    handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
+    modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples", "$projectDir/src/test/java"
     if (findProperty("ci") != null) {
       script = "de/monticore/monticore_noreports.groovy"
     }

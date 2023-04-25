@@ -12,6 +12,7 @@ import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisi
 
 import java.util.Iterator;
 
+@Deprecated(forRemoval = true)
 public class MCSimpleGenericTypesPrettyPrinter implements MCSimpleGenericTypesVisitor2, MCSimpleGenericTypesHandler {
 
   protected MCSimpleGenericTypesTraverser traverser;

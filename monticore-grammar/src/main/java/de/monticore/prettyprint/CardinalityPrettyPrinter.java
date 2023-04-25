@@ -7,6 +7,7 @@ import de.monticore.cardinality._visitor.CardinalityHandler;
 import de.monticore.cardinality._visitor.CardinalityTraverser;
 import de.monticore.cardinality._visitor.CardinalityVisitor2;
 
+@Deprecated(forRemoval = true)
 public class CardinalityPrettyPrinter implements CardinalityVisitor2, CardinalityHandler {
 
   protected CardinalityTraverser traverser;

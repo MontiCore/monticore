@@ -4,9 +4,6 @@ package de.monticore.javalight.cocos;
 import de.monticore.javalight._ast.ASTConstructorDeclaration;
 import de.monticore.javalight._cocos.JavaLightASTConstructorDeclarationCoCo;
 import de.monticore.javalight._symboltable.JavaMethodSymbol;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.prettyprint.JavaLightFullPrettyPrinter;
-import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;

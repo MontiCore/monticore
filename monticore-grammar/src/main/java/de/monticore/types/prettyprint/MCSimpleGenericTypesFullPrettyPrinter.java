@@ -6,6 +6,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCSimpleGenericTypesFullPrettyPrinter extends MCCollectionTypesFullPrettyPrinter {
 
   protected MCSimpleGenericTypesTraverser traverser;

@@ -5,6 +5,7 @@ import de.monticore.expressions.assignmentexpressions.AssignmentExpressionsMill;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class AssignmentExpressionsFullJavaPrinter extends ExpressionsBasisFullJavaPrinter{
   
   protected AssignmentExpressionsTraverser traverser;

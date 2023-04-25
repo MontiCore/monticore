@@ -10,6 +10,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import mc.typescalculator.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 
+@Deprecated(forRemoval = true)
 public class CombineExpressionsWithLiteralsPrettyPrinter {
 
   protected IndentPrinter printer;

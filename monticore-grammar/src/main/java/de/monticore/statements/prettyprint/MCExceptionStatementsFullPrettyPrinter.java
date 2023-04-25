@@ -9,6 +9,7 @@ import de.monticore.statements.mcexceptionstatements._ast.ASTMCExceptionStatemen
 import de.monticore.statements.mcexceptionstatements._visitor.MCExceptionStatementsTraverser;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class MCExceptionStatementsFullPrettyPrinter extends MCCommonStatementsFullPrettyPrinter {
 
   protected MCExceptionStatementsTraverser traverser;

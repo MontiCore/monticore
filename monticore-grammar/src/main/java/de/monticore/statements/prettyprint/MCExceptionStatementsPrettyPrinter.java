@@ -12,6 +12,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 
 import java.util.Iterator;
 
+@Deprecated(forRemoval = true)
 public class MCExceptionStatementsPrettyPrinter implements
     MCExceptionStatementsVisitor2, MCExceptionStatementsHandler {
 

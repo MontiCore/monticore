@@ -7,6 +7,7 @@ import de.monticore.completeness._visitor.CompletenessHandler;
 import de.monticore.completeness._visitor.CompletenessTraverser;
 import de.monticore.completeness._visitor.CompletenessVisitor2;
 
+@Deprecated(forRemoval = true)
 public class CompletenessPrettyPrinter implements CompletenessVisitor2, CompletenessHandler {
 
   protected CompletenessTraverser traverser;

@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("antlrGenerator")}
+${tc.signature("antlrGenerator", "suffix")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
 
-${tc.include("parser.ParserHeader")}
+${tc.includeArgs("parser.ParserHeader",suffix)}
 {
 <#list antlrGenerator.getHWParserJavaCode() as javaCode>
   ${javaCode}

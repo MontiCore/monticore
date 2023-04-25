@@ -2,6 +2,8 @@
 
 package de.monticore.symboltable.modifiers;
 
+import java.util.Map;
+
 public interface AccessModifier extends Modifier {
 
   /**
@@ -12,6 +14,9 @@ public interface AccessModifier extends Modifier {
 
   boolean includes(AccessModifier modifier);
 
+  Map<String, AccessModifier> getDimensionToModifierMap();
+
+  String ALL = "All";
 
   final class AllInclusionAccessModifier implements AccessModifier {
     @Override
@@ -20,6 +25,11 @@ public interface AccessModifier extends Modifier {
     }
 
     private AllInclusionAccessModifier() {
+    }
+
+    @Override
+    public Map<String, AccessModifier> getDimensionToModifierMap() {
+      return Map.of(ALL, this);
     }
   }
 

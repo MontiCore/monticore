@@ -11,6 +11,7 @@ import de.monticore.mcbasics._visitor.MCBasicsVisitor2;
  * whole subtree of a node has been traversed. The ownVisit-Methods stop the automatic traversal
  * order and allow to explictly visit subtrees by calling getVisitor().startVisit(ASTNode)
  */
+@Deprecated(forRemoval = true)
 public class MCBasicsPrettyPrinter implements MCBasicsVisitor2 {
 
   protected IndentPrinter printer;

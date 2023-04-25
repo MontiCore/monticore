@@ -3,8 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,6 +23,10 @@ import java.util.stream.Stream;
  */
 public class SymTypeOfFunction extends SymTypeExpression {
 
+  /**
+   * @deprecated only required for the deprecated type symbol
+   */
+  @Deprecated
   public static final String TYPESYMBOL_NAME = "function";
 
   /**
@@ -48,14 +51,6 @@ public class SymTypeOfFunction extends SymTypeExpression {
   /**
    * Constructor with all parameters that are stored:
    */
-  public SymTypeOfFunction(SymTypeExpression returnType) {
-    this(returnType, new LinkedList<>());
-  }
-
-  public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes) {
-    this(returnType, argumentTypes, false);
-  }
-
   public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes,
       boolean elliptic) {
     super.typeSymbol = new TypeSymbol(TYPESYMBOL_NAME);
@@ -111,27 +106,12 @@ public class SymTypeOfFunction extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfFunction deepClone() {
-    List<SymTypeExpression> clonedArgTypes = new LinkedList<>();
-    for (SymTypeExpression exp : getArgumentTypeList()) {
-      clonedArgTypes.add(exp.deepClone());
-    }
-    return new SymTypeOfFunction(this.returnType.deepClone(), clonedArgTypes);
-  }
-
-  @Override
   public boolean deepEquals(SymTypeExpression sym) {
-    if (!(sym instanceof SymTypeOfFunction)) {
+    if (!sym.isFunctionType()) {
       return false;
     }
     SymTypeOfFunction symFun = (SymTypeOfFunction) sym;
-    if (this.typeSymbol == null || symFun.typeSymbol == null) {
-      return false;
-    }
-    if (!this.typeSymbol.getEnclosingScope().equals(symFun.typeSymbol.getEnclosingScope())) {
-      return false;
-    }
-    if (!this.typeSymbol.getName().equals(symFun.typeSymbol.getName())) {
+    if (!getType().deepEquals(symFun.getType())) {
       return false;
     }
     if (this.sizeArgumentTypes() != symFun.sizeArgumentTypes()) {
@@ -142,20 +122,34 @@ public class SymTypeOfFunction extends SymTypeExpression {
         return false;
       }
     }
-
-    return this.print().equals(symFun.print());
+    if (isElliptic() != symFun.isElliptic()) {
+      return false;
+    }
+    return true;
   }
 
+  /**
+   * @return the return type of the function
+   * NOT the actual type of the function itself
+   */
   public SymTypeExpression getType() {
     return returnType;
   }
 
+  /**
+   * iff true, the last argument type is accepted any amount of times
+   */
   public boolean isElliptic() {
     return elliptic;
   }
 
   public void setElliptic(boolean elliptic) {
     this.elliptic = elliptic;
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 
   // --------------------------------------------------------------------------

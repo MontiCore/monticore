@@ -6,6 +6,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -25,15 +26,15 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Map for unboxing generic types (e.g. "java.util.Collection" -> "Collection")
    */
+  @Deprecated
   public static final Map<String, String> unboxMap;
-
 
   /**
    * Map for boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    */
+  @Deprecated
   public static final Map<String, String> boxMap;
-
 
   /**
    * initializing the maps
@@ -57,10 +58,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * unboxing generic types (e.g. "java.util.Collection" -> "Collection").
    * otherwise return is unchanged
-   *
+   * @deprecated use SymTypeUnboxingVisitor
    * @param type
    * @return
    */
+  @Deprecated
   public static String unbox(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
@@ -82,15 +84,15 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     }
   }
 
-
   /**
    * Boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    * Otherwise return is unchanged
-   *
+   * @deprecated use SymtypeBoxingVisitor
    * @param type
    * @return
    */
+  @Deprecated
   public static String box(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
@@ -111,31 +113,41 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       return type.printTypeWithoutTypeArgument()+r.toString();
     }
   }
-  
+
+  protected TypeSymbol typeSymbol;
+
   /**
    * List of arguments of a type constructor
    */
-  protected List<SymTypeExpression> arguments = new LinkedList<>();
+  protected List<SymTypeExpression> arguments;
+
+  /**
+   * @deprecated use SymTypeExpressionFactory
+   * The Factory then uses the constructor below
+   */
+  @Deprecated
+  public SymTypeOfGenerics(TypeSymbol typeSymbol) {
+    this(typeSymbol, new LinkedList<>());
+  }
 
   /**
    * Constructor with all parameters that are stored:
    */
-  public SymTypeOfGenerics(TypeSymbol typeSymbol) {
-    this.typeSymbol = typeSymbol;
-  }
-
   public SymTypeOfGenerics(TypeSymbol typeSymbol, List<SymTypeExpression> arguments) {
     this.typeSymbol = typeSymbol;
     this.arguments = arguments;
   }
 
-  public String getTypeConstructorFullName() {
-    return typeSymbol.getFullName();
+  @Override
+  public boolean hasTypeInfo() {
+    return typeSymbol != null;
   }
-  
-  /**
-   * print: Umwandlung in einen kompakten String
-   */
+
+  @Override
+  public TypeSymbol getTypeInfo() {
+    return typeSymbol;
+  }
+
   @Override
   public String print() {
     StringBuffer r = new StringBuffer(typeSymbol.getName()).append('<');
@@ -156,20 +168,31 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return r.append('>').toString();
   }
 
+  public String getTypeConstructorFullName() {
+    return getTypeInfo().getFullName();
+  }
+
+  /**
+   * @deprecated same as the the other 2 methods even in spec?
+   */
+  @Deprecated
   public String printTypeWithoutTypeArgument(){
     return this.getFullName();
   }
   
   /**
-   * getFullName: get the Qualified Name including Package
+   * @deprecated same as the the other 2 methods even in spec?
    */
+  @Deprecated
   public String getFullName() {
     return getTypeConstructorFullName();
   }
   
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
+   * @deprecated unused outside of tests, but not required for tests
    */
+  @Deprecated
   public String getBaseName() {
     String[] parts = getTypeConstructorFullName().split("\\.");
     return parts[parts.length - 1];
@@ -180,25 +203,12 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return true;
   }
   
-  /**
-   * This is a deep clone: it clones the whole structure including Symbols and Type-Info,
-   * but not the name of the constructor
-   * @return
-   */
-  @Override
-  public SymTypeOfGenerics deepClone() {
-    return new SymTypeOfGenerics(this.typeSymbol, getArgumentList());
-  }
-
   @Override
   public boolean deepEquals(SymTypeExpression sym){
-    if(!(sym instanceof SymTypeOfGenerics)){
+    if(!sym.isGenericType()){
       return false;
     }
     SymTypeOfGenerics symGen = (SymTypeOfGenerics) sym;
-    if(this.typeSymbol == null ||symGen.typeSymbol ==null){
-      return false;
-    }
     if(!this.typeSymbol.getEnclosingScope().equals(symGen.typeSymbol.getEnclosingScope())){
       return false;
     }
@@ -213,7 +223,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
         return false;
       }
     }
-    return this.print().equals(symGen.print());
+    return true;
   }
 
   @Override
@@ -239,6 +249,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
         type.replaceTypeVariables(replaceMap);
       }
     }
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 
   // --------------------------------------------------------------------------

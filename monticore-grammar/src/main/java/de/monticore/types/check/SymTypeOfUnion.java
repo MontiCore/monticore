@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.types2.ISymTypeVisitor;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,12 +28,12 @@ public class SymTypeOfUnion extends SymTypeExpression {
     super.typeSymbol = new TypeSymbol(DEFAULT_TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.globalScope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
-    this.unionizedTypes = types;
+    this.unionizedTypes = new HashSet<>(types);
   }
 
   @Override
   public boolean isValidType() {
-    return true;
+    return streamUnionizedTypes().allMatch(SymTypeExpression::isValidType);
   }
 
   @Override
@@ -69,15 +70,6 @@ public class SymTypeOfUnion extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfUnion deepClone() {
-    Set<SymTypeExpression> clonedUnionizedTypes = new HashSet<>();
-    for (SymTypeExpression exp : getUnionizedTypeSet()) {
-      clonedUnionizedTypes.add(exp.deepClone());
-    }
-    return SymTypeExpressionFactory.createUnion(clonedUnionizedTypes);
-  }
-
-  @Override
   public boolean deepEquals(SymTypeExpression sym) {
     if (!sym.isUnionType()) {
       return false;
@@ -92,6 +84,11 @@ public class SymTypeOfUnion extends SymTypeExpression {
       }
     }
     return true;
+  }
+
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
   }
 
   // --------------------------------------------------------------------------

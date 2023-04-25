@@ -2,6 +2,7 @@
 package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
+import de.monticore.expressions.lambdaexpressions._prettyprint.LambdaExpressionsFullPrettyPrinter;
 import de.monticore.expressions.testlambdaexpressions._parser.TestLambdaExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -125,7 +126,7 @@ public class LambdaExpressionsPrettyPrinterTest {
     ASTLambdaExpression ast = parseLambdaExpression(exp);
     String output = prettyPrinter.prettyprint(ast);
     ASTLambdaExpression ast2 = parseLambdaExpression(output);
-    assertTrue(ast.deepEquals(ast2));
+    assertTrue("Parse equals: " + exp + " vs " + output, ast.deepEquals(ast2));
   
     assertTrue(Log.getFindings().isEmpty());
   }

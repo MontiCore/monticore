@@ -12,6 +12,7 @@ import de.se_rwth.commons.Names;
 
 import java.util.Iterator;
 
+@Deprecated(forRemoval = true)
 public class MCBasicTypesPrettyPrinter implements MCBasicTypesVisitor2, MCBasicTypesHandler {
 
   protected MCBasicTypesTraverser traverser;

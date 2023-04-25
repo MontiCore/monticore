@@ -9,6 +9,7 @@ import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsHan
 import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsTraverser;
 import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCReturnStatementsPrettyPrinter implements MCReturnStatementsVisitor2, MCReturnStatementsHandler {
 
   protected MCReturnStatementsTraverser traverser;

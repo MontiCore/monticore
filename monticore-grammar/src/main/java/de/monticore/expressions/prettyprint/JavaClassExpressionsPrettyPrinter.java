@@ -11,6 +11,7 @@ import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class JavaClassExpressionsPrettyPrinter implements JavaClassExpressionsVisitor2, JavaClassExpressionsHandler {
 
   protected JavaClassExpressionsTraverser traverser;

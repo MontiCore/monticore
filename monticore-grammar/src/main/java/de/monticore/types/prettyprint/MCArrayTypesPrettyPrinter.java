@@ -7,6 +7,7 @@ import de.monticore.types.mcarraytypes._visitor.MCArrayTypesHandler;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCArrayTypesPrettyPrinter implements MCArrayTypesVisitor2, MCArrayTypesHandler {
 
   protected MCArrayTypesTraverser traverser;

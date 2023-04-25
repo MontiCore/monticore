@@ -6,6 +6,7 @@ import de.monticore.cardinality._ast.ASTCardinalityNode;
 import de.monticore.cardinality._visitor.CardinalityTraverser;
 import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class CardinalityFullPrettyPrinter {
 
   protected CardinalityTraverser traverser;

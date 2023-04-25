@@ -43,7 +43,7 @@ public class BasicSymbolsScope extends BasicSymbolsScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol);
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          set.addAll(t.getMethodList(name, true));
+          set.addAll(t.getMethodList(name, true, modifier));
         }
       }
     }
@@ -66,7 +66,7 @@ public class BasicSymbolsScope extends BasicSymbolsScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-          result.addAll(superType.getFieldList(name, true));
+          result.addAll(superType.getFieldList(name, true, modifier));
         }
       }
     }

@@ -3,9 +3,8 @@ package de.monticore.types.printer;
 
 import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
-import de.monticore.types.prettyprint.MCCollectionTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -42,14 +41,13 @@ public class CollectionTypesPrinterTest {
     assertTrue(astmcOptionalType.isPresent());
     assertTrue(astmcMapType.isPresent());
 
-    MCCollectionTypesFullPrettyPrinter printer = MCCollectionTypesMill.mcCollectionTypesPrettyPrinter();
-    assertEquals("java.util.List", printer.prettyprint(astmcBasicTypeArgument.get()));
-    assertEquals("int", printer.prettyprint(astmcPrimitiveTypeArgument.get()));
-    assertEquals("List<java.lang.String>",printer.prettyprint(astmcListType.get())); // funktioniert nicht
-    assertEquals("Set<int>",printer.prettyprint(astmcSetType.get()));
-    assertEquals("Optional<Character>", printer.prettyprint(astmcOptionalType.get()));
-    assertEquals("Map<String,String>",printer.prettyprint(astmcMapType.get()));
-  
+    assertEquals("java.util.List", MCCollectionTypesMill.prettyPrint(astmcBasicTypeArgument.get(), true));
+    assertEquals("int", MCCollectionTypesMill.prettyPrint(astmcPrimitiveTypeArgument.get(), true));
+    assertEquals("List<java.lang.String>", MCCollectionTypesMill.prettyPrint(astmcListType.get(), true));
+    assertEquals("Set<int>", MCCollectionTypesMill.prettyPrint(astmcSetType.get(), true));
+    assertEquals("Optional<Character>", MCCollectionTypesMill.prettyPrint(astmcOptionalType.get(), true));
+    assertEquals("Map<String,String>", MCCollectionTypesMill.prettyPrint(astmcMapType.get(), true));
+
     assertTrue(Log.getFindings().isEmpty());
   }
 }

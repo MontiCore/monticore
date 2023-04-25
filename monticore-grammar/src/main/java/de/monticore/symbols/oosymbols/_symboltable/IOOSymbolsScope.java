@@ -1,12 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.expressions.combineexpressionswithliterals._symboltable;
+package de.monticore.symbols.oosymbols._symboltable;
 
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -14,23 +8,7 @@ import de.monticore.types.check.SymTypeExpression;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class CombineExpressionsWithLiteralsScope extends CombineExpressionsWithLiteralsScopeTOP {
-
-  public CombineExpressionsWithLiteralsScope() {
-    super();
-  }
-
-  public CombineExpressionsWithLiteralsScope(boolean isShadowingScope) {
-    super(isShadowingScope);
-  }
-
-  public CombineExpressionsWithLiteralsScope(ICombineExpressionsWithLiteralsScope enclosingScope) {
-    this(enclosingScope, false);
-  }
-
-  public CombineExpressionsWithLiteralsScope(ICombineExpressionsWithLiteralsScope enclosingScope, boolean isShadowingScope) {
-    super(enclosingScope,isShadowingScope);
-  }
+public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
 
   /**
    * override method from ExpressionBasisScope to resolve all methods correctly
@@ -39,17 +17,18 @@ public class CombineExpressionsWithLiteralsScope extends CombineExpressionsWithL
    * it is used by the method getMethodList in SymTypeExpression
    */
   @Override
-  public List<FunctionSymbol> resolveFunctionLocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
-                                                       Predicate<FunctionSymbol> predicate) {
+  default List<MethodSymbol> resolveMethodLocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
+                                                         Predicate<MethodSymbol> predicate) {
     //resolve methods by using overridden method
-    List<FunctionSymbol> set = super.resolveFunctionLocallyMany(foundSymbols,name,modifier,predicate);
+    List<MethodSymbol> set = IOOSymbolsScopeTOP.super.resolveMethodLocallyMany(foundSymbols,name,modifier,predicate);
     if(this.isPresentSpanningSymbol()){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof TypeSymbol){
-        TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol);
+      if(spanningSymbol instanceof OOTypeSymbol){
+        OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          set.addAll(t.getMethodList(name, false));
+          t.getMethodList(name, false, modifier).stream().
+                  filter(m -> m instanceof MethodSymbol).forEach(m -> set.add((MethodSymbol) m));
         }
       }
     }
@@ -63,16 +42,17 @@ public class CombineExpressionsWithLiteralsScope extends CombineExpressionsWithL
    * it is used by the method getFieldList in SymTypeExpression
    */
   @Override
-  public List<VariableSymbol> resolveVariableLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<VariableSymbol> predicate){
+  default List<FieldSymbol> resolveFieldLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<FieldSymbol> predicate){
     //resolve methods by using overridden method
-    List<VariableSymbol> result = super.resolveVariableLocallyMany(foundSymbols,name,modifier,predicate);
+    List<FieldSymbol> result = IOOSymbolsScopeTOP.super.resolveFieldLocallyMany(foundSymbols,name,modifier,predicate);
     if(this.isPresentSpanningSymbol()){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof TypeSymbol){
-        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
+      if(spanningSymbol instanceof OOTypeSymbol){
+        OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-          result.addAll(superType.getFieldList(name, false));
+         superType.getFieldList(name, false, modifier).stream().
+                 filter(f -> f instanceof FieldSymbol).forEach(f -> result.add((FieldSymbol) f));
         }
       }
     }

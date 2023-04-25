@@ -4,6 +4,7 @@ package de.monticore.prettyprint;
 
 import de.monticore.cardinality._ast.ASTCardinality;
 import de.monticore.testcardinality._parser.TestCardinalityParser;
+import de.monticore.cardinality._prettyprint.CardinalityFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;

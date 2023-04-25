@@ -9,6 +9,7 @@ import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCFunctionTypesPrettyPrinter
     implements MCFunctionTypesVisitor2, MCFunctionTypesHandler {
 

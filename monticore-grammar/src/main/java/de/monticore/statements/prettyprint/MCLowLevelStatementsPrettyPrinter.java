@@ -11,6 +11,7 @@ import de.monticore.statements.mclowlevelstatements._visitor.MCLowLevelStatement
 import de.monticore.statements.mclowlevelstatements._visitor.MCLowLevelStatementsTraverser;
 import de.monticore.statements.mclowlevelstatements._visitor.MCLowLevelStatementsVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCLowLevelStatementsPrettyPrinter implements MCLowLevelStatementsVisitor2, MCLowLevelStatementsHandler {
 
   protected MCLowLevelStatementsTraverser traverser;

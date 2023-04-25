@@ -4,8 +4,6 @@ package de.monticore.types.printer;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -45,11 +43,10 @@ public class BasicTypesPrinterTest {
     assertTrue(astmcPrimitiveType.isPresent());
     assertTrue(astmcQualifiedType.isPresent());
 
-    MCBasicTypesFullPrettyPrinter printer = MCBasicTypesMill.mcBasicTypesPrettyPrinter();
-    assertEquals("String", printer.prettyprint(astmcReturnType.get()));
-    assertEquals("void", printer.prettyprint(astmcVoidType.get()));
-    assertEquals("int", printer.prettyprint(astmcPrimitiveType.get()));
-    assertEquals("java.util.List", printer.prettyprint(astmcQualifiedType.get()));
+    assertEquals("String", MCBasicTypesMill.prettyPrint(astmcReturnType.get(), true));
+    assertEquals("void", MCBasicTypesMill.prettyPrint(astmcVoidType.get(), true));
+    assertEquals("int", MCBasicTypesMill.prettyPrint(astmcPrimitiveType.get(), true));
+    assertEquals("java.util.List", MCBasicTypesMill.prettyPrint(astmcQualifiedType.get(), true));
   
     assertTrue(Log.getFindings().isEmpty());
   }

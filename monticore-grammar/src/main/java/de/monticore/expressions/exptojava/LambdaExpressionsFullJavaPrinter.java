@@ -6,6 +6,7 @@ import de.monticore.expressions.lambdaexpressions.LambdaExpressionsMill;
 import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class LambdaExpressionsFullJavaPrinter extends ExpressionsBasisFullJavaPrinter {
 
   protected LambdaExpressionsTraverser traverser;

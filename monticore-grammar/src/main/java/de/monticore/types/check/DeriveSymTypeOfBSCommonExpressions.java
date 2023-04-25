@@ -11,6 +11,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.*;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.helpers.*;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
@@ -705,7 +706,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * Hookpoint for object oriented languages to get the correct variables/fields from a type based on their modifiers
    */
   protected List<VariableSymbol> getCorrectFieldsFromInnerType(SymTypeExpression innerResult, ASTFieldAccessExpression expr) {
-    return innerResult.getFieldList(expr.getName(), getTypeCheckResult().isType(), true);
+    return innerResult.getFieldList(expr.getName(), getTypeCheckResult().isType(), true, AccessModifier.ALL_INCLUSION);
   }
 
   /**
@@ -1079,7 +1080,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * Hookpoint for object oriented languages to get the correct functions/methods from a type based on their modifiers
    */
   protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
-    return innerResult.getMethodList(name, getTypeCheckResult().isType(), true);
+    return innerResult.getMethodList(name, getTypeCheckResult().isType(), true, AccessModifier.ALL_INCLUSION);
   }
 
   protected List<SymTypeOfFunction> getFittingFunctions(List<SymTypeOfFunction> candidates,

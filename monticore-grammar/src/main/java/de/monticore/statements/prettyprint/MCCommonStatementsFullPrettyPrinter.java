@@ -10,6 +10,7 @@ import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsTra
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTMCVarDeclarationStatementsNode;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class MCCommonStatementsFullPrettyPrinter {
 
   protected MCCommonStatementsTraverser traverser;

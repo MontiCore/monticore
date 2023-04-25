@@ -39,7 +39,7 @@ public class OverridingNTsHaveNoSuperRules implements GrammarASTClassProdCoCo {
       }
       else{
         extendedType = MCSimpleGenericTypesMill
-            .mcSimpleGenericTypesPrettyPrinter().prettyprint(a.getASTSuperClassList().get(0));
+            .prettyPrint(a.getASTSuperClassList().get(0), false).trim();
       }
       for (MCGrammarSymbol s : grammarSymbols) {
         if (s.getProd(a.getName()).isPresent()) {

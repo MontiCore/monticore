@@ -6,6 +6,7 @@ import de.monticore.expressions.bitexpressions._visitor.BitExpressionsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 
+@Deprecated(forRemoval = true)
 public class BitExpressionsFullPrettyPrinter extends ExpressionsBasisFullPrettyPrinter {
 
   protected BitExpressionsTraverser traverser;

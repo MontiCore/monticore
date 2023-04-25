@@ -9,10 +9,10 @@ import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
-import de.monticore.types.prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -132,9 +132,7 @@ public class Util {
   }
 
   public static String printImportDeclaration(ASTMCImportStatement importDeclaration){
-    MCBasicTypesFullPrettyPrinter p = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
-    importDeclaration.accept(p.getTraverser());
-    return p.getPrinter().getContent();
+    return MCBasicTypesMill.prettyPrint(importDeclaration, true);
   }
 
   public static String printExpression(ASTExpression astExpression) {
@@ -321,8 +319,6 @@ public class Util {
   }
 
   public static String printType(ASTMCType type) {
-    MCSimpleGenericTypesFullPrettyPrinter prettyPrinter = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
-    type.accept(prettyPrinter.getTraverser());
-    return prettyPrinter.getPrinter().getContent().replace("<>", "");
+    return MCSimpleGenericTypesMill.prettyPrint(type, false).replace("<>", "");
   }
 }

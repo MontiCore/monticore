@@ -1,6 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.oosymbols._symboltable;
 
+import de.monticore.symboltable.modifiers.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class FieldSymbol extends FieldSymbolTOP {
 
   public FieldSymbol(String name){
@@ -33,4 +38,29 @@ public class FieldSymbol extends FieldSymbolTOP {
     return clone;
   }
 
+  @Override
+  public AccessModifier getAccessModifier() {
+    List<AccessModifier> modifiers = new ArrayList<>();
+    if(isIsPublic()){
+      modifiers.add(BasicAccessModifier.PUBLIC);
+    }else if(isIsProtected()){
+      modifiers.add(BasicAccessModifier.PROTECTED);
+    }else if(isIsPrivate()){
+      modifiers.add(BasicAccessModifier.PRIVATE);
+    }else{
+      modifiers.add(BasicAccessModifier.PACKAGE_LOCAL);
+    }
+
+    if(isIsStatic()){
+      modifiers.add(StaticAccessModifier.STATIC);
+    }else{
+      modifiers.add(StaticAccessModifier.NON_STATIC);
+    }
+    if(isIsFinal()){
+      modifiers.add(WritableAccessModifier.NON_WRITABLE);
+    }else{
+      modifiers.add(WritableAccessModifier.WRITABLE);
+    }
+    return new CompoundAccessModifier(modifiers);
+  }
 }

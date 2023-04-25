@@ -7,6 +7,7 @@ import mchexnumbers.MCHexNumbersMill;
 import mchexnumbers._ast.ASTMCHexNumbersNode;
 import mchexnumbers._visitor.MCHexNumbersTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCHexNumbersFullPrettyPrinter extends MCNumbersFullPrettyPrinter {
 
   private MCHexNumbersTraverser traverser;

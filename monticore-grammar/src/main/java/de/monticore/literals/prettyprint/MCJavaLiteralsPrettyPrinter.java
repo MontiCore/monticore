@@ -8,6 +8,7 @@ import de.monticore.literals.mcjavaliterals._visitor.MCJavaLiteralsTraverser;
 import de.monticore.literals.mcjavaliterals._visitor.MCJavaLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class MCJavaLiteralsPrettyPrinter implements MCJavaLiteralsVisitor2, MCJavaLiteralsHandler {
 
   protected MCJavaLiteralsTraverser traverser;

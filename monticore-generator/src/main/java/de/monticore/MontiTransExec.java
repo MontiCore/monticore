@@ -51,6 +51,9 @@ public abstract class MontiTransExec extends DefaultTask {
 
   public MontiTransExec() {
     setGroup("MontiTrans");
+
+    // Only one task using MontiCore Mills at the same time
+    usesService(getProject().getGradle().getSharedServices().getRegistrations().findByName(MCPlugin.MC_MILL_BUILD_SERVICE).getService());
   }
 
   protected Method loadTFGenMain() throws ClassNotFoundException, NoSuchMethodException, MalformedURLException {

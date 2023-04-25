@@ -3,6 +3,7 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
+import de.monticore.types.mcarraytypes._prettyprint.MCArrayTypesFullPrettyPrinter;
 import de.monticore.types.mcarraytypestest._parser.MCArrayTypesTestParser;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;

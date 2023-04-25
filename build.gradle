@@ -32,10 +32,10 @@ if(!hasProperty('bootstrap')){
 }
 
 allprojects {
-  
+
   ext.grammarDir = 'src/main/grammars'
   buildDir = file("$projectDir/target")
-  
+
   repositories {
     if(("true").equals(getProperty('useLocalRepo'))){
       mavenLocal()

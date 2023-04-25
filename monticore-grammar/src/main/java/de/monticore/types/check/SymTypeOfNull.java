@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.types2.ISymTypeVisitor;
 
 public class SymTypeOfNull extends SymTypeExpression {
 
@@ -15,7 +16,9 @@ public class SymTypeOfNull extends SymTypeExpression {
    *       Integer i2 = null;     ok
    * but not e.g. to int
    *       int i = null;          illegal
+   * @deprecated contains no non-deprecated program logic
    */
+  @Deprecated
   public SymTypeOfNull() {
     typeSymbol = new TypeSymbolSurrogate(BasicSymbolsMill.NULL);
     typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
@@ -35,21 +38,18 @@ public class SymTypeOfNull extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfNull deepClone() {
-    return new SymTypeOfNull();
-  }
-
-  @Override
   public boolean isNullType() {
     return true;
   }
 
   @Override
   public boolean deepEquals(SymTypeExpression sym){
-    return sym instanceof SymTypeOfNull;
+    return sym.isNullType();
   }
 
-  // --------------------------------------------------------------------------
-
+  @Override
+  public void accept(ISymTypeVisitor visitor) {
+    visitor.visit(this);
+  }
 
 }

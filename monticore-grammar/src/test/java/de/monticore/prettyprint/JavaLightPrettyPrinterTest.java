@@ -3,6 +3,7 @@ package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
+import de.monticore.javalight._prettyprint.JavaLightFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -63,7 +64,8 @@ public class JavaLightPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+
+    assertTrue("Parse pp output: "  + output, ast.deepEquals(result.get()));
 
     assertTrue(Log.getFindings().isEmpty());
   }

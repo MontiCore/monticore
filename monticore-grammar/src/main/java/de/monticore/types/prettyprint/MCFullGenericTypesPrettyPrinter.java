@@ -10,6 +10,7 @@ import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesHandler;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor2;
 
+@Deprecated(forRemoval = true)
 public class MCFullGenericTypesPrettyPrinter implements MCFullGenericTypesVisitor2, MCFullGenericTypesHandler {
 
   protected MCFullGenericTypesTraverser traverser;

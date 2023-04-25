@@ -3,6 +3,7 @@ package de.monticore.expressions.exptojava;
 
 import de.monticore.expressions.assignmentexpressions.AssignmentExpressionsMill;
 import de.monticore.expressions.assignmentexpressions._ast.*;
+import de.monticore.expressions.assignmentexpressions._prettyprint.AssignmentExpressionsFullPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testassignmentexpressions._parser.TestAssignmentExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
@@ -22,7 +23,7 @@ public class AssignmentExpressionsJavaPrinterTest {
   
   private TestAssignmentExpressionsParser parser = new TestAssignmentExpressionsParser();
   
-  private AssignmentExpressionsFullJavaPrinter javaPrinter = new AssignmentExpressionsFullJavaPrinter(new IndentPrinter());
+  private AssignmentExpressionsFullPrettyPrinter javaPrinter = new AssignmentExpressionsFullPrettyPrinter(new IndentPrinter());
   
   @Before
   public void initLog() {
@@ -42,7 +43,7 @@ public class AssignmentExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTIncPrefixExpression ast = result.get();
     
-    String output = javaPrinter.print(ast);
+    String output = javaPrinter.prettyprint(ast);
     
     result = parser.parse_StringIncPrefixExpression(output);
     assertFalse(parser.hasErrors());
@@ -60,7 +61,7 @@ public class AssignmentExpressionsJavaPrinterTest {
     assertTrue(result.isPresent());
     ASTDecPrefixExpression ast = result.get();
     
-    String output = javaPrinter.print(ast);
+    String output = javaPrinter.prettyprint(ast);
     
     result = parser.parse_StringDecPrefixExpression(output);
     assertFalse(parser.hasErrors());
@@ -80,7 +81,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setExpression(a.get())
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a++", output);
   
@@ -96,7 +97,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setExpression(a.get())
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a--", output);
   
@@ -116,7 +117,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(EQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a=b", output);
   
@@ -136,7 +137,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(PLUSEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a+=b", output);
   
@@ -156,7 +157,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(MINUSEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a-=b", output);
   
@@ -176,7 +177,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(PERCENTEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a%=b", output);
   
@@ -196,7 +197,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(AND_EQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a&=b", output);
   
@@ -216,7 +217,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(ROOFEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a^=b", output);
   
@@ -236,7 +237,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(SLASHEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a/=b", output);
   
@@ -256,7 +257,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(STAREQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a*=b", output);
   
@@ -276,7 +277,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(PIPEEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a|=b", output);
   
@@ -296,7 +297,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(LTLTEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a<<=b", output);
   
@@ -316,7 +317,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(GTGTEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a>>=b", output);
   
@@ -336,7 +337,7 @@ public class AssignmentExpressionsJavaPrinterTest {
       .setOperator(GTGTGTEQUALS)
       .build();
     
-    String output = javaPrinter.print(result);
+    String output = javaPrinter.prettyprint(result);
     
     assertEquals("a>>>=b", output);
   

@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -91,6 +92,8 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teUnion1;
 
+  static SymTypeExpression teInter1;
+
   static SymTypeExpression teObscure;
 
   @BeforeClass
@@ -165,6 +168,8 @@ public class SymTypeExpressionTest {
 
     teUnion1 = createUnion(teInt, teDouble);
 
+    teInter1 = createIntersection(teInt, teDouble);
+
     teObscure = createObscureType();
 
   }
@@ -208,6 +213,8 @@ public class SymTypeExpressionTest {
     assertTrue(teFunc1.isValidType());
     assertTrue(teUnion1.isUnionType());
     assertTrue(teUnion1.isValidType());
+    assertTrue(teInter1.isIntersectionType());
+    assertTrue(teInter1.isValidType());
     assertTrue(teObscure.isObscureType());
     assertFalse(teObscure.isValidType());
   }
@@ -237,6 +244,7 @@ public class SymTypeExpressionTest {
     assertEquals("((double, int) -> int) -> () -> void", teFunc3.print());
     assertEquals("(double, int...) -> void", teFunc4.print());
     assertEquals("(double | int)", teUnion1.print());
+    assertEquals("(double & int)", teInter1.print());
   }
 
   @Test
@@ -432,6 +440,22 @@ public class SymTypeExpressionTest {
         union1Types.get(1).getAsJsonObject().getStringMember( "kind"));
     assertEquals("int",
         union1Types.get(1).getAsJsonObject().getStringMember( "primitiveName"));
+
+    result = JsonParser.parse(teInter1.printAsJson());
+    assertTrue(result.isJsonObject());
+    JsonObject teInter1Json = result.getAsJsonObject();
+    assertEquals("de.monticore.types.check.SymTypeOfIntersection",
+        teInter1Json.getStringMember("kind"));
+    assertEquals(2, teInter1Json.getArrayMember("intersectedTypes").size());
+    List<JsonElement> intersected1Types = teInter1Json.getArrayMember("intersectedTypes");
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
+        intersected1Types.get(0).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("double",
+        intersected1Types.get(0).getAsJsonObject().getStringMember( "primitiveName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
+        intersected1Types.get(1).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("int",
+        intersected1Types.get(1).getAsJsonObject().getStringMember( "primitiveName"));
   }
 
   @Test
@@ -458,6 +482,41 @@ public class SymTypeExpressionTest {
     assertEquals("java.util.Set<A>", SymTypeOfGenerics.box((SymTypeOfGenerics) teSetA));
     assertEquals("java.util.Map<java.lang.Integer,de.x.Person>", SymTypeOfGenerics.box((SymTypeOfGenerics)teMap));
     assertEquals("java.util.Map<java.util.Set<java.lang.Integer>,x.Foo<de.x.Person,java.lang.Double,java.lang.Integer,Human>>",SymTypeOfGenerics.box((SymTypeOfGenerics)teMap2));
+  }
+
+  @Test
+  public void testHasTypeInfo() {
+    assertTrue(teInt.hasTypeInfo());
+    assertFalse(SymTypeExpressionFactory.createPrimitive((TypeSymbol) null).hasTypeInfo());
+    assertTrue(teVarA.hasTypeInfo());
+    assertTrue(teVarB.hasTypeInfo());
+    assertTrue(teIntA.hasTypeInfo());
+    assertFalse(SymTypeExpressionFactory.createTypeObject(null).hasTypeInfo());
+    assertTrue(teP.hasTypeInfo());
+    assertTrue(teH.hasTypeInfo());
+    assertFalse(teVoid.hasTypeInfo());
+    assertFalse(teNull.hasTypeInfo());
+    assertFalse(teArr1.hasTypeInfo());
+    assertFalse(teArr3.hasTypeInfo());
+    assertTrue(teSetA.hasTypeInfo());
+    assertTrue(teSetB.hasTypeInfo());
+    assertTrue(teSetC.hasTypeInfo());
+    assertTrue(teMap.hasTypeInfo());
+    assertTrue(teMapA.hasTypeInfo());
+    assertTrue(teMap3.hasTypeInfo());
+    assertTrue(teFoo.hasTypeInfo());
+    assertTrue(teDeep1.hasTypeInfo());
+    assertTrue(teDeep2.hasTypeInfo());
+    assertFalse(SymTypeExpressionFactory.createGenerics(null).hasTypeInfo());
+    assertFalse(teUpperBound.hasTypeInfo());
+    assertFalse(teLowerBound.hasTypeInfo());
+    assertFalse(teWildcard.hasTypeInfo());
+    assertFalse(teFunc1.hasTypeInfo());
+    assertFalse(teFunc2.hasTypeInfo());
+    assertFalse(teFunc3.hasTypeInfo());
+    assertFalse(teFunc4.hasTypeInfo());
+    assertFalse(teUnion1.hasTypeInfo());
+    assertFalse(teObscure.hasTypeInfo());
   }
 
   @Test
@@ -513,6 +572,11 @@ public class SymTypeExpressionTest {
     assertTrue(teUnion1.deepClone() instanceof SymTypeOfUnion);
     assertTrue(teUnion1.deepClone().isUnionType());
     assertEquals(teUnion1.print(), teUnion1.deepClone().print());
+
+    //SymTypeOfIntersection
+    assertTrue(teInter1.deepClone() instanceof SymTypeOfIntersection);
+    assertTrue(teInter1.deepClone().isIntersectionType());
+    assertEquals(teInter1.print(), teInter1.deepClone().print());
   }
 
   @Test
@@ -594,6 +658,12 @@ public class SymTypeExpressionTest {
 
     SymTypeOfUnion tUnion2 = createUnion(Set.of(teInt, teDouble, teArr1));
     assertEquals("(Human[] | double | int)", tUnion2.print());
+
+    SymTypeOfIntersection tInter1 = createIntersection(teInt, teDouble);
+    assertEquals("(double & int)", tInter1.print());
+
+    SymTypeOfIntersection tInter2 = createIntersection(Set.of(teInt, teDouble, teArr1));
+    assertEquals("(Human[] & double & int)", tInter2.print());
   }
 
   @Test

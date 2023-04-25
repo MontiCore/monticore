@@ -8,6 +8,7 @@ import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
+@Deprecated(forRemoval = true)
 public class MCCommonLiteralsPrettyPrinter implements MCCommonLiteralsVisitor2, MCCommonLiteralsHandler {
 
   protected MCCommonLiteralsTraverser traverser;

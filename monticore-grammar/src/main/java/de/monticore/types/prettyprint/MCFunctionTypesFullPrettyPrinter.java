@@ -6,6 +6,7 @@ import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.types.mcfunctiontypes.MCFunctionTypesMill;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCFunctionTypesFullPrettyPrinter extends MCBasicTypesFullPrettyPrinter {
 
   protected MCFunctionTypesTraverser traverser;

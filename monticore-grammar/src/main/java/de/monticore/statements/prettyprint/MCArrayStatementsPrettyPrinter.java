@@ -11,6 +11,7 @@ import de.monticore.statements.mcarraystatements._visitor.MCArrayStatementsTrave
 import de.monticore.statements.mcarraystatements._visitor.MCArrayStatementsVisitor2;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
 
+@Deprecated(forRemoval = true)
 public class MCArrayStatementsPrettyPrinter implements
     MCArrayStatementsVisitor2, MCArrayStatementsHandler {
 

@@ -7,6 +7,7 @@ import mcnumbers.MCNumbersMill;
 import mcnumbers._ast.ASTMCNumbersNode;
 import mcnumbers._visitor.MCNumbersTraverser;
 
+@Deprecated(forRemoval = true)
 public class MCNumbersFullPrettyPrinter {
 
   private MCNumbersTraverser traverser;

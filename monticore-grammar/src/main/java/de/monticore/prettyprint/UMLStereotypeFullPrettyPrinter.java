@@ -6,6 +6,7 @@ import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.monticore.umlstereotype._ast.ASTUMLStereotypeNode;
 import de.monticore.umlstereotype._visitor.UMLStereotypeTraverser;
 
+@Deprecated(forRemoval = true)
 public class UMLStereotypeFullPrettyPrinter {
 
   protected UMLStereotypeTraverser traverser;

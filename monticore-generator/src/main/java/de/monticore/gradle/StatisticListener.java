@@ -82,7 +82,7 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
       if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
         System.out.println(data.toString());
       }
-      StatisticsHandler.storeReport(data.toString(), StatisticsHandler.ReportType.GradleReport);
+      StatisticsHandlerFix.storeReport(data.toString(), "MC_GRADLE_JSON");
     } else{
       Log.info("<projectStartTime> was null. ", this.getClass().getName());
     }
