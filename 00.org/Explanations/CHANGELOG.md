@@ -12,6 +12,8 @@ to be released
 * TOP mechanism for generated ANTLr parser classes
 
 ### Changes
+* Gradle projects containing multiple MCTasks can now use parallel builds
+  * The MontiCore Gradle Plugin ensures that MCTasks are not run in parallel, other tasks, like compile, are run in parallel
 
 ### Fixes
 * parser generation for optional keywords with usage name
