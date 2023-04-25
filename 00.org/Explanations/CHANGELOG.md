@@ -7,10 +7,15 @@ to be released
 
 ### Additions
 * pretty-printer generator
+* parser generator produces code for the new rule "replcaekeyword"
+* new coco NoForbiddenProdName
+* TOP mechanism for generated ANTLr parser classes
 
 ### Changes
 
 ### Fixes
+* parser generation for optional keywords with usage name
+* Overriding/Imlementing use of lexical productions
 
 ## MontiCore 7.4.0
 released: 14.11.2022
