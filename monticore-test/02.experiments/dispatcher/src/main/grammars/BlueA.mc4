@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar BlueA extends de.monticore.MCBasics {
+
+    symbol scope Place = "place" Name "{" Place* "}";
+
+}
