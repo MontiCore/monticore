@@ -11,6 +11,20 @@ to be released
 * parser generator produces code for the new rule "replcaekeyword"
 * new coco NoForbiddenProdName
 * TOP mechanism for generated ANTLr parser classes
+* add class StreamType which can be used to add Stream symbol with corresponding functions to the global scope
+* Additions to AccessModifiers
+  * add class StaticAccessModifier to filter whether a symbol is considered as static or not.
+  * add class WriteableAccessModifier to filter whether a symbol is considered as writable or not.
+  * add class CompoundAccessModifier to compose multiple access modifier, e.g. public + static
+* Additions to the TypeCheck
+  * add new class TypeRelations provide typecheck methods in a non static fashion. The TypeCheck class now delegates to the implementation
+  * add new class SymTypeOfUnion to store the type of a union of types
+  * add new class SymTypeOfIntersection to store the type of an intersection of types
+  * add new interface ISymTypeVisitor to traverse SymTypeExpressions
+  * add new class SymTypeDeepCloneVisitor to clone SymTypeExpressions
+  * add new class SymTypeBoxingVisitor to box SymTypeExpressions. This implemenation fixes issues over the methods within the SymTypeExpression classes
+  * add new class SymTypeUnboxingVisitor to unbox SymTypeExpressions. This implemenation fixes issues over the methods within the SymTypeExpression classes
+  * add new class SymTypeNormalizeVisitor to normalize SymTypeExpressions. This is required to check for compatibility between SymTypeExpressions, especially regarding union and intersection types
 
 ### Changes
 * Gradle projects containing multiple MCTasks can now use parallel builds
@@ -19,6 +33,7 @@ to be released
 ### Fixes
 * parser generation for optional keywords with usage name
 * Overriding/Imlementing use of lexical productions
+* in OOScopes, accessmodifier can be used to filter symbols
 
 ## MontiCore 7.4.0
 released: 14.11.2022
