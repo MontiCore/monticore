@@ -6,6 +6,7 @@
 to be released
 
 ### Additions
+* type dispatcher for type-safe instance checks and casting
 * pretty-printer generator
 * parser generator produces code for the new rule "replcaekeyword"
 * new coco NoForbiddenProdName
