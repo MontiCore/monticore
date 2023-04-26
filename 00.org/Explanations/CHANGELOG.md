@@ -17,7 +17,7 @@ to be released
   * add class WriteableAccessModifier to filter whether a symbol is considered as writable or not.
   * add class CompoundAccessModifier to compose multiple access modifier, e.g. public + static
 * Additions to the TypeCheck
-  * add new class TypeRelations provide typecheck methods in a non static fashion. The TypeCheck class now delegates to the implementation
+  * add new class TypeRelations to provide typecheck methods in a non static fashion. The TypeCheck class now delegates to the implementation
   * add new class SymTypeOfUnion to store the type of a union of types
   * add new class SymTypeOfIntersection to store the type of an intersection of types
   * add new interface ISymTypeVisitor to traverse SymTypeExpressions
