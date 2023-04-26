@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar BlueC extends BlueB {
+
+    symbol scope LightBluePlace extends BluePlace = "lightBluePlace" Name "{" Place* "}";
+
+}

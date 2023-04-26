@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("name", "superTypes")}
+${tc.signature("name", "superTypes", "handlerName")}
 
 <#list superTypes as superType>
-  this.handle((${superType}) node);
+  this.getTraverser().handle((${superType}) node);
 </#list>
-is${name} = true;
-opt${name} = Optional.of(node);
+this.setIs${name}(true);
+this.setOpt${name}(node);

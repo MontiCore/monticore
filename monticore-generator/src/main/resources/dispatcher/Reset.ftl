@@ -1,5 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("booleans", "optionals")}
+${tc.signature("booleans", "optionals", "superDispatchers")}
+
+<#list superDispatchers as superDispatcher>
+    ${superDispatcher.getName()}.reset();
+</#list>
 
 <#list booleans as boolean>
   ${boolean.getName()} = false;
