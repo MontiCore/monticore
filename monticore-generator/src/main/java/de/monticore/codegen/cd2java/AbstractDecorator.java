@@ -127,7 +127,7 @@ public abstract class AbstractDecorator {
     } else {
       ASTCDPackage p = CD4CodeMill.cDPackageBuilder().setMCQualifiedName(
               CD4CodeMill.mCQualifiedNameBuilder().setPartsList(Arrays.asList(completeName.split("\\."))).build()).build();
-      decoratedCD.getCDDefinition().addCDPackage(0, p);
+      decoratedCD.getCDDefinition().addCDElement(0, p);
       return p;
     }
   }
@@ -136,5 +136,4 @@ public abstract class AbstractDecorator {
     String origPackage = Names.constructQualifiedName(origCD.getCDPackageList(), origCD.getCDDefinition().getName());
     return (subPackage.isEmpty()?origPackage: Joiners.DOT.join(origPackage, subPackage)).toLowerCase();
   }
-
 }

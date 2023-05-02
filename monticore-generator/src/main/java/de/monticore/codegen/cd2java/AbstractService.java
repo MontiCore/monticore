@@ -81,16 +81,16 @@ public class AbstractService<T extends AbstractService> {
   /**
    * different methods for getting a list od super ClassDiagrams
    */
-  public List<DiagramSymbol> getSuperCDsDirect() {
+  public Collection<DiagramSymbol> getSuperCDsDirect() {
     return getSuperCDsDirect(getCDSymbol());
   }
 
-  public List<DiagramSymbol> getSuperCDsDirect(DiagramSymbol cdSymbol) {
+  public Collection<DiagramSymbol> getSuperCDsDirect(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<DiagramSymbol> superCDs = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
+    Collection<DiagramSymbol> superCDs = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
         .map(i -> i.getStatement())
         .map(this::resolveCD)
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
     return superCDs;
   }
 
@@ -110,10 +110,11 @@ public class AbstractService<T extends AbstractService> {
   // Cache this methods return value
   protected List<DiagramSymbol> getSuperCDsTransitiveUncached(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
+    Collection<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
             .map(i -> i.getStatement())
+            .filter(i -> !isJava(i))
             .map(AbstractService.this::resolveCD)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     // search for super Cds in super Cds
     List<DiagramSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (DiagramSymbol superSymbol : directSuperCdSymbols) {
@@ -636,5 +637,9 @@ public class AbstractService<T extends AbstractService> {
     }else{
       return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName().toLowerCase(), PRETTYPRINT_PACKAGE, getFullPrettyPrinterSimpleName(cdSymbol));
     }
+  }
+
+  public boolean isJava(String name) {
+    return "java.lang".equals(name);
   }
 }

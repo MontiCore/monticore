@@ -17,20 +17,18 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
 
 /**
@@ -174,7 +172,6 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   
   protected List<ASTCDMethod> createOverriddenMethodDelegates(List<ASTCDMethod> inheritedMethods) {
     List<ASTCDMethod> overriddenDelegates = new ArrayList<>();
-    MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     for (ASTCDMethod inherited : inheritedMethods) {
       ASTCDMethod method = getCDMethodFacade().createMethod(inherited.getModifier(), inherited.getMCReturnType(), inherited.getName(), inherited.getCDParameterList());
       StringBuilder message = new StringBuilder();
@@ -187,31 +184,28 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
         if (method.getMCReturnType().getMCType() instanceof ASTMCListType) {
           message.append("return new ArrayList<>();\n}\n");
         } else if (method.getMCReturnType().getMCType() instanceof ASTMCArrayType) {
-          String typeOfMethod = method.getMCReturnType().printType(printer);
+          String typeOfMethod = ((ASTMCArrayType) method.getMCReturnType().getMCType()).getMCType().printType();
           message.append("return new " + typeOfMethod + "[0];\n}\n");
         } else if (method.getMCReturnType().getMCType() instanceof ASTMCGenericType) {
+          String typeOfList = ((ASTMCGenericType)method.getMCReturnType().getMCType()).getMCTypeArgument(0).printType();
           if (("Iterator").equals(((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0))) {
-            String typeOfList = method.getMCReturnType().printType(printer);
             message.append("return new ArrayList<" + typeOfList + ">().iterator();\n}\n");
           } else if (("ListIterator").equals(((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0))) {
-            String typeOfList = method.getMCReturnType().printType(printer);
             message.append("return new ArrayList<" + typeOfList + ">().listIterator();\n}\n");
           } else if (("Spliterator").equals(((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0))) {
-            String typeOfList = method.getMCReturnType().printType(printer);
             message.append("return new ArrayList<" + typeOfList + ">().spliterator();\n}\n");
           } else if (("Stream").equals(((ASTMCGenericType) method.getMCReturnType().getMCType()).getName(0))) {
-            String typeOfList = method.getMCReturnType().printType(printer);
             message.append("return new ArrayList<" + typeOfList + ">().stream();\n}\n");
           } else {
             message.append("}\n");
           }
-        } else if (("boolean").equals(method.getMCReturnType().printType(printer))) {
+        } else if (("boolean").equals(method.getMCReturnType().printType())) {
           message.append("return false;\n}\n");
-        } else if (("int").equals(method.getMCReturnType().printType(printer))) {
+        } else if (("int").equals(method.getMCReturnType().printType())) {
           message.append("return 0;\n}\n");
-        } else if (("String").equals(method.getMCReturnType().printType(printer))) {
+        } else if (("String").equals(method.getMCReturnType().printType())) {
           message.append("return \"\";\n}\n");
-        } else if (("de.monticore.types.check.SymTypeExpression").equals(method.getMCReturnType().printType(printer))) {
+        } else if (("de.monticore.types.check.SymTypeExpression").equals(method.getMCReturnType().printType())) {
           message.append("return new de.monticore.types.check.SymTypeOfNull();\n}\n");
         } else {
           message.append("}\n");

@@ -4,6 +4,7 @@ package de.monticore;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4code.CD4CodeMill;
@@ -14,6 +15,7 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cli.MontiCoreTool;
 import de.monticore.codegen.mc2cd.TestHelper;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -87,6 +89,7 @@ public class MontiCoreScriptTest {
     GrammarFamilyMill.reset();
     GrammarFamilyMill.init();
     glex = new GlobalExtensionManagement();
+    CD4C.init(new GeneratorSetup());
     Optional<ASTMCGrammar> ast = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
             "src/test/resources/de/monticore/statechart/Statechart.mc4").getAbsolutePath()));

@@ -14,6 +14,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -228,7 +229,7 @@ public class VisitorService extends AbstractService<VisitorService> {
    */
   public List<ASTMCObjectType> getSuperTraverserInterfaces() {
     // only direct super cds, not transitive
-    List<DiagramSymbol> superCDs = getSuperCDsDirect();
+    Collection<DiagramSymbol> superCDs = getSuperCDsDirect();
     return superCDs
         .stream()
         .map(this::getTraverserInterfaceType)

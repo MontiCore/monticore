@@ -15,6 +15,6 @@ public class CDPrettyPrinterDecorator extends AbstractDecorator {
 
   public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD, ASTCDCompilationUnit prettyPrintCD) {
     ASTCDPackage cdPackage = getPackage(input, decoratedCD, PrettyPrinterConstants.PRETTYPRINT_PACKAGE);
-    cdPackage.addAllCDElements(prettyPrintCD.getCDDefinition().getCDPackagesList().get(0).getCDElementList());
+    cdPackage.addAllCDElements(prettyPrintCD.getCDDefinition().getCDElementList());
   }
 }

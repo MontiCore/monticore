@@ -20,6 +20,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 
 import java.util.ArrayList;
@@ -373,13 +374,15 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     for (ASTCDAttribute attribute : attributes) {
       String name = attribute.getName();
       name = name.substring(name.indexOf("opt") + 3);
+      String type = attribute.getMCType() instanceof ASTMCGenericType?
+              CD4CodeMill.prettyPrint(((ASTMCGenericType) attribute.getMCType()).getMCTypeArgument(0), false):
+              CD4CodeMill.prettyPrint(attribute.getMCType(), false);
 
       ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
           .setModifier(PUBLIC.build())
           .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
               .setMCType(MCTypeFacade.getInstance()
-                  .createQualifiedType(attribute.getMCType()
-                      .printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()))))
+                  .createQualifiedType(type))
               .build())
           .setName("as" + name)
           .addCDParameter(CD4CodeMill.cDParameterBuilder()

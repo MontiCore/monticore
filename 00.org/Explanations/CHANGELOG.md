@@ -3,7 +3,7 @@
 # Release Notes
 
 ## MontiCore 7.5.0
-to be released
+released: 02.05.2023
 
 ### Additions
 * type dispatcher for type-safe instance checks and casting

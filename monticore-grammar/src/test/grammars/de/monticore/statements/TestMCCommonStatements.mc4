@@ -5,5 +5,5 @@ package de.monticore.statements;
 grammar TestMCCommonStatements extends de.monticore.statements.MCCommonStatements,
                                        de.monticore.expressions.CombineExpressionsWithLiterals,
                                        de.monticore.types.MCArrayTypes {
-
+start MCStatement;
 }

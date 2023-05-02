@@ -1096,7 +1096,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setGlex(glex);
 
     TopDecorator topDecorator = new TopDecorator(handcodedPath);
-    topDecorator.decoratePackage(decoratedCD);
+    topDecorator.decorate(decoratedCD);
 
     CDGenerator generator = new CDGenerator(setup);
     generator.generate(decoratedCD);
@@ -1135,7 +1135,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     setup.setGlex(glex);
 
     TopDecorator topDecorator = new TopDecorator(handcodedPath);
-    topDecorator.decoratePackage(decoratedCD);
+    topDecorator.decorate(decoratedCD);
 
     CDEmfGenerator generator = new CDEmfGenerator(setup);
     //set originalDefinition, because information is needed in template

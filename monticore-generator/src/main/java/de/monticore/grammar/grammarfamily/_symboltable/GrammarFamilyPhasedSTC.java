@@ -2,7 +2,6 @@
 package de.monticore.grammar.grammarfamily._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.cd._symboltable.CDSymbolTableHelper;
 import de.monticore.cd4codebasis._symboltable.CD4CodeBasisSymbolTableCompleter;
 import de.monticore.cdassociation._symboltable.CDAssociationSymbolTableCompleter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -10,12 +9,14 @@ import de.monticore.cdbasis._symboltable.CDBasisSymbolTableCompleter;
 import de.monticore.cdinterfaceandenum._symboltable.CDInterfaceAndEnumSymbolTableCompleter;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.GrammarSTCompleteTypes;
+import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCSGT4Grammar;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.javalight._symboltable.JavaLightSTCompleteTypes;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSTCompleteTypes;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
 import de.monticore.symboltable.ImportStatement;
+import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
 import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
@@ -63,18 +64,17 @@ public class GrammarFamilyPhasedSTC {
     as.setPackageName(packageName);
 
     // Complete symbol table
+    FullSynthesizeFromMCSGT4Grammar synthesize = new FullSynthesizeFromMCSGT4Grammar();
     GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
-    CDSymbolTableHelper symbolTableHelper = new CDSymbolTableHelper(new DeriveSymType(), new SynthesizeSymType())
-            .setPackageDeclaration(node.getMCPackageDeclaration().getMCQualifiedName());
-    final CDBasisSymbolTableCompleter cDBasisVisitor = new CDBasisSymbolTableCompleter(symbolTableHelper);
+    final CDBasisSymbolTableCompleter cDBasisVisitor = new CDBasisSymbolTableCompleter(synthesize);
     traverser.add4CDBasis(cDBasisVisitor);
     traverser.add4OOSymbols(cDBasisVisitor);
-    final CDAssociationSymbolTableCompleter cDAssociationVisitor = new CDAssociationSymbolTableCompleter(symbolTableHelper);
+    final CDAssociationSymbolTableCompleter cDAssociationVisitor = new CDAssociationSymbolTableCompleter(synthesize);
     traverser.add4CDAssociation(cDAssociationVisitor);
     traverser.setCDAssociationHandler(cDAssociationVisitor);
-    final CDInterfaceAndEnumSymbolTableCompleter cdInterfaceAndEnumVisitor = new CDInterfaceAndEnumSymbolTableCompleter(symbolTableHelper);
+    final CDInterfaceAndEnumSymbolTableCompleter cdInterfaceAndEnumVisitor = new CDInterfaceAndEnumSymbolTableCompleter(synthesize);
     traverser.add4CDInterfaceAndEnum(cdInterfaceAndEnumVisitor);
-    final CD4CodeBasisSymbolTableCompleter cd4CodeBasisVisitor = new CD4CodeBasisSymbolTableCompleter(symbolTableHelper);
+    final CD4CodeBasisSymbolTableCompleter cd4CodeBasisVisitor = new CD4CodeBasisSymbolTableCompleter(synthesize);
     traverser.add4CD4CodeBasis(cd4CodeBasisVisitor);
     node.accept(traverser);
 

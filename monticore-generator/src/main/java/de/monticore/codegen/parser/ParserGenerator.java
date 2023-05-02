@@ -197,7 +197,7 @@ public class ParserGenerator {
     ASTCDCompilationUnit decoratedCD = parserCDDecorator.decorate(astClassDiagram);
 
     TopDecorator topDecorator = new TopDecorator(handcodedPath);
-    topDecorator.decoratePackage(decoratedCD);
+    topDecorator.decorate(decoratedCD);
 
     glex.setGlobalValue("service", new AbstractService(astClassDiagram));
     glex.setGlobalValue("astHelper", DecorationHelper.getInstance());

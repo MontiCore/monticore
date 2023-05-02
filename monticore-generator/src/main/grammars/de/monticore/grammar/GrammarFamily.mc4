@@ -8,4 +8,8 @@ grammar GrammarFamily extends
   // keep the old axiom
   start MCGrammar;
 
+  nokeyword "start", "component", "options", "follow",
+            "keywords", "fragment", "comment",
+            "init", "concept", "external", "method";
+
 }

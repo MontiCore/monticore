@@ -178,8 +178,7 @@ public class EmfService extends AbstractService<EmfService> {
   public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
     List<CDTypeSymbol> superTypes = Lists.newArrayList();
     c.getSymbol().getSuperTypesList().stream()
-            .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
-            .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
+            .map(s -> s.getTypeInfo())
             .forEach(t -> {if(t instanceof CDTypeSymbol && ((CDTypeSymbol)t).isIsInterface()) superTypes.add((CDTypeSymbol) t);});
     return superTypes;
   }
