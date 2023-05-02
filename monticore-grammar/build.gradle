@@ -48,6 +48,7 @@ dependencies {
   implementation "com.google.guava:guava:$guava_version"
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
   testImplementation "junit:junit:$junit_version"
+  testImplementation "org.antlr:antlr4-runtime:$antlr_version!!"
   trafoCompileOnly project(path)
   // use compileOnly as the trafo-artifact is only an extension to the default artifact
   // ensure the trafoCompileOnly dependency line is below the trafo sourceset definition
