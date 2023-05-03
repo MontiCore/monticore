@@ -153,12 +153,14 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   // Cache CDTypeSymbol#resolveCDTypeDown
-  protected final LoadingCache<Pair<ICDBasisScope, String>, Optional<CDTypeSymbol>> calcOCDCDTypeDownCache = CacheBuilder.newBuilder()
+  protected final LoadingCache<Pair<DiagramSymbol, String>, Optional<CDTypeSymbol>> calcOCDCDTypeDownCache = CacheBuilder.newBuilder()
           .maximumSize(10000)
-          .build(new CacheLoader<Pair<ICDBasisScope, String>, Optional<CDTypeSymbol>>() {
+          .build(new CacheLoader<Pair<DiagramSymbol, String>, Optional<CDTypeSymbol>>() {
             @Override
-            public Optional<CDTypeSymbol> load(Pair<ICDBasisScope, String> key) {
-              return key.getLeft().resolveCDTypeDown(key.getRight());
+            public Optional<CDTypeSymbol> load(Pair<DiagramSymbol, String> key) {
+              return ((ASTCDDefinition) key.getLeft().getAstNode()).getCDClassesList().stream().
+                      filter(s -> key.equals(s.getName())).
+                      findAny().map(s -> s.getSymbol());
             }
           });
 
@@ -173,7 +175,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     for (DiagramSymbol superCd : importedClasses) {
       Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
       for (String className : nativeClasses) {
-        Optional<CDTypeSymbol> cdType = calcOCDCDTypeDownCache.getUnchecked(Pair.of((ICDBasisScope) superCd.getEnclosingScope(),className));
+        Optional<CDTypeSymbol> cdType = calcOCDCDTypeDownCache.getUnchecked(Pair.of(superCd,className));
         if (cdType.isPresent()) {
           overriddenSet.add(cdType.get());
           boolean ignore = firstClasses.stream().anyMatch(s -> s.getName().equals(className));

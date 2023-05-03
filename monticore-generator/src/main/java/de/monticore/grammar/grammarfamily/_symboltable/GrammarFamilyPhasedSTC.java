@@ -58,9 +58,6 @@ public class GrammarFamilyPhasedSTC {
     priorityList.forEach(node::accept);
     String packageName = Joiners.DOT.join(node.getCDPackageList());
     as.getLocalDiagramSymbols().forEach(s -> s.setPackageName(packageName));
-    List<ImportStatement> imports = Lists.newArrayList();
-    node.getMCImportStatementList().forEach(i -> imports.add(new ImportStatement(i.getQName(), i.isStar())));
-    as.setImportsList(imports);
     as.setPackageName(packageName);
 
     // Complete symbol table

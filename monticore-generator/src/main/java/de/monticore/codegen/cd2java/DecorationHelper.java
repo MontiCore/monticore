@@ -12,6 +12,7 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.types.MCBasicTypesHelper;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -212,11 +213,11 @@ public class DecorationHelper extends MCBasicTypesHelper {
       return false;
     }
 
-    List<CDTypeSymbol> types = attr.getEnclosingScope().resolveCDTypeMany(typeName);
-    if (types.size() != 1) {
+    Optional<? extends ISymbol> type = attr.getMCType().getDefiningSymbol();
+    if (!type.isPresent() || type.get() instanceof CDTypeSymbol) {
       return false;
     }
-    return types.get(0).isIsEnum();
+    return ((CDTypeSymbol) type.get()).isIsEnum();
   }
 
   /**
