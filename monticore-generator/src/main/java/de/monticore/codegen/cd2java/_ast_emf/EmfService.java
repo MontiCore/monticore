@@ -163,7 +163,7 @@ public class EmfService extends AbstractService<EmfService> {
     if (astcdDefinition.getCDClassesList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {
-      List<DiagramSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
+      List<DiagramSymbol> superCDs = getSuperCDsTransitive(astcdDefinition.getSymbol());
       for (DiagramSymbol superCD : superCDs) {
         if (getAllCDTypes(superCD
         ).stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
