@@ -95,20 +95,20 @@ public class MultipleLanguagesDispatcherTest {
     Log.getFindings().clear();
   }
 
-  public static String printType(ASTPlace ast) {
+  public String printType(ASTPlace ast) {
     return "place";
   }
 
-  public static String printType(ASTBluePlace ast) {
+  public String printType(ASTBluePlace ast) {
     return "bluePlace";
   }
 
 
-  public static String printType(ASTRedPlace ast) {
+  public String printType(ASTRedPlace ast) {
     return "redPlace";
   }
 
-  public static String printType(ASTLightBluePlace ast) {
+  public String printType(ASTLightBluePlace ast) {
     return "lightBluePlace";
   }
 
