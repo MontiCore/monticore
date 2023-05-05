@@ -71,19 +71,19 @@ public class MultipleLanguagesDispatcherTest {
     final ASTPlace ast = optAST.get();
     BlueCTypeDispatcher dispatcher = new BlueCTypeDispatcher();
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast)));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast)));
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast.getPlace(0))));
-    assertEquals("bluePlace", TypePrinter.printType(dispatcher.asASTBluePlace(ast.getPlace(0))));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast.getPlace(0))));
+    assertEquals("bluePlace", printType(dispatcher.asASTBluePlace(ast.getPlace(0))));
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast.getPlace(1))));
-    assertEquals("redPlace", TypePrinter.printType(dispatcher.asASTRedPlace(ast.getPlace(1))));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast.getPlace(1))));
+    assertEquals("redPlace", printType(dispatcher.asASTRedPlace(ast.getPlace(1))));
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast.getPlace(0).getPlace(0))));
-    assertEquals("bluePlace", TypePrinter.printType(dispatcher.asASTBluePlace(ast.getPlace(0).getPlace(0))));
-    assertEquals("lightBluePlace", TypePrinter.printType(dispatcher.asASTLightBluePlace(ast.getPlace(0).getPlace(0))));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast.getPlace(0).getPlace(0))));
+    assertEquals("bluePlace", printType(dispatcher.asASTBluePlace(ast.getPlace(0).getPlace(0))));
+    assertEquals("lightBluePlace", printType(dispatcher.asASTLightBluePlace(ast.getPlace(0).getPlace(0))));
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast.getPlace(0).getPlace(0).getPlace(0))));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast.getPlace(0).getPlace(0).getPlace(0))));
   }
 
   @After
@@ -95,24 +95,21 @@ public class MultipleLanguagesDispatcherTest {
     Log.getFindings().clear();
   }
 
-  private static class TypePrinter {
+  public static String printType(ASTPlace ast) {
+    return "place";
+  }
 
-    public static String printType(ASTPlace ast) {
-      return "place";
-    }
-
-    public static String printType(ASTBluePlace ast) {
-      return "bluePlace";
-    }
+  public static String printType(ASTBluePlace ast) {
+    return "bluePlace";
+  }
 
 
-    public static String printType(ASTRedPlace ast) {
-      return "redPlace";
-    }
+  public static String printType(ASTRedPlace ast) {
+    return "redPlace";
+  }
 
-    public static String printType(ASTLightBluePlace ast) {
-      return "lightBluePlace";
-    }
+  public static String printType(ASTLightBluePlace ast) {
+    return "lightBluePlace";
   }
 
 }
