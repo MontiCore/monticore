@@ -70,13 +70,13 @@ component grammar BitExpressions
   interface BinaryExpression =
     left:Expression operator:"" right:Expression;
 
-  BinaryAndExpression implements Expression <120>, BinaryExpression =
+  BinaryAndExpression implements BinaryExpression, Expression <120> =
     left:Expression operator:"&"  right:Expression;
 
-  BinaryXorExpression implements Expression <110>, BinaryExpression =
+  BinaryXorExpression implements BinaryExpression, Expression <110> =
     left:Expression operator:"^"  right:Expression;
 
-  BinaryOrOpExpression implements Expression <100>, BinaryExpression =
+  BinaryOrOpExpression implements BinaryExpression, Expression <100> =
     left:Expression operator:"|"  right:Expression;
 
 }
