@@ -163,7 +163,7 @@ public class EmfService extends AbstractService<EmfService> {
     if (astcdDefinition.getCDClassesList().stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
       return "this";
     } else {
-      List<DiagramSymbol> superCDs = getSuperCDsTransitive(resolveCD(astcdDefinition.getName()));
+      List<DiagramSymbol> superCDs = getSuperCDsTransitive(astcdDefinition.getSymbol());
       for (DiagramSymbol superCD : superCDs) {
         if (getAllCDTypes(superCD
         ).stream().anyMatch(x -> x.getName().equals(simpleNativeAttributeType))) {
@@ -178,8 +178,7 @@ public class EmfService extends AbstractService<EmfService> {
   public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
     List<CDTypeSymbol> superTypes = Lists.newArrayList();
     c.getSymbol().getSuperTypesList().stream()
-            .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
-            .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
+            .map(s -> s.getTypeInfo())
             .forEach(t -> {if(t instanceof CDTypeSymbol && ((CDTypeSymbol)t).isIsInterface()) superTypes.add((CDTypeSymbol) t);});
     return superTypes;
   }

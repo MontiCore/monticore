@@ -7,6 +7,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDPackageSymbol;
@@ -22,6 +23,7 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
@@ -81,16 +83,16 @@ public class AbstractService<T extends AbstractService> {
   /**
    * different methods for getting a list od super ClassDiagrams
    */
-  public List<DiagramSymbol> getSuperCDsDirect() {
+  public Collection<DiagramSymbol> getSuperCDsDirect() {
     return getSuperCDsDirect(getCDSymbol());
   }
 
-  public List<DiagramSymbol> getSuperCDsDirect(DiagramSymbol cdSymbol) {
+  public Collection<DiagramSymbol> getSuperCDsDirect(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<DiagramSymbol> superCDs = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
+    Collection<DiagramSymbol> superCDs = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
         .map(i -> i.getStatement())
         .map(this::resolveCD)
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
     return superCDs;
   }
 
@@ -110,10 +112,11 @@ public class AbstractService<T extends AbstractService> {
   // Cache this methods return value
   protected List<DiagramSymbol> getSuperCDsTransitiveUncached(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    List<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
+    Collection<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
             .map(i -> i.getStatement())
+            .filter(i -> !isJava(i))
             .map(AbstractService.this::resolveCD)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     // search for super Cds in super Cds
     List<DiagramSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (DiagramSymbol superSymbol : directSuperCdSymbols) {
@@ -172,6 +175,7 @@ public class AbstractService<T extends AbstractService> {
     List<String> superSymbolList = new ArrayList<>();
         List<CDTypeSymbol> localSuperInterfaces = Lists.newArrayList();
         cdTypeSymbol.getSuperTypesList().stream()
+                .filter(s -> !isTFInterface(s))
             .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
                     .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
             .forEach(t -> {if(t instanceof CDTypeSymbol && ((CDTypeSymbol)t).isIsInterface()) localSuperInterfaces.add((CDTypeSymbol) t);});
@@ -182,11 +186,15 @@ public class AbstractService<T extends AbstractService> {
     return superSymbolList;
   }
 
+  protected boolean isTFInterface(SymTypeExpression s) {
+    return s.print().startsWith("de.monticore.tf.ast");
+  }
+
   /**
    * use symboltabe to resolve for ClassDiagrams or CDTypes
    */
   public DiagramSymbol resolveCD(String qualifiedName) {
-    Set<DiagramSymbol> symbols = Sets.newHashSet(getCDSymbol().getEnclosingScope().resolveDiagramMany(qualifiedName));
+    Set<DiagramSymbol> symbols = Sets.newHashSet(CD4CodeMill.globalScope().resolveDiagramMany(qualifiedName));
     if (symbols.size() == 1) {
       return symbols.iterator().next();
     } else {
@@ -195,7 +203,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public CDTypeSymbol resolveCDType(String qualifiedName) {
-    return ((ICDBasisArtifactScope)getCDSymbol().getEnclosingScope()).resolveCDType(qualifiedName)
+    return CD4CodeMill.globalScope().resolveCDType(qualifiedName)
         .orElseThrow(() -> new DecorateException(DecoratorErrorCode.CD_SYMBOL_NOT_FOUND, qualifiedName));
   }
 
@@ -636,5 +644,9 @@ public class AbstractService<T extends AbstractService> {
     }else{
       return String.join(".", cdSymbol.getPackageName(), cdSymbol.getName().toLowerCase(), PRETTYPRINT_PACKAGE, getFullPrettyPrinterSimpleName(cdSymbol));
     }
+  }
+
+  public boolean isJava(String name) {
+    return "java.lang".equals(name);
   }
 }

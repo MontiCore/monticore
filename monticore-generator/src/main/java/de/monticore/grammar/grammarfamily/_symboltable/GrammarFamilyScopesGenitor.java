@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammarfamily._symboltable;
 
+import com.google.common.collect.Lists;
 import de.monticore.symboltable.ImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -43,7 +44,7 @@ public class GrammarFamilyScopesGenitor extends GrammarFamilyScopesGenitorTOP {
     GrammarFamilyArtifactScope artifactScope = new GrammarFamilyArtifactScope(Optional.empty(),
         Names.getQualifiedName(rootNode.getCDPackageList()), new ArrayList<>());
     artifactScope.setAstNode(rootNode);
-    artifactScope.setImportsList(rootNode.getMCImportStatementList().stream().map(i -> new ImportStatement(i.getQName(), i.isStar())).collect(Collectors.toList()));
+    artifactScope.setImportsList(Lists.newArrayList());
     putOnStack(artifactScope);
     rootNode.accept(getTraverser());
     return artifactScope;

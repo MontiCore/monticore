@@ -62,7 +62,9 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
         // LogStub.initPlusLog();  // for manual testing purpose only
     this.MCTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
-
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setGlex(glex);
+    CD4C.init(setup);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");

@@ -167,6 +167,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
     Map<String, CDTypeSymbol> l = Maps.newLinkedHashMap();
     Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
         .map(i -> i.getStatement())
+        .filter(i -> !service.isJava(i))
         .map(service::resolveCD)
         .collect(Collectors.toList());
     for (DiagramSymbol superCd : importedClasses) {

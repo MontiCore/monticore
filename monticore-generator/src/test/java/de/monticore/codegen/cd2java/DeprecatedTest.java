@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java;
 
 import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.*;
@@ -21,6 +22,7 @@ import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.M
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
+import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
@@ -69,6 +71,10 @@ DeprecatedTest extends DecoratorTestCase {
     this.glex.setGlobalValue("service", new AbstractService(compilationUnit));
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
+
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    CD4C.init(generatorSetup);
 
     clazzA = getClassBy("A", compilationUnit);
     interfaceI = getInterfaceBy("I", compilationUnit);
