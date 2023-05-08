@@ -35,7 +35,7 @@ public class MultipleLanguagesDispatcherTest {
     assertTrue(optAST.isPresent());
     final ASTPlace ast = optAST.get();
 
-    BlueCTypeDispatcher dispatcher = new BlueCTypeDispatcher();
+    BlueCTypeDispatcher dispatcher = BlueCMill.blueCTypeDispatcher();
 
     assertFalse(dispatcher.isASTLightBluePlace(ast));
     assertFalse(dispatcher.isASTBluePlace(ast));
@@ -69,7 +69,8 @@ public class MultipleLanguagesDispatcherTest {
     final Optional<ASTPlace> optAST = parser.parse_StringPlace("place p1{bluePlace p2{lightBluePlace p3{place p4{}}}redPlace p5{}}");
     assertTrue(optAST.isPresent());
     final ASTPlace ast = optAST.get();
-    BlueCTypeDispatcher dispatcher = new BlueCTypeDispatcher();
+
+    BlueCTypeDispatcher dispatcher = BlueCMill.blueCTypeDispatcher();
 
     assertEquals("place", printType(dispatcher.asASTPlace(ast)));
 
@@ -88,9 +89,6 @@ public class MultipleLanguagesDispatcherTest {
 
   @After
   public void after() {
-    if (!Log.getFindings().isEmpty()) {
-      Log.getFindings().stream().map(Finding::getMsg).forEach(System.out::println);
-    }
     assertTrue(Log.getFindings().isEmpty());
     Log.getFindings().clear();
   }

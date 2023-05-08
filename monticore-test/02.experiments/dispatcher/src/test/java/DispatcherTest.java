@@ -1,8 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import simpleinterfaces.SimpleInterfacesMill;
 import simpleinterfaces._ast.*;
 import simpleinterfaces._parser.SimpleInterfacesParser;
 import simpleinterfaces._util.SimpleInterfacesTypeDispatcher;
@@ -14,12 +17,18 @@ import static org.junit.Assert.*;
 
 public class DispatcherTest {
 
+  protected static final SimpleInterfacesParser parser = new SimpleInterfacesParser();
+  protected static final SimpleInterfacesTypeDispatcher dispatcher = SimpleInterfacesMill.simpleInterfacesTypeDispatcher();
+
+  @Before
+  public void before() {
+    SimpleInterfacesMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+
   @Test
   public void testIsA() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTA> optAST = parser.parse_StringA("c");
     assertTrue(optAST.isPresent());
     final ASTA ast = optAST.get();
@@ -30,15 +39,10 @@ public class DispatcherTest {
     assertFalse(dispatcher.isASTD(ast));
     assertFalse(dispatcher.isASTE(ast));
     assertFalse(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testIsC() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTC> optAST = parser.parse_StringC("c");
     assertTrue(optAST.isPresent());
     final ASTC ast = optAST.get();
@@ -48,15 +52,10 @@ public class DispatcherTest {
     assertFalse(dispatcher.isASTD(ast));
     assertFalse(dispatcher.isASTE(ast));
     assertFalse(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testIsD() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTD> optAST = parser.parse_StringD("d");
     assertTrue(optAST.isPresent());
     final ASTD ast = optAST.get();
@@ -66,15 +65,10 @@ public class DispatcherTest {
     assertTrue(dispatcher.isASTD(ast));
     assertFalse(dispatcher.isASTE(ast));
     assertFalse(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testIsE() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTE> optAST = parser.parse_StringE("e");
     assertTrue(optAST.isPresent());
     final ASTE ast = optAST.get();
@@ -84,15 +78,10 @@ public class DispatcherTest {
     assertFalse(dispatcher.isASTD(ast));
     assertTrue(dispatcher.isASTE(ast));
     assertFalse(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testIsF() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTF> optAST = parser.parse_StringF("f");
     assertTrue(optAST.isPresent());
     final ASTF ast = optAST.get();
@@ -102,16 +91,10 @@ public class DispatcherTest {
     assertFalse(dispatcher.isASTD(ast));
     assertTrue(dispatcher.isASTE(ast));
     assertTrue(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testAsA() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -174,11 +157,6 @@ public class DispatcherTest {
 
   @Test
   public void testAsB() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -233,11 +211,6 @@ public class DispatcherTest {
 
   @Test
   public void testAsC() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -296,11 +269,6 @@ public class DispatcherTest {
 
   @Test
   public void testAsD() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("d");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -359,11 +327,6 @@ public class DispatcherTest {
 
   @Test
   public void testAsE() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -424,11 +387,6 @@ public class DispatcherTest {
 
   @Test
   public void testAsF() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");

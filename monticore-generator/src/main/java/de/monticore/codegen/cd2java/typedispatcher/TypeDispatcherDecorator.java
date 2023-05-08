@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherConstants.*;
 
 
 public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
@@ -48,7 +49,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage visitorPackage = getPackage(input, decoratedCD, "_util");
+    ASTCDPackage visitorPackage = getPackage(input, decoratedCD, UTILS_PACKAGE);
     visitorPackage.addCDElement(decorate(input));
   }
 
@@ -76,13 +77,13 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
         optSymbolAttributes,
         boolSymbolAttributes));
 
-    methods.addAll(isMethodsForAttributes(boolASTAttributes, "de.monticore.ast.ASTNode", "node"));
-    methods.addAll(isMethodsForAttributes(boolScopeAttributes, "de.monticore.symboltable.IScope", "scope"));
-    methods.addAll(isMethodsForAttributes(boolSymbolAttributes, "de.monticore.symboltable.ISymbol", "symbol"));
+    methods.addAll(isMethodsForAttributes(boolASTAttributes, NODE_TYPE, NODE_PARAMETER));
+    methods.addAll(isMethodsForAttributes(boolScopeAttributes, SCOPE_TYPE, SCOPE_PARAMETER));
+    methods.addAll(isMethodsForAttributes(boolSymbolAttributes, SYMBOL_TYPE, SYMBOL_PARAMETER));
 
-    methods.addAll(asMethodsForAttributes(optASTAttributes, "de.monticore.ast.ASTNode", "node"));
-    methods.addAll(asMethodsForAttributes(optScopeAttributes, "de.monticore.symboltable.IScope", "scope"));
-    methods.addAll(asMethodsForAttributes(optSymbolAttributes, "de.monticore.symboltable.ISymbol", "symbol"));
+    methods.addAll(asMethodsForAttributes(optASTAttributes, NODE_TYPE, NODE_PARAMETER));
+    methods.addAll(asMethodsForAttributes(optScopeAttributes, SCOPE_TYPE, SCOPE_PARAMETER));
+    methods.addAll(asMethodsForAttributes(optSymbolAttributes, SYMBOL_TYPE, SYMBOL_PARAMETER));
 
     methods.addAll(isMethodsForSuperLanguages(methods));
     methods.addAll(asMethodsForSuperLanguages(methods));
@@ -119,8 +120,8 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     List<ASTCDAttribute> dispatchers = new ArrayList<>();
 
     for (DiagramSymbol type : visitorService.getSuperCDsTransitive()) {
-      String pkg = type.getFullName().toLowerCase() + "._util";
-      String superName = type.getName() + "TypeDispatcher";
+      String pkg = type.getFullName().toLowerCase() +"."+ UTILS_PACKAGE;
+      String superName = getTypeDispatcherName(type.getName());
 
       dispatchers.add(CD4CodeMill.cDAttributeBuilder()
           .setModifier(PROTECTED.build())
@@ -297,45 +298,45 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
         String name = "is" + typeSymbol.getName();
         if (!methodNames.contains(name)) {
           methodNames.add(name);
-          methods = isMethodsForSuperLanguages(methods, name, "de.monticore.ast.ASTNode", "node", superLanguage);
+          methods = isMethodsForSuperLanguages(methods, name, NODE_TYPE, NODE_PARAMETER, superLanguage);
         }
       }
 
       for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
         String name = "is" + symbolTableService.getSimpleNameFromSymbolName(symbol);
         if (!methodNames.contains(name)) {
-          methods = isMethodsForSuperLanguages(methods, name, "de.monticore.symboltable.ISymbol", "symbol", superLanguage);
+          methods = isMethodsForSuperLanguages(methods, name, SYMBOL_TYPE, SYMBOL_PARAMETER, superLanguage);
           methodNames.add(name);
         }
       }
       if (!methodNames.contains("is" + symbolTableService.getArtifactScopeInterfaceSimpleName())) {
         methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getArtifactScopeInterfaceSimpleName(),
-            "de.monticore.symboltable.IScope", "scope", superLanguage);
+            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
         methodNames.add("is" + symbolTableService.getArtifactScopeInterfaceSimpleName());
       }
       if (!methodNames.contains("is" + symbolTableService.getGlobalScopeInterfaceSimpleName())) {
         methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getGlobalScopeInterfaceSimpleName(),
-            "de.monticore.symboltable.IScope", "scope", superLanguage);
+            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
         methodNames.add("is" + symbolTableService.getGlobalScopeInterfaceSimpleName());
       }
       if (!methodNames.contains("is" + symbolTableService.getScopeInterfaceSimpleName())) {
         methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getScopeInterfaceSimpleName(),
-            "de.monticore.symboltable.IScope", "scope", superLanguage);
+            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
         methodNames.add("is" + symbolTableService.getScopeInterfaceSimpleName());
       }
       if (!methodNames.contains("is" + symbolTableService.getScopeClassSimpleName())) {
         methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getScopeClassSimpleName(),
-            "de.monticore.symboltable.IScope", "scope", superLanguage);
+            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
         methodNames.add("is" + symbolTableService.getScopeClassSimpleName());
       }
       if (!methodNames.contains("is" + symbolTableService.getArtifactScopeSimpleName())) {
         methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getArtifactScopeSimpleName(),
-            "de.monticore.symboltable.IScope", "scope", superLanguage);
+            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
         methodNames.add("is" + symbolTableService.getArtifactScopeSimpleName());
       }
       if (!methodNames.contains("is" + symbolTableService.getGlobalScopeSimpleName())) {
         methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getGlobalScopeSimpleName(),
-            "de.monticore.symboltable.IScope", "scope", superLanguage);
+            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
         methodNames.add("is" + symbolTableService.getGlobalScopeSimpleName());
       }
     }
@@ -406,7 +407,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
         if (!methodNames.contains("as" + name)) {
           methodNames.add("as" + name);
           methods = asMethodsForSuperLanguages(methods, name, visitorService.createASTFullName(typeSymbol),
-              "de.monticore.ast.ASTNode", "node", superLanguage);
+              NODE_TYPE, NODE_PARAMETER, superLanguage);
         }
       }
 
@@ -414,44 +415,44 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
         String name = symbolTableService.getSimpleNameFromSymbolName(symbol);
         if (!methodNames.contains("as" + name)) {
           methods = asMethodsForSuperLanguages(methods, name, symbol,
-              "de.monticore.symboltable.ISymbol", "symbol", superLanguage);
+              SYMBOL_TYPE, SYMBOL_PARAMETER, superLanguage);
           methodNames.add("as" + name);
         }
       }
       if (!methodNames.contains("as" + symbolTableService.getArtifactScopeInterfaceSimpleName())) {
         methods = asMethodsForSuperLanguages(methods, symbolTableService.getArtifactScopeInterfaceSimpleName(),
-            symbolTableService.getArtifactScopeInterfaceFullName(), "de.monticore.symboltable.IScope",
-            "scope", superLanguage);
+            symbolTableService.getArtifactScopeInterfaceFullName(), SCOPE_TYPE,
+            SCOPE_PARAMETER, superLanguage);
         methodNames.add("as" + symbolTableService.getArtifactScopeInterfaceSimpleName());
       }
       if (!methodNames.contains("as" + symbolTableService.getGlobalScopeInterfaceSimpleName())) {
         methods = asMethodsForSuperLanguages(methods, symbolTableService.getGlobalScopeInterfaceSimpleName(),
-            symbolTableService.getGlobalScopeInterfaceFullName(), "de.monticore.symboltable.IScope",
-            "scope", superLanguage);
+            symbolTableService.getGlobalScopeInterfaceFullName(), SCOPE_TYPE,
+            SCOPE_PARAMETER, superLanguage);
         methodNames.add("as" + symbolTableService.getGlobalScopeInterfaceSimpleName());
       }
       if (!methodNames.contains("as" + symbolTableService.getScopeInterfaceSimpleName())) {
         methods = asMethodsForSuperLanguages(methods, symbolTableService.getScopeInterfaceSimpleName(),
-            symbolTableService.getScopeInterfaceFullName(), "de.monticore.symboltable.IScope",
-            "scope", superLanguage);
+            symbolTableService.getScopeInterfaceFullName(),SCOPE_TYPE,
+            SCOPE_PARAMETER, superLanguage);
         methodNames.add("as" + symbolTableService.getScopeInterfaceSimpleName());
       }
       if (!methodNames.contains("as" + symbolTableService.getScopeClassSimpleName())) {
         methods = asMethodsForSuperLanguages(methods, symbolTableService.getScopeClassSimpleName(),
-            symbolTableService.getScopeClassFullName(), "de.monticore.symboltable.IScope",
-            "scope", superLanguage);
+            symbolTableService.getScopeClassFullName(), SCOPE_TYPE,
+            SCOPE_PARAMETER, superLanguage);
         methodNames.add("as" + symbolTableService.getScopeClassSimpleName());
       }
       if (!methodNames.contains("as" + symbolTableService.getArtifactScopeSimpleName())) {
         methods = asMethodsForSuperLanguages(methods, symbolTableService.getArtifactScopeSimpleName(),
-            symbolTableService.getArtifactScopeFullName(), "de.monticore.symboltable.IScope",
-            "scope", superLanguage);
+            symbolTableService.getArtifactScopeFullName(), SCOPE_TYPE,
+            SCOPE_PARAMETER, superLanguage);
         methodNames.add("as" + symbolTableService.getArtifactScopeSimpleName());
       }
       if (!methodNames.contains("as" + symbolTableService.getGlobalScopeSimpleName())) {
         methods = asMethodsForSuperLanguages(methods, symbolTableService.getGlobalScopeSimpleName(),
-            symbolTableService.getGlobalScopeFullName(), "de.monticore.symboltable.IScope",
-            "scope", superLanguage);
+            symbolTableService.getGlobalScopeFullName(), SCOPE_TYPE,
+            SCOPE_PARAMETER, superLanguage);
         methodNames.add("as" + symbolTableService.getGlobalScopeSimpleName());
       }
     }
@@ -517,7 +518,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
       handleMethod(methods,
           symbolTableService.getSimpleNameFromSymbolName(symbol),
           MCTypeFacade.getInstance().createQualifiedType(symbol),
-          List.of(symbolTableService.getCommonSymbolInterfaceFullName(), "de.monticore.symboltable.ISymbol"));
+          List.of(symbolTableService.getCommonSymbolInterfaceFullName(), SYMBOL_TYPE));
     }
 
     for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
@@ -609,7 +610,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected String getTypeDispatcherName(String name) {
-    return name + "TypeDispatcher";
+    return name + TYPE_DISPATCHER_SUFFIX;
   }
 
   protected ASTCDInterfaceUsage getInterfaceUsage() {
