@@ -136,16 +136,21 @@ public class DSL2TransformationLanguageVisitor implements
     ASTClassProd tfObjectProduction = productionFactory.createTFRuleProduction(grammarSymbol);
     tfLang.getClassProdList().add(0, tfObjectProduction);
 
-    // Only create this interface for non-empty grammars
-    if (tfLang.getClassProdList().size() > 1)
-      // Create an interface substituting ITFPart per Grammar
+    // This language-specific interface might be required,
+    // as otherwise the ITFPart parser method body could exceed Javas limit.
+
+    // Only create this language-specific ITFPart interface (ILangTFPart extends ITFPart)
+    // if any of the present class prods implements it (might not happen for token-only component grammars)
+    String langTFPart = "I" + srcNode.getName() + "TFPart";
+    if (tfLang.getClassProdList().stream()
+        .anyMatch(classprod -> classprod.getSuperInterfaceRuleList().stream() // any ClassProd with an implements
+        .anyMatch(ruleRef -> ruleRef.getName().equals(langTFPart)))) { // to the language specific ITFPart
       tfLang.addInterfaceProd(GrammarMill.interfaceProdBuilder()
-                                      .setName("I" + srcNode.getName() + "TFPart")
-                                      .addSuperInterfaceRule(
-                                              GrammarMill.ruleReferenceBuilder()
-                                                      .setName("ITFPart")
-                                                      .build()
-                                                            ).build());
+          .setName(langTFPart)
+          .addSuperInterfaceRule(GrammarMill.ruleReferenceBuilder()
+              .setName("ITFPart").build())
+          .build());
+    }
   }
 
   @Override
