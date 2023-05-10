@@ -184,7 +184,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    *
    * @param incoming whether to included incoming ports
    * @param outgoing whether to included outgoing ports
-   * @return a {@code List} of all ports of this component with matching direction
+   * @return a {@code List} of all ports of this component the given direction
    */
   public List<PortSymbol> getPorts(boolean incoming, boolean outgoing) {
     List<PortSymbol> result = new ArrayList<>();
@@ -215,7 +215,13 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all incoming ports of this component
    */
   public Set<PortSymbol> getAllIncomingPorts() {
-    return this.getAllPorts(true);
+    Set<PortSymbol> result = new HashSet<>();
+    for (PortSymbol port : this.getAllPorts()) {
+      if (port.isIncoming()) {
+        result.add(port);
+      }
+    }
+    return result;
   }
 
   /**
@@ -224,19 +230,31 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all outgoing ports of this component
    */
   public Set<PortSymbol> getAllOutgoingPorts() {
-    return this.getAllPorts(false);
+    Set<PortSymbol> result = new HashSet<>();
+    for (PortSymbol port : this.getAllPorts()) {
+      if (port.isOutgoing()) {
+        result.add(port);
+      }
+    }
+    return result;
   }
 
   /**
    * Returns the ports of this component with matching direction. Does included
    * inherited ports.
    *
-   * @param isIncoming the direction of the ports.
-   * @return a {@code Set} of all ports of this component type that have the given direction.
+   * @param incoming whether to included incoming ports
+   * @param outgoing whether to included outgoing ports
+   * @return a {@code Set} of all ports of this component with the given direction
    */
-  public Set<PortSymbol> getAllPorts(boolean isIncoming) {
-    return this.getAllPorts().stream().filter(p -> p.isIncoming() == isIncoming)
-      .collect(Collectors.toSet());
+  public Set<PortSymbol> getAllPorts(boolean incoming, boolean outgoing) {
+    Set<PortSymbol> result = new HashSet<>();
+    for (PortSymbol port : this.getAllPorts()) {
+      if (port.isIncoming() == incoming && port.isOutgoing() == outgoing) {
+        result.add(port);
+      }
+    }
+    return result;
   }
 
   public boolean hasPorts() {
