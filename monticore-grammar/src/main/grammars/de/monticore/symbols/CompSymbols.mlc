@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+mlc CompSymbols {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/symbols/ComponentSymbols.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/symbols/compsymbols/**.java";
+  }
+
+  // export all handwritten TOP-mechanism extensions
+  export "$projectDir/src/main/java" {
+    include "de/monticore/symbols/compsymbols/**.java";
+  }
+
+  promote mlc "de.monticore.MCBasics";
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types/check/ComponentExpression.java";
+  }
+
+}
