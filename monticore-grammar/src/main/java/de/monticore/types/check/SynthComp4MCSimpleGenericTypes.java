@@ -41,6 +41,7 @@ public class SynthComp4MCSimpleGenericTypes implements MCSimpleGenericTypesHandl
   public SynthComp4MCSimpleGenericTypes(@NonNull SynthCompResult result,
                                         @NonNull ISynthesize typeSynth) {
     this.resultWrapper = result;
+    this.typeSynth = typeSynth;
   }
 
   @Override
@@ -85,15 +86,6 @@ public class SynthComp4MCSimpleGenericTypes implements MCSimpleGenericTypesHandl
    */
   protected List<ASTMCType> typeArgumentsToTypes(@NonNull List<ASTMCTypeArgument> typeArgs) {
     Preconditions.checkNotNull(typeArgs);
-    Preconditions.checkArgument(typeArgs.stream().allMatch(
-        typeArg -> typeArg instanceof ASTMCBasicTypeArgument
-          || typeArg instanceof ASTMCPrimitiveTypeArgument
-          || typeArg instanceof ASTMCCustomTypeArgument),
-      "Only Type arguments of the types '%s', '%s', '%s' are supported in GenericArc. For you that means " +
-        "that you can use other MontiCore types as type arguments. But you can not use WildCards as type arguments, " +
-        "such as GenericType<? extends Person>.", ASTMCBasicTypeArgument.class.getName(),
-      ASTMCPrimitiveTypeArgument.class.getName(), ASTMCCustomTypeArgument.class.getName()
-    );
 
     List<ASTMCType> types = new ArrayList<>(typeArgs.size());
     for (ASTMCTypeArgument typeArg : typeArgs) {
@@ -104,7 +96,7 @@ public class SynthComp4MCSimpleGenericTypes implements MCSimpleGenericTypesHandl
       } else if (typeArg instanceof ASTMCCustomTypeArgument) {
         types.add(((ASTMCCustomTypeArgument) typeArg).getMCType());
       } else {
-        throw new IllegalStateException(); // Should have been caught by a precondition
+        throw new IllegalStateException();
       }
     }
     return types;
