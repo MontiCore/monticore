@@ -113,6 +113,43 @@ task generateExpressionDSLTR(type: MCTask, dependsOn: generateExpressionDSL) {
   outputs.upToDateWhen { uptoDate }
   isDSTL = true
 }
+
+task generateEmptyComponentGrammar (type: MCTask) {
+  grammar = file "$grammarsDir/mc/testcases/EmptyComponentGrammar.mc4"
+  outputDir = file _outputDir
+  def uptoDate = incCheck("mc/testcases/EmptyComponentGrammar.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+task generateEmptyComponentGrammarTR (type: MCTask, dependsOn: generateEmptyComponentGrammar) {
+  grammar = file "$_outputDir/mc/testcases/tr/EmptyComponentGrammarTR.mc4"
+  outputDir = file _outputDir
+  modelPath += file grammarsDir
+  modelPath += file _outputDir
+  def uptoDate = incCheck("mc/testcases/tr/EmptyComponentGrammarTR.mc4")
+  outputs.upToDateWhen { uptoDate }
+  isDSTL = true
+    dependsOn generateEmptyComponentGrammar
+}
+
+task generateUsingEmptyComponentGrammar (type: MCTask) {
+    grammar = file "$grammarsDir/mc/testcases/UsingEmptyComponentGrammar.mc4"
+    outputDir = file _outputDir
+    def uptoDate = incCheck("mc/testcases/UsingEmptyComponentGrammar.mc4")
+    outputs.upToDateWhen { uptoDate }
+    dependsOn generateEmptyComponentGrammar
+}
+task generateUsingEmptyComponentGrammarTR (type: MCTask, dependsOn: generateEmptyComponentGrammar) {
+    grammar = file "$_outputDir/mc/testcases/tr/UsingEmptyComponentGrammarTR.mc4"
+    outputDir = file _outputDir
+    modelPath += file grammarsDir
+    modelPath += file _outputDir
+    def uptoDate = incCheck("mc/testcases/tr/UsingEmptyComponentGrammarTR.mc4")
+    outputs.upToDateWhen { uptoDate }
+    isDSTL = true
+    dependsOn generateEmptyComponentGrammarTR
+}
+
+
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }
 }
