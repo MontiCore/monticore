@@ -50,12 +50,16 @@ public class SynthComp4MCBasicTypes implements MCBasicTypesHandler {
     List<ComponentSymbol> comp = enclScope.resolveComponentMany(node.getMCQualifiedName().getQName());
 
     if (comp.isEmpty()) {
-      Log.error("0xD0104 Cannot resolve component '%s'",
+      Log.error(String.format("0xD0104 Cannot resolve component '%s'", node.getMCQualifiedName().getQName()),
         node.get_SourcePositionStart(), node.get_SourcePositionEnd()
       );
       this.resultWrapper.setResultAbsent();
     } else if (comp.size() > 1) {
-      Log.error("0xD0105 Ambiguous reference, both '%s' and '%s' match'",
+      Log.error(
+          String.format(
+              "0xD0105 Ambiguous reference, both '%s' and '%s' match'",
+              comp.get(0).getFullName(), comp.get(1).getFullName()
+          ),
         node.get_SourcePositionStart(), node.get_SourcePositionEnd()
       );
       this.resultWrapper.setResult(new KindOfComponent(comp.get(0)));
