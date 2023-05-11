@@ -73,7 +73,7 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
     s2j.getJsonPrinter().beginArray(SUPER);
     for (CompKindExpression superComponent : superComponents) {
       s2j.getJsonPrinter().addToArray(JsonElementFactory
-        .createJsonString(this.getCompTypeExprDeSer().serializeAsJson(superComponent)));
+          .createJsonString(this.getCompTypeExprDeSer().serializeAsJson(superComponent)));
     }
     s2j.getJsonPrinter().endArray();
   }
@@ -133,12 +133,8 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
 
       } else {
         Log.error(String.format(
-          "Could not deserialize parameter '%s' of component '%s', " +
-            "as it is of kind '%s'. However, we only know how to deserialize '%s'",
-          param.getAsJsonObject().getStringMember(JsonDeSers.NAME),
-          paramOwner.getName(),
-          paramJsonKind,
-          varSerializeKind
+            "0xD0101 Malformed json, parameter '%s' of unsupported kind '%s'",
+            param.getAsJsonObject().getStringMember(JsonDeSers.NAME), paramJsonKind
         ));
       }
     }
@@ -163,12 +159,8 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
 
       } else {
         Log.error(String.format(
-          "Could not deserialize port '%s' of component '%s', " +
-            "as it is of kind '%s'. However, we only know how to deserialize '%s'",
-          port.getAsJsonObject().getStringMember(JsonDeSers.NAME),
-          portOwner.getName(),
-          portJasonKind,
-          portSerializeKind
+            "0xD0102 Malformed json, port '%s' of unsupported kind '%s'",
+            port.getAsJsonObject().getStringMember(JsonDeSers.NAME), portJasonKind
         ));
       }
     }
@@ -191,9 +183,9 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
     final String typeVarSerializedKind = "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol";
 
     List<JsonElement> typeParams =
-      typeParamOwnerJson
-        .getArrayMemberOpt(TYPE_PARAMETERS)
-        .orElseGet(Collections::emptyList);
+        typeParamOwnerJson
+            .getArrayMemberOpt(TYPE_PARAMETERS)
+            .orElseGet(Collections::emptyList);
 
     for (JsonElement typeParam : typeParams) {
       String typeParamJsonKind = JsonDeSers.getKind(typeParam.getAsJsonObject());
@@ -204,13 +196,10 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
         typeParamOwner.getSpannedScope().add(typeParamSym);
       } else {
         Log.error(String.format(
-          "Could not deserialize parameter '%s' of component '%s', " +
-            "as it is of kind '%s'. However, we only know how to deserialize '%s'",
-          typeParam.getAsJsonObject().getStringMember(JsonDeSers.NAME),
-          typeParamOwner.getName(),
-          typeParamJsonKind,
-          typeVarSerializedKind
+            "0xD0103 Malformed json, type parameter '%s' of unsupported kind '%s'",
+            typeParam.getAsJsonObject().getStringMember(JsonDeSers.NAME), typeParamJsonKind
         ));
+
       }
     }
   }

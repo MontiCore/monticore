@@ -4,9 +4,10 @@ package de.monticore.symbols.compsymbols._symboltable;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionDeSer;
+import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class PortSymbolDeSer extends PortSymbolDeSerTOP {
 
@@ -27,9 +28,14 @@ public class PortSymbolDeSer extends PortSymbolDeSerTOP {
 
   @Override
   protected Timing deserializeTiming(@NonNull JsonObject symbolJson) {
-    String timingString = symbolJson.getStringMember("timing");
+    String value = symbolJson.getStringMember("timing");
+    Optional<Timing> timing = Timing.of(value);
 
-    return Timing.of(timingString).orElseThrow(() ->
-      new NoSuchElementException(String.format("Malformed Json: no such timing '%s'", timingString)));
+    if (timing.isPresent()) {
+      return timing.get();
+    } else {
+      Log.error("0xD0100 Malformed json, unsupported timing '" + value + "'");
+      return Timing.DEFAULT;
+    }
   }
 }
