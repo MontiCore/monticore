@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases;
+
+// This DSL tests if the DSTLGen works correct on grammars without class productions
+component grammar UsingEmptyComponentGrammar extends EmptyComponentGrammar{
+    Prod = TextBlockDelimiter "Hello" "World" TextBlockDelimiter;
+}
