@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
+
+  interface scope symbol Component = Name;
+
+  symbolrule Component =
+    superComponents: de.monticore.types.check.CompKindExpression*
+  ;
+
+  interface symbol Subcomponent = Name;
+
+  symbolrule Subcomponent =
+    type: de.monticore.types.check.CompKindExpression
+  ;
+
+  interface symbol Port = Name;
+
+  symbolrule Port =
+    type: de.monticore.types.check.SymTypeExpression
+    incoming: boolean
+    outgoing: boolean
+    timing: Timing
+    stronglyCausal: Boolean
+  ;
+
+}

@@ -110,6 +110,7 @@ def grammarDependencies = ext {
   MCFullGenericTypes = ["MCSimpleGenericTypes"]
   ODRuleGeneration = ["MCFullGenericTypes"]
   BasicSymbols = ["MCBasics"]
+  CompSymbols = ["BasicSymbols"]
   AssignmentExpressions = ["ExpressionsBasis"]
   UMLModifier = ["UMLStereotype"]
   MCArrayTypes = ["MCBasicTypes"]
