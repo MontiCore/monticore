@@ -21,7 +21,7 @@ component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
     type: de.monticore.types.check.SymTypeExpression
     incoming: boolean
     outgoing: boolean
-    timing: Timing
+    timing: de.monticore.symbols.compsymbols._symboltable.Timing
     stronglyCausal: Boolean
   ;
 
