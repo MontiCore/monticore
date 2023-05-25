@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.gradle;
 
+import de.monticore.generating.templateengine.reporting.commons.StatisticsHandler;
 import de.se_rwth.commons.logging.Log;
 import org.gradle.BuildListener;
 import org.gradle.BuildResult;
@@ -82,7 +83,7 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
       if ("true".equals(buildResult.getGradle().getRootProject().getProperties().get(show_report))) {
         System.out.println(data.toString());
       }
-      StatisticsHandlerFix.storeReport(data.toString(), "MC_GRADLE_JSON");
+      StatisticsHandler.storeReport(data.toString(), "MC_GRADLE_JSON");
     } else{
       Log.info("<projectStartTime> was null. ", this.getClass().getName());
     }

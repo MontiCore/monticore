@@ -3,9 +3,13 @@
 package de.monticore;
 
 import com.google.common.collect.Sets;
-import de.monticore.gradle.UserJsonStringFix;
 import de.monticore.io.paths.MCPath;
-import de.monticore.symboltable.serialization.json.*;
+import de.monticore.symboltable.serialization.json.JsonArray;
+import de.monticore.symboltable.serialization.json.JsonBoolean;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonNull;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -14,16 +18,14 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import java.util.Set;
-import java.util.List;
-import java.util.Optional;
-import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Provides access to the aggregated configuration of a MontiCore instance
@@ -416,7 +418,7 @@ public final class MontiCoreConfiguration implements Configuration {
       grammars.setValues(
           this.getGrammars().getEntries().stream()
               .map(p->p.getFileName().toString()) // For privacy we only want the name, not the absolute path
-              .map(UserJsonStringFix::new)
+              .map(UserJsonString::new)
               .collect(Collectors.toList())
       );
       result.putMember(GRAMMAR_LONG, grammars);
