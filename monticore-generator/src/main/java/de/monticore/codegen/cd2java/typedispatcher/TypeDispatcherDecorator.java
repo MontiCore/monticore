@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.typedispatcher;
 
-import de.monticore.cd.facade.CDInterfaceUsageFacade;
+import de.monticore.cd.facade.*;
 import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._util.CD4CodeTypeDispatcher;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.*;
@@ -14,12 +15,12 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -119,14 +120,12 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     List<ASTCDAttribute> dispatchers = new ArrayList<>();
 
     for (DiagramSymbol type : visitorService.getSuperCDsTransitive()) {
-      String pkg = type.getFullName().toLowerCase() +"."+ UTILS_PACKAGE;
+      String pkg = type.getFullName().toLowerCase() + "." + UTILS_PACKAGE;
       String superName = getTypeDispatcherName(type.getName());
 
-      dispatchers.add(CD4CodeMill.cDAttributeBuilder()
-          .setModifier(PROTECTED.build())
-          .setMCType(MCTypeFacade.getInstance().createQualifiedType(pkg + "." + superName))
-          .setName(uncapFirst(superName))
-          .build());
+      dispatchers.add(CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(),
+          MCTypeFacade.getInstance().createQualifiedType(pkg + "." + superName),
+          uncapFirst(superName)));
     }
 
     return dispatchers;
@@ -209,21 +208,15 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected ASTCDAttribute createOptional(String type, String name) {
-    return CD4CodeMill.cDAttributeBuilder()
-        .setModifier(PROTECTED.build())
-        .setMCType(MCTypeFacade
-            .getInstance()
-            .createOptionalTypeOf(type))
-        .setName("opt" + name)
-        .build();
+    return CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(),
+        MCTypeFacade.getInstance().createOptionalTypeOf(type),
+        "opt" + name);
   }
 
   protected ASTCDAttribute createBoolean(String type) {
-    return CD4CodeMill.cDAttributeBuilder()
-        .setModifier(PROTECTED.build())
-        .setMCType(MCTypeFacade.getInstance().createBooleanType())
-        .setName("is" + type)
-        .build();
+    return CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(),
+        MCTypeFacade.getInstance().createBooleanType(),
+        "is" + type);
   }
 
   protected ASTCDMethod createResetMethod(List<ASTCDAttribute> superDispatchers,
@@ -234,13 +227,9 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
                                           List<ASTCDAttribute> optSymbolAttributes,
                                           List<ASTCDAttribute> boolSymbolAttributes) {
 
-    ASTCDMethod resetMethod = CD4CodeMill.cDMethodBuilder()
-        .setModifier(PUBLIC.build())
-        .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
-            .setMCVoidType(MCTypeFacade.getInstance().createVoidType())
-            .build())
-        .setName("reset")
-        .build();
+    ASTCDMethod resetMethod = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
+        CD4CodeMill.mCReturnTypeBuilder().setMCVoidType(MCTypeFacade.getInstance().createVoidType()).build(),
+        "reset");
 
     List<ASTCDAttribute> optionals = new ArrayList<>();
     List<ASTCDAttribute> booleans = new ArrayList<>();
@@ -266,17 +255,12 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     List<String> names = attributes.stream().map(ASTCDAttribute::getName).collect(Collectors.toList());
 
     for (String name : names) {
-      ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
-          .setModifier(PUBLIC.build())
-          .setName(name)
-          .addCDParameter(CD4CodeMill.cDParameterBuilder()
-              .setMCType(MCTypeFacade.getInstance().createQualifiedType(parameterType))
-              .setName(parameterName)
-              .build())
-          .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
-              .setMCType(MCTypeFacade.getInstance().createBooleanType())
-              .build())
-          .build();
+
+      ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
+          CD4CodeMill.mCReturnTypeBuilder().setMCType(MCTypeFacade.getInstance().createBooleanType()).build(),
+          name,
+          CDParameterFacade.getInstance().createParameter(MCTypeFacade.getInstance().createQualifiedType(parameterType),
+              parameterName));
 
       replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("dispatcher.IsAST",
           name,
@@ -346,17 +330,10 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   protected List<ASTCDMethod> isMethodsForSuperLanguages(List<ASTCDMethod> methods, String name,
                                                          String parameterType, String parameterName,
                                                          DiagramSymbol superLanguage) {
-    ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(name)
-        .addCDParameter(CD4CodeMill.cDParameterBuilder()
-            .setMCType(MCTypeFacade.getInstance().createQualifiedType(parameterType))
-            .setName(parameterName)
-            .build())
-        .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
-            .setMCType(MCTypeFacade.getInstance().createBooleanType())
-            .build())
-        .build();
+    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
+        MCTypeFacade.getInstance().createBooleanType(), name,
+        CDParameterFacade.getInstance().createParameter(MCTypeFacade.getInstance().createQualifiedType(parameterType),
+            parameterName));
 
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("dispatcher.IsAST",
         name,
@@ -374,21 +351,13 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
       String name = attribute.getName();
       name = name.substring(name.indexOf("opt") + 3);
 
-      String returnType = attribute.getMCType().printType();
-      returnType = returnType.substring(9, returnType.length()-1);
+      CD4CodeTypeDispatcher dispatcher = new CD4CodeTypeDispatcher();
+      ASTMCGenericType result = dispatcher.asASTMCGenericType(attribute.getMCType());
 
-      ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
-          .setModifier(PUBLIC.build())
-          .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
-              .setMCType(MCTypeFacade.getInstance()
-                  .createQualifiedType(returnType))
-              .build())
-          .setName("as" + name)
-          .addCDParameter(CD4CodeMill.cDParameterBuilder()
-              .setMCType(MCTypeFacade.getInstance().createQualifiedType(parameterType))
-              .setName(parameterName)
-              .build())
-          .build();
+      ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
+          result.getMCTypeArgument(0).getMCTypeOpt().get(),
+          "as" + name, CDParameterFacade.getInstance().createParameter(MCTypeFacade.getInstance()
+              .createQualifiedType(parameterType), parameterName));
 
       replaceTemplate(EMPTY_BODY, method,
           new TemplateHookPoint("dispatcher.AsAST", name, parameterName, "this"));
@@ -434,7 +403,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
       }
       if (!methodNames.contains("as" + symbolTableService.getScopeInterfaceSimpleName())) {
         methods = asMethodsForSuperLanguages(methods, symbolTableService.getScopeInterfaceSimpleName(),
-            symbolTableService.getScopeInterfaceFullName(),SCOPE_TYPE,
+            symbolTableService.getScopeInterfaceFullName(), SCOPE_TYPE,
             SCOPE_PARAMETER, superLanguage);
         methodNames.add("as" + symbolTableService.getScopeInterfaceSimpleName());
       }
@@ -462,18 +431,10 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected List<ASTCDMethod> asMethodsForSuperLanguages(List<ASTCDMethod> methods, String name, String type, String parameterType, String parameterName, DiagramSymbol superLanguage) {
-    ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
-        .setModifier(PUBLIC.build())
-        .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
-            .setMCType(MCTypeFacade.getInstance()
-                .createQualifiedType(type))
-            .build())
-        .setName("as" + name)
-        .addCDParameter(CD4CodeMill.cDParameterBuilder()
-            .setMCType(MCTypeFacade.getInstance().createQualifiedType(parameterType))
-            .setName(parameterName)
-            .build())
-        .build();
+    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
+        MCTypeFacade.getInstance().createQualifiedType(type), "as" + name,
+        CDParameterFacade.getInstance().createParameter(MCTypeFacade.getInstance()
+            .createQualifiedType(parameterType), parameterName));
 
     replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint("dispatcher.AsAST",
@@ -540,17 +501,9 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected void handleMethod(List<ASTCDMethod> methods, String typeName, ASTMCType type, List<String> superTypes) {
-    ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
-        .setModifier(PUBLIC.build())
-        .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
-            .setMCVoidType(MCTypeFacade.getInstance().createVoidType())
-            .build())
-        .setName("handle")
-        .addCDParameter(CD4CodeMill.cDParameterBuilder()
-            .setMCType(type)
-            .setName("node")
-            .build())
-        .build();
+    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(), CD4CodeMill.mCReturnTypeBuilder()
+        .setMCVoidType(MCTypeFacade.getInstance().createVoidType()).build(), "handle",
+        CDParameterFacade.getInstance().createParameter(type, "node"));
 
     replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint("dispatcher.Handle", typeName, superTypes, getTypeDispatcherName(visitorService.getCDName())));
@@ -559,16 +512,13 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected ASTCDConstructor createConstructor(String name, List<ASTCDAttribute> superDispatchers) {
-    ASTCDConstructor constructor = CD4CodeMill.cDConstructorBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(name)
-        .build();
+    ASTCDConstructor constructor = CDConstructorFacade.getInstance().createConstructor(PUBLIC.build(), name);
 
     replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("dispatcher.Constructor",
         visitorService.getTraverserInterfaceFullName(),
         visitorService.getMillFullName(),
         superDispatchers.stream().map(ASTCDAttribute::getName).collect(Collectors.toList()),
-        superDispatchers.stream().map(ASTCDAttribute::printType).collect(Collectors.toList()),
+        superDispatchers.stream().map(a -> a.getMCType().printType()).collect(Collectors.toList()),
         visitorService.getSuperCDsTransitive().stream().map(DiagramSymbol::getName).collect(Collectors.toList()),
         visitorService.getCDName()));
 
@@ -578,31 +528,19 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   protected List<ASTCDMember> addTraverserElements() {
     List<ASTCDMember> traverserElements = new ArrayList<>();
 
-    traverserElements.add(CD4CodeMill.cDAttributeBuilder()
-        .setModifier(PROTECTED.build())
-        .setMCType(MCTypeFacade.getInstance().createQualifiedType(visitorService.getTraverserInterfaceFullName()))
-        .setName("traverser")
-        .build());
+    traverserElements.add(CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(),
+        MCTypeFacade.getInstance().createQualifiedType(visitorService.getTraverserInterfaceFullName()),
+        "traverser"));
 
-    ASTCDMethod getter = CD4CodeMill.cDMethodBuilder()
-        .setModifier(PUBLIC.build())
-        .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
-            .setMCType(MCTypeFacade.getInstance().createQualifiedType(visitorService.getTraverserInterfaceFullName()))
-            .build())
-        .setName("getTraverser")
-        .build();
+    ASTCDMethod getter = CDMethodFacade.getInstance().createMethod(PUBLIC.build(), MCTypeFacade.getInstance()
+        .createQualifiedType(visitorService.getTraverserInterfaceFullName()), "getTraverser");
     this.glex.replaceTemplate(EMPTY_BODY, getter, new StringHookPoint("return this.traverser;"));
 
-    ASTCDMethod setter = CD4CodeMill.cDMethodBuilder()
-        .setModifier(PUBLIC.build())
-        .setMCReturnType(CD4CodeMill.mCReturnTypeBuilder()
-            .setMCVoidType(MCTypeFacade.getInstance().createVoidType())
-            .build())
-        .setName("setTraverser")
-        .addCDParameter(CD4CodeMill.cDParameterBuilder()
-            .setMCType(MCTypeFacade.getInstance().createQualifiedType(visitorService.getTraverserInterfaceFullName()))
-            .setName("traverser").build())
-        .build();
+    ASTCDMethod setter = CDMethodFacade.getInstance().createMethod(PUBLIC.build(), CD4CodeMill.mCReturnTypeBuilder()
+        .setMCVoidType(MCTypeFacade.getInstance().createVoidType())
+        .build(), "setTraverser", CDParameterFacade.getInstance()
+        .createParameter(MCTypeFacade.getInstance().createQualifiedType(visitorService.getTraverserInterfaceFullName()),
+            "traverser"));
     this.glex.replaceTemplate(EMPTY_BODY, setter, new StringHookPoint("this.traverser = traverser;"));
 
     traverserElements.add(getter);
