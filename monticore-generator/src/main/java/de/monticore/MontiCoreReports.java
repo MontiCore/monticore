@@ -6,7 +6,25 @@ import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
-import de.monticore.generating.templateengine.reporting.reporter.*;
+import de.monticore.generating.templateengine.reporting.reporter.ArtifactGVReporter;
+import de.monticore.generating.templateengine.reporting.reporter.ArtifactGmlReporter;
+import de.monticore.generating.templateengine.reporting.reporter.DetailedReporter;
+import de.monticore.generating.templateengine.reporting.reporter.GeneratedFilesReporter;
+import de.monticore.generating.templateengine.reporting.reporter.HandWrittenCodeReporter;
+import de.monticore.generating.templateengine.reporting.reporter.HookPointReporter;
+import de.monticore.generating.templateengine.reporting.reporter.IncGenGradleReporter;
+import de.monticore.generating.templateengine.reporting.reporter.InstantiationsReporter;
+import de.monticore.generating.templateengine.reporting.reporter.InvolvedFilesReporter;
+import de.monticore.generating.templateengine.reporting.reporter.NodeTreeDecoratedReporter;
+import de.monticore.generating.templateengine.reporting.reporter.NodeTreeReporter;
+import de.monticore.generating.templateengine.reporting.reporter.NodeTypesReporter;
+import de.monticore.generating.templateengine.reporting.reporter.StatisticsReporter;
+import de.monticore.generating.templateengine.reporting.reporter.SuccessfulReporter;
+import de.monticore.generating.templateengine.reporting.reporter.SummaryReporter;
+import de.monticore.generating.templateengine.reporting.reporter.TemplateTreeReporter;
+import de.monticore.generating.templateengine.reporting.reporter.TemplatesReporter;
+import de.monticore.generating.templateengine.reporting.reporter.TransformationReporter;
+import de.monticore.generating.templateengine.reporting.reporter.VariablesReporter;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.io.paths.MCPath;
@@ -93,7 +111,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, lowerCaseName);
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
-    StatisticsReporterFix statistics = new StatisticsReporterFix(mcConfig, "MC_JAR_JSON", this.reportDirectory, lowerCaseName, repository, traverserSummary);
+    StatisticsReporter statistics = new StatisticsReporter(mcConfig, "MC_JAR_JSON", this.reportDirectory, lowerCaseName, repository, traverserSummary);
     IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
