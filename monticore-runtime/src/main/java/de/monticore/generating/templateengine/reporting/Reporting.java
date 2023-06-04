@@ -751,8 +751,8 @@ public class Reporting extends Log {
   }
 
   /**
-   * Reports the assignment of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
+   * Reports the addition of hook points to a template via
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#addAfterTemplate(String , List )}
    * . This does not include any other assignment or replacement.
    *
    * @param template
@@ -760,6 +760,27 @@ public class Reporting extends Log {
    */
   public static void reportSetAfterTemplate(String template, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
+      getReportManager().reportSetAfterTemplate(template, afterHps);
+    }
+  }
+
+  public static void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
+    if (isEnabled()) {
+      getReportManager().reportUseHandwrittenCodeFile(parentDir, fileName);
+    }
+  }
+
+  /**
+   * Reports the assignment of hook points to a template via
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
+   * . This does not include any other assignment or replacement.
+   *
+   * @param template
+   * @param afterHps
+   */
+  public static void reportAddAfterTemplate(String template, List<? extends HookPoint> afterHps) {
+    if (isEnabled()) {
+      // TODO: getReportManager().reportAddAfterTemplate
       getReportManager().reportSetAfterTemplate(template, afterHps);
     }
   }

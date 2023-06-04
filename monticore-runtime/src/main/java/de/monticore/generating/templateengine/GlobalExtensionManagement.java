@@ -564,8 +564,12 @@ public class GlobalExtensionManagement {
 
   /**
    * Everytime 'template' is included directly (e.g. by
-   * {@link TemplateController#include(String, ASTNode)}), 'afterTemplate' will
+   * {@link TemplateController#include(String, ASTNode)}),
+   * the 'HookPoint' 'afterHp' will
    * be included after it.
+   *
+   * Care: This overrides any effect that previous calls of 'addAfterTemplate'
+   * and 'setAfterTemplate' on the same template have.
    *
    * @param template qualified name of the template
    */
@@ -575,8 +579,11 @@ public class GlobalExtensionManagement {
 
   /**
    * Everytime 'template' is included directly (e.g. by
-   * {@link TemplateController#include(String, ASTNode)}), the templates in
-   * 'afterTemplate' will be included after it.
+   * {@link TemplateController#include(String, ASTNode)}), the 'HookPoints' in
+   * 'afterHps' will be included after it.
+   *
+   * Care: This overrides any effect that previous calls of 'addAfterTemplate'
+   * and 'setAfterTemplate' on the same template have.
    *
    * @param template qualified name of the template
    */
@@ -588,6 +595,21 @@ public class GlobalExtensionManagement {
     if (!afterHps.isEmpty()) {
       this.after.putAll(template, afterHps);
     }
+  }
+
+  /**
+   * Everytime 'template' is included directly (e.g. by
+   * {@link TemplateController#include(String, ASTNode)}), the template in
+   * 'afterHp' will be included after it.
+   *
+   * Multiple additions are possible. 'setAfterTemplate' overrides all additions.
+   *
+   * @param template qualified name of the template
+   */
+  public void addAfterTemplate(String template, HookPoint afterHp) {
+    Reporting.reportAddAfterTemplate(template, afterHps);
+
+    this.after.add(template, afterHps);
   }
 
   protected void warnIfHookPointExists(String hookName) {
