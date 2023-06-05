@@ -785,11 +785,6 @@ public class Reporting extends Log {
     }
   }
 
-  public static void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
-    if (isEnabled()) {
-      getReportManager().reportUseHandwrittenCodeFile(parentDir, fileName);
-    }
-  }
 
   /**
    * Reports the check for existence of an artifact

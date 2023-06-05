@@ -16,7 +16,11 @@ import freemarker.template.SimpleHash;
 import freemarker.template.TemplateModelException;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class for managing hook points, features and (global) variables in templates.
@@ -607,9 +611,9 @@ public class GlobalExtensionManagement {
    * @param template qualified name of the template
    */
   public void addAfterTemplate(String template, HookPoint afterHp) {
-    Reporting.reportAddAfterTemplate(template, afterHps);
+    Reporting.reportAddAfterTemplate(template, Lists.newArrayList(afterHp));
 
-    this.after.add(template, afterHps);
+    this.after.put(template, afterHp);
   }
 
   protected void warnIfHookPointExists(String hookName) {
