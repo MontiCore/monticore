@@ -253,6 +253,14 @@ public class ReportManager implements IReportEventHandler {
   }
 
   @Override
+  public void reportAddAfterTemplate(String template,
+                                     List<? extends HookPoint> afterHps) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportSetAfterTemplate(template, afterHps);
+    }
+  }
+
+  @Override
   public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
       handler.reportUseHandwrittenCodeFile(parentDir, fileName);

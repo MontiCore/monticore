@@ -156,6 +156,12 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   }
 
   @Override
+  public void reportAddAfterTemplate(String template,
+                                     List<? extends HookPoint> afterHps) {
+    // default
+  }
+
+  @Override
   public void reportTransformationStart(String transformationName) {
     // default
   }
