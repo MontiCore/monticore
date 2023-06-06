@@ -256,7 +256,7 @@ public class ReportManager implements IReportEventHandler {
   public void reportAddAfterTemplate(String template,
                                      List<? extends HookPoint> afterHps) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
-      handler.reportSetAfterTemplate(template, afterHps);
+      handler.reportAddAfterTemplate(template, afterHps);
     }
   }
 
