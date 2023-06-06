@@ -51,6 +51,7 @@ public class GlobalExtensionManagement {
 
   /**
    * Map of all hook points
+   *
    * for explicitely define hook points (which are internally managed
    * to be disjoint from the template hook points)
    * This also means explicitely define hook points cannot be decorated

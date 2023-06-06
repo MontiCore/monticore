@@ -222,6 +222,18 @@ public class TemplateControllerHookPointsTest {
     assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     assertTrue(Log.getFindings().isEmpty());
   }
+
+  @Test
+  public void testAddAfterTemplates() {
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
+
+    glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
+    assertEquals("AB", tc.include(TEMPLATE_PACKAGE + "A").toString());
+
+    // previously set template is not overwritten
+    glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+  }
   
   @Test
   public void testReplaceTemplate() {

@@ -154,6 +154,12 @@ public interface IReportEventHandler {
       List<? extends HookPoint> afterHps);
 
   /**
+   * @param template
+   * @param afterHps
+   */
+  public void reportAddAfterTemplate(String template,
+                                     List<? extends HookPoint> afterHps);
+  /**
    * @param transformationName
    */
   public void reportTransformationStart(String transformationName);

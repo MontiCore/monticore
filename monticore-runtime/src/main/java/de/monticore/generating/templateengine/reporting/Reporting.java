@@ -780,8 +780,7 @@ public class Reporting extends Log {
    */
   public static void reportAddAfterTemplate(String template, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
-      // TODO: getReportManager().reportAddAfterTemplate
-      getReportManager().reportSetAfterTemplate(template, afterHps);
+      getReportManager().reportAddAfterTemplate(template, afterHps);
     }
   }
 
