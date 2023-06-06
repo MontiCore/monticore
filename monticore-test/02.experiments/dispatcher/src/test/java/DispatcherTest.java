@@ -1,8 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import simpleinterfaces.SimpleInterfacesMill;
 import simpleinterfaces._ast.*;
 import simpleinterfaces._parser.SimpleInterfacesParser;
 import simpleinterfaces._util.SimpleInterfacesTypeDispatcher;
@@ -14,12 +17,18 @@ import static org.junit.Assert.*;
 
 public class DispatcherTest {
 
+  protected static final SimpleInterfacesParser parser = new SimpleInterfacesParser();
+  protected static final SimpleInterfacesTypeDispatcher dispatcher = SimpleInterfacesMill.simpleInterfacesTypeDispatcher();
+
+  @Before
+  public void before() {
+    SimpleInterfacesMill.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+
   @Test
   public void testIsA() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTA> optAST = parser.parse_StringA("c");
     assertTrue(optAST.isPresent());
     final ASTA ast = optAST.get();
@@ -30,15 +39,10 @@ public class DispatcherTest {
     assertFalse(dispatcher.isASTD(ast));
     assertFalse(dispatcher.isASTE(ast));
     assertFalse(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testIsC() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTC> optAST = parser.parse_StringC("c");
     assertTrue(optAST.isPresent());
     final ASTC ast = optAST.get();
@@ -48,15 +52,10 @@ public class DispatcherTest {
     assertFalse(dispatcher.isASTD(ast));
     assertFalse(dispatcher.isASTE(ast));
     assertFalse(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testIsD() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTD> optAST = parser.parse_StringD("d");
     assertTrue(optAST.isPresent());
     final ASTD ast = optAST.get();
@@ -66,15 +65,10 @@ public class DispatcherTest {
     assertTrue(dispatcher.isASTD(ast));
     assertFalse(dispatcher.isASTE(ast));
     assertFalse(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testIsE() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTE> optAST = parser.parse_StringE("e");
     assertTrue(optAST.isPresent());
     final ASTE ast = optAST.get();
@@ -84,15 +78,10 @@ public class DispatcherTest {
     assertFalse(dispatcher.isASTD(ast));
     assertTrue(dispatcher.isASTE(ast));
     assertFalse(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testIsF() throws IOException {
-
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
     final Optional<ASTF> optAST = parser.parse_StringF("f");
     assertTrue(optAST.isPresent());
     final ASTF ast = optAST.get();
@@ -102,16 +91,10 @@ public class DispatcherTest {
     assertFalse(dispatcher.isASTD(ast));
     assertTrue(dispatcher.isASTE(ast));
     assertTrue(dispatcher.isASTF(ast));
-
   }
 
   @Test
   public void testAsA() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -138,30 +121,42 @@ public class DispatcherTest {
 
     try {
       ASTA castB = dispatcher.asASTA(astB);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(2, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0x54987"));
+    }
+
     try {
       ASTA castC = dispatcher.asASTA(astC);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(4, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(2).getMsg().startsWith("0x54987"));
+    }
+
     try {
       ASTA castD = dispatcher.asASTA(astD);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(6, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(4).getMsg().startsWith("0x54987"));
+    }
+
     try {
       ASTA castE = dispatcher.asASTA(astE);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(8, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(6).getMsg().startsWith("0x54987"));
+    }
+
     try {
       ASTA castF = dispatcher.asASTA(astF);
-    } catch(IllegalStateException ignored) {}
-
-    assertEquals(Log.getFindings().size(), 10);
+    } catch (IllegalStateException e) {
+      assertEquals(10, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(8).getMsg().startsWith("0x54987"));
+    }
   }
 
   @Test
   public void testAsB() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -185,7 +180,10 @@ public class DispatcherTest {
 
     try {
       ASTB castA = dispatcher.asASTB(astA);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(2, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0x54987"));
+    }
 
     ASTB castB = dispatcher.asASTB(astB);
     assertEquals(castB, astB);
@@ -198,22 +196,21 @@ public class DispatcherTest {
 
     try {
       ASTB castE = dispatcher.asASTB(astE);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(4, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(2).getMsg().startsWith("0x54987"));
+    }
 
     try {
       ASTB castF = dispatcher.asASTB(astF);
-    } catch(IllegalStateException ignored) {}
-
-    assertEquals(Log.getFindings().size(), 6);
+    } catch (IllegalStateException e) {
+      assertEquals(6, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(4).getMsg().startsWith("0x54987"));
+    }
   }
 
   @Test
   public void testAsC() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -237,7 +234,10 @@ public class DispatcherTest {
 
     try {
       ASTC castA = dispatcher.asASTC(astA);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(2, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0x54987"));
+    }
 
     ASTC castB = dispatcher.asASTC(astB);
     assertEquals(castB, astB);
@@ -247,26 +247,28 @@ public class DispatcherTest {
 
     try {
       ASTC castD = dispatcher.asASTC(astD);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(4, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(2).getMsg().startsWith("0x54987"));
+    }
 
     try {
       ASTC castE = dispatcher.asASTC(astE);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(6, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(4).getMsg().startsWith("0x54987"));
+    }
 
     try {
       ASTC castF = dispatcher.asASTC(astF);
-    } catch(IllegalStateException ignored) {}
-
-    assertEquals(Log.getFindings().size(), 8);
+    } catch (IllegalStateException e) {
+      assertEquals(8, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(6).getMsg().startsWith("0x54987"));
+    }
   }
 
   @Test
   public void testAsD() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("d");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -290,36 +292,41 @@ public class DispatcherTest {
 
     try {
       ASTD castA = dispatcher.asASTD(astA);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(2, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0x54987"));
+    }
 
     ASTD castB = dispatcher.asASTD(astB);
     assertEquals(castB, astB);
 
     try {
       ASTD castC = dispatcher.asASTD(astC);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(4, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(2).getMsg().startsWith("0x54987"));
+    }
 
     ASTD castD = dispatcher.asASTD(astD);
     assertEquals(castD, astD);
 
     try {
       ASTD castE = dispatcher.asASTD(astE);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(6, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(4).getMsg().startsWith("0x54987"));
+    }
 
     try {
       ASTD castF = dispatcher.asASTD(astF);
-    } catch(IllegalStateException ignored) {}
-
-    assertEquals(Log.getFindings().size(), 8);
+    } catch (IllegalStateException e) {
+      assertEquals(8, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(6).getMsg().startsWith("0x54987"));
+    }
   }
 
   @Test
   public void testAsE() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -343,19 +350,31 @@ public class DispatcherTest {
 
     try {
       ASTE castA = dispatcher.asASTE(astA);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(2, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0x54987"));
+    }
 
     try {
       ASTE castB = dispatcher.asASTE(astB);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(4, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(2).getMsg().startsWith("0x54987"));
+    }
 
     try {
       ASTE castC = dispatcher.asASTE(astC);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(6, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(4).getMsg().startsWith("0x54987"));
+    }
 
     try {
       ASTE castD = dispatcher.asASTE(astD);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(8, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(6).getMsg().startsWith("0x54987"));
+    }
 
     ASTE castE = dispatcher.asASTE(astE);
     assertEquals(castE, astE);
@@ -368,11 +387,6 @@ public class DispatcherTest {
 
   @Test
   public void testAsF() throws IOException {
-    SimpleInterfacesParser parser = new SimpleInterfacesParser();
-    SimpleInterfacesTypeDispatcher dispatcher = new SimpleInterfacesTypeDispatcher();
-
-    Log.enableFailQuick(false);
-
     final Optional<ASTA> optASTA = parser.parse_StringA("c");
     final Optional<ASTB> optASTB = parser.parse_StringB("c");
     final Optional<ASTC> optASTC = parser.parse_StringC("c");
@@ -396,28 +410,41 @@ public class DispatcherTest {
 
     try {
       ASTF castA = dispatcher.asASTF(astA);
-    } catch(IllegalStateException ignored) {}
-
-    try{
-    ASTF castB = dispatcher.asASTF(astB);
-    } catch(IllegalStateException ignored) {}
-
-    try {
-    ASTF castC = dispatcher.asASTF(astC);
-    } catch(IllegalStateException ignored) {}
+    } catch (IllegalStateException e) {
+      assertEquals(2, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(0).getMsg().startsWith("0x54987"));
+    }
 
     try {
-    ASTF castD = dispatcher.asASTF(astD);
-    } catch(IllegalStateException ignored) {}
+      ASTF castB = dispatcher.asASTF(astB);
+    } catch (IllegalStateException e) {
+      assertEquals(4, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(2).getMsg().startsWith("0x54987"));
+    }
 
-    try{
-    ASTF castE = dispatcher.asASTF(astE);
-    } catch(IllegalStateException ignored) {}
+    try {
+      ASTF castC = dispatcher.asASTF(astC);
+    } catch (IllegalStateException e) {
+      assertEquals(6, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(4).getMsg().startsWith("0x54987"));
+    }
+
+    try {
+      ASTF castD = dispatcher.asASTF(astD);
+    } catch (IllegalStateException e) {
+      assertEquals(8, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(6).getMsg().startsWith("0x54987"));
+    }
+
+    try {
+      ASTF castE = dispatcher.asASTF(astE);
+    } catch (IllegalStateException e) {
+      assertEquals(10, Log.getFindings().size());
+      assertTrue(Log.getFindings().get(8).getMsg().startsWith("0x54987"));
+    }
 
     ASTF castF = dispatcher.asASTF(astF);
     assertEquals(castF, astF);
-
-    assertEquals(Log.getFindings().size(), 10);
   }
 
   @After

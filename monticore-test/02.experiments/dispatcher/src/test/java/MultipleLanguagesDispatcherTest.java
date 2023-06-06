@@ -35,7 +35,7 @@ public class MultipleLanguagesDispatcherTest {
     assertTrue(optAST.isPresent());
     final ASTPlace ast = optAST.get();
 
-    BlueCTypeDispatcher dispatcher = new BlueCTypeDispatcher();
+    BlueCTypeDispatcher dispatcher = BlueCMill.blueCTypeDispatcher();
 
     assertFalse(dispatcher.isASTLightBluePlace(ast));
     assertFalse(dispatcher.isASTBluePlace(ast));
@@ -69,50 +69,45 @@ public class MultipleLanguagesDispatcherTest {
     final Optional<ASTPlace> optAST = parser.parse_StringPlace("place p1{bluePlace p2{lightBluePlace p3{place p4{}}}redPlace p5{}}");
     assertTrue(optAST.isPresent());
     final ASTPlace ast = optAST.get();
-    BlueCTypeDispatcher dispatcher = new BlueCTypeDispatcher();
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast)));
+    BlueCTypeDispatcher dispatcher = BlueCMill.blueCTypeDispatcher();
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast.getPlace(0))));
-    assertEquals("bluePlace", TypePrinter.printType(dispatcher.asASTBluePlace(ast.getPlace(0))));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast)));
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast.getPlace(1))));
-    assertEquals("redPlace", TypePrinter.printType(dispatcher.asASTRedPlace(ast.getPlace(1))));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast.getPlace(0))));
+    assertEquals("bluePlace", printType(dispatcher.asASTBluePlace(ast.getPlace(0))));
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast.getPlace(0).getPlace(0))));
-    assertEquals("bluePlace", TypePrinter.printType(dispatcher.asASTBluePlace(ast.getPlace(0).getPlace(0))));
-    assertEquals("lightBluePlace", TypePrinter.printType(dispatcher.asASTLightBluePlace(ast.getPlace(0).getPlace(0))));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast.getPlace(1))));
+    assertEquals("redPlace", printType(dispatcher.asASTRedPlace(ast.getPlace(1))));
 
-    assertEquals("place", TypePrinter.printType(dispatcher.asASTPlace(ast.getPlace(0).getPlace(0).getPlace(0))));
+    assertEquals("place", printType(dispatcher.asASTPlace(ast.getPlace(0).getPlace(0))));
+    assertEquals("bluePlace", printType(dispatcher.asASTBluePlace(ast.getPlace(0).getPlace(0))));
+    assertEquals("lightBluePlace", printType(dispatcher.asASTLightBluePlace(ast.getPlace(0).getPlace(0))));
+
+    assertEquals("place", printType(dispatcher.asASTPlace(ast.getPlace(0).getPlace(0).getPlace(0))));
   }
 
   @After
   public void after() {
-    if (!Log.getFindings().isEmpty()) {
-      Log.getFindings().stream().map(Finding::getMsg).forEach(System.out::println);
-    }
     assertTrue(Log.getFindings().isEmpty());
     Log.getFindings().clear();
   }
 
-  private static class TypePrinter {
+  public String printType(ASTPlace ast) {
+    return "place";
+  }
 
-    public static String printType(ASTPlace ast) {
-      return "place";
-    }
-
-    public static String printType(ASTBluePlace ast) {
-      return "bluePlace";
-    }
+  public String printType(ASTBluePlace ast) {
+    return "bluePlace";
+  }
 
 
-    public static String printType(ASTRedPlace ast) {
-      return "redPlace";
-    }
+  public String printType(ASTRedPlace ast) {
+    return "redPlace";
+  }
 
-    public static String printType(ASTLightBluePlace ast) {
-      return "lightBluePlace";
-    }
+  public String printType(ASTLightBluePlace ast) {
+    return "lightBluePlace";
   }
 
 }
