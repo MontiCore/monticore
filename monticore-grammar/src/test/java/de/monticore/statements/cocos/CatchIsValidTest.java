@@ -11,7 +11,6 @@ import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,19 +21,16 @@ import static org.junit.Assert.assertTrue;
 
 public class CatchIsValidTest {
   
-  private static final TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+  protected TestMCExceptionStatementsCoCoChecker checker;
   
   @Before
-  public void before() {
+  public void init(){
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick(){
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker = new TestMCExceptionStatementsCoCoChecker();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
     checker.addCoCo(new CatchIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
     

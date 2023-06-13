@@ -9,7 +9,7 @@ import de.monticore.literals.mcjavaliterals.cocos.IntLiteralRangeCoCo;
 import de.monticore.literals.mcjavaliterals.cocos.LongLiteralRangeCoCo;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.se_rwth.commons.logging.Log;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,10 +22,12 @@ import static org.junit.Assert.assertEquals;
 
 public class RangeCoCosTest {
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     Log.init();
     Log.enableFailQuick(false);
+    TestMCJavaLiteralsMill.reset();
+    TestMCJavaLiteralsMill.init();
   }
 
 

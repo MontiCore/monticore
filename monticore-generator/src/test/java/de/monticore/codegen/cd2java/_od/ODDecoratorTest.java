@@ -68,8 +68,6 @@ public class ODDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");

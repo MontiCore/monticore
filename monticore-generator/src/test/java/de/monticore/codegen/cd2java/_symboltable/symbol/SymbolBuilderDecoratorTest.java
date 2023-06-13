@@ -52,8 +52,6 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "symboltable","cdForBuilder", "Symbol_Builder");

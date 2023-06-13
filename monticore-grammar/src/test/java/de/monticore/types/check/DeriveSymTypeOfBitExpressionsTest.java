@@ -29,7 +29,7 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
    */
 
   @Before
-  public void setupForEach() {
+  public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -65,7 +65,6 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
     add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",scope)));
 
     setFlatExpressionScopeSetter(scope);
-    super.setupForEach();
   }
 
   @Override

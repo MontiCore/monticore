@@ -21,12 +21,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MCGrammarPrettyPrinterTest {
-  
+
   @Before
-  public void setup() {
-    GrammarFamilyMill.init();
-    Log.init();
+  public void setup(){
+    LogStub.init();
     Log.enableFailQuick(false);
+    GrammarFamilyMill.reset();
+    GrammarFamilyMill.init();
   }
 
   @Test

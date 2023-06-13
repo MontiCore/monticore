@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.method.mutator;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd.facade.CDAttributeFacade;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -24,17 +25,11 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-public class OptionalMutatorDecoratorTest {
+public class OptionalMutatorDecoratorTest extends DecoratorTestCase {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @Before
   public void setup() {

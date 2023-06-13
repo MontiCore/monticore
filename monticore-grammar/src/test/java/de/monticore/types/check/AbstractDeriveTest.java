@@ -15,7 +15,6 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -44,16 +43,12 @@ public class AbstractDeriveTest {
   TypeCalculator tc = new TypeCalculator(null, derLit);
 
 
-  @BeforeClass
-  public static void initLog(){
-    AbstractTypeCheckTestMill.reset();
-    AbstractTypeCheckTestMill.init();
-  }
-  
   @Before
-  public void setup(){
+  public void init(){
     LogStub.init();
     Log.enableFailQuick(false);
+    AbstractTypeCheckTestMill.reset();
+    AbstractTypeCheckTestMill.init();
     
     scope = AbstractTypeCheckTestMill.scope();
     scope.setEnclosingScope(null);

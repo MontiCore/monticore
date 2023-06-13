@@ -4,6 +4,7 @@ package de.monticore.types.printer;
 import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesFullPrettyPrinter;
+import de.monticore.types.mccollectiontypestest.MCCollectionTypesTestMill;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -18,9 +19,11 @@ import static org.junit.Assert.*;
 public class CollectionTypesPrinterTest {
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCCollectionTypesTestMill.reset();
+    MCCollectionTypesTestMill.init();
   }
   
   @Test

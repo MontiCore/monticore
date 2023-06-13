@@ -16,10 +16,11 @@ import org.junit.Test;
 public class DefiningSymbolSetter4CommonExpressionsTest {
 
   @Before
-  public void setup() {
-    CombineExpressionsWithLiteralsMill.init();
-    LogStub.init();         // replace log by a side effect free variant
+  public void init() {
+    LogStub.init();
     Log.enableFailQuick(false);
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
   }
 
   @Test

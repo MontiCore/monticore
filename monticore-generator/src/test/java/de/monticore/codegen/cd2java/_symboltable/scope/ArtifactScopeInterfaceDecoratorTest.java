@@ -55,7 +55,6 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
     this.glex = new GlobalExtensionManagement();
     this.MCTypeFacade = MCTypeFacade.getInstance();
 

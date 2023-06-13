@@ -54,7 +54,6 @@ public class ASTCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    Log.enableFailQuick(false);
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     this.originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.monticore.testumlmodifier.TestUMLModifierMill;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,16 +25,12 @@ public class UMLModifierPrettyPrinterTest {
   
   @Before
   public void init() {
-    // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
+    TestUMLModifierMill.reset();
+    TestUMLModifierMill.init();
   }
-  
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
-  }
-  
+
   @Test
   public void testModifierWord() throws IOException {
     TestUMLModifierParser parser = new TestUMLModifierParser();

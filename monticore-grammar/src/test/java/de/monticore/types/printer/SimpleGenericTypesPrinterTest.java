@@ -4,6 +4,7 @@ package de.monticore.types.printer;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import de.monticore.types.mcsimplegenerictypestest.MCSimpleGenericTypesTestMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -21,6 +22,8 @@ public class SimpleGenericTypesPrinterTest {
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCSimpleGenericTypesTestMill.reset();
+    MCSimpleGenericTypesTestMill.init();
   }
   
   @Test

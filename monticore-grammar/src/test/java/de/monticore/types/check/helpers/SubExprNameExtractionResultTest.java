@@ -16,10 +16,11 @@ import java.util.Optional;
 public class SubExprNameExtractionResultTest {
 
   @Before
-  public void setup() {
-    TestCommonExpressionsMill.init();
-    LogStub.init();         // replace log by a side effect free variant
+  public void init() {
+    LogStub.init();
     Log.enableFailQuick(false);
+    TestCommonExpressionsMill.reset();
+    TestCommonExpressionsMill.init();
   }
 
   protected static ASTNameExpression buildNameExpression(String name) {

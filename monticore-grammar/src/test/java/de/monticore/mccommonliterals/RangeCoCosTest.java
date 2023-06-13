@@ -7,7 +7,7 @@ import de.monticore.literals.mccommonliterals.cocos.*;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.se_rwth.commons.logging.Log;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,12 +19,13 @@ import static org.junit.Assert.*;
 
 public class RangeCoCosTest {
 
-  @BeforeClass
-  public static void setup(){
+  @Before
+  public void setup(){
     Log.init();
     Log.enableFailQuick(false);
+    TestMCCommonLiteralsMill.reset();
+    TestMCCommonLiteralsMill.init();
   }
-
 
   protected final void checkLiteral(String expression, BigInteger min, BigInteger max) throws IOException {
     Log.clearFindings();

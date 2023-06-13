@@ -16,7 +16,6 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,32 +27,25 @@ import static org.junit.Assert.assertEquals;
 
 public class VarDeclarationInitializationHasCorrectTypeTest {
 
-  private static final TestMCVarDeclarationStatementsCoCoChecker checker =
-    new TestMCVarDeclarationStatementsCoCoChecker();
-
-  private static final TestMCVarDeclarationStatementsParser parser = new TestMCVarDeclarationStatementsParser();
+  protected TestMCVarDeclarationStatementsCoCoChecker checker;
+  protected TestMCVarDeclarationStatementsParser parser;
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void setUp() {
     TestMCVarDeclarationStatementsMill.reset();
     TestMCVarDeclarationStatementsMill.init();
-    checker.setTraverser(TestMCVarDeclarationStatementsMill.traverser());
 
-    checker.addCoCo(new VarDeclarationInitializationHasCorrectType(new FullDeriveFromCombineExpressionsWithLiterals()));
-  }
-
-  @Before
-  public void resetSymbolTable() {
     TestMCVarDeclarationStatementsMill.globalScope().clear();
     BasicSymbolsMill.initializePrimitives();
     addMyTypeToGlobalScope();
     addStringToGlobalScope();
+
+    checker = new TestMCVarDeclarationStatementsCoCoChecker();
+    checker.setTraverser(TestMCVarDeclarationStatementsMill.traverser());
+    checker.addCoCo(new VarDeclarationInitializationHasCorrectType(new FullDeriveFromCombineExpressionsWithLiterals()));
+    parser = new TestMCVarDeclarationStatementsParser();
   }
 
   protected static void addMyTypeToGlobalScope() {
@@ -75,7 +67,6 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
   }
 
   protected void checkExpectedErrors(ASTRootVarDeclaration decl, List<String> expectedErrorCodes) {
-    Log.getFindings().clear();
     TestMCVarDeclarationStatementsMill.scopesGenitorDelegator().createFromAST(decl);
     TestMCVarDeclarationStatementsTraverser completerTraverser = TestMCVarDeclarationStatementsMill.traverser();
     completerTraverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());

@@ -38,16 +38,13 @@ public class SynthesizeSymTypeFromMCFullGenericTypesTest {
    */
 
   @Before
-  public void setup() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    init();
-  }
 
-  public static void init(){
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     OOTypeSymbol a2 = DefsTypeBasic.type("A2", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(DefsTypeBasic.typeVariable("T")), gs);
     gs.add(a2);

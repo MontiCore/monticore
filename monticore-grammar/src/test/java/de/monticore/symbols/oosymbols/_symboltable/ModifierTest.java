@@ -8,6 +8,8 @@ import de.monticore.symboltable.modifiers.CompoundAccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.DefsTypeBasic;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,15 +22,15 @@ public class ModifierTest {
 
   protected IOOSymbolsScope symbolTable;
 
-  @BeforeClass
-  public static void init(){
+  @Before
+  public void init(){
+    LogStub.init();
+    Log.enableFailQuick(false);
+
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
-  }
 
-  @Before
-  public void setup(){
     symbolTable = OOSymbolsMill.scope();
 
     //FieldSymbols

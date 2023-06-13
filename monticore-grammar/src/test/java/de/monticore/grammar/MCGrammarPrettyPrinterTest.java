@@ -25,14 +25,9 @@ public class MCGrammarPrettyPrinterTest {
   
   @Before
   public void before() {
-//    LogStub.init();
-    Log.initDEBUG();
+    LogStub.init();
     Log.enableFailQuick(false);
-    Log.clearFindings();
-  }
-  
-  @BeforeClass
-  public static void setup() {
+    Grammar_WithConceptsMill.reset();
     Grammar_WithConceptsMill.init();
   }
 

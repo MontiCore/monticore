@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.method.accessor;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd.facade.CDAttributeFacade;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java.methods.accessor.ListAccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
@@ -26,17 +27,12 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-public class ListAccessorDecoratorTest {
+public class ListAccessorDecoratorTest extends DecoratorTestCase {
 
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+
   
   @Before
   public void setup() {

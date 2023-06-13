@@ -6,6 +6,7 @@ import de.monticore.literals.mcjavaliterals._ast.ASTDoubleLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTLongLiteral;
+import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.monticore.literals.testmcjavaliterals._parser.TestMCJavaLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -26,16 +27,13 @@ public class MCJavaLiteralsPrettyPrinterTest {
   private MCJavaLiteralsFullPrettyPrinter prettyPrinter = new MCJavaLiteralsFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestMCJavaLiteralsMill.reset();
+    TestMCJavaLiteralsMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
-
   @Test
   public void testIntLiteral() throws IOException {
     Optional<ASTIntLiteral> result = parser.parse_StringIntLiteral("1110");

@@ -3,27 +3,18 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import de.se_rwth.commons.logging.Log;
 
 public class ProdAndExtendedProdUseSameAttrNameForDiffNTsTest extends CocoTest {
 
   private final String MESSAGE = " The production B extending the production A must not use the\n" +
       "name a for the nonterminal D as A already uses this name for the nonterminal C.";
-  private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4024.A4024";
-  
+
   @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
+  public void init() {
+    checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new ProdAndExtendedProdUseSameAttrNameForDiffNTs());
   }
 

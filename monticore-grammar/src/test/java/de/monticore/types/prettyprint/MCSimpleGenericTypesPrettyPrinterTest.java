@@ -6,6 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
+import de.monticore.types.mcsimplegenerictypestest.MCSimpleGenericTypesTestMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -24,12 +25,10 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCSimpleGenericTypesTestMill.reset();
+    MCSimpleGenericTypesTestMill.init();
   }
 
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
-  }
 
 
   @Test

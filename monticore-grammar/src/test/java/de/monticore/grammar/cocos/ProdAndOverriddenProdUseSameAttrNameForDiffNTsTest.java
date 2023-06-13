@@ -3,27 +3,18 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import de.se_rwth.commons.logging.Log;
 
 public class ProdAndOverriddenProdUseSameAttrNameForDiffNTsTest extends CocoTest {
 
   private final String MESSAGE = " The overriding production QualifiedName must not use " +
       "the name part for the nonterminal StringLiteral as the overridden production uses this name for the nonterminal Name";
-  private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4025.A4025";
-  
+
   @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
+  public void init() {
+    checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new ProdAndOverriddenProdUseSameAttrNameForDiffNTs());
   }
 

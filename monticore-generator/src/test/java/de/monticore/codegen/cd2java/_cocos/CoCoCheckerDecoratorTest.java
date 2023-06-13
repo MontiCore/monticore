@@ -69,8 +69,6 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
     ICD4CodeGlobalScope gs = CD4CodeMill.globalScope();
     this.glex.setGlobalValue("service", new AbstractService(ast));

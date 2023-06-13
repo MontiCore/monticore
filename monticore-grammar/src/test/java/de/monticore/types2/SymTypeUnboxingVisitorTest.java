@@ -18,7 +18,7 @@ public class SymTypeUnboxingVisitorTest extends AbstractTypeTest {
   SymTypeUnboxingVisitor visitor = new SymTypeUnboxingVisitor();
 
   @Before
-  public void setup() {
+  public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     DefsTypeBasic.setup();

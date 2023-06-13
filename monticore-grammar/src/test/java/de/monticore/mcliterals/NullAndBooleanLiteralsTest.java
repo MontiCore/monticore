@@ -5,6 +5,7 @@ package de.monticore.mcliterals;
 import de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTNullLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -21,6 +22,8 @@ public class NullAndBooleanLiteralsTest {
   public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
+    TestMCCommonLiteralsMill.reset();
+    TestMCCommonLiteralsMill.init();
   }
   
   @Test

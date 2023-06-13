@@ -20,10 +20,11 @@ import static org.junit.Assert.*;
 public class MCGrammarParserTest {
 
   @Before
-  public void setup() {
-    GrammarFamilyMill.init();
+  public void setup(){
     LogStub.init();
     Log.enableFailQuick(false);
+    GrammarFamilyMill.reset();
+    GrammarFamilyMill.init();
   }
 
   @Test

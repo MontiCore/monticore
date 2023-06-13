@@ -59,8 +59,6 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     this.mcTypeFacade = MCTypeFacade.getInstance();
 

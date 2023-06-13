@@ -6,6 +6,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
+import de.monticore.types.mcfullgenerictypestest.MCFullGenericTypesTestMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -26,12 +27,10 @@ public class PrintTypeAstExtensionTests {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCFullGenericTypesTestMill.reset();
+    MCFullGenericTypesTestMill.init();
   }
 
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
-  }
 
   @Test
   public void printTypeMethodPrimitiveBooleanTest() {

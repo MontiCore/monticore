@@ -13,7 +13,6 @@ import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,25 +23,21 @@ import static org.junit.Assert.assertTrue;
 
 public class SynchronizedArgIsReftypeTest {
 
-  private static final TestMCSynchronizedStatementsCoCoChecker checker = new TestMCSynchronizedStatementsCoCoChecker();
+  protected TestMCSynchronizedStatementsCoCoChecker checker;
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
     TestMCSynchronizedStatementsMill.reset();
     TestMCSynchronizedStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker = new TestMCSynchronizedStatementsCoCoChecker();
     checker.addCoCo(new SynchronizedArgIsReftype(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("java.lang.Object").build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("a1").setType(sType).build());
-
   }
 
   public void checkValid(String expressionString) throws IOException {

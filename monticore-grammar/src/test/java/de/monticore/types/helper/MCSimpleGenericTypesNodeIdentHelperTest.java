@@ -4,6 +4,7 @@ package de.monticore.types.helper;
 import de.monticore.types.MCSimpleGenericTypesNodeIdentHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -21,9 +22,11 @@ import static org.junit.Assert.assertEquals;
 public class MCSimpleGenericTypesNodeIdentHelperTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCSimpleGenericTypesMill.reset();
+    MCSimpleGenericTypesMill.init();
   }
   
   @Test

@@ -96,14 +96,15 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teObscure;
 
-  @BeforeClass
-  public static void setUpScope(){
+  @Before
+  public void init(){
+    LogStub.init();
+    Log.enableFailQuick(false);
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
     scope.add(new OOTypeSymbol("long"));
     scope.add(new OOTypeSymbol("Human"));
-
     scope = OOSymbolsMill.scope();
 
     // setup of objects (unchanged during tests)
@@ -172,12 +173,6 @@ public class SymTypeExpressionTest {
 
     teObscure = createObscureType();
 
-  }
-  
-  @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
   }
 
   @Test

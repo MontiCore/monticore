@@ -2,6 +2,7 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
@@ -23,12 +24,10 @@ public class MCBasicTypesPrettyPrinterTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCBasicTypesTestMill.reset();
+    MCBasicTypesTestMill.init();
   }
 
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
-  }
 
 
   @Test

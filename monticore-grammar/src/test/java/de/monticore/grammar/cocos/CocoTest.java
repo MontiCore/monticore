@@ -9,14 +9,20 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.BeforeClass;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 
 import static org.junit.Assert.*;
 
 public abstract class CocoTest {
 
-  @BeforeClass
-  public static void setup(){
+  protected Grammar_WithConceptsCoCoChecker checker;
+
+  @Before
+  public void setup(){
+    LogStub.init();
+    Log.enableFailQuick(false);
+    Grammar_WithConceptsMill.reset();
     Grammar_WithConceptsMill.init();
   }
   

@@ -4,6 +4,7 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
 import de.monticore.statements.mcreturnstatements._prettyprint.MCReturnStatementsFullPrettyPrinter;
+import de.monticore.statements.testmcreturnstatements.TestMCReturnStatementsMill;
 import de.monticore.statements.testmcreturnstatements._parser.TestMCReturnStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -24,13 +25,11 @@ public class MCReturnStatementsPrettyPrinterTest  {
   private MCReturnStatementsFullPrettyPrinter prettyPrinter = new MCReturnStatementsFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestMCReturnStatementsMill.reset();
+    TestMCReturnStatementsMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
 

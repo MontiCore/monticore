@@ -38,15 +38,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
    * i.e. for
    *    types/MCCollectionTypes.mc4
    */
-  
-  @Before
-  public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
-    BasicSymbolsMill.initializePrimitives();
-  }
+
   
   // Parer used for convenience:
   CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
@@ -63,15 +55,19 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
   CombineExpressionsWithLiteralsTraverser traverser;
 
   @Before
-  public void initScope(){
+  public void init(){
+
+    LogStub.init();
+    Log.enableFailQuick(false);
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
+
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCCollectionTypes(scopeSetter);
     traverser.add4MCBasicTypes(scopeSetter);
-    init();
-  }
 
-  public static void init(){
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     gs.add(DefsTypeBasic.type("A"));
     gs.add(DefsTypeBasic.type("Person"));

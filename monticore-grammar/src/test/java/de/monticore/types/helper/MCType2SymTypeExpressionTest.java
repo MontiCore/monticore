@@ -31,22 +31,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MCType2SymTypeExpressionTest {
-  
-  @BeforeClass
-  public static void setup() {
+
+  protected FlatExpressionScopeSetter scopeSetter;
+  protected CombineExpressionsWithLiteralsTraverser traverser;
+
+  @Before
+  public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    init();
-  }
-  
-  @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  public static void init(){
+
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     gs.add(DefsTypeBasic.type("Person"));
     gs.add(DefsTypeBasic.type("Map"));
@@ -82,11 +78,11 @@ public class MCType2SymTypeExpressionTest {
     as8.setEnclosingScope(gs);
   }
 
-  FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
-  CombineExpressionsWithLiteralsTraverser traverser = CombineExpressionsWithLiteralsMill.traverser();
+
 
   @Before
   public void initScope(){
+    scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     traverser = CombineExpressionsWithLiteralsMill.traverser();
     traverser.add4MCSimpleGenericTypes(scopeSetter);
     traverser.add4MCCollectionTypes(scopeSetter);

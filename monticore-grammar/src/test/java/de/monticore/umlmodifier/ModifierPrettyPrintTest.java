@@ -17,6 +17,7 @@ public class ModifierPrettyPrintTest {
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+    UMLModifierMill.reset();
     UMLModifierMill.init();
     Log.clearFindings();
   }

@@ -23,21 +23,17 @@ import static org.junit.Assert.assertTrue;
 
 public class WhileConditionHasBooleanTypeTest {
   
-  private static final TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+  protected TestMCCommonStatementsCoCoChecker checker;
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new WhileConditionHasBooleanType(new TypeCalculator(null,new FullDeriveFromCombineExpressionsWithLiterals())));
-    
   }
   
   public void checkValid(String expressionString) throws IOException {

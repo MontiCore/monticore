@@ -3,12 +3,12 @@
 package de.monticore.prettyprint;
 
 import de.monticore.cardinality._ast.ASTCardinality;
+import de.monticore.testcardinality.TestCardinalityMill;
 import de.monticore.testcardinality._parser.TestCardinalityParser;
 import de.monticore.cardinality._prettyprint.CardinalityFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,16 +22,12 @@ public class CardinalityPrettyPrinterTest {
   
   @Before
   public void init() {
-    // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
+    TestCardinalityMill.reset();
+    TestCardinalityMill.init();
   }
-  
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
-  }
-  
+
   @Test
   public void testCardinality1() throws IOException {
     TestCardinalityParser parser = new TestCardinalityParser();

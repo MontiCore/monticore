@@ -23,13 +23,9 @@ public class MCTypeFacadeTest {
   private MCTypeFacade mcTypeFacade;
 
   @Before
-  public void disableFailQuick() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setUp() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
   }
 

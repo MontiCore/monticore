@@ -21,14 +21,9 @@ public class OOSymbolsSymbols2JsonTest {
   private IOOSymbolsArtifactScope scope;
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp(){
-    LogStub.getFindings().clear();
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
     OOSymbolsMill.reset();

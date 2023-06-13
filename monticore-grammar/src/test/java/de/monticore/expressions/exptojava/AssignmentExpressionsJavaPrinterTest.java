@@ -5,12 +5,12 @@ import de.monticore.expressions.assignmentexpressions.AssignmentExpressionsMill;
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.assignmentexpressions._prettyprint.AssignmentExpressionsFullPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.testassignmentexpressions.TestAssignmentExpressionsMill;
 import de.monticore.expressions.testassignmentexpressions._parser.TestAssignmentExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,18 +21,17 @@ import static org.junit.Assert.*;
 
 public class AssignmentExpressionsJavaPrinterTest {
   
-  private TestAssignmentExpressionsParser parser = new TestAssignmentExpressionsParser();
-  
-  private AssignmentExpressionsFullPrettyPrinter javaPrinter = new AssignmentExpressionsFullPrettyPrinter(new IndentPrinter());
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+  protected TestAssignmentExpressionsParser parser;
+  protected AssignmentExpressionsFullPrettyPrinter javaPrinter;
   
   @Before
   public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    TestAssignmentExpressionsMill.reset();
+    TestAssignmentExpressionsMill.init();
+    parser = new TestAssignmentExpressionsParser();
+    javaPrinter = new AssignmentExpressionsFullPrettyPrinter(new IndentPrinter());
     javaPrinter.getPrinter().clearBuffer();
   }
   

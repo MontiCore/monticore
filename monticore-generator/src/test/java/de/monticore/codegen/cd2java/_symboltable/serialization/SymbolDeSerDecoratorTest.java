@@ -56,7 +56,6 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    Log.init();
     this.mcTypeFacade = MCTypeFacade.getInstance();
     this.glex = new GlobalExtensionManagement();
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());

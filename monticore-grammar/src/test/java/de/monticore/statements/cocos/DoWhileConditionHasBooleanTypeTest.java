@@ -12,7 +12,6 @@ import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,21 +22,17 @@ import static org.junit.Assert.assertTrue;
 
 public class DoWhileConditionHasBooleanTypeTest {
   
-  private static final TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+  protected TestMCCommonStatementsCoCoChecker checker;
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new DoWhileConditionHasBooleanType(new TypeCalculator(null,new FullDeriveFromCombineExpressionsWithLiterals())));
-    
   }
   
   public void checkValid(String expressionString) throws IOException {

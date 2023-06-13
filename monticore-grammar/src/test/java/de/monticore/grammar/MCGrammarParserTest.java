@@ -9,7 +9,6 @@ import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsPar
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,10 +23,7 @@ public class MCGrammarParserTest {
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void setup() {
+    Grammar_WithConceptsMill.reset();
     Grammar_WithConceptsMill.init();
   }
 

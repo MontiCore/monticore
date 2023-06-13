@@ -9,7 +9,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -21,14 +20,9 @@ public class BasicSymbolsSymbols2JsonTest {
   private IBasicSymbolsArtifactScope scope;
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp(){
-    LogStub.getFindings().clear();
 
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
     BasicSymbolsMill.reset();

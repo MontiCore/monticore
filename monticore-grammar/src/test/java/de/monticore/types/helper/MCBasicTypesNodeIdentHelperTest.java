@@ -2,6 +2,7 @@
 package de.monticore.types.helper;
 
 import de.monticore.types.MCBasicTypesNodeIdentHelper;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -18,9 +19,11 @@ import static org.junit.Assert.*;
 public class MCBasicTypesNodeIdentHelperTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCBasicTypesMill.reset();
+    MCBasicTypesMill.init();
   }
   
   @Test

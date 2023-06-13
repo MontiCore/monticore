@@ -2,6 +2,7 @@
 package de.monticore.types;
 
 import de.monticore.types.mcbasictypes._ast.*;
+import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -17,9 +18,11 @@ import static org.junit.Assert.*;
 public class MCBasicTypesTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCBasicTypesTestMill.reset();
+    MCBasicTypesTestMill.init();
   }
   
   

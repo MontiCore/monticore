@@ -17,6 +17,7 @@ import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,24 +32,21 @@ public class ExpressionStatementIsValidTest {
 
   protected TestMCCommonStatementsCoCoChecker checker;
 
-  @BeforeClass
-  public static void init() {
+  @Before
+  public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     TestMCCommonStatementsMill.globalScope().clear();
     BasicSymbolsMill.initializePrimitives();
-    Log.enableFailQuick(false);
     initSymbols();
-  }
 
-  @Before
-  public void setUp() {
-    Log.clearFindings();
     ISynthesize synthesize = new FullSynthesizeFromCombineExpressionsWithLiterals();
     IDerive derive = new FullDeriveFromCombineExpressionsWithLiterals();
     TypeCalculator typeCalc = new TypeCalculator(synthesize, derive);
-    this.checker = new TestMCCommonStatementsCoCoChecker();
-    this.checker.addCoCo(new ExpressionStatementIsValid(typeCalc));
+    checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new ExpressionStatementIsValid(typeCalc));
   }
 
   protected static void initSymbols() {

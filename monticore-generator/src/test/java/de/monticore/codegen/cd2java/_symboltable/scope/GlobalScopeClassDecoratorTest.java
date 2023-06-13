@@ -51,8 +51,6 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    LogStub.init();         // replace log by a sideffect free variant
-        // LogStub.initPlusLog();  // for manual testing purpose only
     this.glex = new GlobalExtensionManagement();
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());

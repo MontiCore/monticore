@@ -22,20 +22,15 @@ import static org.junit.Assert.*;
 
 public class ExpressionValidTest extends CocoTest {
 
-  private static final ExpressionsBasisCoCoChecker checker = new ExpressionsBasisCoCoChecker();
+  protected ExpressionsBasisCoCoChecker checker;
 
   @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
+  public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
     TypeCalculator typeCheck = new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals());
+    checker = new ExpressionsBasisCoCoChecker();
     checker.addCoCo(new ExpressionValid(typeCheck));
     new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals());
   }

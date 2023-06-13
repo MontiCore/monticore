@@ -30,8 +30,6 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
 
     originalClass = getClassBy("A", cd).deepClone();

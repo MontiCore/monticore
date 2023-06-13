@@ -2,6 +2,7 @@
 
 package de.monticore.prettyprint;
 
+import de.monticore.testmcnumbers.TestMCNumbersMill;
 import de.monticore.testmcnumbers._parser.TestMCNumbersParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -22,14 +23,10 @@ public class MCNumbersPrettyPrinterTest {
   
   @Before
   public void init() {
-    // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
+    TestMCNumbersMill.reset();
+    TestMCNumbersMill.init();
   }
   
   @Test

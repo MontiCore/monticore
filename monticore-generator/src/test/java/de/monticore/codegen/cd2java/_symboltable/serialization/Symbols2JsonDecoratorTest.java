@@ -68,7 +68,6 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp(){
-    Log.init();
     this.glex = new GlobalExtensionManagement();
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());

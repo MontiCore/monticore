@@ -38,7 +38,6 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.init();
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "cocos", "CoCos");
     this.glex.setGlobalValue("service", new AbstractService(ast));
     this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());

@@ -4,11 +4,11 @@ package de.monticore.mccommonliterals;
 
 import de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,6 +23,8 @@ public class FloatCommonLiteralsTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    TestMCCommonLiteralsMill.reset();
+    TestMCCommonLiteralsMill.init();
   }
 
   private void checkFloatLiteral(float f, String s) throws IOException {

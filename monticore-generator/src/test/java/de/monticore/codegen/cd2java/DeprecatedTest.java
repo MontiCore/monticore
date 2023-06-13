@@ -64,8 +64,6 @@ DeprecatedTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     compilationUnit = this.parse("de", "monticore", "codegen", "deprecated", "DeprecatedProds");
 
     this.glex.setGlobalValue("service", new AbstractService(compilationUnit));

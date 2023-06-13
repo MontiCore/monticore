@@ -44,9 +44,8 @@ public class TypeCalculatorTest {
   private FlatExpressionScopeSetter flatExpressionScopeSetter;
 
   @Before
-  public void setupForEach() {
+  public void init() {
     LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
     
     // Setting up a Scope Infrastructure (without a global Scope)

@@ -23,19 +23,17 @@ import static org.junit.Assert.assertTrue;
 
 public class ThrowIsValidTest {
   
-  private static final TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+  protected TestMCExceptionStatementsCoCoChecker checker;
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
+
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker = new TestMCExceptionStatementsCoCoChecker();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
     checker.addCoCo(new ThrowIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
@@ -47,7 +45,6 @@ public class ThrowIsValidTest {
     SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObject("B", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("B").build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("b").setType(sTypeB).build());
-    
   }
   
   public void checkValid(String expressionString) throws IOException {

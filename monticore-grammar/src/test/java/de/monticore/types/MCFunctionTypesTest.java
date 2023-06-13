@@ -4,6 +4,7 @@ package de.monticore.types;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
+import de.monticore.types.mcfunctiontypestest.MCFunctionTypesTestMill;
 import de.monticore.types.mcfunctiontypestest._parser.MCFunctionTypesTestParser;
 import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -22,9 +23,11 @@ import static org.junit.Assert.assertTrue;
 public class MCFunctionTypesTest {
 
   @Before
-  public void disableFailQuick() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCFunctionTypesTestMill.reset();
+    MCFunctionTypesTestMill.init();
   }
 
   @Test
