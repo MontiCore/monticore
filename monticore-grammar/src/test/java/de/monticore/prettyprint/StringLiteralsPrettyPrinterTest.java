@@ -2,6 +2,7 @@
 
 package de.monticore.prettyprint;
 
+import de.monticore.teststringliterals.TestStringLiteralsMill;
 import de.monticore.teststringliterals._parser.TestStringLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -23,14 +24,10 @@ public class StringLiteralsPrettyPrinterTest {
   
   @Before
   public void init() {
-    // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
+    TestStringLiteralsMill.reset();
+    TestStringLiteralsMill.init();
   }
   
   @Test

@@ -20,19 +20,18 @@ import static org.junit.Assert.assertTrue;
 
 public class StreamExpressionsPrettyPrinterTest {
 
-  protected TestStreamExpressionsParser parser = TestStreamExpressionsMill.parser();
-
-  protected StreamExpressionsFullPrettyPrinter prettyPrinter =
-    new StreamExpressionsFullPrettyPrinter(new IndentPrinter());
-
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+  protected TestStreamExpressionsParser parser;
+  protected StreamExpressionsFullPrettyPrinter prettyPrinter;
 
   @Before
   public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    TestStreamExpressionsMill.reset();
+    TestStreamExpressionsMill.init();
+    parser = TestStreamExpressionsMill.parser();
+    prettyPrinter =
+            new StreamExpressionsFullPrettyPrinter(new IndentPrinter());
     prettyPrinter.getPrinter().clearBuffer();
   }
 

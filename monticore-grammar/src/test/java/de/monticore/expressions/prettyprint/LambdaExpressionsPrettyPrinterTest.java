@@ -3,12 +3,12 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
 import de.monticore.expressions.lambdaexpressions._prettyprint.LambdaExpressionsFullPrettyPrinter;
+import de.monticore.expressions.testlambdaexpressions.TestLambdaExpressionsMill;
 import de.monticore.expressions.testlambdaexpressions._parser.TestLambdaExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,19 +20,18 @@ import static org.junit.Assert.assertTrue;
 
 public class LambdaExpressionsPrettyPrinterTest {
 
-  protected TestLambdaExpressionsParser parser = new TestLambdaExpressionsParser();
-
-  protected LambdaExpressionsFullPrettyPrinter prettyPrinter =
-      new LambdaExpressionsFullPrettyPrinter(new IndentPrinter());
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+  protected TestLambdaExpressionsParser parser;
+  protected LambdaExpressionsFullPrettyPrinter prettyPrinter;
   
   @Before
   public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    TestLambdaExpressionsMill.reset();
+    TestLambdaExpressionsMill.init();
+    parser = new TestLambdaExpressionsParser();
+    prettyPrinter =
+            new LambdaExpressionsFullPrettyPrinter(new IndentPrinter());
     prettyPrinter.getPrinter().clearBuffer();
   }
 

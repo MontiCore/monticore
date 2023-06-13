@@ -2,6 +2,7 @@
 
 package de.monticore.prettyprint;
 
+import de.monticore.testmchexnumbers.TestMCHexNumbersMill;
 import de.monticore.testmchexnumbers._parser.TestMCHexNumbersParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -23,14 +24,10 @@ public class MCHexNumbersPrettyPrinterTest {
   
   @Before
   public void init() {
-    // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
+    TestMCHexNumbersMill.reset();
+    TestMCHexNumbersMill.init();
   }
   
   @Test

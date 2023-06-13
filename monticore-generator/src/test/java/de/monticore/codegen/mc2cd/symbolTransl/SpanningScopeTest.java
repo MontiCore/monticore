@@ -28,9 +28,10 @@ public class SpanningScopeTest {
 
   @Before
   public void setup(){
-    GrammarFamilyMill.init();
     LogStub.init();
     Log.enableFailQuick(false);
+    GrammarFamilyMill.reset();
+    GrammarFamilyMill.init();
   }
 
   @Before

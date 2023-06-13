@@ -77,15 +77,11 @@ public class SymTypeExpressionDeSerTest {
 
   SymTypeOfUnion teUnion1;
 
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Before
   public void init() {
-    //    LogStub.init();
+    LogStub.init();
+    Log.enableFailQuick(false);
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();

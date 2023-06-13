@@ -2,19 +2,17 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 import de.se_rwth.commons.logging.Log;
 
 public class ConstructorFormalParametersDifferentNameTest extends JavaLightCocoTest{
-  private static final JavaLightCoCoChecker checker = new JavaLightCoCoChecker();
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0821.A0821";
-
-  @BeforeClass
-  public static void initCoCo() {
+  @Before
+  public void initCoCo() {
+    checker = new JavaLightCoCoChecker();
     checker.addCoCo(new ConstructorFormalParametersDifferentName());
   }
 

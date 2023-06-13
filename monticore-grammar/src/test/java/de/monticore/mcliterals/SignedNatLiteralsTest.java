@@ -4,7 +4,9 @@ package de.monticore.mcliterals;
 
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
+import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.testmcliteralsv2.TestMCLiteralsV2Mill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -22,6 +24,8 @@ public class SignedNatLiteralsTest {
   public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
+    TestMCCommonLiteralsMill.reset();
+    TestMCCommonLiteralsMill.init();
   }
   
   private void checkNatLiteral(int i, String s) throws IOException {

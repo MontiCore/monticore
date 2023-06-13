@@ -31,7 +31,7 @@ public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
    */
   
   @Before
-  public void setupForEach() {
+  public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -89,7 +89,6 @@ public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
     add2scope(scope,genSuperField);
 
     setFlatExpressionScopeSetter(scope);
-    super.setupForEach();
   }
 
   @Override

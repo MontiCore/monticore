@@ -5,6 +5,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayDeclaratorId;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.monticore.statements.mcarraystatements._prettyprint.MCArrayStatementsFullPrettyPrinter;
+import de.monticore.statements.testmcarraystatements.TestMCArrayStatementsMill;
 import de.monticore.statements.testmcarraystatements._parser.TestMCArrayStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -25,13 +26,11 @@ public class MCArrayStatementsPrettyPrinterTest {
   private MCArrayStatementsFullPrettyPrinter prettyPrinter = new MCArrayStatementsFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestMCArrayStatementsMill.reset();
+    TestMCArrayStatementsMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
 

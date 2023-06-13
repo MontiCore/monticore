@@ -4,6 +4,7 @@ package de.monticore.types.printer;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcfullgenerictypestest.MCFullGenericTypesTestMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -22,6 +23,8 @@ public class FullGenericTypesPrinterTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCFullGenericTypesTestMill.reset();
+    MCFullGenericTypesTestMill.init();
   }
 
   @Test

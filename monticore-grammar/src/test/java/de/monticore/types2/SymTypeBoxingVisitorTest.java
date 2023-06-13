@@ -19,7 +19,7 @@ public class SymTypeBoxingVisitorTest extends AbstractTypeTest {
   SymTypeBoxingVisitor visitor = new SymTypeBoxingVisitor();
 
   @Before
-  public void setup() {
+  public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     DefsTypeBasic.setup();

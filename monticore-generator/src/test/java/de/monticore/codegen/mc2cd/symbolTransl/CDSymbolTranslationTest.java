@@ -29,6 +29,7 @@ public class CDSymbolTranslationTest {
   public void setup(){
     Log.init();
     Log.enableFailQuick(false);
+    GrammarFamilyMill.reset();
     GrammarFamilyMill.init();
   }
 

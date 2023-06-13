@@ -3,12 +3,17 @@ package de.monticore.types;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
+import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypestest.MCCollectionTypesTestMill;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.types.mcfullgenerictypestest.MCFullGenericTypesTestMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
+import de.monticore.types.mcsimplegenerictypestest.MCSimpleGenericTypesTestMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -28,14 +33,23 @@ public class AlwaysTheSameASTTest {
   private MCFullGenericTypesTestParser genericTypesTestParser;
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  
-  @Before
-  public void setUp() {
+    
+    //only initializing this way as we only use the parser
+    MCCollectionTypesTestMill.reset();
+    MCCollectionTypesTestMill.init();
+
+    MCBasicTypesTestMill.reset();
+    MCBasicTypesTestMill.init();
+
+    MCSimpleGenericTypesTestMill.reset();
+    MCSimpleGenericTypesTestMill.init();
+
+    MCFullGenericTypesTestMill.reset();
+    MCFullGenericTypesTestMill.init();
+
     this.mcCollectionTypesTestParser = new MCCollectionTypesTestParser();
     this.basicTypesTestParser = new MCBasicTypesTestParser();
     this.customGenericTypesTestParser = new MCSimpleGenericTypesTestParser();

@@ -5,6 +5,7 @@ package de.monticore;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -21,14 +22,11 @@ import static org.junit.Assert.assertTrue;
 public class MCGrammarLanguageFamilySymbolTableTest {
 
   @Before
-  public void disableFailQuick() {
-    Grammar_WithConceptsMill.init();
-  }
-
-  @Before
-  public void before() {
+  public void setup(){
     LogStub.init();
     Log.enableFailQuick(false);
+    GrammarFamilyMill.reset();
+    GrammarFamilyMill.init();
   }
   
   @Test

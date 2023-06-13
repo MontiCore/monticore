@@ -10,7 +10,6 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -24,12 +23,9 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
   
   @Before
   public void before() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
+    Grammar_WithConceptsMill.reset();
     Grammar_WithConceptsMill.init();
   }
   

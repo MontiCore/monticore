@@ -5,6 +5,7 @@ import de.monticore.cardinality._ast.ASTCardinality;
 import de.monticore.completeness._ast.ASTCompleteness;
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
+import de.monticore.testmccommon.TestMCCommonMill;
 import de.monticore.testmccommon._parser.TestMCCommonParser;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
@@ -28,10 +29,12 @@ public class MCCommonUnitTest {
   TestMCCommonParser parser = new TestMCCommonParser() ;
   
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
     LogStub.getFindings().clear();
+    TestMCCommonMill.reset();
+    TestMCCommonMill.init();
   }
   
   // --------------------------------------------------------------------

@@ -3,6 +3,7 @@
 package de.monticore.types.helper;
 
 import de.monticore.types.MCArrayTypesNodeIdentHelper;
+import de.monticore.types.mcarraytypes.MCArrayTypesMill;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcarraytypestest._parser.MCArrayTypesTestParser;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -21,9 +22,11 @@ import static org.junit.Assert.assertTrue;
 public class MCArrayTypesNodeIdentHelperTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCArrayTypesMill.reset();
+    MCArrayTypesMill.init();
   }
   
   @Test

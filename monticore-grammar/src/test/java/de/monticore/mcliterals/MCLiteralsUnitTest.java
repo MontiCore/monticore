@@ -2,6 +2,7 @@
 
 package de.monticore.mcliterals;
 
+import de.monticore.testmcliteralsv2.TestMCLiteralsV2Mill;
 import de.monticore.testmcliteralsv2._ast.*;
 import de.monticore.testmcliteralsv2._parser.TestMCLiteralsV2Parser;
 import de.se_rwth.commons.logging.Log;
@@ -29,15 +30,10 @@ public class MCLiteralsUnitTest {
   
   @Before
   public void init() {
-    // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
+    TestMCLiteralsV2Mill.reset();
+    TestMCLiteralsV2Mill.init();
   }
   
   // --------------------------------------------------------------------

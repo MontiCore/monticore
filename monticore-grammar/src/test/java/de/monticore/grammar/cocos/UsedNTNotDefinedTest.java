@@ -5,9 +5,7 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -16,17 +14,11 @@ public class UsedNTNotDefinedTest extends CocoTest {
 
   private final String MESSAGE =" The production A must not use the nonterminal " +
           "B because there exists no production defining B.";
-  private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
   private final String grammar = "de.monticore.grammar.cocos.invalid.A2031.A2031";
-  
+
   @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
+  public void init() {
+    checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new UsedNTNotDefined());
   }
 

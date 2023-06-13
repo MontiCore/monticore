@@ -4,6 +4,7 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcexceptionstatements._ast.*;
 import de.monticore.statements.mcexceptionstatements._prettyprint.MCExceptionStatementsFullPrettyPrinter;
+import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -24,13 +25,11 @@ public class MCExceptionStatementsPrettyPrinterTest {
   private MCExceptionStatementsFullPrettyPrinter prettyPrinter = new MCExceptionStatementsFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestMCExceptionStatementsMill.reset();
+    TestMCExceptionStatementsMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
 

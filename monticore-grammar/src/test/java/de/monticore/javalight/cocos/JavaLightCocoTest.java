@@ -19,7 +19,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -34,15 +33,13 @@ public abstract class JavaLightCocoTest {
   static protected TestJavaLightGlobalScope globalScope;
 
   protected TestJavaLightArtifactScope artifactScope;
+
+  protected JavaLightCoCoChecker checker;
   
   @Before
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void setup() {
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
   }

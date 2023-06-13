@@ -9,6 +9,7 @@ import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesVisitor2;
+import de.monticore.types.mccollectiontypestest.MCCollectionTypesTestMill;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mccollectiontypeswithoutprimitivestest._parser.MCCollectionTypesWithoutPrimitivesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -25,9 +26,11 @@ import static org.junit.Assert.*;
 public class MCCollectionTypesTest {
 
   @Before
-  public void disableFailQuick() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCCollectionTypesTestMill.reset();
+    MCCollectionTypesTestMill.init();
   }
 
   @Test

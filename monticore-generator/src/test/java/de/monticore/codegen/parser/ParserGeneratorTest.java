@@ -46,14 +46,15 @@ public class ParserGeneratorTest {
 
   @Before
   public void setup(){
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
+    GrammarFamilyMill.reset();
     GrammarFamilyMill.init();
   }
 
+
   @Before
   public void setUp() {
-    Log.clearFindings();
     this.glex = new GlobalExtensionManagement();
     Path modelPathPath = Paths.get("src/test/resources");
     outputPath = new File("target/generated-test-sources");

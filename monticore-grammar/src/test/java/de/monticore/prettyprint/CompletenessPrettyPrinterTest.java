@@ -9,12 +9,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import de.monticore.testcompleteness.TestCompletenessMill;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import de.monticore.completeness._ast.ASTCompleteness;
 import de.monticore.completeness._prettyprint.CompletenessFullPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.testcompleteness._parser.TestCompletenessParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -23,14 +22,10 @@ public class CompletenessPrettyPrinterTest {
   
   @Before
   public void init() {
-    // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
+    TestCompletenessMill.reset();
+    TestCompletenessMill.init();
   }
   
   @Test

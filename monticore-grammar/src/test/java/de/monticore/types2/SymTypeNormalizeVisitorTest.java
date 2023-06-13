@@ -27,7 +27,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
   SymTypeNormalizeVisitor visitor;
 
   @Before
-  public void setup() {
+  public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     DefsTypeBasic.setup();

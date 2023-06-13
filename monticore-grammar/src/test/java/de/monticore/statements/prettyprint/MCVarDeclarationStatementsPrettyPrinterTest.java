@@ -4,6 +4,7 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._prettyprint.MCVarDeclarationStatementsFullPrettyPrinter;
+import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
 import de.monticore.statements.testmcvardeclarationstatements._parser.TestMCVarDeclarationStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -24,16 +25,13 @@ public class MCVarDeclarationStatementsPrettyPrinterTest {
   private MCVarDeclarationStatementsFullPrettyPrinter prettyPrinter = new MCVarDeclarationStatementsFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestMCVarDeclarationStatementsMill.reset();
+    TestMCVarDeclarationStatementsMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
-
 
   @Test
   public void testLocalVariableDeclaration() throws IOException {

@@ -37,12 +37,6 @@ public class OptionalAccessorDecoratorTest extends DecoratorTestCase {
   private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @Before
   public void setup() {

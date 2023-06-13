@@ -6,6 +6,7 @@ import de.monticore.statements.mclowlevelstatements._ast.ASTLabelledBreakStateme
 import de.monticore.statements.mclowlevelstatements._ast.ASTContinueStatement;
 import de.monticore.statements.mclowlevelstatements._ast.ASTLabel;
 import de.monticore.statements.mclowlevelstatements._prettyprint.MCLowLevelStatementsFullPrettyPrinter;
+import de.monticore.statements.testmclowlevelstatements.TestMCLowLevelStatementsMill;
 import de.monticore.statements.testmclowlevelstatements._parser.TestMCLowLevelStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -26,13 +27,11 @@ public class MCLowLevelStatementsPrettyPrinterTest  {
   private MCLowLevelStatementsFullPrettyPrinter prettyPrinter = new MCLowLevelStatementsFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestMCLowLevelStatementsMill.reset();
+    TestMCLowLevelStatementsMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
 

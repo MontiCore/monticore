@@ -7,9 +7,7 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -19,11 +17,10 @@ public class KeywordAlternativeNameTest extends CocoTest {
   private final String MESSAGE = " The name of the constant group could't be ascertained";
   
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4019.A4019";
-  
+
   @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
+  public void init() {
+    checker = new Grammar_WithConceptsCoCoChecker();
   }
   
   @Test
@@ -44,7 +41,6 @@ public class KeywordAlternativeNameTest extends CocoTest {
   
   @Test
   public void testSingleKeyword() {
-    Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new KeywordAlternativeName());
     testValidGrammar("de.monticore.grammar.cocos.valid.Attributes", checker);
   }

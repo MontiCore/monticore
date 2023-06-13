@@ -24,19 +24,17 @@ import static org.junit.Assert.assertTrue;
 
 public class ResourceInTryStatementCloseableTest {
   
-  private static final TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+  protected TestMCExceptionStatementsCoCoChecker checker;
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick() {
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+
+    checker = new TestMCExceptionStatementsCoCoChecker();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
     checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.io.Closeable", TestMCExceptionStatementsMill.globalScope());

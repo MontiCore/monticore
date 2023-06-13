@@ -4,6 +4,7 @@ package de.monticore.types.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
 import de.monticore.types.mcfunctiontypes._prettyprint.MCFunctionTypesFullPrettyPrinter;
+import de.monticore.types.mcfunctiontypestest.MCFunctionTypesTestMill;
 import de.monticore.types.mcfunctiontypestest._parser.MCFunctionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -23,6 +24,8 @@ public class MCFunctionTypesPrettyPrinterTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCFunctionTypesTestMill.reset();
+    MCFunctionTypesTestMill.init();
   }
 
   @Test

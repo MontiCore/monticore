@@ -24,18 +24,14 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
    * Focus: Deriving Type of Literals, here:
    *    literals/MCLiteralsBasis.mc4
    */
-  
-  @BeforeClass
-  public static void init() {
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
-    BasicSymbolsMill.initializePrimitives();
-  }
-  
+
   @Before
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
   }
   
   // This is the core Visitor under Test (but rather empty)

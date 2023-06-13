@@ -39,8 +39,6 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
  
   @Before
   public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     originalCD = parse("de", "monticore", "codegen", "ast", "Automaton");
     clonedCD = originalCD.deepClone();
     decoratedCD = createEmptyCompilationUnit(originalCD);

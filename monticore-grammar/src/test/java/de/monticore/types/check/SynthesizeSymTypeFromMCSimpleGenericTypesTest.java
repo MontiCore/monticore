@@ -37,16 +37,13 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
    */
 
   @Before
-  public void setup() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    init();
-  }
 
-  public static void init(){
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     gs.add(DefsTypeBasic.type("A"));
     gs.add(DefsTypeBasic.type("Person"));

@@ -2,8 +2,10 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.mcarraytypes.MCArrayTypesMill;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcarraytypes._prettyprint.MCArrayTypesFullPrettyPrinter;
+import de.monticore.types.mcarraytypestest.MCArrayTypesTestMill;
 import de.monticore.types.mcarraytypestest._parser.MCArrayTypesTestParser;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
@@ -25,11 +27,8 @@ public class MCArrayTypesPrettyPrinterTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
+    MCArrayTypesTestMill.reset();
+    MCArrayTypesTestMill.init();
   }
 
   @Test

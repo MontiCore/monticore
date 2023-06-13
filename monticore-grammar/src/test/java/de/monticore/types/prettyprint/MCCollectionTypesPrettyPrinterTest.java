@@ -3,6 +3,7 @@ package de.monticore.types.prettyprint;
 
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mccollectiontypes._ast.*;
+import de.monticore.types.mccollectiontypestest.MCCollectionTypesTestMill;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -23,13 +24,9 @@ public class MCCollectionTypesPrettyPrinterTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCCollectionTypesTestMill.reset();
+    MCCollectionTypesTestMill.init();
   }
-
-  @Before
-  public void setUp() {
-    Log.getFindings().clear();
-  }
-
   @Test
   public void testMCPrimitiveTypeArgument() throws IOException {
     MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();

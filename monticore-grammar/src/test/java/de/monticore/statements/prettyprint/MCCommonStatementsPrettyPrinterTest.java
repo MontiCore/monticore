@@ -8,6 +8,7 @@ import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
+import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -28,13 +29,11 @@ public class MCCommonStatementsPrettyPrinterTest {
   private MCCommonStatementsFullPrettyPrinter prettyPrinter= new MCCommonStatementsFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestMCCommonStatementsMill.reset();
+    TestMCCommonStatementsMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
 

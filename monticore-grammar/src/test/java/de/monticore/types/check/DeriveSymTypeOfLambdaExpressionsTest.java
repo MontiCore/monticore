@@ -32,7 +32,7 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
    */
 
   @Before
-  public void setupForEach() {
+  public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -41,7 +41,6 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
       .setName("String")
       .build();
     CombineExpressionsWithLiteralsMill.globalScope().add(str);
-    super.setupForEach();
   }
 
   @Override

@@ -3,12 +3,12 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.bitexpressions._prettyprint.BitExpressionsFullPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.testbitexpressions.TestBitExpressionsMill;
 import de.monticore.expressions.testbitexpressions._parser.TestBitExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,19 +17,17 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class BitExpressionsPrettyPrinterTest {
-
-  private TestBitExpressionsParser parser = new TestBitExpressionsParser();
-
-  private BitExpressionsFullPrettyPrinter prettyPrinter= new BitExpressionsFullPrettyPrinter(new IndentPrinter());
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+  protected TestBitExpressionsParser parser;
+  protected BitExpressionsFullPrettyPrinter prettyPrinter;
   
   @Before
   public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    TestBitExpressionsMill.reset();
+    TestBitExpressionsMill.init();
+    parser = new TestBitExpressionsParser();
+    prettyPrinter = new BitExpressionsFullPrettyPrinter(new IndentPrinter());
     prettyPrinter.getPrinter().clearBuffer();
   }
 

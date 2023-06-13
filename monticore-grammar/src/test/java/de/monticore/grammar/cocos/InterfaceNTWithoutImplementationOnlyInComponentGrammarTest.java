@@ -7,7 +7,6 @@ import de.se_rwth.commons.logging.LogStub;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static de.monticore.grammar.cocos.InterfaceNTWithoutImplementationOnlyInComponentGrammar.ERROR_CODE;
@@ -24,8 +23,6 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends 
 
   private final String MESSAGE_Z = " The interface nonterminal Z must not be used without nonterminals " +
       "implementing it in a grammar not marked as a grammar component.";
-
-  private static final Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
 
   private final String grammar = "de.monticore.grammar.cocos.invalid.A0278.A0278";
 
@@ -44,13 +41,8 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends 
   private final String grammar8 = "de.monticore.grammar.cocos.invalid.A0278.A0278e";
 
   @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @BeforeClass
-  public static void disableFailQuick() {
+  public void init() {
+    checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new InterfaceNTWithoutImplementationOnlyInComponentGrammar());
   }
 

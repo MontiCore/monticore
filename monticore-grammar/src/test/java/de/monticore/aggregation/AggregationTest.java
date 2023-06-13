@@ -33,6 +33,10 @@ public class AggregationTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    FooMill.reset();
+    FooMill.init();
+    BlahMill.reset();
+    BlahMill.init();
   }
   
   @Test

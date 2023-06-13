@@ -36,8 +36,6 @@ public class ASTReferencedDefinitionDecoratorListTest extends DecoratorTestCase 
 
   @Before
   public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
 
     this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());

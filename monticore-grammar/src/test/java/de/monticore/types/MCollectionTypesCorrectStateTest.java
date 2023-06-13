@@ -33,7 +33,7 @@ public class MCollectionTypesCorrectStateTest {
   private ASTMCBasicTypeArgument typeArgumentString;
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }

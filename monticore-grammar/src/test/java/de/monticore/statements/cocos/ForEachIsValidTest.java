@@ -13,7 +13,6 @@ import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,19 +23,16 @@ import static org.junit.Assert.assertTrue;
 
 public class ForEachIsValidTest {
 
-  private static final TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-  
+  protected TestMCCommonStatementsCoCoChecker checker;
+
   @Before
-  public void before() {
+  public void init(){
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick(){
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new ForEachIsValid(new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals())));
   
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Iterable", TestMCCommonStatementsMill.globalScope());
@@ -49,7 +45,6 @@ public class ForEachIsValidTest {
     SymTypeOfObject sTypeS = SymTypeExpressionFactory.createTypeObject("Object", TestMCCommonStatementsMill.globalScope());
     TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill.oOTypeSymbolBuilder().setName("Object").build());
     TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill.fieldSymbolBuilder().setName("o").setType(sTypeS).build());
-  
   }
   
   private void addToTraverser(TestMCCommonStatementsTraverser traverser, ITestMCCommonStatementsScope enclosingScope) {

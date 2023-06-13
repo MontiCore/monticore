@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
+
+import de.monticore.testumlstereotype.TestUMLStereotypeMill;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,9 +24,10 @@ public class UMLStereotypePrettyPrinterTest {
   
   @Before
   public void init() {
-    // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
+    TestUMLStereotypeMill.reset();
+    TestUMLStereotypeMill.init();
   }
   
   @Before

@@ -5,12 +5,12 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsFullPrettyPrinter;
+import de.monticore.expressions.testjavaclassexpressions.TestJavaClassExpressionsMill;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,18 +20,17 @@ import static org.junit.Assert.*;
 
 public class JavaClassExpressionsJavaPrinterTest {
   
-  private TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
-  
-  private JavaClassExpressionsFullPrettyPrinter javaPrinter= new JavaClassExpressionsFullPrettyPrinter(new IndentPrinter());
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+  protected TestJavaClassExpressionsParser parser;
+  protected JavaClassExpressionsFullPrettyPrinter javaPrinter;
   
   @Before
   public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    TestJavaClassExpressionsMill.reset();
+    TestJavaClassExpressionsMill.init();
+    parser = new TestJavaClassExpressionsParser();
+    javaPrinter= new JavaClassExpressionsFullPrettyPrinter(new IndentPrinter());
     javaPrinter.getPrinter().clearBuffer();
   }
   

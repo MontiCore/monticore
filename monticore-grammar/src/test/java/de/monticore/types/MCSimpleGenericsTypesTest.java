@@ -5,6 +5,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypestest.MCSimpleGenericTypesTestMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -20,9 +21,11 @@ import static org.junit.Assert.*;
 public class MCSimpleGenericsTypesTest {
 
   @Before
-  public void disableFailQuick() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCSimpleGenericTypesTestMill.reset();
+    MCSimpleGenericTypesTestMill.init();
   }
 
   @Test

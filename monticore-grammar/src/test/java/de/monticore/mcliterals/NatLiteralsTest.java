@@ -3,6 +3,7 @@
 package de.monticore.mcliterals;
 
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
+import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -18,9 +19,11 @@ import static org.junit.Assert.*;
 public class NatLiteralsTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    TestMCCommonLiteralsMill.reset();
+    TestMCCommonLiteralsMill.init();
   }
 
   private void checkNatLiteral(int i, String s) throws IOException {

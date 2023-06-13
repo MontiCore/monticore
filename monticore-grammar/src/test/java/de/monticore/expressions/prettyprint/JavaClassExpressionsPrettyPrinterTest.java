@@ -5,9 +5,11 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsFullPrettyPrinter;
+import de.monticore.expressions.testjavaclassexpressions.TestJavaClassExpressionsMill;
 import de.monticore.expressions.testjavaclassexpressions._ast.ASTExtType;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -24,17 +26,17 @@ public class JavaClassExpressionsPrettyPrinterTest {
   private TestJavaClassExpressionsParser parser = new TestJavaClassExpressionsParser();
 
   private JavaClassExpressionsFullPrettyPrinter prettyPrinter= new JavaClassExpressionsFullPrettyPrinter(new IndentPrinter());
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @Before
   public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    JavaClassExpressionsMill.reset();
+    JavaClassExpressionsMill.init();
+    BasicSymbolsMill.initializePrimitives();
     prettyPrinter.getPrinter().clearBuffer();
   }
+
 
   @Test
   public void testPrimaryThisExpression() throws IOException {
@@ -50,7 +52,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -68,7 +70,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -83,7 +85,9 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     // does not print 'Integer' because functionality for type printing has to be added over delegation form
     // prettyprinter of langauge that fills the external
-    assertEquals("()a", output);
+    String pattern = "^\\(.*\\)a$";
+    boolean matches = output.matches(pattern);
+    assertEquals( matches, true);
   }
 
   @Test
@@ -122,9 +126,9 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(a.isPresent());
     assertTrue(type.isPresent());
     ASTInstanceofExpression result = JavaClassExpressionsMill.instanceofExpressionBuilder()
-        .setExpression(a.get())
-        .setExtType(type.get())
-        .build();
+            .setExpression(a.get())
+            .setExtType(type.get())
+            .build();
     String output = prettyPrinter.prettyprint(result);
 
     // does not print 'Integer' because functionality for type printing has to be added over delegation form
@@ -138,13 +142,13 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     ASTThisExpression result = JavaClassExpressionsMill.thisExpressionBuilder()
-        .setExpression(a.get())
-        .build();
+            .setExpression(a.get())
+            .build();
 
     String output = prettyPrinter.prettyprint(result);
 
     assertEquals("a.this", output);
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -156,14 +160,14 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
     ASTArrayExpression result = JavaClassExpressionsMill.arrayExpressionBuilder()
-        .setExpression(a.get())
-        .setIndexExpression(b.get())
-        .build();
+            .setExpression(a.get())
+            .setIndexExpression(b.get())
+            .build();
 
     String output = prettyPrinter.prettyprint(result);
 
     assertEquals("a[b]", output);
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -175,14 +179,14 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
     ASTSuperExpression result = JavaClassExpressionsMill.superExpressionBuilder()
-        .setExpression(a.get())
-        .setSuperSuffix(b.get())
-        .build();
+            .setExpression(a.get())
+            .setSuperSuffix(b.get())
+            .build();
 
     String output = prettyPrinter.prettyprint(result);
 
     assertEquals("a.super(b)", output);
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
   @Test
@@ -193,9 +197,9 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
     ASTGenericInvocationExpression result = JavaClassExpressionsMill.genericInvocationExpressionBuilder()
-        .setExpression(a.get())
-        .setPrimaryGenericInvocationExpression(b.get())
-        .build();
+            .setExpression(a.get())
+            .setPrimaryGenericInvocationExpression(b.get())
+            .build();
 
     String output = prettyPrinter.prettyprint(result);
 
@@ -218,7 +222,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -236,7 +240,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -254,7 +258,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class SynthesizeSymTypeFromMCcFunctionTypesTest {
 
   @Before
-  public void setup() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();

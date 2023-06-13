@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
+import de.monticore.types.generictypestest.GenericTypesTestMill;
 import de.monticore.types.generictypestest._parser.GenericTypesTestParser;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
@@ -8,6 +9,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcfullgenerictypestest.MCFullGenericTypesTestMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -24,7 +26,7 @@ import static org.junit.Assert.*;
 public class MCGenericsTypesTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
@@ -32,6 +34,8 @@ public class MCGenericsTypesTest {
   
   @Test
   public void testBasicGenericsTypes() throws IOException {
+    MCFullGenericTypesTestMill.reset();
+    MCFullGenericTypesTestMill.init();
     Class foo = boolean.class;
     String[] types = new String[]{"Foo<String>.Bar<List<Integer>>",
             "List<? extends Person>","List<P<String>>","Optional<String>",
@@ -55,6 +59,8 @@ public class MCGenericsTypesTest {
 
   @Test
   public void testArrayTypes() throws IOException {
+    GenericTypesTestMill.reset();
+    GenericTypesTestMill.init();
     Class foo = boolean.class;
     String[] types = new String[]{"String[][]","java.util.List<Foo>[][]",
             "boolean[][]"
@@ -78,6 +84,8 @@ public class MCGenericsTypesTest {
 
   @Test
   public void testMCComplexReferenceTypeValid() throws IOException {
+    MCFullGenericTypesTestMill.reset();
+    MCFullGenericTypesTestMill.init();
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     Optional<ASTMCType> type = parser.parse_StringMCType("java.util.List<A>.Set<C>.some.Collection<B>");
     assertFalse(parser.hasErrors());
@@ -90,6 +98,8 @@ public class MCGenericsTypesTest {
 
   @Test
   public void testMcWildcardTypeArgument() throws IOException {
+    MCFullGenericTypesTestMill.reset();
+    MCFullGenericTypesTestMill.init();
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("? extends java.util.Set<Foo>");
     assertFalse(parser.hasErrors());
@@ -102,7 +112,8 @@ public class MCGenericsTypesTest {
 
   @Test
   public void testOldComplexArrayTypes() {
-  
+    GenericTypesTestMill.reset();
+    GenericTypesTestMill.init();
     GenericTypesTestParser parser = new GenericTypesTestParser();
     try {
       // test-data
@@ -135,6 +146,8 @@ public class MCGenericsTypesTest {
   
   @Test
   public void testOldComplexTypes() throws IOException {
+    GenericTypesTestMill.reset();
+    GenericTypesTestMill.init();
     String[] typesToTest = new String[]{
             "Type"
             , "Type<Arg>"

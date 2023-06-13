@@ -8,6 +8,7 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,16 +21,13 @@ import java.util.stream.Collectors;
 
 public class SymbolImportTest {
 
-  @BeforeClass
-  public static void setup() {
-    Grammar_WithConceptsMill.reset();
-    Grammar_WithConceptsMill.init();
-  }
-
   @Before
   public void init() {
     Log.init();
-    Log.enableFailQuick(false);
+    LogStub.enableFailQuick(false);
+
+    Grammar_WithConceptsMill.reset();
+    Grammar_WithConceptsMill.init();
 
     IGrammar_WithConceptsGlobalScope globalScope = Grammar_WithConceptsMill.globalScope();
     globalScope.clear();

@@ -39,8 +39,6 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
 
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");

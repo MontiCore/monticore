@@ -3,18 +3,17 @@ package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
 public class ConstructorModifiersValidTest extends JavaLightCocoTest{
-  private static final JavaLightCoCoChecker checker = new JavaLightCoCoChecker();
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0820.A0820";
 
-  @BeforeClass
-  public static void initCoCo() {
+  @Before
+  public void initCoCo() {
+    checker = new JavaLightCoCoChecker();
     checker.addCoCo(new ConstructorModifiersValid());
   }
 

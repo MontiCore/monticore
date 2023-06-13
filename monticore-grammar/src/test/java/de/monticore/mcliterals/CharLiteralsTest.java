@@ -2,12 +2,12 @@
 
 package de.monticore.mcliterals;
 
+import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mccommonliterals._ast.ASTCharLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,9 +17,11 @@ import static org.junit.Assert.*;
 public class CharLiteralsTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    MCCommonLiteralsMill.reset();
+    MCCommonLiteralsMill.init();
   }
   
   private void checkCharLiteral(char c, String s) throws IOException {

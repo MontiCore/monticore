@@ -35,7 +35,7 @@ public class TypeRelations2Test extends AbstractTypeTest {
   protected TypeRelations2 tr = new TypeRelations2();
 
   @Before
-  public void setup() {
+  public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     DefsTypeBasic.setup();

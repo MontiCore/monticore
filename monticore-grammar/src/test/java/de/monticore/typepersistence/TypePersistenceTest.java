@@ -11,7 +11,6 @@ import de.monticore.typepersistence.variable._symboltable.VariableScopesGenitorD
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,9 +21,11 @@ import static org.junit.Assert.assertTrue;
 public class TypePersistenceTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    VariableMill.reset();
+    VariableMill.init();
   }
   
   @Test

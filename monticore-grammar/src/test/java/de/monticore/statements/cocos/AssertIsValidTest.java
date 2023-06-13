@@ -23,22 +23,18 @@ import static org.junit.Assert.assertTrue;
 
 public class AssertIsValidTest {
   
-  private static final TestMCAssertStatementsCoCoChecker checker = new TestMCAssertStatementsCoCoChecker();
+  protected TestMCAssertStatementsCoCoChecker checker;
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick(){
     TestMCAssertStatementsMill.reset();
     TestMCAssertStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker = new TestMCAssertStatementsCoCoChecker();
     checker.setTraverser(TestMCAssertStatementsMill.traverser());
     checker.addCoCo(new AssertIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
-    
   }
   
   public void checkValid(String expressionString) throws IOException {

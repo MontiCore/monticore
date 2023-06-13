@@ -13,8 +13,7 @@ import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.FullSynthesizeFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,18 +23,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
-
-  private static final JavaLightCoCoChecker checker = new JavaLightCoCoChecker();
   
-  @BeforeClass
-  public static void disableFailQuick(){
-    
-    Log.enableFailQuick(false);
-    TestJavaLightMill.reset();
-    TestJavaLightMill.init();
+  @Before
+  public void initCoco(){
     BasicSymbolsMill.initializePrimitives();
+    checker = new JavaLightCoCoChecker();
     checker.addCoCo(new ReturnTypeAssignmentIsValid(new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals())));
-    
   }
   
   public void checkValid(String expressionString) throws IOException {

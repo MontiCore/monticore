@@ -16,9 +16,11 @@ import static org.junit.Assert.assertTrue;
 public class MillTest {
   
   @Before
-  public void initLog() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    TestSymTabMillMill.reset();
+    TestSymTabMillMill.init();
   }
   
   @Test

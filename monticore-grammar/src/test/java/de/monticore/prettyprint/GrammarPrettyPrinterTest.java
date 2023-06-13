@@ -21,10 +21,11 @@ import java.util.stream.Stream;
  */
 public class GrammarPrettyPrinterTest {
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
     Log.clearFindings();
+    Grammar_WithConceptsMill.reset();
     Grammar_WithConceptsMill.init();
   }
 

@@ -37,11 +37,6 @@ public abstract class DeriveSymTypeAbstractTest {
         Log.enableFailQuick(false);
     }
 
-    @Before
-    public void setupForEach() {
-        LogStub.init();         // replace log by a sideffect free variant
-    }
-
     // Setup the TypeCheck with according derive and synthesize
     protected abstract void setupTypeCheck();
 

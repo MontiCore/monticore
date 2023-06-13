@@ -2,6 +2,7 @@
 package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
+import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.monticore.javalight._prettyprint.JavaLightFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -23,13 +24,11 @@ public class JavaLightPrettyPrinterTest {
   private JavaLightFullPrettyPrinter prettyPrinter = new JavaLightFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestJavaLightMill.reset();
+    TestJavaLightMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
   

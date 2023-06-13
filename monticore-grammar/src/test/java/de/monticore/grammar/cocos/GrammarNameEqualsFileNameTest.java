@@ -2,12 +2,11 @@
 
 package de.monticore.grammar.cocos;
 
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,18 +14,16 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class GrammarNameEqualsFileNameTest {
-  
+public class GrammarNameEqualsFileNameTest extends CocoTest {
+
+  protected Grammar_WithConceptsParser parser;
   @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
+  public void init() {
+    parser =  new Grammar_WithConceptsParser();
   }
-  
   @Test
   public void testInvalidFilename() throws IOException {
     Log.getFindings().clear();
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     parser.parse("src/test/resources/de/monticore/grammar/cocos/invalid/A4003/A4003.mc4");
 
     assertFalse(Log.getFindings().isEmpty());
@@ -39,7 +36,6 @@ public class GrammarNameEqualsFileNameTest {
   @Test
   public void testInvalidPackage() throws IOException {
     Log.getFindings().clear();
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     parser.parse("src/test/resources/de/monticore/grammar/cocos/invalid/A4004/A4004.mc4");
 
     assertFalse(Log.getFindings().isEmpty());

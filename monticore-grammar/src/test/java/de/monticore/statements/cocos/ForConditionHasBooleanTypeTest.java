@@ -23,23 +23,19 @@ import static org.junit.Assert.assertTrue;
 
 public class ForConditionHasBooleanTypeTest {
   
-  private static final TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+  protected TestMCCommonStatementsCoCoChecker checker;
   
   @Before
-  public void before() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void disableFailQuick(){
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new ForConditionHasBooleanType(new TypeCalculator(null,new FullDeriveFromCombineExpressionsWithLiterals())));
-    
   }
-  
+
   public void checkValid(String expressionString) throws IOException {
     
     TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();

@@ -4,6 +4,7 @@ package de.monticore.statements.prettyprint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcsynchronizedstatements._ast.ASTSynchronizedStatement;
 import de.monticore.statements.mcsynchronizedstatements._prettyprint.MCSynchronizedStatementsFullPrettyPrinter;
+import de.monticore.statements.testmcsynchronizedstatements.TestMCSynchronizedStatementsMill;
 import de.monticore.statements.testmcsynchronizedstatements._parser.TestMCSynchronizedStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -24,13 +25,11 @@ public class MCSynchronizedStatementsPrettyPrinterTest {
   private MCSynchronizedStatementsFullPrettyPrinter prettyPrinter = new MCSynchronizedStatementsFullPrettyPrinter(new IndentPrinter());
 
   @Before
-  public void setUp() {
+  public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void init() {
+    TestMCSynchronizedStatementsMill.reset();
+    TestMCSynchronizedStatementsMill.init();
     prettyPrinter.getPrinter().clearBuffer();
   }
 

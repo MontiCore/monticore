@@ -39,8 +39,6 @@ public class ASTBuilderDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     decoratedCompilationUnit = parse("de", "monticore", "codegen", "ast", "Builder");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 

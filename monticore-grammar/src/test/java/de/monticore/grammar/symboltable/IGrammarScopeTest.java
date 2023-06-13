@@ -28,10 +28,6 @@ public class IGrammarScopeTest {
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-  
-  @BeforeClass
-  public static void setUp(){
     Grammar_WithConceptsMill.reset();
     Grammar_WithConceptsMill.init();
   }

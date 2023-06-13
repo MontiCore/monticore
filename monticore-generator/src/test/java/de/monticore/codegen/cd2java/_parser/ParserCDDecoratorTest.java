@@ -38,10 +38,6 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    // to be issued (the warnings are not checked)
-    LogStub.init();         // replace log by a sideffect free variant
-//     LogStub.initPlusLog();  // for manual testing purpose only
-//    Log.enableFailQuick(false);
     this.glex = new GlobalExtensionManagement();
     MCPath targetPath = Mockito.mock(MCPath.class);
 

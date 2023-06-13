@@ -43,8 +43,6 @@ public class DataDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
     ASTCDClass clazz = getClassBy("A", cd);
     this.glex.setGlobalValue("service", new AbstractService(cd));

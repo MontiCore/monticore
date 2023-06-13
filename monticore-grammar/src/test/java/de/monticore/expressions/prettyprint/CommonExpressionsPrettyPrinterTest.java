@@ -6,12 +6,12 @@ import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsFullPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.testcommonexpressions.TestCommonExpressionsMill;
 import de.monticore.expressions.testcommonexpressions._parser.TestCommonExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,18 +21,17 @@ import static org.junit.Assert.*;
 
 public class CommonExpressionsPrettyPrinterTest {
 
-  private TestCommonExpressionsParser parser = new TestCommonExpressionsParser();
-
-  private CommonExpressionsFullPrettyPrinter prettyPrinter = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
-  
-  @Before
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+  protected TestCommonExpressionsParser parser;
+  protected CommonExpressionsFullPrettyPrinter prettyPrinter;
   
   @Before
   public void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    TestCommonExpressionsMill.reset();
+    TestCommonExpressionsMill.init();
+    parser = new TestCommonExpressionsParser();
+    prettyPrinter = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
     prettyPrinter.getPrinter().clearBuffer();
   }
 
