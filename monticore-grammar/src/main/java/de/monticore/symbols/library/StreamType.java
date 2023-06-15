@@ -21,7 +21,7 @@ public class StreamType {
     IBasicSymbolsScope spannedScope = BasicSymbolsMill.scope();
     spannedScope.setName("");
 
-    TypeSymbol typeSymbol = BasicSymbolsMill.typeVarSymbolBuilder()
+    TypeSymbol typeSymbol = BasicSymbolsMill.typeSymbolBuilder()
         .setName(STREAM_TYPE_NAME)
         .setEnclosingScope(BasicSymbolsMill.globalScope())
         .setSpannedScope(spannedScope)
