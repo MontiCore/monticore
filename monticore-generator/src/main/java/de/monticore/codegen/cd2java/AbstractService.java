@@ -89,10 +89,10 @@ public class AbstractService<T extends AbstractService> {
 
   public Collection<DiagramSymbol> getSuperCDsDirect(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    Collection<DiagramSymbol> superCDs = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
+    List<DiagramSymbol> superCDs = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
         .map(i -> i.getStatement())
         .map(this::resolveCD)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
     return superCDs;
   }
 
@@ -112,11 +112,11 @@ public class AbstractService<T extends AbstractService> {
   // Cache this methods return value
   protected List<DiagramSymbol> getSuperCDsTransitiveUncached(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
-    Collection<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
+    List<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
             .map(i -> i.getStatement())
             .filter(i -> !isJava(i))
             .map(AbstractService.this::resolveCD)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toList());
     // search for super Cds in super Cds
     List<DiagramSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (DiagramSymbol superSymbol : directSuperCdSymbols) {
