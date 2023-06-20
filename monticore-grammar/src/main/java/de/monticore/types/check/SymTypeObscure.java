@@ -4,7 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types2.ISymTypeVisitor;
+import de.monticore.types3.ISymTypeVisitor;
 
 import java.util.Collections;
 import java.util.List;

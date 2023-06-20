@@ -502,7 +502,6 @@ public class SymTypeExpressionTest {
     assertTrue(teFoo.hasTypeInfo());
     assertTrue(teDeep1.hasTypeInfo());
     assertTrue(teDeep2.hasTypeInfo());
-    assertFalse(SymTypeExpressionFactory.createGenerics(null).hasTypeInfo());
     assertFalse(teUpperBound.hasTypeInfo());
     assertFalse(teLowerBound.hasTypeInfo());
     assertFalse(teWildcard.hasTypeInfo());

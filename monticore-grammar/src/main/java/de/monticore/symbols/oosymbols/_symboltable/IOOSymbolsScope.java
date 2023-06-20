@@ -3,6 +3,7 @@ package de.monticore.symbols.oosymbols._symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
   default List<FieldSymbol> resolveFieldLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<FieldSymbol> predicate){
     //resolve methods by using overridden method
     List<FieldSymbol> result = IOOSymbolsScopeTOP.super.resolveFieldLocallyMany(foundSymbols,name,modifier,predicate);
-    if(this.isPresentSpanningSymbol()){
+    if(this.isPresentSpanningSymbol() && modifier.includes(StaticAccessModifier.NON_STATIC)){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
       if(spanningSymbol instanceof OOTypeSymbol){

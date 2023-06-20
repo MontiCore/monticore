@@ -3,18 +3,21 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.PRIMITIVE_LIST;
 
@@ -249,7 +252,11 @@ public class SymTypeExpressionFactory {
    * @return
    */
   public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol) {
-    return createGenerics(typeSymbol, Lists.newArrayList());
+    List<SymTypeExpression> parameters =
+        typeSymbol.getTypeParameterList().stream()
+            .map(tp -> createFromSymbol(tp))
+            .collect(Collectors.toList());
+    return createGenerics(typeSymbol, parameters);
   }
 
   public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
@@ -281,12 +288,30 @@ public class SymTypeExpressionFactory {
     return createGenerics(name, enclosingScope, Arrays.asList(arguments));
   }
 
+  public static SymTypeExpression createFromSymbol(TypeSymbol typeSymbol) {
+    // todo get From Mill ASAP
+    BasicSymbolsTypeDispatcher typeDispatcher = new BasicSymbolsTypeDispatcher();
+    if(typeDispatcher.isTypeVar(typeSymbol)) {
+      return createTypeVariable(typeSymbol);
+    }
+    if(typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()) {
+      return createTypeObject(typeSymbol);
+    }
+    else {
+      return createGenerics(typeSymbol);
+    }
+  }
+
   public static SymTypeOfWildcard createWildcard(boolean isUpper, SymTypeExpression bound) {
     return new SymTypeOfWildcard(bound, isUpper);
   }
 
   public static SymTypeOfWildcard createWildcard() {
     return createWildcard(false, null);
+  }
+
+  public static SymTypeOfFunction createFunction(FunctionSymbol symbol) {
+    return symbol.getFunctionType();
   }
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType) {
@@ -305,7 +330,15 @@ public class SymTypeExpressionFactory {
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
       List<SymTypeExpression> argumentTypes, boolean elliptic) {
-    return new SymTypeOfFunction(returnType, argumentTypes, elliptic);
+    return createFunction(null, returnType, argumentTypes, elliptic);
+  }
+
+  public static SymTypeOfFunction createFunction(
+      FunctionSymbol symbol,
+      SymTypeExpression returnType,
+      List<SymTypeExpression> argumentTypes,
+      boolean elliptic) {
+    return new SymTypeOfFunction(symbol, returnType, argumentTypes, elliptic);
   }
 
   public static SymTypeOfUnion createUnion(Set<SymTypeExpression> unionizedTypes) {
@@ -313,7 +346,7 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeOfUnion createUnion(SymTypeExpression... unionizedTypes) {
-    return createUnion(Set.of(unionizedTypes));
+    return createUnion(Arrays.stream(unionizedTypes).collect(Collectors.toSet()));
   }
 
   public static SymTypeOfIntersection createIntersection(Set<SymTypeExpression> intersectedTypes) {

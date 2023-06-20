@@ -88,11 +88,12 @@ public class FunctionSymbol extends FunctionSymbolTOP {
    * Note that {@link getType()} only provides the return type of the function
    */
   public SymTypeOfFunction getFunctionType() {
+    SymTypeExpression returnType = getType();
     List<SymTypeExpression> parameterTypes = new ArrayList<>();
     for(VariableSymbol parameter : getParameterList()) {
       parameterTypes.add(parameter.getType());
     }
-    return SymTypeExpressionFactory.createFunction(getType(), parameterTypes, isIsElliptic());
+    return SymTypeExpressionFactory.createFunction(this, returnType, parameterTypes, isIsElliptic());
   }
 
 }

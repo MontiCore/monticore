@@ -253,4 +253,14 @@ public class TypeCalculator implements ITypeRelations {
   public boolean isString(SymTypeExpression type) {
     return iTypeRelations.isString(type);
   }
+
+  @Override
+  public boolean isIntegralType(SymTypeExpression type) {
+    return iTypeRelations.isIntegralType(type);
+  }
+
+  @Override
+  public boolean isNumericType(SymTypeExpression type) {
+    return iTypeRelations.isNumericType(type);
+  }
 }

@@ -75,4 +75,8 @@ public interface ITypeRelations {
   boolean isVoid(SymTypeExpression type);
 
   boolean isString(SymTypeExpression type);
+
+  boolean isNumericType(SymTypeExpression type);
+
+  boolean isIntegralType(SymTypeExpression type);
 }

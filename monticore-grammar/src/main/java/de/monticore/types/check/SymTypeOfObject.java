@@ -2,7 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.types2.ISymTypeVisitor;
+import de.monticore.types3.ISymTypeVisitor;
 
 /**
  * An objectType is a full qualified class name.

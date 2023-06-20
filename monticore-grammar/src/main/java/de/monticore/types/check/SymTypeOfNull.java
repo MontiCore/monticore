@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.types2.ISymTypeVisitor;
+import de.monticore.types3.ISymTypeVisitor;
 
 public class SymTypeOfNull extends SymTypeExpression {
 

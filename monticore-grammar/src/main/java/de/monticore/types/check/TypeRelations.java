@@ -286,5 +286,15 @@ public class TypeRelations implements ITypeRelations {
   public boolean isString(SymTypeExpression type) {
     return "String".equals(type.print());
   }
+
+  @Override
+  public boolean isNumericType(SymTypeExpression type) {
+    return isIntegralType(type) || isFloat(type) || isDouble(type);
+  }
+
+  @Override
+  public boolean isIntegralType(SymTypeExpression type) {
+    return isLong(type) || isInt(type) || isChar(type) || isByte(type) || isShort(type);
+  }
 }
 

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types2.ISymTypeVisitor;
+import de.monticore.types3.ISymTypeVisitor;
 
 import java.util.Collection;
 import java.util.HashSet;

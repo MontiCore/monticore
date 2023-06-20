@@ -4,9 +4,8 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symboltable.serialization.JsonDeSers;
-import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types2.ISymTypeVisitor;
+import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -66,21 +65,23 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public static String unbox(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
-    for(int i = 0; i<arguments.size();i++){
-      if(arguments.get(i).isGenericType()){
+    for (int i = 0; i < arguments.size(); i++) {
+      if (arguments.get(i).isGenericType()) {
         r.append(unbox((SymTypeOfGenerics) arguments.get(i)));
-      }else{
+      }
+      else {
         r.append(SymTypePrimitive.unbox(arguments.get(i).print()));
       }
-      if(i<arguments.size()-1) {
+      if (i < arguments.size() - 1) {
         r.append(',');
       }
     }
     r.append(">");
-    if(unboxMap.containsKey(type.printTypeWithoutTypeArgument())){
-      return unboxMap.get(type.printTypeWithoutTypeArgument())+r.toString();
-    }else{
-      return type.printTypeWithoutTypeArgument()+r.toString();
+    if (unboxMap.containsKey(type.printTypeWithoutTypeArgument())) {
+      return unboxMap.get(type.printTypeWithoutTypeArgument()) + r.toString();
+    }
+    else {
+      return type.printTypeWithoutTypeArgument() + r.toString();
     }
   }
 
@@ -96,21 +97,23 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public static String box(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
-    for(int i = 0; i<arguments.size();i++){
-      if(arguments.get(i).isGenericType()){
+    for (int i = 0; i < arguments.size(); i++) {
+      if (arguments.get(i).isGenericType()) {
         r.append(box((SymTypeOfGenerics) arguments.get(i)));
-      }else{
+      }
+      else {
         r.append(SymTypePrimitive.box(arguments.get(i).print()));
       }
-      if(i<arguments.size()-1) {
+      if (i < arguments.size() - 1) {
         r.append(',');
       }
     }
     r.append(">");
     if (boxMap.containsKey(type.printTypeWithoutTypeArgument())) {
-      return boxMap.get(type.printTypeWithoutTypeArgument())+r.toString();
-    }else{
-      return type.printTypeWithoutTypeArgument()+r.toString();
+      return boxMap.get(type.printTypeWithoutTypeArgument()) + r.toString();
+    }
+    else {
+      return type.printTypeWithoutTypeArgument() + r.toString();
     }
   }
 
@@ -226,6 +229,30 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return true;
   }
 
+  public Map<TypeVarSymbol, SymTypeExpression> getTypeVariableReplaceMap() {
+    List<TypeVarSymbol> typeVars = getTypeInfo().getTypeParameterList();
+    List<SymTypeExpression> arguments = getArgumentList();
+    Map<TypeVarSymbol, SymTypeExpression> replaceMap = new HashMap<>();
+    // empty List, e.g. new HashMap<>();
+    if (arguments.size() == 0) {
+      // no-op
+    }
+    // otherwise, we expect the same amount of parameters as there are variables
+    // Java (and we) currently (Java Spec 20) do not support varargs type variables
+    else if (arguments.size() != typeVars.size()) {
+      Log.error("0xFD672 expected " + typeVars.size() + " parameters "
+          + "for " + getTypeInfo().getFullName()
+          + ", but got " + arguments.size()
+          + ": " + printFullName()
+      );
+    }else {
+      for(int i = 0; i < typeVars.size(); i++) {
+        replaceMap.put(typeVars.get(i), arguments.get(i));
+      }
+    }
+    return replaceMap;
+  }
+
   @Override
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
     for(int i = 0; i<this.getArgumentList().size(); i++){
@@ -261,7 +288,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   // (was copied from a created class)
   // (and demonstrates that we still can optimize our generators & build processes)
   // --------------------------------------------------------------------------
-  
 
   public  boolean containsArgument (Object element)  {
     return this.getArgumentList().contains(element);
