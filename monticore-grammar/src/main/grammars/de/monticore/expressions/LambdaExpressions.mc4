@@ -58,6 +58,9 @@ component grammar LambdaExpressions
    */
   interface LambdaBody;
 
+  astrule LambdaBody =
+    type: de.monticore.types.check.SymTypeExpression ;
+
   LambdaExpressionBody implements LambdaBody = Expression;
 
   scope (shadowing non_exporting ordered) LambdaExpression implements Expression <50> =

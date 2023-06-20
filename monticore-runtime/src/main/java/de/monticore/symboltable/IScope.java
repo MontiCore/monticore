@@ -154,4 +154,31 @@ public interface IScope {
     visitor.handle(this);
   }
 
+  /**
+   * whether this is a subscope of the other scope (transitive)
+   */
+  default boolean isSubScopeOf(IScope superScope) {
+    if (this == superScope) {
+      return true;
+    }
+    else if (this.getEnclosingScope() != null) {
+      return this.getEnclosingScope().isSubScopeOf(superScope);
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
+   * whether this is a proper subscope of the other scope (transitive)
+   */
+  default boolean isProperSubScopeOf(IScope superScope) {
+    if (this.getEnclosingScope() == null) {
+      return false;
+    }
+    else {
+      return this.getEnclosingScope().isSubScopeOf(superScope);
+    }
+  }
+
 }

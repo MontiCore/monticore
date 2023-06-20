@@ -2,6 +2,8 @@
 
 package de.monticore.symboltable.modifiers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public interface AccessModifier extends Modifier {
@@ -15,6 +17,12 @@ public interface AccessModifier extends Modifier {
   boolean includes(AccessModifier modifier);
 
   Map<String, AccessModifier> getDimensionToModifierMap();
+
+  default CompoundAccessModifier shallowCopy() {
+    return new CompoundAccessModifier(
+         new ArrayList<>(getDimensionToModifierMap().values())
+    );
+  }
 
   String ALL = "All";
 

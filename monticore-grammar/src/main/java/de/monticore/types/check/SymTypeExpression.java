@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
+import de.monticore.ast.ASTNode;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
@@ -9,8 +10,8 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types2.ISymTypeVisitor;
-import de.monticore.types2.SymTypeDeepCloneVisitor;
+import de.monticore.types3.ISymTypeVisitor;
+import de.monticore.types3.util.SymTypeDeepCloneVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;

@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.types2.ISymTypeVisitor;
+import de.monticore.types3.ISymTypeVisitor;
 
 /**
  * Arrays of a certain dimension (>= 1)
