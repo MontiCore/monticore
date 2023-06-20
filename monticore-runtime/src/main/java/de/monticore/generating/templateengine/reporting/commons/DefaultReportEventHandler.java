@@ -192,7 +192,22 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   }
 
   @Override
+  public void reportUserWarning(String message) {
+    // default
+  }
+
+  @Override
   public void reportError(String message) {
+    // default
+  }
+
+  @Override
+  public void reportErrorInternal(String message) {
+    // default
+  }
+
+  @Override
+  public void reportErrorUser(String message) {
     // default
   }
 

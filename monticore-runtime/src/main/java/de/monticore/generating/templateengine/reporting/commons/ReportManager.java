@@ -385,9 +385,30 @@ public class ReportManager implements IReportEventHandler {
   }
 
   @Override
+  public void reportUserWarning(String message) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportUserWarning(message);
+    }
+  }
+
+  @Override
   public void reportError(String msg) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
       handler.reportError(msg);
+    }
+  }
+
+  @Override
+  public void reportErrorUser(String msg) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportErrorUser(msg);
+    }
+  }
+
+  @Override
+  public void reportErrorInternal(String msg) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportErrorInternal(msg);
     }
   }
 
