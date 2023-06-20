@@ -8,7 +8,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.FileUtils;
 import org.junit.*;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -179,17 +178,28 @@ public class MontiCoreToolTest {
    * This is used for Gradle-Caching!
    */
   @Test
-  public void testReproducibility() throws IOException {
+  public void testReproducibilitySimpleGrammar() throws IOException {
+    generateGrammarAndCheckFiles(Path.of("reports", "de.monticore.automaton","20_Statistics.txt"),
+            "src/test/resources/de/monticore/Automaton.mc4");
+  }
+
+  @Test
+  public void testReproducibilityMultipleGrammars() throws IOException {
+    generateGrammarAndCheckFiles(Path.of("reports", "combininggrammar","20_Statistics.txt"),
+            "src/test/resources/CombiningGrammar.mc4");
+  }
+
+  public void generateGrammarAndCheckFiles(Path path, String grammar) throws IOException {
     File reproOutDir1 = Paths.get("target/test-run-repo/repo1/").toFile();
     File reproOutDir2 = Paths.get("target/test-run-repo/repo2/").toFile();
 
     Set<Path> allowedDirtyFiles = new HashSet<>();
-    allowedDirtyFiles.add(Path.of("reports", "de.monticore.automaton","20_Statistics.txt"));
+    allowedDirtyFiles.add(path);
       // "20_Statistics" contains the execution duration, which varies between runs
 
     String[] reproducableArgs1 = {
         "-" + GRAMMAR,
-        "src/test/resources/de/monticore/Automaton.mc4",
+        grammar,
         "-" + MODELPATH, "src/test/resources",
         "-" + OUT, reproOutDir1.toString(),
         "-" + HANDCODEDPATH, "src/test/java",
