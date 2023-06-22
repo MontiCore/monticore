@@ -289,8 +289,8 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeExpression createFromSymbol(TypeSymbol typeSymbol) {
-    // todo get From Mill ASAP
-    BasicSymbolsTypeDispatcher typeDispatcher = new BasicSymbolsTypeDispatcher();
+    BasicSymbolsTypeDispatcher typeDispatcher =
+        BasicSymbolsMill.basicSymbolsTypeDispatcher();
     if(typeDispatcher.isTypeVar(typeSymbol)) {
       return createTypeVariable(typeSymbol);
     }

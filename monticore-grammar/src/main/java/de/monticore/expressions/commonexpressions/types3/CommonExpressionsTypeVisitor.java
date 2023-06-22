@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions.types3;
 
+import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
@@ -937,7 +938,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   }
 
   protected CommonExpressionsTypeDispatcher getTypeDispatcher() {
-    //todo get from mill asap
-    return new CommonExpressionsTypeDispatcher();
+    return CommonExpressionsMill.commonExpressionsTypeDispatcher();
   }
 }

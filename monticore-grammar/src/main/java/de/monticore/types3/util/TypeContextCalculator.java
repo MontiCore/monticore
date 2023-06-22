@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
 import de.monticore.symboltable.IScope;
@@ -115,8 +116,7 @@ public class TypeContextCalculator {
   // Helper
 
   protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
-    //todo get from mill asap
-    return new BasicSymbolsTypeDispatcher();
+    return BasicSymbolsMill.basicSymbolsTypeDispatcher();
   }
 
 }

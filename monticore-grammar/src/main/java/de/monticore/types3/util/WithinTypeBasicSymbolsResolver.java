@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -297,8 +298,7 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
-    // todo get from mill as soon as possible
-    return new BasicSymbolsTypeDispatcher();
+    return BasicSymbolsMill.basicSymbolsTypeDispatcher();
   }
 
   protected SymTypeExpression replaceVariablesIfNecessary(
