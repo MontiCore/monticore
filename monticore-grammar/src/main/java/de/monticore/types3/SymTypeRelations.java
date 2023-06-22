@@ -5,10 +5,11 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types3.util.BuiltInTypeRelations;
 import de.monticore.types3.util.FunctionRelations;
-import de.monticore.types3.util.SymTypeBoxer;
+import de.monticore.types3.util.SymTypeBoxingVisitor;
 import de.monticore.types3.util.SymTypeCompatibilityCalculator;
 import de.monticore.types3.util.SymTypeLubCalculator;
-import de.monticore.types3.util.SymTypeNormalizer;
+import de.monticore.types3.util.SymTypeNormalizeVisitor;
+import de.monticore.types3.util.SymTypeUnboxingVisitor;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,60 +21,32 @@ import java.util.Optional;
  * some are dependent on the specific type system
  * and as such not hardcoded in the SymTypeExpressions themselves
  * <p>
- * uses the realThis pattern and as such needs to be initialized before use:
- * {@link SymTypeRelations#initDefault()}
  */
 public class SymTypeRelations {
 
-  // for realThis pattern
-  // the pattern from doi:10.5381/jot.2022.21.4.a4 has been slightly modified
-  // to be less flexible
-  // (calls from a delegate method to a method implemented
-  // in the same delegate cannot be intercepted by the realThis object),
-  // but also less prone to errors due to negligence
-  // (forgetting to call getRealThis in the delegate)
+  SymTypeCompatibilityCalculator compatibilityDelegate;
 
-  protected SymTypeRelations symTypeRelations;
+  SymTypeBoxingVisitor boxingVisitor;
 
-  protected SymTypeRelations getSymTypeRelations() {
-    return symTypeRelations;
-  }
+  SymTypeUnboxingVisitor unboxingVisitor;
 
-  protected void setSymTypeRelations(SymTypeRelations symTypeRelations) {
-    this.symTypeRelations = symTypeRelations;
-  }
+  SymTypeNormalizeVisitor normalizeVisitor;
 
-  // realThis delegates
+  SymTypeLubCalculator lubDelegate;
 
-  SymTypeRelations compatibilityDelegate;
+  BuiltInTypeRelations builtInRelationsDelegate;
 
-  SymTypeRelations boxingDelegate;
+  FunctionRelations functionRelationsDelegate;
 
-  SymTypeRelations normalizeDelegate;
-
-  SymTypeRelations lubDelegate;
-
-  SymTypeRelations buildInRelationsDelegate;
-
-  SymTypeRelations functionRelationsDelegate;
-
-  // end realThis pattern
-
-  public void initDefault() {
+  public SymTypeRelations() {
     // default values
-    this.symTypeRelations = this;
-    this.compatibilityDelegate = new SymTypeCompatibilityCalculator();
-    this.compatibilityDelegate.setSymTypeRelations(this);
-    this.boxingDelegate = new SymTypeBoxer();
-    this.boxingDelegate.setSymTypeRelations(this);
-    this.normalizeDelegate = new SymTypeNormalizer();
-    this.normalizeDelegate.setSymTypeRelations(this);
-    this.lubDelegate = new SymTypeLubCalculator();
-    this.lubDelegate.setSymTypeRelations(this);
-    this.buildInRelationsDelegate = new BuiltInTypeRelations();
-    this.buildInRelationsDelegate.setSymTypeRelations(this);
-    this.functionRelationsDelegate = new FunctionRelations();
-    this.functionRelationsDelegate.setSymTypeRelations(this);
+    this.compatibilityDelegate = new SymTypeCompatibilityCalculator(this);
+    this.boxingVisitor = new SymTypeBoxingVisitor();
+    this.unboxingVisitor = new SymTypeUnboxingVisitor();
+    this.normalizeVisitor = new SymTypeNormalizeVisitor(this);
+    this.lubDelegate = new SymTypeLubCalculator(this);
+    this.builtInRelationsDelegate = new BuiltInTypeRelations(this);
+    this.functionRelationsDelegate = new FunctionRelations(this);
   }
 
   /**
@@ -84,8 +57,7 @@ public class SymTypeRelations {
    * -> float and type of 2 need to be compatible
    */
   public boolean isCompatible(SymTypeExpression assignee, SymTypeExpression assigner) {
-    return getSymTypeRelations().compatibilityDelegate
-        .isCompatible(assignee, assigner);
+    return compatibilityDelegate.isCompatible(assignee, assigner);
   }
 
   /**
@@ -98,8 +70,7 @@ public class SymTypeRelations {
    * !isSubType(float, int)
    */
   public boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression superType) {
-    return getSymTypeRelations().compatibilityDelegate
-        .isSubTypeOf(subType, superType);
+    return compatibilityDelegate.isSubTypeOf(subType, superType);
   }
 
   /**
@@ -115,7 +86,7 @@ public class SymTypeRelations {
    */
   public Optional<SymTypeExpression> leastUpperBound(
       Collection<SymTypeExpression> types) {
-    return getSymTypeRelations().lubDelegate.leastUpperBound(types);
+    return lubDelegate.leastUpperBound(types);
   }
 
   public Optional<SymTypeExpression> leastUpperBound(
@@ -130,7 +101,7 @@ public class SymTypeRelations {
    * e.g., List -> java.util.List
    */
   public SymTypeExpression box(SymTypeExpression unboxed) {
-    return getSymTypeRelations().boxingDelegate.box(unboxed);
+    return boxingVisitor.calculate(unboxed);
   }
 
   /**
@@ -140,7 +111,7 @@ public class SymTypeRelations {
    * e.g., java.util.List -> List
    */
   public SymTypeExpression unbox(SymTypeExpression boxed) {
-    return getSymTypeRelations().boxingDelegate.unbox(boxed);
+    return unboxingVisitor.calculate(boxed);
   }
 
   /**
@@ -151,8 +122,7 @@ public class SymTypeRelations {
    * e.g., byte, float -> float
    */
   public SymTypeExpression numericPromotion(List<SymTypeExpression> types) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .numericPromotion(types);
+    return builtInRelationsDelegate.numericPromotion(types);
   }
 
   public SymTypeExpression numericPromotion(SymTypeExpression... types) {
@@ -164,8 +134,7 @@ public class SymTypeRelations {
    * (double, float, long, int, char, short, byte)
    */
   public boolean isNumericType(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isNumericType(type);
+    return builtInRelationsDelegate.isNumericType(type);
   }
 
   /**
@@ -173,53 +142,43 @@ public class SymTypeRelations {
    * (long, int, char, short, byte)
    */
   public boolean isIntegralType(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isIntegralType(type);
+    return builtInRelationsDelegate.isIntegralType(type);
   }
 
   public boolean isBoolean(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isBoolean(type);
+    return builtInRelationsDelegate.isBoolean(type);
   }
 
   public boolean isInt(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isInt(type);
+    return builtInRelationsDelegate.isInt(type);
   }
 
   public boolean isDouble(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isDouble(type);
+    return builtInRelationsDelegate.isDouble(type);
   }
 
   public boolean isFloat(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isFloat(type);
+    return builtInRelationsDelegate.isFloat(type);
   }
 
   public boolean isLong(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isLong(type);
+    return builtInRelationsDelegate.isLong(type);
   }
 
   public boolean isChar(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isChar(type);
+    return builtInRelationsDelegate.isChar(type);
   }
 
   public boolean isShort(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isShort(type);
+    return builtInRelationsDelegate.isShort(type);
   }
 
   public boolean isByte(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isByte(type);
+    return builtInRelationsDelegate.isByte(type);
   }
 
   public boolean isString(SymTypeExpression type) {
-    return getSymTypeRelations().buildInRelationsDelegate
-        .isString(type);
+    return builtInRelationsDelegate.isString(type);
   }
 
   /**
@@ -234,8 +193,7 @@ public class SymTypeRelations {
       SymTypeOfFunction func,
       List<SymTypeExpression> args
   ) {
-    return getSymTypeRelations().functionRelationsDelegate
-        .canBeCalledWith(func, args);
+    return functionRelationsDelegate.canBeCalledWith(func, args);
   }
 
   /**
@@ -247,11 +205,8 @@ public class SymTypeRelations {
   public Optional<SymTypeOfFunction> getMostSpecificFunction(
       Collection<SymTypeOfFunction> funcs
   ) {
-    return getSymTypeRelations().functionRelationsDelegate
-        .getMostSpecificFunction(funcs);
+    return functionRelationsDelegate.getMostSpecificFunction(funcs);
   }
-
-  // Helper, internals
 
   /**
    * normalizes the SymTypeExpression,
@@ -260,21 +215,23 @@ public class SymTypeRelations {
    * Within our type systems, each type has ONE normalized representation.
    * This can be used to, e.g., compare SymTypeExpressions
    */
-  protected SymTypeExpression normalize(SymTypeExpression type) {
-    return getSymTypeRelations().normalizeDelegate.normalize(type);
+  public SymTypeExpression normalize(SymTypeExpression type) {
+    return normalizeVisitor.calculate(type);
   }
+
+  // Helper, internals
 
   /**
    * internal isSubTypeOf,
    * subTypeIsSoft if it is only a possibility, that it is a subtype.
    * a type can be a subtype of a variable. but it is not required to be
    */
-  protected boolean internal_isSubTypeOf(
+  public boolean internal_isSubTypeOf(
       SymTypeExpression subType,
       SymTypeExpression superType,
       boolean subTypeIsSoft
   ) {
-    return getSymTypeRelations().compatibilityDelegate
+    return compatibilityDelegate
         .internal_isSubTypeOf(subType, superType, subTypeIsSoft);
   }
 
@@ -288,7 +245,7 @@ public class SymTypeRelations {
       SymTypeExpression superType,
       boolean subTypeIsSoft
   ) {
-    return getSymTypeRelations().compatibilityDelegate
+    return compatibilityDelegate
         .internal_isSubTypeOfPreNormalized(subType, superType, subTypeIsSoft);
   }
 

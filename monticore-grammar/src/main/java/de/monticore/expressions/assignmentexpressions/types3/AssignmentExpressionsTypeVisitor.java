@@ -32,7 +32,6 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     this(
         new SymTypeRelations()
     );
-    typeRelations.initDefault();
   }
 
   @Override

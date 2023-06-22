@@ -311,9 +311,6 @@ public class CommonExpressionTypeVisitorTest
   @Test
   public void deriveFromConditionalExpression() throws IOException {
     SymTypeRelations typeRel = new SymTypeRelations();
-    typeRel.initDefault();
-    SymTypeNormalizeVisitor normalizeVisitor =
-        new SymTypeNormalizeVisitor(typeRel);
 
     //test with byte and short
     ASTExpression astExpr = parseExpr("varbool ? varbyte : varshort");

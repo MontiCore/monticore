@@ -75,7 +75,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         new TypeContextCalculator(),
         new NameExpressionTypeCalculator()
     );
-    typeRelations.initDefault();
   }
 
   @Override

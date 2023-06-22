@@ -33,7 +33,6 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
     CombineExpressionsWithLiteralsMill.init();
     DefsTypesForTests.setup();
     tr = new SymTypeRelations();
-    tr.initDefault();
   }
 
   @Test
