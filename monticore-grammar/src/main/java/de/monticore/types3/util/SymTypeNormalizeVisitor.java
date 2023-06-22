@@ -27,15 +27,8 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
 
   protected SymTypeRelations typeRel;
 
-  public SymTypeNormalizeVisitor() {
-  }
-
   public SymTypeNormalizeVisitor(SymTypeRelations typeRel) {
-    setTypeRelations(typeRel);
-  }
-
-  public void setTypeRelations(SymTypeRelations typeRelations) {
-    this.typeRel = typeRelations;
+    this.typeRel = typeRel;
   }
 
   protected SymTypeRelations getTypeRel() {

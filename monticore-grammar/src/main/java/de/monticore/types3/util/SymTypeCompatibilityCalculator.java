@@ -19,9 +19,18 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createObscureTyp
  * checks for compatibility between SymTypes
  * delegate of SymTypeRelations
  */
-public class SymTypeCompatibilityCalculator extends SymTypeRelations {
+public class SymTypeCompatibilityCalculator {
 
-  @Override
+  protected SymTypeRelations symTypeRelations;
+
+  public SymTypeCompatibilityCalculator(SymTypeRelations symTypeRelations) {
+    this.symTypeRelations = symTypeRelations;
+  }
+
+  SymTypeRelations getSymTypeRelations() {
+    return symTypeRelations;
+  }
+
   public boolean isCompatible(
       SymTypeExpression assignee,
       SymTypeExpression assigner) {
@@ -33,14 +42,15 @@ public class SymTypeCompatibilityCalculator extends SymTypeRelations {
     // subtypes are assignable to their supertypes
     // additionaly, we allow unboxing
     else {
-      SymTypeExpression unboxedAssignee = unbox(assignee);
-      SymTypeExpression unboxedAssigner = unbox(assigner);
+      SymTypeExpression unboxedAssignee =
+          getSymTypeRelations().unbox(assignee);
+      SymTypeExpression unboxedAssigner =
+          getSymTypeRelations().unbox(assigner);
       result = internal_isSubTypeOf(unboxedAssigner, unboxedAssignee, true);
     }
     return result;
   }
 
-  @Override
   public boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression superType) {
     return internal_isSubTypeOf(subType, superType, false);
   }
@@ -49,14 +59,15 @@ public class SymTypeCompatibilityCalculator extends SymTypeRelations {
    * isSubTypeOf and canBeSubTypeOf, as they are very similar
    * subTypeIsSoft if it is only a possibility, that it is a subtype
    */
-  @Override
-  protected boolean internal_isSubTypeOf(
+  public boolean internal_isSubTypeOf(
       SymTypeExpression subType,
       SymTypeExpression superType,
       boolean subTypeIsSoft
   ) {
-    SymTypeExpression normalizedSubType = normalize(subType);
-    SymTypeExpression normalizedSuperType = normalize(superType);
+    SymTypeExpression normalizedSubType =
+        getSymTypeRelations().normalize(subType);
+    SymTypeExpression normalizedSuperType =
+        getSymTypeRelations().normalize(superType);
     return internal_isSubTypeOfPreNormalized(
         normalizedSubType,
         normalizedSuperType,
@@ -64,7 +75,6 @@ public class SymTypeCompatibilityCalculator extends SymTypeRelations {
     );
   }
 
-  @Override
   public boolean internal_isSubTypeOfPreNormalized(
       SymTypeExpression subType,
       SymTypeExpression superType,
@@ -124,32 +134,42 @@ public class SymTypeCompatibilityCalculator extends SymTypeRelations {
     }
     // primitives
     else if (superType.isPrimitive() && subType.isPrimitive()) {
-      if (isBoolean(superType) && isBoolean(subType)) {
+      if (getSymTypeRelations().isBoolean(superType) &&
+          getSymTypeRelations().isBoolean(subType)) {
         result = true;
       }
-      else if (isNumericType(superType) && isNumericType(subType)) {
-        if (isDouble(superType)) {
+      else if (getSymTypeRelations().isNumericType(superType) &&
+          getSymTypeRelations().isNumericType(subType)) {
+        if (getSymTypeRelations().isDouble(superType)) {
           result = true;
         }
-        else if (isFloat(superType) &&
-            (isFloat(subType) || isIntegralType(subType))) {
+        else if (getSymTypeRelations().isFloat(superType) &&
+            (getSymTypeRelations().isFloat(subType) ||
+                getSymTypeRelations().isIntegralType(subType)
+            )) {
           result = true;
         }
-        else if (isLong(superType) && isIntegralType(subType)) {
+        else if (getSymTypeRelations().isLong(superType) &&
+            getSymTypeRelations().isIntegralType(
+                subType)) {
           result = true;
         }
-        else if (isInt(superType) &&
-            isIntegralType(subType) &&
-            !isLong(subType)) {
+        else if (getSymTypeRelations().isInt(superType) &&
+            getSymTypeRelations().isIntegralType(subType) &&
+            !getSymTypeRelations().isLong(subType)) {
           result = true;
         }
-        else if (isChar(superType) && isChar(subType)) {
+        else if (getSymTypeRelations().isChar(superType) &&
+            getSymTypeRelations().isChar(subType)) {
           result = true;
         }
-        else if (isShort(superType) && (isShort(subType) || isByte(subType))) {
+        else if (getSymTypeRelations().isShort(superType) &&
+            (getSymTypeRelations().isShort(subType)
+                || getSymTypeRelations().isByte(subType))) {
           result = true;
         }
-        else if (isByte(superType) && isByte(subType)) {
+        else if (getSymTypeRelations().isByte(superType) &&
+            getSymTypeRelations().isByte(subType)) {
           result = true;
         }
         else {
@@ -235,7 +255,9 @@ public class SymTypeCompatibilityCalculator extends SymTypeRelations {
         for (SymTypeExpression subSuperExpr : subSym.getSuperTypesList()) {
           result = result ||
               internal_isSubTypeOfPreNormalized(
-                  normalize(unbox(subSuperExpr)),
+                  getSymTypeRelations().normalize(
+                      getSymTypeRelations().unbox(subSuperExpr)
+                  ),
                   superType,
                   subTypeIsSoft
               );

@@ -22,9 +22,18 @@ import java.util.stream.Collectors;
  * (or one would need to pass the SymTypeRelations to the SymTypes)
  * delegate of SymTypeRelations
  */
-public class FunctionRelations extends SymTypeRelations {
+public class FunctionRelations {
 
-  @Override
+  protected SymTypeRelations symTypeRelations;
+
+  public FunctionRelations(SymTypeRelations symTypeRelations) {
+    this.symTypeRelations = symTypeRelations;
+  }
+
+  SymTypeRelations getSymTypeRelations() {
+    return symTypeRelations;
+  }
+
   public boolean canBeCalledWith(
       SymTypeOfFunction func,
       List<SymTypeExpression> args) {
@@ -40,7 +49,7 @@ public class FunctionRelations extends SymTypeRelations {
       for (int i = 0; i < args.size(); i++) {
         SymTypeExpression paramType = func.getArgumentType(
             Math.min(i, func.getArgumentTypeList().size() - 1));
-        if (!isCompatible(paramType, args.get(i))) {
+        if (!getSymTypeRelations().isCompatible(paramType, args.get(i))) {
           // todo extend when adding generic support
           return false;
         }
@@ -56,7 +65,6 @@ public class FunctionRelations extends SymTypeRelations {
    * * Java spec v.20 15.12.2.5
    * * Java spec v.20 18.5.4
    */
-  @Override
   public Optional<SymTypeOfFunction> getMostSpecificFunction(
       Collection<SymTypeOfFunction> funcs) {
     Optional<SymTypeOfFunction> mostSpecificFunction;
@@ -80,7 +88,7 @@ public class FunctionRelations extends SymTypeRelations {
           int it = i;
           potentialFuncs.removeIf(
               potFunc -> funcs.stream().anyMatch(
-                  func -> !internal_isSubTypeOf(
+                  func -> !getSymTypeRelations().internal_isSubTypeOf(
                       potFunc.getArgumentType(it),
                       func.getArgumentType(it),
                       true

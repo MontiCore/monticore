@@ -25,9 +25,18 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
  * calculates the least upper bound of a collection of SymTypes
  * delegate of SymTypeRelations
  */
-public class SymTypeLubCalculator extends SymTypeRelations {
+public class SymTypeLubCalculator {
 
-  @Override
+  protected SymTypeRelations symTypeRelations;
+
+  public SymTypeLubCalculator(SymTypeRelations symTypeRelations) {
+    this.symTypeRelations = symTypeRelations;
+  }
+
+  SymTypeRelations getSymTypeRelations() {
+    return symTypeRelations;
+  }
+
   public Optional<SymTypeExpression> leastUpperBound(
       Collection<SymTypeExpression> types) {
     Optional<SymTypeExpression> lub;
@@ -40,7 +49,7 @@ public class SymTypeLubCalculator extends SymTypeRelations {
     // unions on first level, intersections on second
     // and arrays on the third
     Set<SymTypeExpression> typeSet = types.stream()
-        .map(this::normalize)
+        .map(symTypeRelations::normalize)
         .collect(Collectors.toSet());
 
     // unpack unions
@@ -66,7 +75,7 @@ public class SymTypeLubCalculator extends SymTypeRelations {
         SymTypeOfIntersection inter = (SymTypeOfIntersection) type;
         inter.getIntersectedTypeSet()
             .removeIf(SymTypeExpression::isTypeVariable);
-        typeSet.add(normalize(inter));
+        typeSet.add(symTypeRelations.normalize(inter));
       }
       // todo after discussing (and implementing) type contexts,
       // check if var is bound
@@ -89,32 +98,34 @@ public class SymTypeLubCalculator extends SymTypeRelations {
     }
     // at least two different types, try (boxed) primitives first
     // lub of boolean
-    else if (typeSet.stream().allMatch(t -> isBoolean(t))) {
+    else if (typeSet.stream().allMatch(t -> symTypeRelations.isBoolean(t))) {
       // note: at least one is not boxed, so unbox all
       lub = Optional.of(createPrimitive(BasicSymbolsMill.BOOLEAN));
     }
     // lub of number
     // based on Java Spec (20): Numeric Conditional Expressions
-    else if (typeSet.stream().allMatch(t -> isNumericType(t))) {
-      Stream<SymTypeExpression> numbers = typeSet.stream().map(this::unbox);
+    else if (typeSet.stream().allMatch(t -> symTypeRelations.isNumericType(t))) {
+      Stream<SymTypeExpression> numbers = typeSet.stream().map(symTypeRelations::unbox);
       // lub of byte
-      if (numbers.allMatch(t -> isByte(t))) {
+      if (numbers.allMatch(t -> symTypeRelations.isByte(t))) {
         lub = Optional.of(createPrimitive(BasicSymbolsMill.BYTE));
       }
       // lub of byte|short
-      else if (numbers.allMatch(t -> isByte(t)
-          || isShort(t))) {
+      else if (numbers.allMatch(t -> symTypeRelations.isByte(t)
+          || symTypeRelations.isShort(t))) {
         lub = Optional.of(createPrimitive(BasicSymbolsMill.SHORT));
       }
       // lub using numeric promotion
       else {
-        lub = Optional.of(numericPromotion(numbers.collect(Collectors.toList())));
+        lub = Optional.of(symTypeRelations.numericPromotion(
+            numbers.collect(Collectors.toList())
+        ));
       }
     }
     // lub of incompatible set of primitives
     else if (typeSet.stream().allMatch(t ->
-        isNumericType(t) ||
-            isBoolean(t))) {
+        symTypeRelations.isNumericType(t) ||
+            symTypeRelations.isBoolean(t))) {
       lub = Optional.of(createObscureType()); // or empty?
     }
     // here the function may be extended to calculate further upper bounds
@@ -171,7 +182,7 @@ public class SymTypeLubCalculator extends SymTypeRelations {
                i.hasNext(); ) {
             SymTypeExpression potentialLub = i.next();
             // if a type cannot be a subtype of a potential lub, it is not a lub
-            if (!internal_isSubTypeOf(type, potentialLub, true)) {
+            if (!symTypeRelations.internal_isSubTypeOf(type, potentialLub, true)) {
               i.remove();
               // however, the supertypes could still be lubs
               Collection<SymTypeExpression> superTypes =
@@ -196,7 +207,7 @@ public class SymTypeLubCalculator extends SymTypeRelations {
       // lub is the intersection of the calculated lubs (minus superclasses)
       // exception being the empty intersection -> no lub
       if (acceptedLubs.size() > 1) {
-        lub = Optional.of(normalize(createIntersection(acceptedLubs)));
+        lub = Optional.of(symTypeRelations.normalize(createIntersection(acceptedLubs)));
       }
       else if (acceptedLubs.size() == 1) {
         lub = acceptedLubs.stream().findFirst();

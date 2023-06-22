@@ -34,9 +34,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
     CombineExpressionsWithLiteralsMill.init();
     DefsTypesForTests.setup();
     SymTypeRelations tr = new SymTypeRelations();
-    tr.initDefault();
-    visitor = new SymTypeNormalizeVisitor();
-    visitor.setTypeRelations(tr);
+    visitor = new SymTypeNormalizeVisitor(tr);
     assertNoFindings();
   }
 

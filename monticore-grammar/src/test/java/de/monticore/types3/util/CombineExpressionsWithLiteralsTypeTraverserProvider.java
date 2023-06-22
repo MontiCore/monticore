@@ -13,6 +13,7 @@ import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcfullgenerictypes.types3.MCFullGenericTypesTypeVisitor;
 import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
+import de.monticore.types3.Type4Ast;
 
 public class CombineExpressionsWithLiteralsTypeTraverserProvider {
 
@@ -67,7 +68,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
     synMCSimpleGenericTypes = new MCSimpleGenericTypesTypeVisitor();
   }
 
-  public CombineExpressionsWithLiteralsTraverser init(CombineExpressionsWithLiteralsTraverser traverser) {
+  public CombineExpressionsWithLiteralsTraverser init(
+      CombineExpressionsWithLiteralsTraverser traverser) {
     // Expressions
     traverser.add4AssignmentExpressions(derAssignmentExpressions);
     traverser.add4CommonExpressions(derCommonExpressions);
@@ -85,5 +87,23 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
     traverser.add4MCSimpleGenericTypes(synMCSimpleGenericTypes);
 
     return traverser;
+  }
+
+
+  public void setType4Ast(Type4Ast type4Ast) {
+    // Expressions
+    derAssignmentExpressions.setType4Ast(type4Ast);
+    derCommonExpressions.setType4Ast(type4Ast);
+    derExpressionBasis.setType4Ast(type4Ast);
+    derLambdaExpressions.setType4Ast(type4Ast);
+    derCombineExpressionsWithLiterals.setType4Ast(type4Ast);
+    derOfMCCommonLiterals.setType4Ast(type4Ast);
+    // MCTypes
+    synMCArrayTypes.setType4Ast(type4Ast);
+    synMCBasicTypes.setType4Ast(type4Ast);
+    synMCCollectionTypes.setType4Ast(type4Ast);
+    synMCFullGenericTypes.setType4Ast(type4Ast);
+    synMCFunctionTypes.setType4Ast(type4Ast);
+    synMCSimpleGenericTypes.setType4Ast(type4Ast);
   }
 }
