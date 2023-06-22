@@ -11,16 +11,33 @@ import de.se_rwth.commons.logging.Log;
  */
 public abstract class AbstractTypeVisitor {
 
-  //to be moved to the mill after specifics are discussed, DO NOT USE
-  public static Type4Ast tmpMap = new Type4Ast();
-
   /**
    * the name to be used for Log.info, etc.
    */
   protected static final String LOG_NAME = "TypeVisitor";
 
+  //to be moved to the mill after specifics are discussed, DO NOT USE
+  public static Type4Ast tmpMap = new Type4Ast();
+
+  /**
+   * the map to be filled with type information
+   * In most cases, this is the global map in the mill.
+   * However, if a AstNode kann have multiple Types
+   * (e.g., variants within the same model),
+   * one may set a different map to be filled.
+   */
+  protected Type4Ast type4Ast = tmpMap;
+
+  public void setType4Ast(Type4Ast type4Ast) {
+    this.type4Ast = type4Ast;
+  }
+
+  /**
+   * the map to be filled with type information.
+   * Deriving classes should always use this method to get the map.
+   */
   protected Type4Ast getType4Ast() {
-    return tmpMap;
+    return type4Ast;
   }
 
   protected IBasicSymbolsScope getAsBasicSymbolsScope(IScope scope) {

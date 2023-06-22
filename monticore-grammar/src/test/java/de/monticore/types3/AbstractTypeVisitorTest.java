@@ -61,6 +61,10 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
   // (may be any other Parser that understands CommonExpressions)
   protected CombineExpressionsWithLiteralsParser parser;
 
+  // we can use our own type4Ast instance to try to find occurrences of
+  // Type Visitors using the map from the mill instead of the provided one
+  protected Type4Ast type4Ast;
+
   protected ITraverser typeMapTraverser;
 
   protected ITraverser scopeGenitor;
@@ -80,7 +84,11 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     BasicSymbolsMill.initializePrimitives();
     DefsTypesForTests.setup();
     parser = CombineExpressionsWithLiteralsMill.parser();
-    typeMapTraverser = new CombineExpressionsWithLiteralsTypeTraverserProvider()
+    type4Ast = new Type4Ast();
+    CombineExpressionsWithLiteralsTypeTraverserProvider typeTraverserProvider =
+        new CombineExpressionsWithLiteralsTypeTraverserProvider();
+    typeTraverserProvider.setType4Ast(type4Ast);
+    typeMapTraverser = typeTraverserProvider
         .init(CombineExpressionsWithLiteralsMill.traverser());
     CombineExpressionsWithLiteralsTraverser combinedScopesGenitor =
         CombineExpressionsWithLiteralsMill.traverser();
@@ -331,7 +339,6 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
   }
 
   protected Type4Ast getType4Ast() {
-    // get out of mill as soon as possible
-    return AbstractTypeVisitor.tmpMap;
+    return type4Ast;
   }
 }
