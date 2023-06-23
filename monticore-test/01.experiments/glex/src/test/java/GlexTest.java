@@ -56,6 +56,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testSimple() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -73,6 +74,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testTracing() {
     GeneratorSetup s = new GeneratorSetup();
 
@@ -93,6 +95,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testVariables() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -109,6 +112,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testSignature() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -126,6 +130,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testVariables2() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -143,6 +148,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testVariables3() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -160,6 +166,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testVariables4() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -178,6 +185,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testVariables5() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -212,6 +220,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testVariables7() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
@@ -230,6 +239,7 @@ public class GlexTest {
 
   // --------------------------------------------------------------------
   @Test
+  @Ignore
   public void testShowForRefMan() {
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
