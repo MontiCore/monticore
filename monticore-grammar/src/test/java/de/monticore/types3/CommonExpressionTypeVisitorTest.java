@@ -259,7 +259,7 @@ public class CommonExpressionTypeVisitorTest
   @Test
   public void testInvalidAndOpExpression() throws IOException {
     //only possible with two booleans
-    checkErrorExpr("3&&true", "0xB0164");
+    checkErrorExpr("3&&true", "0xB0113");
   }
 
   @Test
@@ -273,7 +273,7 @@ public class CommonExpressionTypeVisitorTest
   @Test
   public void testInvalidOrOpExpression() throws IOException {
     //only possible with two booleans
-    checkErrorExpr("3||true", "0xB0164");
+    checkErrorExpr("3||true", "0xB0113");
   }
 
   @Test

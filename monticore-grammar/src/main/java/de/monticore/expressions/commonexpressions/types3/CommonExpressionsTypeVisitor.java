@@ -926,7 +926,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
     else {
       // operator not applicable
-      Log.error("0xB0164 Operator '" + op + "' not applicable to " +
+      Log.error("0xB0113 Operator '" + op + "' not applicable to " +
               "'" + left.print() + "', '"
               + right.print() + "'",
           expr.get_SourcePositionStart(),
