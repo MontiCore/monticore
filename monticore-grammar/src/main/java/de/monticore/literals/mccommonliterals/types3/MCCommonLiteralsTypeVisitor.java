@@ -91,32 +91,7 @@ public class MCCommonLiteralsTypeVisitor extends AbstractTypeVisitor
     }
   }
 
-  @Override
-  public void endVisit(ASTSignedNatLiteral lit) {
-    derivePrimitive(lit, BasicSymbolsMill.INT);
-  }
-
-  @Override
-  public void endVisit(ASTSignedBasicDoubleLiteral lit) {
-    derivePrimitive(lit, BasicSymbolsMill.DOUBLE);
-  }
-
-  @Override
-  public void endVisit(ASTSignedBasicFloatLiteral lit) {
-    derivePrimitive(lit, BasicSymbolsMill.FLOAT);
-  }
-
-  @Override
-  public void endVisit(ASTSignedBasicLongLiteral lit) {
-    derivePrimitive(lit, BasicSymbolsMill.LONG);
-  }
-
   protected void derivePrimitive(ASTLiteral lit, String primitive) {
-    getType4Ast().setTypeOfExpression(
-        lit, getPrimitive(primitive, lit.get_SourcePositionStart()));
-  }
-
-  protected void derivePrimitive(ASTSignedLiteral lit, String primitive) {
     getType4Ast().setTypeOfExpression(
         lit, getPrimitive(primitive, lit.get_SourcePositionStart()));
   }
