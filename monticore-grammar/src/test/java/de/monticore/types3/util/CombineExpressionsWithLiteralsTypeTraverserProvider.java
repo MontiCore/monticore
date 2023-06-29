@@ -68,6 +68,32 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
     synMCSimpleGenericTypes = new MCSimpleGenericTypesTypeVisitor();
   }
 
+  /**
+   * initializes additional logic for languages that have access to OO Symbols
+   */
+  public void initForOOSymbols() {
+    init();
+    WithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver =
+        new OOWithinTypeBasicSymbolsResolver();
+    NameExpressionTypeCalculator nameExpressionTypeCalculator =
+        new OONameExpressionTypeCalculator();
+    derCommonExpressions.setWithinTypeBasicSymbolsResolver(
+        withinTypeBasicSymbolsResolver
+    );
+    derCommonExpressions.setNameExpressionTypeCalculator(
+        nameExpressionTypeCalculator
+    );
+    derExpressionBasis.setNameExpressionTypeCalculator(
+        nameExpressionTypeCalculator
+    );
+    synMCBasicTypes.setWithinTypeResolver(
+        withinTypeBasicSymbolsResolver
+    );
+    synMCBasicTypes.setNameExpressionTypeCalculator(
+        nameExpressionTypeCalculator
+    );
+  }
+
   public CombineExpressionsWithLiteralsTraverser init(
       CombineExpressionsWithLiteralsTraverser traverser) {
     // Expressions
@@ -88,7 +114,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
 
     return traverser;
   }
-
 
   public void setType4Ast(Type4Ast type4Ast) {
     // Expressions
