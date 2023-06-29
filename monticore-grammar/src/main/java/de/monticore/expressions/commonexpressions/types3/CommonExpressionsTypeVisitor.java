@@ -9,7 +9,7 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTrav
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis.types3.util.NameExpressionTypeCalculator;
+import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -85,6 +85,24 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void setTraverser(CommonExpressionsTraverser traverser) {
     this.traverser = traverser;
+  }
+
+  public void setSymTypeRelations(SymTypeRelations typeRelations) {
+    this.typeRelations = typeRelations;
+  }
+
+  public void setWithinTypeBasicSymbolsResolver(
+      WithinTypeBasicSymbolsResolver withinTypeResolver) {
+    this.withinTypeResolver = withinTypeResolver;
+  }
+
+  public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
+    this.typeCtxCalc = typeCtxCalc;
+  }
+
+  public void setNameExpressionTypeCalculator(
+      NameExpressionTypeCalculator nameExpressionTypeCalculator) {
+    this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
   }
 
   protected SymTypeRelations getTypeRel() {

@@ -4,12 +4,11 @@ package de.monticore.expressions.expressionsbasis.types3;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
-import de.monticore.expressions.expressionsbasis.types3.util.NameExpressionTypeCalculator;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.util.TypeContextCalculator;
+import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -19,20 +18,18 @@ public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
 
   protected NameExpressionTypeCalculator nameExpressionTypeCalculator;
 
-  protected TypeContextCalculator typeContextCalculator;
-
   public ExpressionBasisTypeVisitor() {
     // default values
     nameExpressionTypeCalculator = new NameExpressionTypeCalculator();
-    typeContextCalculator = new TypeContextCalculator();
+  }
+
+  public void setNameExpressionTypeCalculator(
+      NameExpressionTypeCalculator nameExpressionTypeCalculator) {
+    this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
   }
 
   protected NameExpressionTypeCalculator getNameExpressionTypeCalculator() {
     return nameExpressionTypeCalculator;
-  }
-
-  protected TypeContextCalculator getTypeContextCalculator() {
-    return typeContextCalculator;
   }
 
   @Override
