@@ -289,10 +289,10 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeExpression createFromSymbol(TypeSymbol typeSymbol) {
-    BasicSymbolsTypeDispatcher typeDispatcher =
-        BasicSymbolsMill.basicSymbolsTypeDispatcher();
-    if(typeDispatcher.isTypeVar(typeSymbol)) {
-      return createTypeVariable(typeSymbol);
+    if(BasicSymbolsMill.basicSymbolsTypeDispatcher().isTypeVar(typeSymbol)) {
+      return createTypeVariable(
+          BasicSymbolsMill.basicSymbolsTypeDispatcher().asTypeVar(typeSymbol)
+      );
     }
     if(typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()) {
       return createTypeObject(typeSymbol);
