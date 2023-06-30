@@ -24,8 +24,6 @@ public class LambdaExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void deriveFromLambdaExpressionOneParameterTest() throws IOException {
-    LogStub.initPlusLog();
-    LogStub.initDEBUG();
     // example with int, long
     checkExpr("(int x) -> 5L", "(int) -> long");
     // example with input equaling output
