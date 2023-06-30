@@ -19,6 +19,9 @@ public class SymTypeVariable extends SymTypeExpression {
   @Deprecated
   public SymTypeVariable(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
+    if(typeSymbol instanceof TypeVarSymbol) {
+      this.typeVarSymbol = (TypeVarSymbol) typeSymbol;
+    }
   }
 
   public TypeVarSymbol getTypeVarSymbol() {
