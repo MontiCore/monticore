@@ -136,7 +136,7 @@ public class SymTypeVariable extends SymTypeExpression {
       return false;
     }
     SymTypeVariable symVar = (SymTypeVariable) sym;
-    if (getTypeVarSymbol().getFullName().equals(
+    if (!getTypeVarSymbol().getFullName().equals(
         symVar.getTypeVarSymbol().getFullName())) {
       return false;
     }
