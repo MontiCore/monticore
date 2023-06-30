@@ -66,8 +66,15 @@ public class MCCommonLiteralsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTStringLiteral lit) {
+    // tries to find String
+    // String added into global scope analogous to primitive types
     Optional<TypeSymbol> stringType =
         BasicSymbolsMill.globalScope().resolveType("String");
+    // otherwise, java.util.String, most likely per Class2MC
+    if (stringType.isEmpty()) {
+      stringType = getAsBasicSymbolsScope(lit.getEnclosingScope())
+          .resolveType("java.lang.String");
+    }
     if (stringType.isPresent()) {
       getType4Ast().setTypeOfExpression((ASTLiteral) lit,
           SymTypeExpressionFactory.createTypeObject(stringType.get())
