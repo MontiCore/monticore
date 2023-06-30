@@ -1,6 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("booleans", "optionals", "superDispatchers")}
 
+this.traverser.getTraversedElements().clear();
+
 <#list superDispatchers as superDispatcher>
     ${superDispatcher.getName()}.reset();
 </#list>
