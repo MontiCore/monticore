@@ -7,12 +7,15 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
@@ -374,5 +377,37 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     assertTrue(tr.isCompatible(_IntegerSymType, createTypeOfNull()));
     assertFalse(tr.isSubTypeOf(createTypeOfNull(), _personSymType));
     assertFalse(tr.isSubTypeOf(_personSymType, createTypeOfNull()));
+  }
+
+  /**
+   * tests wether the unboxed type
+   * is compatible to a superclass of the boxed type, e.g.,
+   * Comparable<Integer> ci = 2;
+   * Iterable<Integer> ii = List<int>;
+   */
+  @Test
+  public void isCompatibleSuperTypeOfBoxed() {
+    // add superclasses, these would exist for Class2MC
+    // Integer implements Comparable<Integer>
+    TypeSymbol integerSym = _IntegerSymType.getTypeInfo();
+    TypeVarSymbol comparableSymVar = typeVariable("T");
+    TypeSymbol comparableSym =
+        type("Comparable", Collections.emptyList(), List.of(comparableSymVar));
+    SymTypeExpression comparableInteger = createGenerics(comparableSym, _IntegerSymType);
+    integerSym.addSuperTypes(comparableInteger);
+    // java.util.List<T> implements Iterable<Integer>
+    TypeSymbol listSym = _boxedListSymType.getTypeInfo();
+    TypeVarSymbol iterableSymVar = typeVariable("T");
+    TypeSymbol iterableSym =
+        type("Iterable", Collections.emptyList(), List.of(iterableSymVar));
+    listSym.setSuperTypesList(List.of(
+        createGenerics(iterableSym, _boxedListSymType.getArgument(0))
+    ));
+
+    assertTrue(tr.isCompatible(comparableInteger, _IntegerSymType));
+    assertTrue(tr.isCompatible(
+        createGenerics(iterableSym, _IntegerSymType),
+        createGenerics(_unboxedListSymType.getTypeInfo(), _intSymType)
+    ));
   }
 }
