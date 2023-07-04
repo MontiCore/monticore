@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 public class DispatcherTest {
 
   protected static final SimpleInterfacesParser parser = new SimpleInterfacesParser();
-  protected static final SimpleInterfacesTypeDispatcher dispatcher = SimpleInterfacesMill.simpleInterfacesTypeDispatcher();
+  protected static final SimpleInterfacesTypeDispatcher dispatcher = SimpleInterfacesMill.typeDispatcher();
 
   @Before
   public void before() {
