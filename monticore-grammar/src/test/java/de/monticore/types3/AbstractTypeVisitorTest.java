@@ -28,25 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.types.check.DefsTypeBasic._booleanSymType;
-import static de.monticore.types.check.DefsTypeBasic._byteSymType;
-import static de.monticore.types.check.DefsTypeBasic._charSymType;
-import static de.monticore.types.check.DefsTypeBasic._doubleSymType;
-import static de.monticore.types.check.DefsTypeBasic._floatSymType;
-import static de.monticore.types.check.DefsTypeBasic._intSymType;
-import static de.monticore.types.check.DefsTypeBasic._longSymType;
-import static de.monticore.types.check.DefsTypeBasic._shortSymType;
-import static de.monticore.types.check.DefsTypeBasic._voidSymType;
-import static de.monticore.types3.util.DefsTypesForTests._boxedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._csStudentSymType;
-import static de.monticore.types3.util.DefsTypesForTests._linkedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._personSymType;
-import static de.monticore.types3.util.DefsTypesForTests._studentSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedString;
-import static de.monticore.types3.util.DefsTypesForTests.function;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
-import static de.monticore.types3.util.DefsTypesForTests.variable;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -109,7 +91,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     IBasicSymbolsScope gs =
         BasicSymbolsMill.globalScope();
     // primitives
-    inScope(gs, variable("varbool", _booleanSymType));
+    inScope(gs, variable("varboolean", _booleanSymType));
     inScope(gs, variable("varbyte", _byteSymType));
     inScope(gs, variable("varchar", _charSymType));
     inScope(gs, variable("varshort", _shortSymType));
@@ -117,6 +99,15 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     inScope(gs, variable("varlong", _longSymType));
     inScope(gs, variable("varfloat", _floatSymType));
     inScope(gs, variable("vardouble", _doubleSymType));
+    // boxed primitives
+    inScope(gs, variable("varBoolean", _BooleanSymType));
+    inScope(gs, variable("varByte", _ByteSymType));
+    inScope(gs, variable("varCharacter", _CharacterSymType));
+    inScope(gs, variable("varShort", _ShortSymType));
+    inScope(gs, variable("varInteger", _IntegerSymType));
+    inScope(gs, variable("varLong", _LongSymType));
+    inScope(gs, variable("varFloat", _FloatSymType));
+    inScope(gs, variable("varDouble", _DoubleSymType));
     // non-generic objects
     inScope(gs, variable("varString", _unboxedString));
     inScope(gs, variable("person1", _personSymType));

@@ -15,7 +15,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
 
   @Test
   public void deriveFromIncSuffixExpression() throws IOException {
-
     //example with byte
     checkExpr("varbyte++", "byte");
 
@@ -39,6 +38,9 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
   public void testInvalidIncSuffixExpression() throws IOException {
     //not applicable to Strings
     checkErrorExpr("varString++", "0xA0184");
+
+    //not applicable to boolean
+    checkErrorExpr("varboolean++", "0xA0184");
   }
 
   @Test
@@ -54,6 +56,9 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
 
     //example with int
     checkExpr("varint--", "int");
+
+    //example with float
+    checkExpr("varfloat++", "float");
 
     //example with double
     checkExpr("vardouble--", "double");
@@ -220,7 +225,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     //example with int - int
     checkExpr("varint&=9", "int");
     //example with boolean - boolean
-    checkExpr("varbool&=false", "boolean");
+    checkExpr("varboolean&=false", "boolean");
     //example with char - int
     checkExpr("varchar&=4", "char");
   }
@@ -236,7 +241,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     //example with int - int
     checkExpr("varint|=9", "int");
     //example with boolean - boolean
-    checkExpr("varbool|=true", "boolean");
+    checkExpr("varboolean|=true", "boolean");
   }
 
   @Test
@@ -250,7 +255,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     //example with int - int
     checkExpr("varint^=9", "int");
     //example with boolean - boolean
-    checkExpr("varbool^=false", "boolean");
+    checkExpr("varboolean^=false", "boolean");
   }
 
   @Test
@@ -311,6 +316,10 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("person1 = student2", "Person");
     //example with person - firstsemesterstudent
     checkExpr("person2 = csStudent1", "Person");
+    //example with Boolean - boolean
+    checkExpr("varBoolean = varboolean", "java.lang.Boolean");
+    //example with boolean - Boolean
+    checkExpr("varboolean = varBoolean", "boolean");
   }
 
   @Test

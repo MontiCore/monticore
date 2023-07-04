@@ -24,7 +24,6 @@ import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types3.util.SymTypeNormalizeVisitor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -206,6 +205,7 @@ public class CommonExpressionTypeVisitorTest
   public void deriveFromEqualsExpression() throws IOException {
     //example with two primitives
     checkExpr("7==9.5f", "boolean");
+    checkExpr("varbyte==varchar", "boolean");
 
     //example with two objects of the same class
     checkExpr("student1==student2", "boolean");
@@ -221,8 +221,7 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void testInvalidEqualsExpression2() throws IOException {
-    //person1 has the type Person, foo is a boolean
-    checkErrorExpr("person1==foo", "0xB0166");
+    checkErrorExpr("person1==varboolean", "0xB0166");
   }
 
   @Test
@@ -245,7 +244,7 @@ public class CommonExpressionTypeVisitorTest
   @Test
   public void testInvalidNotEqualsExpression2() throws IOException {
     //person1 is a Person, foo is a boolean
-    checkErrorExpr("person1!=foo", "0xB0166");
+    checkErrorExpr("person1!=varboolean", "0xB0166");
   }
 
   @Test
@@ -313,7 +312,7 @@ public class CommonExpressionTypeVisitorTest
     SymTypeRelations typeRel = new SymTypeRelations();
 
     //test with byte and short
-    ASTExpression astExpr = parseExpr("varbool ? varbyte : varshort");
+    ASTExpression astExpr = parseExpr("varboolean ? varbyte : varshort");
     generateScopes(astExpr);
     assertNoFindings();
     calculateTypes(astExpr);
