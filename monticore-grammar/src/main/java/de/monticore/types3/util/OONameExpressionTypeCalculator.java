@@ -28,8 +28,8 @@ public class OONameExpressionTypeCalculator
   @Override
   protected Predicate<FunctionSymbol> getFunctionPredicate() {
     return f -> {
-      if (OOSymbolsMill.oOSymbolsTypeDispatcher().isMethod(f)) {
-        MethodSymbol m = OOSymbolsMill.oOSymbolsTypeDispatcher().asMethod(f);
+      if (OOSymbolsMill.typeDispatcher().isMethod(f)) {
+        MethodSymbol m = OOSymbolsMill.typeDispatcher().asMethod(f);
         if (m.isIsConstructor()) {
           return false;
         }

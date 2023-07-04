@@ -955,6 +955,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   }
 
   protected CommonExpressionsTypeDispatcher getTypeDispatcher() {
-    return CommonExpressionsMill.commonExpressionsTypeDispatcher();
+    return CommonExpressionsMill.typeDispatcher();
   }
 }

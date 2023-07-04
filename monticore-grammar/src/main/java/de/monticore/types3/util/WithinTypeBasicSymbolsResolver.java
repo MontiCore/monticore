@@ -298,7 +298,7 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
-    return BasicSymbolsMill.basicSymbolsTypeDispatcher();
+    return BasicSymbolsMill.typeDispatcher();
   }
 
   protected SymTypeExpression replaceVariablesIfNecessary(

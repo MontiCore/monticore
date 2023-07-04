@@ -35,7 +35,7 @@ public class MultipleLanguagesDispatcherTest {
     assertTrue(optAST.isPresent());
     final ASTPlace ast = optAST.get();
 
-    BlueCTypeDispatcher dispatcher = BlueCMill.blueCTypeDispatcher();
+    BlueCTypeDispatcher dispatcher = BlueCMill.typeDispatcher();
 
     assertFalse(dispatcher.isASTLightBluePlace(ast));
     assertFalse(dispatcher.isASTBluePlace(ast));
@@ -70,7 +70,7 @@ public class MultipleLanguagesDispatcherTest {
     assertTrue(optAST.isPresent());
     final ASTPlace ast = optAST.get();
 
-    BlueCTypeDispatcher dispatcher = BlueCMill.blueCTypeDispatcher();
+    BlueCTypeDispatcher dispatcher = BlueCMill.typeDispatcher();
 
     assertEquals("place", printType(dispatcher.asASTPlace(ast)));
 

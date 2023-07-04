@@ -116,7 +116,7 @@ public class TypeContextCalculator {
   // Helper
 
   protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
-    return BasicSymbolsMill.basicSymbolsTypeDispatcher();
+    return BasicSymbolsMill.typeDispatcher();
   }
 
 }

@@ -63,9 +63,9 @@ public class OOWithinTypeBasicSymbolsResolver
   // Helper
 
   protected boolean isConstructor(FunctionSymbol func) {
-    if (OOSymbolsMill.oOSymbolsTypeDispatcher().isMethod(func)) {
+    if (OOSymbolsMill.typeDispatcher().isMethod(func)) {
       MethodSymbol method =
-          OOSymbolsMill.oOSymbolsTypeDispatcher().asMethod(func);
+          OOSymbolsMill.typeDispatcher().asMethod(func);
       return method.isIsConstructor();
     }
     return false;

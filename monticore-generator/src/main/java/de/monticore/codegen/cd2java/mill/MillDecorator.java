@@ -20,6 +20,8 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.mcbasics._prettyprint.MCBasicsFullPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -134,6 +136,15 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       Optional<ASTCDClass> fullPrettyPrinterCandidate = classList.stream().filter(c -> c.getName().endsWith(FULLPRETTYPRINTER_SUFFIX)).findFirst();
       fullPrettyPrinterCandidate.ifPresent(astcdClass -> prettyPrinterMembersList.addAll(addPrettyPrinterMembers(astcdClass, cd)));
 
+      // add static getter for type dispatcher singleton
+      List<ASTCDMember> typeDispatcherMemberList = new ArrayList<>();
+      Optional<ASTCDClass> typeDispatcherClass = cd.getCDElementList().stream()
+          .filter(e -> e instanceof ASTCDClass)
+          .map(e -> (ASTCDClass) e)
+          .filter(c -> c.getName().endsWith(TYPE_DISPATCHER_SUFFIX))
+          .findFirst();
+      typeDispatcherClass.ifPresent(c -> typeDispatcherMemberList.addAll(addTypeDispatcherMembers(c, cd, millType)));
+
       //remove the methods that are generated in the code below the for-loop
       classList = classList.stream().filter(this::checkNotGeneratedSpecifically).collect(Collectors.toList());
       List<ASTCDMethod> builderMethodsList = addBuilderMethods(classList, cd);
@@ -141,6 +152,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       millClass.addAllCDMembers(attributeList);
       millClass.addAllCDMembers(builderMethodsList);
       millClass.addAllCDMembers(prettyPrinterMembersList);
+      millClass.addAllCDMembers(typeDispatcherMemberList);
     }
 
     // decorate for traverser
@@ -235,8 +247,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         || name.endsWith(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX)
         || name.endsWith(TRAVERSER_CLASS_SUFFIX)
         || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX)
-        || name.endsWith(FULLPRETTYPRINTER_SUFFIX)
-        || name.endsWith(TYPE_DISPATCHER_SUFFIX);
+        || name.endsWith(FULLPRETTYPRINTER_SUFFIX);
   }
 
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
@@ -325,6 +336,33 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     prettyPrintMembersList.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), fullPrettyPrinterType, "fullPrettyPrinter"));
 
     return prettyPrintMembersList;
+  }
+
+  protected List<ASTCDMember> addTypeDispatcherMembers(ASTCDClass cdClass, ASTCDPackage cdPackage, ASTMCType millType) {
+    List<ASTCDMember> typeDispatcherMembers = new ArrayList<>();
+
+    String typeDispatcherName = cdClass.getName();
+    String packageName = cdPackage.getName();
+    String millDispatcherName = MILL_INFIX + typeDispatcherName;
+    ASTMCQualifiedType typeDispatcherType = this.getMCTypeFacade().createQualifiedType(packageName + "." + typeDispatcherName);
+
+    typeDispatcherMembers.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), typeDispatcherType, "typeDispatcher"));
+    typeDispatcherMembers.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, millDispatcherName));
+
+    ASTCDMethod staticGetter = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), typeDispatcherType, "typeDispatcher");
+    this.replaceTemplate(EMPTY_BODY, staticGetter,
+        new TemplateHookPoint("mill.BuilderMethod",
+            typeDispatcherName, "typeDispatcher"));
+    typeDispatcherMembers.add(staticGetter);
+
+    ASTCDMethod protectedGetter = this.getCDMethodFacade().createMethod(PROTECTED.build(), typeDispatcherType, "_typeDispatcher");
+    this.replaceTemplate(EMPTY_BODY, protectedGetter,
+        new TemplateHookPoint("mill.TypeDispatcherGetter",
+            millDispatcherName,
+            packageName + "." + typeDispatcherName));
+    typeDispatcherMembers.add(protectedGetter);
+
+    return typeDispatcherMembers;
   }
 
   /**

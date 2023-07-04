@@ -436,7 +436,7 @@ public class Type4Ast {
    */
   protected boolean isQNameExpr(ASTExpression expr) {
     CommonExpressionsTypeDispatcher typeDispatcher =
-        CommonExpressionsMill.commonExpressionsTypeDispatcher();
+        CommonExpressionsMill.typeDispatcher();
     if (typeDispatcher.isASTNameExpression(expr)) {
       return true;
     }
