@@ -4,12 +4,14 @@ package de.monticore.types3;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
 
@@ -61,6 +63,41 @@ public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
         .setSource("Y05H1")
         .build();
     check(lit, "String");
+  }
+
+  @Test
+  public void deriveTFromLiteralStringUnBoxedAvailable() {
+    // only String is available
+    MCCommonLiteralsMill.globalScope().clear();
+    DefsTypesForTests.set_unboxedObjects();
+    ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder()
+        .setSource("G0M84")
+        .build();
+    check(lit, "String");
+  }
+
+  @Test
+  public void deriveTFromLiteralStringBoxedAvailable() {
+    // only java.util.String is available
+    MCCommonLiteralsMill.globalScope().clear();
+    DefsTypesForTests.set_boxedObjects();
+    ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder()
+        .setSource("W4210")
+        .build();
+    check(lit, "java.lang.String");
+  }
+
+  @Test
+  public void deriveTFromLiteralStringUnavailable() {
+    // only java.util.String is available
+    MCCommonLiteralsMill.globalScope().clear();
+    ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder()
+        .setSource("50N1C")
+        .build();
+    lit.setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope());
+    lit.accept(getTypeMapTraverser());
+    assertFalse(getType4Ast().hasTypeOfExpression(lit));
+    assertHasErrorCode("0xD02A6");
   }
 
   @Test

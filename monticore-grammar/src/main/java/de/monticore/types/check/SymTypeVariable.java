@@ -19,6 +19,9 @@ public class SymTypeVariable extends SymTypeExpression {
   @Deprecated
   public SymTypeVariable(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
+    if(typeSymbol instanceof TypeVarSymbol) {
+      this.typeVarSymbol = (TypeVarSymbol) typeSymbol;
+    }
   }
 
   public TypeVarSymbol getTypeVarSymbol() {
@@ -133,7 +136,7 @@ public class SymTypeVariable extends SymTypeExpression {
       return false;
     }
     SymTypeVariable symVar = (SymTypeVariable) sym;
-    if (getTypeVarSymbol().getFullName().equals(
+    if (!getTypeVarSymbol().getFullName().equals(
         symVar.getTypeVarSymbol().getFullName())) {
       return false;
     }

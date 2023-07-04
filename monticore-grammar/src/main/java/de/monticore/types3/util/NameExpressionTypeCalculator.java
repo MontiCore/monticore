@@ -1,18 +1,16 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.expressions.expressionsbasis.types3.util;
+package de.monticore.types3.util;
 
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolTOP;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types3.util.TypeContextCalculator;
-import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collections;
@@ -20,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -35,10 +34,27 @@ public class NameExpressionTypeCalculator {
 
   protected WithinTypeBasicSymbolsResolver withinTypeResolver;
 
+  protected NameExpressionTypeCalculator(
+      TypeContextCalculator typeCtxCalc,
+      WithinTypeBasicSymbolsResolver withinTypeResolver
+  ) {
+    this.typeCtxCalc = typeCtxCalc;
+    this.withinTypeResolver = withinTypeResolver;
+  }
+
   public NameExpressionTypeCalculator() {
     // default values
     typeCtxCalc = new TypeContextCalculator();
     withinTypeResolver = new WithinTypeBasicSymbolsResolver();
+  }
+
+  public void setWithinTypeBasicSymbolsResolver(
+      WithinTypeBasicSymbolsResolver withinTypeResolver) {
+    this.withinTypeResolver = withinTypeResolver;
+  }
+
+  public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
+    this.typeCtxCalc = typeCtxCalc;
   }
 
   protected TypeContextCalculator getTypeCtxCalc() {
@@ -60,9 +76,11 @@ public class NameExpressionTypeCalculator {
     // afterwards we evaluate which result to use
 
     // not necessarily in an enclosing type
-    Optional<SymTypeExpression> optVar = enclosingScope.resolveVariable(name)
-        .map(VariableSymbolTOP::getType);
-    List<SymTypeOfFunction> funcs = enclosingScope.resolveFunctionMany(name).stream()
+    Optional<SymTypeExpression> optVar = enclosingScope.resolveVariable(
+            name, AccessModifier.ALL_INCLUSION, getVariablePredicate())
+        .map(v -> v.getType());
+    List<SymTypeOfFunction> funcs = enclosingScope
+        .resolveFunctionMany(name, getFunctionPredicate()).stream()
         // todo remove creation of a set
         // after resolver is fixed to not return duplicates
         .collect(Collectors.toSet())
@@ -80,9 +98,9 @@ public class NameExpressionTypeCalculator {
       AccessModifier modifier = getTypeCtxCalc()
           .getAccessModifier(enclosingType.get(), enclosingScope);
       varInType = getWithinTypeResolver().resolveVariable(
-          enclosingTypeExpr, name, modifier, v -> true);
+          enclosingTypeExpr, name, modifier, getVariablePredicate());
       funcsInType = getWithinTypeResolver().resolveFunctions(
-          enclosingTypeExpr, name, modifier, f -> true);
+          enclosingTypeExpr, name, modifier, getFunctionPredicate());
     }
     // get the correct variable
     if (varInType.isPresent() && optVar.isPresent()) {
@@ -128,17 +146,36 @@ public class NameExpressionTypeCalculator {
     }
   }
 
+  /**
+   * used to filter function symbols
+   * this is an extension point to,
+   * e.g., filter out constructors in OO-Symbols
+   */
+  protected Predicate<FunctionSymbol> getFunctionPredicate() {
+    return f -> true;
+  }
+
+  /**
+   * used to filter variable symbols
+   * this is an extension point
+   */
+  protected Predicate<VariableSymbol> getVariablePredicate() {
+    return v -> true;
+  }
+
   public Optional<SymTypeExpression> typeOfNameAsTypeId(
       IBasicSymbolsScope enclosingScope,
       String name) {
     Optional<SymTypeExpression> type;
     // variable
-    Optional<TypeVarSymbol> optTypeVar =
-        enclosingScope.resolveTypeVar(name);
+    Optional<TypeVarSymbol> optTypeVar = enclosingScope.resolveTypeVar(
+        name, AccessModifier.ALL_INCLUSION, getTypeVarPredicate()
+    );
     // object
     Optional<TypeSymbol> optObj = enclosingScope.resolveType(name,
-        AccessModifier.ALL_INCLUSION,
-        t -> optTypeVar.map(tv -> tv != t).orElse(true));
+        AccessModifier.ALL_INCLUSION, getTypePredicate()
+            .and(t -> optTypeVar.map(tv -> tv != t).orElse(true))
+    );
     // in Java the type variable is preferred
     // e.g. class C<U>{class U{} U v;} //new C<Float>().v has type Float
     if (optTypeVar.isPresent() && optObj.isPresent()) {
@@ -160,6 +197,23 @@ public class NameExpressionTypeCalculator {
       type = Optional.empty();
     }
     return type;
+  }
+
+  /**
+   * used to filter type symbols
+   * this is NOT used to filter type variables
+   * this is an extension point
+   */
+  protected Predicate<TypeSymbol> getTypePredicate() {
+    return t -> true;
+  }
+
+  /**
+   * used to filter type variable symbols
+   * this is an extension point
+   */
+  protected Predicate<TypeVarSymbol> getTypeVarPredicate() {
+    return tv -> true;
   }
 
   // Helper

@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcbasictypes.types3;
 
-import de.monticore.expressions.expressionsbasis.types3.util.NameExpressionTypeCalculator;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -13,6 +12,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.monticore.types3.AbstractTypeVisitor;
+import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
@@ -40,12 +40,26 @@ public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
     return nameExprTypeCalc;
   }
 
+  public void setNameExpressionTypeCalculator(
+      NameExpressionTypeCalculator nameExprTypeCalc) {
+    this.nameExprTypeCalc = nameExprTypeCalc;
+  }
+
   protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
     return withinTypeResolver;
   }
 
+  public void setWithinTypeResolver(
+      WithinTypeBasicSymbolsResolver withinTypeResolver) {
+    this.withinTypeResolver = withinTypeResolver;
+  }
+
   protected TypeContextCalculator getTypeCtxCalc() {
     return typeCtxCalc;
+  }
+
+  public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
+    this.typeCtxCalc = typeCtxCalc;
   }
 
   @Override
