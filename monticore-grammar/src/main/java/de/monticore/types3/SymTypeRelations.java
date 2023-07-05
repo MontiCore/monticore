@@ -45,7 +45,7 @@ public class SymTypeRelations {
     this.unboxingVisitor = new SymTypeUnboxingVisitor();
     this.normalizeVisitor = new SymTypeNormalizeVisitor(this);
     this.lubDelegate = new SymTypeLubCalculator(this);
-    this.builtInRelationsDelegate = new BuiltInTypeRelations(this);
+    this.builtInRelationsDelegate = new BuiltInTypeRelations();
     this.functionRelationsDelegate = new FunctionRelations(this);
   }
 
