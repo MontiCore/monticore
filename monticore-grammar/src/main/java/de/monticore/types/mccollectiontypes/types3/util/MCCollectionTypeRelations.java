@@ -22,75 +22,19 @@ public class MCCollectionTypeRelations {
   }
 
   public boolean isList(SymTypeExpression type) {
-    if (!type.isGenericType()) {
-      return false;
-    }
-    SymTypeOfGenerics generic = (SymTypeOfGenerics) type;
-    String name = generic.getTypeConstructorFullName();
-    if (!name.equals("List") && !name.equals("java.util.List")) {
-      return false;
-    }
-    if (generic.sizeArguments() != 1) {
-      Log.warn("0xFD1C1 encountered generic called "
-          + generic.getTypeConstructorFullName() + " with "
-          + generic.sizeArguments() + " type arguments.");
-      return false;
-    }
-    return true;
+    return isSpecificCollection(type, "List", "java.util.List", 1);
   }
 
   public boolean isSet(SymTypeExpression type) {
-    if (!type.isGenericType()) {
-      return false;
-    }
-    SymTypeOfGenerics generic = (SymTypeOfGenerics) type;
-    String name = generic.getTypeConstructorFullName();
-    if (!name.equals("Set") && !name.equals("java.util.Set")) {
-      return false;
-    }
-    if (generic.sizeArguments() != 1) {
-      Log.warn("0xFD1C2 encountered generic called "
-          + generic.getTypeConstructorFullName() + " with "
-          + generic.sizeArguments() + " type arguments.");
-      return false;
-    }
-    return true;
+    return isSpecificCollection(type, "Set", "java.util.Set", 1);
   }
 
   public boolean isOptional(SymTypeExpression type) {
-    if (!type.isGenericType()) {
-      return false;
-    }
-    SymTypeOfGenerics generic = (SymTypeOfGenerics) type;
-    String name = generic.getTypeConstructorFullName();
-    if (!name.equals("Optional") && !name.equals("java.util.Optional")) {
-      return false;
-    }
-    if (generic.sizeArguments() != 1) {
-      Log.warn("0xFD1C3 encountered generic called "
-          + generic.getTypeConstructorFullName() + " with "
-          + generic.sizeArguments() + " type arguments.");
-      return false;
-    }
-    return true;
+    return isSpecificCollection(type, "Optional", "java.util.Optional", 1);
   }
 
   public boolean isMap(SymTypeExpression type) {
-    if (!type.isGenericType()) {
-      return false;
-    }
-    SymTypeOfGenerics generic = (SymTypeOfGenerics) type;
-    String name = generic.getTypeConstructorFullName();
-    if (!name.equals("Map") && !name.equals("java.util.Map")) {
-      return false;
-    }
-    if (generic.sizeArguments() != 2) {
-      Log.warn("0xFD1C4 encountered generic called "
-          + generic.getTypeConstructorFullName() + " with "
-          + generic.sizeArguments() + " type arguments.");
-      return false;
-    }
-    return true;
+    return isSpecificCollection(type, "Map", "java.util.Map", 2);
   }
 
   /**
@@ -116,6 +60,32 @@ public class MCCollectionTypeRelations {
       return SymTypeExpressionFactory.createObscureType();
     }
     return ((SymTypeOfGenerics) type).getArgument(0);
+  }
+
+  // Helper
+
+  protected boolean isSpecificCollection(
+      SymTypeExpression type,
+      String unboxedName,
+      String boxedName,
+      int numberOfArgs
+  ) {
+    if (!type.isGenericType()) {
+      return false;
+    }
+    SymTypeOfGenerics generic = (SymTypeOfGenerics) type;
+    String name = generic.getTypeConstructorFullName();
+    if (!name.equals(unboxedName) && !name.equals(boxedName)) {
+      return false;
+    }
+    if (generic.sizeArguments() != numberOfArgs) {
+      Log.warn("0xFD1C4 encountered generic called "
+          + generic.getTypeConstructorFullName() + " with "
+          + generic.sizeArguments() + " type arguments, "
+          + "but expected " + numberOfArgs);
+      return false;
+    }
+    return true;
   }
 
 }
