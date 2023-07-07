@@ -48,263 +48,1020 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
-  public void deriveFromIncSuffixExpression() throws IOException {
-
-    //example with byte
-    checkExpr("varbyte++", "byte");
-
-    //example with short
-    checkExpr("varshort++", "short");
-
-    //example with char
-    checkExpr("varchar++", "char");
-
-    //example with int
-    checkExpr("varint++", "int");
-
-    //example with float
-    checkExpr("varfloat++", "float");
-
-    //example with double
-    checkExpr("vardouble++", "double");
-  }
-
-  @Test
   public void deriveFromPlusExpression() throws IOException {
-    // example with two ints
-    checkExpr("3+4", "int");
-
-    // example with double and int
-    checkExpr("4.9+12", "double");
-
-    // example with Integer
-    checkExpr("varint+varint", "int");
-
-    // example with String
-    checkExpr("3 + \"Hallo\"", "String");
+    checkExpr("varint = varbyte + varbyte", "int"); // + applicable to byte, byte, result is int
+    checkExpr("varint = varshort + varshort", "int"); // + applicable to short, short, result is int
+    checkExpr("varint = varint + varint", "int"); // + applicable to int, int, result is int
+    checkExpr("varlong = varlong + varlong", "long"); // + applicable to long, long, result is long
+    checkExpr("varfloat = varfloat + varfloat", "float"); // + applicable to float, float, result is float
+    checkExpr("vardouble = vardouble + vardouble", "double"); // + applicable to double, double, result is double
+    checkExpr("varint = 0 + 0", "int"); // expected int and provided int
+    checkExpr("varint = 127 + 1", "int"); // expected int and provided int
+    checkExpr("varint = 32767 + 1", "int"); // expected int and provided int
+    checkExpr("varint = 65536 + 1", "int"); // expected int and provided int
+    checkExpr("varint = 2147483647 + 0", "int"); // expected int and provided int
+    checkExpr("varint = varchar + varchar", "int"); // + applicable to char, char, result is int
+    checkExpr("3 + \"Hallo\"", "String"); // example with String
   }
 
   @Test
   public void testInvalidPlusExpression() throws IOException {
-    checkErrorExpr("3+true", "0xB0163");
+    checkErrorExpr("varchar = 65535 + 1", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varchar = 1 + 65535", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varchar = varchar + varchar", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varboolean + varboolean", "0xB0163"); // + not applicable to boolean, boolean
+    checkErrorExpr("varboolean + varchar", "0xB0163"); // + not applicable to boolean, char
+    checkErrorExpr("varboolean + varbyte", "0xB0163"); // + not applicable to boolean, byte
+    checkErrorExpr("varboolean + varshort", "0xB0163"); // + not applicable to boolean, short
+    checkErrorExpr("varboolean + varint", "0xB0163"); // + not applicable to boolean, int
+    checkErrorExpr("varboolean + varlong", "0xB0163"); // + not applicable to boolean, long
+    checkErrorExpr("varboolean + varfloat", "0xB0163"); // + not applicable to boolean, float
+    checkErrorExpr("varboolean + vardouble", "0xB0163"); // + not applicable to boolean, double
+    checkErrorExpr("varchar + varboolean", "0xB0163"); // + not applicable to char, boolean
+    checkErrorExpr("varbyte + varboolean", "0xB0163"); // + not applicable to byte, boolean
+    checkErrorExpr("varshort + varboolean", "0xB0163"); // + not applicable to short, boolean
+    checkErrorExpr("varint + varboolean", "0xB0163"); // + not applicable to int, boolean
+    checkErrorExpr("varlong + varboolean", "0xB0163"); // + not applicable to long, boolean
+    checkErrorExpr("varfloat + varboolean", "0xB0163"); // + not applicable to float, boolean
+    checkErrorExpr("vardouble + varboolean", "0xB0163"); // + not applicable to double, boolean
+    checkErrorExpr("varchar = 1 + 1l", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1l + 1", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1 + 0.1f", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 0.1f + 1", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 1 + 0.1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varchar = 0.1 + 1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varbyte = 127 + 1", "0xA0179"); // expected byte but provided int
+    checkErrorExpr("varbyte = 1 + 127", "0xA0179"); // expected byte but provided int
+    checkErrorExpr("varbyte = varbyte + varbyte", "0xA0179"); // expected byte but provided int
+    checkErrorExpr("varbyte = 1 + 1l", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1l + 1", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1 + 0.1f", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 0.1f + 1", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 1 + 0.1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varbyte = 0.1 + 1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varshort = 32767 + 1", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = 1 + 32767", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = varshort + varshort", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = 1 + 1l", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1l + 1", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1 + 0.1f", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 0.1f + 1", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 1 + 0.1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varshort = 0.1 + 1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varint = 1 + 1l", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1l + 1", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1 + 0.1f", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 0.1f + 1", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 1 + 0.1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varint = 0.1 + 1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varlong = 1l + 0.1f", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 0.1f + 1l", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 1l + 0.1", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varlong = 0.1 + 1l", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varfloat = 0.1f + 0.1", "0xA0179"); // expected float but provided double
+    checkErrorExpr("varfloat = 0.1 + 0.1f", "0xA0179"); // expected float but provided double
   }
 
   @Test
   public void deriveFromMinusExpression() throws IOException {
-    // example with two ints
-    checkExpr("7-2", "int");
-
-    //example with float and long
-    checkExpr("7.9f-3L", "float");
+    checkExpr("varint = 1 - 1", "int"); // expected int and provided int
+    checkExpr("varint = -128 - 1", "int"); // expected int and provided int
+    checkExpr("varint = -32768 - 1", "int"); // expected int and provided int
+    checkExpr("varint = -2147483648 - 0", "int"); // expected int and provided int
+    checkExpr("varint = varchar - varchar", "int"); // - applicable to char, char, result is int
+    checkExpr("varint = varbyte - varbyte", "int"); // - applicable to byte, byte, result is int
+    checkExpr("varint = varshort - varshort", "int"); // - applicable to short, short, result is int
+    checkExpr("varint = varint - varint", "int"); // - applicable to int, int, result is int
+    checkExpr("varlong = varlong - varlong", "long"); // - applicable to long, long, result is long
+    checkExpr("varfloat = varfloat - varfloat", "float"); // - applicable to float, float, result is float
+    checkExpr("vardouble = vardouble - vardouble", "double"); // - applicable to double, double, result is double
   }
 
   @Test
   public void testInvalidMinusExpression() throws IOException {
-    checkErrorExpr("3-true", "0xB0163");
+    checkErrorExpr("varboolean - varboolean", "0xB0163"); // - not applicable to boolean, boolean
+    checkErrorExpr("varboolean - varchar", "0xB0163"); // - not applicable to boolean, char
+    checkErrorExpr("varboolean - varbyte", "0xB0163"); // - not applicable to boolean, byte
+    checkErrorExpr("varboolean - varshort", "0xB0163"); // - not applicable to boolean, short
+    checkErrorExpr("varboolean - varint", "0xB0163"); // - not applicable to boolean, int
+    checkErrorExpr("varboolean - varlong", "0xB0163"); // - not applicable to boolean, long
+    checkErrorExpr("varboolean - varfloat", "0xB0163"); // - not applicable to boolean, float
+    checkErrorExpr("varboolean - vardouble", "0xB0163"); // - not applicable to boolean, double
+    checkErrorExpr("varchar - varboolean", "0xB0163"); // - not applicable to char, boolean
+    checkErrorExpr("varbyte - varboolean", "0xB0163"); // - not applicable to byte, boolean
+    checkErrorExpr("varshort - varboolean", "0xB0163"); // - not applicable to short, boolean
+    checkErrorExpr("varint - varboolean", "0xB0163"); // - not applicable to int, boolean
+    checkErrorExpr("varlong - varboolean", "0xB0163"); // - not applicable to long, boolean
+    checkErrorExpr("varfloat - varboolean", "0xB0163"); // - not applicable to float, boolean
+    checkErrorExpr("vardouble - varboolean", "0xB0163"); // - not applicable to double, boolean
+    checkErrorExpr("varchar = varchar - varchar", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varchar = 1 - 1l", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1l - 1", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1 - 0.1f", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 0.1f - 1", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 1 - 0.1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varchar = 0.1 - 1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varbyte = 1 - 1l", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1l - 1", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1 - 0.1f", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 0.1f - 1", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 1 - 0.1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varbyte = 0.1 - 1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varshort = varshort - varshort", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = 1 - 1l", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1l - 1", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1 - 0.1f", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 0.1f - 1", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 1 - 0.1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varshort = 0.1 - 1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varint = 1 - 1l", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1l - 1", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1 - 0.1f", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 0.1f - 1", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 1 - 0.1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varint = 0.1 - 1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varlong = 1l - 0.1f", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 0.1f - 1l", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 1l - 0.1", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varlong = 0.1 - 1l", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varfloat = 0.1f - 0.1", "0xA0179"); // expected float but provided double
+    checkErrorExpr("varfloat = 0.1 - 0.1f", "0xA0179"); // expected float but provided double
   }
 
   @Test
   public void deriveFromMultExpression() throws IOException {
-    //example with two ints
-    checkExpr("2*19", "int");
-
-    //example with long and char
-    checkExpr("'a'*3L", "long");
+    checkExpr("varint = 0 * 0", "int"); // expected int and provided int
+    checkExpr("varint = 2147483647 * 1", "int"); // expected int and provided int
+    checkExpr("varint = 1 * 2147483647", "int"); // expected int and provided int
+    checkExpr("varint = varchar * varchar", "int"); // * applicable to char, char, result is int
+    checkExpr("varint = varbyte * varbyte", "int"); // * applicable to byte, byte, result is int
+    checkExpr("varint = varshort * varshort", "int"); // * applicable to short, short, result is int
+    checkExpr("varint = varint * varint", "int"); // * applicable to int, int, result is int
+    checkExpr("varlong = varlong * varlong", "long"); // * applicable to long, long, result is long
+    checkExpr("varfloat = varfloat * varfloat", "float"); // * applicable to float, float, result is float
+    checkExpr("vardouble = vardouble * vardouble", "double"); // * applicable to double, double, result is double
   }
 
   @Test
   public void testInvalidMultExpression() throws IOException {
-    checkErrorExpr("3*true", "0xB0163");
+    checkErrorExpr("varboolean * varboolean", "0xB0163"); // * not applicable to boolean, boolean
+    checkErrorExpr("varboolean * varchar", "0xB0163"); // * not applicable to boolean, char
+    checkErrorExpr("varboolean * varbyte", "0xB0163"); // * not applicable to boolean, byte
+    checkErrorExpr("varboolean * varshort", "0xB0163"); // * not applicable to boolean, short
+    checkErrorExpr("varboolean * varint", "0xB0163"); // * not applicable to boolean, int
+    checkErrorExpr("varboolean * varlong", "0xB0163"); // * not applicable to boolean, long
+    checkErrorExpr("varboolean * varfloat", "0xB0163"); // * not applicable to boolean, float
+    checkErrorExpr("varboolean * vardouble", "0xB0163"); // * not applicable to boolean, double
+    checkErrorExpr("varchar * varboolean", "0xB0163"); // * not applicable to char, boolean
+    checkErrorExpr("varbyte * varboolean", "0xB0163"); // * not applicable to byte, boolean
+    checkErrorExpr("varshort * varboolean", "0xB0163"); // * not applicable to short, boolean
+    checkErrorExpr("varint * varboolean", "0xB0163"); // * not applicable to int, boolean
+    checkErrorExpr("varlong * varboolean", "0xB0163"); // * not applicable to long, boolean
+    checkErrorExpr("varfloat * varboolean", "0xB0163"); // * not applicable to float, boolean
+    checkErrorExpr("vardouble * varboolean", "0xB0163"); // * not applicable to double, boolean
+    checkErrorExpr("varbyte = 64 * 2", "0xA0179"); // expected byte but provided int
+    checkErrorExpr("varbyte = varbyte * varbyte", "0xA0179"); // expected byte but provided int
+    checkErrorExpr("varbyte = 1 * 1l", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1l * 1", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1 * 0.1f", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 0.1f * 1", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 1 * 0.1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varbyte = 0.1 * 1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varshort = 16384 * 2", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = varshort * varshort", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = 1 * 1l", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1l * 1", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1 * 0.1f", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 0.1f * 1", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 1 * 0.1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varshort = 0.1 * 1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varint = 1 * 1l", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1l * 1", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1 * 0.1f", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 0.1f * 1", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 1 * 0.1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varint = 0.1 * 1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varlong = 1l * 0.1f", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 0.1f * 1l", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 1l * 0.1", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varlong = 0.1 * 1l", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varfloat = 0.1f * 0.1", "0xA0179"); // expected float but provided double
+    checkErrorExpr("varfloat = 0.1 * 0.1f", "0xA0179"); // expected float but provided double
+    checkErrorExpr("varchar = 32768 * 2", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varchar = varchar * varchar", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varchar = 1 * 1l", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1l * 1", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1 * 0.1f", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 0.1f * 1", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 1 * 0.1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varchar = 0.1 * 1", "0xA0179"); // expected char but provided double
   }
 
   @Test
   public void deriveFromDivideExpression() throws IOException {
-    //example with two ints
-    checkExpr("7/12", "int");
-
-    //example with float and double
-    checkExpr("5.4f/3.9", "double");
+    checkExpr("varint = 2147483647 / 1", "int"); // expected int and provided int
+    checkExpr("varint = 1 / 2147483647", "int"); // expected int and provided int
+    checkExpr("varint = varchar / varchar", "int"); // / applicable to char, char, result is int
+    checkExpr("varint = varbyte / varbyte", "int"); // / applicable to byte, byte, result is int
+    checkExpr("varint = varshort / varshort", "int"); // / applicable to short, short, result is int
+    checkExpr("varint = varint / varint", "int"); // / applicable to int, int, result is int
+    checkExpr("varlong = varlong / varlong", "long"); // / applicable to long, long, result is long
+    checkExpr("varfloat = varfloat / varfloat", "float"); // / applicable to float, float, result is float
+    checkExpr("vardouble = vardouble / vardouble", "double"); // / applicable to double, double, result is double
   }
 
   @Test
   public void testInvalidDivideExpression() throws IOException {
-    checkErrorExpr("3/true", "0xB0163");
+    checkErrorExpr("varboolean / varboolean", "0xB0163"); // / not applicable to boolean, boolean
+    checkErrorExpr("varboolean / varchar", "0xB0163"); // / not applicable to boolean, char
+    checkErrorExpr("varboolean / varbyte", "0xB0163"); // / not applicable to boolean, byte
+    checkErrorExpr("varboolean / varshort", "0xB0163"); // / not applicable to boolean, short
+    checkErrorExpr("varboolean / varint", "0xB0163"); // / not applicable to boolean, int
+    checkErrorExpr("varboolean / varlong", "0xB0163"); // / not applicable to boolean, long
+    checkErrorExpr("varboolean / varfloat", "0xB0163"); // / not applicable to boolean, float
+    checkErrorExpr("varboolean / vardouble", "0xB0163"); // / not applicable to boolean, double
+    checkErrorExpr("varchar / varboolean", "0xB0163"); // / not applicable to char, boolean
+    checkErrorExpr("varbyte / varboolean", "0xB0163"); // / not applicable to byte, boolean
+    checkErrorExpr("varshort / varboolean", "0xB0163"); // / not applicable to short, boolean
+    checkErrorExpr("varint / varboolean", "0xB0163"); // / not applicable to int, boolean
+    checkErrorExpr("varlong / varboolean", "0xB0163"); // / not applicable to long, boolean
+    checkErrorExpr("varfloat / varboolean", "0xB0163"); // / not applicable to float, boolean
+    checkErrorExpr("vardouble / varboolean", "0xB0163"); // / not applicable to double, boolean
+    checkErrorExpr("varchar = 65536 / 1", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varchar = varchar / varchar", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varchar = 1 / 1l", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1l / 1", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1 / 0.1f", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 0.1f / 1", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 1 / 0.1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varchar = 0.1 / 1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varbyte = 128 / 1", "0xA0179"); // expected byte but provided int
+    checkErrorExpr("varbyte = varbyte / varbyte", "0xA0179"); // expected byte but provided int
+    checkErrorExpr("varbyte = 1 / 1l", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1l / 1", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1 / 0.1f", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 0.1f / 1", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 1 / 0.1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varbyte = 0.1 / 1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varshort = 32768 / 1", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = varshort / varshort", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = 1 / 1l", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1l / 1", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1 / 0.1f", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 0.1f / 1", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 1 / 0.1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varshort = 0.1 / 1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varint = 1 / 1l", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1l / 1", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1 / 0.1f", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 0.1f / 1", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 1 / 0.1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varint = 0.1 / 1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varlong = 1l / 0.1f", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 0.1f / 1l", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 1l / 0.1", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varlong = 0.1 / 1l", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varfloat = 0.1f / 0.1", "0xA0179"); // expected float but provided double
+    checkErrorExpr("varfloat = 0.1 / 0.1f", "0xA0179"); // expected float but provided double
   }
 
   @Test
   public void deriveFromModuloExpression() throws IOException {
-    //example with two ints
-    checkExpr("3%1", "int");
-
-    //example with long and double
-    checkExpr("0.8%3L", "double");
+    checkExpr("varint = 2147483647 % 1", "int"); // expected int and provided int
+    checkExpr("varint = 1 % 2147483647", "int"); // expected int and provided int
+    checkExpr("varint = varchar % varchar", "int"); // % applicable to char, char, result is int
+    checkExpr("varint = varbyte % varbyte", "int"); // % applicable to byte, byte, result is int
+    checkExpr("varint = varshort % varshort", "int"); // % applicable to short, short, result is int
+    checkExpr("varint = varint % varint", "int"); // % applicable to int, int, result is int
+    checkExpr("varlong = varlong % varlong", "long"); // % applicable to long, long, result is long
+    checkExpr("varfloat = varfloat % varfloat", "float"); // % applicable to float, float, result is float
+    checkExpr("vardouble = vardouble % vardouble", "double"); // % applicable to double, double, result is double
   }
 
   @Test
   public void testInvalidModuloExpression() throws IOException {
-    checkErrorExpr("3%true", "0xB0163");
+    checkErrorExpr("varboolean % varboolean", "0xB0163"); // % not applicable to boolean, boolean
+    checkErrorExpr("varboolean % varchar", "0xB0163"); // % not applicable to boolean, char
+    checkErrorExpr("varboolean % varbyte", "0xB0163"); // % not applicable to boolean, byte
+    checkErrorExpr("varboolean % varshort", "0xB0163"); // % not applicable to boolean, short
+    checkErrorExpr("varboolean % varint", "0xB0163"); // % not applicable to boolean, int
+    checkErrorExpr("varboolean % varlong", "0xB0163"); // % not applicable to boolean, long
+    checkErrorExpr("varboolean % varfloat", "0xB0163"); // % not applicable to boolean, float
+    checkErrorExpr("varboolean % vardouble", "0xB0163"); // % not applicable to boolean, double
+    checkErrorExpr("varchar % varboolean", "0xB0163"); // % not applicable to char, boolean
+    checkErrorExpr("varbyte % varboolean", "0xB0163"); // % not applicable to byte, boolean
+    checkErrorExpr("varshort % varboolean", "0xB0163"); // % not applicable to short, boolean
+    checkErrorExpr("varint % varboolean", "0xB0163"); // % not applicable to int, boolean
+    checkErrorExpr("varlong % varboolean", "0xB0163"); // % not applicable to long, boolean
+    checkErrorExpr("varfloat % varboolean", "0xB0163"); // % not applicable to float, boolean
+    checkErrorExpr("vardouble % varboolean", "0xB0163"); // % not applicable to double, boolean
+    checkErrorExpr("varchar = varchar % varchar", "0xA0179"); // expected char but provided int
+    checkErrorExpr("varchar = 1 % 1l", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1l % 1", "0xA0179"); // expected char but provided long
+    checkErrorExpr("varchar = 1 % 0.1f", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 0.1f % 1", "0xA0179"); // expected char but provided float
+    checkErrorExpr("varchar = 1 % 0.1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varchar = 0.1 % 1", "0xA0179"); // expected char but provided double
+    checkErrorExpr("varbyte = varbyte % varbyte", "0xA0179"); // expected byte but provided int
+    checkErrorExpr("varbyte = 1 % 1l", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1l % 1", "0xA0179"); // expected byte but provided long
+    checkErrorExpr("varbyte = 1 % 0.1f", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 0.1f % 1", "0xA0179"); // expected byte but provided float
+    checkErrorExpr("varbyte = 1 % 0.1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varbyte = 0.1 % 1", "0xA0179"); // expected byte but provided double
+    checkErrorExpr("varshort = varshort % varshort", "0xA0179"); // expected short but provided int
+    checkErrorExpr("varshort = 1 % 1l", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1l % 1", "0xA0179"); // expected short but provided long
+    checkErrorExpr("varshort = 1 % 0.1f", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 0.1f % 1", "0xA0179"); // expected short but provided float
+    checkErrorExpr("varshort = 1 % 0.1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varshort = 0.1 % 1", "0xA0179"); // expected short but provided double
+    checkErrorExpr("varint = 1 % 1l", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1l % 1", "0xA0179"); // expected int but provided long
+    checkErrorExpr("varint = 1 % 0.1f", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 0.1f % 1", "0xA0179"); // expected int but provided float
+    checkErrorExpr("varint = 1 % 0.1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varint = 0.1 % 1", "0xA0179"); // expected int but provided double
+    checkErrorExpr("varlong = 1l % 0.1f", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 0.1f % 1l", "0xA0179"); // expected long but provided float
+    checkErrorExpr("varlong = 1l % 0.1", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varlong = 0.1 % 1l", "0xA0179"); // expected long but provided double
+    checkErrorExpr("varfloat = 0.1f % 0.1", "0xA0179"); // expected float but provided double
+    checkErrorExpr("varfloat = 0.1 % 0.1f", "0xA0179"); // expected float but provided double
   }
 
   @Test
   public void deriveFromLessEqualExpression() throws IOException {
-    //example with two ints
-    checkExpr("4<=9", "boolean");
-
-    //example with two other numeric types
-    checkExpr("2.4f<=3L", "boolean");
+    checkExpr("varboolean = varbyte <= varbyte", "boolean"); // <= applicable to byte, byte, result is boolean
+    checkExpr("varboolean = varbyte <= varshort", "boolean"); // <= applicable to byte, short, result is boolean
+    checkExpr("varboolean = varbyte <= varchar", "boolean"); // <= applicable to byte, char, result is boolean
+    checkExpr("varboolean = varbyte <= varint", "boolean"); // <= applicable to byte, int, result is boolean
+    checkExpr("varboolean = varbyte <= varlong", "boolean"); // <= applicable to byte, long, result is boolean
+    checkExpr("varboolean = varbyte <= varfloat", "boolean"); // <= applicable to byte, float, result is boolean
+    checkExpr("varboolean = varbyte <= vardouble", "boolean"); // <= applicable to byte, double, result is boolean
+    checkExpr("varboolean = varshort <= varbyte", "boolean"); // <= applicable to short, byte, result is boolean
+    checkExpr("varboolean = varshort <= varshort", "boolean"); // <= applicable to short, short, result is boolean
+    checkExpr("varboolean = varshort <= varchar", "boolean"); // <= applicable to short, char, result is boolean
+    checkExpr("varboolean = varshort <= varint", "boolean"); // <= applicable to short, int, result is boolean
+    checkExpr("varboolean = varshort <= varlong", "boolean"); // <= applicable to short, long, result is boolean
+    checkExpr("varboolean = varshort <= varfloat", "boolean"); // <= applicable to short, float, result is boolean
+    checkExpr("varboolean = varshort <= vardouble", "boolean"); // <= applicable to short, double, result is boolean
+    checkExpr("varboolean = varchar <= varbyte", "boolean"); // <= applicable to char, byte, result is boolean
+    checkExpr("varboolean = varchar <= varshort", "boolean"); // <= applicable to char, short, result is boolean
+    checkExpr("varboolean = varchar <= varchar", "boolean"); // <= applicable to char, char, result is boolean
+    checkExpr("varboolean = varchar <= varint", "boolean"); // <= applicable to char, int, result is boolean
+    checkExpr("varboolean = varchar <= varlong", "boolean"); // <= applicable to char, long, result is boolean
+    checkExpr("varboolean = varchar <= varfloat", "boolean"); // <= applicable to char, float, result is boolean
+    checkExpr("varboolean = varchar <= vardouble", "boolean"); // <= applicable to char, double, result is boolean
+    checkExpr("varboolean = varint <= varbyte", "boolean"); // <= applicable to int, byte, result is boolean
+    checkExpr("varboolean = varint <= varshort", "boolean"); // <= applicable to int, short, result is boolean
+    checkExpr("varboolean = varint <= varchar", "boolean"); // <= applicable to int, char, result is boolean
+    checkExpr("varboolean = varint <= varint", "boolean"); // <= applicable to int, int, result is boolean
+    checkExpr("varboolean = varint <= varlong", "boolean"); // <= applicable to int, long, result is boolean
+    checkExpr("varboolean = varint <= varfloat", "boolean"); // <= applicable to int, float, result is boolean
+    checkExpr("varboolean = varint <= vardouble", "boolean"); // <= applicable to int, double, result is boolean
+    checkExpr("varboolean = varlong <= varbyte", "boolean"); // <= applicable to long, byte, result is boolean
+    checkExpr("varboolean = varlong <= varshort", "boolean"); // <= applicable to long, short, result is boolean
+    checkExpr("varboolean = varlong <= varchar", "boolean"); // <= applicable to long, char, result is boolean
+    checkExpr("varboolean = varlong <= varint", "boolean"); // <= applicable to long, int, result is boolean
+    checkExpr("varboolean = varlong <= varlong", "boolean"); // <= applicable to long, long, result is boolean
+    checkExpr("varboolean = varlong <= varfloat", "boolean"); // <= applicable to long, float, result is boolean
+    checkExpr("varboolean = varlong <= vardouble", "boolean"); // <= applicable to long, double, result is boolean
+    checkExpr("varboolean = varfloat <= varbyte", "boolean"); // <= applicable to float, byte, result is boolean
+    checkExpr("varboolean = varfloat <= varshort", "boolean"); // <= applicable to float, short, result is boolean
+    checkExpr("varboolean = varfloat <= varchar", "boolean"); // <= applicable to float, char, result is boolean
+    checkExpr("varboolean = varfloat <= varint", "boolean"); // <= applicable to float, int, result is boolean
+    checkExpr("varboolean = varfloat <= varlong", "boolean"); // <= applicable to float, long, result is boolean
+    checkExpr("varboolean = varfloat <= varfloat", "boolean"); // <= applicable to float, float, result is boolean
+    checkExpr("varboolean = varfloat <= vardouble", "boolean"); // <= applicable to float, double, result is boolean
+    checkExpr("varboolean = vardouble <= varbyte", "boolean"); // <= applicable to double, byte, result is boolean
+    checkExpr("varboolean = vardouble <= varshort", "boolean"); // <= applicable to double, short, result is boolean
+    checkExpr("varboolean = vardouble <= varchar", "boolean"); // <= applicable to double, char, result is boolean
+    checkExpr("varboolean = vardouble <= varint", "boolean"); // <= applicable to double, int, result is boolean
+    checkExpr("varboolean = vardouble <= varlong", "boolean"); // <= applicable to double, long, result is boolean
+    checkExpr("varboolean = vardouble <= varfloat", "boolean"); // <= applicable to double, float, result is boolean
+    checkExpr("varboolean = vardouble <= vardouble", "boolean"); // <= applicable to double, double, result is boolean
   }
 
   @Test
   public void testInvalidLessEqualExpression() throws IOException {
-    checkErrorExpr("3<=true", "0xB0167");
+    checkErrorExpr("varboolean <= varchar", "0xB0167"); // <= not applicable to boolean, char
+    checkErrorExpr("varboolean <= varbyte", "0xB0167"); // <= not applicable to boolean, byte
+    checkErrorExpr("varboolean <= varshort", "0xB0167"); // <= not applicable to boolean, short
+    checkErrorExpr("varboolean <= varint", "0xB0167"); // <= not applicable to boolean, int
+    checkErrorExpr("varboolean <= varlong", "0xB0167"); // <= not applicable to boolean, long
+    checkErrorExpr("varboolean <= varfloat", "0xB0167"); // <= not applicable to boolean, float
+    checkErrorExpr("varboolean <= vardouble", "0xB0167"); // <= not applicable to boolean, double
+    checkErrorExpr("varchar <= varboolean", "0xB0167"); // <= not applicable to char, boolean
+    checkErrorExpr("varbyte <= varboolean", "0xB0167"); // <= not applicable to byte, boolean
+    checkErrorExpr("varshort <= varboolean", "0xB0167"); // <= not applicable to short, boolean
+    checkErrorExpr("varint <= varboolean", "0xB0167"); // <= not applicable to int, boolean
+    checkErrorExpr("varlong <= varboolean", "0xB0167"); // <= not applicable to long, boolean
+    checkErrorExpr("varfloat <= varboolean", "0xB0167"); // <= not applicable to float, boolean
+    checkErrorExpr("vardouble <= varboolean", "0xB0167"); // <= not applicable to double, boolean
+    checkErrorExpr("varchar = varchar <= varchar", "0xA0179"); // expected char but provided boolean
+    checkErrorExpr("varbyte = varbyte <= varbyte", "0xA0179"); // expected byte but provided boolean
+    checkErrorExpr("varshort = varshort <= varshort", "0xA0179"); // expected short but provided boolean
+    checkErrorExpr("varint = varint <= varint", "0xA0179"); // expected int but provided boolean
+    checkErrorExpr("varlong = varlong <= varlong", "0xA0179"); // expected long but provided boolean
+    checkErrorExpr("varfloat = varfloat <= varfloat", "0xA0179"); // expected float but provided boolean
+    checkErrorExpr("vardouble = vardouble <= vardouble", "0xA0179"); // expected double but provided boolean
   }
 
   @Test
   public void deriveFromGreaterEqualExpression() throws IOException {
-    //example with two ints
-    checkExpr("7>=2", "boolean");
-
-    //example with two other numeric types
-    checkExpr("2.5>='d'", "boolean");
+    checkExpr("varboolean = varbyte >= varbyte", "boolean"); // >= applicable to byte, byte, result is boolean
+    checkExpr("varboolean = varbyte >= varshort", "boolean"); // >= applicable to byte, short, result is boolean
+    checkExpr("varboolean = varbyte >= varchar", "boolean"); // >= applicable to byte, char, result is boolean
+    checkExpr("varboolean = varbyte >= varint", "boolean"); // >= applicable to byte, int, result is boolean
+    checkExpr("varboolean = varbyte >= varlong", "boolean"); // >= applicable to byte, long, result is boolean
+    checkExpr("varboolean = varbyte >= varfloat", "boolean"); // >= applicable to byte, float, result is boolean
+    checkExpr("varboolean = varbyte >= vardouble", "boolean"); // >= applicable to byte, double, result is boolean
+    checkExpr("varboolean = varshort >= varbyte", "boolean"); // >= applicable to short, byte, result is boolean
+    checkExpr("varboolean = varshort >= varshort", "boolean"); // >= applicable to short, short, result is boolean
+    checkExpr("varboolean = varshort >= varchar", "boolean"); // >= applicable to short, char, result is boolean
+    checkExpr("varboolean = varshort >= varint", "boolean"); // >= applicable to short, int, result is boolean
+    checkExpr("varboolean = varshort >= varlong", "boolean"); // >= applicable to short, long, result is boolean
+    checkExpr("varboolean = varshort >= varfloat", "boolean"); // >= applicable to short, float, result is boolean
+    checkExpr("varboolean = varshort >= vardouble", "boolean"); // >= applicable to short, double, result is boolean
+    checkExpr("varboolean = varchar >= varbyte", "boolean"); // >= applicable to char, byte, result is boolean
+    checkExpr("varboolean = varchar >= varshort", "boolean"); // >= applicable to char, short, result is boolean
+    checkExpr("varboolean = varchar >= varchar", "boolean"); // >= applicable to char, char, result is boolean
+    checkExpr("varboolean = varchar >= varint", "boolean"); // >= applicable to char, int, result is boolean
+    checkExpr("varboolean = varchar >= varlong", "boolean"); // >= applicable to char, long, result is boolean
+    checkExpr("varboolean = varchar >= varfloat", "boolean"); // >= applicable to char, float, result is boolean
+    checkExpr("varboolean = varchar >= vardouble", "boolean"); // >= applicable to char, double, result is boolean
+    checkExpr("varboolean = varint >= varbyte", "boolean"); // >= applicable to int, byte, result is boolean
+    checkExpr("varboolean = varint >= varshort", "boolean"); // >= applicable to int, short, result is boolean
+    checkExpr("varboolean = varint >= varchar", "boolean"); // >= applicable to int, char, result is boolean
+    checkExpr("varboolean = varint >= varint", "boolean"); // >= applicable to int, int, result is boolean
+    checkExpr("varboolean = varint >= varlong", "boolean"); // >= applicable to int, long, result is boolean
+    checkExpr("varboolean = varint >= varfloat", "boolean"); // >= applicable to int, float, result is boolean
+    checkExpr("varboolean = varint >= vardouble", "boolean"); // >= applicable to int, double, result is boolean
+    checkExpr("varboolean = varlong >= varbyte", "boolean"); // >= applicable to long, byte, result is boolean
+    checkExpr("varboolean = varlong >= varshort", "boolean"); // >= applicable to long, short, result is boolean
+    checkExpr("varboolean = varlong >= varchar", "boolean"); // >= applicable to long, char, result is boolean
+    checkExpr("varboolean = varlong >= varint", "boolean"); // >= applicable to long, int, result is boolean
+    checkExpr("varboolean = varlong >= varlong", "boolean"); // >= applicable to long, long, result is boolean
+    checkExpr("varboolean = varlong >= varfloat", "boolean"); // >= applicable to long, float, result is boolean
+    checkExpr("varboolean = varlong >= vardouble", "boolean"); // >= applicable to long, double, result is boolean
+    checkExpr("varboolean = varfloat >= varbyte", "boolean"); // >= applicable to float, byte, result is boolean
+    checkExpr("varboolean = varfloat >= varshort", "boolean"); // >= applicable to float, short, result is boolean
+    checkExpr("varboolean = varfloat >= varchar", "boolean"); // >= applicable to float, char, result is boolean
+    checkExpr("varboolean = varfloat >= varint", "boolean"); // >= applicable to float, int, result is boolean
+    checkExpr("varboolean = varfloat >= varlong", "boolean"); // >= applicable to float, long, result is boolean
+    checkExpr("varboolean = varfloat >= varfloat", "boolean"); // >= applicable to float, float, result is boolean
+    checkExpr("varboolean = varfloat >= vardouble", "boolean"); // >= applicable to float, double, result is boolean
+    checkExpr("varboolean = vardouble >= varbyte", "boolean"); // >= applicable to double, byte, result is boolean
+    checkExpr("varboolean = vardouble >= varshort", "boolean"); // >= applicable to double, short, result is boolean
+    checkExpr("varboolean = vardouble >= varchar", "boolean"); // >= applicable to double, char, result is boolean
+    checkExpr("varboolean = vardouble >= varint", "boolean"); // >= applicable to double, int, result is boolean
+    checkExpr("varboolean = vardouble >= varlong", "boolean"); // >= applicable to double, long, result is boolean
+    checkExpr("varboolean = vardouble >= varfloat", "boolean"); // >= applicable to double, float, result is boolean
+    checkExpr("varboolean = vardouble >= vardouble", "boolean"); // >= applicable to double, double, result is boolean
   }
 
   @Test
   public void testInvalidGreaterEqualExpression() throws IOException {
-    checkErrorExpr("3>=true", "0xB0167");
+    checkErrorExpr("varboolean >= varchar", "0xB0167"); // >= not applicable to boolean, char
+    checkErrorExpr("varboolean >= varbyte", "0xB0167"); // >= not applicable to boolean, byte
+    checkErrorExpr("varboolean >= varshort", "0xB0167"); // >= not applicable to boolean, short
+    checkErrorExpr("varboolean >= varint", "0xB0167"); // >= not applicable to boolean, int
+    checkErrorExpr("varboolean >= varlong", "0xB0167"); // >= not applicable to boolean, long
+    checkErrorExpr("varboolean >= varfloat", "0xB0167"); // >= not applicable to boolean, float
+    checkErrorExpr("varboolean >= vardouble", "0xB0167"); // >= not applicable to boolean, double
+    checkErrorExpr("varchar >= varboolean", "0xB0167"); // >= not applicable to char, boolean
+    checkErrorExpr("varbyte >= varboolean", "0xB0167"); // >= not applicable to byte, boolean
+    checkErrorExpr("varshort >= varboolean", "0xB0167"); // >= not applicable to short, boolean
+    checkErrorExpr("varint >= varboolean", "0xB0167"); // >= not applicable to int, boolean
+    checkErrorExpr("varlong >= varboolean", "0xB0167"); // >= not applicable to long, boolean
+    checkErrorExpr("varfloat >= varboolean", "0xB0167"); // >= not applicable to float, boolean
+    checkErrorExpr("vardouble >= varboolean", "0xB0167"); // >= not applicable to double, boolean
+    checkErrorExpr("varchar = varchar >= varchar", "0xA0179"); // expected char but provided boolean
+    checkErrorExpr("varbyte = varbyte >= varbyte", "0xA0179"); // expected byte but provided boolean
+    checkErrorExpr("varshort = varshort >= varshort", "0xA0179"); // expected short but provided boolean
+    checkErrorExpr("varint = varint >= varint", "0xA0179"); // expected int but provided boolean
+    checkErrorExpr("varlong = varlong >= varlong", "0xA0179"); // expected long but provided boolean
+    checkErrorExpr("varfloat = varfloat >= varfloat", "0xA0179"); // expected float but provided boolean
+    checkErrorExpr("vardouble = vardouble >= vardouble", "0xA0179"); // expected double but provided boolean
   }
 
   @Test
   public void deriveFromLessThanExpression() throws IOException {
-    //example with two ints
-    checkExpr("4<9", "boolean");
-
-    //example with two other numeric types
-    checkExpr("2.4f<3L", "boolean");
+    checkExpr("varboolean = varbyte < varbyte", "boolean"); // < applicable to byte, byte, result is boolean
+    checkExpr("varboolean = varbyte < varshort", "boolean"); // < applicable to byte, short, result is boolean
+    checkExpr("varboolean = varbyte < varchar", "boolean"); // < applicable to byte, char, result is boolean
+    checkExpr("varboolean = varbyte < varint", "boolean"); // < applicable to byte, int, result is boolean
+    checkExpr("varboolean = varbyte < varlong", "boolean"); // < applicable to byte, long, result is boolean
+    checkExpr("varboolean = varbyte < varfloat", "boolean"); // < applicable to byte, float, result is boolean
+    checkExpr("varboolean = varbyte < vardouble", "boolean"); // < applicable to byte, double, result is boolean
+    checkExpr("varboolean = varshort < varbyte", "boolean"); // < applicable to short, byte, result is boolean
+    checkExpr("varboolean = varshort < varshort", "boolean"); // < applicable to short, short, result is boolean
+    checkExpr("varboolean = varshort < varchar", "boolean"); // < applicable to short, char, result is boolean
+    checkExpr("varboolean = varshort < varint", "boolean"); // < applicable to short, int, result is boolean
+    checkExpr("varboolean = varshort < varlong", "boolean"); // < applicable to short, long, result is boolean
+    checkExpr("varboolean = varshort < varfloat", "boolean"); // < applicable to short, float, result is boolean
+    checkExpr("varboolean = varshort < vardouble", "boolean"); // < applicable to short, double, result is boolean
+    checkExpr("varboolean = varchar < varbyte", "boolean"); // < applicable to char, byte, result is boolean
+    checkExpr("varboolean = varchar < varshort", "boolean"); // < applicable to char, short, result is boolean
+    checkExpr("varboolean = varchar < varchar", "boolean"); // < applicable to char, char, result is boolean
+    checkExpr("varboolean = varchar < varint", "boolean"); // < applicable to char, int, result is boolean
+    checkExpr("varboolean = varchar < varlong", "boolean"); // < applicable to char, long, result is boolean
+    checkExpr("varboolean = varchar < varfloat", "boolean"); // < applicable to char, float, result is boolean
+    checkExpr("varboolean = varchar < vardouble", "boolean"); // < applicable to char, double, result is boolean
+    checkExpr("varboolean = varint < varbyte", "boolean"); // < applicable to int, byte, result is boolean
+    checkExpr("varboolean = varint < varshort", "boolean"); // < applicable to int, short, result is boolean
+    checkExpr("varboolean = varint < varchar", "boolean"); // < applicable to int, char, result is boolean
+    checkExpr("varboolean = varint < varint", "boolean"); // < applicable to int, int, result is boolean
+    checkExpr("varboolean = varint < varlong", "boolean"); // < applicable to int, long, result is boolean
+    checkExpr("varboolean = varint < varfloat", "boolean"); // < applicable to int, float, result is boolean
+    checkExpr("varboolean = varint < vardouble", "boolean"); // < applicable to int, double, result is boolean
+    checkExpr("varboolean = varlong < varbyte", "boolean"); // < applicable to long, byte, result is boolean
+    checkExpr("varboolean = varlong < varshort", "boolean"); // < applicable to long, short, result is boolean
+    checkExpr("varboolean = varlong < varchar", "boolean"); // < applicable to long, char, result is boolean
+    checkExpr("varboolean = varlong < varint", "boolean"); // < applicable to long, int, result is boolean
+    checkExpr("varboolean = varlong < varlong", "boolean"); // < applicable to long, long, result is boolean
+    checkExpr("varboolean = varlong < varfloat", "boolean"); // < applicable to long, float, result is boolean
+    checkExpr("varboolean = varlong < vardouble", "boolean"); // < applicable to long, double, result is boolean
+    checkExpr("varboolean = varfloat < varbyte", "boolean"); // < applicable to float, byte, result is boolean
+    checkExpr("varboolean = varfloat < varshort", "boolean"); // < applicable to float, short, result is boolean
+    checkExpr("varboolean = varfloat < varchar", "boolean"); // < applicable to float, char, result is boolean
+    checkExpr("varboolean = varfloat < varint", "boolean"); // < applicable to float, int, result is boolean
+    checkExpr("varboolean = varfloat < varlong", "boolean"); // < applicable to float, long, result is boolean
+    checkExpr("varboolean = varfloat < varfloat", "boolean"); // < applicable to float, float, result is boolean
+    checkExpr("varboolean = varfloat < vardouble", "boolean"); // < applicable to float, double, result is boolean
+    checkExpr("varboolean = vardouble < varbyte", "boolean"); // < applicable to double, byte, result is boolean
+    checkExpr("varboolean = vardouble < varshort", "boolean"); // < applicable to double, short, result is boolean
+    checkExpr("varboolean = vardouble < varchar", "boolean"); // < applicable to double, char, result is boolean
+    checkExpr("varboolean = vardouble < varint", "boolean"); // < applicable to double, int, result is boolean
+    checkExpr("varboolean = vardouble < varlong", "boolean"); // < applicable to double, long, result is boolean
+    checkExpr("varboolean = vardouble < varfloat", "boolean"); // < applicable to double, float, result is boolean
+    checkExpr("varboolean = vardouble < vardouble", "boolean"); // < applicable to double, double, result is boolean
   }
 
   @Test
   public void testInvalidLessThanExpression() throws IOException {
-    checkErrorExpr("3<true", "0xB0167");
+    checkErrorExpr("varboolean < varchar", "0xB0167"); // < not applicable to boolean, char
+    checkErrorExpr("varboolean < varbyte", "0xB0167"); // < not applicable to boolean, byte
+    checkErrorExpr("varboolean < varshort", "0xB0167"); // < not applicable to boolean, short
+    checkErrorExpr("varboolean < varint", "0xB0167"); // < not applicable to boolean, int
+    checkErrorExpr("varboolean < varlong", "0xB0167"); // < not applicable to boolean, long
+    checkErrorExpr("varboolean < varfloat", "0xB0167"); // < not applicable to boolean, float
+    checkErrorExpr("varboolean < vardouble", "0xB0167"); // < not applicable to boolean, double
+    checkErrorExpr("varchar < varboolean", "0xB0167"); // < not applicable to char, boolean
+    checkErrorExpr("varbyte < varboolean", "0xB0167"); // < not applicable to byte, boolean
+    checkErrorExpr("varshort < varboolean", "0xB0167"); // < not applicable to short, boolean
+    checkErrorExpr("varint < varboolean", "0xB0167"); // < not applicable to int, boolean
+    checkErrorExpr("varlong < varboolean", "0xB0167"); // < not applicable to long, boolean
+    checkErrorExpr("varfloat < varboolean", "0xB0167"); // < not applicable to float, boolean
+    checkErrorExpr("vardouble < varboolean", "0xB0167"); // < not applicable to double, boolean
+    checkErrorExpr("varchar = varchar < varchar", "0xA0179"); // expected char but provided boolean
+    checkErrorExpr("varbyte = varbyte < varbyte", "0xA0179"); // expected byte but provided boolean
+    checkErrorExpr("varshort = varshort < varshort", "0xA0179"); // expected short but provided boolean
+    checkErrorExpr("varint = varint < varint", "0xA0179"); // expected int but provided boolean
+    checkErrorExpr("varlong = varlong < varlong", "0xA0179"); // expected long but provided boolean
+    checkErrorExpr("varfloat = varfloat < varfloat", "0xA0179"); // expected float but provided boolean
+    checkErrorExpr("vardouble = vardouble < vardouble", "0xA0179"); // expected double but provided boolean
   }
 
   @Test
   public void deriveFromGreaterThanExpression() throws IOException {
-    //example with two ints
-    checkExpr("7>2", "boolean");
-
-    //example with two other numeric types
-    checkExpr("2.5>'d'", "boolean");
+    checkExpr("varboolean = varbyte > varbyte", "boolean"); // > applicable to byte, byte, result is boolean
+    checkExpr("varboolean = varbyte > varshort", "boolean"); // > applicable to byte, short, result is boolean
+    checkExpr("varboolean = varbyte > varchar", "boolean"); // > applicable to byte, char, result is boolean
+    checkExpr("varboolean = varbyte > varint", "boolean"); // > applicable to byte, int, result is boolean
+    checkExpr("varboolean = varbyte > varlong", "boolean"); // > applicable to byte, long, result is boolean
+    checkExpr("varboolean = varbyte > varfloat", "boolean"); // > applicable to byte, float, result is boolean
+    checkExpr("varboolean = varbyte > vardouble", "boolean"); // > applicable to byte, double, result is boolean
+    checkExpr("varboolean = varshort > varbyte", "boolean"); // > applicable to short, byte, result is boolean
+    checkExpr("varboolean = varshort > varshort", "boolean"); // > applicable to short, short, result is boolean
+    checkExpr("varboolean = varshort > varchar", "boolean"); // > applicable to short, char, result is boolean
+    checkExpr("varboolean = varshort > varint", "boolean"); // > applicable to short, int, result is boolean
+    checkExpr("varboolean = varshort > varlong", "boolean"); // > applicable to short, long, result is boolean
+    checkExpr("varboolean = varshort > varfloat", "boolean"); // > applicable to short, float, result is boolean
+    checkExpr("varboolean = varshort > vardouble", "boolean"); // > applicable to short, double, result is boolean
+    checkExpr("varboolean = varchar > varbyte", "boolean"); // > applicable to char, byte, result is boolean
+    checkExpr("varboolean = varchar > varshort", "boolean"); // > applicable to char, short, result is boolean
+    checkExpr("varboolean = varchar > varchar", "boolean"); // > applicable to char, char, result is boolean
+    checkExpr("varboolean = varchar > varint", "boolean"); // > applicable to char, int, result is boolean
+    checkExpr("varboolean = varchar > varlong", "boolean"); // > applicable to char, long, result is boolean
+    checkExpr("varboolean = varchar > varfloat", "boolean"); // > applicable to char, float, result is boolean
+    checkExpr("varboolean = varchar > vardouble", "boolean"); // > applicable to char, double, result is boolean
+    checkExpr("varboolean = varint > varbyte", "boolean"); // > applicable to int, byte, result is boolean
+    checkExpr("varboolean = varint > varshort", "boolean"); // > applicable to int, short, result is boolean
+    checkExpr("varboolean = varint > varchar", "boolean"); // > applicable to int, char, result is boolean
+    checkExpr("varboolean = varint > varint", "boolean"); // > applicable to int, int, result is boolean
+    checkExpr("varboolean = varint > varlong", "boolean"); // > applicable to int, long, result is boolean
+    checkExpr("varboolean = varint > varfloat", "boolean"); // > applicable to int, float, result is boolean
+    checkExpr("varboolean = varint > vardouble", "boolean"); // > applicable to int, double, result is boolean
+    checkExpr("varboolean = varlong > varbyte", "boolean"); // > applicable to long, byte, result is boolean
+    checkExpr("varboolean = varlong > varshort", "boolean"); // > applicable to long, short, result is boolean
+    checkExpr("varboolean = varlong > varchar", "boolean"); // > applicable to long, char, result is boolean
+    checkExpr("varboolean = varlong > varint", "boolean"); // > applicable to long, int, result is boolean
+    checkExpr("varboolean = varlong > varlong", "boolean"); // > applicable to long, long, result is boolean
+    checkExpr("varboolean = varlong > varfloat", "boolean"); // > applicable to long, float, result is boolean
+    checkExpr("varboolean = varlong > vardouble", "boolean"); // > applicable to long, double, result is boolean
+    checkExpr("varboolean = varfloat > varbyte", "boolean"); // > applicable to float, byte, result is boolean
+    checkExpr("varboolean = varfloat > varshort", "boolean"); // > applicable to float, short, result is boolean
+    checkExpr("varboolean = varfloat > varchar", "boolean"); // > applicable to float, char, result is boolean
+    checkExpr("varboolean = varfloat > varint", "boolean"); // > applicable to float, int, result is boolean
+    checkExpr("varboolean = varfloat > varlong", "boolean"); // > applicable to float, long, result is boolean
+    checkExpr("varboolean = varfloat > varfloat", "boolean"); // > applicable to float, float, result is boolean
+    checkExpr("varboolean = varfloat > vardouble", "boolean"); // > applicable to float, double, result is boolean
+    checkExpr("varboolean = vardouble > varbyte", "boolean"); // > applicable to double, byte, result is boolean
+    checkExpr("varboolean = vardouble > varshort", "boolean"); // > applicable to double, short, result is boolean
+    checkExpr("varboolean = vardouble > varchar", "boolean"); // > applicable to double, char, result is boolean
+    checkExpr("varboolean = vardouble > varint", "boolean"); // > applicable to double, int, result is boolean
+    checkExpr("varboolean = vardouble > varlong", "boolean"); // > applicable to double, long, result is boolean
+    checkExpr("varboolean = vardouble > varfloat", "boolean"); // > applicable to double, float, result is boolean
+    checkExpr("varboolean = vardouble > vardouble", "boolean"); // > applicable to double, double, result is boolean
   }
 
   @Test
   public void testInvalidGreaterThanExpression() throws IOException {
-    checkErrorExpr("3>true", "0xB0167");
+    checkErrorExpr("varboolean > varchar", "0xB0167"); // > not applicable to boolean, char
+    checkErrorExpr("varboolean > varbyte", "0xB0167"); // > not applicable to boolean, byte
+    checkErrorExpr("varboolean > varshort", "0xB0167"); // > not applicable to boolean, short
+    checkErrorExpr("varboolean > varint", "0xB0167"); // > not applicable to boolean, int
+    checkErrorExpr("varboolean > varlong", "0xB0167"); // > not applicable to boolean, long
+    checkErrorExpr("varboolean > varfloat", "0xB0167"); // > not applicable to boolean, float
+    checkErrorExpr("varboolean > vardouble", "0xB0167"); // > not applicable to boolean, double
+    checkErrorExpr("varchar > varboolean", "0xB0167"); // > not applicable to char, boolean
+    checkErrorExpr("varbyte > varboolean", "0xB0167"); // > not applicable to byte, boolean
+    checkErrorExpr("varshort > varboolean", "0xB0167"); // > not applicable to short, boolean
+    checkErrorExpr("varint > varboolean", "0xB0167"); // > not applicable to int, boolean
+    checkErrorExpr("varlong > varboolean", "0xB0167"); // > not applicable to long, boolean
+    checkErrorExpr("varfloat > varboolean", "0xB0167"); // > not applicable to float, boolean
+    checkErrorExpr("vardouble > varboolean", "0xB0167"); // > not applicable to double, boolean
+    checkErrorExpr("varchar = varchar > varchar", "0xA0179"); // expected char but provided boolean
+    checkErrorExpr("varbyte = varbyte > varbyte", "0xA0179"); // expected byte but provided boolean
+    checkErrorExpr("varshort = varshort > varshort", "0xA0179"); // expected short but provided boolean
+    checkErrorExpr("varint = varint > varint", "0xA0179"); // expected int but provided boolean
+    checkErrorExpr("varlong = varlong > varlong", "0xA0179"); // expected long but provided boolean
+    checkErrorExpr("varfloat = varfloat > varfloat", "0xA0179"); // expected float but provided boolean
+    checkErrorExpr("vardouble = vardouble > vardouble", "0xA0179"); // expected double but provided boolean
   }
 
   @Test
   public void deriveFromEqualsExpression() throws IOException {
-    //example with two primitives
-    checkExpr("7==9.5f", "boolean");
-    checkExpr("varbyte==varchar", "boolean");
-
-    //example with two objects of the same class
-    checkExpr("student1==student2", "boolean");
-
-    //example with two objects in sub-supertype relation
-    checkExpr("person1==student1", "boolean");
+    checkExpr("varboolean = varbyte == varbyte", "boolean"); // == applicable to byte, byte, result is boolean
+    checkExpr("varboolean = varbyte == varshort", "boolean"); // == applicable to byte, short, result is boolean
+    checkExpr("varboolean = varbyte == varchar", "boolean"); // == applicable to byte, char, result is boolean
+    checkExpr("varboolean = varbyte == varint", "boolean"); // == applicable to byte, int, result is boolean
+    checkExpr("varboolean = varbyte == varlong", "boolean"); // == applicable to byte, long, result is boolean
+    checkExpr("varboolean = varbyte == varfloat", "boolean"); // == applicable to byte, float, result is boolean
+    checkExpr("varboolean = varbyte == vardouble", "boolean"); // == applicable to byte, double, result is boolean
+    checkExpr("varboolean = varshort == varbyte", "boolean"); // == applicable to short, byte, result is boolean
+    checkExpr("varboolean = varshort == varshort", "boolean"); // == applicable to short, short, result is boolean
+    checkExpr("varboolean = varshort == varchar", "boolean"); // == applicable to short, char, result is boolean
+    checkExpr("varboolean = varshort == varint", "boolean"); // == applicable to short, int, result is boolean
+    checkExpr("varboolean = varshort == varlong", "boolean"); // == applicable to short, long, result is boolean
+    checkExpr("varboolean = varshort == varfloat", "boolean"); // == applicable to short, float, result is boolean
+    checkExpr("varboolean = varshort == vardouble", "boolean"); // == applicable to short, double, result is boolean
+    checkExpr("varboolean = varchar == varbyte", "boolean"); // == applicable to char, byte, result is boolean
+    checkExpr("varboolean = varchar == varshort", "boolean"); // == applicable to char, short, result is boolean
+    checkExpr("varboolean = varchar == varchar", "boolean"); // == applicable to char, char, result is boolean
+    checkExpr("varboolean = varchar == varint", "boolean"); // == applicable to char, int, result is boolean
+    checkExpr("varboolean = varchar == varlong", "boolean"); // == applicable to char, long, result is boolean
+    checkExpr("varboolean = varchar == varfloat", "boolean"); // == applicable to char, float, result is boolean
+    checkExpr("varboolean = varchar == vardouble", "boolean"); // == applicable to char, double, result is boolean
+    checkExpr("varboolean = varint == varbyte", "boolean"); // == applicable to int, byte, result is boolean
+    checkExpr("varboolean = varint == varshort", "boolean"); // == applicable to int, short, result is boolean
+    checkExpr("varboolean = varint == varchar", "boolean"); // == applicable to int, char, result is boolean
+    checkExpr("varboolean = varint == varint", "boolean"); // == applicable to int, int, result is boolean
+    checkExpr("varboolean = varint == varlong", "boolean"); // == applicable to int, long, result is boolean
+    checkExpr("varboolean = varint == varfloat", "boolean"); // == applicable to int, float, result is boolean
+    checkExpr("varboolean = varint == vardouble", "boolean"); // == applicable to int, double, result is boolean
+    checkExpr("varboolean = varlong == varbyte", "boolean"); // == applicable to long, byte, result is boolean
+    checkExpr("varboolean = varlong == varshort", "boolean"); // == applicable to long, short, result is boolean
+    checkExpr("varboolean = varlong == varchar", "boolean"); // == applicable to long, char, result is boolean
+    checkExpr("varboolean = varlong == varint", "boolean"); // == applicable to long, int, result is boolean
+    checkExpr("varboolean = varlong == varlong", "boolean"); // == applicable to long, long, result is boolean
+    checkExpr("varboolean = varlong == varfloat", "boolean"); // == applicable to long, float, result is boolean
+    checkExpr("varboolean = varlong == vardouble", "boolean"); // == applicable to long, double, result is boolean
+    checkExpr("varboolean = varfloat == varbyte", "boolean"); // == applicable to float, byte, result is boolean
+    checkExpr("varboolean = varfloat == varshort", "boolean"); // == applicable to float, short, result is boolean
+    checkExpr("varboolean = varfloat == varchar", "boolean"); // == applicable to float, char, result is boolean
+    checkExpr("varboolean = varfloat == varint", "boolean"); // == applicable to float, int, result is boolean
+    checkExpr("varboolean = varfloat == varlong", "boolean"); // == applicable to float, long, result is boolean
+    checkExpr("varboolean = varfloat == varfloat", "boolean"); // == applicable to float, float, result is boolean
+    checkExpr("varboolean = varfloat == vardouble", "boolean"); // == applicable to float, double, result is boolean
+    checkExpr("varboolean = vardouble == varbyte", "boolean"); // == applicable to double, byte, result is boolean
+    checkExpr("varboolean = vardouble == varshort", "boolean"); // == applicable to double, short, result is boolean
+    checkExpr("varboolean = vardouble == varchar", "boolean"); // == applicable to double, char, result is boolean
+    checkExpr("varboolean = vardouble == varint", "boolean"); // == applicable to double, int, result is boolean
+    checkExpr("varboolean = vardouble == varlong", "boolean"); // == applicable to double, long, result is boolean
+    checkExpr("varboolean = vardouble == varfloat", "boolean"); // == applicable to double, float, result is boolean
+    checkExpr("varboolean = vardouble == vardouble", "boolean"); // == applicable to double, double, result is boolean
+    checkExpr("student1==student2", "boolean"); // example with two objects of the same class
+    checkExpr("person1==student1", "boolean"); // example with two objects in sub-supertype relation
   }
 
   @Test
   public void testInvalidEqualsExpression() throws IOException {
-    checkErrorExpr("3==true", "0xB0166");
-  }
-
-  @Test
-  public void testInvalidEqualsExpression2() throws IOException {
+    checkErrorExpr("varboolean == varchar", "0xB0166"); // == not applicable to boolean, char
+    checkErrorExpr("varboolean == varbyte", "0xB0166"); // == not applicable to boolean, byte
+    checkErrorExpr("varboolean == varshort", "0xB0166"); // == not applicable to boolean, short
+    checkErrorExpr("varboolean == varint", "0xB0166"); // == not applicable to boolean, int
+    checkErrorExpr("varboolean == varlong", "0xB0166"); // == not applicable to boolean, long
+    checkErrorExpr("varboolean == varfloat", "0xB0166"); // == not applicable to boolean, float
+    checkErrorExpr("varboolean == vardouble", "0xB0166"); // == not applicable to boolean, double
+    checkErrorExpr("varchar == varboolean", "0xB0166"); // == not applicable to char, boolean
+    checkErrorExpr("varbyte == varboolean", "0xB0166"); // == not applicable to byte, boolean
+    checkErrorExpr("varshort == varboolean", "0xB0166"); // == not applicable to short, boolean
+    checkErrorExpr("varint == varboolean", "0xB0166"); // == not applicable to int, boolean
+    checkErrorExpr("varlong == varboolean", "0xB0166"); // == not applicable to long, boolean
+    checkErrorExpr("varfloat == varboolean", "0xB0166"); // == not applicable to float, boolean
+    checkErrorExpr("vardouble == varboolean", "0xB0166"); // == not applicable to double, boolean
+    checkErrorExpr("varchar = varchar == varchar", "0xA0179"); // expected char but provided boolean
+    checkErrorExpr("varbyte = varbyte == varbyte", "0xA0179"); // expected byte but provided boolean
+    checkErrorExpr("varshort = varshort == varshort", "0xA0179"); // expected short but provided boolean
+    checkErrorExpr("varint = varint == varint", "0xA0179"); // expected int but provided boolean
+    checkErrorExpr("varlong = varlong == varlong", "0xA0179"); // expected long but provided boolean
+    checkErrorExpr("varfloat = varfloat == varfloat", "0xA0179"); // expected float but provided boolean
+    checkErrorExpr("vardouble = vardouble == vardouble", "0xA0179"); // expected double but provided boolean
     checkErrorExpr("person1==varboolean", "0xB0166");
   }
 
   @Test
   public void deriveFromNotEqualsExpression() throws IOException {
-    //example with two primitives
-    checkExpr("true!=false", "boolean");
-
-    //example with two objects of the same class
-    checkExpr("person1!=person2", "boolean");
-
-    //example with two objects in sub-supertype relation
-    checkExpr("student2!=person2", "boolean");
+    checkExpr("varboolean = varbyte != varbyte", "boolean"); // != applicable to byte, byte, result is boolean
+    checkExpr("varboolean = varbyte != varshort", "boolean"); // != applicable to byte, short, result is boolean
+    checkExpr("varboolean = varbyte != varchar", "boolean"); // != applicable to byte, char, result is boolean
+    checkExpr("varboolean = varbyte != varint", "boolean"); // != applicable to byte, int, result is boolean
+    checkExpr("varboolean = varbyte != varlong", "boolean"); // != applicable to byte, long, result is boolean
+    checkExpr("varboolean = varbyte != varfloat", "boolean"); // != applicable to byte, float, result is boolean
+    checkExpr("varboolean = varbyte != vardouble", "boolean"); // != applicable to byte, double, result is boolean
+    checkExpr("varboolean = varshort != varbyte", "boolean"); // != applicable to short, byte, result is boolean
+    checkExpr("varboolean = varshort != varshort", "boolean"); // != applicable to short, short, result is boolean
+    checkExpr("varboolean = varshort != varchar", "boolean"); // != applicable to short, char, result is boolean
+    checkExpr("varboolean = varshort != varint", "boolean"); // != applicable to short, int, result is boolean
+    checkExpr("varboolean = varshort != varlong", "boolean"); // != applicable to short, long, result is boolean
+    checkExpr("varboolean = varshort != varfloat", "boolean"); // != applicable to short, float, result is boolean
+    checkExpr("varboolean = varshort != vardouble", "boolean"); // != applicable to short, double, result is boolean
+    checkExpr("varboolean = varchar != varbyte", "boolean"); // != applicable to char, byte, result is boolean
+    checkExpr("varboolean = varchar != varshort", "boolean"); // != applicable to char, short, result is boolean
+    checkExpr("varboolean = varchar != varchar", "boolean"); // != applicable to char, char, result is boolean
+    checkExpr("varboolean = varchar != varint", "boolean"); // != applicable to char, int, result is boolean
+    checkExpr("varboolean = varchar != varlong", "boolean"); // != applicable to char, long, result is boolean
+    checkExpr("varboolean = varchar != varfloat", "boolean"); // != applicable to char, float, result is boolean
+    checkExpr("varboolean = varchar != vardouble", "boolean"); // != applicable to char, double, result is boolean
+    checkExpr("varboolean = varint != varbyte", "boolean"); // != applicable to int, byte, result is boolean
+    checkExpr("varboolean = varint != varshort", "boolean"); // != applicable to int, short, result is boolean
+    checkExpr("varboolean = varint != varchar", "boolean"); // != applicable to int, char, result is boolean
+    checkExpr("varboolean = varint != varint", "boolean"); // != applicable to int, int, result is boolean
+    checkExpr("varboolean = varint != varlong", "boolean"); // != applicable to int, long, result is boolean
+    checkExpr("varboolean = varint != varfloat", "boolean"); // != applicable to int, float, result is boolean
+    checkExpr("varboolean = varint != vardouble", "boolean"); // != applicable to int, double, result is boolean
+    checkExpr("varboolean = varlong != varbyte", "boolean"); // != applicable to long, byte, result is boolean
+    checkExpr("varboolean = varlong != varshort", "boolean"); // != applicable to long, short, result is boolean
+    checkExpr("varboolean = varlong != varchar", "boolean"); // != applicable to long, char, result is boolean
+    checkExpr("varboolean = varlong != varint", "boolean"); // != applicable to long, int, result is boolean
+    checkExpr("varboolean = varlong != varlong", "boolean"); // != applicable to long, long, result is boolean
+    checkExpr("varboolean = varlong != varfloat", "boolean"); // != applicable to long, float, result is boolean
+    checkExpr("varboolean = varlong != vardouble", "boolean"); // != applicable to long, double, result is boolean
+    checkExpr("varboolean = varfloat != varbyte", "boolean"); // != applicable to float, byte, result is boolean
+    checkExpr("varboolean = varfloat != varshort", "boolean"); // != applicable to float, short, result is boolean
+    checkExpr("varboolean = varfloat != varchar", "boolean"); // != applicable to float, char, result is boolean
+    checkExpr("varboolean = varfloat != varint", "boolean"); // != applicable to float, int, result is boolean
+    checkExpr("varboolean = varfloat != varlong", "boolean"); // != applicable to float, long, result is boolean
+    checkExpr("varboolean = varfloat != varfloat", "boolean"); // != applicable to float, float, result is boolean
+    checkExpr("varboolean = varfloat != vardouble", "boolean"); // != applicable to float, double, result is boolean
+    checkExpr("varboolean = vardouble != varbyte", "boolean"); // != applicable to double, byte, result is boolean
+    checkExpr("varboolean = vardouble != varshort", "boolean"); // != applicable to double, short, result is boolean
+    checkExpr("varboolean = vardouble != varchar", "boolean"); // != applicable to double, char, result is boolean
+    checkExpr("varboolean = vardouble != varint", "boolean"); // != applicable to double, int, result is boolean
+    checkExpr("varboolean = vardouble != varlong", "boolean"); // != applicable to double, long, result is boolean
+    checkExpr("varboolean = vardouble != varfloat", "boolean"); // != applicable to double, float, result is boolean
+    checkExpr("varboolean = vardouble != vardouble", "boolean"); // != applicable to double, double, result is boolean
+    checkExpr("person1!=person2", "boolean"); // example with two objects of the same class
+    checkExpr("student2!=person2", "boolean"); //example with two objects in sub-supertype relation
   }
 
   @Test
   public void testInvalidNotEqualsExpression() throws IOException {
-    checkErrorExpr("3!=true", "0xB0166");
-  }
-
-  @Test
-  public void testInvalidNotEqualsExpression2() throws IOException {
-    //person1 is a Person, foo is a boolean
-    checkErrorExpr("person1!=varboolean", "0xB0166");
+    checkErrorExpr("aBoolean != aChar", "0xFD118"); // != not applicable to boolean, char
+    checkErrorExpr("aBoolean != aByte", "0xFD118"); // != not applicable to boolean, byte
+    checkErrorExpr("aBoolean != aShort", "0xFD118"); // != not applicable to boolean, short
+    checkErrorExpr("aBoolean != anInt", "0xFD118"); // != not applicable to boolean, int
+    checkErrorExpr("aBoolean != aLong", "0xFD118"); // != not applicable to boolean, long
+    checkErrorExpr("aBoolean != aFloat", "0xFD118"); // != not applicable to boolean, float
+    checkErrorExpr("aBoolean != aDouble", "0xFD118"); // != not applicable to boolean, double
+    checkErrorExpr("aChar != aBoolean", "0xFD118"); // != not applicable to char, boolean
+    checkErrorExpr("aByte != aBoolean", "0xFD118"); // != not applicable to byte, boolean
+    checkErrorExpr("aShort != aBoolean", "0xFD118"); // != not applicable to short, boolean
+    checkErrorExpr("anInt != aBoolean", "0xFD118"); // != not applicable to int, boolean
+    checkErrorExpr("aLong != aBoolean", "0xFD118"); // != not applicable to long, boolean
+    checkErrorExpr("aFloat != aBoolean", "0xFD118"); // != not applicable to float, boolean
+    checkErrorExpr("aDouble != aBoolean", "0xFD118"); // != not applicable to double, boolean
+    checkErrorExpr("aChar = aChar != aChar", "0xFD118"); // expected char but provided boolean
+    checkErrorExpr("aByte = aByte != aByte", "0xFD118"); // expected byte but provided boolean
+    checkErrorExpr("aShort = aShort != aShort", "0xFD118"); // expected short but provided boolean
+    checkErrorExpr("anInt = anInt != anInt", "0xFD118"); // expected int but provided boolean
+    checkErrorExpr("aLong = aLong != aLong", "0xFD118"); // expected long but provided boolean
+    checkErrorExpr("aFloat = aFloat != aFloat", "0xFD118"); // expected float but provided boolean
+    checkErrorExpr("aDouble = aDouble != aDouble", "0xFD118"); // expected double but provided boolean
+    checkErrorExpr("person1!=varboolean", "0xB0166"); // person1 is a Person, foo is a boolean
   }
 
   @Test
   public void deriveFromBooleanAndOpExpression() throws IOException {
-    //only possible with two booleans
-    checkExpr("true&&true", "boolean");
-
+    checkExpr("varboolean = varboolean && varboolean", "boolean"); // && applicable to boolean, boolean, result is boolean
+    checkExpr("true&&true", "boolean"); //only possible with two booleans
     checkExpr("(3<=4&&5>6)", "boolean");
   }
 
   @Test
   public void testInvalidAndOpExpression() throws IOException {
-    //only possible with two booleans
-    checkErrorExpr("3&&true", "0xB0113");
+    checkErrorExpr("varboolean && varchar", "0xB0113"); // && not applicable to boolean, char
+    checkErrorExpr("varboolean && varbyte", "0xB0113"); // && not applicable to boolean, byte
+    checkErrorExpr("varboolean && varshort", "0xB0113"); // && not applicable to boolean, short
+    checkErrorExpr("varboolean && varint", "0xB0113"); // && not applicable to boolean, int
+    checkErrorExpr("varboolean && varlong", "0xB0113"); // && not applicable to boolean, long
+    checkErrorExpr("varboolean && varfloat", "0xB0113"); // && not applicable to boolean, float
+    checkErrorExpr("varboolean && vardouble", "0xB0113"); // && not applicable to boolean, double
+    checkErrorExpr("varchar && varboolean", "0xB0113"); // && not applicable to char, boolean
+    checkErrorExpr("varchar && varchar", "0xB0113"); // && not applicable to char, char
+    checkErrorExpr("varchar && varbyte", "0xB0113"); // && not applicable to char, byte
+    checkErrorExpr("varchar && varshort", "0xB0113"); // && not applicable to char, short
+    checkErrorExpr("varchar && varint", "0xB0113"); // && not applicable to char, int
+    checkErrorExpr("varchar && varlong", "0xB0113"); // && not applicable to char, long
+    checkErrorExpr("varchar && varfloat", "0xB0113"); // && not applicable to char, float
+    checkErrorExpr("varchar && vardouble", "0xB0113"); // && not applicable to char, double
+    checkErrorExpr("varbyte && varboolean", "0xB0113"); // && not applicable to byte, boolean
+    checkErrorExpr("varbyte && varchar", "0xB0113"); // && not applicable to byte, char
+    checkErrorExpr("varbyte && varbyte", "0xB0113"); // && not applicable to byte, byte
+    checkErrorExpr("varbyte && varshort", "0xB0113"); // && not applicable to byte, short
+    checkErrorExpr("varbyte && varint", "0xB0113"); // && not applicable to byte, int
+    checkErrorExpr("varbyte && varlong", "0xB0113"); // && not applicable to byte, long
+    checkErrorExpr("varbyte && varfloat", "0xB0113"); // && not applicable to byte, float
+    checkErrorExpr("varbyte && vardouble", "0xB0113"); // && not applicable to byte, double
+    checkErrorExpr("varshort && varboolean", "0xB0113"); // && not applicable to short, boolean
+    checkErrorExpr("varshort && varchar", "0xB0113"); // && not applicable to short, char
+    checkErrorExpr("varshort && varbyte", "0xB0113"); // && not applicable to short, byte
+    checkErrorExpr("varshort && varshort", "0xB0113"); // && not applicable to short, short
+    checkErrorExpr("varshort && varint", "0xB0113"); // && not applicable to short, int
+    checkErrorExpr("varshort && varlong", "0xB0113"); // && not applicable to short, long
+    checkErrorExpr("varshort && varfloat", "0xB0113"); // && not applicable to short, float
+    checkErrorExpr("varshort && vardouble", "0xB0113"); // && not applicable to short, double
+    checkErrorExpr("varint && varboolean", "0xB0113"); // && not applicable to short, boolean
+    checkErrorExpr("varint && varchar", "0xB0113"); // && not applicable to int, char
+    checkErrorExpr("varint && varbyte", "0xB0113"); // && not applicable to int, byte
+    checkErrorExpr("varint && varshort", "0xB0113"); // && not applicable to int, short
+    checkErrorExpr("varint && varint", "0xB0113"); // && not applicable to int, int
+    checkErrorExpr("varint && varlong", "0xB0113"); // && not applicable to int, long
+    checkErrorExpr("varint && varfloat", "0xB0113"); // && not applicable to int, float
+    checkErrorExpr("varint && vardouble", "0xB0113"); // && not applicable to int, double
+    checkErrorExpr("varlong && varboolean", "0xB0113"); // && not applicable to long, boolean
+    checkErrorExpr("varlong && varchar", "0xB0113"); // && not applicable to long, char
+    checkErrorExpr("varlong && varbyte", "0xB0113"); // && not applicable to long, byte
+    checkErrorExpr("varlong && varshort", "0xB0113"); // && not applicable to long, short
+    checkErrorExpr("varlong && varint", "0xB0113"); // && not applicable to long, int
+    checkErrorExpr("varlong && varlong", "0xB0113"); // && not applicable to long, long
+    checkErrorExpr("varlong && varfloat", "0xB0113"); // && not applicable to long, float
+    checkErrorExpr("varlong && vardouble", "0xB0113"); // && not applicable to long, double
+    checkErrorExpr("varfloat && varboolean", "0xB0113"); // && not applicable to float, boolean
+    checkErrorExpr("varfloat && varchar", "0xB0113"); // && not applicable to float, char
+    checkErrorExpr("varfloat && varbyte", "0xB0113"); // && not applicable to float, byte
+    checkErrorExpr("varfloat && varshort", "0xB0113"); // && not applicable to float, short
+    checkErrorExpr("varfloat && varint", "0xB0113"); // && not applicable to float, int
+    checkErrorExpr("varfloat && varlong", "0xB0113"); // && not applicable to float, long
+    checkErrorExpr("varfloat && varfloat", "0xB0113"); // && not applicable to float, float
+    checkErrorExpr("varfloat && vardouble", "0xB0113"); // && not applicable to float, double
+    checkErrorExpr("vardouble && varboolean", "0xB0113"); // && not applicable to double, boolean
+    checkErrorExpr("vardouble && varchar", "0xB0113"); // && not applicable to double, char
+    checkErrorExpr("vardouble && varbyte", "0xB0113"); // && not applicable to double, byte
+    checkErrorExpr("vardouble && varshort", "0xB0113"); // && not applicable to double, short
+    checkErrorExpr("vardouble && varint", "0xB0113"); // && not applicable to double, int
+    checkErrorExpr("vardouble && varlong", "0xB0113"); // && not applicable to double, long
+    checkErrorExpr("vardouble && varfloat", "0xB0113"); // && not applicable to double, float
+    checkErrorExpr("vardouble && vardouble", "0xB0113"); // && not applicable to double, double
+    checkErrorExpr("varchar = varboolean && varboolean", "0xA0179"); // expected char but provided boolean
+    checkErrorExpr("varbyte = varboolean && varboolean", "0xA0179"); // expected byte but provided boolean
+    checkErrorExpr("varshort = varboolean && varboolean", "0xA0179"); // expected short but provided boolean
+    checkErrorExpr("varint = varboolean && varboolean", "0xA0179"); // expected int but provided boolean
+    checkErrorExpr("varlong = varboolean && varboolean", "0xA0179"); // expected long but provided boolean
+    checkErrorExpr("varfloat = varboolean && varboolean", "0xA0179"); // expected float but provided boolean
+    checkErrorExpr("vardouble = varboolean && varboolean", "0xA0179"); // expected double but provided boolean
   }
 
   @Test
   public void deriveFromBooleanOrOpExpression() throws IOException {
-    //only possible with two booleans
-    checkExpr("true||false", "boolean");
-
+    checkExpr("varboolean = varboolean || varboolean", "boolean"); // || applicable to boolean, boolean, result is boolean
+    checkExpr("true||false", "boolean"); //only possible with two booleans
     checkExpr("(3<=4.5f||5.3>6)", "boolean");
   }
 
   @Test
   public void testInvalidOrOpExpression() throws IOException {
-    //only possible with two booleans
-    checkErrorExpr("3||true", "0xB0113");
+    checkErrorExpr("varboolean || varchar", "0xB0113"); // || not applicable to boolean, char
+    checkErrorExpr("varboolean || varbyte", "0xB0113"); // || not applicable to boolean, byte
+    checkErrorExpr("varboolean || varshort", "0xB0113"); // || not applicable to boolean, short
+    checkErrorExpr("varboolean || varint", "0xB0113"); // || not applicable to boolean, int
+    checkErrorExpr("varboolean || varlong", "0xB0113"); // || not applicable to boolean, long
+    checkErrorExpr("varboolean || varfloat", "0xB0113"); // || not applicable to boolean, float
+    checkErrorExpr("varboolean || vardouble", "0xB0113"); // || not applicable to boolean, double
+    checkErrorExpr("varchar || varboolean", "0xB0113"); // || not applicable to char, boolean
+    checkErrorExpr("varchar || varchar", "0xB0113"); // || not applicable to char, char
+    checkErrorExpr("varchar || varbyte", "0xB0113"); // || not applicable to char, byte
+    checkErrorExpr("varchar || varshort", "0xB0113"); // || not applicable to char, short
+    checkErrorExpr("varchar || varint", "0xB0113"); // || not applicable to char, int
+    checkErrorExpr("varchar || varlong", "0xB0113"); // || not applicable to char, long
+    checkErrorExpr("varchar || varfloat", "0xB0113"); // || not applicable to char, float
+    checkErrorExpr("varchar || vardouble", "0xB0113"); // || not applicable to char, double
+    checkErrorExpr("varbyte || varboolean", "0xB0113"); // || not applicable to byte, boolean
+    checkErrorExpr("varbyte || varchar", "0xB0113"); // || not applicable to byte, char
+    checkErrorExpr("varbyte || varbyte", "0xB0113"); // || not applicable to byte, byte
+    checkErrorExpr("varbyte || varshort", "0xB0113"); // || not applicable to byte, short
+    checkErrorExpr("varbyte || varint", "0xB0113"); // || not applicable to byte, int
+    checkErrorExpr("varbyte || varlong", "0xB0113"); // || not applicable to byte, long
+    checkErrorExpr("varbyte || varfloat", "0xB0113"); // || not applicable to byte, float
+    checkErrorExpr("varbyte || vardouble", "0xB0113"); // || not applicable to byte, double
+    checkErrorExpr("varshort || varboolean", "0xB0113"); // || not applicable to short, boolean
+    checkErrorExpr("varshort || varchar", "0xB0113"); // || not applicable to short, char
+    checkErrorExpr("varshort || varbyte", "0xB0113"); // || not applicable to short, byte
+    checkErrorExpr("varshort || varshort", "0xB0113"); // || not applicable to short, short
+    checkErrorExpr("varshort || varint", "0xB0113"); // || not applicable to short, int
+    checkErrorExpr("varshort || varlong", "0xB0113"); // || not applicable to short, long
+    checkErrorExpr("varshort || varfloat", "0xB0113"); // || not applicable to short, float
+    checkErrorExpr("varshort || vardouble", "0xB0113"); // || not applicable to short, double
+    checkErrorExpr("varint || varboolean", "0xB0113"); // || not applicable to short, boolean
+    checkErrorExpr("varint || varchar", "0xB0113"); // || not applicable to int, char
+    checkErrorExpr("varint || varbyte", "0xB0113"); // || not applicable to int, byte
+    checkErrorExpr("varint || varshort", "0xB0113"); // || not applicable to int, short
+    checkErrorExpr("varint || varint", "0xB0113"); // || not applicable to int, int
+    checkErrorExpr("varint || varlong", "0xB0113"); // || not applicable to int, long
+    checkErrorExpr("varint || varfloat", "0xB0113"); // || not applicable to int, float
+    checkErrorExpr("varint || vardouble", "0xB0113"); // || not applicable to int, double
+    checkErrorExpr("varlong || varboolean", "0xB0113"); // || not applicable to long, boolean
+    checkErrorExpr("varlong || varchar", "0xB0113"); // || not applicable to long, char
+    checkErrorExpr("varlong || varbyte", "0xB0113"); // || not applicable to long, byte
+    checkErrorExpr("varlong || varshort", "0xB0113"); // || not applicable to long, short
+    checkErrorExpr("varlong || varint", "0xB0113"); // || not applicable to long, int
+    checkErrorExpr("varlong || varlong", "0xB0113"); // || not applicable to long, long
+    checkErrorExpr("varlong || varfloat", "0xB0113"); // || not applicable to long, float
+    checkErrorExpr("varlong || vardouble", "0xB0113"); // || not applicable to long, double
+    checkErrorExpr("varfloat || varboolean", "0xB0113"); // || not applicable to float, boolean
+    checkErrorExpr("varfloat || varchar", "0xB0113"); // || not applicable to float, char
+    checkErrorExpr("varfloat || varbyte", "0xB0113"); // || not applicable to float, byte
+    checkErrorExpr("varfloat || varshort", "0xB0113"); // || not applicable to float, short
+    checkErrorExpr("varfloat || varint", "0xB0113"); // || not applicable to float, int
+    checkErrorExpr("varfloat || varlong", "0xB0113"); // || not applicable to float, long
+    checkErrorExpr("varfloat || varfloat", "0xB0113"); // || not applicable to float, float
+    checkErrorExpr("varfloat || vardouble", "0xB0113"); // || not applicable to float, double
+    checkErrorExpr("vardouble || varboolean", "0xB0113"); // || not applicable to double, boolean
+    checkErrorExpr("vardouble || varchar", "0xB0113"); // || not applicable to double, char
+    checkErrorExpr("vardouble || varbyte", "0xB0113"); // || not applicable to double, byte
+    checkErrorExpr("vardouble || varshort", "0xB0113"); // || not applicable to double, short
+    checkErrorExpr("vardouble || varint", "0xB0113"); // || not applicable to double, int
+    checkErrorExpr("vardouble || varlong", "0xB0113"); // || not applicable to double, long
+    checkErrorExpr("vardouble || varfloat", "0xB0113"); // || not applicable to double, float
+    checkErrorExpr("vardouble || vardouble", "0xB0113"); // || not applicable to double, double
+    checkErrorExpr("varchar = varboolean || varboolean", "0xA0179"); // expected char but provided boolean
+    checkErrorExpr("varbyte = varboolean || varboolean", "0xA0179"); // expected byte but provided boolean
+    checkErrorExpr("varshort = varboolean || varboolean", "0xA0179"); // expected short but provided boolean
+    checkErrorExpr("varint = varboolean || varboolean", "0xA0179"); // expected int but provided boolean
+    checkErrorExpr("varlong = varboolean || varboolean", "0xA0179"); // expected long but provided boolean
+    checkErrorExpr("varfloat = varboolean || varboolean", "0xA0179"); // expected float but provided boolean
+    checkErrorExpr("vardouble = varboolean || varboolean", "0xA0179"); // expected double but provided boolean
   }
 
   @Test
   public void deriveFromLogicalNotExpression() throws IOException {
-    //only possible with boolean as inner expression
-    checkExpr("!true", "boolean");
-
+    checkExpr("!varboolean", "boolean"); // ~ applicable to boolean
+    checkExpr("!true", "boolean"); // only possible with boolean as inner expression
     checkExpr("!(2.5>=0.3)", "boolean");
+    checkExpr("varboolean = !varboolean", "boolean"); // ~ applicable to boolean, result is boolean
   }
 
   @Test
   public void testInvalidLogicalNotExpression() throws IOException {
-    //only possible with a boolean as inner expression
-    checkErrorExpr("!4", "0xB0164");
+    checkErrorExpr("!varchar", "0xB0164"); // ! not applicable to char
+    checkErrorExpr("!varbyte", "0xB0164"); // ! not applicable to byte
+    checkErrorExpr("!varshort", "0xB0164"); // ! not applicable to short
+    checkErrorExpr("!varint", "0xB0164"); // ! not applicable to int
+    checkErrorExpr("!varlong", "0xB0164"); // ! not applicable to long
+    checkErrorExpr("!varfloat", "0xB0164"); // ! not applicable to float
+    checkErrorExpr("!vardouble", "0xB0164"); // ! not applicable to double
+    checkErrorExpr("!varchar", "0xB0164"); // ! not applicable to char
+    checkErrorExpr("!varbyte", "0xB0164"); // ! not applicable to byte
+    checkErrorExpr("!varshort", "0xB0164"); // ! not applicable to short
+    checkErrorExpr("!varint", "0xB0164"); // ! not applicable to int
+    checkErrorExpr("!varlong", "0xB0164"); // ! not applicable to long
+    checkErrorExpr("!varfloat", "0xB0164"); // ! not applicable to float
+    checkErrorExpr("!vardouble", "0xB0164"); // ! not applicable to double
   }
 
   @Test
   public void deriveFromBracketExpression() throws IOException {
-    //test with only a literal in the inner expression
-    checkExpr("(3)", "int");
-
-    //test with a more complex inner expression
-    checkExpr("(3+4*(18-7.5))", "double");
-
-    //test without primitive types in inner expression
-    checkExpr("(person1)", "Person");
+    checkExpr("(3)", "int"); // test with only a literal in the inner expression
+    checkExpr("(3+4*(18-7.5))", "double"); // test with a more complex inner expression
+    checkExpr("(person1)", "Person"); // test without primitive types in inner expression
   }
 
   @Test
   public void testInvalidBracketExpression() throws IOException {
-    //a cannot be resolved -> a has no type
-    checkErrorExpr("(a)", "0xFD118");
+    checkErrorExpr("(a)", "0xFD118"); // a cannot be resolved -> a has no type
   }
 
   @Test
@@ -362,27 +1119,402 @@ public class CommonExpressionTypeVisitorTest
     type = getType4Ast().getTypeOfExpression(astExpr);
     assertTrue(typeRel.isCompatible(_personSymType, type));
     assertFalse(typeRel.isCompatible(_studentSymType, type));
+
+    astExpr = parseExpr("varboolean ? 0 : 1"); // ? applicable to boolean
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varboolean = varboolean ? varboolean : varboolean"); // ? applicable to boolean, boolean, result is boolean
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_booleanSymType, type));
+
+    astExpr = parseExpr("varbyte = varboolean ? varbyte : varbyte"); // ? applicable to byte, byte, result is byte
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_byteSymType, type));
+
+    astExpr = parseExpr("varshort = varboolean ? varbyte : varshort"); // ? applicable to byte, short, result is short
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_shortSymType, type));
+
+    astExpr = parseExpr("varshort = varboolean ? varshort : varbyte"); // ? applicable to short, byte, result is short
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_shortSymType, type));
+
+    astExpr = parseExpr("varshort = varboolean ? varshort : varshort"); // ? applicable to short, short, result is short
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_shortSymType, type));
+
+    astExpr = parseExpr("varchar = varboolean ? varchar : varchar"); // ? applicable to char, char, result is char
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_charSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varchar : varbyte"); // ? applicable to char, byte, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varbyte : varchar"); // ? applicable to byte, char, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varchar : varshort"); // ? applicable to char, short, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varshort : varchar"); // ? applicable to short, char, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varint : varbyte"); // ? applicable to int, byte, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varint : varshort"); // ? applicable to int, short, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varint : varchar"); // ? applicable to int, char, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varbyte : varint"); // ? applicable to byte, int, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varshort : varint"); // ? applicable to short, int, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varchar : varint"); // ? applicable to char, int, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_intSymType, type));
+
+    astExpr = parseExpr("varint = varboolean ? varint : varint"); // ? applicable to int, int, result is int
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varlong : varbyte"); // ? applicable to long, byte, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varlong : varshort"); // ? applicable to long, short, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varlong : varchar"); // ? applicable to long, char, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varlong : varint"); // ? applicable to long, int, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varbyte : varlong"); // ? applicable to byte, long, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varshort : varlong"); // ? applicable to short, long, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varchar : varlong"); // ? applicable to char, long, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varint : varlong"); // ? applicable to int, long, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varlong = varboolean ? varlong : varlong"); // ? applicable to long, long, result is long
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_longSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varfloat : varbyte"); // ? applicable to float, byte, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varfloat : varshort"); // ? applicable to float, short, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varfloat : varchar"); // ? applicable to float, char, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varfloat : varint"); // ? applicable to float, int, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varfloat : varlong"); // ? applicable to float, long, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varbyte : varfloat"); // ? applicable to byte, float, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varshort : varfloat"); // ? applicable to short, float, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varchar : varfloat"); // ? applicable to char, float, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varint : varfloat"); // ? applicable to int, float, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varlong : varfloat"); // ? applicable to long, float, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("varfloat = varboolean ? varfloat : varfloat"); // ? applicable to float, float, result is float
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_floatSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? vardouble : varbyte"); // ? applicable to double, byte, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? vardouble : varshort"); // ? applicable to double, short, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? vardouble : varchar"); // ? applicable to double, char, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? vardouble : varint"); // ? applicable to double, int, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? vardouble : varlong"); // ? applicable to double, long, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? vardouble : varfloat"); // ? applicable to double, long, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? varbyte : vardouble"); // ? applicable to byte, double, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? varshort : vardouble"); // ? applicable to short, double, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? varchar : vardouble"); // ? applicable to char, double, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? varint : vardouble"); // ? applicable to int, double, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? varlong : vardouble"); // ? applicable to long, double, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? varfloat : vardouble"); // ? applicable to float, double, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
+
+    astExpr = parseExpr("vardouble = varboolean ? vardouble : vardouble"); // ? applicable to double, double, result is double
+    generateScopes(astExpr);
+    assertNoFindings();
+    calculateTypes(astExpr);
+    type = getType4Ast().getTypeOfExpression(astExpr);
+    assertTrue(typeRel.isCompatible(_doubleSymType, type));
   }
 
   @Test
   public void testInvalidConditionalExpression() throws IOException {
-    checkErrorExpr("3?true:false", "0xB0165");
+    checkErrorExpr("3?true:fvarlse", "0xFD118");
+    checkErrorExpr("varbyte ? 0 : 1", "0xB0165"); // ? not applicable to byte
+    checkErrorExpr("varshort ? 0 : 1", "0xB0165"); // ? not applicable to short
+    checkErrorExpr("varchar ? 0 : 1", "0xB0165"); // ? not applicable to char
+    checkErrorExpr("varint ? 0 : 1", "0xB0165"); // ? not applicable to int
+    checkErrorExpr("varlong ? 0 : 1", "0xB0165"); // ? not applicable to long
+    checkErrorExpr("varfloat ? 0 : 1", "0xB0165"); // ? not applicable to float
+    checkErrorExpr("vardouble ? 0 : 1", "0xB0165"); // ? not applicable to double
+    checkErrorExpr("varboolean = varboolean ? varbyte : varboolean", "0xA0179"); // expected boolean but provided byte
+    checkErrorExpr("varboolean = varboolean ? varboolean : varbyte", "0xA0179"); // expected boolean but provided byte
+    checkErrorExpr("varboolean = varboolean ? varbyte : varbyte", "0xA0179"); // expected boolean but provided byte
   }
 
   @Test
   public void deriveFromBooleanNotExpression() throws IOException {
-    //test with a int
-    checkExpr("~3", "int");
-    //test with a char
-    checkExpr("~'a'", "int");
-    //test with a long
-    checkExpr("~varlong", "long");
+    checkExpr("~varchar", "int"); // ~ applicable to char
+    checkExpr("~varbyte", "int"); // ~ applicable to byte
+    checkExpr("~varshort", "int"); // ~ applicable to short
+    checkExpr("~varint", "int"); // ~ applicable to int
+    checkExpr("~varlong", "long"); // ~ applicable to long
+    checkExpr("varint = ~varchar", "int"); // ~ applicable to char, result is int
+    checkExpr("varint = ~varbyte", "int"); // ~ applicable to byte, result is int
+    checkExpr("varint = ~varshort", "int"); // ~ applicable to short, result is int
+    checkExpr("varint = ~varint", "int"); // ~ applicable to int, result is int
+    checkExpr("varlong = ~varlong", "long"); // ~ applicable to long, result is long
   }
 
   @Test
   public void testInvalidBooleanNotExpression() throws IOException {
-    //only possible with an integral type (int, long, char, short, byte)
-    checkErrorExpr("~3.4", "0xB0175");
+    checkErrorExpr("~varboolean", "0xB0175"); // ! not applicable to boolean
+    checkErrorExpr("~varfloat", "0xB0175"); // ! not applicable to boolean
+    checkErrorExpr("~vardouble", "0xB0175"); // ! not applicable to boolean
+    checkErrorExpr("varchar = ~varchar", "0xA0179"); // ~ applicable to char, but result is int
+    checkErrorExpr("varbyte = ~varbyte", "0xA0179"); // ~ applicable to byte, but result is int
+    checkErrorExpr("varshort = ~varshort", "0xA0179"); // ~ applicable to short, but result is int
   }
 
   /**
@@ -1092,7 +2224,8 @@ public class CommonExpressionTypeVisitorTest
         ExpressionsBasisMill.inheritanceTraverser();
     scopeSetter.add4ExpressionsBasis(
         new ExpressionsBasisVisitor2() {
-          @Override public void visit(ASTExpression node) {
+          @Override
+          public void visit(ASTExpression node) {
             node.setEnclosingScope(myAdd.getSpannedScope());
           }
         }
