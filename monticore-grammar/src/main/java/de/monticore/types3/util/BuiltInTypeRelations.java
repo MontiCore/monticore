@@ -16,14 +16,14 @@ import java.util.List;
  */
 public class BuiltInTypeRelations {
 
-  protected SymTypeRelations symTypeRelations;
-
-  public BuiltInTypeRelations(SymTypeRelations symTypeRelations) {
-    this.symTypeRelations = symTypeRelations;
+  public BuiltInTypeRelations() {
   }
 
-  SymTypeRelations getSymTypeRelations() {
-    return symTypeRelations;
+  /**
+   * @deprecated use constructor {@link #BuiltInTypeRelations()}
+   */
+  @Deprecated
+  public BuiltInTypeRelations(SymTypeRelations symTypeRelations) {
   }
 
   public SymTypeExpression numericPromotion(List<SymTypeExpression> types) {
@@ -74,51 +74,83 @@ public class BuiltInTypeRelations {
   }
 
   public boolean isBoolean(SymTypeExpression type) {
-    SymTypeExpression unboxed = getSymTypeRelations().unbox(type);
-    return unboxed.isPrimitive() &&
-        unboxed.getTypeInfo().getName().equals(BasicSymbolsMill.BOOLEAN);
+    if (type.isPrimitive()) {
+      return type.printFullName().equals(BasicSymbolsMill.BOOLEAN);
+    }
+    if (type.isObjectType()) {
+      return type.printFullName().equals("java.lang.Boolean");
+    }
+    return false;
   }
 
   public boolean isInt(SymTypeExpression type) {
-    SymTypeExpression unboxed = getSymTypeRelations().unbox(type);
-    return unboxed.isPrimitive() &&
-        unboxed.getTypeInfo().getName().equals(BasicSymbolsMill.INT);
+    if (type.isPrimitive()) {
+      return type.printFullName().equals(BasicSymbolsMill.INT);
+    }
+    if (type.isObjectType()) {
+      return type.printFullName().equals("java.lang.Integer");
+    }
+    return false;
   }
 
   public boolean isDouble(SymTypeExpression type) {
-    SymTypeExpression unboxed = getSymTypeRelations().unbox(type);
-    return unboxed.isPrimitive() &&
-        unboxed.getTypeInfo().getName().equals(BasicSymbolsMill.DOUBLE);
+    if (type.isPrimitive()) {
+      return type.printFullName().equals(BasicSymbolsMill.DOUBLE);
+    }
+    if (type.isObjectType()) {
+      return type.printFullName().equals("java.lang.Double");
+    }
+    return false;
   }
 
   public boolean isFloat(SymTypeExpression type) {
-    SymTypeExpression unboxed = getSymTypeRelations().unbox(type);
-    return unboxed.isPrimitive() &&
-        unboxed.getTypeInfo().getName().equals(BasicSymbolsMill.FLOAT);
+    if (type.isPrimitive()) {
+      return type.printFullName().equals(BasicSymbolsMill.FLOAT);
+    }
+    if (type.isObjectType()) {
+      return type.printFullName().equals("java.lang.Float");
+    }
+    return false;
   }
 
   public boolean isLong(SymTypeExpression type) {
-    SymTypeExpression unboxed = getSymTypeRelations().unbox(type);
-    return unboxed.isPrimitive() &&
-        unboxed.getTypeInfo().getName().equals(BasicSymbolsMill.LONG);
+    if (type.isPrimitive()) {
+      return type.printFullName().equals(BasicSymbolsMill.LONG);
+    }
+    if (type.isObjectType()) {
+      return type.printFullName().equals("java.lang.Long");
+    }
+    return false;
   }
 
   public boolean isChar(SymTypeExpression type) {
-    SymTypeExpression unboxed = getSymTypeRelations().unbox(type);
-    return unboxed.isPrimitive() &&
-        unboxed.getTypeInfo().getName().equals(BasicSymbolsMill.CHAR);
+    if (type.isPrimitive()) {
+      return type.printFullName().equals(BasicSymbolsMill.CHAR);
+    }
+    if (type.isObjectType()) {
+      return type.printFullName().equals("java.lang.Character");
+    }
+    return false;
   }
 
   public boolean isShort(SymTypeExpression type) {
-    SymTypeExpression unboxed = getSymTypeRelations().unbox(type);
-    return unboxed.isPrimitive() &&
-        unboxed.getTypeInfo().getName().equals(BasicSymbolsMill.SHORT);
+    if (type.isPrimitive()) {
+      return type.printFullName().equals(BasicSymbolsMill.SHORT);
+    }
+    if (type.isObjectType()) {
+      return type.printFullName().equals("java.lang.Short");
+    }
+    return false;
   }
 
   public boolean isByte(SymTypeExpression type) {
-    SymTypeExpression unboxed = getSymTypeRelations().unbox(type);
-    return unboxed.isPrimitive() &&
-        unboxed.getTypeInfo().getName().equals(BasicSymbolsMill.BYTE);
+    if (type.isPrimitive()) {
+      return type.printFullName().equals(BasicSymbolsMill.BYTE);
+    }
+    if (type.isObjectType()) {
+      return type.printFullName().equals("java.lang.Byte");
+    }
+    return false;
   }
 
   public boolean isString(SymTypeExpression type) {
