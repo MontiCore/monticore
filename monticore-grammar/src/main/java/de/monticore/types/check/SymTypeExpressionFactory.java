@@ -356,4 +356,30 @@ public class SymTypeExpressionFactory {
   public static SymTypeOfIntersection createIntersection(SymTypeExpression... intersectedTypes) {
     return createIntersection(Set.of(intersectedTypes));
   }
+
+  /**
+   * @return a type which is the superType of ALL other types,
+   * NO further guarantees are made.
+   * Note, this is not the case for, e.g., Java's Object class.
+   * This is used internally in the TypeCheck.
+   */
+  public static SymTypeExpression createTopType() {
+    // This is technically dependent on the type system in use.
+    // Here, use the fact that we support
+    // intersection types in our implementations
+    return createIntersection();
+  }
+
+  /**
+   * @return a type which is the subType of ALL other types,
+   * NO further guarantees are made.
+   * Note, this is not the case for, e.g., Java's null type.
+   * This is used internally in the TypeCheck.
+   */
+  public static SymTypeExpression createBottomType() {
+    // This is technically dependent on the type system in use.
+    // Here, use the fact that we support
+    // intersection types in our implementations
+    return createUnion();
+  }
 }

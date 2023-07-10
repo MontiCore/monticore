@@ -372,6 +372,56 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
   }
 
   @Test
+  public void isSubTypeBottom() {
+    // bottom is subType of EVERY other type
+    assertTrue(tr.isSubTypeOf(_bottomType, _bottomType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _topType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _intSymType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _booleanSymType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _IntegerSymType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _personSymType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _nullSymType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _unboxedListSymType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _unboxedListSymType));
+    assertTrue(tr.isSubTypeOf(_bottomType, _linkedListSymType));
+    // bottom is never the superType except for bottom itself
+    assertFalse(tr.isSubTypeOf(_topType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_intSymType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_booleanSymType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_IntegerSymType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_personSymType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_nullSymType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_unboxedListSymType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_unboxedListSymType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_linkedListSymType, _bottomType));
+  }
+
+  @Test
+  public void isSubTypeTop() {
+    // top is superType of EVERY other type
+    assertTrue(tr.isSubTypeOf(_bottomType, _topType));
+    assertTrue(tr.isSubTypeOf(_topType, _topType));
+    assertTrue(tr.isSubTypeOf(_intSymType, _topType));
+    assertTrue(tr.isSubTypeOf(_booleanSymType, _topType));
+    assertTrue(tr.isSubTypeOf(_IntegerSymType, _topType));
+    assertTrue(tr.isSubTypeOf(_personSymType, _topType));
+    assertTrue(tr.isSubTypeOf(_nullSymType, _topType));
+    assertTrue(tr.isSubTypeOf(_unboxedListSymType, _topType));
+    assertTrue(tr.isSubTypeOf(_unboxedListSymType, _topType));
+    assertTrue(tr.isSubTypeOf(_linkedListSymType, _topType));
+    // top is never the subType except for top itself
+    assertFalse(tr.isSubTypeOf(_topType, _bottomType));
+    assertFalse(tr.isSubTypeOf(_topType, _intSymType));
+    assertFalse(tr.isSubTypeOf(_topType, _booleanSymType));
+    assertFalse(tr.isSubTypeOf(_topType, _IntegerSymType));
+    assertFalse(tr.isSubTypeOf(_topType, _personSymType));
+    assertFalse(tr.isSubTypeOf(_topType, _nullSymType));
+    assertFalse(tr.isSubTypeOf(_topType, _unboxedListSymType));
+    assertFalse(tr.isSubTypeOf(_topType, _unboxedListSymType));
+    assertFalse(tr.isSubTypeOf(_topType, _linkedListSymType));
+  }
+
+  @Test
   public void nullCompatibilityAndSubTyping() {
     assertFalse(tr.isCompatible(_intSymType, createTypeOfNull()));
     assertTrue(tr.isCompatible(_IntegerSymType, createTypeOfNull()));

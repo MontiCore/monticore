@@ -25,8 +25,10 @@ import de.monticore.types.check.SymTypeVoid;
 
 import java.util.List;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 
@@ -50,6 +52,7 @@ public class DefsTypesForTests {
     set_boxedCollections();
     set_objectTypes();
     set_generics();
+    set_bottomTopTypes();
   }
 
   /*********************************************************************/
@@ -607,6 +610,19 @@ public class DefsTypesForTests {
             List.of(listVar))),
         createTypeVariable(listVar)
     );
+  }
+
+  /*
+   * These are predefined symbols for bottom and top types
+   */
+
+  public static SymTypeExpression _bottomType;
+
+  public static SymTypeExpression _topType;
+
+  public static void set_bottomTopTypes() {
+    _bottomType = createBottomType();
+    _topType = createTopType();
   }
 
 }
