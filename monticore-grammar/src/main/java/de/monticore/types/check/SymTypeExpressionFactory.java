@@ -13,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,8 +41,37 @@ public class SymTypeExpressionFactory {
     return createTypeVariable(typeSymbol);
   }
 
-  public static SymTypeVariable createTypeVariable(TypeVarSymbol typeSymbol) {
-    return new SymTypeVariable(typeSymbol);
+  /**
+   * used to create a (optionally bounded) FREE type variable.
+   * These are created internally while inferring types.
+   *
+   * @param lowerBound is required to be a sub-type.
+   *                   For no bounds use {@link #createBottomType()}.
+   * @param upperBound is required to be a super-type,
+   *                   e.g., {@code T extends Person & Iterable<Integer>}.
+   *                   For no bounds use {@link #createTopType()}.
+   */
+  public static SymTypeVariable createTypeVariable(
+      SymTypeExpression lowerBound, SymTypeExpression upperBound) {
+    return createTypeVariable(null, lowerBound, upperBound);
+  }
+
+  public static SymTypeVariable createTypeVariable(TypeVarSymbol typeVarSymbol) {
+    // the SymTypeVariable extracts the upper bound from the type itself,
+    // as such we do not set it here
+    SymTypeExpression upperBound = createTopType();
+    // our Symbols have no notion of lower bound,
+    // as such we use the bottom type
+    SymTypeExpression lowerBound = createBottomType();
+    return createTypeVariable(typeVarSymbol, lowerBound, upperBound);
+  }
+
+  public static SymTypeVariable createTypeVariable(
+      TypeVarSymbol typeVarSymbol,
+      SymTypeExpression lowerBound,
+      SymTypeExpression upperBound
+  ) {
+    return new SymTypeVariable(typeVarSymbol, lowerBound, upperBound);
   }
 
   @Deprecated
@@ -292,7 +320,7 @@ public class SymTypeExpressionFactory {
     BasicSymbolsTypeDispatcher typeDispatcher =
         BasicSymbolsMill.typeDispatcher();
     if(typeDispatcher.isTypeVar(typeSymbol)) {
-      return createTypeVariable(typeSymbol);
+      return createTypeVariable((TypeVarSymbol) typeSymbol);
     }
     if(typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()) {
       return createTypeObject(typeSymbol);

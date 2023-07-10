@@ -6,11 +6,13 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +26,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createIntersecti
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeOfNull;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.Assert.assertFalse;
@@ -419,6 +422,91 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     assertFalse(tr.isSubTypeOf(_topType, _unboxedListSymType));
     assertFalse(tr.isSubTypeOf(_topType, _unboxedListSymType));
     assertFalse(tr.isSubTypeOf(_topType, _linkedListSymType));
+  }
+
+  @Test
+  public void isCompatibleTypeVariable() {
+    // Setup type variables
+    IBasicSymbolsScope someScope = BasicSymbolsMill.scope();
+    // unbounded, e.g., E in List<E>
+    SymTypeVariable unboundedTVar = createTypeVariable(
+        inScope(someScope, typeVariable("unbounded"))
+    );
+    SymTypeVariable unbounded2TVar = createTypeVariable(
+        inScope(someScope, typeVariable("unbounded2"))
+    );
+    // upper bound Student, e.g., E in List<E extends Student>
+    SymTypeVariable subStudentTVar =
+        createTypeVariable(_bottomType, _studentSymType);
+    // upper bound Person
+    SymTypeVariable subPersonTVar =
+        createTypeVariable(_bottomType, _personSymType);
+    // lower bound Student, no direct Java representation available
+    SymTypeVariable superStudentTVar =
+        createTypeVariable(_studentSymType, _topType);
+    // lower bound Person
+    SymTypeVariable superPersonTVar =
+        createTypeVariable(_personSymType, _topType);
+    // lower and upper Bound
+    SymTypeVariable superSSubCsSTVar =
+        createTypeVariable(_csStudentSymType, _studentSymType);
+
+    // unbounded type variable are like existential types:
+    // we don't know enough to do pretty much anything with it
+    assertTrue(tr.isCompatible(unboundedTVar, unboundedTVar));
+    assertFalse(tr.isCompatible(unboundedTVar, unbounded2TVar));
+    assertFalse(tr.isCompatible(unboundedTVar, _personSymType));
+    assertFalse(tr.isCompatible(_personSymType, unboundedTVar));
+
+    // we can assign variables if we know their upper bound
+    assertTrue(tr.isCompatible(_personSymType, subStudentTVar));
+    assertTrue(tr.isCompatible(_studentSymType, subStudentTVar));
+    assertFalse(tr.isCompatible(_csStudentSymType, subStudentTVar));
+    // we cannot really assign to variable if we only know their upper bounds
+    assertFalse(tr.isCompatible(subStudentTVar, _personSymType));
+    assertFalse(tr.isCompatible(subStudentTVar, _studentSymType));
+    assertFalse(tr.isCompatible(subStudentTVar, _csStudentSymType));
+
+    // we can assign to variables if we know their lower bound
+    assertFalse(tr.isCompatible(superStudentTVar, _personSymType));
+    assertTrue(tr.isCompatible(superStudentTVar, _studentSymType));
+    assertTrue(tr.isCompatible(superStudentTVar, _csStudentSymType));
+    // we cannot really assign variables if we only know their lower bounds
+    assertFalse(tr.isCompatible(_personSymType, superStudentTVar));
+    assertFalse(tr.isCompatible(_studentSymType, superStudentTVar));
+    assertFalse(tr.isCompatible(_csStudentSymType, superStudentTVar));
+
+    // two single bounded variables
+    assertTrue(tr.isCompatible(superStudentTVar, subStudentTVar));
+    assertTrue(tr.isCompatible(superPersonTVar, subStudentTVar));
+    assertFalse(tr.isCompatible(superStudentTVar, subPersonTVar));
+    assertFalse(tr.isCompatible(subPersonTVar, subStudentTVar));
+    assertFalse(tr.isCompatible(subStudentTVar, subPersonTVar));
+
+    // in case of upper AND lower bound set,
+    // we can assign and assign to the type variable
+    // assign to:
+    assertFalse(tr.isCompatible(superSSubCsSTVar, _personSymType));
+    assertFalse(tr.isCompatible(superSSubCsSTVar, _studentSymType));
+    assertTrue(tr.isCompatible(superSSubCsSTVar, _csStudentSymType));
+    assertTrue(tr.isCompatible(superSSubCsSTVar, _firstSemesterCsStudentSymType));
+    // assign:
+    assertTrue(tr.isCompatible(_personSymType, superSSubCsSTVar));
+    assertTrue(tr.isCompatible(_studentSymType, superSSubCsSTVar));
+    assertFalse(tr.isCompatible(_csStudentSymType, superSSubCsSTVar));
+    assertFalse(tr.isCompatible(_firstSemesterCsStudentSymType, superSSubCsSTVar));
+
+    assertNoFindings();
+  }
+
+  @Test
+  public void isCompatibleTypeVariableRecursive() {
+    // check that we can handle recursively defined generics,
+    // e.g., A<T extends A<T>>
+    assertTrue(tr.isCompatible(_simpleCrtSymType, _simpleCrtSymType));
+    assertTrue(tr.isCompatible(_graphSymType, _graphSymType));
+    assertTrue(tr.isCompatible(_graphNodeSymType, _graphNodeSymType));
+    assertTrue(tr.isCompatible(_graphEdgeSymType, _graphEdgeSymType));
   }
 
   @Test

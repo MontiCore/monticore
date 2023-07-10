@@ -35,7 +35,8 @@ public class SymTypeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
     // as containsKey uses equals, we need to go other it ourselves
     boolean inMap = false;
     for (TypeVarSymbol varSym : getReplaceMap().keySet()) {
-      if (varSym.deepEquals(typVar.getTypeVarSymbol()) && !inMap) {
+      if (typVar.hasTypeVarSymbol() &&
+          varSym.deepEquals(typVar.getTypeVarSymbol()) & !inMap) {
         pushTransformedSymType(getReplaceMap().get(varSym));
         inMap = true;
       }
