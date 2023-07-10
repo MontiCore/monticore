@@ -388,7 +388,8 @@ public class SymTypeExpressionFactory {
   /**
    * @return a type which is the superType of ALL other types,
    * NO further guarantees are made.
-   * Note, this is not the case for, e.g., Java's Object class.
+   * Note, this is not the case for,
+   * e.g., Java's Object class as it is not a superType of primitives
    * This is used internally in the TypeCheck.
    */
   public static SymTypeExpression createTopType() {
@@ -401,7 +402,8 @@ public class SymTypeExpressionFactory {
   /**
    * @return a type which is the subType of ALL other types,
    * NO further guarantees are made.
-   * Note, this is not the case for, e.g., Java's null type.
+   * Note, this is not the case for,
+   * e.g., Java's null type as it is not a subType of primitives
    * This is used internally in the TypeCheck.
    */
   public static SymTypeExpression createBottomType() {
