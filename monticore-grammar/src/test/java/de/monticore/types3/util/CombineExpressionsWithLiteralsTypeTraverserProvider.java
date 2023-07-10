@@ -2,6 +2,7 @@
 package de.monticore.types3.util;
 
 import de.monticore.expressions.assignmentexpressions.types3.AssignmentExpressionsTypeVisitor;
+import de.monticore.expressions.bitexpressions.types3.BitExpressionsTypeVisitor;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
@@ -17,11 +18,11 @@ import de.monticore.types3.Type4Ast;
 
 public class CombineExpressionsWithLiteralsTypeTraverserProvider {
 
-  //todo Bit Expressions
-
   // Expressions
 
   protected AssignmentExpressionsTypeVisitor derAssignmentExpressions;
+
+  protected BitExpressionsTypeVisitor derBitExpressions;
 
   protected CommonExpressionsTypeVisitor derCommonExpressions;
 
@@ -54,6 +55,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
   protected void init() {
     // Expressions
     derAssignmentExpressions = new AssignmentExpressionsTypeVisitor();
+    derBitExpressions = new BitExpressionsTypeVisitor();
     derCommonExpressions = new CommonExpressionsTypeVisitor();
     derExpressionBasis = new ExpressionBasisTypeVisitor();
     derLambdaExpressions = new LambdaExpressionsTypeVisitor();
@@ -98,6 +100,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
       CombineExpressionsWithLiteralsTraverser traverser) {
     // Expressions
     traverser.add4AssignmentExpressions(derAssignmentExpressions);
+    traverser.add4BitExpressions(derBitExpressions);
     traverser.add4CommonExpressions(derCommonExpressions);
     traverser.setCommonExpressionsHandler(derCommonExpressions);
     traverser.add4ExpressionsBasis(derExpressionBasis);
@@ -118,6 +121,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
   public void setType4Ast(Type4Ast type4Ast) {
     // Expressions
     derAssignmentExpressions.setType4Ast(type4Ast);
+    derBitExpressions.setType4Ast(type4Ast);
     derCommonExpressions.setType4Ast(type4Ast);
     derExpressionBasis.setType4Ast(type4Ast);
     derLambdaExpressions.setType4Ast(type4Ast);
