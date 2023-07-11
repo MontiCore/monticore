@@ -21,12 +21,15 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypePrimitive;
+import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.check.SymTypeVoid;
 
 import java.util.List;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 
@@ -48,8 +51,10 @@ public class DefsTypesForTests {
     set_boxedObjects();
     set_unboxedCollections();
     set_boxedCollections();
+    set_genericsRecursive();
     set_objectTypes();
     set_generics();
+    set_bottomTopTypes();
   }
 
   /*********************************************************************/
@@ -545,6 +550,80 @@ public class DefsTypesForTests {
   /*********************************************************************/
 
   /*
+   * These are some predefined Symbols for recursively defined generic types
+   */
+
+  /**
+   * s. simple curiously recurring template pattern
+   */
+  public static SymTypeOfGenerics _simpleCrtSymType;
+
+  // Graph example out of Wild FJ (2015)
+  //class Node <N extends Node<N,E>, E extends Edge<N,E>>
+  //class Edge <N extends Node<N,E>, E extends Edge<N,E>>
+  //class Graph<N extends Node<N,E>, E extends Edge<N,E>>
+
+  public static SymTypeOfGenerics _graphNodeSymType;
+
+  public static SymTypeOfGenerics _graphEdgeSymType;
+
+  public static SymTypeOfGenerics _graphSymType;
+
+  public static void set_genericsRecursive() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // SimpleCrt<CrtT extends SimpleCrt<CrtT>>
+    TypeVarSymbol crtVar = typeVariable("CrtT");
+    _simpleCrtSymType = createGenerics(
+        inScope(gs, type("SimpleCrt", List.of(), List.of(crtVar))),
+        createTypeVariable(crtVar)
+    );
+    crtVar.addSuperTypes(_simpleCrtSymType);
+
+    // Graph example out of Wild FJ (2015)
+    TypeSymbol nodeSymbol = inScope(gs, type("Node"));
+    TypeSymbol edgeSymbol = inScope(gs, type("Edge"));
+    TypeSymbol graphSymbol = inScope(gs, type("Graph"));
+    //class Node <N extends Node<N,E>, E extends Edge<N,E>>
+    SymTypeVariable nodeNodeVar = createTypeVariable(typeVariable("NodeN"));
+    SymTypeVariable nodeEdgeVar = createTypeVariable(typeVariable("NodeE"));
+    nodeSymbol.getSpannedScope().add(nodeNodeVar.getTypeVarSymbol());
+    nodeSymbol.getSpannedScope().add(nodeEdgeVar.getTypeVarSymbol());
+    nodeNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
+        nodeSymbol, List.of(nodeNodeVar, nodeEdgeVar)
+    ));
+    nodeEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
+        edgeSymbol, List.of(nodeNodeVar, nodeEdgeVar)
+    ));
+    _graphNodeSymType = createGenerics(nodeSymbol, nodeNodeVar, nodeEdgeVar);
+    //class Edge <N extends Node<N,E>, E extends Edge<N,E>>
+    SymTypeVariable edgeNodeVar = createTypeVariable(typeVariable("EdgeN"));
+    SymTypeVariable edgeEdgeVar = createTypeVariable(typeVariable("EdgeE"));
+    edgeSymbol.getSpannedScope().add(edgeNodeVar.getTypeVarSymbol());
+    edgeSymbol.getSpannedScope().add(edgeEdgeVar.getTypeVarSymbol());
+    edgeNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
+        nodeSymbol, List.of(edgeNodeVar, edgeEdgeVar)
+    ));
+    edgeEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
+        edgeSymbol, List.of(edgeNodeVar, edgeEdgeVar)
+    ));
+    _graphEdgeSymType = createGenerics(edgeSymbol, edgeNodeVar, edgeEdgeVar);
+    //class Graph<N extends Node<N,E>, E extends Edge<N,E>>
+    SymTypeVariable graphNodeVar = createTypeVariable(typeVariable("GraphN"));
+    SymTypeVariable graphEdgeVar = createTypeVariable(typeVariable("GraphE"));
+    graphSymbol.getSpannedScope().add(graphNodeVar.getTypeVarSymbol());
+    graphSymbol.getSpannedScope().add(graphEdgeVar.getTypeVarSymbol());
+    graphNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
+        nodeSymbol, List.of(graphNodeVar, graphEdgeVar)
+    ));
+    graphEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
+        edgeSymbol, List.of(graphNodeVar, graphEdgeVar)
+    ));
+    _graphSymType = createGenerics(graphSymbol, graphNodeVar, graphEdgeVar);
+  }
+
+  /*********************************************************************/
+
+  /*
    * These are some predefined Symbols for Object Types
    */
 
@@ -557,6 +636,10 @@ public class DefsTypesForTests {
 
   // computer science student is a subtype of student;
   public static SymTypeOfObject _csStudentSymType;
+
+  // first semester computer science student
+  // is a subType of computer science student
+  public static SymTypeOfObject _firstSemesterCsStudentSymType;
 
   // child is a subtype of person, teachable
   public static SymTypeOfObject _childSymType;
@@ -577,6 +660,9 @@ public class DefsTypesForTests {
     );
     _csStudentSymType = createTypeObject(inScope(gs,
         type("CsStudent", List.of(_studentSymType)))
+    );
+    _firstSemesterCsStudentSymType = createTypeObject(inScope(gs,
+        type("FirstSemesterCsStudent", List.of(_csStudentSymType)))
     );
     _childSymType = createTypeObject(inScope(gs,
         type("Child", List.of(_personSymType, _teachableSymType)))
@@ -607,6 +693,21 @@ public class DefsTypesForTests {
             List.of(listVar))),
         createTypeVariable(listVar)
     );
+  }
+
+  /*********************************************************************/
+
+  /*
+   * These are predefined symbols for bottom and top types
+   */
+
+  public static SymTypeExpression _bottomType;
+
+  public static SymTypeExpression _topType;
+
+  public static void set_bottomTopTypes() {
+    _bottomType = createBottomType();
+    _topType = createTopType();
   }
 
 }

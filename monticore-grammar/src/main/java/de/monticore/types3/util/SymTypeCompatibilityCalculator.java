@@ -10,7 +10,9 @@ import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypePrimitive;
+import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,14 +141,8 @@ public class SymTypeCompatibilityCalculator {
   ) {
     boolean result;
     // variable
-    // this is not enough for full generics
     if (superType.isTypeVariable() || subType.isTypeVariable()) {
-      if (superType.isTypeVariable() && subType.isTypeVariable()) {
-        result = superType.deepEquals(subType);
-      }
-      else {
-        result = subTypeIsSoft;
-      }
+      result = typeVarIsSubTypeOf(subType, superType, subTypeIsSoft);
     }
     // arrays
     else if (superType.isArrayType() && subType.isArrayType()) {
@@ -193,6 +189,52 @@ public class SymTypeCompatibilityCalculator {
       result = objectIsSubTypeOf(subType, superType, subTypeIsSoft);
     }
     else {
+      result = false;
+    }
+    return result;
+  }
+
+  /**
+   * whether one expression is the subType of another,
+   * with at least one of the types being a variable
+   */
+  protected boolean typeVarIsSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType,
+      boolean subTypeIsSoft
+  ) {
+    // this is not enough for full generics
+    boolean result;
+    // T is compatible to T
+    // this has to be checked specifically,
+    // as two unbounded type variable are not subTypes of each other otherwise
+    if (subType.isTypeVariable() &&
+        superType.isTypeVariable() &&
+        subType.deepEquals(superType)
+    ) {
+      result = true;
+    }
+    // T extends B is a subType of A iff B is a subType of A.
+    else if (subType.isTypeVariable()) {
+      SymTypeVariable subVar = (SymTypeVariable) subType;
+      SymTypeExpression normalizedUpperBound =
+          getSymTypeRelations().normalize(subVar.getUpperBound());
+      result = internal_isSubTypeOfPreNormalized(
+          normalizedUpperBound, superType, subTypeIsSoft);
+    }
+    // T super A is a superType of B iff A is a superType of B.
+    // This example cannot be (directly) represented using Java,
+    // but can occur while type checking Java (s. Wild FJ (2005))
+    else if (superType.isTypeVariable()) {
+      SymTypeVariable superVar = (SymTypeVariable) superType;
+      SymTypeExpression normalizedLowerBound =
+          getSymTypeRelations().normalize(superVar.getLowerBound());
+      result = internal_isSubTypeOfPreNormalized(
+          subType, normalizedLowerBound, subTypeIsSoft);
+    }
+    else {
+      Log.error("0xFDB32 internal error, "
+          + "expected an type variable");
       result = false;
     }
     return result;

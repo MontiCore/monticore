@@ -59,7 +59,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     // no union of unions
     // (A|(B|C)) -> (A|B|C)
     Set<SymTypeExpression> splittedTypes = splitUnions(types);
-    // here would be a opportunity to unbox types,
+    // here would be an opportunity to unbox types,
     // however, we lose information, so we don't do so
     // z.B. (int|Float) -> float would be a Java-esque option
 
@@ -92,7 +92,16 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     SymTypeExpression normalized;
     // empty union is obscure
     if (uniqueTypes.isEmpty()) {
-      normalized = SymTypeExpressionFactory.createObscureType();
+      // empty union is obscure,
+      if (!union.getUnionizedTypeSet().isEmpty()) {
+        normalized = SymTypeExpressionFactory.createObscureType();
+      }
+      // except if it has been added deliberately
+      // this is likely to change in the future
+      // if we add a way to normalize into empty unions
+      else {
+        normalized = SymTypeExpressionFactory.createBottomType();
+      }
     }
     // union of one is no union
     // (A) = A
@@ -123,7 +132,6 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       // A&B&(C|D) -> (A&B&C)|(A&B&D)
       Set<SymTypeOfIntersection> intersectionsWithoutUnions
           = intersectionOfUnions2UnionOfIntersections(types);
-
       // normalize each intersection
       Set<SymTypeExpression> normalizedUnionTypes = new HashSet<>();
       for (SymTypeOfIntersection intersectionWithoutUnion
@@ -194,12 +202,20 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
 
     SymTypeExpression normalized;
     // empty intersection contains all values
-    // this is not expected
     if (uniqueTypes.isEmpty()) {
-      Log.error("0xFDA6B internal error: "
-          + "normalized intersection is empty,"
-          + "this was not expected");
-      normalized = SymTypeExpressionFactory.createObscureType();
+      // this is not expected
+      if (!intersection.getIntersectedTypeSet().isEmpty()) {
+        Log.error("0xFDA6B internal error: "
+            + "normalized intersection is empty,"
+            + "this was not expected");
+        normalized = SymTypeExpressionFactory.createObscureType();
+      }
+      // except if it has been added deliberately
+      // this is likely to change in the future if we ever
+      // add ways to normalize into bottom / top types
+      else {
+        normalized = SymTypeExpressionFactory.createTopType();
+      }
     }
     // intersection of one is not an intersection
     // (A) = A
@@ -310,6 +326,9 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
    * A&B&(C|D) -> (A&B&C)|(A&B&D)
    * Note that this only calculates the given intersection,
    * not the intersection contained within the given intersection.
+   * An additional characteristic to mention is that
+   * NO empty intersections / unions are created
+   * if there have been none to begin with
    */
   protected Set<SymTypeOfIntersection> intersectionOfUnions2UnionOfIntersections(
       Set<SymTypeExpression> intersectedTypes) {
@@ -329,7 +348,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       // create a union of intersections from the intersection of unions
       // in rare cases, this can be exponential
       // (A|B)&(C|D) -> (A&C)|(A&D)|(B&C)|(B&D)
-      //handle the first union differently to set up the set of intersections
+      // handle the first union differently to set up the set of intersections
       SymTypeOfUnion firstUnion = unions.stream().findAny().get();
       unions.remove(firstUnion);
       for (SymTypeExpression type : firstUnion.getUnionizedTypeSet()) {
@@ -349,6 +368,13 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
         }
       }
       // we now have a union of intersections
+    }
+    // given an empty intersection, we assume that this is the top type
+    else {
+      // note, this has to be changed if we make changes to the top type
+      intersections.add((SymTypeOfIntersection)
+          SymTypeExpressionFactory.createTopType()
+      );
     }
     return intersections;
   }

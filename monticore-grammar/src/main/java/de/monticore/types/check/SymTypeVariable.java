@@ -4,14 +4,43 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class SymTypeVariable extends SymTypeExpression {
 
-  protected TypeVarSymbol typeVarSymbol;
+  protected static final String FREE_VARIABLE_NAME = "__INTERNAL_TYPEVARIABLE";
 
   /**
-   * Constructor:
+   * may be null, as some type variables are created
+   * DURING the type checking process and thus have no symbols
    */
+  protected TypeVarSymbol typeVarSymbol;
+
+  protected SymTypeExpression lowerBound;
+
+  /**
+   * this is NOT the full upper bound,
+   * given a TypeVarSymbol, it's supertypes are added to this upperBound
+   */
+  protected SymTypeExpression upperBound;
+
+  /**
+   * @param typeVarSymbol is allowed to be null
+   */
+  public SymTypeVariable(
+      TypeVarSymbol typeVarSymbol,
+      SymTypeExpression lowerBound,
+      SymTypeExpression upperBound
+  ) {
+    this.typeVarSymbol = typeVarSymbol;
+    this.lowerBound = lowerBound;
+    this.upperBound = upperBound;
+  }
+
+  @Deprecated
   public SymTypeVariable(TypeVarSymbol typeSymbol) {
     this.typeVarSymbol = typeSymbol;
   }
@@ -24,8 +53,17 @@ public class SymTypeVariable extends SymTypeExpression {
     }
   }
 
+  public boolean hasTypeVarSymbol() {
+    return typeVarSymbol != null;
+  }
+
   public TypeVarSymbol getTypeVarSymbol() {
-    return typeVarSymbol;
+    if (hasTypeVarSymbol()) {
+      return typeVarSymbol;
+    }
+    Log.error("0xFDFDD internal error: getTypeVarSymbol called, "
+        + "but no TypeVarSymbol available");
+    return null;
   }
 
   @Override
@@ -42,6 +80,40 @@ public class SymTypeVariable extends SymTypeExpression {
       return typeSymbol;
     }
     return getTypeVarSymbol();
+  }
+
+  /**
+   * a type variable only allows super types of its lower bound
+   */
+  protected SymTypeExpression getStoredLowerBound() {
+    return lowerBound;
+  }
+
+  public SymTypeExpression getLowerBound() {
+    return getStoredLowerBound();
+  }
+
+  protected SymTypeExpression getStoredUpperBound() {
+    return upperBound;
+  }
+
+  /**
+   * a type variable only allows sub-types of its upper bound,
+   * e.g., T extends Number
+   */
+  public SymTypeExpression getUpperBound() {
+    // add upper bound given by symbol if applicable
+    SymTypeExpression result;
+    if (hasTypeVarSymbol() && !getTypeVarSymbol().isEmptySuperTypes()) {
+      Set<SymTypeExpression> intersectedTypes =
+          new HashSet<>(getTypeVarSymbol().getSuperTypesList());
+      intersectedTypes.add(getStoredUpperBound());
+      result = SymTypeExpressionFactory.createIntersection(intersectedTypes);
+    }
+    else {
+      result = getStoredUpperBound();
+    }
+    return result;
   }
 
   /**
@@ -67,6 +139,9 @@ public class SymTypeVariable extends SymTypeExpression {
     if(typeSymbol != null) {
     return typeSymbol.getName();
     }
+    if (!hasTypeVarSymbol()) {
+      return FREE_VARIABLE_NAME;
+    }
     return getTypeVarSymbol().getName();
   }
 
@@ -75,6 +150,9 @@ public class SymTypeVariable extends SymTypeExpression {
     //support deprecated code:
     if(typeSymbol != null) {
     return getVarName();
+    }
+    if (!hasTypeVarSymbol()) {
+      return FREE_VARIABLE_NAME;
     }
     return getTypeVarSymbol().getFullName();
   }
@@ -110,7 +188,16 @@ public class SymTypeVariable extends SymTypeExpression {
     if(typeSymbol != null) {
     return new SymTypeVariable(this.typeSymbol);
     }
-    return new SymTypeVariable(getTypeVarSymbol());
+    if (hasTypeVarSymbol()) {
+      return new SymTypeVariable(
+          getTypeVarSymbol(),
+          getLowerBound(),
+          getUpperBound()
+      );
+    }
+    else {
+      return new SymTypeVariable(null, getLowerBound(), getUpperBound());
+    }
   }
 
   @Override
@@ -133,6 +220,13 @@ public class SymTypeVariable extends SymTypeExpression {
     return this.print().equals(symVar.print());
     }
     if (!sym.isTypeVariable()) {
+      return false;
+    }
+    if(sym == this) {
+      return true;
+    }
+    // cannot identify without a name at this point
+    else if(!hasTypeVarSymbol()) {
       return false;
     }
     SymTypeVariable symVar = (SymTypeVariable) sym;
