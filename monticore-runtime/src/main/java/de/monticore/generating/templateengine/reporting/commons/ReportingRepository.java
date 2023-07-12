@@ -78,11 +78,11 @@ public class ReportingRepository {
         // name map has no identifier
         if (!name2maxidSourcePos.containsKey(out + pos)) {
           // init map
-          MapUtil.incMapValue(name2maxidSourcePos, out + pos); // value is 1
+          name2maxidSourcePos.merge(out + pos, 1, Integer::sum); // value is 1
         }
         nodeWithSource2Ident.put(obj, name2maxidSourcePos.get(out + pos));
-        MapUtil.incMapValue(name2maxidSourcePos, out + pos); // increase current
-                                                             // value
+        name2maxidSourcePos.merge(out + pos, 1, Integer::sum); // increase current
+                                                                        // value
       }
       // do not print <...>!1!
       if (nodeWithSource2Ident.get(obj) != 1) {
@@ -101,10 +101,10 @@ public class ReportingRepository {
       // name map has no identifier
       if (!name2maxid.containsKey(out)) {
         // init map
-        MapUtil.incMapValue(name2maxid, out);
+        name2maxid.merge(out, 1, Integer::sum);
       }
       node2Ident.put(obj, name2maxid.get(out));
-      MapUtil.incMapValue(name2maxid, out);
+      name2maxid.merge(out, 1, Integer::sum);
     }
     
     // do not print <<...>>!1!

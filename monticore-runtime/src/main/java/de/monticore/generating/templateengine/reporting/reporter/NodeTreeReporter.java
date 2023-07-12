@@ -7,7 +7,10 @@ import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.generating.templateengine.reporting.commons.*;
+import de.monticore.generating.templateengine.reporting.commons.AReporter;
+import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+import de.monticore.generating.templateengine.reporting.commons.TreePrintVisitor;
 import de.monticore.visitor.ITraverser;
 
 import java.io.File;
@@ -79,7 +82,7 @@ public class NodeTreeReporter extends AReporter {
   @Override
   public void reportTemplateStart(String templatename, ASTNode ast) {
     String aident = compactStr(ast);
-    MapUtil.incMapValue(nodeVisits, aident);
+    nodeVisits.merge(aident, 1, Integer::sum);
   }
   
   /**
@@ -92,7 +95,7 @@ public class NodeTreeReporter extends AReporter {
     for (HookPoint hp : afterHPs) {
       if (hp != null && hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
-        MapUtil.incMapValue(nodeVisits, aident);
+        nodeVisits.merge(aident, 1, Integer::sum);
       }
     }
   }
@@ -107,7 +110,7 @@ public class NodeTreeReporter extends AReporter {
     for (HookPoint hp : beforeHPs) {
       if (hp != null && hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
-        MapUtil.incMapValue(nodeVisits, aident);
+        nodeVisits.merge(aident, 1, Integer::sum);
       }
     }
   }
@@ -121,7 +124,7 @@ public class NodeTreeReporter extends AReporter {
     for (HookPoint hp : hps) {
       if (hp != null && hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
-        MapUtil.incMapValue(nodeVisits, aident);
+        nodeVisits.merge(aident, 1, Integer::sum);
       }
     }
   }
@@ -136,7 +139,7 @@ public class NodeTreeReporter extends AReporter {
     for (HookPoint hp : hps) {
       if (hp != null && hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
-        MapUtil.incMapValue(nodeVisits, aident);
+        nodeVisits.merge(aident, 1, Integer::sum);
       }
     }
   }
@@ -149,7 +152,7 @@ public class NodeTreeReporter extends AReporter {
   public void reportCallHookPointStart(String hookName, HookPoint hp, ASTNode ast) {
     if (hp != null && hp instanceof TemplateHookPoint) {
       String aident = compactStr(ast);
-      MapUtil.incMapValue(nodeVisits, aident);
+      nodeVisits.merge(aident, 1, Integer::sum);
     }
   }
   
@@ -161,7 +164,7 @@ public class NodeTreeReporter extends AReporter {
   public void reportFileCreation(String templatename, String qualifiedfilename,
       String fileextension, ASTNode ast) {
     String aident = compactStr(ast);
-    MapUtil.incMapValue(nodeVisits, aident);
+    nodeVisits.merge(aident, 1, Integer::sum);
   }
   
   /**

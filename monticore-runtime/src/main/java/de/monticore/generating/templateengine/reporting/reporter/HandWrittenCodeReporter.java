@@ -4,7 +4,10 @@ package de.monticore.generating.templateengine.reporting.reporter;
 
 import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.*;
+import de.monticore.generating.templateengine.reporting.commons.AReporter;
+import de.monticore.generating.templateengine.reporting.commons.Layouter;
+import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -39,7 +42,7 @@ public class HandWrittenCodeReporter extends AReporter {
   @Override
   public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
     if (parentDir != null) {
-      MapUtil.incMapValue(usedFileNames, parentDir.toString());
+      usedFileNames.merge(parentDir.toString(), 1, Integer::sum);
     }
   }
   

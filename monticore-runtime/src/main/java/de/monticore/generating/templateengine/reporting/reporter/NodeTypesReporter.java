@@ -4,7 +4,10 @@ package de.monticore.generating.templateengine.reporting.reporter;
 
 import com.google.common.collect.Maps;
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.reporting.commons.*;
+import de.monticore.generating.templateengine.reporting.commons.AReporter;
+import de.monticore.generating.templateengine.reporting.commons.Layouter;
+import de.monticore.generating.templateengine.reporting.commons.ObjectCountVisitor;
+import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
 
@@ -153,9 +156,9 @@ public class NodeTypesReporter extends AReporter {
   @Override
   public void reportTemplateStart(String templatename, ASTNode ast) {
     String key = Layouter.nodeName(ast);
-    MapUtil.incMapValue(nodeTypeCount, key);
+    nodeTypeCount.merge(key, 1, Integer::sum);
     if (!ast.get_SourcePositionStart().equals(SourcePosition.getDefaultSourcePosition())) {
-      MapUtil.incMapValue(nodeTypeCountPos, key);
+      nodeTypeCountPos.merge(key, 1, Integer::sum);
     }
   }
  

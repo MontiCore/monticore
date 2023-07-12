@@ -32,10 +32,10 @@ public class ObjectCountVisitor implements IVisitor {
     totalCount++;
     depth++;
     String key = Layouter.nodeName(a);
-    MapUtil.incMapValue(type2count, key);
+   type2count.merge(key, 1, Integer::sum);
     // count astnodes with source position
     if (!a.get_SourcePositionStart().equals(SourcePosition.getDefaultSourcePosition())) {
-      MapUtil.incMapValue(type2countPos, key);
+      type2countPos.merge(key, 1, Integer::sum);
     }
   }
 

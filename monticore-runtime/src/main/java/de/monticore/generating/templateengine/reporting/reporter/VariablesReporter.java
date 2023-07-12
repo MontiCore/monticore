@@ -2,21 +2,18 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.reporting.commons.AReporter;
+import de.monticore.generating.templateengine.reporting.commons.Layouter;
+import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import de.monticore.ast.ASTNode;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.reporting.commons.Layouter;
-import de.monticore.generating.templateengine.reporting.commons.MapUtil;
-import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 
 /**
  */
@@ -83,14 +80,14 @@ public class VariablesReporter extends AReporter {
       // templateCount.add("NAME:   " + name + Layouter.getSpaceString(10 -
       // name.length())
       // + "VALUE:   " + value);
-      MapUtil.incMapValue(var2asmt, name);
+      var2asmt.merge(name, 1, Integer::sum);
     }
   }
   
   @Override
   public void reportAddValue(String name, Object value, int size) {
     if (name != null) {
-      MapUtil.incMapValue(var2adds, name);
+      var2adds.merge(name, 1, Integer::sum);
     }
   }
   
