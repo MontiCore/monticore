@@ -2,17 +2,31 @@
 package de.monticore.codegen.cd2java._symboltable;
 
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.*;
+import de.monticore.codegen.cd2java._symboltable.scope.ArtifactScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ArtifactScopeInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ScopeInterfaceDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.*;
+import de.monticore.codegen.cd2java._symboltable.symbol.CommonSymbolInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Joiners;
@@ -24,8 +38,6 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.PACKAGE;
-import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
-import static de.monticore.codegen.cd2java.CoreTemplates.createPackageHookPoint;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
 
@@ -170,18 +182,18 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
 
   protected void addPackageAndAnnotation(ASTCDDefinition symTabCD, List<String> symbolTablePackage) {
     for (ASTCDClass cdClass : symTabCD.getCDClassesList()) {
-      this.replaceTemplate(PACKAGE, cdClass, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+      this.replaceTemplate(PACKAGE, cdClass, decorationHelper.createPackageHookPoint(symbolTablePackage));
+      this.replaceTemplate(ANNOTATIONS, cdClass, decorationHelper.createAnnotationsHookPoint(cdClass.getModifier()));
     }
 
     for (ASTCDInterface cdInterface : symTabCD.getCDInterfacesList()) {
-      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdInterface, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdInterface, decorationHelper.createPackageHookPoint(symbolTablePackage));
+      this.replaceTemplate(ANNOTATIONS, cdInterface, decorationHelper.createAnnotationsHookPoint(cdInterface.getModifier()));
     }
 
     for (ASTCDEnum cdEnum : symTabCD.getCDEnumsList()) {
-      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdEnum, createPackageHookPoint(symbolTablePackage));
-      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
+      this.replaceTemplate(CD2JavaTemplates.PACKAGE, cdEnum, decorationHelper.createPackageHookPoint(symbolTablePackage));
+      this.replaceTemplate(ANNOTATIONS, cdEnum, decorationHelper.createAnnotationsHookPoint(cdEnum.getModifier()));
     }
   }
 

@@ -5,7 +5,11 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -23,9 +27,13 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE_SPANNING_SYMBOL;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_AST_INHERITANCE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_SYMTAB_INHERITANCE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 
 /**
  * creates a InheritanceVisitor class from a grammar
@@ -64,8 +72,8 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
         .addAllCDMembers(getScopeHandleMethods(input.getCDDefinition(), handlerSimpleName))
         .addAllCDMembers(getSymbolHandleMethods(input.getCDDefinition(), handlerSimpleName))
         .build();
-    
-    this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+
+    this.replaceTemplate(ANNOTATIONS, cdClass, decorationHelper.createAnnotationsHookPoint(cdClass.getModifier()));
     CD4C.getInstance().addImport(cdClass, "de.monticore.ast.ASTNode");
     CD4C.getInstance().addImport(cdClass, "de.monticore.ast.ASTCNode");
     return cdClass;

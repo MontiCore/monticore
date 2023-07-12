@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
-import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
 import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_PACKAGE;
 
 public class ParserCDDecorator extends AbstractDecorator {
@@ -76,15 +75,15 @@ public class ParserCDDecorator extends AbstractDecorator {
 
   protected void addAnnotation(ASTCDDefinition parserCD) {
     for (ASTCDClass cdClass : parserCD.getCDClassesList()) {
-      this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+      this.replaceTemplate(ANNOTATIONS, cdClass, decorationHelper.createAnnotationsHookPoint(cdClass.getModifier()));
     }
 
     for (ASTCDInterface cdInterface : parserCD.getCDInterfacesList()) {
-      this.replaceTemplate(ANNOTATIONS, cdInterface, createAnnotationsHookPoint(cdInterface.getModifier()));
+      this.replaceTemplate(ANNOTATIONS, cdInterface, decorationHelper.createAnnotationsHookPoint(cdInterface.getModifier()));
     }
 
     for (ASTCDEnum cdEnum : parserCD.getCDEnumsList()) {
-      this.replaceTemplate(ANNOTATIONS, cdEnum, createAnnotationsHookPoint(cdEnum.getModifier()));
+      this.replaceTemplate(ANNOTATIONS, cdEnum, decorationHelper.createAnnotationsHookPoint(cdEnum.getModifier()));
     }
   }
 
