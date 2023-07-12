@@ -30,7 +30,6 @@ import de.se_rwth.commons.logging.Log;
  * Tests composing simple visiors using the traverser visitor. The
  * SimpleXVisitors append "[NameOfVisitor].[h|t|v|e][ASTNode]" when a method of
  * them is called.
- * TODO NJ,DA replace Visitors by traverser/handler 
  */
 public class ComposeSimpleTest extends CommonVisitorTest {
   
