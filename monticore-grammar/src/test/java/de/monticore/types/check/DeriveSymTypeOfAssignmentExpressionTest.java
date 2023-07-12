@@ -83,7 +83,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     add2scope(scope, f);
     f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("varbool", _booleanSymType));
+    add2scope(scope, field("varboolean", _booleanSymType));
     add2scope(scope, field("varbyte", _byteSymType));
     add2scope(scope, field("varchar", _charSymType));
     add2scope(scope, field("varshort", _shortSymType));
@@ -358,7 +358,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     //example with int - int
     check("varint&=9", "int");
     //example with boolean - boolean
-    check("varbool&=false", "boolean");
+    check("varboolean&=false", "boolean");
     //example with char - int
     check("varchar&=4", "char");
   }
@@ -377,7 +377,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     //example with int - int
     check("varint|=9", "int");
     //example with boolean - boolean
-    check("varbool|=true", "boolean");
+    check("varboolean|=true", "boolean");
   }
 
   @Test
@@ -394,7 +394,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     //example with int - int
     check("varint^=9", "int");
     //example with boolean - boolean
-    check("varbool^=false", "boolean");
+    check("varboolean^=false", "boolean");
   }
 
   @Test
