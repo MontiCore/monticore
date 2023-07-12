@@ -60,10 +60,6 @@ public interface IGrammarScope extends IGrammarScopeTOP {
 
   default Optional<ProdSymbol> resolveInSuperGrammars(String name,  AccessModifier modifier) {
     Optional<ProdSymbol> resolvedSymbol = empty();
-
-    // TODO (GV, MB)
-    // Die Methode muss überarbeitet werden. GrammarSymbols sollen nicht gefunden werden? Dann braucht man u.U.
-    // checkIfContinueWithSuperGrammar gar nicht mehr ...
     Optional<MCGrammarSymbol> spanningSymbol = MCGrammarSymbolTableHelper.getMCGrammarSymbol(this);
     if (spanningSymbol.isPresent()) {
       MCGrammarSymbol grammarSymbol = spanningSymbol.get();
