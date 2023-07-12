@@ -10,11 +10,6 @@ public class ASTMCWildcardTypeArgument extends ASTMCWildcardTypeArgumentTOP {
     super();
   }
 
-  // TODO RE: Mir ist nicht klar wozu diese Methode dient, aber auch hier
-  // wäre eigentlich manchmal ein Type vorhanden.-
-  // Warum da "empty" zurück kommt ist mir schleierhaft.
-  // entfernbar?
-  // (dann könte man sich nämlich viele der TOP Klassen sparen) 
   public Optional<ASTMCType> getMCTypeOpt() {
     return Optional.empty();
   }
