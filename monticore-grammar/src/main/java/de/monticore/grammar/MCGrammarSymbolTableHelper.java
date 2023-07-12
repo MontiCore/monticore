@@ -225,12 +225,6 @@ public class MCGrammarSymbolTableHelper {
 
   }
 
-  public static boolean isAssignmentCompatibleOrUndecidable(ProdSymbol subType,
-                                                            ProdSymbol superType) {
-    return isAssignmentCompatibleOrUndecidable(subType, superType,
-        newLinkedHashSet(Arrays.asList(subType)));
-  }
-
   /**
    * Returns the type of the collection <code>types</code> that is the sub type
    * of all other types in this collection. Else, null is returned.
@@ -253,40 +247,6 @@ public class MCGrammarSymbolTableHelper {
     }
     return Optional.empty();
   }
-
-  public static boolean isAssignmentCompatibleOrUndecidable(ProdSymbol subType,
-                                                            ProdSymbol superType, Set<ProdSymbol> handledTypes) {
-    // Return true if this type or the other type are both external
-    // TODO GV: check, wenn Java angebunden
-    if (subType.isIsExternal()
-        || superType.isIsExternal()) {
-      return true;
-    }
-
-    // Return true if this type and the other type are the same
-    if (areSameTypes(subType, superType)) {
-      return true;
-    }
-
-    // Try to find superType in supertypes of this type
-    Collection<ProdSymbol> allSuperTypes = getAllSuperProds(subType);
-    if (allSuperTypes.contains(superType)) {
-      return true;
-    }
-
-    // check transitive sub-type relation
-    for (ProdSymbol t : allSuperTypes) {
-      if (handledTypes.add(superType)) {
-        boolean subtypeOf = isAssignmentCompatibleOrUndecidable(t, superType, handledTypes);
-        if (subtypeOf) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
 
   public static Optional<Integer> getMin(AdditionalAttributeSymbol attrSymbol) {
     if (!attrSymbol.isPresentAstNode()) {
