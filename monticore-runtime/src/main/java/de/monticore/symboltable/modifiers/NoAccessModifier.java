@@ -21,6 +21,8 @@ public final class NoAccessModifier implements AccessModifier {
 
   @Override
   public Map<String, AccessModifier> getDimensionToModifierMap() {
-    return Map.of(ALL, this);
+    return Map.of(DIMENSION, this);
   }
+
+  protected final static String DIMENSION = "All";
 }

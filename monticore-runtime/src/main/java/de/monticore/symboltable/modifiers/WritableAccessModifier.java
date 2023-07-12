@@ -9,7 +9,7 @@ public enum WritableAccessModifier implements AccessModifier {
   WRITABLE {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier writeable = modifier.getDimensionToModifierMap().get("Writable");
+      AccessModifier writeable = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(writeable != null){
         return writeable.equals(WRITABLE);
       }
@@ -18,14 +18,14 @@ public enum WritableAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Writable", this);
+      return Map.of(DIMENSION, this);
     }
   },
 
   NON_WRITABLE {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier writeable = modifier.getDimensionToModifierMap().get("Writable");
+      AccessModifier writeable = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(writeable != null){
         return writeable.equals(NON_WRITABLE);
       }
@@ -34,7 +34,10 @@ public enum WritableAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Writable", this);
+      return Map.of(DIMENSION, this);
     }
   }
+  ;
+
+  public static final String DIMENSION = "Writable";
 }
