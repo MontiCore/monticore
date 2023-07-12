@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symbolName", "simpleName")}
-  final List<${symbolName}> result = new ArrayList<>();
+  final Set<${symbolName}> result = new HashSet<>();
 
 if (checkIfContinueWithEnclosingScope(foundSymbols) && getEnclosingScope() != null) {
 if (!(getEnclosingScope() instanceof IGlobalScope)) {
@@ -17,4 +17,4 @@ if (!(getEnclosingScope() instanceof IGlobalScope)) {
       result.addAll(resolvedFromEnclosing);
     }
   }
-  return result;
+  return new ArrayList(result);
