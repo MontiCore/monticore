@@ -37,11 +37,14 @@ public class WithinTypeBasicSymbolsResolver {
       BasicAccessModifier.PUBLIC.getDimensionToModifierMap()
           .keySet().stream().findFirst().get();
 
-  SymTypeVariableReplaceVisitor replaceVisitor;
+  protected SymTypeVariableReplaceVisitor replaceVisitor;
+
+  protected ExplicitSuperTypeCalculator superTypeCalculator;
 
   public WithinTypeBasicSymbolsResolver() {
     // default values
     replaceVisitor = new SymTypeVariableReplaceVisitor();
+    superTypeCalculator = new ExplicitSuperTypeCalculator();
   }
 
   /**
@@ -213,27 +216,6 @@ public class WithinTypeBasicSymbolsResolver {
   // Helper
 
   /**
-   * supertypes, but modified according to type parameters
-   */
-  List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
-    List<SymTypeExpression> superTypes;
-    List<SymTypeExpression> unmodifiedSuperTypes =
-        thisType.getTypeInfo().getSuperTypesList();
-    if (thisType.isGenericType()) {
-      Map<TypeVarSymbol, SymTypeExpression> replaceMap =
-          ((SymTypeOfGenerics) thisType).getTypeVariableReplaceMap();
-      superTypes = new ArrayList<>();
-      for (SymTypeExpression superType : unmodifiedSuperTypes) {
-        superTypes.add(replaceVariables(superType, replaceMap));
-      }
-    }
-    else {
-      superTypes = unmodifiedSuperTypes;
-    }
-    return superTypes;
-  }
-
-  /**
    * resolves locally, EXCLUDING supertypes
    */
   protected Optional<VariableSymbol> resolveVariableLocally(
@@ -318,6 +300,10 @@ public class WithinTypeBasicSymbolsResolver {
       SymTypeExpression type,
       Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
     return replaceVisitor.calculate(type, replaceMap);
+  }
+
+  protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
+    return superTypeCalculator.getExplicitSuperTypes(thisType);
   }
 
   /**
