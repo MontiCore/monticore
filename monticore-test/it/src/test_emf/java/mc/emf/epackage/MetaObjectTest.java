@@ -3,6 +3,7 @@
 package mc.emf.epackage;
 
 import mc.GeneratorIntegrationsTest;
+import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
@@ -12,12 +13,16 @@ import org.junit.Test;
 import org.junit.Ignore;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@Ignore // TODO MB
 public class MetaObjectTest extends GeneratorIntegrationsTest {
-  
+
+  public void setup() {
+
+  }
   @Test
+  @Ignore
   public void testSuperTypes() {
     EClass compAssig = ExpressionPackage.eINSTANCE.getASTComplexAssigment();
     
@@ -28,8 +33,6 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
     assertTrue(supertypes.contains(ExpressionPackage.eINSTANCE.getASTExpression()));
   }
 
-  //TODO :reactivate test
- /* @Test
   public void testEClass() {
     EClass exp = ExpressionPackage.eINSTANCE.getASTExpression();
     EClass incExp = (EClass) ExpressionPackage.eINSTANCE
@@ -44,16 +47,10 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
     assertTrue(exp.isInterface());
     assertFalse(incExp.isInterface());
 
-    assertEquals(ASTAssignment.class, assig.getInstanceClass());*/
+    assertEquals(ASTAssignment.class, assig.getInstanceClass());
+    assertEquals(3, assig.getFeatureCount());
 
-  //todo: assig.getFeatureCount() returns 4 at the moment, because:
-  //  initEAttribute(getASTAssignment_Value(), ecorePackage.getEString(), "Value", null,
-  //      0, 1, ASTAssignment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-  // is generated, which should not be the case
-
-/*    assertEquals(3, assig.getFeatureCount());
-
-}*/
+}
   
   @Test
   public void testEDataType() {

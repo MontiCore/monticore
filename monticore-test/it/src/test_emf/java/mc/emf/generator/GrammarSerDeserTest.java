@@ -2,9 +2,28 @@
 
 package mc.emf.generator;
 
+import de.monticore.emf.util.AST2ModelFiles;
+import de.monticore.emf.util.compare.AstEmfDiffUtility;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import mc.grammar.ittestgrammar._ast.ASTMCGrammar;
+import mc.grammar.ittestgrammar._ast.ItTestGrammarPackage;
+import mc.grammar.ittestgrammar_withconcepts._parser.ItTestGrammar_WithConceptsParser;
+import org.antlr.v4.runtime.RecognitionException;
+import org.eclipse.emf.compare.diff.metamodel.DiffElement;
+import org.eclipse.emf.ecore.EObject;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class GrammarSerDeserTest {
 
@@ -13,16 +32,13 @@ public class GrammarSerDeserTest {
     LogStub.init();
     Log.enableFailQuick(false);
   }
-  //todo: reactivate test
-  // line 45 has NullPointer exception, because inherited attribute from ITTerminal in Terminal
-  // if ASTTerminal_Name is not called in initializePackageContents, this should work
 
-/*
+  @Ignore // TODO
   @Test
   public void testSerializeDesirializeASTMCGrammarInstance() {
     try {
 
-      String path1 = "mc/emf/generator/Automata.mc4";
+      String path1 = "mc/emf/generator/Automaton.mc4";
       Optional<ASTMCGrammar> automatonGrammar = new ItTestGrammar_WithConceptsParser()
           .parse("src/test/resources/" + path1);
       assertTrue(automatonGrammar.isPresent());
@@ -46,5 +62,5 @@ public class GrammarSerDeserTest {
     catch (InterruptedException e) {
       fail("Should not reach this, but: " + e);
     }
-  }*/
+  }
 }

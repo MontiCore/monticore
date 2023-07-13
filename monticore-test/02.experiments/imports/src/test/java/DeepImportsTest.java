@@ -342,9 +342,9 @@ public class DeepImportsTest {
 
     // assume import to be cdlight.a.b.*
     assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());  // ToDo
+    assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
     assertFalse(gs.resolveOOType("Y").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.a.b.Y").isPresent());  // ToDo
+    assertTrue(gs.resolveOOType("cdlight.a.b.Y").isPresent());
   }
 
   public ASTCdCompilationUnit parse(String model) throws IOException {

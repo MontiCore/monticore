@@ -85,19 +85,7 @@ public class AutomataTool extends AutomataToolTOP {
   public void run(String[] args) {
     init();
     Options options = initOptions();
-   //todo kann das weg?
-    /* // (i, s, hw, o, p)
-    // get the model from args
-    if (args.length < 4) {
-      Log.error("0xDE631 Please specify at least 4 arguments: \n"
-          + "1. automata modelfile,\n"
-          + "2. symbol file,\n"
-          + "3. handcodedPath,\n"
-          + "4. output directory,\n"
-          + "5. (optional) templatePath\n"
-      );
-      return;
-    }*/
+
     try {
       CommandLineParser toolParser = new DefaultParser();
       CommandLine cmd = toolParser.parse(options, args);

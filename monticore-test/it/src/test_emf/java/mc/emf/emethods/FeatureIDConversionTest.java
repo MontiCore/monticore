@@ -22,8 +22,6 @@ public class FeatureIDConversionTest extends GeneratorIntegrationsTest {
   public void setUp() throws Exception {
     ast = ExpressionMill.complexAssigmentBuilder().uncheckedBuild();
   }
-  
-  // TODO GV
   public void testDerivedFeatureID() {
     int derivedID = ast.eDerivedStructuralFeatureID(ExpressionPackage.ASTValue, ASTValue.class);
     
