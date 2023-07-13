@@ -480,13 +480,6 @@ public class TemplateController {
     initAliases();
 
     // Load template
-    // TODO:
-    // It's pretty inefficient each time to create a new instance of the
-    // FreeMarker configuration by FreeMarkerTemplateEngine.loadTemplate(...)
-    // method
-    // Template t = FreeMarkerTemplateEngine.loadTemplate(templatename,
-    // classLoader, MontiCoreTemplateExceptionHandler.THROW_ERROR,
-    // externalTemplatePath);
     Template template = config.getFreeMarkerTemplateEngine().loadTemplate(templateName);
 
     // add static functions to template

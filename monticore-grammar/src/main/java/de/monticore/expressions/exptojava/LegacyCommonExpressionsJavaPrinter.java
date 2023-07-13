@@ -43,7 +43,7 @@ public class LegacyCommonExpressionsJavaPrinter extends CommonExpressionsPrettyP
     super(new IndentPrinter());
   }
   
-  @Override //TODO: READD ME
+  @Override
   public void handle(ASTFieldAccessExpression node) {
     node.getExpression().accept(getTraverser());
     String name = "get"+ node.getName().substring(0,1).toUpperCase() + node.getName().substring(1)+"()";

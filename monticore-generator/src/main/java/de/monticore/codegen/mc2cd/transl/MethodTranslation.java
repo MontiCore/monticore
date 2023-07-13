@@ -78,7 +78,6 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
 
   protected void addMethodBodyStereotype(ASTModifier modifier, StringBuilder code) {
     // to save the body in the cd
-    // todo think of better version
     TransformationHelper.addStereotypeValue(modifier,
         MC2CDStereotypes.METHOD_BODY.toString(),
         code.toString());

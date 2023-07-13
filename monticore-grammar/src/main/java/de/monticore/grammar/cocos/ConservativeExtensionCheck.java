@@ -14,8 +14,6 @@ import java.util.List;
 
 public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
 
-    // TODO: Multiple kinds of Errors, #2376
-
   public static final String ERROR_CODE = "0xA2007";
 
   public static final String ERROR_MSG_FORMAT = " Warning: Production %s does not extend %s in a conservative manner in component %s. This can lead to problems in the AST.";

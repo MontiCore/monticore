@@ -17,7 +17,6 @@ mlc Grammar {
     // pretty printer
     include "de/monticore/grammar/prettyprint/GrammarPrettyPrinter.java";
 
-    // TODO: Discuss whether we want to include general CoCos here
   }
 
   // export all Java files generated from the grammar

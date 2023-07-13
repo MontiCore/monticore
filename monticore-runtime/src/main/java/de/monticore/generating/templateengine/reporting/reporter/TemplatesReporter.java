@@ -42,7 +42,6 @@ public class TemplatesReporter extends AReporter {
   protected void writeContent() {
     writeUsedTemplates();
     writeUnusedTemplates();
-    // TODO: see #1738 properly deal with handwritten template inclusion
     writeUsedUSTemplates();
     writeUnusedUSTemplates();
   }
