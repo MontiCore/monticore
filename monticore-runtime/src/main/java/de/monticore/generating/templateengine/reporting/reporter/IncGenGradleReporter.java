@@ -9,9 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Function;
 
-import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.GEN_ERROR;
-import static de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter.MISSING;
-
 public class IncGenGradleReporter extends IncGenReporter {
 
   static final String SIMPLE_FILE_NAME = "IncGenGradleCheck";
