@@ -3,6 +3,7 @@
 package de.monticore.types3;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
@@ -280,6 +281,25 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
   }
 
   @Test
+  public void isSubTypeGenericsDoNotIgnoreTypeArguments() {
+    //s. https://git.rwth-aachen.de/monticore/monticore/-/issues/2977
+    // Test if we do not ignore TypeVariables in the description of the supertypes.
+    // e.g., given HashMap<K, V> extends Map<K, V>
+    // do not ignore the identity of the variables, e.g., do not allow
+    // Map<Integer, String> x = new HashMap<String, Integer>();
+    SymTypeOfGenerics iSMap = createGenerics(
+        _boxedMapSymType.getTypeInfo(), _IntegerSymType, _boxedString);
+    SymTypeOfGenerics iSHashMap = createGenerics(
+        _hashMapSymType.getTypeInfo(), _IntegerSymType, _boxedString);
+    SymTypeOfGenerics sIHashMap = createGenerics(
+        _hashMapSymType.getTypeInfo(), _boxedString, _IntegerSymType);
+
+    assertTrue(tr.isCompatible(iSMap, iSHashMap));
+    assertFalse(tr.isCompatible(iSMap, sIHashMap));
+    assertNoFindings();
+  }
+
+  @Test
   public void isCompatibleUnions() {
     assertTrue(tr.isCompatible(
         createUnion(_personSymType, _carSymType), _personSymType
@@ -507,6 +527,112 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     assertTrue(tr.isCompatible(_graphSymType, _graphSymType));
     assertTrue(tr.isCompatible(_graphNodeSymType, _graphNodeSymType));
     assertTrue(tr.isCompatible(_graphEdgeSymType, _graphEdgeSymType));
+  }
+
+  @Test
+  public void isCompatibleUpperBoundedGenerics() {
+    ICombineExpressionsWithLiteralsGlobalScope gs =
+        CombineExpressionsWithLiteralsMill.globalScope();
+    // List<Person>
+    SymTypeOfGenerics pList = createGenerics(
+        _boxedListSymType.getTypeInfo(), _personSymType);
+    // List<Student>
+    SymTypeOfGenerics sList = createGenerics(
+        _boxedListSymType.getTypeInfo(), _studentSymType);
+    // List<? extends Student>
+    SymTypeOfGenerics sSubList = createGenerics(
+        _boxedListSymType.getTypeInfo(),
+        createTypeVariable(_bottomType, _studentSymType)
+    );
+    // List<? extends Person>
+    SymTypeOfGenerics pSubList = createGenerics(
+        _boxedListSymType.getTypeInfo(),
+        createTypeVariable(_bottomType, _personSymType)
+    );
+    // LinkedList<? extends Student>
+    SymTypeOfGenerics sSubLinkedList = createGenerics(
+        _linkedListSymType.getTypeInfo(),
+        createTypeVariable(_bottomType, _studentSymType)
+    );
+    // LinkedList<? extends Person>
+    SymTypeOfGenerics pSubLinkedList = createGenerics(
+        _linkedListSymType.getTypeInfo(),
+        createTypeVariable(_bottomType, _personSymType)
+    );
+
+    assertFalse(tr.isCompatible(pList, sList));
+    assertFalse(tr.isCompatible(sList, pList));
+    assertFalse(tr.isCompatible(pList, sSubList));
+    assertFalse(tr.isCompatible(sList, sSubList));
+
+    assertTrue(tr.isCompatible(pSubList, pList));
+    assertTrue(tr.isCompatible(pSubList, sList));
+    assertTrue(tr.isCompatible(pSubList, pSubList));
+    assertTrue(tr.isCompatible(pSubList, sSubList));
+    assertFalse(tr.isCompatible(sSubList, pList));
+    assertTrue(tr.isCompatible(sSubList, sList));
+    assertFalse(tr.isCompatible(sSubList, pSubList));
+    assertTrue(tr.isCompatible(sSubList, sSubList));
+
+    assertTrue(tr.isCompatible(pSubList, pSubLinkedList));
+    assertTrue(tr.isCompatible(pSubList, sSubLinkedList));
+    assertFalse(tr.isCompatible(sSubList, pSubLinkedList));
+    assertTrue(tr.isCompatible(sSubList, sSubLinkedList));
+
+    assertNoFindings();
+  }
+
+  @Test
+  public void isCompatibleLowerBoundedGenerics() {
+    ICombineExpressionsWithLiteralsGlobalScope gs =
+        CombineExpressionsWithLiteralsMill.globalScope();
+    // List<Person>
+    SymTypeOfGenerics pList = createGenerics(
+        _boxedListSymType.getTypeInfo(), _personSymType);
+    // List<Student>
+    SymTypeOfGenerics sList = createGenerics(
+        _boxedListSymType.getTypeInfo(), _studentSymType);
+    // List<? super Student>
+    SymTypeOfGenerics sSuperList = createGenerics(
+        _boxedListSymType.getTypeInfo(),
+        createTypeVariable(_studentSymType, _topType)
+    );
+    // List<? super Person>
+    SymTypeOfGenerics pSuperList = createGenerics(
+        _boxedListSymType.getTypeInfo(),
+        createTypeVariable(_personSymType, _topType)
+    );
+    // LinkedList<? super Student>
+    SymTypeOfGenerics sSuperLinkedList = createGenerics(
+        _linkedListSymType.getTypeInfo(),
+        createTypeVariable(_studentSymType, _topType)
+    );
+    // LinkedList<? super Person>
+    SymTypeOfGenerics pSuperLinkedList = createGenerics(
+        _linkedListSymType.getTypeInfo(),
+        createTypeVariable(_personSymType, _topType)
+    );
+
+    assertFalse(tr.isCompatible(pList, sList));
+    assertFalse(tr.isCompatible(sList, pList));
+    assertFalse(tr.isCompatible(pList, sSuperList));
+    assertFalse(tr.isCompatible(sList, sSuperList));
+
+    assertTrue(tr.isCompatible(pSuperList, pList));
+    assertFalse(tr.isCompatible(pSuperList, sList));
+    assertTrue(tr.isCompatible(pSuperList, pSuperList));
+    assertFalse(tr.isCompatible(pSuperList, sSuperList));
+    assertTrue(tr.isCompatible(sSuperList, pList));
+    assertTrue(tr.isCompatible(sSuperList, sList));
+    assertTrue(tr.isCompatible(sSuperList, pSuperList));
+    assertTrue(tr.isCompatible(sSuperList, sSuperList));
+
+    assertTrue(tr.isCompatible(pSuperList, pSuperLinkedList));
+    assertFalse(tr.isCompatible(pSuperList, sSuperLinkedList));
+    assertTrue(tr.isCompatible(sSuperList, pSuperLinkedList));
+    assertTrue(tr.isCompatible(sSuperList, sSuperLinkedList));
+
+    assertNoFindings();
   }
 
   @Test

@@ -1,9 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
@@ -27,7 +27,17 @@ public class SymTypeCompatibilityCalculator {
 
   protected SymTypeRelations symTypeRelations;
 
+  protected ExplicitSuperTypeCalculator superTypeCalculator;
+
+  SymTypeCompatibilityCalculator() {
+    // default values
+    // SymTypeRelations has no default,
+    // as this tends to be part of SymTypeRelations
+    superTypeCalculator = new ExplicitSuperTypeCalculator();
+  }
+
   public SymTypeCompatibilityCalculator(SymTypeRelations symTypeRelations) {
+    this();
     this.symTypeRelations = symTypeRelations;
   }
 
@@ -196,7 +206,7 @@ public class SymTypeCompatibilityCalculator {
 
   /**
    * whether one expression is the subType of another,
-   * with at least one of the types being a variable
+   * with at least one of the types being a variable.
    */
   protected boolean typeVarIsSubTypeOf(
       SymTypeExpression subType,
@@ -395,37 +405,48 @@ public class SymTypeCompatibilityCalculator {
       boolean subTypeIsSoft
   ) {
     boolean result;
-    TypeSymbol superSym = superType.getTypeInfo();
-    TypeSymbol subSym = subType.getTypeInfo();
+    String superName;
     List<SymTypeExpression> superArgs;
     if (superType.isGenericType()) {
+      superName = ((SymTypeOfGenerics) superType).getTypeConstructorFullName();
       superArgs = ((SymTypeOfGenerics) superType).getArgumentList();
     }
     else {
+      superName = superType.printFullName();
       superArgs = new ArrayList<>();
     }
+    String subName;
     List<SymTypeExpression> subArgs;
     if (subType.isGenericType()) {
+      subName = ((SymTypeOfGenerics) subType).getTypeConstructorFullName();
       subArgs = ((SymTypeOfGenerics) subType).getArgumentList();
     }
     else {
+      subName = subType.printFullName();
       subArgs = new ArrayList<>();
     }
-    //TODO check recursively, this is only a hotfix, see #2977
-    if (subSym.getFullName().equals(superSym.getFullName())) {
+    if (subName.equals(superName)) {
+      if (subArgs.size() != superArgs.size()) {
+        Log.error("0xFD6AD internal error: type \"" + subName + "\" "
+            + "used with inconsistent amount of type arguments: "
+            + subType.printFullName() + " and "
+            + superType.printFullName()
+        );
+        return false;
+      }
+      // cannot use subTyping-relation for type arguments;
+      // List<SuperClass> is not a superType of List<SubClass> or vice versa.
+      // However, e.g., List<? super C> is a superType of List<C>
       result = true;
       for (int i = 0; i < subArgs.size(); i++) {
-        if (!subArgs.get(i).isTypeVariable()) {
-          if (!(subArgs.get(i).print().equals(superArgs.get(i).print()))) {
-            result = false;
-          }
-        }
+        result = result &&
+            containsPreNormalized(subArgs.get(i), superArgs.get(i));
       }
     }
     else {
       // check super classes
       result = false;
-      for (SymTypeExpression subSuperExpr : subSym.getSuperTypesList()) {
+      for (SymTypeExpression subSuperExpr : getSuperTypes(subType)) {
         result = result ||
             // here we box the symTypes, as we did not before
             // this leads to List<int> being a subType of java.util.List<Integer>
@@ -443,4 +464,80 @@ public class SymTypeCompatibilityCalculator {
     return result;
   }
 
+  // Helper
+
+  /**
+   * Is the set of types denoted by subSetType a subSet
+   * of the set of types denoted by superSetType?
+   * s. Java spec 20 4.5.1, 4.10.2
+   * A type variable represents multiple Types,
+   * in other cases, this is an identity check.
+   * s. a. {@link #typeVarIsSubTypeOf}
+   * The arguments are expected to be normalized.
+   * Additionally, type variables within other symTypes
+   * are currently not supported,
+   * this helper function (currently) is only to check subtyping of generics.
+   * <p>
+   * Fundamentally, T1 "contains" T2 ("T2 <= T1")
+   * if the set of types denoted by T1 is (provably) a superSet
+   * of the types denoted by T2.
+   * This translates to the reflexive and transitive closure of (from spec):
+   * <ul>
+   * <li> ? extends T <= ? extends S if T <: S
+   * <li> ? extends T <= ?
+   * <li> ? super T <= ? super S if S <: T
+   * <li> ? super T <= ?
+   * <li> ? super T <= ? extends Object
+   * <li> T <= T
+   * <li> T <= ? extends T
+   * <li> T <= ? super T
+   * </ul>
+   */
+  protected boolean containsPreNormalized(
+      SymTypeExpression subSetType,
+      SymTypeExpression superSetType
+  ) {
+    boolean result;
+    // stop recursive checks (e.g., A<T extends A<T>>)
+    if (subSetType.deepEquals(superSetType)) {
+      result = true;
+    }
+    // check both upper and lower bound
+    else {
+      // convert both arguments into TypeVariables with upper and lower bound
+      SymTypeVariable subSetVar;
+      SymTypeVariable superSetVar;
+      if (subSetType.isTypeVariable()) {
+        subSetVar = (SymTypeVariable) subSetType;
+      }
+      else {
+        subSetVar = SymTypeExpressionFactory
+            .createTypeVariable(subSetType, subSetType);
+      }
+      if (superSetType.isTypeVariable()) {
+        superSetVar = (SymTypeVariable) superSetType;
+      }
+      else {
+        superSetVar = SymTypeExpressionFactory
+            .createTypeVariable(superSetType, superSetType);
+      }
+      // check that the subSetVar bounds are within the superSetVar bounds
+      if (!internal_isSubTypeOfPreNormalized(subSetVar.getUpperBound(), superSetVar.getUpperBound(),
+          false)) {
+        result = false;
+      }
+      else if (!internal_isSubTypeOfPreNormalized(superSetVar.getLowerBound(),
+          subSetVar.getLowerBound(), false)) {
+        result = false;
+      }
+      else {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
+    return superTypeCalculator.getExplicitSuperTypes(thisType);
+  }
 }
