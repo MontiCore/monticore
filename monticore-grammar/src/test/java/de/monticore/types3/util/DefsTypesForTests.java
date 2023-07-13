@@ -683,6 +683,8 @@ public class DefsTypesForTests {
 
   public static SymTypeOfGenerics _linkedListSymType;
 
+  public static SymTypeOfGenerics _hashMapSymType;
+
   public static void set_generics() {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     TypeVarSymbol listVar = typeVariable("LinkedListT");
@@ -690,8 +692,20 @@ public class DefsTypesForTests {
         inScope(gs, type("LinkedList",
             List.of(createGenerics(_boxedListSymType.getTypeInfo(),
                 createTypeVariable(listVar))),
-            List.of(listVar))),
-        createTypeVariable(listVar)
+            List.of(listVar)
+        ))
+    );
+    TypeVarSymbol mapKVar = typeVariable("HashMapK");
+    TypeVarSymbol mapVVar = typeVariable("HashMapV");
+    _hashMapSymType = createGenerics(
+        inScope(gs, type("HashMap",
+            List.of(createGenerics(
+                _boxedMapSymType.getTypeInfo(),
+                createTypeVariable(mapKVar),
+                createTypeVariable(mapVVar))
+            ),
+            List.of(mapKVar, mapVVar))
+        )
     );
   }
 

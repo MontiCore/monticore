@@ -20,7 +20,7 @@ public class ExpressionBasisTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void deriveTFromASTNameExpression2() throws IOException {
-    checkExpr("varbool", "boolean");
+    checkExpr("varboolean", "boolean");
   }
 
   @Test

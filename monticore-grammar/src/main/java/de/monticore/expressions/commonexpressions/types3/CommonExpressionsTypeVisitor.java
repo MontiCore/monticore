@@ -9,7 +9,6 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTrav
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -18,6 +17,7 @@ import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.Names;
@@ -906,8 +906,15 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
 
-    // unboxing if one is primitive
-    if (left.isPrimitive() || right.isPrimitive()) {
+    if (left.isObscureType() || right.isObscureType()) {
+      // if any inner obscure then error already logged
+      return createObscureType();
+    }
+    else if (left.isPrimitive() || right.isPrimitive()) {
+      // skip unboxing + numeric promotion if applicable
+      if (getTypeRel().isNumericType(left) && getTypeRel().isNumericType(right)) {
+        return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
+      }
       left = getTypeRel().unbox(left);
       right = getTypeRel().unbox(right);
     }
