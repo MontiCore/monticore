@@ -225,21 +225,18 @@ public class SymTypeVariable extends SymTypeExpression {
     if(sym == this) {
       return true;
     }
-    // cannot identify without a name at this point
-    else if(!hasTypeVarSymbol()) {
-      return false;
-    }
     SymTypeVariable symVar = (SymTypeVariable) sym;
-    if (!getTypeVarSymbol().getFullName().equals(
-        symVar.getTypeVarSymbol().getFullName())) {
+    if (!getUpperBound().deepEquals(symVar.getUpperBound())) {
       return false;
     }
-    if (!getTypeVarSymbol().getEnclosingScope().equals(
-        symVar.getTypeVarSymbol().getEnclosingScope())) {
+    else if (!getLowerBound().deepEquals(symVar.getLowerBound())) {
       return false;
     }
-    if (!getTypeVarSymbol().getSpannedScope().equals(
-        symVar.getTypeVarSymbol().getSpannedScope())) {
+    // cannot identify without a name at this point
+    else if (!hasTypeVarSymbol() || !symVar.hasTypeVarSymbol()) {
+      return false;
+    }
+    else if (!getTypeVarSymbol().deepEquals(symVar.getTypeVarSymbol())) {
       return false;
     }
     return true;
