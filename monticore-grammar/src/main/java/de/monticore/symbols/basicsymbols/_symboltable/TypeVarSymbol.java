@@ -14,6 +14,7 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
     if (this.getEnclosingScope() != other.getEnclosingScope()) {
       return false;
     }
+    // allow null as spanned scope
     if (this.spannedScope != other.spannedScope) {
       return false;
     }
