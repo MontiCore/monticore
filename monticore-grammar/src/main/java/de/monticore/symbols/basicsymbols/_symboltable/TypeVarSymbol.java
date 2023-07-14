@@ -14,7 +14,7 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
     if (this.getEnclosingScope() != other.getEnclosingScope()) {
       return false;
     }
-    if (this.getSpannedScope() != other.getSpannedScope()) {
+    if (this.spannedScope != other.spannedScope) {
       return false;
     }
     if (!this.getName().equals(other.getName())) {
