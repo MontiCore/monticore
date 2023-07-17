@@ -14,9 +14,12 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.check.SymTypeOfUnion;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +32,11 @@ import java.util.stream.Collectors;
  * but in a more type correct way then our resolve algorithm,
  * as some additions cannot be (simply) added to it.
  * E.g., given generics, the correct type parameters will be set.
- * The results will be in form of SymTypeExpressions
+ * The results will be in form of SymTypeExpressions.
  */
 public class WithinTypeBasicSymbolsResolver {
+
+  protected static final String LOG_NAME = "WithinTypeResolving";
 
   protected static final String VISIBILITY_MODIFIER_KEY =
       BasicAccessModifier.PUBLIC.getDimensionToModifierMap()
@@ -39,12 +44,22 @@ public class WithinTypeBasicSymbolsResolver {
 
   protected SymTypeVariableReplaceVisitor replaceVisitor;
 
-  protected ExplicitSuperTypeCalculator superTypeCalculator;
+  protected SymTypeRelations symTypeRelations;
+
+  public WithinTypeBasicSymbolsResolver(SymTypeRelations symTypeRelations) {
+    this.symTypeRelations = symTypeRelations;
+    // default values
+    replaceVisitor = new SymTypeVariableReplaceVisitor();
+  }
 
   public WithinTypeBasicSymbolsResolver() {
     // default values
     replaceVisitor = new SymTypeVariableReplaceVisitor();
-    superTypeCalculator = new ExplicitSuperTypeCalculator();
+    symTypeRelations = new SymTypeRelations();
+  }
+
+  protected SymTypeRelations getSymTypeRelations() {
+    return symTypeRelations;
   }
 
   /**
@@ -56,41 +71,40 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate) {
     Optional<SymTypeExpression> resolvedSymType;
-    if (!thisType.hasTypeInfo()) {
-      Log.error("0xFD36A internal error: type symbol expected");
+    Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
+    if (spannedScopeOpt.isEmpty()) {
       resolvedSymType = Optional.empty();
     }
+    // search in this scope
     else {
       Optional<VariableSymbol> resolvedSymbol = resolveVariableLocally(
-          thisType.getTypeInfo().getSpannedScope(),
+          spannedScopeOpt.get(),
           name,
           accessModifier,
           predicate
       );
-      if (resolvedSymbol.isPresent()) {
-        SymTypeExpression resolvedTypeUnmodified = resolvedSymbol.get().getType();
-        resolvedSymType = Optional.of(
-            replaceVariablesIfNecessary(thisType, resolvedTypeUnmodified)
-        );
-      }
-      else {
-        // private -> protected while searching in super types
-        AccessModifier superModifier = private2Protected(accessModifier);
-        List<SymTypeExpression> superTypes = getSuperTypes(thisType);
-        resolvedSymType = Optional.empty();
-        for (SymTypeExpression superType : superTypes) {
-          Optional<SymTypeExpression> resolvedInSuper =
-              resolveVariable(superType, name, superModifier, predicate);
-          if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
-            Log.error("0xFD222 found variables with name \""
-                + name + "\" in multiple super types of \""
-                + thisType.printFullName() + "\"");
-          }
-          else if (resolvedSymType.isEmpty() && resolvedInSuper.isPresent()) {
-            resolvedSymType = resolvedInSuper;
-          }
-          //filter based on local variables
+      resolvedSymType = resolvedSymbol.map(
+          s -> replaceVariablesIfNecessary(thisType, s.getType())
+      );
+    }
+    // search in super types
+    if (resolvedSymType.isEmpty()) {
+      // private -> protected while searching in super types
+      AccessModifier superModifier = private2Protected(accessModifier);
+      List<SymTypeExpression> superTypes = getSuperTypes(thisType);
+      resolvedSymType = Optional.empty();
+      for (SymTypeExpression superType : superTypes) {
+        Optional<SymTypeExpression> resolvedInSuper =
+            resolveVariable(superType, name, superModifier, predicate);
+        if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
+          Log.error("0xFD222 found variables with name \""
+              + name + "\" in multiple super types of \""
+              + thisType.printFullName() + "\"");
         }
+        else if (resolvedSymType.isEmpty() && resolvedInSuper.isPresent()) {
+          resolvedSymType = resolvedInSuper;
+        }
+        //filter based on local variables
       }
     }
     return resolvedSymType;
@@ -105,9 +119,11 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
     List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
-    if (!thisType.hasTypeInfo()) {
-      Log.error("0xFD36B internal error: type symbol expected");
+    Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
+    if (spannedScopeOpt.isEmpty()) {
+      resolvedSymTypes = new ArrayList<>();
     }
+    // search in this scope
     else {
       //todo outer types (and vs. supertypes) not really?
       List<FunctionSymbol> resolvedSymbols = resolveFunctionLocally(
@@ -122,47 +138,48 @@ public class WithinTypeBasicSymbolsResolver {
       resolvedSymTypes = resolvedTypesUnmodified.stream()
           .map(f -> (SymTypeOfFunction) replaceVariablesIfNecessary(thisType, f))
           .collect(Collectors.toList());
-
-      // private -> protected while searching in super types
-      AccessModifier superModifier = private2Protected(accessModifier);
-      List<SymTypeExpression> superTypes = getSuperTypes(thisType);
-      List<SymTypeOfFunction> superFuncs = new ArrayList<>();
-      for (SymTypeExpression superType : superTypes) {
-        List<SymTypeOfFunction> resolvedInSuper =
-            resolveFunctions(superType, name, superModifier, predicate);
-        // filter based on being overridden / hidden (static)
-        // Java Spec 20 8.4.8.1 overriding methods need to have the SAME signature,
-        // e.g., Integer getX() overrides Number getX()
-        // e.g., void setX(Number x) does not override void setX(Integer x)
-        // we assume that CoCos corresponding to the compile time errors of
-        // Java Spec 20 8.4.8 are used
-        for (Iterator<SymTypeOfFunction> fItr = resolvedInSuper.iterator();
-             fItr.hasNext(); ) {
-          SymTypeOfFunction superFunc = fItr.next();
-          if (resolvedSymTypes.stream()
-              .anyMatch(f -> f.deepEqualsSignature(superFunc))) {
-            fItr.remove();
-          }
-        }
-        superFuncs.addAll(resolvedInSuper);
-      }
-      // filter based on being inherited twice (diamond pattern)
-      // we cannot (solely) rely on the symbols in case of generics
-      List<SymTypeOfFunction> filteredSuperFuncs = new ArrayList<>();
-      for (SymTypeOfFunction func1 : superFuncs) {
-        boolean duplicate = false;
-        for (SymTypeOfFunction func2 : filteredSuperFuncs) {
-          if (func1.getSymbol() == func2.getSymbol()
-              && func1.deepEqualsSignature(func2)) {
-            duplicate = true;
-          }
-        }
-        if (!duplicate) {
-          filteredSuperFuncs.add(func1);
-        }
-      }
-      resolvedSymTypes.addAll(filteredSuperFuncs);
     }
+    // search in super types
+    // private -> protected while searching in super types
+    AccessModifier superModifier = private2Protected(accessModifier);
+    List<SymTypeExpression> superTypes = getSuperTypes(thisType);
+    List<SymTypeOfFunction> superFuncs = new ArrayList<>();
+    for (SymTypeExpression superType : superTypes) {
+      List<SymTypeOfFunction> resolvedInSuper =
+          resolveFunctions(superType, name, superModifier, predicate);
+      // filter based on being overridden / hidden (static)
+      // Java Spec 20 8.4.8.1 overriding methods need to have the SAME signature,
+      // e.g., Integer getX() overrides Number getX()
+      // e.g., void setX(Number x) does not override void setX(Integer x)
+      // we assume that CoCos corresponding to the compile time errors of
+      // Java Spec 20 8.4.8 are used
+      for (Iterator<SymTypeOfFunction> fItr = resolvedInSuper.iterator();
+           fItr.hasNext(); ) {
+        SymTypeOfFunction superFunc = fItr.next();
+        if (resolvedSymTypes.stream()
+            .anyMatch(f -> f.deepEqualsSignature(superFunc))) {
+          fItr.remove();
+        }
+      }
+      superFuncs.addAll(resolvedInSuper);
+    }
+    // filter based on being inherited twice (diamond pattern)
+    // we cannot (solely) rely on the symbols in case of generics
+    List<SymTypeOfFunction> filteredSuperFuncs = new ArrayList<>();
+    for (SymTypeOfFunction func1 : superFuncs) {
+      boolean duplicate = false;
+      for (SymTypeOfFunction func2 : filteredSuperFuncs) {
+        if (func1.getSymbol() == func2.getSymbol()
+            && func1.deepEqualsSignature(func2)) {
+          duplicate = true;
+        }
+      }
+      if (!duplicate) {
+        filteredSuperFuncs.add(func1);
+      }
+    }
+    resolvedSymTypes.addAll(filteredSuperFuncs);
+
     return resolvedSymTypes;
   }
 
@@ -175,13 +192,14 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<TypeSymbol> predicate) {
     Optional<SymTypeExpression> resolvedSymType;
-    if (!thisType.hasTypeInfo()) {
-      Log.error("0xFD36A internal error: type symbol expected");
+    Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
+    if (spannedScopeOpt.isEmpty()) {
       resolvedSymType = Optional.empty();
     }
+    // search in this scope
     else {
       Optional<TypeSymbol> resolvedSymbol = resolveTypeLocally(
-          thisType.getTypeInfo().getSpannedScope(),
+          spannedScopeOpt.get(),
           name,
           accessModifier,
           predicate
@@ -194,23 +212,45 @@ public class WithinTypeBasicSymbolsResolver {
         );
       }
       else {
-        // private -> protected while searching in super types
-        AccessModifier superModifier = private2Protected(accessModifier);
-        List<SymTypeExpression> superTypes = getSuperTypes(thisType);
         resolvedSymType = Optional.empty();
-        for (SymTypeExpression superType : superTypes) {
-          Optional<SymTypeExpression> resolvedInSuper =
-              resolveType(superType, name, superModifier, predicate);
-          if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
-            Log.error("0xFD224 found type with name \""
-                + name + "\" in multiple super types of \""
-                + thisType.printFullName() + "\"");
-          }
-          resolvedSymType = resolvedInSuper;
-        }
       }
     }
+    // search in super types
+    if (resolvedSymType.isEmpty()) {
+      // private -> protected while searching in super types
+      AccessModifier superModifier = private2Protected(accessModifier);
+      List<SymTypeExpression> superTypes = getSuperTypes(thisType);
+      resolvedSymType = Optional.empty();
+      for (SymTypeExpression superType : superTypes) {
+        Optional<SymTypeExpression> resolvedInSuper =
+            resolveType(superType, name, superModifier, predicate);
+        if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
+          Log.error("0xFD224 found type with name \""
+              + name + "\" in multiple super types of \""
+              + thisType.printFullName() + "\"");
+        }
+        resolvedSymType = resolvedInSuper;
+      }
+    }
+
     return resolvedSymType;
+  }
+
+  /**
+   * checks if the symtypeExpression is of a (sym)type to be resolved in,
+   * e.g., this includes objects but excludes primitives.
+   * This method is intended to be used
+   * to increase the specificity of error messages,
+   * it is NOT necessary to check a type with it before calling resolve[...]().
+   * s. a. {@link NominalSuperTypeCalculator}
+   */
+  public boolean canResolveIn(SymTypeExpression thisType) {
+    return thisType.isObjectType() ||
+        thisType.isGenericType() ||
+        thisType.isTypeVariable() ||
+        thisType.isUnionType() ||
+        thisType.isIntersectionType();
+    // array.size not supported yet
   }
 
   // Helper
@@ -302,8 +342,50 @@ public class WithinTypeBasicSymbolsResolver {
     return replaceVisitor.calculate(type, replaceMap);
   }
 
+  protected Optional<IBasicSymbolsScope> getSpannedScope(SymTypeExpression type) {
+    // note that this function has to be kept in sync with
+    // SymTypeRelations::getNominalSuperTypes,
+    // e.g., the union's lub is considered to be
+    // an alternative (, less specified) representation of the union's type,
+    // while the type's in an intersection are the intersection's supertypes.
+    Optional<IBasicSymbolsScope> spannedScope;
+    // object
+    if (type.isObjectType() || type.isGenericType()) {
+      spannedScope = Optional.of(type.getTypeInfo().getSpannedScope());
+    }
+    // type variable
+    // considered unknown scope with super types
+    else if (type.isTypeVariable()) {
+      spannedScope = Optional.empty();
+    }
+    // intersection
+    // considered empty scope with super types
+    else if (type.isIntersectionType()) {
+      spannedScope = Optional.empty();
+    }
+    // union
+    // only its lub is known to be present
+    else if (type.isUnionType()) {
+      Collection<SymTypeExpression> unionizedTypes =
+          ((SymTypeOfUnion) type).getUnionizedTypeSet();
+      Optional<SymTypeExpression> lubOpt =
+          getSymTypeRelations().leastUpperBound(unionizedTypes);
+      spannedScope = lubOpt.flatMap(lub -> getSpannedScope(lub));
+    }
+    // extension point
+    else {
+      Log.info("tried to get the spanned scope of "
+              + type.printFullName()
+              + " which is currently not supported",
+          LOG_NAME
+      );
+      spannedScope = Optional.empty();
+    }
+    return spannedScope;
+  }
+
   protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
-    return superTypeCalculator.getExplicitSuperTypes(thisType);
+    return getSymTypeRelations().getNominalSuperTypes(thisType);
   }
 
   /**

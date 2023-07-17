@@ -11,6 +11,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
@@ -405,16 +406,33 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     // case: expression "." name, e.g., getX().var
     if (getType4Ast().hasTypeOfExpression(expr.getExpression())) {
       type = calculateExprFieldAccess(expr);
-      // case: typeIdentifier "." name, e.g., XClass.staticVar
-      // in Java, if variable exists, typeIdentifier "." name is ignored,
-      // even if variable "." name does not exist
+      if (type.isEmpty() && !resultsAreOptional) {
+        Log.error("0xF737F given expression of type "
+                + getType4Ast().getPartialTypeOfExpr(expr.getExpression()).printFullName()
+                + " unable to derive the type of the access \"."
+                + expr.getName() + "\"",
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd()
+        );
+      }
     }
-    // case: typeid "." name, e.g., MyClass.staticVar
+    // case: typeIdentifier "." name, e.g., XClass.staticVar
+    // in Java, if variable exists, typeIdentifier "." name is ignored,
+    // even if variable "." name does not exist
     else if (getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression())) {
       type = calculateTypeIdFieldAccess(expr);
       // case: typeid "." typeid2 ("." name), e.g., C1.CInner.staticVar
       if (type.isEmpty() && resultsAreOptional) {
         type = calculateInnerTypeIdFieldAccess(expr);
+      }
+      else if (type.isEmpty() && !resultsAreOptional) {
+        Log.error("0xF736F given type identifier of type "
+                + getType4Ast().getPartialTypeOfTypeIdForName(expr.getExpression()).printFullName()
+                + " unable to derive the type of the access \"."
+                + expr.getName() + "\"",
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd()
+        );
       }
     }
     else {
@@ -423,10 +441,23 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       // case qualifier "." name as type identifier
       // this requires an outer field-access (qualifier.name.field),
       // as the end result has to be an expression
-      if (resultsAreOptional && type.isEmpty()) {
+      if (type.isEmpty() && resultsAreOptional) {
         Optional<SymTypeExpression> typeId = calculateTypeIdQName(expr);
         if (typeId.isPresent()) {
           getType4Ast().setTypeOfTypeIdentifierForName(expr, typeId.get());
+        }
+      }
+      else if (type.isEmpty() && !resultsAreOptional) {
+        if (isSeriesOfNames(expr)) {
+          Log.error("0xF735F unable to interpret qualified name \""
+                  + getExprAsQName(expr).get()
+                  + "\" as expression",
+              expr.get_SourcePositionStart(),
+              expr.get_SourcePositionEnd()
+          );
+        }
+        else {
+          // error already logged
         }
       }
     }
@@ -435,26 +466,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       getType4Ast().setTypeOfExpression(expr, type.get());
     }
     else if (!resultsAreOptional) {
-      if (!isSeriesOfNames(expr.getExpression())) {
-        // more specific error message possible
-        if (!getType4Ast().hasTypeOfExpression(expr.getExpression())
-            && !getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression())) {
-          Log.error("0xF777E unable to derive type of [...] in "
-                  + "\"[...]." + expr.getName() + "\"",
-              expr.getExpression().get_SourcePositionStart(),
-              expr.getExpression().get_SourcePositionEnd()
-          );
-        }
-      }
-      // this error message might seem rather generic.
-      // issue being that we have 2-4 options to get a type from
-      // and if all options fail,
-      // we don't know which is the one that was expected to work
-      Log.error("0xF777F unable to derive a type of [...] "
-              + "for \"[...]." + expr.getName() + "\"",
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd()
-      );
+      // error already logged
       getType4Ast().setTypeOfExpression(expr, SymTypeExpressionFactory.createObscureType());
     }
   }
@@ -559,15 +571,15 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     if (getType4Ast().hasTypeOfExpression(expr.getExpression())) {
       SymTypeExpression innerAsExprType =
           getType4Ast().getPartialTypeOfExpr(expr.getExpression());
-      // object
-      if (innerAsExprType.isObjectType() || innerAsExprType.isGenericType()) {
-
+      if (getWithinTypeResolver().canResolveIn(innerAsExprType)) {
+        AccessModifier modifier = innerAsExprType.hasTypeInfo() ?
+            getTypeCtxCalc().getAccessModifier(
+                innerAsExprType.getTypeInfo(), expr.getEnclosingScope()
+            ) : AccessModifier.ALL_INCLUSION;
         Optional<SymTypeExpression> variable =
             getWithinTypeResolver().resolveVariable(innerAsExprType,
                 name,
-                getTypeCtxCalc().getAccessModifier(
-                    innerAsExprType.getTypeInfo(), expr.getEnclosingScope()
-                ),
+                modifier,
                 v -> true
             );
         if (variable.isPresent()) {
@@ -577,9 +589,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             getWithinTypeResolver().resolveFunctions(
                 innerAsExprType,
                 name,
-                getTypeCtxCalc().getAccessModifier(
-                    innerAsExprType.getTypeInfo(), expr.getEnclosingScope()
-                ),
+                modifier,
                 f -> true
             );
         types.addAll(functions);
@@ -621,12 +631,13 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     else {
       SymTypeExpression innerAsTypeIdType =
           getType4Ast().getPartialTypeOfTypeIdForName(expr.getExpression());
-      if (innerAsTypeIdType.isObjectType() || innerAsTypeIdType.isGenericType()) {
-        AccessModifier modifier = getTypeCtxCalc().getAccessModifier(
-            innerAsTypeIdType.getTypeInfo(),
-            expr.getEnclosingScope(),
-            true
-        );
+      if (getWithinTypeResolver().canResolveIn(innerAsTypeIdType)) {
+        AccessModifier modifier = innerAsTypeIdType.hasTypeInfo() ?
+            getTypeCtxCalc().getAccessModifier(
+                innerAsTypeIdType.getTypeInfo(),
+                expr.getEnclosingScope(),
+                true
+            ) : StaticAccessModifier.STATIC;
         Optional<SymTypeExpression> variable =
             getWithinTypeResolver().resolveVariable(
                 innerAsTypeIdType,
@@ -681,7 +692,13 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     else {
       SymTypeExpression innerAsTypeIdType =
           getType4Ast().getPartialTypeOfTypeIdForName(expr.getExpression());
-      if (innerAsTypeIdType.isObjectType() || innerAsTypeIdType.isGenericType()) {
+      if (getWithinTypeResolver().canResolveIn(innerAsTypeIdType)) {
+        AccessModifier modifier = innerAsTypeIdType.hasTypeInfo() ?
+            getTypeCtxCalc().getAccessModifier(
+                innerAsTypeIdType.getTypeInfo(),
+                expr.getEnclosingScope(),
+                true
+            ) : StaticAccessModifier.STATIC;
         type = getWithinTypeResolver().resolveType(
             innerAsTypeIdType,
             name,

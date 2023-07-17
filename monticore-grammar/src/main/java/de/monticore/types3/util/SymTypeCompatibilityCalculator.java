@@ -27,17 +27,7 @@ public class SymTypeCompatibilityCalculator {
 
   protected SymTypeRelations symTypeRelations;
 
-  protected ExplicitSuperTypeCalculator superTypeCalculator;
-
-  SymTypeCompatibilityCalculator() {
-    // default values
-    // SymTypeRelations has no default,
-    // as this tends to be part of SymTypeRelations
-    superTypeCalculator = new ExplicitSuperTypeCalculator();
-  }
-
   public SymTypeCompatibilityCalculator(SymTypeRelations symTypeRelations) {
-    this();
     this.symTypeRelations = symTypeRelations;
   }
 
@@ -538,6 +528,6 @@ public class SymTypeCompatibilityCalculator {
   }
 
   protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
-    return superTypeCalculator.getExplicitSuperTypes(thisType);
+    return getSymTypeRelations().getNominalSuperTypes(thisType);
   }
 }

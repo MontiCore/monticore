@@ -5,6 +5,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types3.util.BuiltInTypeRelations;
 import de.monticore.types3.util.FunctionRelations;
+import de.monticore.types3.util.NominalSuperTypeCalculator;
 import de.monticore.types3.util.SymTypeBoxingVisitor;
 import de.monticore.types3.util.SymTypeCompatibilityCalculator;
 import de.monticore.types3.util.SymTypeLubCalculator;
@@ -26,6 +27,8 @@ public class SymTypeRelations {
 
   SymTypeCompatibilityCalculator compatibilityDelegate;
 
+  NominalSuperTypeCalculator superTypeCalculator;
+
   SymTypeBoxingVisitor boxingVisitor;
 
   SymTypeUnboxingVisitor unboxingVisitor;
@@ -41,6 +44,7 @@ public class SymTypeRelations {
   public SymTypeRelations() {
     // default values
     this.compatibilityDelegate = new SymTypeCompatibilityCalculator(this);
+    this.superTypeCalculator = new NominalSuperTypeCalculator(this);
     this.boxingVisitor = new SymTypeBoxingVisitor();
     this.unboxingVisitor = new SymTypeUnboxingVisitor();
     this.normalizeVisitor = new SymTypeNormalizeVisitor(this);
@@ -71,6 +75,19 @@ public class SymTypeRelations {
    */
   public boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression superType) {
     return compatibilityDelegate.isSubTypeOf(subType, superType);
+  }
+
+  /**
+   * returns nominal supertypes.
+   * Nominal supertypes are those that are explicitly listed as super types,
+   * e.g., in Java those specified using "extends" or "implements".
+   * The return value is neither the reflexive nor the transitive closure,
+   * i.e., only the direct supertypes are included (s. Java spec 20 4.10).
+   * Note that the "direct" supertype-relation is deliberately underspecified,
+   * such that it can be refined according to the specific type system's needs.
+   */
+  public List<SymTypeExpression> getNominalSuperTypes(SymTypeExpression thisType) {
+    return superTypeCalculator.getNominalSuperTypes(thisType);
   }
 
   /**
