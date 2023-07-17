@@ -24,6 +24,7 @@ import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.check.SymTypeVoid;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
@@ -232,8 +233,14 @@ public class DefsTypesForTests {
   // create TypeVarSymbols (some defaults apply)
 
   public static TypeVarSymbol typeVariable(String name) {
+    return typeVariable(name, new ArrayList<>());
+  }
+
+  public static TypeVarSymbol typeVariable(String name,
+      List<SymTypeExpression> superTypeList) {
     return BasicSymbolsMill.typeVarSymbolBuilder()
         .setName(name)
+        .setSuperTypesList(superTypeList)
         .setSpannedScope(BasicSymbolsMill.scope())
         .build();
   }

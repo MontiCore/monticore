@@ -12,6 +12,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraver
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
@@ -32,8 +33,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
+import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1703,6 +1706,76 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void deriveFromFieldAccessExpressionTypeVarUpperBound() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add Person.age
+    inScope(_personSymType.getTypeInfo().getSpannedScope(),
+        variable("age", _intSymType)
+    );
+    // TPSub extends Person
+    // TPSub tPSub;
+    inScope(gs, variable("tPSub",
+        createTypeVariable(inScope(gs,
+            typeVariable("TPSub", List.of(_personSymType))
+        ))
+    ));
+    // TSSub extends Student
+    // TSSub tSSub;
+    inScope(gs, variable("tSSub",
+        createTypeVariable(inScope(gs,
+            typeVariable("TSSub", List.of(_studentSymType))
+        ))
+    ));
+
+    checkExpr("tPSub.age", "int");
+    checkExpr("tSSub.age", "int");
+  }
+
+  @Test
+  public void deriveFromFieldAccessExpressionUnion() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add Person.age
+    inScope(_personSymType.getTypeInfo().getSpannedScope(),
+        variable("age", _intSymType)
+    );
+    // (Student | Child) teachablePerson;
+    inScope(gs, variable("teachablePerson",
+        createUnion(_studentSymType, _childSymType)
+    ));
+
+    checkExpr("teachablePerson.age", "int");
+  }
+
+  @Test
+  public void testInvalidFieldAccessExpressionUnion() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add Person.age
+    inScope(_personSymType.getTypeInfo().getSpannedScope(),
+        variable("age", _intSymType)
+    );
+    // (Person | int) maybePerson;
+    inScope(gs, variable("maybePerson",
+        createUnion(_personSymType, _intSymType)
+    ));
+
+    checkErrorExpr("maybePerson.age", "0xF737F");
+  }
+
+  @Test
+  public void deriveFromFieldAccessExpressionIntersection() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add Person.age
+    inScope(_personSymType.getTypeInfo().getSpannedScope(),
+        variable("age", _intSymType)
+    );
+    // (Person & Car) talkingCar;
+    inScope(gs, variable("talkingCar",
+        createIntersection(_personSymType, _carSymType)
+    ));
+    checkExpr("talkingCar.age", "int");
+  }
+
+  @Test
   public void syntheziseFromFieldAccessExpression() throws IOException {
     init_advanced();
 
@@ -1765,6 +1838,76 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void deriveFromCallExpressionTypeVarUpperBound() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add Person::getAge
+    inScope(_personSymType.getTypeInfo().getSpannedScope(),
+        function("getAge", _intSymType)
+    );
+    // TPSub extends Person
+    // TPSub tPSub;
+    inScope(gs, variable("tPSub",
+        createTypeVariable(inScope(gs,
+            typeVariable("TPSub", List.of(_personSymType))
+        ))
+    ));
+    // TSSub extends Student
+    // TSSub tSSub;
+    inScope(gs, variable("tSSub",
+        createTypeVariable(inScope(gs,
+            typeVariable("TSSub", List.of(_studentSymType))
+        ))
+    ));
+
+    checkExpr("tPSub.getAge()", "int");
+    checkExpr("tSSub.getAge()", "int");
+  }
+
+  @Test
+  public void deriveFromCallExpressionUnion() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add Person::getAge
+    inScope(_personSymType.getTypeInfo().getSpannedScope(),
+        function("getAge", _intSymType)
+    );
+    // (Student | Child) teachablePerson;
+    inScope(gs, variable("teachablePerson",
+        createUnion(_studentSymType, _childSymType)
+    ));
+
+    checkExpr("teachablePerson.getAge()", "int");
+  }
+
+  @Test
+  public void testInvalidCallExpressionUnion() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add Person::getAge
+    inScope(_personSymType.getTypeInfo().getSpannedScope(),
+        function("getAge", _intSymType)
+    );
+    // (Person | int) maybePerson;
+    inScope(gs, variable("maybePerson",
+        createUnion(_personSymType, _intSymType)
+    ));
+
+    checkErrorExpr("maybePerson.getAge()", "0xF737F");
+  }
+
+  @Test
+  public void deriveFromCallExpressionIntersection() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add Person::getAge
+    inScope(_personSymType.getTypeInfo().getSpannedScope(),
+        function("getAge", _intSymType)
+    );
+    // (Person & Car) talkingCar;
+    inScope(gs, variable("talkingCar",
+        createIntersection(_personSymType, _carSymType)
+    ));
+    checkExpr("talkingCar.getAge()", "int");
+  }
+
+  @Test
   public void testInvalidCallExpression() throws IOException {
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     init_advanced();
@@ -1783,7 +1926,7 @@ public class CommonExpressionTypeVisitorTest
   public void testInvalidCallExpressionWithInvalidQualifiedName() throws IOException {
     //method isInt() is not in the specified scope -> method cannot be resolved
     init_advanced();
-    checkErrorExpr("notAScope.isInt()", "0xF777F");
+    checkErrorExpr("notAScope.isInt()", "0xF735F");
   }
 
   @Test
@@ -2358,7 +2501,7 @@ public class CommonExpressionTypeVisitorTest
   public void testInvalidStaticField() throws IOException {
     init_static_example();
 
-    checkErrorExpr("B.field", "0xF777F");
+    checkErrorExpr("B.field", "0xF736F");
   }
 
   @Test
@@ -2372,7 +2515,7 @@ public class CommonExpressionTypeVisitorTest
   public void testInvalidStaticMethod() throws IOException {
     init_static_example();
 
-    checkErrorExpr("B.test()", "0xF777F");
+    checkErrorExpr("B.test()", "0xF736F");
   }
 
   @Test
@@ -2384,7 +2527,7 @@ public class CommonExpressionTypeVisitorTest
   public void testMissingFieldQualified() throws IOException {
     init_static_example();
 
-    checkErrorExpr("B.notPresentField", "0xF777F");
+    checkErrorExpr("B.notPresentField", "0xF736F");
   }
 
   @Test
@@ -2394,7 +2537,7 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void testMissingMethodQualified() throws IOException {
-    checkErrorExpr("pac.kage.not.present.Type.method()", "0xF777F");
+    checkErrorExpr("pac.kage.not.present.Type.method()", "0xF735F");
   }
 
   @Test

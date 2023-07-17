@@ -73,6 +73,8 @@ public class SymTypeLubCalculator {
     for (SymTypeExpression type : typesSet_tmp) {
       if (type.isIntersectionType()) {
         SymTypeOfIntersection inter = (SymTypeOfIntersection) type;
+        // todo after discussing (and implementing) type contexts,
+        // check if var is bound
         inter.getIntersectedTypeSet()
             .removeIf(SymTypeExpression::isTypeVariable);
         typeSet.add(symTypeRelations.normalize(inter));
