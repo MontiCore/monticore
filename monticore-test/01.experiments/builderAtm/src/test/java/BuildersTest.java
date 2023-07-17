@@ -95,9 +95,7 @@ public class BuildersTest {
 
   @Test
   public void testGetFunctions() throws IOException {
-    // XXX BUG SOLL: ASTStateBuilder sb = AutomataMill
-    // nachfolgende Zeile dafür raus:
-    ASTStateBuilderTOP sb = AutomataMill
+     ASTStateBuilderTOP sb = AutomataMill
         .stateBuilder()
         .setName("x2")
         .setFinal(true)
