@@ -44,6 +44,8 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
 
   @Before
   public void before() {
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
     // replace the typeMapTraverser with an OO-aware variant
     CombineExpressionsWithLiteralsTypeTraverserProvider typeTraverserProvider =
         new CombineExpressionsWithLiteralsTypeTraverserProvider();
