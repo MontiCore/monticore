@@ -982,7 +982,7 @@ It is defined in the file `AutomataTool.java` contained in the directory
 `src/automata`.
 
 ```java
-public class AutomataTool {
+public class AutomataTool extends AutomataToolTOP {
   // main method missing in this listing
 
   public ASTAutomaton parse(String model) {
@@ -1001,27 +1001,15 @@ public class AutomataTool {
     System.exit(1);
     return null;
   }
-
-  public IAutomataArtifactScope createSymbolTable(ASTAutomaton ast) {
-
-    IAutomataGlobalScope globalScope = AutomataMill.globalScope();
-    globalScope.setModelPath(new ModelPath());
-    globalScope.setFileExt("aut");
-
-    AutomataScopesGenitorDelegator symbolTable = AutomataMill
-        .scopesGenitorDelegator();
-
-    return symbolTable.createFromAST(ast);
-  }
 }
 ```
 <figcaption>Listing 2.25: Methods for parsing and creating symbol tables.</figcaption>
 
-Listing 2.25 presents the implementation of the methods `parse` and
-`createSymbolTable` of the `AutomataTool` class. The methods can be used
-for parsing and creating symbol tables for `Automata`. The methods also
-demonstrate the usage of the mill for retrieving global scopes and
-genitors.
+Listing 2.25 presents the implementation of the methods `parse` of the `AutomataTool` 
+class. This method can be used for parsing `Automata` models. Thr class extends the 
+generated abstract superclass `AutomataToolTOP` which gets created with a couple of 
+methods to be used in the `run` method like the method `createSymbolTable` that uses
+the global scopes and genitors available im the mill to create a symbol table for `Automata`. 
 
 ```java
 public static void main(String[] args) {
@@ -1031,72 +1019,70 @@ public static void main(String[] args) {
 }
 
 public void run(String[] args) {
+
   // use normal logging (no DEBUG, TRACE)
+  AutomataMill.init();
   Log.ensureInitalization();
-  
-  // Retrieve the model name
-  if (args.length != 2) {
-    Log.error("0xEE7400 Arguments are: (1) input 
-      model and (2) symbol store."); 
-    return;
+
+  Options options = initOptions();
+  try {
+    //create CLI Parser and parse input options from commandline
+    CommandLineParser cliparser = new org.apache.commons.cli.DefaultParser();
+    CommandLine cmd = cliparser.parse(options, args);
+
+    //help: when --help
+    if (cmd.hasOption("h")) {
+      printHelp(options);
+      //do not continue, when help is printed.
+      return;
+    }
+    //version: when --version
+    else if (cmd.hasOption("v")) {
+      printVersion();
+      //do not continue when help is printed
+      return;
+    }
+
+    Log.info("Automata DSL Tool", "AutomataTool");
+
+    if (cmd.hasOption("i")) {
+      String model = cmd.getOptionValue("i");
+      final ASTAutomaton ast = parse(model);
+      Log.info(model + " parsed successfully!", "AutomataTool");
+
+      AutomataMill.globalScope().setFileExt("aut");
+      IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
+      // can be used for resolving things in the model
+      Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
+      if (aSymbol.isPresent()) {
+        Log.info("Resolved state symbol \"Ping\"; FQN = "
+            + aSymbol.get().toString(),
+          "AutomataTool");
+      } else {
+        Log.info("This automaton does not contain a state called \"Ping\";",
+          "AutomataTool");
+        }
+      runDefaultCoCos(ast);
+
+      if(cmd.hasOption("s")){
+        String storeLocation = cmd.getOptionValue("s");
+        storeSymbols(modelTopScope, storeLocation);
+      }
+ 
+      // analyze the model with a visitor
+      CountStates cs = new CountStates();
+      AutomataTraverser traverser = AutomataMill.traverser();
+      traverser.add4Automata(cs);
+      ast.accept(traverser);
+      Log.info("Automaton has " + cs.getCount() + " states.", "AutomataTool");
+      prettyPrint(ast,"");
+    }else{
+      printHelp(options);
+    }
+  } catch (ParseException e) {
+    // e.getMessage displays the incorrect input-parameters
+    Log.error("0xEE752 Could not process AutomataTool parameters: " + e.getMessage());
   }
-  Log.info("Automata DSL Tool", "AutomataTool");
-  String model = args[0];
-
-  // parse the model and create the AST representation
-  ASTAutomaton ast = parse(model); 
-  Log.info(model + " parsed successfully!", "AutomataTool");
-
-  // setup the symbol table
-  IAutomataArtifactScope modelTopScope = 
-    createSymbolTable(ast);
-  
-  // can be used for resolving names in the model
-  Optional<StateSymbol> aSymbol = 
-          modelTopScope.resolveState("Ping");
-  if (aSymbol.isPresent()) {
-    Log.info("Resolved state symbol \"Ping\"; FQN = "
-             + aSymbol.get().toString(),
-        "AutomataTool");
-  } else {
-    Log.info("This automaton does not contain a state 
-      called \"Ping\";", "AutomataTool");
-  }
-
-  // setup context condition infrastructure
-  AutomataCoCoChecker checker = new AutomataCoCoChecker();
-
-  // add a custom set of context conditions
-  checker.addCoCo(new StateNameStartsWithCapitalLetter());
-  checker.addCoCo(new AtLeastOneInitialAndFinalState());
-  checker.addCoCo(new TransitionSourceExists());
-
-  // check the CoCos
-  checker.checkAll(ast); 
-
-  // Now we know the model is well-formed and start backend
-
-  // store artifact scope and its symbols
-  AutomataSymbols2Json deser = new AutomataSymbols2Json();
-  deser.store(modelTopScope, args[1]);
-
-  // analyze the model with a visitor
-  CountStates cs = new CountStates();
-  AutomataTraverser traverser = AutomataMill.traverser();
-  traverser.add4Automata(cs);
-  ast.accept(traverser);
-  Log.info("Automaton has " + cs.getCount() + " states.", 
-    "AutomataTool");
-
-  // execute a pretty printer
-  PrettyPrinter pp = new PrettyPrinter();
-  AutomataTraverser traverser2 = AutomataMill.traverser();
-  traverser2.setAutomataHandler(pp);
-  ast.accept(traverser2);
-  Log.info("Pretty printing automaton into console:", 
-           "AutomataTool");
-  // print the result
-  Log.println(pp.getResult());
 }
 ```
 <figcaption>Listing 2.26: Main method of the <code>AutomataTool</code> class</figcaption>
