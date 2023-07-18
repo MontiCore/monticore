@@ -7,6 +7,7 @@ import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
+import de.monticore.types3.SymTypeRelations;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,14 @@ import java.util.function.Predicate;
  */
 public class OOWithinTypeBasicSymbolsResolver
     extends WithinTypeBasicSymbolsResolver {
+
+  public OOWithinTypeBasicSymbolsResolver(SymTypeRelations symTypeRelations) {
+    super(symTypeRelations);
+  }
+
+  public OOWithinTypeBasicSymbolsResolver() {
+    super();
+  }
 
   // Helper
 
