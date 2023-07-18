@@ -39,7 +39,7 @@ public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
       getType4Ast().setTypeOfExpression(expr, wholeResult.get());
     }
     else {
-      Log.error("0xFD118 could not find type of name expression \""
+      Log.error("0xFD118 could not find symbol for expression \""
               + expr.getName() + "\"",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
