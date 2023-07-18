@@ -1005,11 +1005,11 @@ public class AutomataTool extends AutomataToolTOP {
 ```
 <figcaption>Listing 2.25: Methods for parsing and creating symbol tables.</figcaption>
 
-Listing 2.25 presents the implementation of the methods `parse` of the `AutomataTool` 
-class. This method can be used for parsing `Automata` models. Thr class extends the 
-generated abstract superclass `AutomataToolTOP` which gets created with a couple of 
-methods to be used in the `run` method like the method `createSymbolTable` that uses
-the global scopes and genitors available im the mill to create a symbol table for `Automata`. 
+Listing 2.25 presents the implementation of the method `parse` of the `AutomataTool` 
+class which can be used for parsing `Automata` models. The class extends the 
+generated abstract superclass `AutomataToolTOP` that provides methods to be used in
+the `run` method. One example is the method `createSymbolTable` that uses the global scope 
+and genitors available in the mill to create a symbol table for `Automata`. 
 
 ```java
 public static void main(String[] args) {
