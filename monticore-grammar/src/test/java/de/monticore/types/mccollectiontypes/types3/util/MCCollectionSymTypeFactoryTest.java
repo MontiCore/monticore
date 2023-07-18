@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types.mccollectiontypes.types3.util;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -29,8 +30,9 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
 
   @Before
   public void setup() {
-    BasicSymbolsMill.reset();
-    BasicSymbolsMill.init();
+    // todo change to BasicSymbolsMill after fix of #3465
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
     // make collection types available in unboxed AND boxed form
     DefsTypesForTests.setup();
     collectionTypeRelations = new MCCollectionTypeRelations();
