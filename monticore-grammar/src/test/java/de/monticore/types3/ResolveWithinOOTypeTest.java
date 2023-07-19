@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
-import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
@@ -19,7 +18,7 @@ import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserProvider;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,12 +46,8 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     // replace the typeMapTraverser with an OO-aware variant
-    CombineExpressionsWithLiteralsTypeTraverserProvider typeTraverserProvider =
-        new CombineExpressionsWithLiteralsTypeTraverserProvider();
-    typeTraverserProvider.initForOOSymbols();
-    typeTraverserProvider.setType4Ast(type4Ast);
-    typeMapTraverser = typeTraverserProvider
-        .init(CombineExpressionsWithLiteralsMill.traverser());
+    typeMapTraverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
+        .createTraverserForOO(type4Ast);
   }
 
   // class t {

@@ -16,7 +16,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserProvider;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Finding;
@@ -67,11 +67,8 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     DefsTypesForTests.setup();
     parser = CombineExpressionsWithLiteralsMill.parser();
     type4Ast = new Type4Ast();
-    CombineExpressionsWithLiteralsTypeTraverserProvider typeTraverserProvider =
-        new CombineExpressionsWithLiteralsTypeTraverserProvider();
-    typeTraverserProvider.setType4Ast(type4Ast);
-    typeMapTraverser = typeTraverserProvider
-        .init(CombineExpressionsWithLiteralsMill.traverser());
+    typeMapTraverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
+        .createTraverser(type4Ast);
     CombineExpressionsWithLiteralsTraverser combinedScopesGenitor =
         CombineExpressionsWithLiteralsMill.traverser();
     combinedScopesGenitor.add4LambdaExpressions(
