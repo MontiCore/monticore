@@ -30,9 +30,8 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
 
   @Before
   public void setup() {
-    // todo change to BasicSymbolsMill after fix of #3465
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.reset();
+    BasicSymbolsMill.init();
     // make collection types available in unboxed AND boxed form
     DefsTypesForTests.setup();
     collectionTypeRelations = new MCCollectionTypeRelations();
