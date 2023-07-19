@@ -16,6 +16,10 @@ import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 
+/**
+ * @deprecated use {@link CombineExpressionsWithLiteralsTypeTraverserFactory}
+ */
+@Deprecated(forRemoval = true)
 public class CombineExpressionsWithLiteralsTypeTraverserProvider {
 
   // Expressions
