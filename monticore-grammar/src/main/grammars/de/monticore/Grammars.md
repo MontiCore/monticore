@@ -4,7 +4,7 @@
 
 # MontiCore Grammars for Expressions, Literals and Types - an Overview
 
-[[_TOC_]]
+
 
 [MontiCore](https://www.monticore.de) is a language workbench. It uses an
 extended grammar format as primary mechanism to describe DSLs. This format 

@@ -2,7 +2,7 @@
 
 # Documentation of the Symbol Table Infrastructure
 
-[[_TOC_]]
+
 
 ## Conceptual Model of Symbol Tables
 * What is a symbol? 
