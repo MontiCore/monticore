@@ -395,7 +395,7 @@ public class JsonPrinter {
    * @param value The double value of the Json attribute
    */
   public void value(double value) {
-    intenalNumberValue(String.valueOf(value));
+    internalNumberValue(String.valueOf(value));
   }
 
   /**
@@ -404,7 +404,7 @@ public class JsonPrinter {
    * @param value The long value of the Json attribute
    */
   public void value(long value) {
-    intenalNumberValue(String.valueOf(value));
+    internalNumberValue(String.valueOf(value));
   }
 
   /**
@@ -413,7 +413,7 @@ public class JsonPrinter {
    * @param value The float value of the Json attribute
    */
   public void value(float value) {
-    intenalNumberValue(String.valueOf(value));
+    internalNumberValue(String.valueOf(value));
   }
 
   /**
@@ -423,7 +423,7 @@ public class JsonPrinter {
    * @param value The int value of the Json attribute
    */
   public void value(int value) {
-    intenalNumberValue(String.valueOf(value));
+    internalNumberValue(String.valueOf(value));
   }
 
   /**
@@ -453,7 +453,7 @@ public class JsonPrinter {
    * @param value The String value of the Json attribute
    */
   public void value(String value) {
-    intenalStringValue("\"" +escapeSpecialChars(value) +"\"");
+    internalStringValue("\"" +escapeSpecialChars(value) +"\"");
   }
 
   /**
@@ -463,7 +463,7 @@ public class JsonPrinter {
    * @param value The String encoded in JSON
    */
   public void valueJson(String value) {
-    intenalStringValue(value);
+    internalStringValue(value);
   }
 
   /**
@@ -472,7 +472,7 @@ public class JsonPrinter {
    * @param value The JsonPrinter of the value object
    */
   public void value(JsonPrinter value) {
-    intenalStringValue(value.getContent());
+    internalStringValue(value.getContent());
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -493,7 +493,7 @@ public class JsonPrinter {
         .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
   }
 
-  protected void intenalNumberValue(String value) {
+  protected void internalNumberValue(String value) {
     if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
       JsonArray parent = currElements.peek().getAsJsonArray();
       parent.add(createJsonNumber(String.valueOf(value)));
@@ -508,7 +508,7 @@ public class JsonPrinter {
     }
   }
 
-  protected void intenalStringValue(String value) {
+  protected void internalStringValue(String value) {
     if (!currElements.isEmpty() && currElements.peek().isJsonArray()) {
       JsonArray parent = currElements.peek().getAsJsonArray();
       parent.add(createJsonString(value));
