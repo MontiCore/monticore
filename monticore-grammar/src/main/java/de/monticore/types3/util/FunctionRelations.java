@@ -88,10 +88,9 @@ public class FunctionRelations {
           int it = i;
           potentialFuncs.removeIf(
               potFunc -> funcs.stream().anyMatch(
-                  func -> !getSymTypeRelations().internal_isSubTypeOf(
-                      potFunc.getArgumentType(it),
-                      func.getArgumentType(it),
-                      true
+                  func -> !getSymTypeRelations().isSubTypeOf(
+                      getSymTypeRelations().box(potFunc.getArgumentType(it)),
+                      getSymTypeRelations().box(func.getArgumentType(it))
                   )
               )
           );
