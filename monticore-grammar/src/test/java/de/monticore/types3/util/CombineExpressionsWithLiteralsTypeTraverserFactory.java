@@ -30,10 +30,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     return traverser;
   }
 
-  public CombineExpressionsWithLiteralsTraverser createTraverser() {
-    return createTraverser(new Type4Ast());
-  }
-
   public CombineExpressionsWithLiteralsTraverser createTraverserForOO(
       Type4Ast type4Ast
   ) {
@@ -44,12 +40,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     populateTraverser(visitors, traverser);
     return traverser;
   }
-
-  public CombineExpressionsWithLiteralsTraverser createTraverserForOO() {
-    return createTraverser(new Type4Ast());
-  }
-
-  // Helper
 
   protected void setType4Ast(VisitorList visitors, Type4Ast type4Ast) {
     // Expressions
