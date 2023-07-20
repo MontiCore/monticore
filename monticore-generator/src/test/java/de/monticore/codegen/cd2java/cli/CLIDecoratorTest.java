@@ -5,7 +5,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -16,9 +15,7 @@ import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,15 +30,12 @@ import static org.junit.Assert.assertFalse;
 public class CLIDecoratorTest extends DecoratorTestCase {
   private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
   private static final String AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonArtifactScope";
-  private static final String CLI_OPTIONS = "org.apache.commons.cli.Options";
-  private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
-  private ASTCDClass cliClass;
+  private static final String CLI_OPTIONS = "org.apache.commons.cli.Options";private ASTCDClass cliClass;
 
   @Before
   public void setup() {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("service", new AbstractService(ast));
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     CLIDecorator cliDecorator = new CLIDecorator(glex, new ParserService(ast), new SymbolTableService(ast));
     this.cliClass = cliDecorator.decorate(ast).get();

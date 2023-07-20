@@ -5,7 +5,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -15,9 +14,7 @@ import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,8 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CDCLIDecoratorTest extends DecoratorTestCase {
-
-  private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private ASTCDCompilationUnit decoratedCD;
  
@@ -43,7 +38,6 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
     clonedCD = originalCD.deepClone();
     decoratedCD = createEmptyCompilationUnit(originalCD);
     this.glex.setGlobalValue("service", new AbstractService(originalCD));
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     SymbolTableService symbolTableService = new SymbolTableService(originalCD);
     ParserService parserService = new ParserService(originalCD);
     CLIDecorator cliDecorator = new CLIDecorator(glex, parserService,symbolTableService);

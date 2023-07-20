@@ -5,7 +5,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -43,16 +42,10 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDInterface dataInterface;
 
-  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
-  
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
-
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "data", "DataInterface");
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     SymbolTableService symbolTableService = new SymbolTableService(astcdCompilationUnit);
     ASTCDInterface interfaceBy = getInterfaceBy("ASTA", astcdCompilationUnit);
     ASTInterfaceDecorator decorator = new ASTInterfaceDecorator(this.glex, new ASTService(astcdCompilationUnit)
