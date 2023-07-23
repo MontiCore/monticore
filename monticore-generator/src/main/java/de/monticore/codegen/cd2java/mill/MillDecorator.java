@@ -261,7 +261,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
   }
 
   protected ASTCDMethod addGetMillMethods(ASTMCType millType) {
-    ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PROTECTED_STATIC.build(), millType, GET_MILL);
+    ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), millType, GET_MILL);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("mill.GetMillMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
     return getMillMethod;
   }
