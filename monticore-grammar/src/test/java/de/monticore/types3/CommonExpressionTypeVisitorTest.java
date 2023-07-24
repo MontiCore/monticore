@@ -25,6 +25,7 @@ import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types3.util.SymTypeRelations;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -1070,7 +1071,7 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void deriveFromConditionalExpression() throws IOException {
-    SymTypeRelations typeRel = new SymTypeRelations();
+    ISymTypeRelations typeRel = new SymTypeRelations();
 
     //test with byte and short
     ASTExpression astExpr = parseExpr("varboolean ? varbyte : varshort");

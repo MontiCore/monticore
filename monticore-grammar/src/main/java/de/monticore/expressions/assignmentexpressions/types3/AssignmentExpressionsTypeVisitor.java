@@ -13,17 +13,18 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.ISymTypeRelations;
+import de.monticore.types3.util.SymTypeRelations;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     implements AssignmentExpressionsVisitor2 {
 
-  protected SymTypeRelations typeRelations;
+  protected ISymTypeRelations typeRelations;
 
   public AssignmentExpressionsTypeVisitor(
-      SymTypeRelations typeRelations) {
+      ISymTypeRelations typeRelations) {
     this.typeRelations = typeRelations;
   }
 
@@ -32,6 +33,10 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     this(
         new SymTypeRelations()
     );
+  }
+
+  public void setSymTypeRelations(ISymTypeRelations symTypeRelations) {
+    this.typeRelations = symTypeRelations;
   }
 
   @Override

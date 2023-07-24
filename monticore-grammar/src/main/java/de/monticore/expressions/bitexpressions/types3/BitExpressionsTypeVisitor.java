@@ -14,16 +14,17 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.ISymTypeRelations;
+import de.monticore.types3.util.SymTypeRelations;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     implements BitExpressionsVisitor2 {
 
-  protected SymTypeRelations typeRelations;
+  protected ISymTypeRelations typeRelations;
 
-  public BitExpressionsTypeVisitor(SymTypeRelations typeRelations) {
+  public BitExpressionsTypeVisitor(ISymTypeRelations typeRelations) {
     this.typeRelations = typeRelations;
   }
 
@@ -31,7 +32,11 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     this(new SymTypeRelations());
   }
 
-  protected SymTypeRelations getTypeRel() {
+  public void setSymTypeRelations(ISymTypeRelations symTypeRelations) {
+    this.typeRelations = symTypeRelations;
+  }
+
+  protected ISymTypeRelations getTypeRel() {
     return typeRelations;
   }
 

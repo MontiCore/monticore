@@ -4,6 +4,7 @@ package de.monticore.types.mccollectiontypes.types3.util;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mccollectiontypes.types3.IMCCollectionTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -11,7 +12,7 @@ import de.se_rwth.commons.logging.Log;
  * these are List, Set, Optional, Map
  * This does NOT include types that inherit from collection types
  */
-public class MCCollectionTypeRelations {
+public class MCCollectionTypeRelations implements IMCCollectionTypeRelations {
 
   /**
    * whether the type is one of the four collection types
