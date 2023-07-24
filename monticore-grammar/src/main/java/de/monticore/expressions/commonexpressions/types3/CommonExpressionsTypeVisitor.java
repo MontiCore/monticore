@@ -17,8 +17,10 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.ISymTypeRelations;
+import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
+import de.monticore.types3.util.SymTypeRelations;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.Names;
@@ -48,7 +50,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
 
   protected CommonExpressionsTraverser traverser;
 
-  protected SymTypeRelations typeRelations;
+  protected ISymTypeRelations typeRelations;
+
+  protected FunctionRelations functionRelations;
 
   protected WithinTypeBasicSymbolsResolver withinTypeResolver;
 
@@ -58,11 +62,13 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   protected NameExpressionTypeCalculator nameExpressionTypeCalculator;
 
   protected CommonExpressionsTypeVisitor(
-      SymTypeRelations typeRelations,
+      ISymTypeRelations typeRelations,
+      FunctionRelations functionRelations,
       WithinTypeBasicSymbolsResolver withinTypeResolver,
       TypeContextCalculator typeCtxCalc,
       NameExpressionTypeCalculator nameExpressionTypeCalculator) {
     this.typeRelations = typeRelations;
+    this.functionRelations = functionRelations;
     this.withinTypeResolver = withinTypeResolver;
     this.typeCtxCalc = typeCtxCalc;
     this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
@@ -72,10 +78,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     // default values
     this(
         new SymTypeRelations(),
+        null,
         new WithinTypeBasicSymbolsResolver(),
         new TypeContextCalculator(),
         new NameExpressionTypeCalculator()
     );
+    functionRelations = new FunctionRelations(getTypeRel());
   }
 
   @Override
@@ -88,8 +96,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     this.traverser = traverser;
   }
 
-  public void setSymTypeRelations(SymTypeRelations typeRelations) {
+  public void setSymTypeRelations(ISymTypeRelations typeRelations) {
     this.typeRelations = typeRelations;
+  }
+
+  public void setFunctionRelations(FunctionRelations functionRelations) {
+    this.functionRelations = functionRelations;
   }
 
   public void setWithinTypeBasicSymbolsResolver(
@@ -106,8 +118,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
   }
 
-  protected SymTypeRelations getTypeRel() {
+  protected ISymTypeRelations getTypeRel() {
     return typeRelations;
+  }
+
+  protected FunctionRelations getFuncRel() {
+    return functionRelations;
   }
 
   protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
@@ -398,7 +414,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
           .collect(Collectors.toSet());
       // filter out all function that do not fit the arguments
       Set<SymTypeOfFunction> callableFuncs = funcs.stream()
-          .filter(f -> getTypeRel().canBeCalledWith(f, args))
+          .filter(f -> getFuncRel().canBeCalledWith(f, args))
           .collect(Collectors.toSet());
       if (callableFuncs.isEmpty()) {
         Log.error("0xFDABE with " + args.size() + " argument ("
@@ -421,7 +437,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             .map(f -> f.getWithFixedArity(args.size()))
             .collect(Collectors.toSet());
         Optional<SymTypeOfFunction> mostSpecificFunction =
-            getTypeRel().getMostSpecificFunction(callableFuncs);
+            getFuncRel().getMostSpecificFunction(callableFuncs);
         if (mostSpecificFunction.isPresent()) {
           type = mostSpecificFunction.get().getType().deepClone();
         }

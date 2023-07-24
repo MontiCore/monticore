@@ -11,7 +11,7 @@ import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.ISymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -25,13 +25,13 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createObscureTyp
  */
 public class SymTypeCompatibilityCalculator {
 
-  protected SymTypeRelations symTypeRelations;
+  protected ISymTypeRelations symTypeRelations;
 
-  public SymTypeCompatibilityCalculator(SymTypeRelations symTypeRelations) {
+  public SymTypeCompatibilityCalculator(ISymTypeRelations symTypeRelations) {
     this.symTypeRelations = symTypeRelations;
   }
 
-  SymTypeRelations getSymTypeRelations() {
+  protected ISymTypeRelations getSymTypeRelations() {
     return symTypeRelations;
   }
 
