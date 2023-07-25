@@ -22,10 +22,6 @@ import java.util.function.Predicate;
 public class OOWithinTypeBasicSymbolsResolver
     extends WithinTypeBasicSymbolsResolver {
 
-  protected static final String STATIC_MODIFIER_KEY =
-      StaticAccessModifier.STATIC.getDimensionToModifierMap()
-          .keySet().stream().findFirst().get();
-
   public OOWithinTypeBasicSymbolsResolver(SymTypeRelations symTypeRelations) {
     super(symTypeRelations);
   }
@@ -88,7 +84,7 @@ public class OOWithinTypeBasicSymbolsResolver
   protected AccessModifier removeStaticness(AccessModifier accessModifier) {
     AccessModifier newModifier = accessModifier.shallowCopy();
     Map<String, AccessModifier> map = newModifier.getDimensionToModifierMap();
-    map.remove(STATIC_MODIFIER_KEY);
+    map.remove(StaticAccessModifier.DIMENSION);
     return newModifier;
   }
 

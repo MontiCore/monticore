@@ -8,7 +8,7 @@ public enum ReadableAccessModifier implements AccessModifier {
   READABLE {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier readable = modifier.getDimensionToModifierMap().get("Readable");
+      AccessModifier readable = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(readable != null){
         return readable.equals(READABLE);
       }
@@ -17,14 +17,14 @@ public enum ReadableAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Readable", this);
+      return Map.of(DIMENSION, this);
     }
   },
 
   NON_READABLE {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier readable = modifier.getDimensionToModifierMap().get("Readable");
+      AccessModifier readable = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(readable != null){
         return readable.equals(NON_READABLE);
       }
@@ -33,9 +33,10 @@ public enum ReadableAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Readable", this);
+      return Map.of(DIMENSION, this);
     }
   }
+  ;
 
-
+  public static final String DIMENSION = "Readable";
 }

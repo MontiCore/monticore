@@ -8,7 +8,7 @@ public enum StaticAccessModifier implements AccessModifier {
   STATIC {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier staticModifier = modifier.getDimensionToModifierMap().get("Static");
+      AccessModifier staticModifier = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(staticModifier != null){
         return staticModifier.equals(STATIC);
       }
@@ -17,7 +17,7 @@ public enum StaticAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Static", this);
+      return Map.of(DIMENSION, this);
     }
 
     @Override
@@ -30,7 +30,7 @@ public enum StaticAccessModifier implements AccessModifier {
   NON_STATIC {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier staticModifier = modifier.getDimensionToModifierMap().get("Static");
+      AccessModifier staticModifier = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(staticModifier != null){
         return staticModifier.equals(NON_STATIC);
       }
@@ -39,7 +39,7 @@ public enum StaticAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Static", this);
+      return Map.of(DIMENSION, this);
     }
 
     @Override
@@ -47,4 +47,7 @@ public enum StaticAccessModifier implements AccessModifier {
       return "";
     }
   }
+  ;
+
+  public static final String DIMENSION = "Static";
 }

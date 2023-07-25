@@ -22,10 +22,6 @@ import java.util.Optional;
  */
 public class TypeContextCalculator {
 
-  protected static final String STATIC_MODIFIER_KEY =
-      StaticAccessModifier.STATIC.getDimensionToModifierMap()
-          .keySet().stream().findAny().get();
-
   /**
    * given an expression's enclosing scope, returns the enclosing type symbol
    */
@@ -72,7 +68,7 @@ public class TypeContextCalculator {
         if (getTypeDispatcher().isFunction(spanningSymbol) &&
             getTypeDispatcher().asFunction(spanningSymbol)
                 .getAccessModifier().getDimensionToModifierMap()
-                .getOrDefault(STATIC_MODIFIER_KEY, null)
+                .getOrDefault(StaticAccessModifier.DIMENSION, null)
                 == StaticAccessModifier.STATIC) {
           accessIsStaticIfInType = true;
         }
@@ -84,7 +80,7 @@ public class TypeContextCalculator {
           // static inner type
           if (!exprIsInType &&
               type.getAccessModifier().getDimensionToModifierMap()
-                  .getOrDefault(STATIC_MODIFIER_KEY, null)
+                  .getOrDefault(StaticAccessModifier.DIMENSION, null)
                   == StaticAccessModifier.STATIC) {
             accessIsStaticIfInType = true;
           }

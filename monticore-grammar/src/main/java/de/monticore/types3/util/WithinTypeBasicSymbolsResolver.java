@@ -38,10 +38,6 @@ public class WithinTypeBasicSymbolsResolver {
 
   protected static final String LOG_NAME = "WithinTypeResolving";
 
-  protected static final String VISIBILITY_MODIFIER_KEY =
-      BasicAccessModifier.PUBLIC.getDimensionToModifierMap()
-          .keySet().stream().findFirst().get();
-
   protected SymTypeVariableReplaceVisitor replaceVisitor;
 
   protected SymTypeRelations symTypeRelations;
@@ -396,9 +392,9 @@ public class WithinTypeBasicSymbolsResolver {
   protected AccessModifier private2Protected(AccessModifier accessModifier) {
     AccessModifier newModifier = accessModifier.shallowCopy();
     Map<String, AccessModifier> map = newModifier.getDimensionToModifierMap();
-    if (map.containsKey(VISIBILITY_MODIFIER_KEY)
-        && map.get(VISIBILITY_MODIFIER_KEY) == BasicAccessModifier.PRIVATE) {
-      map.put(VISIBILITY_MODIFIER_KEY, BasicAccessModifier.PROTECTED);
+    if (map.containsKey(BasicAccessModifier.DIMENSION)
+        && map.get(BasicAccessModifier.DIMENSION) == BasicAccessModifier.PRIVATE) {
+      map.put(BasicAccessModifier.DIMENSION, BasicAccessModifier.PROTECTED);
     }
     return newModifier;
   }
