@@ -850,6 +850,17 @@ public class SymTypeExpressionTest {
   }
 
   @Test
+  public void symTypeArrayCloneWithLessDimTest() {
+    SymTypeArray arr3 = (SymTypeArray) teArr3;
+    assertEquals("int[][][][]", arr3.cloneWithLessDim(-1).print());
+    assertEquals("int[][][]", arr3.cloneWithLessDim(0).print());
+    assertEquals("int[][]", arr3.cloneWithLessDim(1).print());
+    assertEquals("int[]", arr3.cloneWithLessDim(2).print());
+    assertEquals("int", arr3.cloneWithLessDim(3).print());
+    assertFalse(arr3.cloneWithLessDim(3).isArrayType());
+  }
+
+  @Test
   public void symTypePrimitiveTest(){
     SymTypePrimitive intType = SymTypeExpressionFactory.createPrimitive("int");
     assertEquals("int",intType.print());
