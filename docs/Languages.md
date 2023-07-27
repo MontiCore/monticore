@@ -158,8 +158,8 @@ can be found in the same repository.
 includes basic concepts and more specific implementation of component
 configuration.
 * In projects legacy version is currently used:
-  * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation),
-              Ford
+  * Examples: [**MaCoCo**](https://www.se-rwth.de/projects/MaCoCo/),
+              [Ford](https://www.se-rwth.de/projects/22.09.MontiGem.Ford.Press.Release/)
   * [Main grammar `GUIDSL`](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4)
 includes definitions of MontiGem visualisation components, which are based on
 abstract concepts, described in
