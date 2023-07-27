@@ -18,6 +18,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.monticore.types3.util.DefsTypesForTests;
+import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -87,32 +88,13 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
   protected void setupValues() {
     IBasicSymbolsScope gs =
         BasicSymbolsMill.globalScope();
-    // primitives
-    inScope(gs, variable("varboolean", _booleanSymType));
-    inScope(gs, variable("varbyte", _byteSymType));
-    inScope(gs, variable("varchar", _charSymType));
-    inScope(gs, variable("varshort", _shortSymType));
-    inScope(gs, variable("varint", _intSymType));
-    inScope(gs, variable("varlong", _longSymType));
-    inScope(gs, variable("varfloat", _floatSymType));
-    inScope(gs, variable("vardouble", _doubleSymType));
-    // boxed primitives
-    inScope(gs, variable("varBoolean", _BooleanSymType));
-    inScope(gs, variable("varByte", _ByteSymType));
-    inScope(gs, variable("varCharacter", _CharacterSymType));
-    inScope(gs, variable("varShort", _ShortSymType));
-    inScope(gs, variable("varInteger", _IntegerSymType));
-    inScope(gs, variable("varLong", _LongSymType));
-    inScope(gs, variable("varFloat", _FloatSymType));
-    inScope(gs, variable("varDouble", _DoubleSymType));
-    // non-generic objects
-    inScope(gs, variable("varString", _unboxedString));
+    DefsVariablesForTests.setup(gs);
+    // deprecated
     inScope(gs, variable("person1", _personSymType));
     inScope(gs, variable("person2", _personSymType));
     inScope(gs, variable("student1", _studentSymType));
     inScope(gs, variable("student2", _studentSymType));
     inScope(gs, variable("csStudent1", _csStudentSymType));
-    // generic objects
     inScope(gs, variable("intList",
         SymTypeExpressionFactory.createGenerics(
             _boxedListSymType.getTypeInfo(), _intSymType))
