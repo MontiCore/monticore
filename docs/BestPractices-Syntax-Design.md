@@ -14,7 +14,7 @@ found and where they have been applied first.
 
 This file is partially temporary and also contains compact (incomplete) solutions.
 More detailed descriptions of best practices can be found in the 
-[MontiCore reference manual](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+[MontiCore handbook](https://www.monticore.de/handbook.pdf).
 Some of the best practices here will also be incorporated in the next version
 of the reference manual.
 

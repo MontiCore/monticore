@@ -10,7 +10,7 @@ with an explicit notion of language components. It uses
 grammars to describe textual DSLs. 
 MontiCore uses an extended grammar format that allows to compose 
 language components via inheritance, embedding and aggregation (see the 
-[**reference manual**](https://monticore.de/MontiCore_Reference-Manual.2017.pdf)
+[**handbook**](https://www.monticore.de/handbook.pdf)
 for details).
 
 A **language component** is mainly represented through 
@@ -199,8 +199,8 @@ and
   defines the language with some open parameters and
   [`de.monticore.grammar.Grammar_WithConcepts`](https://github.com/MontiCore/monticore/tree/opendev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
   binds the external, imported expressions, method bodies, etc.
-* [*Detailed description*](https://monticore.de/MontiCore_Reference-Manual.2017.pdf)
-  in the MontiCore Reference Manual.
+* [*Detailed description*](https://www.monticore.de/handbook.pdf)
+  in the MontiCore Handbook.
   
 
 ### [JSON](https://github.com/MontiCore/json) (MontiCore Stable)

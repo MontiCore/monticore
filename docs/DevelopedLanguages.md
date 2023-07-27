@@ -130,8 +130,8 @@ development. See language definition and usage method in
 
 ## More Information about Languages and Language Components 
 
-* [**MontiCore Reference Manual**](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-   The reference Manual describes how to use MontiCore as an out-of-the-box 
+* [**MontiCore Handbook**](https://www.monticore.de/handbook.pdf).
+   The handbook describes how to use MontiCore as an out-of-the-box 
    *language workbench*), but also as a grey box *tooling framework*.
    It thus also gives an overview over a number of core mechanisms of MontiCore.
 
