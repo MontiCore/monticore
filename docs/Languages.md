@@ -138,7 +138,7 @@ featurediagram MyPhones {
 
 
 
-### GUI DSL: (Alpha: Intention to become stable) - not publicly available (links are private)
+### GUI DSL: (MontiCore stable) - not publicly available (links are private)
 * Language for textual definition of Graphical User Interfaces of Web
 Applications
 * GUI DSL covers GUI elements and relevant configuration, which include
