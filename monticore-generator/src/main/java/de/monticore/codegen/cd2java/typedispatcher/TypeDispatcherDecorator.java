@@ -285,7 +285,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
         }
       }
 
-      for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
+      for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(superLanguage)) {
         String name = "is" + symbolTableService.getSimpleNameFromSymbolName(symbol);
         if (!methodNames.contains(name)) {
           methods = isMethodsForSuperLanguages(methods, name, SYMBOL_TYPE, SYMBOL_PARAMETER, superLanguage);
