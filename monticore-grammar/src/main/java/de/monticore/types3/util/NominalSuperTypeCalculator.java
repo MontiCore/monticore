@@ -55,9 +55,9 @@ public class NominalSuperTypeCalculator {
    */
   public List<SymTypeExpression> getNominalSuperTypes(SymTypeExpression thisType) {
     if (!isSupported(thisType)) {
-      Log.error("0xFDA11 internal error: "
-          + "tried to get list of explicit super types "
-          + "of unsupported type: " + thisType.printFullName());
+      Log.info("tried to get list of nominal super types "
+              + "of unsupported type: " + thisType.printFullName(),
+          LOG_NAME);
       return Collections.emptyList();
     }
     List<SymTypeExpression> superTypes;
