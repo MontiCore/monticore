@@ -524,6 +524,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
 
     return constructor;
   }
+
   protected List<ASTCDMember> addTraverserElements() {
     List<ASTCDMember> traverserElements = new ArrayList<>();
 
