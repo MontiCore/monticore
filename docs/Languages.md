@@ -274,9 +274,9 @@ component InteriorLight {                           // MontiArc language
   language a concrete timing, such as formally grounded by Focus, 
   should be added.
 * Main grammar 
-  [`MontiArc.mc4`](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
+  [`MontiArc.mc4`](https://github.com/MontiCore/montiarc/blob/develop/languages/grammars/MontiArc.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.md)
+  [*detailed description*](https://github.com/MontiCore/montiarc/blob/develop/languages/MontiArc.md)
 
 
 ### [OCL/P](https://github.com/monticore/OCL) (MontiCore Stable)
