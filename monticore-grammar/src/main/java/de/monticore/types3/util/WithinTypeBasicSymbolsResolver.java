@@ -8,6 +8,8 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -264,6 +266,7 @@ public class WithinTypeBasicSymbolsResolver {
         accessModifier,
         predicate.and(v -> v.getEnclosingScope() == scope)
     );
+    resolved = filterNonLocalSymbols(resolved, scope);
     return resolved;
   }
 
@@ -282,6 +285,7 @@ public class WithinTypeBasicSymbolsResolver {
         accessModifier,
         predicate.and(f -> f.getEnclosingScope() == scope)
     );
+    resolved = filterNonLocalSymbols(resolved, scope);
     return resolved;
   }
 
@@ -300,6 +304,7 @@ public class WithinTypeBasicSymbolsResolver {
         accessModifier,
         predicate.and(t -> t.getEnclosingScope() == scope)
     );
+    resolved = filterNonLocalSymbols(resolved, scope);
     // prefer variables to concrete types in the same scope,
     // e.g., class A<B>{class B{} B b = new B();} is not valid Java
     if (resolved.stream().anyMatch(getTypeDispatcher()::isTypeVar)) {
@@ -312,6 +317,50 @@ public class WithinTypeBasicSymbolsResolver {
           + name + "\" (locally in the same scope)");
     }
     return resolved.stream().findAny();
+  }
+
+  /**
+   * Even more legacy code workarounds:
+   * filter out anything that is not in the exact scope
+   * due to questionable resolve strategy overrides in Scope classes...
+   * Changes the original list!!!
+   */
+  protected <E extends ISymbol> List<E> filterNonLocalSymbols(
+      List<E> symbols,
+      IScope scope
+  ) {
+    Iterator<E> sItr = symbols.iterator();
+    while (sItr.hasNext()) {
+      ISymbol symbol = sItr.next();
+      if (symbol.getEnclosingScope() != scope) {
+        Log.info("filtered symbol '"
+                + symbol.getFullName() + "' as it was resolved "
+                + "in a different scope, even though "
+                + "\"resolve[...]Locally[...]\" was used",
+            LOG_NAME
+        );
+        sItr.remove();
+      }
+    }
+    return symbols;
+  }
+
+  protected <E extends ISymbol> Optional<E> filterNonLocalSymbols(
+      Optional<E> symbolOpt,
+      IScope scope
+  ) {
+    if (symbolOpt.isPresent()) {
+      if (symbolOpt.get().getEnclosingScope() != scope) {
+        Log.info("filtered symbol '"
+                + symbolOpt.get().getFullName() + "' as it was resolved "
+                + "in a different scope, even though "
+                + "\"resolve[...]Locally[...]\" was used",
+            LOG_NAME
+        );
+        symbolOpt = Optional.empty();
+      }
+    }
+    return symbolOpt;
   }
 
   protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
