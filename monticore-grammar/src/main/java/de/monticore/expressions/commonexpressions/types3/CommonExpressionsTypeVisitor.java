@@ -17,8 +17,10 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.ISymTypeRelations;
+import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
+import de.monticore.types3.util.SymTypeRelations;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.Names;
@@ -48,7 +50,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
 
   protected CommonExpressionsTraverser traverser;
 
-  protected SymTypeRelations typeRelations;
+  protected ISymTypeRelations typeRelations;
+
+  protected FunctionRelations functionRelations;
 
   protected WithinTypeBasicSymbolsResolver withinTypeResolver;
 
@@ -58,11 +62,13 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   protected NameExpressionTypeCalculator nameExpressionTypeCalculator;
 
   protected CommonExpressionsTypeVisitor(
-      SymTypeRelations typeRelations,
+      ISymTypeRelations typeRelations,
+      FunctionRelations functionRelations,
       WithinTypeBasicSymbolsResolver withinTypeResolver,
       TypeContextCalculator typeCtxCalc,
       NameExpressionTypeCalculator nameExpressionTypeCalculator) {
     this.typeRelations = typeRelations;
+    this.functionRelations = functionRelations;
     this.withinTypeResolver = withinTypeResolver;
     this.typeCtxCalc = typeCtxCalc;
     this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
@@ -72,10 +78,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     // default values
     this(
         new SymTypeRelations(),
+        null,
         new WithinTypeBasicSymbolsResolver(),
         new TypeContextCalculator(),
         new NameExpressionTypeCalculator()
     );
+    functionRelations = new FunctionRelations(getTypeRel());
   }
 
   @Override
@@ -88,8 +96,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     this.traverser = traverser;
   }
 
-  public void setSymTypeRelations(SymTypeRelations typeRelations) {
+  public void setSymTypeRelations(ISymTypeRelations typeRelations) {
     this.typeRelations = typeRelations;
+  }
+
+  public void setFunctionRelations(FunctionRelations functionRelations) {
+    this.functionRelations = functionRelations;
   }
 
   public void setWithinTypeBasicSymbolsResolver(
@@ -106,8 +118,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
   }
 
-  protected SymTypeRelations getTypeRel() {
+  protected ISymTypeRelations getTypeRel() {
     return typeRelations;
+  }
+
+  protected FunctionRelations getFuncRel() {
+    return functionRelations;
   }
 
   protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
@@ -347,131 +363,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   // Field/MethodAccess
 
   @Override
-  public void traverse(ASTFieldAccessExpression expr) {
-    if (isSeriesOfNames(expr.getExpression())) {
-      // done without visitor in calculateFieldAccessExpression
-    }
-    else {
-      // traverse as normal
-      expr.getExpression().accept(getTraverser());
-    }
-  }
-
-  @Override
-  public void endVisit(ASTFieldAccessExpression expr) {
-    calculateFieldAccess(expr, false);
-  }
-
-  /**
-   * implementation for endVisit,
-   * s. _internal_traverse
-   */
-  protected void calculateFieldAccess(
-      ASTFieldAccessExpression expr, boolean resultsAreOptional) {
-    // handle non-visitor traversal
-    if (isSeriesOfNames(expr)) {
-      if (getTypeDispatcher().isASTFieldAccessExpression(expr.getExpression())) {
-        calculateFieldAccess(
-            getTypeDispatcher().asASTFieldAccessExpression(expr.getExpression()),
-            true
-        );
-      }
-      else if (getTypeDispatcher().isASTNameExpression(expr.getExpression())) {
-        ASTNameExpression nameExpr = getTypeDispatcher().asASTNameExpression(expr.getExpression());
-        Optional<SymTypeExpression> nameAsExprType =
-            calculateExprQName(nameExpr);
-        Optional<SymTypeExpression> nameAsTypeIdType =
-            calculateTypeIdQName(nameExpr);
-        if (nameAsExprType.isPresent()) {
-          getType4Ast().setTypeOfExpression(nameExpr, nameAsExprType.get());
-        }
-        else if (nameAsTypeIdType.isPresent()) {
-          getType4Ast().setTypeOfTypeIdentifierForName(
-              nameExpr,
-              nameAsTypeIdType.get()
-          );
-        }
-      }
-      else {
-        Log.error("0xFD5AC internal error:"
-                + "expected a series of names (a.b.c)",
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd()
-        );
-      }
-    }
-
-    // after the non-visitor traversal, types are calculated if they exist
-    Optional<SymTypeExpression> type;
-    // case: expression "." name, e.g., getX().var
-    if (getType4Ast().hasTypeOfExpression(expr.getExpression())) {
-      type = calculateExprFieldAccess(expr);
-      if (type.isEmpty() && !resultsAreOptional) {
-        Log.error("0xF737F given expression of type "
-                + getType4Ast().getPartialTypeOfExpr(expr.getExpression()).printFullName()
-                + " unable to derive the type of the access \"."
-                + expr.getName() + "\"",
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd()
-        );
-      }
-    }
-    // case: typeIdentifier "." name, e.g., XClass.staticVar
-    // in Java, if variable exists, typeIdentifier "." name is ignored,
-    // even if variable "." name does not exist
-    else if (getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression())) {
-      type = calculateTypeIdFieldAccess(expr);
-      // case: typeid "." typeid2 ("." name), e.g., C1.CInner.staticVar
-      if (type.isEmpty() && resultsAreOptional) {
-        type = calculateInnerTypeIdFieldAccess(expr);
-      }
-      else if (type.isEmpty() && !resultsAreOptional) {
-        Log.error("0xF736F given type identifier of type "
-                + getType4Ast().getPartialTypeOfTypeIdForName(expr.getExpression()).printFullName()
-                + " unable to derive the type of the access \"."
-                + expr.getName() + "\"",
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd()
-        );
-      }
-    }
-    else {
-      // case: qualifier "." name as Expression
-      type = calculateExprQName(expr);
-      // case qualifier "." name as type identifier
-      // this requires an outer field-access (qualifier.name.field),
-      // as the end result has to be an expression
-      if (type.isEmpty() && resultsAreOptional) {
-        Optional<SymTypeExpression> typeId = calculateTypeIdQName(expr);
-        if (typeId.isPresent()) {
-          getType4Ast().setTypeOfTypeIdentifierForName(expr, typeId.get());
-        }
-      }
-      else if (type.isEmpty() && !resultsAreOptional) {
-        if (isSeriesOfNames(expr)) {
-          Log.error("0xF735F unable to interpret qualified name \""
-                  + getExprAsQName(expr).get()
-                  + "\" as expression",
-              expr.get_SourcePositionStart(),
-              expr.get_SourcePositionEnd()
-          );
-        }
-        else {
-          // error already logged
-        }
-      }
-    }
-
-    if (type.isPresent()) {
-      getType4Ast().setTypeOfExpression(expr, type.get());
-    }
-    else if (!resultsAreOptional) {
-      // error already logged
-      getType4Ast().setTypeOfExpression(expr, SymTypeExpressionFactory.createObscureType());
-    }
-  }
-
-  @Override
   public void endVisit(ASTCallExpression expr) {
     // most of the time the expression within the call expression
     // will be a (qualified) name of a function.
@@ -523,7 +414,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
           .collect(Collectors.toSet());
       // filter out all function that do not fit the arguments
       Set<SymTypeOfFunction> callableFuncs = funcs.stream()
-          .filter(f -> getTypeRel().canBeCalledWith(f, args))
+          .filter(f -> getFuncRel().canBeCalledWith(f, args))
           .collect(Collectors.toSet());
       if (callableFuncs.isEmpty()) {
         Log.error("0xFDABE with " + args.size() + " argument ("
@@ -546,7 +437,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             .map(f -> f.getWithFixedArity(args.size()))
             .collect(Collectors.toSet());
         Optional<SymTypeOfFunction> mostSpecificFunction =
-            getTypeRel().getMostSpecificFunction(callableFuncs);
+            getFuncRel().getMostSpecificFunction(callableFuncs);
         if (mostSpecificFunction.isPresent()) {
           type = mostSpecificFunction.get().getType().deepClone();
         }
@@ -558,7 +449,154 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     getType4Ast().setTypeOfExpression(expr, type);
   }
 
+  @Override
+  public void traverse(ASTFieldAccessExpression expr) {
+    if (isSeriesOfNames(expr.getExpression())) {
+      // done without visitor
+      fieldAccessCustomTraverse(expr);
+    }
+    else {
+      // traverse as normal
+      expr.getExpression().accept(getTraverser());
+    }
+  }
+
+  /**
+   * custom traverse for ASTFieldAccessExpressions.
+   * Normal traversing would try to calculate types,
+   * however, not every ASTFieldAccessExpression is a field access expression;
+   * E.g., given the expression "a.b.c.d.e", "a.b" could be a package name,
+   * "a.b.c" a name of a typeId, "a.b.c.d" the name of a variable,
+   * and "a.b.c.d.e" the access of field "e" in "a.b.c.d".
+   * <p>
+   * As such, given a series of names a.b.c,
+   * up until the most outer field access expression in the series,
+   * we allow to not find an expression (and thus have no type calculated).
+   */
+  protected void fieldAccessCustomTraverse(ASTFieldAccessExpression expr) {
+    if (isSeriesOfNames(expr)) {
+      if (getTypeDispatcher().isASTFieldAccessExpression(expr.getExpression())) {
+        ASTFieldAccessExpression innerFieldAccessExpr =
+            getTypeDispatcher().asASTFieldAccessExpression(expr.getExpression());
+        fieldAccessCustomTraverse(innerFieldAccessExpr);
+        // if expression or type identifier has been found,
+        // continue to require further results
+        boolean resultsAreOptional =
+            !getType4Ast().hasTypeOfExpression(expr.getExpression()) &&
+                !getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression());
+        calculateFieldAccess(innerFieldAccessExpr, resultsAreOptional);
+      }
+      else if (getTypeDispatcher().isASTNameExpression(expr.getExpression())) {
+        ASTNameExpression nameExpr = getTypeDispatcher().asASTNameExpression(expr.getExpression());
+        Optional<SymTypeExpression> nameAsExprType =
+            calculateExprQName(nameExpr);
+        Optional<SymTypeExpression> nameAsTypeIdType =
+            calculateTypeIdQName(nameExpr);
+        if (nameAsExprType.isPresent()) {
+          getType4Ast().setTypeOfExpression(nameExpr, nameAsExprType.get());
+        }
+        else if (nameAsTypeIdType.isPresent()) {
+          getType4Ast().setTypeOfTypeIdentifierForName(
+              nameExpr,
+              nameAsTypeIdType.get()
+          );
+        }
+      }
+      else {
+        Log.error("0xFD5AC internal error:"
+                + "expected a series of names (a.b.c)",
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd()
+        );
+      }
+    }
+    else {
+      Log.error("0xFD5AD internal error:"
+              + "expected a series of names (a.b.c)",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+    }
+  }
+
+  @Override
+  public void endVisit(ASTFieldAccessExpression expr) {
+    calculateFieldAccess(expr, false);
+  }
+
+  /**
+   * implementation for endVisit.
+   *
+   * @param resultsAreOptional s. {@link #fieldAccessCustomTraverse(ASTFieldAccessExpression)}
+   */
+  protected void calculateFieldAccess(
+      ASTFieldAccessExpression expr, boolean resultsAreOptional) {
+    // after the non-visitor traversal, types have been calculated if they exist
+    Optional<SymTypeExpression> exprType;
+    Optional<SymTypeExpression> typeId = Optional.empty();
+    // case: expression "." name, e.g., getX().var
+    if (getType4Ast().hasTypeOfExpression(expr.getExpression())) {
+      exprType = calculateExprFieldAccessOrLogError(expr, false);
+    }
+    // case: typeIdentifier "." name, e.g., XClass.staticVar
+    // in Java, if variable exists, typeIdentifier "." name is ignored,
+    // even if variable "." name does not exist
+    else if (getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression())) {
+      exprType = calculateTypeIdFieldAccessOrLogError(expr, resultsAreOptional);
+      // case: typeid "." typeid2 ("." name), e.g., C1.CInner.staticVar
+      if (exprType.isEmpty() && resultsAreOptional) {
+        typeId = calculateInnerTypeIdFieldAccess(expr);
+      }
+    }
+    // case: qualifier "." name
+    else {
+      // case: qualifier "." name as Expression
+      exprType = calculateExprQNameOrLogError(expr, resultsAreOptional);
+      // case qualifier "." name as type identifier
+      // this requires an outer field-access (qualifier.name.field),
+      // as the end result has to be an expression
+      if (exprType.isEmpty() && resultsAreOptional) {
+        typeId = calculateTypeIdQName(expr);
+      }
+    }
+
+    // store expression type
+    if (exprType.isPresent()) {
+      getType4Ast().setTypeOfExpression(expr, exprType.get());
+    }
+    else if (!resultsAreOptional) {
+      // error already logged
+      getType4Ast().setTypeOfExpression(expr, SymTypeExpressionFactory.createObscureType());
+    }
+    // store type id
+    if (typeId.isPresent()) {
+      getType4Ast().setTypeOfTypeIdentifierForName(expr, typeId.get());
+    }
+  }
+
   // The following functions all interpret field access / name expressions
+
+  /**
+   * case: expression "." name,
+   * e.g., getX().var.
+   * will log an error if necessary (resultsAreOptional).
+   */
+  protected Optional<SymTypeExpression> calculateExprFieldAccessOrLogError(
+      ASTFieldAccessExpression expr,
+      boolean resultsAreOptional
+  ) {
+    Optional<SymTypeExpression> type = calculateExprFieldAccess(expr);
+    if (type.isEmpty() && !resultsAreOptional) {
+      Log.error("0xF737F given expression of type "
+              + getType4Ast().getPartialTypeOfExpr(expr.getExpression()).printFullName()
+              + " unable to derive the type of the access \"."
+              + expr.getName() + "\"",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+    }
+    return type;
+  }
 
   /**
    * calculates a.b with a being an expression,
@@ -568,7 +606,14 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       ASTFieldAccessExpression expr) {
     Set<SymTypeExpression> types = new HashSet<>();
     final String name = expr.getName();
-    if (getType4Ast().hasTypeOfExpression(expr.getExpression())) {
+    if (!getType4Ast().hasTypeOfExpression(expr.getExpression())) {
+      Log.error("0xFD231 internal error:"
+              + "unable to find type identifier for field access",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+    }
+    else {
       SymTypeExpression innerAsExprType =
           getType4Ast().getPartialTypeOfExpr(expr.getExpression());
       if (getWithinTypeResolver().canResolveIn(innerAsExprType)) {
@@ -611,6 +656,28 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     else {
       return Optional.of(SymTypeExpressionFactory.createIntersection(types));
     }
+  }
+
+  /**
+   * case: typeIdentifier "." name,
+   * e.g., XClass.staticVar.
+   * will log an error if necessary (resultsAreOptional).
+   */
+  protected Optional<SymTypeExpression> calculateTypeIdFieldAccessOrLogError(
+      ASTFieldAccessExpression expr,
+      boolean resultsAreOptional
+  ) {
+    Optional<SymTypeExpression> type = calculateTypeIdFieldAccess(expr);
+    if (type.isEmpty() && !resultsAreOptional) {
+      Log.error("0xF736F given type identifier of type "
+              + getType4Ast().getPartialTypeOfTypeIdForName(expr.getExpression()).printFullName()
+              + " unable to derive the type of the access \"."
+              + expr.getName() + "\"",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+    }
+    return type;
   }
 
   /**
@@ -683,7 +750,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     final String name = expr.getName();
     Optional<SymTypeExpression> type = Optional.empty();
     if (!getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression())) {
-      Log.error("0xFD232 internal error:"
+      Log.error("0xFD233 internal error:"
               + "unable to find type identifier for field access",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
@@ -718,6 +785,33 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             expr.get_SourcePositionStart(),
             expr.get_SourcePositionEnd()
         );
+      }
+    }
+    return type;
+  }
+
+  /**
+   * case: qName "." name,
+   * e.g., package.artifact.staticVar.
+   * will log an error if necessary (resultsAreOptional).
+   */
+  protected Optional<SymTypeExpression> calculateExprQNameOrLogError(
+      ASTFieldAccessExpression expr,
+      boolean resultsAreOptional
+  ) {
+    // case qualifier "." name as an expression
+    Optional<SymTypeExpression> type = calculateExprQName(expr);
+    if (type.isEmpty() && !resultsAreOptional) {
+      if (isSeriesOfNames(expr)) {
+        Log.error("0xF735F unable to interpret qualified name \""
+                + getExprAsQName(expr).get()
+                + "\" as expression",
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd()
+        );
+      }
+      else {
+        // error already logged
       }
     }
     return type;

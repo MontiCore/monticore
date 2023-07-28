@@ -3,6 +3,7 @@ package de.monticore.types.mccollectiontypes.types3.util;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.mccollectiontypes.types3.IMCCollectionTypeRelations;
 import de.monticore.types3.AbstractTypeTest;
 import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.Before;
@@ -199,7 +200,7 @@ public class MCCollectionTypeRelationsTest extends AbstractTypeTest {
 
   // Helper
 
-  protected MCCollectionTypeRelations getRel() {
+  protected IMCCollectionTypeRelations getRel() {
     return new MCCollectionTypeRelations();
   }
 

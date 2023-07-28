@@ -478,6 +478,8 @@ public class DefsTypesForTests {
 
   /*
    * These are the predefined Symbol for unboxed Collections like "List"
+   * They have separate setup function as different languages (s. OCL)
+   * have their own version of some of them
    */
 
   public static SymTypeOfGenerics _unboxedOptionalSymType;
@@ -489,22 +491,41 @@ public class DefsTypesForTests {
   public static SymTypeOfGenerics _unboxedMapSymType;
 
   public static void set_unboxedCollections() {
+    set_unboxedOptionalSymType();
+    set_unboxedSetSymType();
+    set_unboxedListSymType();
+    set_unboxedMapSymType();
+  }
+
+  public static void set_unboxedOptionalSymType() {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     TypeVarSymbol optVar = typeVariable("T");
     _unboxedOptionalSymType = createGenerics(
         inScope(gs, type("Optional", List.of(), List.of(optVar))),
         createTypeVariable(optVar)
     );
+  }
+
+  public static void set_unboxedSetSymType() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     TypeVarSymbol setVar = typeVariable("T");
     _unboxedSetSymType = createGenerics(
         inScope(gs, type("Set", List.of(), List.of(setVar))),
         createTypeVariable(setVar)
     );
+  }
+
+  public static void set_unboxedListSymType() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     TypeVarSymbol listVar = typeVariable("T");
     _unboxedListSymType = createGenerics(
         inScope(gs, type("List", List.of(), List.of(listVar))),
         createTypeVariable(listVar)
     );
+  }
+
+  public static void set_unboxedMapSymType() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     TypeVarSymbol mapVar1 = typeVariable("T");
     TypeVarSymbol mapVar2 = typeVariable("U");
     _unboxedMapSymType = createGenerics(

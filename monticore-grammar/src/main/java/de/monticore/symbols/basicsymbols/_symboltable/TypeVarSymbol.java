@@ -1,6 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.symbols.basicsymbols._symboltable;
 
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.se_rwth.commons.logging.Log;
+
 public class TypeVarSymbol extends TypeVarSymbolTOP {
 
   public TypeVarSymbol(String name) {
@@ -22,5 +25,17 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public AccessModifier getAccessModifier() {
+    // supporting legacy source code...
+    if(accessModifier == null) {
+      Log.info("AccessModifier of type variable '"
+              + getFullName() + "' was not set (null)",
+          "BasicSymbols");
+      return AccessModifier.ALL_INCLUSION;
+    }
+    return accessModifier;
   }
 }

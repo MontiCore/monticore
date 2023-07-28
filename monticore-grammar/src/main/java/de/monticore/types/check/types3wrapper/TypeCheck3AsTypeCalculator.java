@@ -4,7 +4,7 @@ package de.monticore.types.check.types3wrapper;
 import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCalculator;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.ISymTypeRelations;
 import de.monticore.types3.Type4Ast;
 import de.monticore.visitor.ITraverser;
 
@@ -15,11 +15,11 @@ import de.monticore.visitor.ITraverser;
  */
 public class TypeCheck3AsTypeCalculator extends TypeCalculator {
 
-  SymTypeRelations symTypeRelations;
+  protected ISymTypeRelations symTypeRelations;
 
-  Type4Ast type4Ast;
+  protected Type4Ast type4Ast;
 
-  ITraverser typeTraverser;
+  protected ITraverser typeTraverser;
 
   /**
    * @param typeTraverser    traverser filling type4Ast, language specific
@@ -30,7 +30,7 @@ public class TypeCheck3AsTypeCalculator extends TypeCalculator {
   public TypeCheck3AsTypeCalculator(
       ITraverser typeTraverser,
       Type4Ast type4Ast,
-      SymTypeRelations symTypeRelations,
+      ISymTypeRelations symTypeRelations,
       ILValueRelations lValueRelations
   ) {
     super(

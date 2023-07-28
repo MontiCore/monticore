@@ -6,7 +6,6 @@ import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
-import de.monticore.types3.SymTypeRelations;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,7 +32,7 @@ public class SymTypeLubCalculator {
     this.symTypeRelations = symTypeRelations;
   }
 
-  SymTypeRelations getSymTypeRelations() {
+  protected SymTypeRelations getSymTypeRelations() {
     return symTypeRelations;
   }
 
@@ -188,7 +187,7 @@ public class SymTypeLubCalculator {
               i.remove();
               // however, the supertypes could still be lubs
               Collection<SymTypeExpression> superTypes =
-                  potentialLub.getTypeInfo().getSuperTypesList();
+                  getSymTypeRelations().getNominalSuperTypes(potentialLub);
               nextPotentialLubs.addAll(superTypes);
             }
           }

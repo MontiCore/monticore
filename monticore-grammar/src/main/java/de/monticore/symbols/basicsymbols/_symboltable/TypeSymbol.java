@@ -2,6 +2,7 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -94,4 +95,15 @@ public class TypeSymbol extends TypeSymbolTOP {
     throw new IllegalStateException();
   }
 
+  @Override
+  public AccessModifier getAccessModifier() {
+    // supporting legacy source code...
+    if(accessModifier == null) {
+      Log.info("AccessModifier of type '"
+              + getFullName() + "' was not set (null)",
+          "BasicSymbols");
+      return AccessModifier.ALL_INCLUSION;
+    }
+    return accessModifier;
+  }
 }

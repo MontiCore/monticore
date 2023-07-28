@@ -2,9 +2,11 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,4 +98,15 @@ public class FunctionSymbol extends FunctionSymbolTOP {
     return SymTypeExpressionFactory.createFunction(this, returnType, parameterTypes, isIsElliptic());
   }
 
+  @Override
+  public AccessModifier getAccessModifier() {
+    // supporting legacy source code...
+    if(accessModifier == null) {
+      Log.info("AccessModifier of function '"
+              + getFullName() + "' was not set (null)",
+          "BasicSymbols");
+      return AccessModifier.ALL_INCLUSION;
+    }
+    return accessModifier;
+  }
 }
