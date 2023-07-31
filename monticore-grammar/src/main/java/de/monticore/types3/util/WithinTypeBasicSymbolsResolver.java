@@ -264,9 +264,8 @@ public class WithinTypeBasicSymbolsResolver {
     Optional<VariableSymbol> resolved = scope.resolveVariable(
         name,
         accessModifier,
-        predicate.and(v -> v.getEnclosingScope() == scope)
+        predicate.and(getIsLocalSymbolPredicate(scope))
     );
-    resolved = filterNonLocalSymbols(resolved, scope);
     return resolved;
   }
 
@@ -283,9 +282,8 @@ public class WithinTypeBasicSymbolsResolver {
         false,
         name,
         accessModifier,
-        predicate.and(f -> f.getEnclosingScope() == scope)
+        predicate.and(getIsLocalSymbolPredicate(scope))
     );
-    resolved = filterNonLocalSymbols(resolved, scope);
     return resolved;
   }
 
@@ -302,9 +300,8 @@ public class WithinTypeBasicSymbolsResolver {
         false,
         name,
         accessModifier,
-        predicate.and(t -> t.getEnclosingScope() == scope)
+        predicate.and(getIsLocalSymbolPredicate(scope))
     );
-    resolved = filterNonLocalSymbols(resolved, scope);
     // prefer variables to concrete types in the same scope,
     // e.g., class A<B>{class B{} B b = new B();} is not valid Java
     if (resolved.stream().anyMatch(getTypeDispatcher()::isTypeVar)) {
@@ -323,44 +320,20 @@ public class WithinTypeBasicSymbolsResolver {
    * Even more legacy code workarounds:
    * filter out anything that is not in the exact scope
    * due to questionable resolve strategy overrides in Scope classes...
-   * Changes the original list!!!
    */
-  protected <E extends ISymbol> List<E> filterNonLocalSymbols(
-      List<E> symbols,
-      IScope scope
-  ) {
-    Iterator<E> sItr = symbols.iterator();
-    while (sItr.hasNext()) {
-      ISymbol symbol = sItr.next();
-      if (symbol.getEnclosingScope() != scope) {
+  protected Predicate<ISymbol> getIsLocalSymbolPredicate(IScope localScope) {
+    return s -> {
+      if (s.getEnclosingScope() != localScope) {
         Log.info("filtered symbol '"
-                + symbol.getFullName() + "' as it was resolved "
+                + s.getFullName() + "' as it was resolved "
                 + "in a different scope, even though "
                 + "\"resolve[...]Locally[...]\" was used",
             LOG_NAME
         );
-        sItr.remove();
+        return false;
       }
-    }
-    return symbols;
-  }
-
-  protected <E extends ISymbol> Optional<E> filterNonLocalSymbols(
-      Optional<E> symbolOpt,
-      IScope scope
-  ) {
-    if (symbolOpt.isPresent()) {
-      if (symbolOpt.get().getEnclosingScope() != scope) {
-        Log.info("filtered symbol '"
-                + symbolOpt.get().getFullName() + "' as it was resolved "
-                + "in a different scope, even though "
-                + "\"resolve[...]Locally[...]\" was used",
-            LOG_NAME
-        );
-        symbolOpt = Optional.empty();
-      }
-    }
-    return symbolOpt;
+      return true;
+    };
   }
 
   protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
