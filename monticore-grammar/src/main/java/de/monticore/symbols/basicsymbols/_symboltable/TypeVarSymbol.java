@@ -34,7 +34,7 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
       Log.info("AccessModifier of type variable '"
               + getFullName() + "' was not set (null)",
           "BasicSymbols");
-      return AccessModifier.ALL_INCLUSION;
+      accessModifier = AccessModifier.ALL_INCLUSION;
     }
     return accessModifier;
   }
