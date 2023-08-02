@@ -21,6 +21,11 @@ extra_css:
 
 copyright: '(c) https://github.com/MontiCore/monticore'
 
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+
 nav:
   - Home: 'README.md'
   - 'Getting Started': 'docs/GettingStarted.md'
