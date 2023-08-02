@@ -330,7 +330,7 @@ or archives
 containing paths to grammars and Java classes that are imported by the 
 processed grammar and the related tooling. In this case, the archive 
 `monticore-rt.jar` contains the grammars and handwritten extensions
-of the monticore standard library.
+of the [monticore standard library](https://git.rwth-aachen.de/monticore/monticore/-/tree/dev/monticore-grammar/src/main).
 More information about the standard library can be found in 
 [Chapters 17- 20 of the handbook](https://www.monticore.de/handbook.pdf).
 
