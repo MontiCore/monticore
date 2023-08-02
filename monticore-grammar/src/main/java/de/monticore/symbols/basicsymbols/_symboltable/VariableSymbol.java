@@ -50,10 +50,10 @@ public class VariableSymbol extends VariableSymbolTOP {
   public AccessModifier getAccessModifier() {
     // supporting legacy source code...
     if(accessModifier == null) {
-      Log.info("AccessModifier of variable '"
+      Log.trace("AccessModifier of variable '"
               + getFullName() + "' was not set (null)",
           "BasicSymbols");
-      return AccessModifier.ALL_INCLUSION;
+      accessModifier = AccessModifier.ALL_INCLUSION;
     }
     return accessModifier;
   }
