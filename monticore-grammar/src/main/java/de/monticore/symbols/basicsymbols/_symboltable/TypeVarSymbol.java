@@ -31,7 +31,7 @@ public class TypeVarSymbol extends TypeVarSymbolTOP {
   public AccessModifier getAccessModifier() {
     // supporting legacy source code...
     if(accessModifier == null) {
-      Log.info("AccessModifier of type variable '"
+      Log.trace("AccessModifier of type variable '"
               + getFullName() + "' was not set (null)",
           "BasicSymbols");
       accessModifier = AccessModifier.ALL_INCLUSION;

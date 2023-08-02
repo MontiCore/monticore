@@ -99,7 +99,7 @@ public class TypeSymbol extends TypeSymbolTOP {
   public AccessModifier getAccessModifier() {
     // supporting legacy source code...
     if(accessModifier == null) {
-      Log.info("AccessModifier of type '"
+      Log.trace("AccessModifier of type '"
               + getFullName() + "' was not set (null)",
           "BasicSymbols");
       accessModifier = AccessModifier.ALL_INCLUSION;

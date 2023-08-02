@@ -4,6 +4,7 @@ package de.monticore.symbols.basicsymbols;
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symboltable.modifiers.AccessModifier;
 
 import java.util.List;
 import java.util.Collections;
@@ -61,6 +62,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
             .setEnclosingScope(globalScope())
             .setFullName(name)
             .setSpannedScope(scope())
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .build();
   }
 

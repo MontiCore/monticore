@@ -324,7 +324,7 @@ public class WithinTypeBasicSymbolsResolver {
   protected Predicate<ISymbol> getIsLocalSymbolPredicate(IScope localScope) {
     return s -> {
       if (s.getEnclosingScope() != localScope) {
-        Log.info("filtered symbol '"
+        Log.trace("filtered symbol '"
                 + s.getFullName() + "' as it was resolved "
                 + "in a different scope, even though "
                 + "\"resolve[...]Locally[...]\" was used",
