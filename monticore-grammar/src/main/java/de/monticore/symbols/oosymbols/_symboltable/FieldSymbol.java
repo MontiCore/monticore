@@ -66,22 +66,28 @@ public class FieldSymbol extends FieldSymbolTOP {
 
   @Override
   public void setIsPublic(boolean isPublic) {
+    if (isPublic) {
+      this.isPrivate = false;
+      this.isProtected = false;
+    }
     this.isPublic = isPublic;
-    this.isPrivate = false;
-    this.isProtected = false;
   }
 
   @Override
   public void setIsPrivate(boolean isPrivate) {
+    if (isPrivate) {
+      this.isPublic = false;
+      this.isProtected = false;
+    }
     this.isPrivate = isPrivate;
-    this.isPublic = false;
-    this.isProtected = false;
   }
 
   @Override
   public void setIsProtected(boolean isProtected) {
+    if (isProtected) {
+      this.isPrivate = false;
+      this.isPublic = false;
+    }
     this.isProtected = isProtected;
-    this.isPublic = false;
-    this.isPrivate = false;
   }
 }
