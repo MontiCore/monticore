@@ -63,4 +63,25 @@ public class FieldSymbol extends FieldSymbolTOP {
     }
     return new CompoundAccessModifier(modifiers);
   }
+
+  @Override
+  public void setIsPublic(boolean isPublic) {
+    this.isPublic = isPublic;
+    this.isPrivate = false;
+    this.isProtected = false;
+  }
+
+  @Override
+  public void setIsPrivate(boolean isPrivate) {
+    this.isPrivate = isPrivate;
+    this.isPublic = false;
+    this.isProtected = false;
+  }
+
+  @Override
+  public void setIsProtected(boolean isProtected) {
+    this.isProtected = isProtected;
+    this.isPublic = false;
+    this.isPrivate = false;
+  }
 }
