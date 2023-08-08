@@ -2,6 +2,9 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.codegen.cd2java._visitor.VisitorConstants;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.symboltable.serialization.ISymbolDeSer;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -32,6 +35,7 @@ import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator.LOAD;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
 /**
  * creates a globalScope class from a grammar
@@ -40,6 +44,8 @@ public class GlobalScopeInterfaceDecorator
     extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
 
   protected final SymbolTableService symbolTableService;
+
+  protected final VisitorService visitorService;
 
   protected final MethodDecorator methodDecorator;
 
@@ -60,14 +66,15 @@ public class GlobalScopeInterfaceDecorator
   protected boolean isGlobalScopeInterfaceTop = false;
 
   protected static final String PUTSYMBOLDESER = "put%sSymbolDeSer";
-  
+
   protected static final String GETSYMBOLDESER = "get%sSymbolDeSer";
-  
+
   public GlobalScopeInterfaceDecorator(final GlobalExtensionManagement glex,
                                        final SymbolTableService symbolTableService,
-                                       final MethodDecorator methodDecorator) {
+                                       VisitorService visitorService, final MethodDecorator methodDecorator) {
     super(glex);
     this.symbolTableService = symbolTableService;
+    this.visitorService = visitorService;
     this.methodDecorator = methodDecorator;
     this.accessorDecorator = methodDecorator.getAccessorDecorator();
     this.mutatorDecorator = methodDecorator.getMutatorDecorator();
@@ -96,8 +103,8 @@ public class GlobalScopeInterfaceDecorator
         .setName(globalScopeInterfaceName)
         .setModifier(PUBLIC.build())
         .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder()
-                .addAllSuperclass(getSuperGlobalScopeInterfaces())
-                .addSuperclass(symbolTableService.getScopeInterfaceType()).build())
+            .addAllSuperclass(getSuperGlobalScopeInterfaces())
+            .addSuperclass(symbolTableService.getScopeInterfaceType()).build())
         .addAllCDMembers(createCalculateModelNameMethods(symbolClasses))
         .addAllCDMembers(resolverMethods)
         .addAllCDMembers(createResolveAdaptedMethods(symbolClasses))
@@ -113,6 +120,8 @@ public class GlobalScopeInterfaceDecorator
         .addAllCDMembers(createPutDeSerMethods(symbolProds))
         .addAllCDMembers(createGetDeSerMethods(symbolProds))
         .addCDMember(createGetRealThisMethod(globalScopeInterfaceName))
+        .addCDMember(createAcceptTraverserMethod())
+        .addAllCDMembers(createAcceptTraverserSuperMethods())
         .build();
   }
 
@@ -132,7 +141,7 @@ public class GlobalScopeInterfaceDecorator
     return getSuperGlobalScopeInterfaces(symbolTableService.getCDSymbol());
   }
 
-  protected List<ASTMCObjectType> getSuperGlobalScopeInterfaces(DiagramSymbol symbol){
+  protected List<ASTMCObjectType> getSuperGlobalScopeInterfaces(DiagramSymbol symbol) {
     List<ASTMCObjectType> result = new ArrayList<>();
     for (DiagramSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
       if (!superGrammar.isPresentAstNode()) {
@@ -306,7 +315,7 @@ public class GlobalScopeInterfaceDecorator
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), methodName, nameParameter);
   }
 
-  protected ASTCDMethod createGetRealThisMethod(String realThis){
+  protected ASTCDMethod createGetRealThisMethod(String realThis) {
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), getMCTypeFacade().createQualifiedType(realThis), "getRealThis");
   }
 
@@ -421,7 +430,7 @@ public class GlobalScopeInterfaceDecorator
       deSerMethods.add(method);
     }
 
-    for (DiagramSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
+    for (DiagramSymbol cdSymbol : symbolTableService.getSuperCDsTransitive()) {
       symbolTableService.getSymbolDefiningProds((ASTCDDefinition) cdSymbol.getAstNode()).forEach(s -> {
         String className = symbolTableService.removeASTPrefix(s);
         String methodName = String.format(PUTSYMBOLDESER, className);
@@ -437,37 +446,54 @@ public class GlobalScopeInterfaceDecorator
 
     return deSerMethods;
   }
-  
-  protected List<ASTCDMethod> createGetDeSerMethods(List <? extends ASTCDType> symbolProds) {
+
+  protected List<ASTCDMethod> createGetDeSerMethods(List<? extends ASTCDType> symbolProds) {
     List<ASTCDMethod> deSerMethods = new ArrayList<>();
-    
+
     for (ASTCDType symbolProd : symbolProds) {
       String simpleName = symbolTableService.removeASTPrefix(symbolProd);
       String className = symbolTableService.getScopeClassFullName();
       String methodName = String.format(GETSYMBOLDESER, simpleName);
-      
+
       ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName);
-      String hook = String.format("return getSymbolDeSer(\""+className+"\");");
+      String hook = String.format("return getSymbolDeSer(\"" + className + "\");");
       this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
-  
+
       deSerMethods.add(method);
     }
-    
-    for (DiagramSymbol cdSymbol: symbolTableService.getSuperCDsTransitive()) {
+
+    for (DiagramSymbol cdSymbol : symbolTableService.getSuperCDsTransitive()) {
       symbolTableService.getSymbolDefiningProds((ASTCDDefinition) cdSymbol.getAstNode()).forEach(s -> {
         String simpleName = symbolTableService.removeASTPrefix(s);
         String className = symbolTableService.getScopeClassFullName();
         String methodName = String.format(GETSYMBOLDESER, simpleName);
-      
+
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName);
-        String hook = String.format("return getSymbolDeSer(\""+className+"\");");
+        String hook = String.format("return getSymbolDeSer(\"" + className + "\");");
         this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
-      
+
         deSerMethods.add(method);
       });
     }
-  
+
     return deSerMethods;
+  }
+
+  protected ASTCDMethod createAcceptTraverserMethod() {
+    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getTraverserInterfaceType(), VISITOR_PREFIX);
+    return this.getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ASTConstants.ACCEPT_METHOD, visitorParameter);
+  }
+
+  protected List<ASTCDMethod> createAcceptTraverserSuperMethods() {
+    List<ASTCDMethod> result = new ArrayList<>();
+    //accept methods for super visitors
+    List<ASTMCQualifiedType> l = this.visitorService.getAllTraverserInterfacesTypesInHierarchy();
+    l.add(getMCTypeFacade().createQualifiedType(VisitorConstants.ITRAVERSER_FULL_NAME));
+    for (ASTMCType superVisitorType : l) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+      result.add(this.getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter));
+    }
+    return result;
   }
 
   public boolean isGlobalScopeInterfaceTop() {

@@ -12,8 +12,10 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolKindHierarchies;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -33,7 +35,6 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
@@ -190,13 +191,16 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .addAllCDMembers(astNodeMethods)
         .addCDMember(createSubScopesAttribute(scopeInterfaceType))
         .addAllCDMembers(createSubScopeMethods(scopeInterfaceType))
-        .addAllCDMembers(createAcceptTraverserMethods(scopeClassName))
         .addAllCDMembers(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()))
         .addAllCDMembers(resolveSubKindsMethods);
     if (scopeRuleSuperClass.isPresent()) {
       builder.setCDExtendUsage(scopeRuleSuperClass.get().getCDExtendUsage().deepClone());
     }
     ASTCDClass clazz = builder.build();
+
+    clazz.addCDMember(createAcceptTraverserMethod(clazz));
+    clazz.addAllCDMembers(createAcceptTraverserSuperMethods(clazz));
+
     CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
     return clazz;
   }
@@ -252,42 +256,6 @@ public class ScopeClassDecorator extends AbstractDecorator {
         new StringHookPoint("this.setEnclosingScope(" + ENCLOSING_SCOPE_VAR + ");\n" +
             "    " + THIS + SHADOWING_VAR + " = " + SHADOWING_VAR + "; \n" + ASSIGN_OPTIONAL_NAME));
     return defaultConstructor;
-  }
-
-  protected List<ASTCDMethod> createAcceptTraverserMethods(String scopeClassName) {
-    List<ASTCDMethod> acceptMethods = new ArrayList<>();
-
-    String visitor = visitorService.getTraverserInterfaceFullName();
-    ASTCDParameter parameter = getCDParameterFacade()
-        .createParameter(getMCTypeFacade().createQualifiedType(visitor), VISITOR_PREFIX);
-    ASTCDMethod ownAcceptMethod = getCDMethodFacade()
-        .createMethod(PUBLIC.build(), ACCEPT_METHOD, parameter);
-    if (isScopeTop()) {
-      String errorCode = symbolTableService.getGeneratedErrorCode(scopeClassName + ACCEPT_METHOD);
-      this.replaceTemplate(EMPTY_BODY, ownAcceptMethod,
-          new TemplateHookPoint(TEMPLATE_PATH + "AcceptOwn", scopeClassName, errorCode));
-    }
-    else {
-      this.replaceTemplate(EMPTY_BODY, ownAcceptMethod,
-          new StringHookPoint("visitor.handle(this);"));
-    }
-    acceptMethods.add(ownAcceptMethod);
-
-    for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
-      String superVisitor = visitorService.getTraverserInterfaceFullName(cdDefinitionSymbol);
-      ASTCDParameter superVisitorParameter = getCDParameterFacade()
-          .createParameter(getMCTypeFacade().createQualifiedType(superVisitor), VISITOR_PREFIX);
-      ASTCDMethod acceptMethod = getCDMethodFacade()
-          .createMethod(PUBLIC.build(), ACCEPT_METHOD, superVisitorParameter);
-      String errorCode = symbolTableService
-          .getGeneratedErrorCode(scopeClassName + cdDefinitionSymbol.getFullName() + ACCEPT_METHOD);
-      this.replaceTemplate(EMPTY_BODY, acceptMethod,
-          new TemplateHookPoint(TEMPLATE_PATH + "AcceptScope", visitor, scopeClassName,
-              superVisitor, errorCode));
-      acceptMethods.add(acceptMethod);
-    }
-
-    return acceptMethods;
   }
 
   protected Map<String, ASTCDAttribute> getSuperSymbolAttributes() {
@@ -629,6 +597,32 @@ public class ScopeClassDecorator extends AbstractDecorator {
     this.replaceTemplate(EMPTY_BODY, method,
         new TemplateHookPoint(TEMPLATE_PATH + "ResolveSubKinds", symbolFullName, subKinds));
     return method;
+  }
+
+  protected ASTCDMethod createAcceptTraverserMethod(ASTCDClass astClass) {
+    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getTraverserInterfaceType(), VISITOR_PREFIX);
+    ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, visitorParameter);
+    this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
+    return acceptMethod;
+  }
+
+  protected List<ASTCDMethod> createAcceptTraverserSuperMethods(ASTCDClass astClass) {
+    List<ASTCDMethod> result = new ArrayList<>();
+    //accept methods for super visitors
+    List<ASTMCQualifiedType> l = this.visitorService.getAllTraverserInterfacesTypesInHierarchy();
+    l.add(getMCTypeFacade().createQualifiedType(VisitorConstants.ITRAVERSER_FULL_NAME));
+    for (ASTMCType superVisitorType : l) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+
+      ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
+      String errorCode = visitorService.getGeneratedErrorCode(astClass.getName()+
+          superVisitorType.printType());
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_symboltable.AcceptSuper",
+          this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
+          superVisitorType.printType()));
+      result.add(superAccept);
+    }
+    return result;
   }
 
   public boolean isScopeTop() {

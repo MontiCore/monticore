@@ -23,8 +23,8 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -52,6 +52,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
+  private GeneratorSetup generatorSetup;
+
   private static final String AUTOMATON_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol>";
 
   private static final String STATE_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol>";
@@ -78,7 +80,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String I_LEXICAS_SCOPE = "de.monticore.codegen.ast.lexicals._symboltable.ILexicalsScope";
 
-
   @Before
   public void setUp() {
     this.mcTypeFacade = mcTypeFacade.getInstance();
@@ -91,6 +92,10 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
     originalCompilationUnit = decoratedSymbolCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
+
+    generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    CD4C.init(generatorSetup);
 
     ScopeClassDecorator decorator = new ScopeClassDecorator(this.glex, new SymbolTableService(astcdCompilationUnit),
         new VisitorService(decoratedSymbolCompilationUnit),
@@ -808,10 +813,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGeneratedCode() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    CD4C.init(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, scopeClass, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
@@ -821,4 +823,20 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   
     assertTrue(Log.getFindings().isEmpty());
   }
+
+  @Test
+  public void testAcceptMethods() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", scopeClass);
+
+    assertEquals(2, methods.size());
+
+    methods.forEach(method -> {
+      assertDeepEquals(PUBLIC, method.getModifier());
+      assertVoid(method.getMCReturnType().getMCVoidType());
+      assertEquals(1, method.getCDParameterList().size());
+      assertEquals("visitor", method.getCDParameter(0).getName());
+      assertTrue(method.getCDParameter(0).getMCType().printType().endsWith("Traverser"));
+    });
+  }
+
 }

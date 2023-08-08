@@ -23,10 +23,13 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.*;
 
 public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
@@ -73,6 +76,22 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testGeneratedCode() {
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
+    CD4C.init(generatorSetup);
+    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.INTERFACE, scopeInterface, packageDir);
+    // test parsing
+    ParserConfiguration configuration = new ParserConfiguration();
+    JavaParser parser = new JavaParser(configuration);
+    ParseResult parseResult = parser.parse(sb.toString());
+    assertTrue(parseResult.isSuccessful());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testCompilationUnitNotChanged() {
     assertDeepEquals(originalCompilationUnit, decoratedCompilationUnit);
   
@@ -102,7 +121,7 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(41, scopeInterface.getCDMethodList().size());
+    assertEquals(44, scopeInterface.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -224,18 +243,18 @@ public class ArtifactScopeInterfaceDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testGeneratedCode() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    CD4C.init(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.INTERFACE, scopeInterface, packageDir);
-    // test parsing
-    ParserConfiguration configuration = new ParserConfiguration();
-    JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
-    assertTrue(parseResult.isSuccessful());
-  
-    assertTrue(Log.getFindings().isEmpty());
+  public void testAcceptMethods() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", scopeInterface);
+
+    assertEquals(3, methods.size());
+
+    methods.forEach(method -> {
+      assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+      assertVoid(method.getMCReturnType().getMCVoidType());
+      assertEquals(1, method.getCDParameterList().size());
+      assertEquals("visitor", method.getCDParameter(0).getName());
+      assertTrue(method.getCDParameter(0).getMCType().printType().endsWith("Traverser"));
+    });
   }
+
 }

@@ -384,6 +384,7 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     DiagramSymbol cdSymbol = astcdDefinition.getSymbol();
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
+    ASTMCQualifiedType globalScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getGlobalScopeInterfaceFullName(cdSymbol));
     String handlerName = visitorService.getHandlerSimpleName();
     String scopeTypeAsString = scopeType.getMCQualifiedName().getQName();
     String topCast = isTop() ? "(" + visitorService.getTraverserInterfaceSimpleName() + ") " : "";
@@ -395,6 +396,8 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     visitorMethods.addAll(createVisitorDelegatorScopeMethod(scopeType, simpleVisitorName, traverseSymbolsBody));
 
     visitorMethods.addAll(createVisitorDelegatorScopeMethod(artifactScopeType, simpleVisitorName, traverseDelegationBody));
+
+    visitorMethods.addAll(createVisitorDelegatorScopeMethod(globalScopeType, simpleVisitorName, traverseDelegationBody));
 
     return visitorMethods;
   }
