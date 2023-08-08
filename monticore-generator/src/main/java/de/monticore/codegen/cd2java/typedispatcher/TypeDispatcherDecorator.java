@@ -167,13 +167,6 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     attributes.add(createOptional(symbolTableService.getScopeInterfaceFullName(),
         symbolTableService.getScopeInterfaceSimpleName()));
 
-    attributes.add(createOptional(symbolTableService.getScopeClassFullName(),
-        symbolTableService.getScopeClassSimpleName()));
-    attributes.add(createOptional(symbolTableService.getArtifactScopeFullName(),
-        symbolTableService.getArtifactScopeSimpleName()));
-    attributes.add(createOptional(symbolTableService.getGlobalScopeFullName(),
-        symbolTableService.getGlobalScopeSimpleName()));
-
     return attributes;
   }
 
@@ -183,10 +176,6 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     attributes.add(createBoolean(symbolTableService.getArtifactScopeInterfaceSimpleName()));
     attributes.add(createBoolean(symbolTableService.getGlobalScopeInterfaceSimpleName()));
     attributes.add(createBoolean(symbolTableService.getScopeInterfaceSimpleName()));
-
-    attributes.add(createBoolean(symbolTableService.getScopeClassSimpleName()));
-    attributes.add(createBoolean(symbolTableService.getArtifactScopeSimpleName()));
-    attributes.add(createBoolean(symbolTableService.getGlobalScopeSimpleName()));
 
     return attributes;
   }
@@ -307,21 +296,6 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
             SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
         methodNames.add("is" + symbolTableService.getScopeInterfaceSimpleName());
       }
-      if (!methodNames.contains("is" + symbolTableService.getScopeClassSimpleName())) {
-        methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getScopeClassSimpleName(),
-            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
-        methodNames.add("is" + symbolTableService.getScopeClassSimpleName());
-      }
-      if (!methodNames.contains("is" + symbolTableService.getArtifactScopeSimpleName())) {
-        methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getArtifactScopeSimpleName(),
-            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
-        methodNames.add("is" + symbolTableService.getArtifactScopeSimpleName());
-      }
-      if (!methodNames.contains("is" + symbolTableService.getGlobalScopeSimpleName())) {
-        methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getGlobalScopeSimpleName(),
-            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
-        methodNames.add("is" + symbolTableService.getGlobalScopeSimpleName());
-      }
     }
 
     return methods;
@@ -407,24 +381,6 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
             SCOPE_PARAMETER, superLanguage);
         methodNames.add("as" + symbolTableService.getScopeInterfaceSimpleName());
       }
-      if (!methodNames.contains("as" + symbolTableService.getScopeClassSimpleName())) {
-        methods = asMethodsForSuperLanguages(methods, symbolTableService.getScopeClassSimpleName(),
-            symbolTableService.getScopeClassFullName(), SCOPE_TYPE,
-            SCOPE_PARAMETER, superLanguage);
-        methodNames.add("as" + symbolTableService.getScopeClassSimpleName());
-      }
-      if (!methodNames.contains("as" + symbolTableService.getArtifactScopeSimpleName())) {
-        methods = asMethodsForSuperLanguages(methods, symbolTableService.getArtifactScopeSimpleName(),
-            symbolTableService.getArtifactScopeFullName(), SCOPE_TYPE,
-            SCOPE_PARAMETER, superLanguage);
-        methodNames.add("as" + symbolTableService.getArtifactScopeSimpleName());
-      }
-      if (!methodNames.contains("as" + symbolTableService.getGlobalScopeSimpleName())) {
-        methods = asMethodsForSuperLanguages(methods, symbolTableService.getGlobalScopeSimpleName(),
-            symbolTableService.getGlobalScopeFullName(), SCOPE_TYPE,
-            SCOPE_PARAMETER, superLanguage);
-        methodNames.add("as" + symbolTableService.getGlobalScopeSimpleName());
-      }
     }
 
     return methods;
@@ -470,11 +426,6 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
         symbolTableService.getSuperCDsTransitive().stream()
             .map(symbolTableService::getScopeInterfaceFullName)
             .collect(Collectors.toList()));
-
-    handleMethod(methods,
-        symbolTableService.getArtifactScopeSimpleName(),
-        symbolTableService.getArtifactScopeType(),
-        List.of(symbolTableService.getArtifactScopeInterfaceFullName()));
 
     for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
       handleMethod(methods,

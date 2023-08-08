@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import com.google.common.collect.Lists;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
 /**
  * creates an artifactScope interface from a grammar
@@ -46,9 +47,9 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
   protected static final String TEMPLATE_PATH = "_symboltable.iartifactscope.";
 
   public ArtifactScopeInterfaceDecorator(final GlobalExtensionManagement glex,
-                                final SymbolTableService symbolTableService,
-                                final VisitorService visitorService,
-                                final MethodDecorator methodDecorator) {
+                                         final SymbolTableService symbolTableService,
+                                         final VisitorService visitorService,
+                                         final MethodDecorator methodDecorator) {
     super(glex);
     this.symbolTableService = symbolTableService;
     this.visitorService = visitorService;
@@ -72,16 +73,19 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
             .addCDMember(createGetFullNameMethod())
             .addAllCDMembers(createContinueWithEnclosingScopeMethods(symbolProds, symbolTableService.getCDSymbol()))
             .addAllCDMembers(createSuperContinueWithEnclosingScopeMethods())
+            .addCDMember(createAcceptTraverserMethod())
+            .addAllCDMembers(createAcceptTraverserSuperMethods())
             .build();
+
     CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
     return clazz;
   }
 
-  protected List<ASTMCObjectType> getSuperArtifactScopeInterfaces(){
+  protected List<ASTMCObjectType> getSuperArtifactScopeInterfaces() {
     return getSuperArtifactScopeInterfaces(symbolTableService.getCDSymbol());
   }
 
-  protected List<ASTMCObjectType> getSuperArtifactScopeInterfaces(DiagramSymbol symbol){
+  protected List<ASTMCObjectType> getSuperArtifactScopeInterfaces(DiagramSymbol symbol) {
     List<ASTMCObjectType> result = new ArrayList<>();
     for (DiagramSymbol superGrammar : symbolTableService.getSuperCDsDirect(symbol)) {
       if (!superGrammar.isPresentAstNode()) {
@@ -167,7 +171,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     return methodList;
   }
 
-  protected ASTCDMethod createGetFullNameMethod(){
+  protected ASTCDMethod createGetFullNameMethod() {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "getFullName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));
     return method;
@@ -200,4 +204,22 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
     }
     return symbolAttributes;
   }
+
+  protected ASTCDMethod createAcceptTraverserMethod() {
+    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getTraverserInterfaceType(), VISITOR_PREFIX);
+    return this.getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ASTConstants.ACCEPT_METHOD, visitorParameter);
+  }
+
+  protected List<ASTCDMethod> createAcceptTraverserSuperMethods() {
+    List<ASTCDMethod> result = new ArrayList<>();
+    //accept methods for super visitors
+    List<ASTMCQualifiedType> l = this.visitorService.getAllTraverserInterfacesTypesInHierarchy();
+    l.add(getMCTypeFacade().createQualifiedType(VisitorConstants.ITRAVERSER_FULL_NAME));
+    for (ASTMCType superVisitorType : l) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+      result.add(this.getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter));
+    }
+    return result;
+  }
+
 }

@@ -295,7 +295,8 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     ASTMCQualifiedType scopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getScopeInterfaceFullName(cdSymbol));
     String scopeTypeAsString = scopeType.getMCQualifiedName().getQName();
     ASTMCQualifiedType artifactScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getArtifactScopeInterfaceFullName(cdSymbol));
-    
+    ASTMCQualifiedType globalScopeType = getMCTypeFacade().createQualifiedType(symbolTableService.getGlobalScopeInterfaceFullName(cdSymbol));
+
     TemplateHookPoint traverseSymbolsBody = new TemplateHookPoint(HANDLER_TRAVERSE_SCOPE_TEMPLATE, getSymbolsTransitive(), scopeTypeAsString);
     StringHookPoint traverseDelegationBody = new StringHookPoint(TRAVERSE + "(("
         + symbolTableService.getScopeInterfaceFullName() + ") node);");
@@ -303,6 +304,8 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     visitorMethods.addAll(createHandlerScopeMethod(scopeType, simpleVisitorName, traverseSymbolsBody));
 
     visitorMethods.addAll(createHandlerScopeMethod(artifactScopeType, simpleVisitorName, traverseDelegationBody));
+
+    visitorMethods.addAll(createHandlerScopeMethod(globalScopeType, simpleVisitorName, traverseDelegationBody));
 
     return visitorMethods;
   }

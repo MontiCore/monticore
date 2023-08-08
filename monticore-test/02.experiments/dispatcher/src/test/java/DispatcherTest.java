@@ -8,6 +8,9 @@ import org.junit.Test;
 import simpleinterfaces.SimpleInterfacesMill;
 import simpleinterfaces._ast.*;
 import simpleinterfaces._parser.SimpleInterfacesParser;
+import simpleinterfaces._symboltable.ISimpleInterfacesArtifactScope;
+import simpleinterfaces._symboltable.ISimpleInterfacesGlobalScope;
+import simpleinterfaces._symboltable.ISimpleInterfacesScope;
 import simpleinterfaces._util.SimpleInterfacesTypeDispatcher;
 
 import java.io.IOException;
@@ -25,6 +28,24 @@ public class DispatcherTest {
     SimpleInterfacesMill.init();
     LogStub.init();
     Log.enableFailQuick(false);
+  }
+
+  @Test
+  public void testAsGlobalScope() {
+    ISimpleInterfacesGlobalScope scope = SimpleInterfacesMill.globalScope();
+    assertTrue(dispatcher.isISimpleInterfacesGlobalScope(scope));
+  }
+
+  @Test
+  public void testAsArtifactScope() {
+    ISimpleInterfacesArtifactScope scope = SimpleInterfacesMill.artifactScope();
+    assertTrue(dispatcher.isISimpleInterfacesArtifactScope(scope));
+  }
+
+  @Test
+  public void testAsScope() {
+    ISimpleInterfacesScope scope = SimpleInterfacesMill.scope();
+    assertTrue(dispatcher.isISimpleInterfacesScope(scope));
   }
 
   @Test

@@ -16,21 +16,22 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import java.util.List;
+
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static org.junit.Assert.*;
 
 public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
@@ -62,7 +63,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
     GlobalScopeClassDecorator decorator = new GlobalScopeClassDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit),
-        new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
+        new VisitorService(decoratedCompilationUnit), new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)));
 
     this.scopeClass = decorator.decorate(decoratedCompilationUnit);
   }
@@ -233,7 +234,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(29, scopeClass.getCDMethodList().size());
+    assertEquals(32, scopeClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -357,6 +358,21 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     assertEquals("kind", method.getCDParameter(0).getName());
   
     assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testAcceptMethods() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", scopeClass);
+
+    assertEquals(3, methods.size());
+
+    methods.forEach(method -> {
+      assertDeepEquals(PUBLIC, method.getModifier());
+      assertVoid(method.getMCReturnType().getMCVoidType());
+      assertEquals(1, method.getCDParameterList().size());
+      assertEquals("visitor", method.getCDParameter(0).getName());
+      assertTrue(method.getCDParameter(0).getMCType().printType().endsWith("Traverser"));
+    });
   }
 
 }

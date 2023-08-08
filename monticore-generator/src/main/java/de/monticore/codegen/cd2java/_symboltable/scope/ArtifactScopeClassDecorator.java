@@ -7,12 +7,15 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
@@ -80,6 +83,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
             .addCDMember(createSetEnclosingScopeMethod(scopeInterfaceFullName, artifactScopeSimpleName, globalScopeClassSimpleName))
             .addCDMember(createAcceptTraverserMethod(artifactScopeSimpleName))
             .build();
+    clazz.addAllCDMembers(createAcceptTraverserSuperMethods(clazz));
     CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
     return clazz;
   }
@@ -168,6 +172,25 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
 
   public void setArtifactScopeTop(boolean artifactScopeTop) {
     isArtifactScopeTop = artifactScopeTop;
+  }
+
+  protected List<ASTCDMethod> createAcceptTraverserSuperMethods(ASTCDClass astClass) {
+    List<ASTCDMethod> result = new ArrayList<>();
+    //accept methods for super visitors
+    List<ASTMCQualifiedType> l = this.visitorService.getAllTraverserInterfacesTypesInHierarchy();
+    l.add(getMCTypeFacade().createQualifiedType(VisitorConstants.ITRAVERSER_FULL_NAME));
+    for (ASTMCType superVisitorType : l) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+
+      ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
+      String errorCode = visitorService.getGeneratedErrorCode(astClass.getName()+
+          superVisitorType.printType());
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_symboltable.AcceptSuper",
+          this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
+          superVisitorType.printType()));
+      result.add(superAccept);
+    }
+    return result;
   }
 
 }

@@ -226,10 +226,12 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
   protected List<ASTCDMethod> addScopeVisitorMethods(Set<String> symbolsNameList, ASTCDDefinition astcdDefinition) {
     ASTMCQualifiedType scopeType = symbolTableService.getScopeInterfaceType();
     ASTMCQualifiedType artifactScopeType = symbolTableService.getArtifactScopeInterfaceType();
+    ASTMCQualifiedType globalScopeType = symbolTableService.getGlobalScopeInterfaceType();
 
     List<ASTCDMethod> methodList = new ArrayList<>();
     methodList.addAll(createScopeVisitorMethods(scopeType));
     methodList.addAll(createScopeVisitorMethods(artifactScopeType));
+    methodList.addAll(createScopeVisitorMethods(globalScopeType));
 
     return methodList;
   }
