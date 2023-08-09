@@ -423,11 +423,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
-      String errorCode = visitorService.getGeneratedErrorCode(astClass.getName()+
+      String errorCode = "0xA7011" + visitorService.getGeneratedErrorCode(astClass.getName()+
           superVisitorType.printType());
-      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_symboltable.AcceptSuper",
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
           this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
-          superVisitorType.printType()));
+          superVisitorType.printType(), "Scope"));
       result.add(superAccept);
     }
     return result;

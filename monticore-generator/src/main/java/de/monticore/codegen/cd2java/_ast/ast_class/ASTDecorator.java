@@ -140,11 +140,11 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
-      String errorCode = astService.getGeneratedErrorCode(astClass.getName()+
+      String errorCode = "0x70000" + astService.getGeneratedErrorCode(astClass.getName()+
               superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_ast.ast_class.AcceptSuper",
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
           this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
-              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType)));
+              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType), "AST node"));
       result.add(superAccept);
     }
     return result;
