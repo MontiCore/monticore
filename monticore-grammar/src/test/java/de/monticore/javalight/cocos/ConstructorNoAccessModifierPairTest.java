@@ -20,7 +20,7 @@ public class ConstructorNoAccessModifierPairTest extends JavaLightCocoTest{
   @Test
   public void testInvalid() {
     testInvalid(fileName, "constructor", ConstructorNoAccessModifierPair.ERROR_CODE,
-        String.format(ConstructorNoAccessModifierPair.ERROR_MSG_FORMAT, "constructor"), checker);
+        String.format(ConstructorNoAccessModifierPair.ERROR_MSG_FORMAT, "constructor", "StringReader:<2,0>"), checker);
   }
 
   @Test
