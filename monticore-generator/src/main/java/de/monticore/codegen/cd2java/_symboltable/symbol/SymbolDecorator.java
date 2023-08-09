@@ -286,11 +286,11 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
       ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
-      String errorCode = symbolTableService.getGeneratedErrorCode(symbolInput.getName()+
+      String errorCode = "0xA7010" + symbolTableService.getGeneratedErrorCode(symbolInput.getName()+
               superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
-      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("_symboltable.AcceptSuper",
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
               this.visitorService.getTraverserInterfaceFullName(), errorCode, symbolInput.getName(),
-              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType)));
+              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType), "Symbol"));
       result.add(superAccept);
     }
     return result;
