@@ -133,6 +133,11 @@ public class SymTypeOfFunction extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeOfFunction asFunctionType(){
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(SymTypeExpression sym) {
     if (!deepEqualsSignature(sym)) {
       return false;

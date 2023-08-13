@@ -50,6 +50,12 @@ public class SymTypeArray extends SymTypeExpression {
     return true;
   }
 
+  @Override
+  public SymTypeArray asArrayType(){
+    return this;
+  }
+
+
   public int getDim() {
     return dim;
   }

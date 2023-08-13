@@ -32,6 +32,12 @@ public class SymTypeVoid extends SymTypeExpression {
     return true;
   }
 
+
+  @Override
+  public SymTypeVoid asVoidType(){
+    return this;
+  }
+
   @Override
   public boolean deepEquals(SymTypeExpression sym){
     return sym.isVoidType();

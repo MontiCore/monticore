@@ -97,6 +97,12 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeOfWildcard asWildcard() {
+    return this;
+  }
+
+
+  @Override
   public boolean deepEquals(SymTypeExpression sym){
     //supporting deprecated code:
     if(typeSymbol != null) {

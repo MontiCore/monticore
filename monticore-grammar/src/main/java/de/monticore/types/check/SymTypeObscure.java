@@ -42,6 +42,11 @@ public class SymTypeObscure extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeObscure asObscureType(){
+    return this;
+  }
+
+  @Override
   public List<FunctionSymbol> getMethodList(String methodname,
                                             boolean abstractTc,
                                             AccessModifier modifier) {

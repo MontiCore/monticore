@@ -179,8 +179,14 @@ public class SymTypeVariable extends SymTypeExpression {
 
   @Override
   public boolean isTypeVariable() {
-    return true;
+  return true;
   }
+
+  @Override
+  public SymTypeVariable asTypeVariable(){
+    return this;
+  }
+
 
   @Override
   public SymTypeVariable deepClone() {

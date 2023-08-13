@@ -138,6 +138,106 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+
+  /**
+   * Take me as an object type (e.g. "String", "Person")
+   */
+  public SymTypeOfObject asObjectType(){
+    Log.error("SymTypeExpression is the superclass of SymTypeOfObject.");
+    return null;
+  }
+
+  /**
+   * Take me as a type variable
+   */
+  public SymTypeVariable asTypeVariable(){
+    Log.error("SymTypeExpression is the superclass of SymTypeVariable.");
+    return null;
+  }
+
+  /**
+   * Take me as of null type
+   */
+  public SymTypeOfNull asNullType(){
+    Log.error("SymTypeExpression is the superclass of SymTypeOfNull.");
+    return null;
+  }
+
+  /**
+   * Take me as an union type (e.g. "(A|B)")?
+   */
+  public SymTypeOfUnion asUnionType() {
+    Log.error("SymTypeExpression is the superclass of SymTypeOfUnion.");
+    return null;
+  }
+
+  /**
+   * Take me as a type derived from (e.g. "1 - student")?
+   */
+  public SymTypeObscure asObscureType(){
+    Log.error("SymTypeExpression is the superclass of SymTypeObscure.");
+    return null;
+  }
+
+  /**
+   * Take me as a wildcard (s. generics)
+   */
+  public SymTypeOfWildcard asWildcard() {
+    Log.error("SymTypeExpression is the superclass of SymTypeOfWildcard.");
+    return null;
+  }
+
+
+  /**
+   * Take me as a function type (e.g. "String -> Integer")
+   */
+  public SymTypeOfFunction asFunctionType(){
+    Log.error("SymTypeExpression is the superclass of SymTypeOfFunction.");
+    return null;
+  }
+
+  /**
+   * Take me as of void type
+   */
+  public SymTypeVoid asVoidType(){
+    Log.error("SymTypeExpression is the superclass of SymTypeVoid.");
+    return null;
+  }
+
+  /**
+   * Take me as an primitive type (e.g. "int", "float")
+   */
+  public SymTypePrimitive asPrimitive() {
+    Log.error("SymTypeExpression is the superclass of SymTypePrimitive.");
+    return null;
+  }
+
+  /**
+   * Take me as a generic type (such as "List<Integer>")
+   */
+  public SymTypeOfGenerics asGenericType() {
+    Log.error("SymTypeExpression is the superclass of SymTypeOfGenerics.");
+    return null;
+  }
+
+  /**
+   * Am I an array?
+   */
+  public SymTypeArray asArrayType(){
+    Log.error("SymTypeExpression is the superclass of SymTypeArray.");
+    return null;
+  }
+
+  /**
+   * Am I an intersection type (e.g. "(A&B)")
+   */
+  public SymTypeOfIntersection asIntersectionType() {
+    Log.error("SymTypeExpression is the superclass of SymTypeOfIntersection.");
+    return null;
+  }
+
+
+
   public SymTypeExpression deepClone() {
     return new SymTypeDeepCloneVisitor().calculate(this);
   }

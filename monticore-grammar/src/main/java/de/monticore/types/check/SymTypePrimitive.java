@@ -197,6 +197,11 @@ public class SymTypePrimitive extends SymTypeExpression {
   }
 
   @Override
+  public SymTypePrimitive asPrimitive() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(SymTypeExpression sym){
     if(!sym.isPrimitive()){
       return false;

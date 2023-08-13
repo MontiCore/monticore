@@ -34,6 +34,12 @@ public class SymTypeOfIntersection extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeOfIntersection asIntersectionType() {
+    return this;
+  }
+
+
+  @Override
   public String print() {
     final StringBuilder r = new StringBuilder();
     r.append("(");

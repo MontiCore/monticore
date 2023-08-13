@@ -205,6 +205,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public boolean isGenericType(){
     return true;
   }
+
+  @Override
+  public SymTypeOfGenerics asGenericType() {
+    return this;
+  }
   
   @Override
   public boolean deepEquals(SymTypeExpression sym){

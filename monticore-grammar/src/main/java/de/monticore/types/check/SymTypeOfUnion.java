@@ -41,6 +41,13 @@ public class SymTypeOfUnion extends SymTypeExpression {
     return true;
   }
 
+ @Override
+  public SymTypeOfUnion asUnionType() {
+    return this;
+  }
+
+
+
   @Override
   public String print() {
     final StringBuilder r = new StringBuilder();
@@ -184,4 +191,8 @@ public class SymTypeOfUnion extends SymTypeExpression {
     this.unionizedTypes = unionizedTypes;
   }
 
+
+
+
 }
+
