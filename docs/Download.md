@@ -18,7 +18,14 @@ The following tools for MontiCore can be used from the command line and thus e.g
 
 | Artifact                            | Description                                                                                                                                                                                                                                                               | Download                                                                            |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| :---------------------------------------------------------------------------------: |
-| MontiCore Tool                      | Tool for processing grammars.                                                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/monticore.jar)                     |
+| MontiCore Language Workbench        
+    | meta-tool for processing grammars and producing tool code: 
+      model-loading, model-management,
+      AST, AST-building, AST-traversal, ccontext condition check,
+      type check, symbol management, scope management,
+      generator workflows, template engine, etc.
+    | [Download JAR](https://www.monticore.de/download/monticore.jar)
+    |
 | MontiCore Runtime                   | MontiCore's runtime library.                                                                                                                                                                                                                                              | [Download JAR](https://www.monticore.de/download/monticore-rt.jar)                  |
 | Automaton Example Project           | Example project that can be used with the MontiCore CLI tool.                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/aut.tar.gz)                        |
 | Automaton Example Project in Gradle | Example project that can be used with Gradle.                                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/Automaton.zip)                     |
