@@ -1,6 +1,8 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-The following tools for MontiCore can be used from the command line and thus e.g. well be embedded in scripting. Their languages as well as related tooling are currently available for download:
+The following tools for MontiCore can be used from the command line and 
+thus e.g. well be embedded in scripting. Their languages as well as 
+related tooling are currently available for download:
 
 <!-- Optimize table display -->
 <style>
@@ -16,8 +18,8 @@ The following tools for MontiCore can be used from the command line and thus e.g
 }
 </style>
 
-| Artifact                            | Description                                                                                                                                                                                                                                                               | Download                                                                            |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| :---------------------------------------------------------------------------------: |
+| Artifact                            | Description                     | Download     |
+| ----------------------------------- | --------------------------------| :----------: |
 | MontiCore Language Workbench        
     | meta-tool for processing grammars and producing tool code: 
       model-loading, model-management,
