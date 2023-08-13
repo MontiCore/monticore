@@ -20,14 +20,7 @@ related tooling are currently available for download:
 
 | Artifact                            | Description                     | Download     |
 | ----------------------------------- | --------------------------------| :----------: |
-| MontiCore Language Workbench        
-    | meta-tool for processing grammars and producing tool code: 
-      model-loading, model-management,
-      AST, AST-building, AST-traversal, ccontext condition check,
-      type check, symbol management, scope management,
-      generator workflows, template engine, etc.
-    | [Download JAR](https://www.monticore.de/download/monticore.jar)
-    |
+| MontiCore Language Workbench        | Meta-tool for processing grammars and producing tool code: model-loading, model-management, AST, AST-building, AST-traversal, ccontext condition check, type check, symbol management, scope management, generator workflows, template engine, etc.  | [Download JAR](https://www.monticore.de/download/monticore.jar) |
 | MontiCore Runtime                   | MontiCore's runtime library.                                                                                                                                                                                                                                              | [Download JAR](https://www.monticore.de/download/monticore-rt.jar)                  |
 | Automaton Example Project           | Example project that can be used with the MontiCore CLI tool.                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/aut.tar.gz)                        |
 | Automaton Example Project in Gradle | Example project that can be used with Gradle.                                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/Automaton.zip)                     |
