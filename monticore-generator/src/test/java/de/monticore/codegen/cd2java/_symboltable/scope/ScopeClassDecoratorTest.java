@@ -6,7 +6,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -21,7 +21,6 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -35,6 +34,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -387,9 +387,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methodList = getMethodsBy("remove", scopeClass);
 
     Map<String, ASTCDMethod> methods = new HashMap<>();
-    CD4CodeFullPrettyPrinter p = new CD4CodeFullPrettyPrinter();
     methodList.forEach(l -> methods.put(
-        p.prettyprint(l.getCDParameter(0).getMCType()), l)
+            CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
 
     assertEquals(5, methodList.size());
@@ -431,9 +430,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testAddSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("add", scopeClass);
     Map<String, ASTCDMethod> methods = new HashMap<>();
-    CD4CodeFullPrettyPrinter p = new CD4CodeFullPrettyPrinter();
     methodList.forEach(l -> methods.put(
-        p.prettyprint(l.getCDParameter(0).getMCType()), l)
+        CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
 
     assertEquals(5, methodList.size());
