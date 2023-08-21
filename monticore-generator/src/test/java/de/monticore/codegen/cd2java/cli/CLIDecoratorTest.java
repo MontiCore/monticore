@@ -30,7 +30,8 @@ import static org.junit.Assert.assertFalse;
 public class CLIDecoratorTest extends DecoratorTestCase {
   private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
   private static final String AUTOMATON_ARTIFACT_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonArtifactScope";
-  private static final String CLI_OPTIONS = "org.apache.commons.cli.Options";private ASTCDClass cliClass;
+  private static final String CLI_OPTIONS = "org.apache.commons.cli.Options";
+  private ASTCDClass cliClass;
 
   @Before
   public void setup() {
