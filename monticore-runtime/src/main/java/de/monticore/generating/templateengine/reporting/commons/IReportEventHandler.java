@@ -186,7 +186,22 @@ public interface IReportEventHandler {
   /**
    * @param message
    */
+  public void reportUserWarning(String message);
+
+  /**
+   * @param message
+   */
   public void reportError(String message);
+
+  /**
+   * @param message
+   */
+  public void reportErrorUser(String message);
+
+  /**
+   * @param message
+   */
+  public void reportErrorInternal(String message);
 
   /**
    * @param transformationName

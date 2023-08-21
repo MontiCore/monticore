@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * Arrays of a certain dimension (>= 1)
@@ -55,6 +56,25 @@ public class SymTypeArray extends SymTypeExpression {
 
   public void setDim(int dim) {
     this.dim = dim;
+  }
+
+  /**
+   * returns a clone, but with n dimensions less
+   */
+  public SymTypeExpression cloneWithLessDim(int n) {
+    if (n > getDim()) {
+      Log.error("0xFDCCE tried removing " + n
+          + "dimensions from an " + getDim() + "dimensional array");
+      return SymTypeExpressionFactory.createObscureType();
+    }
+    else if (n == getDim()) {
+      return getArgument().deepClone();
+    }
+    else {
+      SymTypeArray clone = this.deepClone();
+      clone.setDim(getDim() - n);
+      return clone;
+    }
   }
 
   public SymTypeExpression getArgument() {

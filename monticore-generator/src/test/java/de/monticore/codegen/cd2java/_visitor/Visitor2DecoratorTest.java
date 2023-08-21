@@ -93,7 +93,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(18, visitor2.getCDMethodList().size());
+    assertEquals(20, visitor2.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }

@@ -34,9 +34,15 @@ public class SummaryReporter extends AReporter {
   static final String NUM_VARIABLE_ASSIGNMENTS = "variable assignments";
   
   static final String NUM_WARNINGS = "warnings";
-  
+
+  static final String NUM_USER_WARNINGS = "user warnings";
+
   static final String NUM_ERRORS = "errors";
-  
+
+  static final String NUM_USER_ERRORS = "user errors";
+
+  static final String NUM_INTERNAL_ERRORS = "internal errors";
+
   static final String MAX_TEMPLATE_DEPTH = "max template depth";
   
   static final String MAX_AST_DEPTH = "max AST depth";
@@ -88,8 +94,14 @@ public class SummaryReporter extends AReporter {
   protected int numVariableAssignments;
   
   protected int numWarnings;
+
+  protected int numUserWarnings;
   
   protected int numErrors;
+
+  protected int numUserErrors;
+
+  protected int numInternalErrors;
   
   protected int templateDepth;
   
@@ -152,6 +164,14 @@ public class SummaryReporter extends AReporter {
   public void reportWarning(String message) {
     numWarnings++;
   }
+
+  /**
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportUserWarning(java.lang.String)
+   */
+  @Override
+  public void reportUserWarning(String message) {
+    numUserWarnings++;
+  }
   
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportError(java.lang.String)
@@ -159,6 +179,22 @@ public class SummaryReporter extends AReporter {
   @Override
   public void reportError(String message) {
     numErrors++;
+  }
+
+  /**
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportErrorUser(java.lang.String)
+   */
+  @Override
+  public void reportErrorUser(String message) {
+    numUserErrors++;
+  }
+
+  /**
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportErrorInternal(java.lang.String)
+   */
+  @Override
+  public void reportErrorInternal(String message) {
+    numInternalErrors++;
   }
   
   /**
@@ -329,7 +365,10 @@ public class SummaryReporter extends AReporter {
         numUsedHWTemplates;
     int numVariables = variableNames.size();
     writeSummaryLine(NUM_ERRORS, numErrors);
+    writeSummaryLine(NUM_USER_ERRORS, numUserErrors);
+    writeSummaryLine(NUM_INTERNAL_ERRORS, numInternalErrors);
     writeSummaryLine(NUM_WARNINGS, numWarnings);
+    writeSummaryLine(NUM_USER_WARNINGS, numUserWarnings);
     writeSummaryLine(NUM_GENERATED_FILES, numGeneratedFiles);
     writeSummaryLine(NUM_INSTANTIATIONS, numInstantiations);
     writeSummaryLine(NUM_TEMPLATE_INCLUDE, numTemplateIncludes);
@@ -371,7 +410,10 @@ public class SummaryReporter extends AReporter {
     numVariableAssignments = 0;
     numASTNodeVisits = 0;
     numErrors = 0;
+    numUserErrors = 0;
+    numInternalErrors = 0;
     numWarnings = 0;
+    numUserWarnings = 0;
     templateDepth = 0;
     maxTemplateDepth = 0;
     numCallCodeHookpoints = 0;
@@ -397,7 +439,10 @@ public class SummaryReporter extends AReporter {
     writeLine("========================================================== Explanation");
     writeLine("Summary of all reports:");
     writeLine(" -" + NUM_ERRORS + ": " + "Number of errors during the process");
+    writeLine(" -" + NUM_USER_ERRORS + ": " + "Number of user errors during the process");
+    writeLine(" -" + NUM_INTERNAL_ERRORS + ": " + "Number of internal errors during the process");
     writeLine(" -" + NUM_WARNINGS + ": " + "Number of warnings during the process");
+    writeLine(" -" + NUM_USER_WARNINGS + ": " + "Number of user warnings during the process");
     writeLine(" -" + NUM_GENERATED_FILES + ": " + "Number of generated files");
     writeLine(" -" + NUM_INSTANTIATIONS + ": " + "Number of instantiated objects");
     writeLine(" -" + NUM_TEMPLATE_INCLUDE + ": " + "Number of templates being included");

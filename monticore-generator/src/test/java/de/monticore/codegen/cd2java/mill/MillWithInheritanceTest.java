@@ -146,7 +146,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
     assertTrue(getMill.getMCReturnType().isPresentMCType());
     assertDeepEquals("CGrammarMill", getMill.getMCReturnType().getMCType());
     //test Modifier
-    assertTrue(PROTECTED_STATIC.build().deepEquals(getMill.getModifier()));
+    assertTrue(PUBLIC_STATIC.build().deepEquals(getMill.getModifier()));
   
     assertTrue(Log.getFindings().isEmpty());
   }

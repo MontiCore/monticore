@@ -6,6 +6,7 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.util.DefsTypesForTests;
+import de.monticore.types3.util.SymTypeRelations;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
 
   protected ICombineExpressionsWithLiteralsScope scope;
 
-  protected SymTypeRelations tr;
+  protected ISymTypeRelations tr;
 
   @Before
   public void setup() {

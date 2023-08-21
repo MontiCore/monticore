@@ -9,7 +9,7 @@ public enum BasicAccessModifier implements AccessModifier {
   PUBLIC {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier visibility = modifier.getDimensionToModifierMap().get("Visibility");
+      AccessModifier visibility = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(visibility != null){
         return visibility.equals(PUBLIC);
       }
@@ -18,7 +18,7 @@ public enum BasicAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Visibility", this);
+      return Map.of(DIMENSION, this);
     }
 
     @Override
@@ -32,7 +32,7 @@ public enum BasicAccessModifier implements AccessModifier {
   PROTECTED {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier visibility = modifier.getDimensionToModifierMap().get("Visibility");
+      AccessModifier visibility = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(visibility != null){
         return (visibility.equals(PUBLIC)
           || visibility.equals(PROTECTED));
@@ -47,14 +47,14 @@ public enum BasicAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Visibility", this);
+      return Map.of(DIMENSION, this);
     }
   },
 
   PACKAGE_LOCAL {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier visibility = modifier.getDimensionToModifierMap().get("Visibility");
+      AccessModifier visibility = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(visibility != null){
         return (visibility.equals(PUBLIC)
           || visibility.equals(PROTECTED)
@@ -70,14 +70,14 @@ public enum BasicAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Visibility", this);
+      return Map.of(DIMENSION, this);
     }
   },
 
   PRIVATE {
     @Override
     public boolean includes(AccessModifier modifier) {
-      AccessModifier visibility = modifier.getDimensionToModifierMap().get("Visibility");
+      AccessModifier visibility = modifier.getDimensionToModifierMap().get(DIMENSION);
       if(visibility != null){
         return (visibility.equals(PUBLIC)
           || visibility.equals(PROTECTED)
@@ -94,8 +94,11 @@ public enum BasicAccessModifier implements AccessModifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of("Visibility", this);
+      return Map.of(DIMENSION, this);
     }
 
   },
+  ;
+
+  public static final String DIMENSION = "Visibility";
 }

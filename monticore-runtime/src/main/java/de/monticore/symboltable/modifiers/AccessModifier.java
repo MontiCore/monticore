@@ -24,9 +24,10 @@ public interface AccessModifier extends Modifier {
     );
   }
 
-  String ALL = "All";
-
   final class AllInclusionAccessModifier implements AccessModifier {
+
+    protected static final String DIMENSION = "All";
+
     @Override
     public boolean includes(AccessModifier modifier) {
       return true;
@@ -37,7 +38,7 @@ public interface AccessModifier extends Modifier {
 
     @Override
     public Map<String, AccessModifier> getDimensionToModifierMap() {
-      return Map.of(ALL, this);
+      return Map.of(DIMENSION, this);
     }
   }
 

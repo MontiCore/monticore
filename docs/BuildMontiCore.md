@@ -5,7 +5,7 @@
 
 # MontiCore - Language Workbench And Development Tool Framework 
 
-* [**MontiCore Reference Manual**](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+* [**MontiCore Handbook**](https://www.monticore.de/handbook.pdf).
 
 ## General disclaimer
 
@@ -56,7 +56,7 @@ lasting tasks.
     *  `gradle -p monticore-test/it build`
   * EMF Integration tests of the generator (only test collection not included in `testIt`): 
     * `gradle -p monticore-test/it build -PbuildProfile=emf`
-  * Experiments (from the Reference Manual) as integration tests:
+  * Experiments (from the Handbook) as integration tests:
     * `gradle -p monticore-test/01.experiments build` and 
     * `gradle -p monticore-test/02.experiments build`
   * Grammar integration tests:
@@ -75,5 +75,5 @@ lasting tasks.
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+* [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

@@ -7,17 +7,17 @@
 [[_TOC_]]
 
 [MontiCore](https://www.monticore.de) is a language workbench. It uses an
-extended grammar format as primary mechanism to describe DSLs. This format 
+extended grammar format as primary mechanism to describe DSLs. This format
 allows to **compose language components** by grammar
-(1) **inheritance**, (2) **extension**, (3) **embedding** 
-and (4) **aggregating**. Please refer the
+(1) **inheritance**, (2) **extension**, (3) **embedding**
+and (4) **aggregating**. Please refer to the
 [MontiCore handbook](https://www.monticore.de/handbook.pdf) for more details.
 
-MontiCore bundles a generator that can produce lots of infrastructure from
-MontiCore grammars. Like grammars, this infrastructure is **composable**. and
-can also be **extended with handwrittten code**. Most importantly, these
+MontiCore bundles a **generator** that can produce lots of infrastructure from
+MontiCore grammars. Like grammars, this infrastructure is **composable** and
+can be **extended with handwritten code**. Most importantly, these
 extensions and the grammar composition are compatible which
-leads to optimal forms of **reuse**.
+leads to flexible forms of **reuse**.
 
 This documentation presents a library of language components provided by the
 core of the MontiCore project together with short descriptions and status

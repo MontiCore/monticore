@@ -226,7 +226,8 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         || name.endsWith(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX)
         || name.endsWith(TRAVERSER_CLASS_SUFFIX)
         || name.endsWith(FULLPRETTYPRINTER_SUFFIX)
-        || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX));
+        || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX)
+        || name.endsWith(TYPE_DISPATCHER_SUFFIX));
   }
 
   /**
@@ -247,7 +248,8 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         || name.endsWith(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX)
         || name.endsWith(TRAVERSER_CLASS_SUFFIX)
         || name.endsWith(INHERITANCE_SUFFIX + HANDLER_SUFFIX)
-        || name.endsWith(FULLPRETTYPRINTER_SUFFIX);
+        || name.endsWith(FULLPRETTYPRINTER_SUFFIX)
+        || name.endsWith(TYPE_DISPATCHER_SUFFIX);
   }
 
   protected List<String> getAttributeNameList(List<ASTCDClass> astcdClasses) {
@@ -259,7 +261,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
   }
 
   protected ASTCDMethod addGetMillMethods(ASTMCType millType) {
-    ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PROTECTED_STATIC.build(), millType, GET_MILL);
+    ASTCDMethod getMillMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), millType, GET_MILL);
     this.replaceTemplate(EMPTY_BODY, getMillMethod, new TemplateHookPoint("mill.GetMillMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())));
     return getMillMethod;
   }
@@ -347,7 +349,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTMCQualifiedType typeDispatcherType = this.getMCTypeFacade().createQualifiedType(packageName + "." + typeDispatcherName);
 
     typeDispatcherMembers.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), typeDispatcherType, "typeDispatcher"));
-    typeDispatcherMembers.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, millDispatcherName));
 
     ASTCDMethod staticGetter = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), typeDispatcherType, "typeDispatcher");
     this.replaceTemplate(EMPTY_BODY, staticGetter,

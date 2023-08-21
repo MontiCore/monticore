@@ -1,24 +1,39 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-The following tools for MontiCore can be used from the command line and thus e.g. well be embedded in scripting. Their languages as well as related tooling are currently available for download:
+The following tools for MontiCore can be used from the command line and 
+thus e.g. well be embedded in scripting. Their languages as well as 
+related tooling are currently available for download:
 
-* The [MontiCore tool](https://www.monticore.de/download/monticore.jar) for processing grammars
-* The [MontiCore runtime](https://www.monticore.de/download/monticore-rt.jar) library
-* The [Automaton example project](https://www.monticore.de/download/aut.tar.gz) that can be used with the MontiCore CLI tool
-* The [Automaton example project in Gradle](https://www.monticore.de/download/Automaton.zip) that can be used with Gradle
-* The [CD tool](https://www.monticore.de/download/MCCD.jar) for a [Class Diagram language](https://github.com/MontiCore/cd4analysis)
-* The [FACT tool](https://www.monticore.de/download/MCFACT.jar) for a [Feature Diagram language](https://github.com/MontiCore/feature-diagram)
-* The [FeatureConfiguration tool](https://www.monticore.de/download/MCFeatureConfiguration.jar) for a [Feature Diagram language](https://github.com/MontiCore/feature-diagram)
-* The [FeatureConfigurationPartial tool](https://www.monticore.de/download/MCFeatureConfigurationPartial.jar) for a [Feature Diagram language](https://github.com/MontiCore/feature-diagram)
-* The [FeatureDiagram tool](https://www.monticore.de/download/MCFeatureDiagram.jar) for a [Feature Diagram language](https://github.com/MontiCore/feature-diagram)
-* The [MLC tool](https://www.monticore.de/download/MCMLC.jar) for grouping [Monticore Language Components](https://git.rwth-aachen.de/monticore/languages/mlc)
-* The [OCL tool](https://www.monticore.de/download/MCOCL.jar) for an [Object Constraint Language](https://github.com/MontiCore/ocl)
-* The [OD4Data tool](https://www.monticore.de/download/MCOD4Data.jar) for an [Object Diagram language](https://github.com/MontiCore/object-diagram)
-* The [OD4Report tool](https://www.monticore.de/download/MCOD4Report.jar) for an [Object Diagram language](https://github.com/MontiCore/object-diagram)
-* The [SD4Development tool](https://www.monticore.de/download/MCSD4Development.jar) for a [Sequence Diagram language](https://github.com/MontiCore/sequence-diagram)
-* The [Statecharts tool](https://www.monticore.de/download/MCStatecharts.jar) for a [Statechart language](https://github.com/MontiCore/statecharts)
-* The [JSON tool](https://www.monticore.de/download/MCJSON.jar) for a [JSON language](https://github.com/MontiCore/json)
-* The [XML tool](https://www.monticore.de/download/MCXML.jar) for an [XML language](https://github.com/MontiCore/xml)
+<!-- Optimize table display -->
+<style>
+.md-typeset table:not([class]) {
+  font-size:.75rem;
+  box-sizing:content-box;
+}
+.md-typeset table:not([class]) th {
+  padding:.3em .7em;
+}
+.md-typeset table:not([class]) td {
+  padding:.3em .7em;
+}
+</style>
+
+| Artifact                            | Description                     | Download     |
+| ----------------------------------- | --------------------------------| :----------: |
+| MontiCore Language Workbench        | Meta-tool for processing grammars and producing tool code: model-loading, model-management, AST, AST-building, AST-traversal, ccontext condition check, type check, symbol management, scope management, generator workflows, template engine, etc.  | [Download JAR](https://www.monticore.de/download/monticore.jar) |
+| MontiCore Runtime                   | MontiCore's runtime library.                                                                                                                                                                                                                                              | [Download JAR](https://www.monticore.de/download/monticore-rt.jar)                  |
+| Automaton Example Project           | Example language definition project that can be used with MontiCore.                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/aut.tar.gz)                        |
+| Automaton Example Project in Gradle | Example language definition project that can be used with MontiCore's Gradle integration.                                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/Automaton.zip)                     |
+| CD Tool                             | Parser, well-formedness checker, pretty printer, semantic and syntactic differencing, merging for the [MontiCore Class Diagrams](https://github.com/MontiCore/cd4analysis#readme).                                                                        | [Download JAR](https://www.monticore.de/download/MCCD.jar)                          |
+| FACT Tool                           | Finds valid configurations for [MontiCore Feature Diagrams](https://github.com/MontiCore/feature-diagram#readme), completes incomplete feature configurations and checks validity of complete feature configurations.                                                                                                          | [Download JAR](https://www.monticore.de/download/MCFACT.jar)                        |
+| MLC Tool                            | Modelling and maintaining architectural drift in language components (especially usable in MontiCore language definitions).                                                                                                                                                                                                                          | [Download JAR](https://www.monticore.de/download/MCMLC.jar)                         |
+| OCL Tool                            | Parser, well-formedness checker, pretty printer for the [MontiCore Object Constraint Language](https://github.com/MontiCore/ocl#readme).                                                                                                                  | [Download JAR](https://www.monticore.de/download/MCOCL.jar)                         |
+| OD4Data Tool                        | Parser, well-formedness checker, pretty printer for the [MontiCore Object Diagram language](https://github.com/MontiCore/object-diagram#readme) describing data.                                                                                                          | [Download JAR](https://www.monticore.de/download/MCOD4Data.jar)                     |
+| OD4Report Tool                      | Parser, well-formedness checker, pretty printer for the extended [MontiCore Object Diagram language](https://github.com/MontiCore/object-diagram#readme), in the version which focuses on generated reports and artifact-based analyses.                                | [Download JAR](https://www.monticore.de/download/MCOD4Report.jar)                   |
+| SD4Development Tool                 | Parser, well-formedness checker, pretty printer, semantic differencing for the [MontiCore Sequence Diagram language](https://github.com/MontiCore/sequence-diagram#readme).                                                                               | [Download JAR](https://www.monticore.de/download/MCSD4Development.jar)              |
+| Statecharts Tool                    | Parser, well-formedness checker, pretty printer for [MontiCore Statechart Models](https://github.com/MontiCore/statecharts#readme), which are a rich variant of automata.                                                                                                                       | [Download JAR](https://www.monticore.de/download/MCStatecharts.jar)                 |
+| JSON Tool                           | Parser, well-formedness checker, pretty printer, object diagram exporter for the [MontiCore JSON language](https://github.com/MontiCore/json#readme) using the [command line](https://github.com/MontiCore/json/blob/develop/src/main/grammars/de/monticore/lang/json.md#usage). | [Download JAR](https://www.monticore.de/download/MCJSON.jar)                        |
+| XML Tool                            | Parser and pretty printer for the [MontiCore XML language](https://github.com/MontiCore/xml#readme).                                                                                                                                                                                           | [Download JAR](https://www.monticore.de/download/MCXML.jar)                         |
 
 Please note the [MontiCore 3-Level License](../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) of these tools.
 

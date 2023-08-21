@@ -25,6 +25,7 @@ import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types3.util.SymTypeRelations;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +35,7 @@ import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
@@ -1069,7 +1071,7 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void deriveFromConditionalExpression() throws IOException {
-    SymTypeRelations typeRel = new SymTypeRelations();
+    ISymTypeRelations typeRel = new SymTypeRelations();
 
     //test with byte and short
     ASTExpression astExpr = parseExpr("varboolean ? varbyte : varshort");
@@ -2665,4 +2667,94 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("foo2(b, c)", "B");
     checkExpr("foo2(c, a)", "C");
   }
+
+  @Test
+  public void testCorrectMethodChosenPrimitives() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // primitive id
+    inScope(gs, function("pid", _charSymType, _charSymType));
+    inScope(gs, function("pid", _byteSymType, _byteSymType));
+    inScope(gs, function("pid", _shortSymType, _shortSymType));
+    inScope(gs, function("pid", _intSymType, _intSymType));
+    inScope(gs, function("pid", _longSymType, _longSymType));
+    inScope(gs, function("pid", _floatSymType, _floatSymType));
+    inScope(gs, function("pid", _doubleSymType, _doubleSymType));
+    inScope(gs, function("pid", _booleanSymType, _booleanSymType));
+
+    // based on String::valueOf
+    // byte and short get converted to int
+    inScope(gs, function("pid2", _charSymType, _charSymType));
+    inScope(gs, function("pid2", _intSymType, _intSymType));
+    inScope(gs, function("pid2", _longSymType, _longSymType));
+    inScope(gs, function("pid2", _floatSymType, _floatSymType));
+    inScope(gs, function("pid2", _doubleSymType, _doubleSymType));
+    inScope(gs, function("pid2", _booleanSymType, _booleanSymType));
+
+    checkExpr("pid(varchar)", "char");
+    checkExpr("pid(varbyte)", "byte");
+    checkExpr("pid(varshort)", "short");
+    checkExpr("pid(varint)", "int");
+    checkExpr("pid(varlong)", "long");
+    checkExpr("pid(varfloat)", "float");
+    checkExpr("pid(vardouble)", "double");
+    checkExpr("pid(varboolean)", "boolean");
+
+    checkExpr("pid2(varchar)", "char");
+    checkExpr("pid2(varbyte)", "int");
+    checkExpr("pid2(varshort)", "int");
+    checkExpr("pid2(varint)", "int");
+    checkExpr("pid2(varlong)", "long");
+    checkExpr("pid2(varfloat)", "float");
+    checkExpr("pid2(vardouble)", "double");
+    checkExpr("pid2(varboolean)", "boolean");
+  }
+
+  @Test
+  public void testCorrectMethodChosenStringValueOf() throws IOException {
+    // explicitly tries to recreate String::valueOf
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // Object being the superType of reference types,
+    SymTypeExpression objectSymType =
+        createTypeObject(inScope(gs, type("Object")));
+    _CharacterSymType.getTypeInfo().setSuperTypesList(List.of(objectSymType));
+    _ByteSymType.getTypeInfo().setSuperTypesList(List.of(objectSymType));
+    _ShortSymType.getTypeInfo().setSuperTypesList(List.of(objectSymType));
+    _IntegerSymType.getTypeInfo().setSuperTypesList(List.of(objectSymType));
+    _LongSymType.getTypeInfo().setSuperTypesList(List.of(objectSymType));
+    _FloatSymType.getTypeInfo().setSuperTypesList(List.of(objectSymType));
+    _DoubleSymType.getTypeInfo().setSuperTypesList(List.of(objectSymType));
+    _IntegerSymType.getTypeInfo().setSuperTypesList(List.of(objectSymType));
+
+    inScope(gs, function("valueOf", _boxedString, objectSymType));
+    inScope(gs, function("valueOf", _boxedString, _charSymType));
+    inScope(gs, function("valueOf", _boxedString, _intSymType));
+    inScope(gs, function("valueOf", _boxedString, _longSymType));
+    inScope(gs, function("valueOf", _boxedString, _floatSymType));
+    inScope(gs, function("valueOf", _boxedString, _doubleSymType));
+    inScope(gs, function("valueOf", _boxedString, _booleanSymType));
+    // presumably not necessary, but for good measure:
+    inScope(gs, function("valueOf", _boxedString,
+        createTypeArray(_charSymType, 1)));
+    inScope(gs, function("valueOf", _boxedString,
+        createTypeArray(_charSymType, 1), _intSymType, _intSymType));
+
+    checkExpr("valueOf(varchar)", "java.lang.String");
+    checkExpr("valueOf(varbyte)", "java.lang.String");
+    checkExpr("valueOf(varshort)", "java.lang.String");
+    checkExpr("valueOf(varint)", "java.lang.String");
+    checkExpr("valueOf(varlong)", "java.lang.String");
+    checkExpr("valueOf(varfloat)", "java.lang.String");
+    checkExpr("valueOf(vardouble)", "java.lang.String");
+    checkExpr("valueOf(varboolean)", "java.lang.String");
+
+    checkExpr("valueOf(varCharacter)", "java.lang.String");
+    checkExpr("valueOf(varByte)", "java.lang.String");
+    checkExpr("valueOf(varShort)", "java.lang.String");
+    checkExpr("valueOf(varInteger)", "java.lang.String");
+    checkExpr("valueOf(varLong)", "java.lang.String");
+    checkExpr("valueOf(varFloat)", "java.lang.String");
+    checkExpr("valueOf(varDouble)", "java.lang.String");
+    checkExpr("valueOf(varBoolean)", "java.lang.String");
+  }
+
 }

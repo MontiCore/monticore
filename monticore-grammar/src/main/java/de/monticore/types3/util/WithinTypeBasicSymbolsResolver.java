@@ -8,6 +8,8 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -15,7 +17,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfUnion;
-import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -37,10 +38,6 @@ import java.util.stream.Collectors;
 public class WithinTypeBasicSymbolsResolver {
 
   protected static final String LOG_NAME = "WithinTypeResolving";
-
-  protected static final String VISIBILITY_MODIFIER_KEY =
-      BasicAccessModifier.PUBLIC.getDimensionToModifierMap()
-          .keySet().stream().findFirst().get();
 
   protected SymTypeVariableReplaceVisitor replaceVisitor;
 
@@ -267,7 +264,7 @@ public class WithinTypeBasicSymbolsResolver {
     Optional<VariableSymbol> resolved = scope.resolveVariable(
         name,
         accessModifier,
-        predicate.and(v -> v.getEnclosingScope() == scope)
+        predicate.and(getIsLocalSymbolPredicate(scope))
     );
     return resolved;
   }
@@ -285,7 +282,7 @@ public class WithinTypeBasicSymbolsResolver {
         false,
         name,
         accessModifier,
-        predicate.and(f -> f.getEnclosingScope() == scope)
+        predicate.and(getIsLocalSymbolPredicate(scope))
     );
     return resolved;
   }
@@ -303,7 +300,7 @@ public class WithinTypeBasicSymbolsResolver {
         false,
         name,
         accessModifier,
-        predicate.and(t -> t.getEnclosingScope() == scope)
+        predicate.and(getIsLocalSymbolPredicate(scope))
     );
     // prefer variables to concrete types in the same scope,
     // e.g., class A<B>{class B{} B b = new B();} is not valid Java
@@ -317,6 +314,26 @@ public class WithinTypeBasicSymbolsResolver {
           + name + "\" (locally in the same scope)");
     }
     return resolved.stream().findAny();
+  }
+
+  /**
+   * Even more legacy code workarounds:
+   * filter out anything that is not in the exact scope
+   * due to questionable resolve strategy overrides in Scope classes...
+   */
+  protected Predicate<ISymbol> getIsLocalSymbolPredicate(IScope localScope) {
+    return s -> {
+      if (s.getEnclosingScope() != localScope) {
+        Log.trace("filtered symbol '"
+                + s.getFullName() + "' as it was resolved "
+                + "in a different scope, even though "
+                + "\"resolve[...]Locally[...]\" was used",
+            LOG_NAME
+        );
+        return false;
+      }
+      return true;
+    };
   }
 
   protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
@@ -396,9 +413,9 @@ public class WithinTypeBasicSymbolsResolver {
   protected AccessModifier private2Protected(AccessModifier accessModifier) {
     AccessModifier newModifier = accessModifier.shallowCopy();
     Map<String, AccessModifier> map = newModifier.getDimensionToModifierMap();
-    if (map.containsKey(VISIBILITY_MODIFIER_KEY)
-        && map.get(VISIBILITY_MODIFIER_KEY) == BasicAccessModifier.PRIVATE) {
-      map.put(VISIBILITY_MODIFIER_KEY, BasicAccessModifier.PROTECTED);
+    if (map.containsKey(BasicAccessModifier.DIMENSION)
+        && map.get(BasicAccessModifier.DIMENSION) == BasicAccessModifier.PRIVATE) {
+      map.put(BasicAccessModifier.DIMENSION, BasicAccessModifier.PROTECTED);
     }
     return newModifier;
   }

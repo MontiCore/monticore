@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Map;
 import java.util.Optional;
@@ -42,5 +44,17 @@ public class VariableSymbol extends VariableSymbolTOP {
     }else{
       returnType.replaceTypeVariables(replaceMap);
     }
+  }
+
+  @Override
+  public AccessModifier getAccessModifier() {
+    // supporting legacy source code...
+    if(accessModifier == null) {
+      Log.trace("AccessModifier of variable '"
+              + getFullName() + "' was not set (null)",
+          "BasicSymbols");
+      accessModifier = AccessModifier.ALL_INCLUSION;
+    }
+    return accessModifier;
   }
 }

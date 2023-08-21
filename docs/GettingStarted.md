@@ -118,7 +118,7 @@ form of extension allows to achieve several effects:
 Component grammars and grammar extensions are detailedly discussed in 
 [Chapter 4 of the MontiCore handbook](https://www.monticore.de/handbook.pdf).
 
-```
+```monticore
 grammar Automata extends de.monticore.MCBasics {
 
   symbol scope Automaton =
@@ -223,7 +223,7 @@ the second usage is named `to`. MontiCore also supports `interface` and
 described in [Chapter 4 of the MontiCore handbook](https://www.monticore.de/handbook.pdf). 
 However, the example grammar does not use these concepts.
 
-```
+```automaton
 automaton PingPong {
   state NoGame <<initial>>;
   state Ping;
@@ -1359,5 +1359,5 @@ the project again.
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+* [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

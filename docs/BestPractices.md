@@ -15,9 +15,9 @@ The list is subdivided into several MD files tackling various language design ar
 
 The list is partially temporary and also contains compact (incomplete) solutions.
 More detailed descriptions of best practices can be found in the 
-[MontiCore reference manual](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+[MontiCore handbook](https://www.monticore.de/handbook.pdf).
 Some of the best practices here will also be incorporated in the next version
-of the reference manual.
+of the handbook.
 
 
 * [**Designing A Language**](BestPractices-Language-Design.md)
@@ -43,5 +43,5 @@ of the reference manual.
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+* [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

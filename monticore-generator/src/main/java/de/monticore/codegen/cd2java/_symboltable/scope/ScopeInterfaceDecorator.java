@@ -7,9 +7,10 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -141,7 +142,9 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
             .addAllCDMembers(scopeRuleAttributeMethods)
             .addCDMember(createAcceptTraverserMethod())
             .addCDMember(createSymbolsSizeMethod(symbolAttributes))
+            .addAllCDMembers(createAcceptTraverserSuperMethods())
             .build();
+
     CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
     return clazz;
   }
@@ -602,6 +605,18 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       return Optional.ofNullable(attrName);
     }
     return Optional.empty();
+  }
+
+  protected List<ASTCDMethod> createAcceptTraverserSuperMethods() {
+    List<ASTCDMethod> result = new ArrayList<>();
+    //accept methods for super visitors
+    List<ASTMCQualifiedType> l = this.visitorService.getAllTraverserInterfacesTypesInHierarchy();
+    l.add(getMCTypeFacade().createQualifiedType(VisitorConstants.ITRAVERSER_FULL_NAME));
+    for (ASTMCType superVisitorType : l) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+      result.add(this.getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter));
+    }
+    return result;
   }
 
 }

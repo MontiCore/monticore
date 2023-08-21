@@ -15,6 +15,34 @@ also be adapted, extended and further composed.
 Please also have a look at our literature references for further 
 information on many of the languages. 
 
+## Information about Languages and Language Components 
+
+* [**MontiCore Handbook**](https://www.monticore.de/handbook.pdf).
+   The handbook describes how to use MontiCore as an out-of-the-box 
+   *language workbench*), but also as a grey box *tooling framework*.
+   It thus also gives an overview over a number of core mechanisms of MontiCore.
+
+* [**List of MontiCore core Language Components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
+   MontiCore concentrates on reuse. It therefore offers a set of
+   predefined *language components* where the main artifact is usually a
+   *component grammar*. Reusing these language components allows 
+   language developers to define their own language as a
+   composition of reusable assets efficiently. Reusable assets describe among others 
+   several sets of *literals*, *expressions* and *types*, which are relatively 
+   freely composable.
+
+* [**List of languages**](Languages.md).
+   This is a another list of newer MontiCore
+   languages that can be used out of the box or also composed. 
+   Many of them already are rather stable, but some of them also undergo a
+   lively development and enhancement. 
+   These complete languages are usually composed of a number of language
+   components.
+
+* [**MontiCore topic list**](https://www.se-rwth.de/research/) 
+   Describes various research topics which MontiCore builds on or
+   where MontiCore has been used as foundation.
+
 ## Github Available Languages
 * [Class Diagrams](https://github.com/MontiCore/cd4analysis)
 * [Sequence Diagrams](https://github.com/MontiCore/sequence-diagram)
@@ -128,34 +156,6 @@ development. See language definition and usage method in
 * **MontiCore** itself uses a family of DSLs for the definition of 
     DSLs, i.e., their grammars. [[HR17]](https://www.se-rwth.de/publications/)
 
-## More Information about Languages and Language Components 
-
-* [**MontiCore Reference Manual**](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
-   The reference Manual describes how to use MontiCore as an out-of-the-box 
-   *language workbench*), but also as a grey box *tooling framework*.
-   It thus also gives an overview over a number of core mechanisms of MontiCore.
-
-* [**List of MontiCore core Language Components**](../monticore-grammar/src/main/grammars/de/monticore/Grammars.md).
-   MontiCore concentrates on reuse. It therefore offers a set of
-   predefined *language components* where the main artifact is usually a
-   *component grammar*. Reusing these language components allows 
-   language developers to define their own language as a
-   composition of reusable assets efficiently. Reusable assets describe among others 
-   several sets of *literals*, *expressions* and *types*, which are relatively 
-   freely composable.
-
-* [**List of languages**](Languages.md).
-   This is a another list of newer MontiCore
-   languages that can be used out of the box or also composed. 
-   Many of them already are rather stable, but some of them also undergo a
-   lively development and enhancement. 
-   These complete languages are usually composed of a number of language
-   components.
-
-* [**MontiCore topic list**](https://www.se-rwth.de/research/) 
-   Describes various research topics which MontiCore builds on or
-   where MontiCore has been used as foundation.
-
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
@@ -164,5 +164,5 @@ development. See language definition and usage method in
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+* [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

@@ -7,7 +7,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.ISymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class NominalSuperTypeCalculator {
 
   protected final static String LOG_NAME = "NominalSuperTypes";
 
-  protected SymTypeRelations symTypeRelations;
+  protected ISymTypeRelations symTypeRelations;
 
   protected SymTypeVariableReplaceVisitor replaceVisitor;
 
@@ -32,13 +32,13 @@ public class NominalSuperTypeCalculator {
     this.replaceVisitor = new SymTypeVariableReplaceVisitor();
   }
 
-  public NominalSuperTypeCalculator(SymTypeRelations typeRelations) {
+  public NominalSuperTypeCalculator(ISymTypeRelations typeRelations) {
     // default values
     this();
     this.symTypeRelations = typeRelations;
   }
 
-  protected SymTypeRelations getSymTypeRelations() {
+  protected ISymTypeRelations getSymTypeRelations() {
     return symTypeRelations;
   }
 
@@ -55,9 +55,9 @@ public class NominalSuperTypeCalculator {
    */
   public List<SymTypeExpression> getNominalSuperTypes(SymTypeExpression thisType) {
     if (!isSupported(thisType)) {
-      Log.error("0xFDA11 internal error: "
-          + "tried to get list of explicit super types "
-          + "of unsupported type: " + thisType.printFullName());
+      Log.info("tried to get list of nominal super types "
+              + "of unsupported type: " + thisType.printFullName(),
+          LOG_NAME);
       return Collections.emptyList();
     }
     List<SymTypeExpression> superTypes;

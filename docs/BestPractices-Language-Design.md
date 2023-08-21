@@ -89,14 +89,14 @@ Some general questions on how to design a complete languages are addressed here.
   adaptability are important:
     1. MontiCore has powerful techniques for adaptation, extension and 
        composition of *modelling languages* (through their grammars). See the
-       [reference manual](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+       [handbook](https://www.monticore.de/handbook.pdf).
     2. MontiCore has powerful techniques for the *aggregation of models* --
        using the same principles as programming languages, namely allowing to keep 
        the models independent (and thus storable, versionable, reusable) artifacts,
        while they are semantically and through the generator technology well integrated. 
        The appropriate approach is based on *using* foreign models, e.g., through 
        `import` statements and sharing *symbol* infrastructures as described in the
-       [reference manual](https://monticore.de/MontiCore_Reference-Manual.2017.pdf).
+       [handbook](https://www.monticore.de/handbook.pdf).
     3. The generator provides (a) many Java classes and methods that can be overridden
        (b) Freemarker templates hook points to extend and replace templates, and (c)
        can be customized using a groovy script.
@@ -234,5 +234,5 @@ of which has its own advantages and disadvantages:
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+* [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

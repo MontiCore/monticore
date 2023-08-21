@@ -136,4 +136,31 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
 
     return new CompoundAccessModifier(modifiers);
   }
+
+  @Override
+  public void setIsPublic(boolean isPublic) {
+    if (isPublic) {
+      this.isPrivate = false;
+      this.isProtected = false;
+    }
+    this.isPublic = isPublic;
+  }
+
+  @Override
+  public void setIsPrivate(boolean isPrivate) {
+    if (isPrivate) {
+      this.isPublic = false;
+      this.isProtected = false;
+    }
+    this.isPrivate = isPrivate;
+  }
+
+  @Override
+  public void setIsProtected(boolean isProtected) {
+    if (isProtected) {
+      this.isPrivate = false;
+      this.isPublic = false;
+    }
+    this.isProtected = isProtected;
+  }
 }

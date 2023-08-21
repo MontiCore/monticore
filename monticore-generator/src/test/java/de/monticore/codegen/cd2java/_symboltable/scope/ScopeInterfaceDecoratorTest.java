@@ -107,7 +107,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(166, scopeInterface.getCDMethodList().size());
+    assertEquals(168, scopeInterface.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -781,6 +781,21 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
     assertTrue(method.isEmptyCDParameters());
   
     assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testAcceptMethods() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", scopeInterface);
+
+    assertEquals(3, methods.size());
+
+    methods.forEach(method -> {
+      assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());
+      assertVoid(method.getMCReturnType().getMCVoidType());
+      assertEquals(1, method.getCDParameterList().size());
+      assertEquals("visitor", method.getCDParameter(0).getName());
+      assertTrue(method.getCDParameter(0).getMCType().printType().endsWith("Traverser"));
+    });
   }
 
   @Test

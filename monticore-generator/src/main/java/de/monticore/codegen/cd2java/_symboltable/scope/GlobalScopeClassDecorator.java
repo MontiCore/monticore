@@ -11,8 +11,11 @@ import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.serialization.AbstractDeSers;
+import de.monticore.codegen.cd2java._visitor.VisitorConstants;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -32,6 +35,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
 /**
  * creates a globalScope class from a grammar
@@ -39,6 +43,8 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;
+
+  protected final VisitorService visitorService;
 
   protected final MethodDecorator methodDecorator;
 
@@ -63,9 +69,10 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
   public GlobalScopeClassDecorator(final GlobalExtensionManagement glex,
                                    final SymbolTableService symbolTableService,
-                                   final MethodDecorator methodDecorator) {
+                                   VisitorService visitorService, final MethodDecorator methodDecorator) {
     super(glex);
     this.symbolTableService = symbolTableService;
+    this.visitorService = visitorService;
     this.methodDecorator = methodDecorator;
     this.accessorDecorator = methodDecorator.getAccessorDecorator();
     this.mutatorDecorator = methodDecorator.getMutatorDecorator();
@@ -114,7 +121,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     List<String> symbolListString = allSymbolClasses.stream().map(symbolTableService::getSymbolSimpleName).collect(Collectors.toList());
 
-    return CD4AnalysisMill.cDClassBuilder()
+    ASTCDClass cdClass = CD4AnalysisMill.cDClassBuilder()
         .setName(globalScopeName)
         .setModifier(PUBLIC.build())
         .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(scopeType).build())
@@ -145,6 +152,11 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
         .addCDMember(createClearMethod(resolverMethods, symbolListString))
         .addAllCDMembers(createPutDeSerMethods(symbolProds))
         .build();
+
+    cdClass.addCDMember(createAcceptTraverserMethod(cdClass));
+    cdClass.addAllCDMembers(createAcceptTraverserSuperMethods(cdClass));
+
+    return cdClass;
   }
 
   protected ASTCDConstructor createConstructor(String globalScopeClassName) {
@@ -393,6 +405,32 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
     }
     
     return deSerMethods;
+  }
+
+  protected ASTCDMethod createAcceptTraverserMethod(ASTCDClass astClass) {
+    ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getTraverserInterfaceType(), VISITOR_PREFIX);
+    ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, visitorParameter);
+    this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
+    return acceptMethod;
+  }
+
+  protected List<ASTCDMethod> createAcceptTraverserSuperMethods(ASTCDClass astClass) {
+    List<ASTCDMethod> result = new ArrayList<>();
+    //accept methods for super visitors
+    List<ASTMCQualifiedType> l = this.visitorService.getAllTraverserInterfacesTypesInHierarchy();
+    l.add(getMCTypeFacade().createQualifiedType(VisitorConstants.ITRAVERSER_FULL_NAME));
+    for (ASTMCType superVisitorType : l) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+
+      ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
+      String errorCode = "0xA7011" + visitorService.getGeneratedErrorCode(astClass.getName()+
+          superVisitorType.printType());
+      this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
+          this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
+          superVisitorType.printType(), "Scope"));
+      result.add(superAccept);
+    }
+    return result;
   }
   
   public boolean isGlobalScopeTop() {

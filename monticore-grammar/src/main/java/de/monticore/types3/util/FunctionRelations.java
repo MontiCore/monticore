@@ -3,7 +3,7 @@ package de.monticore.types3.util;
 
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.ISymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
  */
 public class FunctionRelations {
 
-  protected SymTypeRelations symTypeRelations;
+  protected ISymTypeRelations symTypeRelations;
 
-  public FunctionRelations(SymTypeRelations symTypeRelations) {
+  public FunctionRelations(ISymTypeRelations symTypeRelations) {
     this.symTypeRelations = symTypeRelations;
   }
 
-  SymTypeRelations getSymTypeRelations() {
+  protected ISymTypeRelations getSymTypeRelations() {
     return symTypeRelations;
   }
 
@@ -88,10 +88,9 @@ public class FunctionRelations {
           int it = i;
           potentialFuncs.removeIf(
               potFunc -> funcs.stream().anyMatch(
-                  func -> !getSymTypeRelations().internal_isSubTypeOf(
-                      potFunc.getArgumentType(it),
-                      func.getArgumentType(it),
-                      true
+                  func -> !getSymTypeRelations().isSubTypeOf(
+                      getSymTypeRelations().box(potFunc.getArgumentType(it)),
+                      getSymTypeRelations().box(func.getArgumentType(it))
                   )
               )
           );

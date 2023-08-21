@@ -10,7 +10,7 @@ with an explicit notion of language components. It uses
 grammars to describe textual DSLs. 
 MontiCore uses an extended grammar format that allows to compose 
 language components via inheritance, embedding and aggregation (see the 
-[**reference manual**](https://monticore.de/MontiCore_Reference-Manual.2017.pdf)
+[**handbook**](https://www.monticore.de/handbook.pdf)
 for details).
 
 A **language component** is mainly represented through 
@@ -138,7 +138,7 @@ featurediagram MyPhones {
 
 
 
-### GUI DSL: (Alpha: Intention to become stable) - not publicly available (links are private)
+### GUI DSL: (MontiCore stable) - not publicly available (links are private)
 * Language for textual definition of Graphical User Interfaces of Web
 Applications
 * GUI DSL covers GUI elements and relevant configuration, which include
@@ -158,8 +158,8 @@ can be found in the same repository.
 includes basic concepts and more specific implementation of component
 configuration.
 * In projects legacy version is currently used:
-  * Examples: [**MaCoCo**](https://git.rwth-aachen.de/macoco/implementation),
-              Ford
+  * Examples: [**MaCoCo**](https://www.se-rwth.de/projects/MaCoCo/),
+              [Ford](https://www.se-rwth.de/projects/22.09.MontiGem.Ford.Press.Release/)
   * [Main grammar `GUIDSL`](https://git.rwth-aachen.de/monticore/languages/gui-dsl/-/blob/master/src/main/grammars/GUIDSL.mc4)
 includes definitions of MontiGem visualisation components, which are based on
 abstract concepts, described in
@@ -199,8 +199,8 @@ and
   defines the language with some open parameters and
   [`de.monticore.grammar.Grammar_WithConcepts`](https://github.com/MontiCore/monticore/tree/opendev/monticore-grammar/src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4)
   binds the external, imported expressions, method bodies, etc.
-* [*Detailed description*](https://monticore.de/MontiCore_Reference-Manual.2017.pdf)
-  in the MontiCore Reference Manual.
+* [*Detailed description*](https://www.monticore.de/handbook.pdf)
+  in the MontiCore Handbook.
   
 
 ### [JSON](https://github.com/MontiCore/json) (MontiCore Stable)
@@ -274,9 +274,9 @@ component InteriorLight {                           // MontiArc language
   language a concrete timing, such as formally grounded by Focus, 
   should be added.
 * Main grammar 
-  [`MontiArc.mc4`](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.mc4)
+  [`MontiArc.mc4`](https://github.com/MontiCore/montiarc/blob/develop/languages/grammars/MontiArc.mc4)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/montiarc/core/-/blob/develop/languages/montiarc-fe/src/main/grammars/MontiArc.md)
+  [*detailed description*](https://github.com/MontiCore/montiarc/blob/develop/languages/MontiArc.md)
 
 
 ### [OCL/P](https://github.com/monticore/OCL) (MontiCore Stable)
@@ -636,5 +636,5 @@ public void print(String name) {
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
+* [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

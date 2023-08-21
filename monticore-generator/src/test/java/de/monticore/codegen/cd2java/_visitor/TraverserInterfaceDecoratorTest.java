@@ -91,7 +91,7 @@ public class TraverserInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(46, traverserInterface.getCDMethodList().size());
+    assertEquals(50, traverserInterface.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
