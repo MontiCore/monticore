@@ -40,6 +40,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
   public static final List<String> PRIMITIVE_LIST = Collections.unmodifiableList(Lists.newArrayList(INT, DOUBLE, FLOAT, SHORT, LONG, BOOLEAN, BYTE, CHAR, NULL, VOID));
 
+  public static final String STRING = "String";
 
   public static void initializePrimitives(){
     if(primitiveTypesInitializer == null){
@@ -64,6 +65,33 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
             .setSpannedScope(scope())
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .build();
+  }
+
+  /**
+   * This is only required if the String Symbol is not provided otherwise,
+   * e.g., using Class2MC,
+   * as it is required for, e.g., String literals.
+   * It is deliberately a trivial Symbol without any fields / methods.
+   */
+  public static void initializeString() {
+    // reusing the initializer
+    if(primitiveTypesInitializer == null){
+      primitiveTypesInitializer = getMill();
+    }
+    primitiveTypesInitializer._initializeString();
+  }
+
+  protected void _initializeString() {
+    IBasicSymbolsGlobalScope gs = globalScope();
+    gs.add(typeSymbolBuilder()
+        .setName(STRING)
+        // this is not Java's String
+        .setFullName(STRING)
+        .setEnclosingScope(gs)
+        .setSpannedScope(scope())
+        .setAccessModifier(AccessModifier.ALL_INCLUSION)
+        .build()
+    );
   }
 
   public static  void reset ()  {

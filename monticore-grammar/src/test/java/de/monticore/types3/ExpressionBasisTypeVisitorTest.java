@@ -55,7 +55,7 @@ public class ExpressionBasisTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void deriveTFromLiteralString() throws IOException {
-    checkExpr("\"aStringi\"", "String");
+    checkExpr("\"aStringi\"", "java.lang.String");
   }
 
 }

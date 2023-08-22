@@ -266,6 +266,8 @@ public class WithinTypeBasicSymbolsResolver {
         accessModifier,
         predicate.and(getIsLocalSymbolPredicate(scope))
     );
+    // todo remove given a fixed resolver
+    resolved = resolved.filter(predicate.and(getIsLocalSymbolPredicate(scope)));
     return resolved;
   }
 
@@ -284,6 +286,10 @@ public class WithinTypeBasicSymbolsResolver {
         accessModifier,
         predicate.and(getIsLocalSymbolPredicate(scope))
     );
+    // todo remove given a fixed resolver
+    resolved = resolved.stream()
+        .filter(predicate.and(getIsLocalSymbolPredicate(scope)))
+        .collect(Collectors.toList());
     return resolved;
   }
 
@@ -302,6 +308,10 @@ public class WithinTypeBasicSymbolsResolver {
         accessModifier,
         predicate.and(getIsLocalSymbolPredicate(scope))
     );
+    // todo remove given a fixed resolver
+    resolved = resolved.stream()
+        .filter(predicate.and(getIsLocalSymbolPredicate(scope)))
+        .collect(Collectors.toList());
     // prefer variables to concrete types in the same scope,
     // e.g., class A<B>{class B{} B b = new B();} is not valid Java
     if (resolved.stream().anyMatch(getTypeDispatcher()::isTypeVar)) {
