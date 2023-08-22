@@ -31,6 +31,10 @@ public class FunctionRelations {
   }
 
   protected ISymTypeRelations getSymTypeRelations() {
+    if (symTypeRelations == null) {
+      Log.error("0xFD81A internal error:"
+          + "SymTypeNormalizeVisitor not set up correctly");
+    }
     return symTypeRelations;
   }
 

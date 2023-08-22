@@ -39,6 +39,10 @@ public class NominalSuperTypeCalculator {
   }
 
   protected ISymTypeRelations getSymTypeRelations() {
+    if (symTypeRelations == null) {
+      Log.error("0xFD81C internal error:"
+          + "SymTypeNormalizeVisitor not set up correctly");
+    }
     return symTypeRelations;
   }
 

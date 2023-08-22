@@ -32,6 +32,10 @@ public class SymTypeCompatibilityCalculator {
   }
 
   protected ISymTypeRelations getSymTypeRelations() {
+    if (symTypeRelations == null) {
+      Log.error("0xFD81D internal error:"
+          + "SymTypeNormalizeVisitor not set up correctly");
+    }
     return symTypeRelations;
   }
 
