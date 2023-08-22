@@ -66,7 +66,7 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("65536 + 1", "int"); // expected int and provided int
     checkExpr("2147483647 + 0", "int"); // expected int and provided int
     checkExpr("varchar + varchar", "int"); // + applicable to char, char, result is int
-    checkExpr("3 + \"Hallo\"", "String"); // example with String
+    checkExpr("3 + \"Hallo\"", "java.lang.String"); // example with String
   }
 
   @Test
