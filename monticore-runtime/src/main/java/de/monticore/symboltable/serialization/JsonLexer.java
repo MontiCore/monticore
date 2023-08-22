@@ -3,6 +3,7 @@
 package de.monticore.symboltable.serialization;
 
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.text.StringEscapeUtils;
 
 import static de.monticore.symboltable.serialization.JsonToken.*;
 import static de.monticore.symboltable.serialization.JsonTokenKind.NUMBER;
@@ -221,7 +222,7 @@ public class JsonLexer {
           pos = pos + 5;
         }
         // else, check whether other allowed escaped character
-        else if ("\\\"bfnrt".indexOf(c) != -1) {
+        else if ("\\\"bfnrt/".indexOf(c) != -1) {
           pos++;
         }
         else {
@@ -232,7 +233,7 @@ public class JsonLexer {
       //else these are unescaped quotes, the string ends here and is valid
       else if (c == '\"') {
         pos++;
-        peeked = new JsonToken(STRING, result.toString());
+        peeked = new JsonToken(STRING, StringEscapeUtils.unescapeJson(result.toString()));
         return peeked;
       }
       else {
