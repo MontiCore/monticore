@@ -424,7 +424,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
                 + "), no potential function can be invoked:"
                 + System.lineSeparator()
                 + funcs.stream()
-                .map(SymTypeExpression::printFullName)
+                .map(this::printFunctionForLog)
                 .collect(Collectors.joining(System.lineSeparator())),
             expr.get_SourcePositionStart(),
             expr.get_SourcePositionEnd()
@@ -1074,5 +1074,17 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
 
   protected CommonExpressionsTypeDispatcher getTypeDispatcher() {
     return CommonExpressionsMill.typeDispatcher();
+  }
+
+  protected String printFunctionForLog(SymTypeOfFunction func) {
+    String result = "";
+    result += func.printFullName();
+    if (func.hasSymbol()) {
+      result += " (symbol: "
+          + func.getSymbol().getFullName()
+          + ")"
+      ;
+    }
+    return result;
   }
 }
