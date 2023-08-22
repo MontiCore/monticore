@@ -7,10 +7,16 @@ import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfFunction;
+import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * resolves within a type,
@@ -27,6 +33,52 @@ public class OOWithinTypeBasicSymbolsResolver
 
   public OOWithinTypeBasicSymbolsResolver() {
     super();
+  }
+
+  /**
+   * resolves within a type including supertypes
+   */
+  public List<SymTypeOfFunction> resolveConstructors(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate) {
+    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
+    Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
+    if (spannedScopeOpt.isEmpty()) {
+      resolvedSymTypes = new ArrayList<>();
+    }
+    // search in this scope
+    else {
+      List<FunctionSymbol> resolvedSymbols = resolveConstructorLocally(
+          thisType.getTypeInfo().getSpannedScope(),
+          thisType.getTypeInfo().getName(),
+          accessModifier,
+          predicate
+      );
+      List<SymTypeOfFunction> resolvedTypesUnmodified = resolvedSymbols.stream()
+          .map(FunctionSymbol::getFunctionType)
+          .collect(Collectors.toList());
+      // checking for broken symbol table
+      if (resolvedTypesUnmodified.stream().anyMatch(f ->
+          !f.getType().hasTypeInfo() ||
+              f.getType().getTypeInfo() != thisType.getTypeInfo()
+      )) {
+        Log.error("0xFDCC2 unexpected constructor return type(s) of type "
+            + thisType.printFullName()
+            + ", constructors are " + System.lineSeparator()
+            + resolvedTypesUnmodified.stream()
+            .map(SymTypeOfFunction::printFullName)
+            .collect(Collectors.joining(System.lineSeparator()))
+        );
+      }
+      resolvedSymTypes = resolvedTypesUnmodified.stream()
+          .map(f -> (SymTypeOfFunction) replaceVariablesIfNecessary(thisType, f))
+          .collect(Collectors.toList());
+    }
+
+    // do not search super types for constructors
+
+    return resolvedSymTypes;
   }
 
   // Helper
@@ -50,7 +102,10 @@ public class OOWithinTypeBasicSymbolsResolver
   /**
    * same as {@link #resolveFunctionLocally}
    * but does only returns constructors
+   *
+   * @deprecated is to be made private, use {@link #resolveConstructors}
    */
+  @Deprecated
   public List<FunctionSymbol> resolveConstructorLocally(
       IBasicSymbolsScope scope,
       String name,

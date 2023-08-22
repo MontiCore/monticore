@@ -5,7 +5,9 @@ import de.monticore.expressions.assignmentexpressions.types3.AssignmentExpressio
 import de.monticore.expressions.bitexpressions.types3.BitExpressionsTypeVisitor;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
+import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorTypeVisitor;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeVisitor;
+import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorTypeVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
@@ -36,6 +38,17 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     CombineExpressionsWithLiteralsTraverser traverser =
         CombineExpressionsWithLiteralsMill.inheritanceTraverser();
     VisitorList visitors = constructVisitorsForOO();
+    setType4Ast(visitors, type4Ast);
+    populateTraverser(visitors, traverser);
+    return traverser;
+  }
+
+  public CombineExpressionsWithLiteralsTraverser createTraverserForOOWithConstructors(
+      Type4Ast type4Ast
+  ) {
+    CombineExpressionsWithLiteralsTraverser traverser =
+        CombineExpressionsWithLiteralsMill.inheritanceTraverser();
+    VisitorList visitors = constructVisitorsForOOWithConstructors();
     setType4Ast(visitors, type4Ast);
     populateTraverser(visitors, traverser);
     return traverser;
@@ -84,30 +97,43 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
   /**
    * initializes additional logic for languages that have access to OO Symbols
-   *
-   * @return
    */
   protected VisitorList constructVisitorsForOO() {
     VisitorList visitors = constructVisitors();
+    visitors.derCommonExpressions =
+        new CommonExpressionsTypeIdAsConstructorTypeVisitor();
     WithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver =
         new OOWithinTypeBasicSymbolsResolver();
-    NameExpressionTypeCalculator nameExpressionTypeCalculator =
-        new OONameExpressionTypeCalculator();
+    WithinScopeBasicSymbolsResolver withinScopeResolver =
+        new OOWithinScopeBasicSymbolsResolver();
     visitors.derCommonExpressions.setWithinTypeBasicSymbolsResolver(
         withinTypeBasicSymbolsResolver
     );
-    visitors.derCommonExpressions.setNameExpressionTypeCalculator(
-        nameExpressionTypeCalculator
+    visitors.derCommonExpressions.setWithinScopeResolver(
+        withinScopeResolver
     );
-    visitors.derExpressionBasis.setNameExpressionTypeCalculator(
-        nameExpressionTypeCalculator
+    visitors.derExpressionBasis.setWithinScopeResolver(
+        withinScopeResolver
     );
     visitors.synMCBasicTypes.setWithinTypeResolver(
         withinTypeBasicSymbolsResolver
     );
-    visitors.synMCBasicTypes.setNameExpressionTypeCalculator(
-        nameExpressionTypeCalculator
+    visitors.synMCBasicTypes.setWithinScopeResolver(
+        withinScopeResolver
     );
+    return visitors;
+  }
+
+  /**
+   * initializes additional logic for languages that have access to OO Symbols,
+   * in addition to being able to search for constructors
+   */
+  protected VisitorList constructVisitorsForOOWithConstructors() {
+    VisitorList visitors = constructVisitorsForOO();
+    visitors.derCommonExpressions =
+        new CommonExpressionsTypeIdAsConstructorTypeVisitor();
+    visitors.derExpressionBasis =
+        new ExpressionBasisTypeIdAsConstructorTypeVisitor();
     return visitors;
   }
 

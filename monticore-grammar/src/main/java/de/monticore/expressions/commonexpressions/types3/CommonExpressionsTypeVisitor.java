@@ -22,6 +22,7 @@ import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.types3.util.SymTypeRelations;
 import de.monticore.types3.util.TypeContextCalculator;
+import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -59,19 +60,19 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   protected TypeContextCalculator typeCtxCalc;
 
   // should be the same as used in DeriveSymTypeOfExpressionBasis
-  protected NameExpressionTypeCalculator nameExpressionTypeCalculator;
+  protected WithinScopeBasicSymbolsResolver withinScopeResolver;
 
   protected CommonExpressionsTypeVisitor(
       ISymTypeRelations typeRelations,
       FunctionRelations functionRelations,
       WithinTypeBasicSymbolsResolver withinTypeResolver,
       TypeContextCalculator typeCtxCalc,
-      NameExpressionTypeCalculator nameExpressionTypeCalculator) {
+      WithinScopeBasicSymbolsResolver withinScopeResolver) {
     this.typeRelations = typeRelations;
     this.functionRelations = functionRelations;
     this.withinTypeResolver = withinTypeResolver;
     this.typeCtxCalc = typeCtxCalc;
-    this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
+    this.withinScopeResolver = withinScopeResolver;
   }
 
   public CommonExpressionsTypeVisitor() {
@@ -81,7 +82,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         null,
         new WithinTypeBasicSymbolsResolver(),
         new TypeContextCalculator(),
-        new NameExpressionTypeCalculator()
+        new WithinScopeBasicSymbolsResolver()
     );
     functionRelations = new FunctionRelations(getTypeRel());
   }
@@ -113,9 +114,18 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     this.typeCtxCalc = typeCtxCalc;
   }
 
-  public void setNameExpressionTypeCalculator(
-      NameExpressionTypeCalculator nameExpressionTypeCalculator) {
-    this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
+  public void setWithinScopeResolver(
+      WithinScopeBasicSymbolsResolver withinScopeResolver) {
+    this.withinScopeResolver = withinScopeResolver;
+  }
+
+  /**
+   * @param resolver
+   * @deprecated use {@link #setWithinScopeResolver}
+   */
+  @Deprecated
+  public void setNameExpressionTypeCalculator(NameExpressionTypeCalculator resolver) {
+    setWithinScopeResolver(resolver);
   }
 
   protected ISymTypeRelations getTypeRel() {
@@ -134,8 +144,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     return typeCtxCalc;
   }
 
-  protected NameExpressionTypeCalculator getNameExpressionTypeCalculator() {
-    return nameExpressionTypeCalculator;
+  protected WithinScopeBasicSymbolsResolver getWithinScopeResolver() {
+    return withinScopeResolver;
   }
 
   // Prefix
@@ -527,7 +537,13 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   /**
    * implementation for endVisit.
    *
-   * @param resultsAreOptional s. {@link #fieldAccessCustomTraverse(ASTFieldAccessExpression)}
+   * @param resultsAreOptional whether an expression type has to be found,
+   *                           s. {@link #fieldAccessCustomTraverse(ASTFieldAccessExpression)}.
+   *                           Note that this flag is passed to functions
+   *                           calculating the types, simply to allow them
+   *                           to search differently given the knowledge
+   *                           that the given ASTFieldAccessExpression
+   *                           is an actual expression
    */
   protected void calculateFieldAccess(
       ASTFieldAccessExpression expr, boolean resultsAreOptional) {
@@ -598,12 +614,19 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     return type;
   }
 
+  @Deprecated
+  protected Optional<SymTypeExpression> calculateExprFieldAccess(
+      ASTFieldAccessExpression expr) {
+    return calculateExprFieldAccess(expr, false);
+  }
+
   /**
    * calculates a.b with a being an expression,
    * e.g., getX().var
    */
   protected Optional<SymTypeExpression> calculateExprFieldAccess(
-      ASTFieldAccessExpression expr) {
+      ASTFieldAccessExpression expr,
+      boolean resultsAreOptional) {
     Set<SymTypeExpression> types = new HashSet<>();
     final String name = expr.getName();
     if (!getType4Ast().hasTypeOfExpression(expr.getExpression())) {
@@ -680,12 +703,19 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     return type;
   }
 
+  @Deprecated
+  protected Optional<SymTypeExpression> calculateTypeIdFieldAccess(
+      ASTFieldAccessExpression expr) {
+    return calculateTypeIdFieldAccess(expr, false);
+  }
+
   /**
    * calculates a.b.c with a.b being a type identifier,
    * e.g., XClass.staticVar
    */
   protected Optional<SymTypeExpression> calculateTypeIdFieldAccess(
-      ASTFieldAccessExpression expr) {
+      ASTFieldAccessExpression expr,
+      boolean resultsAreOptional) {
     final String name = expr.getName();
     Set<SymTypeExpression> types = new HashSet<>();
     if (!getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression())) {
@@ -743,7 +773,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
 
   /**
    * calculates a.b.c as a type identifier with a.b being a type identifier,
-   * e.g., OuterClass.InnerClass.StaticVariable
+   * e.g., OuterClass.InnerClass.staticVariable
    */
   protected Optional<SymTypeExpression> calculateInnerTypeIdFieldAccess(
       ASTFieldAccessExpression expr) {
@@ -817,15 +847,22 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     return type;
   }
 
+  @Deprecated
+  protected Optional<SymTypeExpression> calculateExprQName(
+      ASTFieldAccessExpression expr) {
+    return calculateExprQName(expr, false);
+  }
+
   /**
    * calculates a.b.c as expression with a.b being a qualifier
    */
   protected Optional<SymTypeExpression> calculateExprQName(
-      ASTFieldAccessExpression expr) {
+      ASTFieldAccessExpression expr,
+      boolean resultsAreOptional) {
     Optional<String> nameOpt = getExprAsQName(expr);
     Optional<SymTypeExpression> type;
     if (nameOpt.isPresent()) {
-      type = getNameExpressionTypeCalculator().
+      type = getWithinScopeResolver().
           typeOfNameAsExpr(
               getAsBasicSymbolsScope(expr.getEnclosingScope()),
               nameOpt.get()
@@ -842,7 +879,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected Optional<SymTypeExpression> calculateExprQName(
       ASTNameExpression expr) {
-    return getNameExpressionTypeCalculator().typeOfNameAsExpr(
+    return getWithinScopeResolver().resolveNameAsExpr(
         getAsBasicSymbolsScope(expr.getEnclosingScope()),
         expr.getName()
     );
@@ -859,11 +896,10 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     Optional<String> nameOpt = getExprAsQName(expr);
     Optional<SymTypeExpression> type;
     if (nameOpt.isPresent()) {
-      type = getNameExpressionTypeCalculator().
-          typeOfNameAsTypeId(
-              getAsBasicSymbolsScope(expr.getEnclosingScope()),
-              nameOpt.get()
-          );
+      type = getWithinScopeResolver().resolveType(
+          getAsBasicSymbolsScope(expr.getEnclosingScope()),
+          nameOpt.get()
+      );
     }
     else {
       type = Optional.empty();
@@ -876,7 +912,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected Optional<SymTypeExpression> calculateTypeIdQName(
       ASTNameExpression expr) {
-    return getNameExpressionTypeCalculator().typeOfNameAsTypeId(
+    return getWithinScopeResolver().resolveType(
         getAsBasicSymbolsScope(expr.getEnclosingScope()),
         expr.getName()
     );

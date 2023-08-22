@@ -24,11 +24,12 @@ public class SymTypeOfUnion extends SymTypeExpression {
    */
   protected Set<SymTypeExpression> unionizedTypes;
 
-  public SymTypeOfUnion(Set<SymTypeExpression> types) {
+  public SymTypeOfUnion(Collection<? extends SymTypeExpression> types) {
     super.typeSymbol = new TypeSymbol(DEFAULT_TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.globalScope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
-    this.unionizedTypes = new HashSet<>(types);
+    this.unionizedTypes = new HashSet<>();
+    this.unionizedTypes.addAll(types);
   }
 
   @Override
