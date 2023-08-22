@@ -7,6 +7,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
@@ -478,19 +479,10 @@ public class JsonPrinter {
   ////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Adds escape sequences for all characters that are escaped in Java Strings according to
-   * https://docs.oracle.com/javase/tutorial/java/data/characters.html
+   * Adds escape sequences for all characters that are escaped in Json
    */
   protected String escapeSpecialChars(String input) {
-    return input
-        .replace("\\", "\\\\") // Insert a backslash character in the text at this point.
-        .replace("\t", "\\t") // Insert a tab in the text at this point.
-        .replace("\b", "\\b") // Insert a backspace in the text at this point.
-        .replace("\n", "\\n") // Insert a newline in the text at this point.
-        .replace("\r", "\\r") // Insert a carriage return in the text at this point.
-        .replace("\f", "\\f") // Insert a formfeed in the text at this point.
-        .replace("\'", "\\\'") // Insert a single quote character in the text at this point.
-        .replace("\"", "\\\""); // Insert a double quote character in the text at this point.
+    return StringEscapeUtils.escapeJson(input);
   }
 
   protected void intenalNumberValue(String value) {

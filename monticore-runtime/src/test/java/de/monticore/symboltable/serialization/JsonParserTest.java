@@ -78,5 +78,12 @@ public class JsonParserTest {
     assertTrue( JsonParser.parseJsonObject("{}").isJsonObject());
     assertTrue(Log.getFindings().isEmpty());
   }
-  
+
+  @Test
+  public void testStringEscapes(){
+    JsonObject result = JsonParser.parseJsonObject("{\"foo\":\"\\n\"}");
+    assertTrue(result.getMember("foo").isJsonString());
+    assertEquals("\n", result.getMember("foo").getAsJsonString().getValue());
+  }
+
 }

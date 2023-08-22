@@ -114,31 +114,33 @@ public class JsonLexerTest {
     checkSingleToken("\"foo\"", STRING);
     checkSingleToken("\"true\"", STRING);
     checkSingleToken("\"foo foo \"", STRING);
-    checkSingleToken("\"\\u1234\"", STRING);
-    checkSingleToken("\"\\u12345\"", STRING);
-    checkSingleToken("\"\\b\"", STRING);
-    checkSingleToken("\"\\f\"", STRING);
-    checkSingleToken("\"\\n\"", STRING);
-    checkSingleToken("\"\\r\"", STRING);
-    checkSingleToken("\"\\t\"", STRING);
-    checkSingleToken("\"\\\"\"", STRING);
-    checkSingleToken("\"foo \\b\\f\\r\\n\\t\\\" foo \"", STRING);
+    checkSingleToken("\"\\u1234\"", "\u1234", STRING);
+    checkSingleToken("\"\\u12345\"", "\u12345", STRING);
+    checkSingleToken("\"\\b\"", "\b", STRING);
+    checkSingleToken("\"\\f\"", "\f",STRING);
+    checkSingleToken("\"\\n\"", "\n", STRING);
+    checkSingleToken("\"\\r\"", "\r", STRING);
+    checkSingleToken("\"\\t\"", "\t",STRING);
+    checkSingleToken("\"\\\"\"", "\"",STRING);
+    checkSingleToken("\"foo \\b\\f\\r\\n\\t\\\" foo \"", "foo \b\f\r\n\t\" foo ", STRING);
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  protected void checkSingleToken(String json, JsonTokenKind expectedTokenKind) {
+  protected void checkSingleToken(String json, String expectedContent, JsonTokenKind expectedTokenKind){
     JsonLexer lexer = new JsonLexer(json);
     JsonToken actual = lexer.poll();
     assertEquals(expectedTokenKind, actual.getKind());
     if (actual.getKind().hasValue()) {
       String value = actual.getValue();
-      if (actual.getKind() == STRING) {
-        value = "\"" + value + "\"";
-      }
-      assertEquals(json, value);
+      assertEquals(expectedContent, value);
     }
     assertEquals(false, lexer.hasNext());
+  }
+
+  protected void checkSingleToken(String json, JsonTokenKind expectedTokenKind) {
+    // Strip starting and ending " from String
+    checkSingleToken(json, expectedTokenKind == STRING ? json.replaceAll("^\"", "").replaceAll("\"$", "") : json, expectedTokenKind);
   }
 
 }
