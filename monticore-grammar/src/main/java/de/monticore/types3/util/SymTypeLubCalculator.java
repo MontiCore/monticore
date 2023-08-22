@@ -35,8 +35,8 @@ public class SymTypeLubCalculator {
 
   protected SymTypeRelations getSymTypeRelations() {
     if (symTypeRelations == null) {
-      Log.error("0xFD81B internal error:"
-          + "SymTypeNormalizeVisitor not set up correctly");
+      Log.error("0xFD81B internal error: "
+          + "SymTypeLubCalculator not set up correctly");
     }
     return symTypeRelations;
   }
