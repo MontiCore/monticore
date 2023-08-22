@@ -13,6 +13,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -369,7 +370,7 @@ public class SymTypeExpressionFactory {
     return new SymTypeOfFunction(symbol, returnType, argumentTypes, elliptic);
   }
 
-  public static SymTypeOfUnion createUnion(Set<SymTypeExpression> unionizedTypes) {
+  public static SymTypeOfUnion createUnion(Collection<? extends SymTypeExpression> unionizedTypes) {
     return new SymTypeOfUnion(unionizedTypes);
   }
 
@@ -377,7 +378,7 @@ public class SymTypeExpressionFactory {
     return createUnion(Arrays.stream(unionizedTypes).collect(Collectors.toSet()));
   }
 
-  public static SymTypeOfIntersection createIntersection(Set<SymTypeExpression> intersectedTypes) {
+  public static SymTypeOfIntersection createIntersection(Collection<? extends SymTypeExpression> intersectedTypes) {
     return new SymTypeOfIntersection(intersectedTypes);
   }
 
