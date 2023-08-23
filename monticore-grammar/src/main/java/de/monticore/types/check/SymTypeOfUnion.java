@@ -189,8 +189,5 @@ public class SymTypeOfUnion extends SymTypeExpression {
     this.unionizedTypes = unionizedTypes;
   }
 
-
-
-
 }
 
