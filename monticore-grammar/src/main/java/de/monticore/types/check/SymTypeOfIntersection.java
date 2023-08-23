@@ -30,8 +30,14 @@ public class SymTypeOfIntersection extends SymTypeExpression {
     return streamIntersectedTypes().allMatch(SymTypeExpression::isValidType);
   }
 
+  @Override
   public boolean isIntersectionType() {
     return true;
+  }
+
+  @Override
+  public SymTypeOfIntersection asIntersectionType() {
+    return this;
   }
 
   @Override

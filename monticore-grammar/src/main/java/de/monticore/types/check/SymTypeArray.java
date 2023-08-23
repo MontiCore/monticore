@@ -44,11 +44,16 @@ public class SymTypeArray extends SymTypeExpression {
 
   // ------------------------------------------------------------------ Functions
 
-
   @Override
   public boolean isArrayType() {
     return true;
   }
+
+  @Override
+  public SymTypeArray asArrayType() {
+    return this;
+  }
+
 
   public int getDim() {
     return dim;

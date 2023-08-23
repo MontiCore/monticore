@@ -43,6 +43,11 @@ public class SymTypeOfUnion extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeOfUnion asUnionType() {
+    return this;
+  }
+
+  @Override
   public String print() {
     final StringBuilder r = new StringBuilder();
     r.append("(");
@@ -186,3 +191,4 @@ public class SymTypeOfUnion extends SymTypeExpression {
   }
 
 }
+
