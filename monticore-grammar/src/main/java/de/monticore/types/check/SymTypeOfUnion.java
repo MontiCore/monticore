@@ -41,12 +41,10 @@ public class SymTypeOfUnion extends SymTypeExpression {
     return true;
   }
 
- @Override
+  @Override
   public SymTypeOfUnion asUnionType() {
     return this;
   }
-
-
 
   @Override
   public String print() {

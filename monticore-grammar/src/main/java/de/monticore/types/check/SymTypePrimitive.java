@@ -67,7 +67,9 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * List of potential constants
    * (on purpose not implemented as enum)
+   * @deprecated cannot assume fixed set for all languages
    */
+  @Deprecated
   public static final List<String> primitiveTypes =
       Collections.unmodifiableList(Arrays.asList(
           BasicSymbolsMill.BOOLEAN,
@@ -189,9 +191,7 @@ public class SymTypePrimitive extends SymTypeExpression {
         isIntegralType();
   }
 
-  /**
-   * Am I primitive? (such as "int")
-   */
+  @Override
   public boolean isPrimitive() {
     return true;
   }

@@ -43,7 +43,7 @@ public class SymTypeOfNull extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfNull asNullType(){
+  public SymTypeOfNull asNullType() {
     return this;
   }
 

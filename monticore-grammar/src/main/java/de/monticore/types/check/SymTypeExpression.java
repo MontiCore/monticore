@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
-import de.monticore.ast.ASTNode;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
@@ -48,7 +47,9 @@ public abstract class SymTypeExpression {
    * e.g. unknown type,
    * not all type variables set,
    * pseudo types like typeVariables
+   * @deprecated not well-thought-out and unused
    */
+  @Deprecated
   public boolean isValidType() {
     return true;
   }
@@ -61,6 +62,12 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  public SymTypePrimitive asPrimitive() {
+    Log.error("0xFDAA0 internal error: "
+        + "tried to convert non-primitive to a primitive");
+    return null;
+  }
+
   /**
    * Am I a generic type? (such as "List<Integer>")
    */
@@ -68,46 +75,88 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  public SymTypeOfGenerics asGenericType() {
+    Log.error("0xFDAA1 internal error: "
+        + "tried to convert non-generic to a generic");
+    return null;
+  }
+
   /**
    * Am I a type variable?
    */
-  public boolean isTypeVariable(){
+  public boolean isTypeVariable() {
     return false;
+  }
+
+  public SymTypeVariable asTypeVariable() {
+    Log.error("0xFDAA2 internal error: "
+        + "tried to convert non-type-variable to a type-variable");
+    return null;
   }
 
   /**
    * Am I an array?
    */
-  public boolean isArrayType(){
+  public boolean isArrayType() {
     return false;
+  }
+
+  public SymTypeArray asArrayType() {
+    Log.error("0xFDAA3 internal error: "
+        + "tried to convert non-array to an array");
+    return null;
   }
 
   /**
    * Am I of void type?
    */
-  public boolean isVoidType(){
+  public boolean isVoidType() {
     return false;
+  }
+
+  public SymTypeVoid asVoidType() {
+    Log.error("0xFDAA4 internal error: "
+        + "tried to convert non-void-type to a void type");
+    return null;
   }
 
   /**
    * Am I of null type?
    */
-  public boolean isNullType(){
+  public boolean isNullType() {
     return false;
+  }
+
+  public SymTypeOfNull asNullType() {
+    Log.error("0xFDAA5 internal error: "
+        + "tried to convert non-null-type to a null-type");
+    return null;
   }
 
   /**
    * Am I an object type? (e.g. "String", "Person")
    */
-  public boolean isObjectType(){
+  public boolean isObjectType() {
     return false;
+  }
+
+  public SymTypeOfObject asObjectType() {
+    Log.error("0xFDAA6 internal error: "
+        + "tried to convert non-object-type to an object-type");
+    return null;
   }
 
   /**
    * Am I a function type (e.g. "String -> Integer")
    */
-  public boolean isFunctionType(){
+  public boolean isFunctionType() {
     return false;
+  }
+
+  public SymTypeOfFunction asFunctionType() {
+    Log.error("0xFDAA7 internal error: "
+        + "tried to convert non-function-type to a function type");
+    return null;
   }
 
   /**
@@ -117,6 +166,12 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  public SymTypeOfUnion asUnionType() {
+    Log.error("0xFDAA8 internal error: "
+        + "tried to convert non-union-type to a union-type");
+    return null;
+  }
+
   /**
    * Am I an intersection type (e.g. "(A&B)")
    */
@@ -124,11 +179,23 @@ public abstract class SymTypeExpression {
     return false;
   }
 
+  public SymTypeOfIntersection asIntersectionType() {
+    Log.error("0xFDAA9 internal error: "
+        + "tried to convert non-intersection-type to an intersection-type");
+    return null;
+  }
+
   /**
    * Can I not have a type derived from (e.g. "1 - student")?
    */
-  public boolean isObscureType(){
+  public boolean isObscureType() {
     return false;
+  }
+
+  public SymTypeObscure asObscureType() {
+    Log.error("0xFDAAA internal error: "
+        + "tried to convert non-obscure-type to an obscure-type");
+    return null;
   }
 
   /**
@@ -138,105 +205,11 @@ public abstract class SymTypeExpression {
     return false;
   }
 
-
-  /**
-   * Take me as an object type (e.g. "String", "Person")
-   */
-  public SymTypeOfObject asObjectType(){
-    Log.error("SymTypeExpression is the superclass of SymTypeOfObject.");
-    return null;
-  }
-
-  /**
-   * Take me as a type variable
-   */
-  public SymTypeVariable asTypeVariable(){
-    Log.error("SymTypeExpression is the superclass of SymTypeVariable.");
-    return null;
-  }
-
-  /**
-   * Take me as of null type
-   */
-  public SymTypeOfNull asNullType(){
-    Log.error("SymTypeExpression is the superclass of SymTypeOfNull.");
-    return null;
-  }
-
-  /**
-   * Take me as an union type (e.g. "(A|B)")?
-   */
-  public SymTypeOfUnion asUnionType() {
-    Log.error("SymTypeExpression is the superclass of SymTypeOfUnion.");
-    return null;
-  }
-
-  /**
-   * Take me as a type derived from (e.g. "1 - student")?
-   */
-  public SymTypeObscure asObscureType(){
-    Log.error("SymTypeExpression is the superclass of SymTypeObscure.");
-    return null;
-  }
-
-  /**
-   * Take me as a wildcard (s. generics)
-   */
   public SymTypeOfWildcard asWildcard() {
-    Log.error("SymTypeExpression is the superclass of SymTypeOfWildcard.");
+    Log.error("0xFDAAB internal error: "
+        + "tried to convert non-wildcard-type to a wildcard-type");
     return null;
   }
-
-
-  /**
-   * Take me as a function type (e.g. "String -> Integer")
-   */
-  public SymTypeOfFunction asFunctionType(){
-    Log.error("SymTypeExpression is the superclass of SymTypeOfFunction.");
-    return null;
-  }
-
-  /**
-   * Take me as of void type
-   */
-  public SymTypeVoid asVoidType(){
-    Log.error("SymTypeExpression is the superclass of SymTypeVoid.");
-    return null;
-  }
-
-  /**
-   * Take me as an primitive type (e.g. "int", "float")
-   */
-  public SymTypePrimitive asPrimitive() {
-    Log.error("SymTypeExpression is the superclass of SymTypePrimitive.");
-    return null;
-  }
-
-  /**
-   * Take me as a generic type (such as "List<Integer>")
-   */
-  public SymTypeOfGenerics asGenericType() {
-    Log.error("SymTypeExpression is the superclass of SymTypeOfGenerics.");
-    return null;
-  }
-
-  /**
-   * Am I an array?
-   */
-  public SymTypeArray asArrayType(){
-    Log.error("SymTypeExpression is the superclass of SymTypeArray.");
-    return null;
-  }
-
-  /**
-   * Am I an intersection type (e.g. "(A&B)")
-   */
-  public SymTypeOfIntersection asIntersectionType() {
-    Log.error("SymTypeExpression is the superclass of SymTypeOfIntersection.");
-    return null;
-  }
-
-
 
   public SymTypeExpression deepClone() {
     return new SymTypeDeepCloneVisitor().calculate(this);

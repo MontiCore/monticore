@@ -42,7 +42,7 @@ public class SymTypeObscure extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeObscure asObscureType(){
+  public SymTypeObscure asObscureType() {
     return this;
   }
 

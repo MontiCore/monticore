@@ -133,7 +133,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfFunction asFunctionType(){
+  public SymTypeOfFunction asFunctionType() {
     return this;
   }
 

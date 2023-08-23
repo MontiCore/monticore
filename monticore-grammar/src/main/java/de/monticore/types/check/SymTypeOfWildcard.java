@@ -101,7 +101,6 @@ public class SymTypeOfWildcard extends SymTypeExpression {
     return this;
   }
 
-
   @Override
   public boolean deepEquals(SymTypeExpression sym){
     //supporting deprecated code:
