@@ -183,6 +183,11 @@ public class SymTypeVariable extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeVariable asTypeVariable() {
+    return this;
+  }
+
+  @Override
   public SymTypeVariable deepClone() {
     //support deprecated code:
     if(typeSymbol != null) {

@@ -51,8 +51,8 @@ public class JsonPrinterTest {
   @Test
   public void testEscapeSequences() {
     JsonPrinter printer = new JsonPrinter();
-    printer.value("\"\t\\\n\'");
-    assertEquals("\"\\\"\\t\\\\\\n\\'\"", printer.toString());
+    printer.value("\"\t\\\n'");
+    assertEquals("\"\\\"\\t\\\\\\n'\"", printer.toString());
     assertTrue(Log.getFindings().isEmpty());
   }
 

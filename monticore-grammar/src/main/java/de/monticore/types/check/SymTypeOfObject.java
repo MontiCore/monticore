@@ -78,6 +78,9 @@ public class SymTypeOfObject extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeOfObject asObjectType(){return this;}
+
+  @Override
   public boolean deepEquals(SymTypeExpression sym){
     if(!sym.isObjectType()){
       return false;

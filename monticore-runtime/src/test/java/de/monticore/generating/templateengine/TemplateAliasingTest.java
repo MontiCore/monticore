@@ -167,7 +167,7 @@ public class TemplateAliasingTest {
 
     assertEquals("default text 1\n" +
         "default text 2\n" +
-        "default text 3", templateOut.toString());
+        "default text 3", templateOut.toString().replaceAll("\r", ""));
 
     GlobalExtensionManagement glex = tc.getGeneratorSetup().getGlex();
 
@@ -176,7 +176,7 @@ public class TemplateAliasingTest {
         tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
     assertEquals("a1\n" +
         "default text 2\n" +
-        "default text 3", templateOut.toString());
+        "default text 3", templateOut.toString().replaceAll("\r", ""));
 
 
     glex.bindHookPoint("WithAst", new TemplateStringHookPoint("${ast.content}"));
@@ -184,14 +184,14 @@ public class TemplateAliasingTest {
         tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
     assertEquals("a1\n" +
         "c1\n" +
-        "default text 3", templateOut.toString());
+        "default text 3", templateOut.toString().replaceAll("\r", ""));
 
     glex.bindHookPoint("WithAlternativeAst", new TemplateStringHookPoint("${ast.content}"));
     templateOut =
         tc.includeArgs(templateName, ast, Collections.singletonList(alternativeAst));
     assertEquals("a1\n" +
         "c1\n" +
-        "c2", templateOut.toString());
+        "c2", templateOut.toString().replaceAll("\r", ""));
     assertTrue(Log.getFindings().isEmpty());
   }
 

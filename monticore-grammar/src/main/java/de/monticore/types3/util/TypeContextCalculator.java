@@ -72,8 +72,11 @@ public class TypeContextCalculator {
                 == StaticAccessModifier.STATIC) {
           accessIsStaticIfInType = true;
         }
-        else if (getTypeDispatcher().isType(spanningSymbol)) {
-          TypeSymbol typeSymbol = getTypeDispatcher().asType(spanningSymbol);
+        // todo reactivate after typedispatcher fix
+        //else if (getTypeDispatcher().isType(spanningSymbol)) {
+        //  TypeSymbol typeSymbol = getTypeDispatcher().asType(spanningSymbol);
+        else if (spanningSymbol instanceof TypeSymbol) {
+          TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
           if (typeSymbol == type) {
             exprIsInType = true;
           }

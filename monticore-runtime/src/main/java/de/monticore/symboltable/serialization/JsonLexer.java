@@ -3,6 +3,7 @@
 package de.monticore.symboltable.serialization;
 
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.text.StringEscapeUtils;
 
 import static de.monticore.symboltable.serialization.JsonToken.*;
 import static de.monticore.symboltable.serialization.JsonTokenKind.NUMBER;
@@ -207,8 +208,8 @@ public class JsonLexer {
         result.append(c);
         // if backslash and u occurs, 4 digits must follow
         if (c == 'u') {
-          if ((DIGITS.indexOf(la(1)) != -1 && DIGITS.indexOf(la(2)) != -1
-              && DIGITS.indexOf(la(3)) != -1 && DIGITS.indexOf(la(4)) != -1)) {
+          if ((HEX_DIGITS.indexOf(la(1)) != -1 && HEX_DIGITS.indexOf(la(2)) != -1
+              && HEX_DIGITS.indexOf(la(3)) != -1 && HEX_DIGITS.indexOf(la(4)) != -1)) {
             result.append(la(1));
             result.append(la(2));
             result.append(la(3));
@@ -221,7 +222,7 @@ public class JsonLexer {
           pos = pos + 5;
         }
         // else, check whether other allowed escaped character
-        else if ("\\\"bfnrt".indexOf(c) != -1) {
+        else if ("\\\"bfnrt/".indexOf(c) != -1) {
           pos++;
         }
         else {
@@ -232,7 +233,7 @@ public class JsonLexer {
       //else these are unescaped quotes, the string ends here and is valid
       else if (c == '\"') {
         pos++;
-        peeked = new JsonToken(STRING, result.toString());
+        peeked = new JsonToken(STRING, StringEscapeUtils.unescapeJson(result.toString()));
         return peeked;
       }
       else {
@@ -246,6 +247,6 @@ public class JsonLexer {
 
   protected static final String WHITESPACE_CHARACTERS = " \t\n\f\r";
 
-  protected static final String DIGITS = "0123456789";
+  protected static final String HEX_DIGITS = "0123456789abdefABCDEF";
 
 }

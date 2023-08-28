@@ -20,8 +20,9 @@ public class SymTypeOfIntersection extends SymTypeExpression {
    */
   protected Set<SymTypeExpression> intersectedTypes;
 
-  public SymTypeOfIntersection(Set<SymTypeExpression> types) {
-    this.intersectedTypes = new HashSet<>(types);
+  public SymTypeOfIntersection(Collection<? extends SymTypeExpression> types) {
+    this.intersectedTypes = new HashSet<>();
+    this.intersectedTypes.addAll(types);
   }
 
   @Override
@@ -29,8 +30,14 @@ public class SymTypeOfIntersection extends SymTypeExpression {
     return streamIntersectedTypes().allMatch(SymTypeExpression::isValidType);
   }
 
+  @Override
   public boolean isIntersectionType() {
     return true;
+  }
+
+  @Override
+  public SymTypeOfIntersection asIntersectionType() {
+    return this;
   }
 
   @Override

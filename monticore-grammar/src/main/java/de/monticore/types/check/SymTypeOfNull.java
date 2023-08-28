@@ -43,6 +43,11 @@ public class SymTypeOfNull extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeOfNull asNullType() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(SymTypeExpression sym){
     return sym.isNullType();
   }

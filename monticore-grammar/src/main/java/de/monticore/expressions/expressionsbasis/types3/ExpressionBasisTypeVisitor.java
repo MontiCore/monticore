@@ -9,6 +9,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
+import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -16,36 +17,63 @@ import java.util.Optional;
 public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
     implements ExpressionsBasisVisitor2 {
 
-  protected NameExpressionTypeCalculator nameExpressionTypeCalculator;
+  protected WithinScopeBasicSymbolsResolver withinScopeResolver;
 
   public ExpressionBasisTypeVisitor() {
     // default values
-    nameExpressionTypeCalculator = new NameExpressionTypeCalculator();
+    withinScopeResolver = new WithinScopeBasicSymbolsResolver();
   }
 
+  public void setWithinScopeResolver(
+      WithinScopeBasicSymbolsResolver withinScopeResolver) {
+    this.withinScopeResolver = withinScopeResolver;
+  }
+
+  /**
+   * @deprecated use {@link #setWithinScopeResolver}
+   */
+  @Deprecated
   public void setNameExpressionTypeCalculator(
       NameExpressionTypeCalculator nameExpressionTypeCalculator) {
-    this.nameExpressionTypeCalculator = nameExpressionTypeCalculator;
+    setWithinScopeResolver(nameExpressionTypeCalculator);
   }
 
-  protected NameExpressionTypeCalculator getNameExpressionTypeCalculator() {
-    return nameExpressionTypeCalculator;
+  protected WithinScopeBasicSymbolsResolver getWithinScopeResolver() {
+    return withinScopeResolver;
   }
 
+  /**
+   * note: this will not be called in a ASTFieldAccessExpression
+   * given the default ASTFieldAccessExpression traversal;
+   * given expr. a.b.c, "a" is a ASTNameExpression,
+   * however, in FieldAccessExpressions, the "a" is not required to have a type,
+   * as such the traversal is customized.
+   * Thus, here an expression type has to be calculated.
+   */
   @Override
   public void endVisit(ASTNameExpression expr) {
-    Optional<SymTypeExpression> wholeResult = calculateNameExpression(expr);
+    Optional<SymTypeExpression> wholeResult =
+        calculateNameExpressionOrLogError(expr);
     if (wholeResult.isPresent()) {
       getType4Ast().setTypeOfExpression(expr, wholeResult.get());
     }
     else {
+      getType4Ast().setTypeOfExpression(expr, SymTypeExpressionFactory.createObscureType());
+    }
+  }
+
+  protected Optional<SymTypeExpression> calculateNameExpressionOrLogError(
+      ASTNameExpression expr
+  ) {
+    Optional<SymTypeExpression> wholeResult = calculateNameExpression(expr);
+    if (wholeResult.isEmpty()) {
       Log.error("0xFD118 could not find symbol for expression \""
               + expr.getName() + "\"",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
       );
-      getType4Ast().setTypeOfExpression(expr, SymTypeExpressionFactory.createObscureType());
     }
+    return wholeResult;
   }
 
   protected Optional<SymTypeExpression> calculateNameExpression(
@@ -62,7 +90,7 @@ public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
     final String name = expr.getName();
     IBasicSymbolsScope enclosingScope =
         getAsBasicSymbolsScope(expr.getEnclosingScope());
-    return getNameExpressionTypeCalculator().typeOfNameAsExpr(enclosingScope, name);
+    return getWithinScopeResolver().resolveNameAsExpr(enclosingScope, name);
   }
 
   @Override

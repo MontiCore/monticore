@@ -455,8 +455,12 @@ public class DefsTypesForTests {
   public static SymTypeOfObject _unboxedString;
 
   public static void set_unboxedObjects() {
-    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
-    _unboxedString = createTypeObject(inScope(gs, type("String")));
+    IBasicSymbolsGlobalScope typeSymbolsScope = BasicSymbolsMill.globalScope();
+    if (typeSymbolsScope.resolveType(BasicSymbolsMill.STRING).isEmpty()) {
+      BasicSymbolsMill.initializeString();
+    }
+    _unboxedString = createTypeObject(
+        typeSymbolsScope.resolveType(BasicSymbolsMill.STRING).get());
   }
 
   /*********************************************************************/

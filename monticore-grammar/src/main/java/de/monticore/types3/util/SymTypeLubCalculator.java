@@ -6,6 +6,7 @@ import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,6 +34,10 @@ public class SymTypeLubCalculator {
   }
 
   protected SymTypeRelations getSymTypeRelations() {
+    if (symTypeRelations == null) {
+      Log.error("0xFD81B internal error: "
+          + "SymTypeLubCalculator not set up correctly");
+    }
     return symTypeRelations;
   }
 
