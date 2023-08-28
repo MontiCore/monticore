@@ -5,7 +5,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -16,9 +15,7 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,15 +29,12 @@ import static org.junit.Assert.assertTrue;
 
 public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
-  private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
   private List<ASTCDInterface> interfaces;
 
   @Before
   public void setup() {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "cocos", "CoCos");
     this.glex.setGlobalValue("service", new AbstractService(ast));
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     CoCoInterfaceDecorator coCoInterfaceDecorator = new CoCoInterfaceDecorator(glex, new CoCoService(ast), new ASTService(ast));
     this.interfaces = coCoInterfaceDecorator.decorate(ast.getCDDefinition());

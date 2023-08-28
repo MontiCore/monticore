@@ -1,33 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.method.mutator;
 
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cd4codebasis._ast.*;
 import de.monticore.cd.facade.CDAttributeFacade;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.types.MCTypeFacade;
 import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class OptionalMutatorDecoratorTest extends DecoratorTestCase {
-
-  private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDMethod> methods;
 

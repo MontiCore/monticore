@@ -29,17 +29,19 @@ import org.mockito.Mockito;
 
 import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED_FINAL;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass scopesGenitorClass;
-
-  private GlobalExtensionManagement glex;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
@@ -59,11 +61,8 @@ public class ScopesGenitorDelegatorDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
     this.MCTypeFacade = MCTypeFacade.getInstance();
 
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));

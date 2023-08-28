@@ -14,13 +14,11 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,18 +32,13 @@ import static org.junit.Assert.assertTrue;
 public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
   
   private ASTCDEnum cdEnum;
-  
-  private GlobalExtensionManagement glex;
-  
+
   private ASTCDCompilationUnit decoratedCompilationUnit;
   
   private ASTCDCompilationUnit originalCompilationUnit;
   
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
-    
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));

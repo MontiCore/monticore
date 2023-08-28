@@ -3,6 +3,8 @@ package de.monticore.codegen.cd2java;
 
 import com.google.common.collect.Lists;
 import de.monticore.cd._symboltable.BuiltInTypes;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._parser.CD4CodeParser;
@@ -11,6 +13,8 @@ import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Joiners;
@@ -29,6 +33,8 @@ public abstract class DecoratorTestCase {
   protected static final String MODEL_PATH = "src/test/resources/";
   protected ASTCDPackage packageDir;
 
+  protected GlobalExtensionManagement glex;
+
   @Before
   public void initLog() {
     LogStub.init();
@@ -41,7 +47,13 @@ public abstract class DecoratorTestCase {
     CD4CodeMill.init();
     ICD4CodeGlobalScope globalScope = CD4CodeMill.globalScope();
     BuiltInTypes.addBuiltInTypes(globalScope);
-   // globalScope.setModelPath(new ModelPath(Paths.get(MODEL_PATH)));
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    glex = new GlobalExtensionManagement();
+    generatorSetup.setGlex(glex);
+    CD4C.init(generatorSetup);
+    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
+    // globalScope.setModelPath(new ModelPath(Paths.get(MODEL_PATH)));
     packageDir = CD4CodeMill.cDPackageBuilder().
             setMCQualifiedName(CD4CodeMill.mCQualifiedNameBuilder().build()).build();
   }

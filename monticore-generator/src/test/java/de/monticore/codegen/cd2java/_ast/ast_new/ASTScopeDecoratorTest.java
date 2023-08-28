@@ -4,17 +4,14 @@ package de.monticore.codegen.cd2java._ast.ast_new;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,11 +22,11 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ASTScopeDecoratorTest extends DecoratorTestCase {
-
-  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private List<ASTCDAttribute> attributes;
 
@@ -41,7 +38,6 @@ public class ASTScopeDecoratorTest extends DecoratorTestCase {
   public void setup() {
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "AST");
 
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     this.glex.setGlobalValue("service", new AbstractService(ast));
 
     ASTScopeDecorator decorator = new ASTScopeDecorator(this.glex, new SymbolTableService(ast));
