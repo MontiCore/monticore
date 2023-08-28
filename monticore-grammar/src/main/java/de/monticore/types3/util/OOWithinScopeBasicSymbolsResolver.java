@@ -10,16 +10,23 @@ import java.util.function.Predicate;
 /**
  * contains the code to derive / synthesize the type of a single name,
  * but is "OO-aware" e.g. constructors are filtered out.
- *
- * @deprectated use {@link OOWithinScopeBasicSymbolsResolver}
  */
-@Deprecated
-public class OONameExpressionTypeCalculator
-    extends NameExpressionTypeCalculator {
+public class OOWithinScopeBasicSymbolsResolver
+    extends WithinScopeBasicSymbolsResolver {
 
-  public OONameExpressionTypeCalculator() {
-    // default values
+  protected OOWithinScopeBasicSymbolsResolver(
+      TypeContextCalculator typeContextCalculator,
+      WithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver
+  ) {
     super(
+        typeContextCalculator,
+        withinTypeBasicSymbolsResolver
+    );
+  }
+
+  public OOWithinScopeBasicSymbolsResolver() {
+    // default values
+    this(
         new TypeContextCalculator(),
         new OOWithinTypeBasicSymbolsResolver()
     );
@@ -30,14 +37,20 @@ public class OONameExpressionTypeCalculator
    */
   @Override
   protected Predicate<FunctionSymbol> getFunctionPredicate() {
+    return Predicate.not(getIsConstructorPredicate());
+  }
+
+  // Helper
+
+  protected Predicate<FunctionSymbol> getIsConstructorPredicate() {
     return f -> {
       if (OOSymbolsMill.typeDispatcher().isMethod(f)) {
         MethodSymbol m = OOSymbolsMill.typeDispatcher().asMethod(f);
         if (m.isIsConstructor()) {
-          return false;
+          return true;
         }
       }
-      return true;
+      return false;
     };
   }
 

@@ -14,6 +14,7 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.types3.util.TypeContextCalculator;
+import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
     implements MCBasicTypesVisitor2 {
 
-  protected NameExpressionTypeCalculator nameExprTypeCalc;
+  protected WithinScopeBasicSymbolsResolver withinScopeResolver;
 
   protected WithinTypeBasicSymbolsResolver withinTypeResolver;
 
@@ -31,18 +32,27 @@ public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
 
   public MCBasicTypesTypeVisitor() {
     // defaultValues
-    nameExprTypeCalc = new NameExpressionTypeCalculator();
+    withinScopeResolver = new NameExpressionTypeCalculator();
     withinTypeResolver = new WithinTypeBasicSymbolsResolver();
     typeCtxCalc = new TypeContextCalculator();
   }
 
-  protected NameExpressionTypeCalculator getNameExprTypeCalc() {
-    return nameExprTypeCalc;
+  protected WithinScopeBasicSymbolsResolver getWithinScopeResolver() {
+    return withinScopeResolver;
   }
 
+  public void setWithinScopeResolver(
+      WithinScopeBasicSymbolsResolver nameExprTypeCalc) {
+    this.withinScopeResolver = nameExprTypeCalc;
+  }
+
+  /**
+   * @deprecated use {@link #setWithinScopeResolver}
+   */
+  @Deprecated
   public void setNameExpressionTypeCalculator(
       NameExpressionTypeCalculator nameExprTypeCalc) {
-    this.nameExprTypeCalc = nameExprTypeCalc;
+    setWithinScopeResolver(nameExprTypeCalc);
   }
 
   protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
@@ -129,7 +139,7 @@ public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
         String prefix = qName.getPartsList().stream()
             .limit(numberOfPartsUsedForFirstType)
             .collect(Collectors.joining("."));
-        type = getNameExprTypeCalc()
+        type = getWithinScopeResolver()
             .typeOfNameAsTypeId(enclosingScope, prefix);
       }
       else {

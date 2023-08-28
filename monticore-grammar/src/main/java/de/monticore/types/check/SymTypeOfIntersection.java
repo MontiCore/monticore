@@ -20,8 +20,9 @@ public class SymTypeOfIntersection extends SymTypeExpression {
    */
   protected Set<SymTypeExpression> intersectedTypes;
 
-  public SymTypeOfIntersection(Set<SymTypeExpression> types) {
-    this.intersectedTypes = new HashSet<>(types);
+  public SymTypeOfIntersection(Collection<? extends SymTypeExpression> types) {
+    this.intersectedTypes = new HashSet<>();
+    this.intersectedTypes.addAll(types);
   }
 
   @Override

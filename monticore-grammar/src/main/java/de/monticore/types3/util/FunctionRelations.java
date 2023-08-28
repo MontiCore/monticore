@@ -31,6 +31,10 @@ public class FunctionRelations {
   }
 
   protected ISymTypeRelations getSymTypeRelations() {
+    if (symTypeRelations == null) {
+      Log.error("0xFD81A internal error: "
+          + "FunctionRelations not set up correctly");
+    }
     return symTypeRelations;
   }
 
@@ -99,7 +103,7 @@ public class FunctionRelations {
           Log.error("0xFDCBA could not determine most specific function of:"
               + System.lineSeparator()
               + funcs.stream()
-              .map(SymTypeOfFunction::printFullName)
+              .map(this::printFunctionForLog)
               .collect(Collectors.joining(System.lineSeparator()))
           );
           mostSpecificFunction = Optional.empty();
@@ -108,7 +112,7 @@ public class FunctionRelations {
           Log.error("0xFDCBB could not determine most specific function of:"
               + System.lineSeparator()
               + potentialFuncs.stream()
-              .map(SymTypeOfFunction::printFullName)
+              .map(this::printFunctionForLog)
               .collect(Collectors.joining(System.lineSeparator()))
           );
           mostSpecificFunction = Optional.empty();
@@ -120,5 +124,17 @@ public class FunctionRelations {
     }
 
     return mostSpecificFunction;
+  }
+
+  protected String printFunctionForLog(SymTypeOfFunction func) {
+    String result = "";
+    result += func.printFullName();
+    if (func.hasSymbol()) {
+      result += " (symbol: "
+          + func.getSymbol().getFullName()
+          + ")"
+      ;
+    }
+    return result;
   }
 }

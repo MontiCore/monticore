@@ -81,22 +81,22 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
     init();
     WithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver =
         new OOWithinTypeBasicSymbolsResolver();
-    NameExpressionTypeCalculator nameExpressionTypeCalculator =
-        new OONameExpressionTypeCalculator();
+    WithinScopeBasicSymbolsResolver withinScopeResolver =
+        new OOWithinScopeBasicSymbolsResolver();
     derCommonExpressions.setWithinTypeBasicSymbolsResolver(
         withinTypeBasicSymbolsResolver
     );
-    derCommonExpressions.setNameExpressionTypeCalculator(
-        nameExpressionTypeCalculator
+    derCommonExpressions.setWithinScopeResolver(
+        withinScopeResolver
     );
-    derExpressionBasis.setNameExpressionTypeCalculator(
-        nameExpressionTypeCalculator
+    derExpressionBasis.setWithinScopeResolver(
+        withinScopeResolver
     );
     synMCBasicTypes.setWithinTypeResolver(
         withinTypeBasicSymbolsResolver
     );
-    synMCBasicTypes.setNameExpressionTypeCalculator(
-        nameExpressionTypeCalculator
+    synMCBasicTypes.setWithinScopeResolver(
+        withinScopeResolver
     );
   }
 

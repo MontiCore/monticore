@@ -59,6 +59,7 @@ public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void deriveTFromLiteral1String() {
+    // both builtin String and java.util.String are available
     ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder()
         .setSource("Y05H1")
         .build();
