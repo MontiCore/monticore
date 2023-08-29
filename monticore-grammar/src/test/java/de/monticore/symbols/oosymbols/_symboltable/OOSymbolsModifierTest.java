@@ -114,6 +114,13 @@ public class OOSymbolsModifierTest {
     assertFalse(symbol.isIsPublic());
     assertFalse(symbol.isIsPrivate());
     assertFalse(symbol.isIsProtected());
+
+    assertFalse(symbol.isAbstract);
+
+    symbol.setIsAbstract(true);
+
+    assertTrue(symbol.isAbstract);
+
   }
 
 }

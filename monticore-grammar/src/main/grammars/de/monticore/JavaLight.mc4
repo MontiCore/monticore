@@ -41,7 +41,6 @@ symbol JavaMethod extends Method = Name;
 symbolrule JavaMethod =
     exceptions: de.monticore.types.check.SymTypeExpression*
     annotations: de.monticore.types.check.SymTypeExpression*
-    isAbstract: boolean
     isSynchronized: boolean
     isNative:boolean
     isStrictfp: boolean
