@@ -29,6 +29,7 @@ public class MethodSymbol extends MethodSymbolTOP {
     clone.setIsPrivate(this.isPrivate);
     clone.setIsProtected(this.isProtected);
     clone.setIsPublic(this.isPublic);
+    clone.setIsAbstract(this.isAbstract);
     if (isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }

@@ -2,22 +2,18 @@
 
 package de.monticore.codegen.cd2java._symboltable;
 
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,8 +29,6 @@ public class Symbols2JsonTest extends DecoratorTestCase {
 
   private ASTCDClass symTabPrinterClass;
 
-  private GlobalExtensionManagement glex;
-
   private ASTCDCompilationUnit decoratedASTCompilationUnit;
 
   private ASTCDCompilationUnit decoratedScopeCompilationUnit;
@@ -48,11 +42,8 @@ public class Symbols2JsonTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedASTCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");

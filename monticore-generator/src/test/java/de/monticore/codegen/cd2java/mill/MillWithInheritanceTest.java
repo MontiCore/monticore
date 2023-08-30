@@ -5,7 +5,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
@@ -15,10 +14,13 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
-import de.monticore.codegen.cd2java._ast.ast_class.*;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTFullDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
@@ -37,12 +39,13 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.cd.facade.CDModifier.*;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PROTECTED_STATIC;
+import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static org.junit.Assert.assertEquals;
@@ -52,18 +55,12 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
 
   private ASTCDClass millClass;
 
-  private GlobalExtensionManagement glex;
-
   private ASTCDCompilationUnit originalCompilationUnit;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
-
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "factory", "CGrammar");
     ICD4CodeGlobalScope gs = CD4CodeMill.globalScope();
     glex.setGlobalValue("service", new AbstractService(decoratedCompilationUnit));

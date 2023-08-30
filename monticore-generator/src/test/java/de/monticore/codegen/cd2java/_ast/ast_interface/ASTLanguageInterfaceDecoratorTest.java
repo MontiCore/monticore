@@ -5,7 +5,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -16,7 +15,6 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -37,14 +35,11 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
-  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
   @Before
   public void setUp() {
     this.MCTypeFacade = MCTypeFacade.getInstance();
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     this.glex.setGlobalValue("service", new AbstractService(originalCompilationUnit));
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     ASTService astService = new ASTService(originalCompilationUnit);
     VisitorService visitorService = new VisitorService(originalCompilationUnit);

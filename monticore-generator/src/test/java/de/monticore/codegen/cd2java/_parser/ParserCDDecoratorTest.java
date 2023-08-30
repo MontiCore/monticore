@@ -1,32 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._parser;
 
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.umlmodifier._ast.ASTModifier;
-import de.monticore.io.paths.MCPath;
-
-import de.se_rwth.commons.logging.LogStub;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ParserCDDecoratorTest extends DecoratorTestCase {
-
-  private GlobalExtensionManagement glex;
 
   private ASTCDCompilationUnit decoratedASTCompilationUnit;
 
@@ -38,11 +29,6 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
-    MCPath targetPath = Mockito.mock(MCPath.class);
-
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     decoratedASTCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalASTCompilationUnit = decoratedASTCompilationUnit.deepClone();
 

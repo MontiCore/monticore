@@ -2,7 +2,6 @@
 package de.monticore.codegen.cd2java._ast.builder;
 
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -10,17 +9,14 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,14 +24,23 @@ import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
-import static org.junit.Assert.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertInt;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.IS_VALID;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BuilderDecoratorTest extends DecoratorTestCase {
-
-  private final GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private ASTCDClass originalClass;
 
@@ -45,8 +50,6 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   public void setup() {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
     this.glex.setGlobalValue("service", new AbstractService(ast));
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     originalClass = getClassBy("A", ast);
 

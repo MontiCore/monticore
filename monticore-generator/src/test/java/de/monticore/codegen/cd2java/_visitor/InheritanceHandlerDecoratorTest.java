@@ -5,7 +5,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -42,8 +41,6 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass handlerClass;
 
-  private GlobalExtensionManagement glex;
-
   private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
 
   private static final String AST_TRANSITION = "de.monticore.codegen.ast.automaton._ast.ASTTransition";
@@ -58,14 +55,12 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);

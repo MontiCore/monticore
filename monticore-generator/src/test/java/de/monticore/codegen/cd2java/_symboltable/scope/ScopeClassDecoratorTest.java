@@ -5,26 +5,22 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -34,15 +30,21 @@ import java.util.Optional;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.DecoratorAssert.*;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static org.junit.Assert.*;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
+import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass scopeClass;
-
-  private GlobalExtensionManagement glex;
 
   private de.monticore.types.MCTypeFacade mcTypeFacade;
 
@@ -83,10 +85,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   @Before
   public void setUp() {
     this.mcTypeFacade = mcTypeFacade.getInstance();
-    this.glex = new GlobalExtensionManagement();
 
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
@@ -388,9 +387,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     List<ASTCDMethod> methodList = getMethodsBy("remove", scopeClass);
 
     Map<String, ASTCDMethod> methods = new HashMap<>();
-    CD4CodeFullPrettyPrinter p = new CD4CodeFullPrettyPrinter();
     methodList.forEach(l -> methods.put(
-        p.prettyprint(l.getCDParameter(0).getMCType()), l)
+            CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
 
     assertEquals(5, methodList.size());
@@ -432,9 +430,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testAddSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("add", scopeClass);
     Map<String, ASTCDMethod> methods = new HashMap<>();
-    CD4CodeFullPrettyPrinter p = new CD4CodeFullPrettyPrinter();
     methodList.forEach(l -> methods.put(
-        p.prettyprint(l.getCDParameter(0).getMCType()), l)
+        CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
 
     assertEquals(5, methodList.size());

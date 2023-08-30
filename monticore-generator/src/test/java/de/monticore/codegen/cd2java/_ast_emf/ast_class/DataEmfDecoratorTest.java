@@ -5,13 +5,11 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast_emf.ast_class.mutatordecorator.EmfMutatorDecorator;
@@ -19,7 +17,6 @@ import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +27,6 @@ import static org.junit.Assert.assertTrue;
 
 public class DataEmfDecoratorTest extends DecoratorTestCase {
 
-  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
-
   private ASTCDClass emfClass;
 
   @Before
@@ -40,8 +35,6 @@ public class DataEmfDecoratorTest extends DecoratorTestCase {
 
     ASTCDClass clazz = getClassBy("ASTAutomaton", compilationUnit);
     this.glex.setGlobalValue("service", new AbstractService(compilationUnit));
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     MethodDecorator methodDecorator = new MethodDecorator(glex, new ASTService(compilationUnit));
     EmfMutatorDecorator emfMutatorDecorator= new EmfMutatorDecorator(glex, new ASTService(compilationUnit));

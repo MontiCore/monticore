@@ -2,27 +2,20 @@
 package de.monticore.codegen.cd2java._visitor;
 
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
@@ -35,11 +28,8 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
-  private GlobalExtensionManagement glex;
-
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
 
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
 
@@ -47,8 +37,6 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(originalCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(originalCompilationUnit);
     this.glex.setGlobalValue("service", visitorService);
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
     TraverserInterfaceDecorator traverserInterfaceDecorator = new TraverserInterfaceDecorator(this.glex, visitorService, symbolTableService);
     MethodDecorator methodDecorator = new MethodDecorator(this.glex, visitorService);
     TraverserClassDecorator traverserClassDecorator = new TraverserClassDecorator(this.glex, visitorService, symbolTableService);

@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java;
 
-import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.*;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
@@ -17,31 +17,32 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoInterfaceDecorator;
 import de.monticore.codegen.cd2java._cocos.CoCoService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.symbol.*;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getEnumBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class
 DeprecatedTest extends DecoratorTestCase {
-
-  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
   private MCTypeFacade mcTypeFacade = MCTypeFacade.getInstance();
 
@@ -67,12 +68,6 @@ DeprecatedTest extends DecoratorTestCase {
     compilationUnit = this.parse("de", "monticore", "codegen", "deprecated", "DeprecatedProds");
 
     this.glex.setGlobalValue("service", new AbstractService(compilationUnit));
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    CD4C.init(generatorSetup);
 
     clazzA = getClassBy("A", compilationUnit);
     interfaceI = getInterfaceBy("I", compilationUnit);

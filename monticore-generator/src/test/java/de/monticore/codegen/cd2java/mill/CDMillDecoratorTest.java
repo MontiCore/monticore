@@ -1,15 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.mill;
 
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
-import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
-import de.monticore.codegen.cd2java._ast.ast_class.*;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTFullDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
@@ -21,13 +23,23 @@ import de.monticore.codegen.cd2java._ast.enums.EnumDecorator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.scope.*;
+import de.monticore.codegen.cd2java._symboltable.scope.ArtifactScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ArtifactScopeInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ScopeInterfaceDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.*;
+import de.monticore.codegen.cd2java._symboltable.symbol.CommonSymbolInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -35,7 +47,6 @@ import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
@@ -51,9 +62,6 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class CDMillDecoratorTest extends DecoratorTestCase {
-
-  private GlobalExtensionManagement glex;
-
   private ASTCDCompilationUnit originalCompilationUnit;
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
@@ -66,10 +74,6 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
-    this.glex = new GlobalExtensionManagement();
-
-    this.glex.setGlobalValue("astHelper", DecorationHelper.getInstance());
-    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     scopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
     symbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
