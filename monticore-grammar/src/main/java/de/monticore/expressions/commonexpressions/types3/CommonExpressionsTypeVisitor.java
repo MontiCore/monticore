@@ -1001,8 +1001,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       // if any inner obscure then error already logged
       return createObscureType();
     }
-    else if (getTypeRel().isNumericType(left) && getTypeRel().isNumericType(right)) {
-      return getTypeRel().numericPromotion(left, right);
+    else if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
+      return SymTypeRelations.numericPromotion(left, right);
     }
     else {
       // operator not applicable
