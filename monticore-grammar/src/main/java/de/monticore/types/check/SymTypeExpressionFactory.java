@@ -35,7 +35,9 @@ public class SymTypeExpressionFactory {
 
   /**
    * createTypeVariable vor Variables
+   * @deprecated -> create a symbol and use it to create a SymTypeVariable
    */
+  @Deprecated
   public static SymTypeVariable createTypeVariable(String name, IBasicSymbolsScope scope) {
     TypeVarSymbol typeSymbol = new TypeVarSymbol(name);
     typeSymbol.setEnclosingScope(scope);
@@ -410,7 +412,7 @@ public class SymTypeExpressionFactory {
   public static SymTypeExpression createBottomType() {
     // This is technically dependent on the type system in use.
     // Here, use the fact that we support
-    // intersection types in our implementations
+    // union types in our implementations
     return createUnion();
   }
 }
