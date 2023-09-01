@@ -21,8 +21,6 @@ public class NominalSuperTypeCalculator {
 
   protected final static String LOG_NAME = "NominalSuperTypes";
 
-  protected ISymTypeRelations symTypeRelations;
-
   protected SymTypeVariableReplaceVisitor replaceVisitor;
 
   protected NominalSuperTypeCalculator() {
@@ -30,20 +28,6 @@ public class NominalSuperTypeCalculator {
     // SymTypeRelations has no default,
     // as this tends to be part of SymTypeRelations
     this.replaceVisitor = new SymTypeVariableReplaceVisitor();
-  }
-
-  public NominalSuperTypeCalculator(ISymTypeRelations typeRelations) {
-    // default values
-    this();
-    this.symTypeRelations = typeRelations;
-  }
-
-  protected ISymTypeRelations getSymTypeRelations() {
-    if (symTypeRelations == null) {
-      Log.error("0xFD81C internal error: "
-          + "NominalSuperTypeCalculator not set up correctly");
-    }
-    return symTypeRelations;
   }
 
   /**
@@ -117,7 +101,7 @@ public class NominalSuperTypeCalculator {
       Collection<SymTypeExpression> unionizedTypes =
           ((SymTypeOfUnion) thisType).getUnionizedTypeSet();
       Optional<SymTypeExpression> lubOpt =
-          getSymTypeRelations().leastUpperBound(unionizedTypes);
+          SymTypeRelations.leastUpperBound(unionizedTypes);
       unmodifiedSuperTypes = lubOpt
           .filter(lub -> isSupported(lub))
           .map(lub -> getNominalSuperTypes(lub))

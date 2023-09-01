@@ -4,8 +4,8 @@ package de.monticore.types.check.types3wrapper;
 import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCalculator;
-import de.monticore.types3.ISymTypeRelations;
 import de.monticore.types3.Type4Ast;
+import de.monticore.types3.util.SymTypeRelations;
 import de.monticore.visitor.ITraverser;
 
 /**
@@ -15,8 +15,6 @@ import de.monticore.visitor.ITraverser;
  */
 public class TypeCheck3AsTypeCalculator extends TypeCalculator {
 
-  protected ISymTypeRelations symTypeRelations;
-
   protected Type4Ast type4Ast;
 
   protected ITraverser typeTraverser;
@@ -24,13 +22,11 @@ public class TypeCheck3AsTypeCalculator extends TypeCalculator {
   /**
    * @param typeTraverser    traverser filling type4Ast, language specific
    * @param type4Ast         a map of types to be filled
-   * @param symTypeRelations relations on SymTypes, language specific
    * @param lValueRelations  is expression a variable?, language specific
    */
   public TypeCheck3AsTypeCalculator(
       ITraverser typeTraverser,
       Type4Ast type4Ast,
-      ISymTypeRelations symTypeRelations,
       ILValueRelations lValueRelations
   ) {
     super(
@@ -39,16 +35,15 @@ public class TypeCheck3AsTypeCalculator extends TypeCalculator {
     );
     this.typeTraverser = typeTraverser;
     this.type4Ast = type4Ast;
-    this.symTypeRelations = symTypeRelations;
   }
 
   @Override
   public boolean compatible(SymTypeExpression left, SymTypeExpression right) {
-    return symTypeRelations.isCompatible(left, right);
+    return SymTypeRelations.isCompatible(left, right);
   }
 
   @Override
   public boolean isSubtypeOf(SymTypeExpression subType, SymTypeExpression superType) {
-    return symTypeRelations.isSubTypeOf(subType, superType);
+    return SymTypeRelations.isSubTypeOf(subType, superType);
   }
 }

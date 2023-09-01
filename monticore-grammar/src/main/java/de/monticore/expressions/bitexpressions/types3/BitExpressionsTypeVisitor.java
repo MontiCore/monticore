@@ -14,31 +14,12 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.ISymTypeRelations;
 import de.monticore.types3.util.SymTypeRelations;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     implements BitExpressionsVisitor2 {
-
-  protected ISymTypeRelations typeRelations;
-
-  public BitExpressionsTypeVisitor(ISymTypeRelations typeRelations) {
-    this.typeRelations = typeRelations;
-  }
-
-  public BitExpressionsTypeVisitor() {
-    this(new SymTypeRelations());
-  }
-
-  public void setSymTypeRelations(ISymTypeRelations symTypeRelations) {
-    this.typeRelations = symTypeRelations;
-  }
-
-  protected ISymTypeRelations getTypeRel() {
-    return typeRelations;
-  }
 
   @Override
   public void endVisit(ASTLeftShiftExpression expr) {
@@ -83,7 +64,7 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypePrimitive rightEx = (SymTypePrimitive) rightResult;
 
       //only defined on integral type - integral type
-      if (typeRelations.isIntegralType(leftEx) && typeRelations.isIntegralType(rightEx)) {
+      if (SymTypeRelations.isIntegralType(leftEx) && SymTypeRelations.isIntegralType(rightEx)) {
         return shiftCalculator(leftResult, rightResult, op, pos);
       }
     }
@@ -107,9 +88,9 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypePrimitive rightResult = (SymTypePrimitive) right;
 
     //only defined on integral type - integral type
-    if (typeRelations.isIntegralType(leftResult) && typeRelations.isIntegralType(rightResult)) {
-      if (getTypeRel().isLong(rightResult)) {
-        if (getTypeRel().isLong(leftResult)) {
+    if (SymTypeRelations.isIntegralType(leftResult) && SymTypeRelations.isIntegralType(rightResult)) {
+      if (SymTypeRelations.isLong(rightResult)) {
+        if (SymTypeRelations.isLong(leftResult)) {
           return SymTypeExpressionFactory.createPrimitive("long");
         }
         else {
@@ -168,12 +149,12 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypePrimitive rightEx = (SymTypePrimitive) rightResult;
 
       //only defined on boolean - boolean and integral type - integral type
-      if (getTypeRel().isBoolean(leftResult) &&
-          getTypeRel().isBoolean(rightResult)) {
+      if (SymTypeRelations.isBoolean(leftResult) &&
+          SymTypeRelations.isBoolean(rightResult)) {
         return SymTypeExpressionFactory.createPrimitive("boolean");
       }
-      else if (getTypeRel().isIntegralType(leftEx) && getTypeRel().isIntegralType(rightEx)) {
-        return getTypeRel().numericPromotion(leftEx, rightEx);
+      else if (SymTypeRelations.isIntegralType(leftEx) && SymTypeRelations.isIntegralType(rightEx)) {
+        return SymTypeRelations.numericPromotion(leftEx, rightEx);
       }
     }
     //should not happen, no valid result, error will be handled in traverse

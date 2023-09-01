@@ -26,14 +26,12 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
 
   protected ICombineExpressionsWithLiteralsScope scope;
 
-  protected ISymTypeRelations tr;
-
   @Before
   public void setup() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     DefsTypesForTests.setup();
-    tr = new SymTypeRelations();
+    SymTypeRelations.init();
   }
 
   @Test
@@ -59,7 +57,7 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
   }
 
   protected void checkLub(SymTypeExpression type, String expectedPrint) {
-    Optional<SymTypeExpression> lubOpt = tr.leastUpperBound(type);
+    Optional<SymTypeExpression> lubOpt = SymTypeRelations.leastUpperBound(type);
     String printed = lubOpt.map(SymTypeExpression::printFullName).orElse("");
     assertNoFindings();
     assertEquals(expectedPrint, printed);
