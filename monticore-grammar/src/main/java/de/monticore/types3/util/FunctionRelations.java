@@ -3,7 +3,6 @@ package de.monticore.types3.util;
 
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types3.ISymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -24,21 +23,23 @@ import java.util.stream.Collectors;
  */
 public class FunctionRelations {
 
-  protected ISymTypeRelations symTypeRelations;
+  protected static FunctionRelations delegate;
 
-  public FunctionRelations(ISymTypeRelations symTypeRelations) {
-    this.symTypeRelations = symTypeRelations;
+  public static void init() {
+    FunctionRelations.delegate = new FunctionRelations();
   }
 
-  protected ISymTypeRelations getSymTypeRelations() {
-    if (symTypeRelations == null) {
-      Log.error("0xFD81A internal error: "
-          + "FunctionRelations not set up correctly");
-    }
-    return symTypeRelations;
+  static {
+    init();
   }
 
-  public boolean canBeCalledWith(
+  public static boolean canBeCalledWith(
+      SymTypeOfFunction func,
+      List<SymTypeExpression> args) {
+    return delegate.calculateCanBeCalledWith(func, args);
+  }
+
+  protected boolean calculateCanBeCalledWith(
       SymTypeOfFunction func,
       List<SymTypeExpression> args) {
     // check amount of arguments
@@ -53,7 +54,7 @@ public class FunctionRelations {
       for (int i = 0; i < args.size(); i++) {
         SymTypeExpression paramType = func.getArgumentType(
             Math.min(i, func.getArgumentTypeList().size() - 1));
-        if (!getSymTypeRelations().isCompatible(paramType, args.get(i))) {
+        if (!SymTypeRelations.isCompatible(paramType, args.get(i))) {
           // todo extend when adding generic support
           return false;
         }
@@ -69,7 +70,12 @@ public class FunctionRelations {
    * * Java spec v.20 15.12.2.5
    * * Java spec v.20 18.5.4
    */
-  public Optional<SymTypeOfFunction> getMostSpecificFunction(
+  public static Optional<SymTypeOfFunction> getMostSpecificFunction(
+      Collection<SymTypeOfFunction> funcs) {
+    return delegate.calculateGetMostSpecificFunction(funcs);
+  }
+
+  protected Optional<SymTypeOfFunction> calculateGetMostSpecificFunction(
       Collection<SymTypeOfFunction> funcs) {
     Optional<SymTypeOfFunction> mostSpecificFunction;
     if (funcs.isEmpty()) {
@@ -92,9 +98,9 @@ public class FunctionRelations {
           int it = i;
           potentialFuncs.removeIf(
               potFunc -> funcs.stream().anyMatch(
-                  func -> !getSymTypeRelations().isSubTypeOf(
-                      getSymTypeRelations().box(potFunc.getArgumentType(it)),
-                      getSymTypeRelations().box(func.getArgumentType(it))
+                  func -> !SymTypeRelations.isSubTypeOf(
+                      SymTypeRelations.box(potFunc.getArgumentType(it)),
+                      SymTypeRelations.box(func.getArgumentType(it))
                   )
               )
           );
@@ -125,6 +131,8 @@ public class FunctionRelations {
 
     return mostSpecificFunction;
   }
+
+  // Helper
 
   protected String printFunctionForLog(SymTypeOfFunction func) {
     String result = "";

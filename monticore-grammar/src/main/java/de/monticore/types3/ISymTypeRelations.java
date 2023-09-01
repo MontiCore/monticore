@@ -12,7 +12,9 @@ import java.util.Optional;
  * <p>
  * some are dependent on the specific type system
  * and as such not hardcoded in the SymTypeExpressions themselves
+ * @deprecated use SymTypeRelations
  */
+@Deprecated
 public interface ISymTypeRelations {
 
   /**

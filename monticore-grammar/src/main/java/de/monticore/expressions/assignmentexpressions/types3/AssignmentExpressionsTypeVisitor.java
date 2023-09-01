@@ -21,24 +21,6 @@ import de.se_rwth.commons.logging.Log;
 public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     implements AssignmentExpressionsVisitor2 {
 
-  protected ISymTypeRelations typeRelations;
-
-  public AssignmentExpressionsTypeVisitor(
-      ISymTypeRelations typeRelations) {
-    this.typeRelations = typeRelations;
-  }
-
-  public AssignmentExpressionsTypeVisitor() {
-    //default values
-    this(
-        new SymTypeRelations()
-    );
-  }
-
-  public void setSymTypeRelations(ISymTypeRelations symTypeRelations) {
-    this.typeRelations = symTypeRelations;
-  }
-
   @Override
   public void endVisit(ASTIncSuffixExpression expr) {
     Preconditions.checkNotNull(expr);
@@ -87,8 +69,8 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
   }
 
   protected SymTypeExpression affix(SymTypeExpression inner, String op, SourcePosition pos) {
-    if (typeRelations.isNumericType(inner)) {
-      SymTypeExpression unboxed = typeRelations.unbox(inner);
+    if (SymTypeRelations.isNumericType(inner)) {
+      SymTypeExpression unboxed = SymTypeRelations.unbox(inner);
       return SymTypeExpressionFactory.createPrimitive(unboxed.print());
     }
     else {
@@ -166,7 +148,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     // anything on the rhs be converted to a String
-    if (typeRelations.isString(left)) {
+    if (SymTypeRelations.isString(left)) {
       return left;
     }
     else {
@@ -238,8 +220,8 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       String op, SourcePosition pos) {
     // both must be of integral or both must be of boolean type
-    if ((typeRelations.isIntegralType(left) && typeRelations.isIntegralType(right))
-        || (typeRelations.isBoolean(left) && typeRelations.isBoolean(right))) {
+    if ((SymTypeRelations.isIntegralType(left) && SymTypeRelations.isIntegralType(right))
+        || (SymTypeRelations.isBoolean(left) && SymTypeRelations.isBoolean(right))) {
       return left;
     }
     else {
@@ -255,7 +237,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       String op,
       SourcePosition src) {
     // both must be of integral type
-    if (typeRelations.isIntegralType(left) && typeRelations.isIntegralType(right)) {
+    if (SymTypeRelations.isIntegralType(left) && SymTypeRelations.isIntegralType(right)) {
       return left;
     }
     else {
@@ -271,7 +253,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       String op,
       SourcePosition src) {
     // both must be of numeric type
-    if (typeRelations.isNumericType(left) && typeRelations.isNumericType(right)) {
+    if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
       return left;
     }
     else {
@@ -286,7 +268,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition src) {
     // types must be compatible
-    if (typeRelations.isCompatible(left, right)) {
+    if (SymTypeRelations.isCompatible(left, right)) {
       return left;
     }
     else {

@@ -27,14 +27,6 @@ import java.util.stream.Collectors;
 public class OOWithinTypeBasicSymbolsResolver
     extends WithinTypeBasicSymbolsResolver {
 
-  public OOWithinTypeBasicSymbolsResolver(SymTypeRelations symTypeRelations) {
-    super(symTypeRelations);
-  }
-
-  public OOWithinTypeBasicSymbolsResolver() {
-    super();
-  }
-
   /**
    * resolves within a type including supertypes
    */

@@ -21,7 +21,7 @@ public class BuiltInTypeRelations {
   /**
    * @deprecated use constructor {@link #BuiltInTypeRelations()}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public BuiltInTypeRelations(SymTypeRelations symTypeRelations) {
   }
 

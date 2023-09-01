@@ -41,22 +41,9 @@ public class WithinTypeBasicSymbolsResolver {
 
   protected SymTypeVariableReplaceVisitor replaceVisitor;
 
-  protected SymTypeRelations symTypeRelations;
-
-  public WithinTypeBasicSymbolsResolver(SymTypeRelations symTypeRelations) {
-    this.symTypeRelations = symTypeRelations;
-    // default values
-    replaceVisitor = new SymTypeVariableReplaceVisitor();
-  }
-
   public WithinTypeBasicSymbolsResolver() {
     // default values
     replaceVisitor = new SymTypeVariableReplaceVisitor();
-    symTypeRelations = new SymTypeRelations();
-  }
-
-  protected SymTypeRelations getSymTypeRelations() {
-    return symTypeRelations;
   }
 
   /**
@@ -396,7 +383,7 @@ public class WithinTypeBasicSymbolsResolver {
       Collection<SymTypeExpression> unionizedTypes =
           ((SymTypeOfUnion) type).getUnionizedTypeSet();
       Optional<SymTypeExpression> lubOpt =
-          getSymTypeRelations().leastUpperBound(unionizedTypes);
+          SymTypeRelations.leastUpperBound(unionizedTypes);
       spannedScope = lubOpt.flatMap(lub -> getSpannedScope(lub));
     }
     // extension point
@@ -412,7 +399,7 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
-    return getSymTypeRelations().getNominalSuperTypes(thisType);
+    return SymTypeRelations.getNominalSuperTypes(thisType);
   }
 
   /**
