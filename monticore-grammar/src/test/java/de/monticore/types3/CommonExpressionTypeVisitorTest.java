@@ -71,6 +71,13 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void deriveFromPlusExpressionLifted() throws IOException {
+    checkExpr("varbyte + (true ? varint : vardouble)", "double");
+    checkExpr("(true ? varint : vardouble) + varbyte", "double");
+    checkExpr("(true ? varint : vardouble) + (true ? varint : vardouble)", "double");
+  }
+
+  @Test
   public void testInvalidPlusExpression() throws IOException {
     checkErrorExpr("varchar = 65535 + 1", "0xA0179"); // expected char but provided int
     checkErrorExpr("varchar = 1 + 65535", "0xA0179"); // expected char but provided int
@@ -141,6 +148,13 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong - varlong", "long"); // - applicable to long, long, result is long
     checkExpr("varfloat - varfloat", "float"); // - applicable to float, float, result is float
     checkExpr("vardouble - vardouble", "double"); // - applicable to double, double, result is double
+  }
+
+  @Test
+  public void deriveFromMinusExpressionLifted() throws IOException {
+    checkExpr("varbyte - (true ? varint : vardouble)", "double");
+    checkExpr("(true ? varint : vardouble) - varbyte", "double");
+    checkExpr("(true ? varint : vardouble) - (true ? varint : vardouble)", "double");
   }
 
   @Test
