@@ -13,8 +13,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.ISymTypeRelations;
-import de.monticore.types3.util.SymTypeRelations;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 

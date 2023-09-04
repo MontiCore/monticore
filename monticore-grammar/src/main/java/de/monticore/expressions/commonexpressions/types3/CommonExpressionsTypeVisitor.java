@@ -19,7 +19,7 @@ import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
-import de.monticore.types3.util.SymTypeRelations;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.TypeVisitorLifting;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;

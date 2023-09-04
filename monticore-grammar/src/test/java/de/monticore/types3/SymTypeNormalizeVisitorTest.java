@@ -7,7 +7,6 @@ import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types3.util.SymTypeNormalizeVisitor;
-import de.monticore.types3.util.SymTypeRelations;
 import org.junit.Before;
 import org.junit.Test;
 

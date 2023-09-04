@@ -3,6 +3,7 @@ package de.monticore.types3.util;
 
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -26,6 +27,7 @@ public class FunctionRelations {
   protected static FunctionRelations delegate;
 
   public static void init() {
+    Log.trace("init default FunctionRelations", "TypeCheck setup");
     FunctionRelations.delegate = new FunctionRelations();
   }
 

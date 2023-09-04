@@ -15,7 +15,6 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.util.DefsTypesForTests;
-import de.monticore.types3.util.SymTypeRelations;
 import org.junit.Before;
 import org.junit.Test;
 

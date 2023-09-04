@@ -7,7 +7,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.ISymTypeRelations;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class NominalSuperTypeCalculator {
 
   protected SymTypeVariableReplaceVisitor replaceVisitor;
 
-  protected NominalSuperTypeCalculator() {
+  public NominalSuperTypeCalculator() {
     // default values
     // SymTypeRelations has no default,
     // as this tends to be part of SymTypeRelations

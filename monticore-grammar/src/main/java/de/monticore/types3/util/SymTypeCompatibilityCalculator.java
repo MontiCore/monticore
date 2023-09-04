@@ -11,7 +11,7 @@ import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.ISymTypeRelations;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
