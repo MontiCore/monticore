@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.constantgroups;
+
+grammar SpecialLexerTokensInConstantGroup {
+    Start = ALTQUESTION bar:["?" | "!"];
+    token ALTQUESTION = '?';
+}
