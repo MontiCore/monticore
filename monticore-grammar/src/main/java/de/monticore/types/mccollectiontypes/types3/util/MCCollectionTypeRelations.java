@@ -18,8 +18,18 @@ public class MCCollectionTypeRelations implements IMCCollectionTypeRelations {
    * whether the type is one of the four collection types
    * from MCCollectionTypes; List, Set, Optional, Map
    */
-  public boolean isCollection(SymTypeExpression type) {
+  public boolean isMCCollection(SymTypeExpression type) {
     return isList(type) || isSet(type) || isOptional(type) || isMap(type);
+  }
+
+  /**
+   * whether the type is one of the four collection types
+   * from MCCollectionTypes; List, Set, Optional, Map
+   * @deprecated due to bad naming, use isMCCollection
+   */
+  @Deprecated
+  public boolean isCollection(SymTypeExpression type) {
+    return isMCCollection(type);
   }
 
   public boolean isList(SymTypeExpression type) {

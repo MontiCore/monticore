@@ -7,7 +7,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.ISymTypeRelations;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -21,29 +21,13 @@ public class NominalSuperTypeCalculator {
 
   protected final static String LOG_NAME = "NominalSuperTypes";
 
-  protected ISymTypeRelations symTypeRelations;
-
   protected SymTypeVariableReplaceVisitor replaceVisitor;
 
-  protected NominalSuperTypeCalculator() {
+  public NominalSuperTypeCalculator() {
     // default values
     // SymTypeRelations has no default,
     // as this tends to be part of SymTypeRelations
     this.replaceVisitor = new SymTypeVariableReplaceVisitor();
-  }
-
-  public NominalSuperTypeCalculator(ISymTypeRelations typeRelations) {
-    // default values
-    this();
-    this.symTypeRelations = typeRelations;
-  }
-
-  protected ISymTypeRelations getSymTypeRelations() {
-    if (symTypeRelations == null) {
-      Log.error("0xFD81C internal error: "
-          + "NominalSuperTypeCalculator not set up correctly");
-    }
-    return symTypeRelations;
   }
 
   /**
@@ -117,7 +101,7 @@ public class NominalSuperTypeCalculator {
       Collection<SymTypeExpression> unionizedTypes =
           ((SymTypeOfUnion) thisType).getUnionizedTypeSet();
       Optional<SymTypeExpression> lubOpt =
-          getSymTypeRelations().leastUpperBound(unionizedTypes);
+          SymTypeRelations.leastUpperBound(unionizedTypes);
       unmodifiedSuperTypes = lubOpt
           .filter(lub -> isSupported(lub))
           .map(lub -> getNominalSuperTypes(lub))

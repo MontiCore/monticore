@@ -17,11 +17,11 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.ISymTypeRelations;
 import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
-import de.monticore.types3.util.SymTypeRelations;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.TypeContextCalculator;
+import de.monticore.types3.util.TypeVisitorLifting;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.Names;
@@ -51,10 +51,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
 
   protected CommonExpressionsTraverser traverser;
 
-  protected ISymTypeRelations typeRelations;
-
-  protected FunctionRelations functionRelations;
-
   protected WithinTypeBasicSymbolsResolver withinTypeResolver;
 
   protected TypeContextCalculator typeCtxCalc;
@@ -63,13 +59,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   protected WithinScopeBasicSymbolsResolver withinScopeResolver;
 
   protected CommonExpressionsTypeVisitor(
-      ISymTypeRelations typeRelations,
-      FunctionRelations functionRelations,
       WithinTypeBasicSymbolsResolver withinTypeResolver,
       TypeContextCalculator typeCtxCalc,
       WithinScopeBasicSymbolsResolver withinScopeResolver) {
-    this.typeRelations = typeRelations;
-    this.functionRelations = functionRelations;
     this.withinTypeResolver = withinTypeResolver;
     this.typeCtxCalc = typeCtxCalc;
     this.withinScopeResolver = withinScopeResolver;
@@ -78,13 +70,10 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   public CommonExpressionsTypeVisitor() {
     // default values
     this(
-        new SymTypeRelations(),
-        null,
         new WithinTypeBasicSymbolsResolver(),
         new TypeContextCalculator(),
         new WithinScopeBasicSymbolsResolver()
     );
-    functionRelations = new FunctionRelations(getTypeRel());
   }
 
   @Override
@@ -95,14 +84,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void setTraverser(CommonExpressionsTraverser traverser) {
     this.traverser = traverser;
-  }
-
-  public void setSymTypeRelations(ISymTypeRelations typeRelations) {
-    this.typeRelations = typeRelations;
-  }
-
-  public void setFunctionRelations(FunctionRelations functionRelations) {
-    this.functionRelations = functionRelations;
   }
 
   public void setWithinTypeBasicSymbolsResolver(
@@ -128,14 +109,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     setWithinScopeResolver(resolver);
   }
 
-  protected ISymTypeRelations getTypeRel() {
-    return typeRelations;
-  }
-
-  protected FunctionRelations getFuncRel() {
-    return functionRelations;
-  }
-
   protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
     return withinTypeResolver;
   }
@@ -152,14 +125,20 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTPlusPrefixExpression expr) {
-    SymTypeExpression symType = calculateNumericPrefix(expr.getExpression(), "+");
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression result = TypeVisitorLifting.liftDefault(
+        (innerType) -> calculateNumericPrefix(expr.getExpression(), "+", innerType)
+    ).apply(inner);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTMinusPrefixExpression expr) {
-    SymTypeExpression symType = calculateNumericPrefix(expr.getExpression(), "-");
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression result = TypeVisitorLifting.liftDefault(
+        (innerType) -> calculateNumericPrefix(expr.getExpression(), "-", innerType)
+    ).apply(inner);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   // Arithmetic
@@ -169,18 +148,21 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
 
-    SymTypeExpression result;
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((leftPar, rightPar) -> calculatePlusExpression(expr, leftPar, rightPar))
+        .apply(left, right);
 
-    if (left.isObscureType() || right.isObscureType()) {
-      // if any inner obscure then error already logged
-      result = createObscureType();
-    }
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  protected SymTypeExpression calculatePlusExpression(ASTPlusExpression expr, SymTypeExpression left, SymTypeExpression right) {
+    SymTypeExpression result;
     // if one part of the expression is a String
     // then the whole expression is a String
-    else if (getTypeRel().isString(left)) {
+    if (SymTypeRelations.isString(left)) {
       result = createTypeObject(left.getTypeInfo());
     }
-    else if (getTypeRel().isString(right)) {
+    else if (SymTypeRelations.isString(right)) {
       result = createTypeObject(right.getTypeInfo());
     }
     // no String in the expression
@@ -188,7 +170,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     else {
       result = calculateArithmeticExpression(expr, expr.getOperator());
     }
-    getType4Ast().setTypeOfExpression(expr, result);
+    return result;
   }
 
   @Override
@@ -285,13 +267,17 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   public void endVisit(ASTLogicalNotExpression expr) {
     SymTypeExpression inner =
         getType4Ast().getPartialTypeOfExpr(expr.getExpression());
-    SymTypeExpression result;
-    if (inner.isObscureType()) {
-      // if inner obscure then error already logged
-      result = createObscureType();
-    }
-    else if (getTypeRel().isBoolean(inner)) {
-      result = createPrimitive(BasicSymbolsMill.BOOLEAN);
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((symType) -> calculateLogicalNotExpression(expr, symType))
+        .apply(inner);
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  protected SymTypeExpression calculateLogicalNotExpression(
+      ASTLogicalNotExpression expr,
+      SymTypeExpression inner) {
+    if (SymTypeRelations.isBoolean(inner)) {
+      return createPrimitive(BasicSymbolsMill.BOOLEAN);
     }
     else {
       // operator not applicable
@@ -300,15 +286,14 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
       );
-      result = createObscureType();
+      return createObscureType();
     }
-    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTConditionalExpression expr) {
-    SymTypeExpression cond =
-        getType4Ast().getPartialTypeOfExpr(expr.getCondition());
+    SymTypeExpression cond = SymTypeRelations.normalize(
+        getType4Ast().getPartialTypeOfExpr(expr.getCondition()));
     SymTypeExpression left =
         getType4Ast().getPartialTypeOfExpr(expr.getTrueExpression());
     SymTypeExpression right =
@@ -322,7 +307,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       result = createObscureType();
     }
     // condition must be boolean
-    else if (!getTypeRel().isBoolean(cond)) {
+    else if (!SymTypeRelations.isBoolean(cond)) {
       Log.error("0xB0165 expected '" + BasicSymbolsMill.BOOLEAN +
               "' but provided '" + cond.print() + "'",
           expr.getCondition().get_SourcePositionStart(),
@@ -343,13 +328,17 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   public void endVisit(ASTBooleanNotExpression expr) {
     SymTypeExpression inner =
         getType4Ast().getPartialTypeOfExpr(expr.getExpression());
-    SymTypeExpression result;
-    if (inner.isObscureType()) {
-      // if inner obscure then error already logged
-      result = createObscureType();
-    }
-    else if (getTypeRel().isIntegralType(inner)) {
-      result = getTypeRel().numericPromotion(inner);
+    SymTypeExpression result = TypeVisitorLifting.liftDefault(
+        (symType) -> calculateBooleanNotExpression(expr, symType)
+    ).apply(inner);
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  protected SymTypeExpression calculateBooleanNotExpression(
+      ASTBooleanNotExpression expr,
+      SymTypeExpression inner) {
+    if (SymTypeRelations.isIntegralType(inner)) {
+      return SymTypeRelations.numericPromotion(inner);
     }
     else {
       // operator not applicable
@@ -358,9 +347,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
       );
-      result = createObscureType();
+      return createObscureType();
     }
-    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
@@ -424,7 +412,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
           .collect(Collectors.toSet());
       // filter out all function that do not fit the arguments
       Set<SymTypeOfFunction> callableFuncs = funcs.stream()
-          .filter(f -> getFuncRel().canBeCalledWith(f, args))
+          .filter(f -> FunctionRelations.canBeCalledWith(f, args))
           .collect(Collectors.toSet());
       if (callableFuncs.isEmpty()) {
         Log.error("0xFDABE with " + args.size() + " argument ("
@@ -447,7 +435,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             .map(f -> f.getWithFixedArity(args.size()))
             .collect(Collectors.toSet());
         Optional<SymTypeOfFunction> mostSpecificFunction =
-            getFuncRel().getMostSpecificFunction(callableFuncs);
+            FunctionRelations.getMostSpecificFunction(callableFuncs);
         if (mostSpecificFunction.isPresent()) {
           type = mostSpecificFunction.get().getType().deepClone();
         }
@@ -863,7 +851,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     Optional<SymTypeExpression> type;
     if (nameOpt.isPresent()) {
       type = getWithinScopeResolver().
-          typeOfNameAsExpr(
+          resolveNameAsExpr(
               getAsBasicSymbolsScope(expr.getEnclosingScope()),
               nameOpt.get()
           );
@@ -888,7 +876,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   /**
    * calculates a.b.c as type identifier with a.b being a qualifier.
    * only evaluates qualified names without type arguments
-   *
    * s.a. {@link #getExprAsQName(ASTExpression)}
    */
   protected Optional<SymTypeExpression> calculateTypeIdQName(
@@ -967,12 +954,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   }
 
   protected SymTypeExpression calculateNumericPrefix(
-      ASTExpression innerExpr, String op) {
-    SymTypeExpression innerType = getType4Ast().getPartialTypeOfExpr(innerExpr);
-    if (innerType.isObscureType()) {
-      return createObscureType();
-    }
-    if (!getTypeRel().isNumericType(innerType)) {
+      ASTExpression innerExpr, String op, SymTypeExpression innerType) {
+    if (!SymTypeRelations.isNumericType(innerType)) {
       Log.error("0xA017D Prefix Operator '" + op
               + "' not applicable to " + "'" + innerType.print() + "'",
           innerExpr.get_SourcePositionStart(),
@@ -982,7 +965,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
     // in Java, an evaluation of the actual value
     // would take place (if possible)
-    return getTypeRel().numericPromotion(innerType);
+    return SymTypeRelations.numericPromotion(innerType);
   }
 
   /**
@@ -993,14 +976,17 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       ASTInfixExpression expr, String op) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    return TypeVisitorLifting.liftDefault((leftPar, rightPar) ->
+        calculateNumericComparison(expr, op, leftPar, rightPar)
+    ).apply(left, right);
+  }
 
-    if (left.isObscureType() || right.isObscureType()) {
-      // if any inner obscure then error already logged
-      return createObscureType();
-    }
+  protected SymTypeExpression calculateNumericComparison(
+      ASTInfixExpression expr, String op,
+      SymTypeExpression left, SymTypeExpression right) {
     // if the left and the right part of the expression are numerics,
     // then the whole expression is a boolean
-    else if (getTypeRel().isNumericType(left) && getTypeRel().isNumericType(right)) {
+    if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
       return createPrimitive(BasicSymbolsMill.BOOLEAN);
     }
     else {
@@ -1025,12 +1011,14 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
 
-    if (left.isObscureType() || right.isObscureType()) {
-      // if any inner obscure then error already logged
-      return createObscureType();
-    }
-    else if (getTypeRel().isNumericType(left) && getTypeRel().isNumericType(right)) {
-      return getTypeRel().numericPromotion(left, right);
+    return TypeVisitorLifting.liftDefault((SymTypeExpression leftPar, SymTypeExpression rightPar) ->
+        calculateArithmeticExpression(expr, op, leftPar, rightPar)
+    ).apply(left, right);
+  }
+
+  protected SymTypeExpression calculateArithmeticExpression(ASTInfixExpression expr, String op, SymTypeExpression left, SymTypeExpression right) {
+    if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
+      return SymTypeRelations.numericPromotion(left, right);
     }
     else {
       // operator not applicable
@@ -1052,21 +1040,29 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       ASTInfixExpression expr, String op) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    return TypeVisitorLifting.liftDefault((leftPar, rightPar) ->
+        calculateEquality(expr, op, leftPar, rightPar)
+    ).apply(left, right);
+  }
 
-    if (left.isObscureType() || right.isObscureType()) {
-      // if any inner obscure then error already logged
-      return createObscureType();
-    }
-    else if (left.isPrimitive() || right.isPrimitive()) {
+  /**
+   * for ==, !=
+   * calculates the resulting type
+   */
+  protected SymTypeExpression calculateEquality(
+      ASTInfixExpression expr, String op,
+      SymTypeExpression left, SymTypeExpression right) {
+
+    if (left.isPrimitive() || right.isPrimitive()) {
       // skip unboxing + numeric promotion if applicable
-      if (getTypeRel().isNumericType(left) && getTypeRel().isNumericType(right)) {
+      if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
         return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
       }
-      left = getTypeRel().unbox(left);
-      right = getTypeRel().unbox(right);
+      left = SymTypeRelations.unbox(left);
+      right = SymTypeRelations.unbox(right);
     }
-    if (getTypeRel().isCompatible(left, right)
-        || getTypeRel().isCompatible(right, left)) {
+    if (SymTypeRelations.isCompatible(left, right)
+        || SymTypeRelations.isCompatible(right, left)) {
       return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
     }
     else {
@@ -1088,12 +1084,15 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       ASTInfixExpression expr, String op) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    return TypeVisitorLifting.liftDefault((leftPar, rightPar) ->
+        calculateConditionalBooleanOp(expr, op, leftPar, rightPar)
+    ).apply(left, right);
+  }
 
-    if (left.isObscureType() || right.isObscureType()) {
-      // if any inner obscure then error already logged
-      return createObscureType();
-    }
-    else if (getTypeRel().isBoolean(left) && getTypeRel().isBoolean(right)) {
+  protected SymTypeExpression calculateConditionalBooleanOp(
+      ASTInfixExpression expr, String op,
+      SymTypeExpression left, SymTypeExpression right) {
+    if (SymTypeRelations.isBoolean(left) && SymTypeRelations.isBoolean(right)) {
       return createPrimitive(BasicSymbolsMill.BOOLEAN);
     }
     else {
