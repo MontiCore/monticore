@@ -3,6 +3,10 @@ package de.monticore.types.mccollectiontypes.types3;
 
 import de.monticore.types.check.SymTypeExpression;
 
+/**
+ * @deprecated use MCCollectionSymTypeRelations
+ */
+@Deprecated
 public interface IMCCollectionTypeRelations {
 
   /**

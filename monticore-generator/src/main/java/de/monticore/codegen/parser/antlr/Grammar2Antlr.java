@@ -371,7 +371,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
           addToCodeSection(parserHelper.getKeyRuleName(x.getName()));
         } else {
-          addToCodeSection("'" + x.getName() + "'");
+          addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
         }
 
         if (embeddedJavaCode) {

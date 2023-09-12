@@ -11,7 +11,7 @@ import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.ISymTypeRelations;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -25,20 +25,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createObscureTyp
  */
 public class SymTypeCompatibilityCalculator {
 
-  protected ISymTypeRelations symTypeRelations;
-
-  public SymTypeCompatibilityCalculator(ISymTypeRelations symTypeRelations) {
-    this.symTypeRelations = symTypeRelations;
-  }
-
-  protected ISymTypeRelations getSymTypeRelations() {
-    if (symTypeRelations == null) {
-      Log.error("0xFD81D internal error: "
-          + "SymTypeCompatibilityCalculator not set up correctly");
-    }
-    return symTypeRelations;
-  }
-
   public boolean isCompatible(
       SymTypeExpression assignee,
       SymTypeExpression assigner) {
@@ -51,9 +37,9 @@ public class SymTypeCompatibilityCalculator {
     // in addition, we allow boxing
     else {
       SymTypeExpression boxedAssignee =
-          getSymTypeRelations().box(assignee);
+          SymTypeRelations.box(assignee);
       SymTypeExpression boxedAssigner =
-          getSymTypeRelations().box(assigner);
+          SymTypeRelations.box(assigner);
       result = internal_isSubTypeOf(boxedAssigner, boxedAssignee, true);
     }
     return result;
@@ -73,9 +59,9 @@ public class SymTypeCompatibilityCalculator {
       boolean subTypeIsSoft
   ) {
     SymTypeExpression normalizedSubType =
-        getSymTypeRelations().normalize(subType);
+        SymTypeRelations.normalize(subType);
     SymTypeExpression normalizedSuperType =
-        getSymTypeRelations().normalize(superType);
+        SymTypeRelations.normalize(superType);
     return internal_isSubTypeOfPreNormalized(
         normalizedSubType,
         normalizedSuperType,
@@ -167,10 +153,10 @@ public class SymTypeCompatibilityCalculator {
     // boxed primitives
     else if (
         !superType.isPrimitive() && !subType.isPrimitive() &&
-            (getSymTypeRelations().isNumericType(superType) ||
-                getSymTypeRelations().isBoolean(superType)) &&
-            (getSymTypeRelations().isNumericType(subType) ||
-                getSymTypeRelations().isBoolean(subType))
+            (SymTypeRelations.isNumericType(superType) ||
+                SymTypeRelations.isBoolean(superType)) &&
+            (SymTypeRelations.isNumericType(subType) ||
+                SymTypeRelations.isBoolean(subType))
     ) {
       result = boxedPrimitiveIsSubTypeOf(
           (SymTypeOfObject) subType,
@@ -222,7 +208,7 @@ public class SymTypeCompatibilityCalculator {
     else if (subType.isTypeVariable()) {
       SymTypeVariable subVar = (SymTypeVariable) subType;
       SymTypeExpression normalizedUpperBound =
-          getSymTypeRelations().normalize(subVar.getUpperBound());
+          SymTypeRelations.normalize(subVar.getUpperBound());
       result = internal_isSubTypeOfPreNormalized(
           normalizedUpperBound, superType, subTypeIsSoft);
     }
@@ -232,7 +218,7 @@ public class SymTypeCompatibilityCalculator {
     else if (superType.isTypeVariable()) {
       SymTypeVariable superVar = (SymTypeVariable) superType;
       SymTypeExpression normalizedLowerBound =
-          getSymTypeRelations().normalize(superVar.getLowerBound());
+          SymTypeRelations.normalize(superVar.getLowerBound());
       result = internal_isSubTypeOfPreNormalized(
           subType, normalizedLowerBound, subTypeIsSoft);
     }
@@ -300,42 +286,42 @@ public class SymTypeCompatibilityCalculator {
       boolean subTypeIsSoft
   ) {
     boolean result;
-    if (getSymTypeRelations().isBoolean(superType) &&
-        getSymTypeRelations().isBoolean(subType)) {
+    if (SymTypeRelations.isBoolean(superType) &&
+        SymTypeRelations.isBoolean(subType)) {
       result = true;
     }
-    else if (getSymTypeRelations().isNumericType(superType) &&
-        getSymTypeRelations().isNumericType(subType)) {
-      if (getSymTypeRelations().isDouble(superType)) {
+    else if (SymTypeRelations.isNumericType(superType) &&
+        SymTypeRelations.isNumericType(subType)) {
+      if (SymTypeRelations.isDouble(superType)) {
         result = true;
       }
-      else if (getSymTypeRelations().isFloat(superType) &&
-          (getSymTypeRelations().isFloat(subType) ||
-              getSymTypeRelations().isIntegralType(subType)
+      else if (SymTypeRelations.isFloat(superType) &&
+          (SymTypeRelations.isFloat(subType) ||
+              SymTypeRelations.isIntegralType(subType)
           )) {
         result = true;
       }
-      else if (getSymTypeRelations().isLong(superType) &&
-          getSymTypeRelations().isIntegralType(
+      else if (SymTypeRelations.isLong(superType) &&
+          SymTypeRelations.isIntegralType(
               subType)) {
         result = true;
       }
-      else if (getSymTypeRelations().isInt(superType) &&
-          getSymTypeRelations().isIntegralType(subType) &&
-          !getSymTypeRelations().isLong(subType)) {
+      else if (SymTypeRelations.isInt(superType) &&
+          SymTypeRelations.isIntegralType(subType) &&
+          !SymTypeRelations.isLong(subType)) {
         result = true;
       }
-      else if (getSymTypeRelations().isChar(superType) &&
-          getSymTypeRelations().isChar(subType)) {
+      else if (SymTypeRelations.isChar(superType) &&
+          SymTypeRelations.isChar(subType)) {
         result = true;
       }
-      else if (getSymTypeRelations().isShort(superType) &&
-          (getSymTypeRelations().isShort(subType)
-              || getSymTypeRelations().isByte(subType))) {
+      else if (SymTypeRelations.isShort(superType) &&
+          (SymTypeRelations.isShort(subType)
+              || SymTypeRelations.isByte(subType))) {
         result = true;
       }
-      else if (getSymTypeRelations().isByte(superType) &&
-          getSymTypeRelations().isByte(subType)) {
+      else if (SymTypeRelations.isByte(superType) &&
+          SymTypeRelations.isByte(subType)) {
         result = true;
       }
       else {
@@ -447,10 +433,10 @@ public class SymTypeCompatibilityCalculator {
             // as Lists of primitives are not available in Java,
             // they are interpreted as being identical.
             internal_isSubTypeOfPreNormalized(
-                getSymTypeRelations().normalize(
-                    getSymTypeRelations().box(subSuperExpr)
+                SymTypeRelations.normalize(
+                    SymTypeRelations.box(subSuperExpr)
                 ),
-                getSymTypeRelations().box(superType),
+                SymTypeRelations.box(superType),
                 subTypeIsSoft
             );
       }
@@ -532,6 +518,6 @@ public class SymTypeCompatibilityCalculator {
   }
 
   protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
-    return getSymTypeRelations().getNominalSuperTypes(thisType);
+    return SymTypeRelations.getNominalSuperTypes(thisType);
   }
 }

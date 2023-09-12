@@ -4,6 +4,7 @@ package de.monticore.types3.util;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class BuiltInTypeRelations {
   /**
    * @deprecated use constructor {@link #BuiltInTypeRelations()}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public BuiltInTypeRelations(SymTypeRelations symTypeRelations) {
   }
 

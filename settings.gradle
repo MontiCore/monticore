@@ -52,8 +52,10 @@ if(!hasProperty('bootstrap')) {
 
 include(':monticore-runtime')
 include(':monticore-grammar')
-include(':monticore-runtime-emf')
-include(':monticore-grammar-emf')
+if(("true").equals(getProperty('genEMF'))) {
+  include(':monticore-runtime-emf')
+  include(':monticore-grammar-emf')
+}
 
 if(!hasProperty('bootstrap')) {
   include(':monticore-test:monticore-grammar-it')
@@ -71,7 +73,6 @@ if(!hasProperty('bootstrap')) {
   include(':monticore-test:01experiments:extensionvariants')
   include(':monticore-test:01experiments:forAst')
   include(':monticore-test:01experiments:forConcSt')
-  include(':monticore-test:01experiments:forEmfAst')
   include(':monticore-test:01experiments:forMill')
   include(':monticore-test:01experiments:forParser')
   include(':monticore-test:01experiments:forVisitors')
@@ -123,6 +124,10 @@ if(!hasProperty('bootstrap')) {
     include(':monticore-test:montitrans:test-dstl-gen')
     include(':monticore-test:montitrans:test-odrules')
     include(':monticore-test:montitrans:test-generated-dstls')
+  }
+
+  if ("true".equals(getProperty('genEMF'))) { // Only test EMF if the flag is set
+    include(':monticore-test:01experiments:forEmfAst')
   }
 
  // include 'example'
