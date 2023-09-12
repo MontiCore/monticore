@@ -112,13 +112,12 @@ subprojects {
 task buildMC {
   group("build")
   description('Builds the core projects, i.e. the generator, runtime and grammar library.')
-  dependsOn(
-          ":monticore-grammar:build",
-          ":monticore-runtime:build",
-          ":monticore-runtime-emf:build",
-          ":monticore-grammar-emf:build"
-  
-  )
+  dependsOn ":monticore-grammar:build"
+  dependsOn ":monticore-runtime:build"
+  if(("true").equals(getProperty('genEMF'))) {
+    dependsOn ":monticore-runtime-emf:build"
+    dependsOn ":monticore-grammar-emf:build"
+  }
 }
 
 if(!hasProperty('bootstrap')) {
@@ -132,14 +131,12 @@ if(!hasProperty('bootstrap')) {
 task assembleMC {
   group("build")
   description('Assembles the core projects, i.e. the generator, runtime and grammar library.')
-  
-  dependsOn(
-          ":monticore-grammar:assemble",
-          ":monticore-runtime:assemble",
-          ":monticore-runtime-emf:assemble",
-          ":monticore-grammar-emf:assemble"
-  
-  )
+  dependsOn ":monticore-grammar:assemble"
+  dependsOn ":monticore-runtime:assemble"
+  if(("true").equals(getProperty('genEMF'))) {
+    dependsOn ":monticore-runtime-emf:assemble"
+    dependsOn ":monticore-grammar-emf:assemble"
+  }
 }
 if(!hasProperty('bootstrap')) {
   assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
@@ -151,14 +148,13 @@ if(!hasProperty('bootstrap')) {
 task testMC {
   group("build")
   description('Tests the core projects, i.e. the generator, runtime and grammar library.')
-  
-  dependsOn(
-          ":monticore-grammar:test",
-          ":monticore-runtime:test",
-          ":monticore-runtime-emf:test",
-          ":monticore-grammar-emf:test"
-  
-  )
+
+  dependsOn ":monticore-grammar:test"
+  dependsOn ":monticore-runtime:test"
+  if(("true").equals(getProperty('genEMF'))) {
+    dependsOn ":monticore-runtime-emf:test"
+    dependsOn ":monticore-grammar-emf:test"
+  }
 }
 
 if(!hasProperty('bootstrap')) {
@@ -173,14 +169,14 @@ if(!hasProperty('bootstrap')) {
 task deployMC {
   group("build")
   description('Publishes the core projects, i.e. the generator, runtime and grammar library.')
-  
-  dependsOn(
-          ":monticore-grammar:publish",
-          ":monticore-runtime:publish",
-          ":monticore-runtime-emf:publish",
-          ":monticore-grammar-emf:publish"
-  
-  )
+
+  dependsOn ":monticore-grammar:publish"
+  dependsOn ":monticore-runtime:publish"
+  if(("true").equals(getProperty('genEMF'))) {
+    dependsOn ":monticore-runtime-emf:publish"
+    dependsOn ":monticore-grammar-emf:publish"
+  }
+
 }
 
 if(!hasProperty('bootstrap')) {
@@ -196,12 +192,12 @@ task publishMCToMavenLocal {
   group("build")
   description('Publishes the core projects, i.e. the generator, runtime and grammar library' +
           'to the local maven repository.')
-  dependsOn(
-          ":monticore-grammar:publishToMavenLocal",
-          ":monticore-runtime:publishToMavenLocal",
-          ":monticore-runtime-emf:publishToMavenLocal",
-          ":monticore-grammar-emf:publishToMavenLocal"
-  )
+  dependsOn ":monticore-grammar:publishToMavenLocal"
+  dependsOn ":monticore-runtime:publishToMavenLocal"
+  if(("true").equals(getProperty('genEMF'))) {
+    dependsOn ":monticore-runtime-emf:publishToMavenLocal"
+    dependsOn   ":monticore-grammar-emf:publishToMavenLocal"
+  }
 }
 
 if(!hasProperty('bootstrap')) {
@@ -231,13 +227,12 @@ task buildAll(type: GradleBuild) {
 }
 
 task cleanMC {
-  dependsOn(
-          ":monticore-grammar:clean",
-          ":monticore-runtime:clean",
-          ":monticore-runtime-emf:clean",
-          ":monticore-grammar-emf:clean"
-  
-  )
+  dependsOn ":monticore-grammar:clean"
+  dependsOn ":monticore-runtime:clean"
+  if(("true").equals(getProperty('genEMF'))) {
+    dependsOn ":monticore-runtime-emf:clean"
+    dependsOn   ":monticore-grammar-emf:clean"
+  }
 }
 
 if (!hasProperty('bootstrap')) {
@@ -256,11 +251,14 @@ task sonarMC (type: GradleBuild) {
   tasks = [ 'jacocoMergeSubprojects', 'sonarqube' ]
 }
 
-
-configure([project(':monticore-grammar'),
-           project(':monticore-grammar-emf'),
-           project(':monticore-runtime'),
-           project(':monticore-runtime-emf')]){
+def projectsToConfigure = [
+  project(':monticore-grammar'),
+  project(':monticore-runtime')]
+if(("true").equals(getProperty('genEMF'))) {
+    projectsToConfigure << project(':monticore-grammar-emf')
+    projectsToConfigure << project(':monticore-runtime-emf')
+}
+configure(projectsToConfigure){
   apply plugin: 'maven-publish'
   
   // configure deployment
