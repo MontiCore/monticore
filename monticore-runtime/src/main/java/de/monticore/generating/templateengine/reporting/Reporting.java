@@ -98,12 +98,14 @@ public class Reporting extends Log {
 
   @Override
   public void doWarn(String msg, SourcePosition position) {
-    this.doWarn(msg);
+    reportWarning(msg);
+    super.doWarn(msg, position);
   }
 
   @Override
   public void doWarn(String msg, SourcePosition start, SourcePosition end) {
-    this.doWarn(msg);
+    reportWarning(msg);
+    super.doWarn(msg, start, end);
   }
 
 
@@ -122,17 +124,17 @@ public class Reporting extends Log {
    */
   @Override
   public void doError(String msg) {
-    this.doError(msg, Optional.empty());
+    _doError(msg, Optional.empty(), Optional.empty(), Optional.empty());
   }
 
   @Override
   public void doError(String msg, SourcePosition position) {
-    this.doError(msg);
+    _doError(msg, Optional.empty(), Optional.ofNullable(position), Optional.empty());
   }
 
   @Override
   public void doError(String msg, SourcePosition start, SourcePosition end) {
-    this.doError(msg);
+    _doError(msg, Optional.empty(), Optional.ofNullable(start), Optional.ofNullable(end));
   }
 
   /**
@@ -141,10 +143,10 @@ public class Reporting extends Log {
    */
   @Override
   public void doError(String msg, Throwable t) {
-    this.doError(msg, Optional.ofNullable(t));
+    _doError(msg, Optional.ofNullable(t), Optional.empty(), Optional.empty());
   }
 
-  protected void doError(String msg, Optional<Throwable> t) {
+  protected void _doError(String msg, Optional<Throwable> t, Optional<SourcePosition> start, Optional<SourcePosition> end) {
     // we need to know whether we wanted to fail immediately
     boolean wantsToFailQuick = Log.isFailQuickEnabled();
     if (wantsToFailQuick) {
@@ -157,7 +159,11 @@ public class Reporting extends Log {
     if (t.isPresent()) {
       super.doError(msg, t.get());
     }
-    else {
+    else if(start.isPresent() && end.isPresent()){
+      super.doError(msg, start.get(), end.get());
+    } else if(start.isPresent()) {
+      super.doError(msg, start.get());
+    }else{
       super.doError(msg);
     }
 
