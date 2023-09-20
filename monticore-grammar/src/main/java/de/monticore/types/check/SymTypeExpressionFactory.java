@@ -115,6 +115,13 @@ public class SymTypeExpressionFactory {
   }
 
   /**
+   * for RegEx-types, e.g. 'R"gr(a|e)y"'
+   */
+  public static SymTypeOfRegEx createTypeRegEx(String regex) {
+    return new SymTypeOfRegEx(regex);
+  }
+
+  /**
    * creates the "Void"-type, i.e. a pseudotype that represents the absence of a real type
    *
    * @return

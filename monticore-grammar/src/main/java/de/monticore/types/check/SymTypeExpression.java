@@ -147,6 +147,19 @@ public abstract class SymTypeExpression {
   }
 
   /**
+   * Am I a regex type (e.g. 'R"rege(x(es)?|xps?)"')
+   */
+  public boolean isRegExType() {
+    return false;
+  }
+
+  public SymTypeOfRegEx asRegExType() {
+    Log.error("0xFDAAC internal error: "
+        + "tried to convert non-regex-type to a regex type");
+    return null;
+  }
+
+  /**
    * Am I a function type (e.g. "String -> Integer")
    */
   public boolean isFunctionType() {

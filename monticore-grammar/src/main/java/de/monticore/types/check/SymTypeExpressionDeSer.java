@@ -35,6 +35,8 @@ public class SymTypeExpressionDeSer {
 
   protected SymTypeOfObjectDeSer symTypeOfObjectDeSer;
 
+  protected SymTypeOfRegExDeSer symTypeOfRegExDeSer;
+
   protected SymTypeOfUnionDeSer symTypeOfUnionDeSer;
 
   protected SymTypeVariableDeSer symTypeVariableDeSer;
@@ -50,6 +52,7 @@ public class SymTypeExpressionDeSer {
     this.symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
     this.symTypeOfIntersectionDeSer = new SymTypeOfIntersectionDeSer();
     this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
+    this.symTypeOfRegExDeSer = new SymTypeOfRegExDeSer();
     this.symTypeOfUnionDeSer = new SymTypeOfUnionDeSer();
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
     this.symTypeOfWildcardDeSer = new SymTypeOfWildcardDeSer();
@@ -143,6 +146,9 @@ public class SymTypeExpressionDeSer {
     if(toSerialize.isObjectType()) {
       return symTypeOfObjectDeSer.serialize((SymTypeOfObject) toSerialize);
     }
+    if(toSerialize.isRegExType()) {
+      return symTypeOfRegExDeSer.serialize((SymTypeOfRegEx) toSerialize);
+    }
     if(toSerialize.isUnionType()) {
       return symTypeOfUnionDeSer.serialize((SymTypeOfUnion)toSerialize);
     }
@@ -204,6 +210,8 @@ public class SymTypeExpressionDeSer {
           return symTypeOfIntersectionDeSer.deserialize(o);
         case SymTypeOfObjectDeSer.SERIALIZED_KIND:
           return symTypeOfObjectDeSer.deserialize(o);
+        case SymTypeOfRegExDeSer.SERIALIZED_KIND:
+          return symTypeOfRegExDeSer.deserialize(o);
         case SymTypeOfUnionDeSer.SERIALIZED_KIND:
           return symTypeOfUnionDeSer.deserialize(o);
         case SymTypeVariableDeSer.SERIALIZED_KIND:
