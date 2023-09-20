@@ -22,7 +22,15 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.*;
+import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
+import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeOfNull;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
+import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -247,6 +255,8 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     assertTrue(SymTypeRelations.isCompatible(regEx1, regEx1));
     assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
     assertTrue(SymTypeRelations.isCompatible(_unboxedString, regEx1));
+    assertTrue(SymTypeRelations.isCompatible(regEx1, _unboxedString));
+    assertTrue(SymTypeRelations.isCompatible(_boxedString, regEx1));
     assertTrue(SymTypeRelations.isCompatible(regEx1, _boxedString));
   }
 
