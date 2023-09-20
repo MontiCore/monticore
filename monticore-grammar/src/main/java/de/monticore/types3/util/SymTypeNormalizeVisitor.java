@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
  * Usage:
  * calculate(symType)
  * <p>
+ * normalization of regular expressions are not supported
+ * <p>
  * note, this visitor does not box/unbox,
  * boxing/unboxing should be done before this visitor if required
  */
