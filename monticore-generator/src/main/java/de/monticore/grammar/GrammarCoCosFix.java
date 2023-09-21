@@ -51,7 +51,6 @@ import de.monticore.grammar.cocos.NoMultipleSymbolRule;
 import de.monticore.grammar.cocos.NoNestedGenericsInAdditionalAttributes;
 import de.monticore.grammar.cocos.NoOverridingNTHasAnnotation;
 import de.monticore.grammar.cocos.NoTokenDefined;
-import de.monticore.grammar.cocos.NoTokenModeInComponentGrammar;
 import de.monticore.grammar.cocos.OverridingAbstractNTs;
 import de.monticore.grammar.cocos.OverridingAbstractNTsHaveNoSuperRules;
 import de.monticore.grammar.cocos.OverridingAdditionalAttributes;
@@ -163,7 +162,6 @@ public class GrammarCoCosFix {
     checker.addCoCo(new NoExtensionOfSymbolThatOnlySpansScope());
     // checker.addCoCo(new NoNTInheritanceCycle());
     checker.addCoCo(new LexProdModeNameUpperCase());
-    checker.addCoCo(new NoTokenModeInComponentGrammar());
     checker.addCoCo(new InheritedModiOverwrite());
     checker.addCoCo(new NoForbiddenGrammarName());
     checker.addCoCo(new NoForbiddenProdName());
