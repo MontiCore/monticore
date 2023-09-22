@@ -1,0 +1,41 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.regex;
+
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.types.*;
+
+/**
+ * This grammar extends the normal type definitions to 
+ * support regular expressions as typing constraints for Strings.
+ * 
+ * How to use this grammar:
+ * For example a variable declared as `R"a*(b|c)" v` can only contain
+ * Strings of the defined form. Appropriate context conditions of the
+ * embedding language can check assignements, etc. 
+ * Because containment in regular expressions is computable, e.g. 
+ * when given variable `R"a+c" w` the assignement of `v=w` is always
+ * correct, while `w=v` may lead to a runtime error
+ * or even force an explicit coercion, such as `w= (R"a+c")v` with 
+ * potential for runtime exceptions. This, however, depends on the
+ * embedding language. 
+ *
+ * The regular expressions such forms a lattice of subtypes, with 
+ * type `String` as the most common supertype (if this is enforced by the
+ * context conditions).
+ * 
+ * The syntax for the regular expressions within "..." 
+ * conforms to the specification at:
+ * https://en.wikipedia.org/wiki/Regular_expression#Formal_language_theory
+ *
+ * This grammar is part of a hierarchy of types, namely 
+ * * types.MCBasicTypes.mc4
+ */
+
+component grammar RegExType extends RegularExpressions, MCBasicTypes {
+
+  /**
+   * RegExType provides a syntax for using regular expression types.
+   */
+   RegExType implements MCType = RegExLiteral;
+}
