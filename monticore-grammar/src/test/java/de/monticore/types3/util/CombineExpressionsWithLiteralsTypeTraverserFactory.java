@@ -11,6 +11,7 @@ import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsC
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
+import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
 import de.monticore.types.mcarraytypes.types3.MCArrayTypesTypeVisitor;
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
@@ -70,6 +71,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.synMCFullGenericTypes.setType4Ast(type4Ast);
     visitors.synMCFunctionTypes.setType4Ast(type4Ast);
     visitors.synMCSimpleGenericTypes.setType4Ast(type4Ast);
+    visitors.synRegExType.setType4Ast(type4Ast);
   }
 
   // Expressions
@@ -92,6 +94,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.synMCFullGenericTypes = new MCFullGenericTypesTypeVisitor();
     visitors.synMCFunctionTypes = new MCFunctionTypesTypeVisitor();
     visitors.synMCSimpleGenericTypes = new MCSimpleGenericTypesTypeVisitor();
+    visitors.synRegExType = new RegExTypeTypeVisitor();
     return visitors;
   }
 
@@ -157,6 +160,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.add4MCFullGenericTypes(visitors.synMCFullGenericTypes);
     traverser.add4MCFunctionTypes(visitors.synMCFunctionTypes);
     traverser.add4MCSimpleGenericTypes(visitors.synMCSimpleGenericTypes);
+    traverser.add4RegExType(visitors.synRegExType);
   }
 
   /**
@@ -193,5 +197,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public MCFunctionTypesTypeVisitor synMCFunctionTypes;
 
     public MCSimpleGenericTypesTypeVisitor synMCSimpleGenericTypes;
+
+    public RegExTypeTypeVisitor synRegExType;
   }
 }

@@ -125,6 +125,7 @@ def grammarDependencies = ext {
   MCJavaLiterals = ["MCCommonLiterals"]
   UMLStereotype = ["MCCommonLiterals"]
   MCArrayStatements = ["MCVarDeclarationStatements"]
+  RegularExpressions = ["MCCommonLiterals"]
 
   // two dependencies
   Cardinality = ["MCBasics", "MCCommonLiterals"]
@@ -135,6 +136,7 @@ def grammarDependencies = ext {
   MCCommonLiterals = ["MCBasics", "MCLiteralsBasis"]
   MCLowLevelStatements = ["MCStatementsBasis", "MCBasics"]
   MCAssertStatements = ["MCStatementsBasis", "ExpressionsBasis"]
+  RegExType = ["RegularExpressions", "MCBasicTypes"]
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
