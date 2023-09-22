@@ -1,0 +1,18 @@
+package de.monticore.regex;
+
+mlc MCCommonLiterals {
+
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/regex/RegularExpressions.mc4";
+  }
+
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/regex/regularexpressions/**.java";
+  }
+
+  export "$projectDir/src/main/java" {
+    include "de/monticore/regex/regularexpressions/**.java";
+  }
+
+  uses mlc "de.monticore.literals.MCCommonLiterals";
+}
