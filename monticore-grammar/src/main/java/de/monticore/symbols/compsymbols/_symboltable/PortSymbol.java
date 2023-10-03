@@ -11,7 +11,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class PortSymbol extends PortSymbolTOP {
 
   protected Boolean delayed = null;
-  protected Boolean stronglyCausal = null;
 
   protected PortSymbol(String name) {
     super(name);
