@@ -21,7 +21,7 @@ public class Automata5Tool extends Automata5ToolTOP {
    */
   public static void main(String[] args) {
     // use normal logging (no DEBUG, TRACE)
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     Log.info("Automata5 DSL Tool", "Automata5Tool");
     Log.info("------------------", "Automata5Tool");

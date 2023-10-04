@@ -1022,7 +1022,7 @@ public void run(String[] args) {
 
   // use normal logging (no DEBUG, TRACE)
   AutomataMill.init();
-  Log.ensureInitalization();
+  Log.ensureInitialization();
 
   Options options = initOptions();
   try {

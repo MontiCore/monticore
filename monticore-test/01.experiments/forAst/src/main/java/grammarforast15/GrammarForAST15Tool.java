@@ -20,7 +20,7 @@ public class GrammarForAST15Tool extends GrammarForAST15ToolTOP {
    */
   public static void main(String[] args) {
     // use normal logging (no DEBUG, TRACE)
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     Log.info("GrammarForAST15 DSL Tool", "GrammarForAST15Tool");
     Log.info("------------------", "GrammarForAST15Tool");

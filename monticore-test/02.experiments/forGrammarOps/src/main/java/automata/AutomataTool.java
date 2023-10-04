@@ -30,7 +30,7 @@ public class AutomataTool extends AutomataToolTOP {
   public static void main(String[] args) {
   
     // use normal logging (no DEBUG, TRACE)
-    Log.ensureInitalization();
+    Log.ensureInitialization();
     new AutomataTool().run(args);
   }
   

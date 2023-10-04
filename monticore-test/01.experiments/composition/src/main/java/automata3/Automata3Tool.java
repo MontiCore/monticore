@@ -31,7 +31,7 @@ public class Automata3Tool extends Automata3ToolTOP {
     // use normal logging (no DEBUG, TRACE)
     Automata3Mill.reset();
     Automata3Mill.init();
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     Options options = initOptions();
     try {
