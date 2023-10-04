@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.CompKindExpression;
+import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
@@ -291,5 +292,50 @@ public class ComponentSymbol extends ComponentSymbolTOP {
 
   public boolean isAtomic() {
     return this.getSubcomponents().isEmpty();
+  }
+
+  /**
+   * Helper function that transitively determines the start of the refinement chain.<br>
+   *
+   * Example: A refines B, C; B refines D; C refines D;
+   *           The unique start is D.<br>
+   *
+   * A component without explicit refinements is itself the start on the chain. If there does not exist an unique
+   * start (A refines B, C and B, C are unrefined) we throw an error.
+   */
+  public Optional<ComponentSymbol> getRefinementStart() {
+    if(getRefinementsList() == null || getRefinementsList().isEmpty()) {
+      return Optional.of(this);
+    }
+    else {
+      var candidates = getRefinementsList().stream()
+          .map(refinement -> refinement.getTypeInfo())
+          .filter(component -> component instanceof ComponentSymbol)
+          .map(component -> (ComponentSymbol)component)
+          .map(mildComponent -> mildComponent.getRefinementStart()) // Rekursion
+          .filter(optComponent -> optComponent.isPresent())
+          .map(optComponent -> optComponent.get())
+          .collect(Collectors.toSet());
+      if(candidates.size() == 1) {
+        return candidates.stream().findFirst();
+      }
+      else {
+        Log.warn("Could not determine a single root component in the refinement chain.");
+        return Optional.empty();
+      }
+    }
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if(other instanceof ComponentSymbol) {
+      return ((ComponentSymbol)other).getFullName().equals(this.getFullName());
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return this.getFullName().hashCode();
   }
 }

@@ -13,6 +13,7 @@ import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.CompKindExpression;
 import de.monticore.types.check.FullCompKindExprDeSer;
+import de.monticore.types.check.KindOfComponent;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -26,6 +27,8 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
   public static final String PORTS = "ports";
   public static final String TYPE_PARAMETERS = "typeParameters";
   public static final String SUPER = "super";
+  public static final String SUBCOMPONENTS = "subcomponents";
+  public static final String REFINEMENTS = "refinements";
 
   private FullCompKindExprDeSer compTypeExprDeSer;
 
@@ -57,9 +60,6 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
     // Don't serialize the spanned scope (because it carries private information)
     // Instead, serialize type parameters and normal parameters separately.
     s2j.getTraverser().addTraversedElement(toSerialize.getSpannedScope());  // So the spanned scope is not visited
-    serializeParameters(toSerialize, s2j);
-    serializePorts(toSerialize, s2j);
-    serializeTypeParameters(toSerialize, s2j);
 
     serializeAddons(toSerialize, s2j);
     printer.endObject();
@@ -88,6 +88,14 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
       result.add(this.getCompTypeExprDeSer().deserialize(superComponent));
     }
     return result;
+  }
+
+  @Override
+  protected  void serializeAddons(ComponentSymbol toSerialize, CompSymbolsSymbols2Json s2j) {
+    serializeParameters(toSerialize, s2j);
+    serializePorts(toSerialize, s2j);
+    serializeTypeParameters(toSerialize, s2j);
+    serializeSubcomponents(toSerialize, s2j);
   }
 
   @Override
@@ -202,5 +210,35 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
 
       }
     }
+  }
+
+  protected void serializeSubcomponents(@NonNull ComponentSymbol portOwner, @NonNull CompSymbolsSymbols2Json s2j) {
+    JsonPrinter printer = s2j.getJsonPrinter();
+
+    printer.beginArray(SUBCOMPONENTS);
+    portOwner.getSubcomponents().forEach(p -> p.accept(s2j.getTraverser()));
+    printer.endArray();
+  }
+
+  @Override
+  protected void serializeRefinements(List<CompKindExpression> refinements,
+                                      CompSymbolsSymbols2Json s2j) {
+    s2j.getJsonPrinter().beginArray(REFINEMENTS);
+    for (CompKindExpression superComponent : refinements) {
+      s2j.getJsonPrinter().addToArray(JsonElementFactory
+          .createJsonString(compTypeExprDeSer.serializeAsJson(superComponent)));
+    }
+    s2j.getJsonPrinter().endArray();
+  }
+
+  @Override
+  protected List<CompKindExpression> deserializeRefinements(JsonObject symbolJson) {
+    List<JsonElement> refinements = symbolJson.getArrayMemberOpt(REFINEMENTS).orElseGet(Collections::emptyList);
+    List<CompKindExpression> result = new ArrayList<>(refinements.size());
+
+    for (JsonElement refinement : refinements) {
+      result.add(compTypeExprDeSer.deserialize(refinement));
+    }
+    return result;
   }
 }

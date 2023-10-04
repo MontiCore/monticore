@@ -10,6 +10,7 @@ component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
 
   symbolrule Component =
     superComponents: de.monticore.types.check.CompKindExpression*
+    refinements: de.monticore.types.check.CompKindExpression*
   ;
 
   interface symbol Subcomponent = Name;
