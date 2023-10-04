@@ -105,19 +105,27 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
   protected void check(String type, String exprStr) throws IOException {
     CombineExpressionsWithLiteralsMill.globalScope().clear();
 
-    CombineExpressionsWithLiteralsTypeTraverserFactory factory = new CombineExpressionsWithLiteralsTypeTraverserFactory();
+    CombineExpressionsWithLiteralsTypeTraverserFactory factory =
+        new CombineExpressionsWithLiteralsTypeTraverserFactory();
     Type4Ast type4Ast = new Type4Ast();
-    CombineExpressionsWithLiteralsTraverser traverser = factory.createTraverser(type4Ast);
-    TypeCheck3AsIDerive derive = new TypeCheck3AsIDerive(traverser, type4Ast, new CommonExpressionsLValueRelations());
-    TypeCheck3AsISynthesize synthesize = new TypeCheck3AsISynthesize(traverser, type4Ast);
+    CombineExpressionsWithLiteralsTraverser traverser =
+        factory.createTraverser(type4Ast);
+    TypeCheck3AsIDerive derive = new TypeCheck3AsIDerive(
+        traverser, type4Ast, new CommonExpressionsLValueRelations());
+    TypeCheck3AsISynthesize synthesize =
+        new TypeCheck3AsISynthesize(traverser, type4Ast);
 
-    Optional<ASTMCType> optType = CombineExpressionsWithLiteralsMill.parser().parse_StringMCType(type);
+    Optional<ASTMCType> optType = CombineExpressionsWithLiteralsMill
+        .parser()
+        .parse_StringMCType(type);
     assertTrue(optType.isPresent());
 
     TypeCheckResult typeExpression = synthesize.synthesizeType(optType.get());
     assertTrue(typeExpression.isPresentResult());
 
-    CombineExpressionsWithLiteralsMill.globalScope().add(CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
+    CombineExpressionsWithLiteralsMill
+        .globalScope()
+        .add(CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
         .setName("t")
         .setType(typeExpression.getResult())
         .build());
@@ -133,7 +141,8 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
   }
 
   protected AssignmentExpressionsCoCoChecker getChecker(IDerive derive) {
-    AssignmentExpressionsCoCoChecker checker = new AssignmentExpressionsCoCoChecker();
+    AssignmentExpressionsCoCoChecker checker =
+        new AssignmentExpressionsCoCoChecker();
     checker.addCoCo(new LiteralAssignmentMatchesRegExExpressionCoCo(derive));
     return checker;
   }
