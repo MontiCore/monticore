@@ -37,7 +37,7 @@ public class HierInvAutomataTool extends HierInvAutomataToolTOP {
     // use normal logging (no DEBUG, TRACE)
     HierInvAutomataMill.reset();
     HierInvAutomataMill.init();
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     Options options = initOptions();
 

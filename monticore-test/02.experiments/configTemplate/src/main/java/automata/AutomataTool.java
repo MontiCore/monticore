@@ -57,7 +57,7 @@ public class AutomataTool extends AutomataToolTOP {
   public void run(String[] args) {
     // use normal logging (no DEBUG, TRACE)
     init();
-    Log.ensureInitalization();
+    Log.ensureInitialization();
     Options options = initOptions();
 
     try {

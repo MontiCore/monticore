@@ -28,7 +28,7 @@ public class Automata16Tool {
   public static void main(String[] args) {
 
     // use normal logging (no DEBUG, TRACE)
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     // Retrieve the model name
     if (args.length != 1) {

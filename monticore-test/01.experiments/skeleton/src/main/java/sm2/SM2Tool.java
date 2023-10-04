@@ -34,7 +34,7 @@ public class SM2Tool extends SM2ToolTOP {
    */
   public static void main(String[] args) {
     // use normal logging (no DEBUG, TRACE)
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     Log.info("SM2 DSL Tool", "SM2Tool");
     Log.info("------------------", "SM2Tool");

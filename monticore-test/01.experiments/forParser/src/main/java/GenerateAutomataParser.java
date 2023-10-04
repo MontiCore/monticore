@@ -19,7 +19,7 @@ public class GenerateAutomataParser {
    */
   public static void main(String[] args) {
 
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     if (args.length != 2) {
       Log.error("0xEE630 Please specify one single path to the input model and one single path for the generated output");
