@@ -14,7 +14,6 @@ import de.monticore.ast.ASTNode;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
-import de.se_rwth.commons.TreeUtil;
 import de.se_rwth.commons.Util;
 
 /**
@@ -85,7 +84,7 @@ public final class Link<S extends ASTNode, T extends ASTNode> implements Iterabl
   
   @Override
   public Iterator<Link<?, ?>> iterator() {
-    Iterable<Link<?, ?>> subtree = TreeUtil.preOrder(this, link -> link.childLinks);
+    Iterable<Link<?, ?>> subtree = Util.preOrder(this, link -> link.childLinks);
     return subtree.iterator();
   }
   
