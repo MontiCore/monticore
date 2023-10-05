@@ -40,8 +40,11 @@ public class LiteralAssignmentMatchesRegExExpressionCoCo implements
           String regex = leftResult.getResult().asRegExType().getRegExString();
 
           if (!s.matches(regex)) {
-            Log.error("0xFD724 Variable of a regex type gets assigned " +
-                "to a string which is not compatible.");
+            Log.error("0xFD724 incompatible String literal \""
+                    + s + "\" is assigned to a regex instance "
+                    + leftResult.getResult().printFullName(),
+                node.get_SourcePositionStart(),
+                node.get_SourcePositionEnd());
           }
         }
       }
