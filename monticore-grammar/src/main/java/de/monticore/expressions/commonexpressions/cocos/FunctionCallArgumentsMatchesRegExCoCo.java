@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions.cocos;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsASTCallExpressionCoCo;
-import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.IDerive;
@@ -37,7 +37,8 @@ public class FunctionCallArgumentsMatchesRegExCoCo implements
 
       if (expr.isFunctionType()) {
         functions.add(expr.asFunctionType());
-      } else if (expr.isUnionType()) {
+      }
+      else if (expr.isUnionType()) {
         functions.addAll(expr.asUnionType().getUnionizedTypeSet()
             .stream()
             .filter(SymTypeExpression::isFunctionType)
@@ -52,25 +53,34 @@ public class FunctionCallArgumentsMatchesRegExCoCo implements
           .map(TypeCheckResult::getResult)
           .collect(Collectors.toList());
 
-      for (SymTypeOfFunction function : functions) {
-        if (FunctionRelations.canBeCalledWith(function, arguments)) {
-          SymTypeOfFunction fixedFunction =
-              function.getWithFixedArity(arguments.size());
-          for (int i = 0; i < arguments.size(); i++) {
-            if (fixedFunction.getArgumentType(i).isRegExType() &&
-                CommonExpressionsMill.typeDispatcher()
-                    .isASTLiteralExpression(node.getArguments().getExpression(i))) {
-              ASTLiteral literal = CommonExpressionsMill.typeDispatcher()
-                  .asASTLiteralExpression(node.getArguments().getExpression(i))
-                  .getLiteral();
-              if (MCCommonLiteralsMill.typeDispatcher().isASTStringLiteral(literal)) {
-                String s = MCCommonLiteralsMill.typeDispatcher().asASTStringLiteral(literal).getSource();
-                String regex = fixedFunction.getArgumentType(i).asRegExType().getRegExString();
+      List<SymTypeOfFunction> applicableFunctions = functions.stream()
+          .filter(f -> FunctionRelations.canBeCalledWith(f, arguments))
+          .map(f -> f.getWithFixedArity(arguments.size()))
+          .collect(Collectors.toList());
 
-                if (!s.matches(regex)) {
-                  Log.error("0xFD725 Variable of a regex type gets assigned " +
-                      "to a string which is not compatible.");
-                }
+      for (SymTypeOfFunction function : applicableFunctions) {
+        for (int i = 0; i < arguments.size(); i++) {
+          SymTypeExpression parameterType = function.getArgumentType(i);
+          ASTNode argumentNode = node.getArguments().getExpression(i);
+          if (parameterType.isRegExType() &&
+              CommonExpressionsMill.typeDispatcher()
+                  .isASTLiteralExpression(argumentNode)) {
+            ASTLiteral literal = CommonExpressionsMill.typeDispatcher()
+                .asASTLiteralExpression(argumentNode)
+                .getLiteral();
+            if (MCCommonLiteralsMill.typeDispatcher()
+                .isASTStringLiteral(literal)) {
+              String s = MCCommonLiteralsMill.typeDispatcher()
+                  .asASTStringLiteral(literal).getSource();
+              String regex = parameterType.asRegExType().getRegExString();
+              if (!s.matches(regex)) {
+                Log.error("0xFD725 incompatible String literal \""
+                        + s + "\" is assigned to regex type "
+                        + parameterType.printFullName()
+                        + " as argument " + i,
+                    argumentNode.get_SourcePositionStart(),
+                    argumentNode.get_SourcePositionEnd()
+                );
               }
             }
           }
