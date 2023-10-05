@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions.cocos;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsASTCallExpressionCoCo;
+import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
+import de.monticore.literals.mccommonliterals._util.MCCommonLiteralsTypeDispatcher;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.SymTypeExpression;
@@ -37,9 +39,8 @@ public class FunctionCallArgumentsMatchesRegExCoCo implements
 
       if (expr.isFunctionType()) {
         functions.add(expr.asFunctionType());
-      }
-      else if (expr.isUnionType()) {
-        functions.addAll(expr.asUnionType().getUnionizedTypeSet()
+      } else if (expr.isIntersectionType()) {
+        functions.addAll(expr.asIntersectionType().getIntersectedTypeSet()
             .stream()
             .filter(SymTypeExpression::isFunctionType)
             .map(SymTypeExpression::asFunctionType)
@@ -53,39 +54,42 @@ public class FunctionCallArgumentsMatchesRegExCoCo implements
           .map(TypeCheckResult::getResult)
           .collect(Collectors.toList());
 
-      List<SymTypeOfFunction> applicableFunctions = functions.stream()
+      functions.stream()
           .filter(f -> FunctionRelations.canBeCalledWith(f, arguments))
           .map(f -> f.getWithFixedArity(arguments.size()))
-          .collect(Collectors.toList());
+          .forEach(f -> {
+            for (int i = 0; i < arguments.size(); i++) {
+              CommonExpressionsTypeDispatcher expressionsDispatcher =
+                  CommonExpressionsMill.typeDispatcher();
 
-      for (SymTypeOfFunction function : applicableFunctions) {
-        for (int i = 0; i < arguments.size(); i++) {
-          SymTypeExpression parameterType = function.getArgumentType(i);
-          ASTNode argumentNode = node.getArguments().getExpression(i);
-          if (parameterType.isRegExType() &&
-              CommonExpressionsMill.typeDispatcher()
-                  .isASTLiteralExpression(argumentNode)) {
-            ASTLiteral literal = CommonExpressionsMill.typeDispatcher()
-                .asASTLiteralExpression(argumentNode)
-                .getLiteral();
-            if (MCCommonLiteralsMill.typeDispatcher()
-                .isASTStringLiteral(literal)) {
-              String s = MCCommonLiteralsMill.typeDispatcher()
-                  .asASTStringLiteral(literal).getSource();
-              String regex = parameterType.asRegExType().getRegExString();
-              if (!s.matches(regex)) {
-                Log.error("0xFD725 incompatible String literal \""
-                        + s + "\" is assigned to regex type "
-                        + parameterType.printFullName()
-                        + " as argument " + i,
-                    argumentNode.get_SourcePositionStart(),
-                    argumentNode.get_SourcePositionEnd()
-                );
+              ASTExpression argumentNode = node.getArguments().getExpression(i);
+              SymTypeExpression parameterType = f.getArgumentType(i);
+
+              if (parameterType.isRegExType() &&
+                  expressionsDispatcher.isASTLiteralExpression(argumentNode)) {
+
+                ASTLiteral literal = expressionsDispatcher
+                        .asASTLiteralExpression(argumentNode).getLiteral();
+
+                MCCommonLiteralsTypeDispatcher literalsDispatcher =
+                    MCCommonLiteralsMill.typeDispatcher();
+
+                if (literalsDispatcher.isASTStringLiteral(literal)) {
+                  String s = literalsDispatcher.asASTStringLiteral(literal).getSource();
+                  String regex = parameterType.asRegExType().getRegExString();
+
+                  if (!s.matches(regex)) {
+                    Log.error("0xFD725 incompatible String literal \""
+                            + s + "\" is assigned to regex type "
+                            + parameterType.printFullName()
+                            + " as argument " + i,
+                        argumentNode.get_SourcePositionStart(),
+                        argumentNode.get_SourcePositionEnd());
+                  }
+                }
               }
             }
-          }
-        }
-      }
+          });
     }
   }
 }
