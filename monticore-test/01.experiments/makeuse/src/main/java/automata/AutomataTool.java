@@ -59,7 +59,7 @@ public class AutomataTool extends AutomataToolTOP {
 
     // use normal logging (no DEBUG, TRACE)
     AutomataMill.init();
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     Options options = initOptions();
     try {

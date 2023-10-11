@@ -23,7 +23,7 @@ public class Automata6Tool extends Automata6ToolTOP {
    */
   public static void main(String[] args) {
     // use normal logging (no DEBUG, TRACE)
-    Log.ensureInitalization();
+    Log.ensureInitialization();
 
     Log.info("Automata6 DSL Tool", "Automata6Tool");
     Log.info("------------------", "Automata6Tool");

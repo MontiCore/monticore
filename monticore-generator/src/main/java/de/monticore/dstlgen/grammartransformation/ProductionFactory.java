@@ -4,14 +4,13 @@ package de.monticore.dstlgen.grammartransformation;
 import de.monticore.ast.Comment;
 import de.monticore.dstlgen.ruletranslation.DSTLGenInheritanceHelper;
 import de.monticore.dstlgen.util.DSTLUtil;
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -106,7 +105,7 @@ public class ProductionFactory {
   }
 
   public ASTInterfaceProd createInterfaceProd(ASTInterfaceProd srcNode, int grammar_depth) {
-    return this.createInterfaceProd(srcNode, grammar_depth, false);
+    return this.createInterfaceProd(srcNode, grammar_depth, true);
   }
 
 
@@ -120,7 +119,6 @@ public class ProductionFactory {
    * @return the interface production as an ASTInterfaceProd object
    */
   public ASTInterfaceProd createInterfaceProd(ASTInterfaceProd srcNode, int grammar_depth, boolean reduceParserAlts) {
-    reduceParserAlts = true; // TODO: remove it all together?
     String ITFPart = "I" + srcNode.getSymbol().getEnclosingScope().getName() + "TFPart";
     final String tfReplacementRule = "interface ITF" + srcNode.getName() + " astextends de.monticore.tf.ast.ITFElement " + (reduceParserAlts ? "" : " extends " +ITFPart+"<" + grammar_depth + ">") + ";";
     ASTInterfaceProd result = parseInterfaceProd(tfReplacementRule);
@@ -217,7 +215,7 @@ public class ProductionFactory {
     postProcessingTraverser.add4Grammar(new PostprocessPatternAttributesVisitor(grammarSymbol));
 
     // create "astimplements ..."
-    result.getASTSuperInterfaceList().add(parseGenericType(PSYM_PATTERN));
+    result.getASTSuperInterfaceList().add(MCTypeFacade.getInstance().createQualifiedType(PSYM_PATTERN));
 
     // change name
     result.setName(srcNode.getName() + PATTERN_SUFFIX);
@@ -274,10 +272,11 @@ public class ProductionFactory {
       ASTAlt aDeepClone = srcNode.getAltList().get(0).deepClone();
       postProcessingTraverser.clearTraversedElements();
       aDeepClone.accept(postProcessingTraverser);
-      aDeepClone.setRightAssoc(false); //TODO: Do i need the rightassoc?
+      aDeepClone.setRightAssoc(false);
       origAlt.getComponentList().addAll(aDeepClone.getComponentList()); // origAlt = AcloneComp
       origBlock.getAltList().add(aDeepClone); // origBlock = Aclone
       origAlt.add_PreComment(new Comment(" /* Avoid an extra block here */ "));
+      // if we were to introduce a block here, the left-recursiveness will cause issues
     } else {
       // add an extra pair of brackets/a block around the original production
       origAlt.getComponentList().add(origBlock);
@@ -433,7 +432,7 @@ public class ProductionFactory {
 
 
     // create "astimplements ..."
-    result.getASTSuperInterfaceList().add(parseGenericType(PSYM_PATTERN));
+    result.getASTSuperInterfaceList().add(MCTypeFacade.getInstance().createQualifiedType(PSYM_PATTERN));
 
     // change name
     result.setName(srcNode.getName() + PATTERN_SUFFIX);
@@ -512,6 +511,8 @@ public class ProductionFactory {
    *
    * @param srcNode node to create a production for
    * @param type    type of production to be created
+   * @param superExternal if one of the super productions is an external one
+   * @param specialRecursion if the srcNode is left recursive
    * @return production fo the given type
    */
   public ASTClassProd createProd(ASTProd srcNode,
@@ -519,11 +520,7 @@ public class ProductionFactory {
                                  boolean superExternal,
                                  boolean specialRecursion) {
     final String name = srcNode.getName();
-    String relation = superExternal ? " extends " : " implements ";
     String nonterminal = "ITF" + name;
-
-    //TODO: When to use special name vs
-    String specialname = specialRecursion ? nonterminal : (name + "_Pat");
 
     if (type.equals(ProductionType.OPTIONAL)) {
       String classProdAsString =
@@ -544,10 +541,12 @@ public class ProductionFactory {
                       "ITF" + name, "I" + srcNode.getSymbol().getEnclosingScope().getName() + "TFPart")) + " astimplements de.monticore.tf.ast.I" + "Negation" + " = "
                       + createPrefix(name, type) + " \"[[\" "
                       + StringTransformations.uncapitalize(
-                      name) + ":" + (nonterminal /* specialName */) + " \"]]\";";
+                      name) + ":" + (nonterminal) + " \"]]\";";
 
       return parseClassProd(classProdAsString);
     } else {
+      // Use the prod-pattern-interface, in case of non-left-recursiveness
+      String nonTermNameOrPattern = specialRecursion ? nonterminal : (name + "_Pat");
       String classProdAsString =
               name + "_" + type.getNameString() + helpRelation(
                       superExternal,
@@ -556,7 +555,7 @@ public class ProductionFactory {
                       + createPrefix(name,
                                      type) + PSYM_SCHEMAVAR + NAME + COLON + NAME + "? \"[[\" "
                       + StringTransformations.uncapitalize(
-                      name) + ":" + specialname + " \"]]\";";
+                      name) + ":" + nonTermNameOrPattern + " \"]]\";";
 
       return parseClassProd(classProdAsString);
     }
@@ -787,16 +786,6 @@ public class ProductionFactory {
       return Optional.of(GrammarMill.classProdBuilder().setName(name).addAlt(first).addAlt(second).addAlt(third).addAlt(fourth)
               .addSuperInterfaceRule(GrammarMill.ruleReferenceBuilder().setName(PSYM_TFIDENTIFIER).build())
               .build());
-    }
-  }
-
-  protected ASTMCType parseGenericType(String type) {
-    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
-    try {
-      return p.parse_StringMCType(type).get();
-    } catch (IOException e) {
-      throw new RuntimeException(
-              "0xF1002 Unable to create GenericType for " + type);
     }
   }
 
