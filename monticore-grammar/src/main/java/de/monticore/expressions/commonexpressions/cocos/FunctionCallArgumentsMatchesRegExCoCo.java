@@ -31,7 +31,7 @@ public class FunctionCallArgumentsMatchesRegExCoCo implements
 
   @Override
   public void check(ASTCallExpression node) {
-    TypeCheckResult result = derive.deriveType(node);
+    TypeCheckResult result = derive.deriveType(node.getExpression());
     if (result.isPresentResult()) {
 
       SymTypeExpression expr = result.getResult();
