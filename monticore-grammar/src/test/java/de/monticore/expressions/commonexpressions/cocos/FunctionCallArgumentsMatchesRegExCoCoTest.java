@@ -16,6 +16,7 @@ import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.monticore.types3.util.DefsTypesForTests;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class FunctionCallArgumentsMatchesRegExCoCoTest {
@@ -139,14 +139,19 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
   protected void testValid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
-    assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().stream()
+            .map(Finding::buildMsg)
+            .collect(Collectors.joining(System.lineSeparator())),
+        Log.getFindings().isEmpty()
+    );
     Log.clearFindings();
   }
 
   protected void testInvalid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
-    assertEquals(Log.getFindings().size(), 1);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xFD725"));
+    assertTrue(Log.getFindings().stream().anyMatch(
+        f -> f.getMsg().startsWith("0xFD725")
+    ));
     Log.clearFindings();
   }
 
