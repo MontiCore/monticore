@@ -13,6 +13,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createIntersecti
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeOfNull;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types3.util.DefsTypesForTests.*;
@@ -244,6 +246,18 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     assertFalse(SymTypeRelations.isCompatible(_personSymType, _unboxedMapSymType));
     assertFalse(SymTypeRelations.isCompatible(_personSymType, _BooleanSymType));
     assertNoFindings();
+  }
+
+  @Test
+  public void isCompatibleRegEx() {
+    SymTypeOfRegEx regEx1 = createTypeRegEx("gr(a|e)y");
+    SymTypeOfRegEx regEx2 = createTypeRegEx("gr(e|a)y");
+    assertTrue(SymTypeRelations.isCompatible(regEx1, regEx1));
+    assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
+    assertTrue(SymTypeRelations.isCompatible(_unboxedString, regEx1));
+    assertTrue(SymTypeRelations.isCompatible(regEx1, _unboxedString));
+    assertTrue(SymTypeRelations.isCompatible(_boxedString, regEx1));
+    assertTrue(SymTypeRelations.isCompatible(regEx1, _boxedString));
   }
 
   @Test

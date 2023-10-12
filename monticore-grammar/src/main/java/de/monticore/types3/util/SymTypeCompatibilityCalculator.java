@@ -42,6 +42,37 @@ public class SymTypeCompatibilityCalculator {
           SymTypeRelations.box(assigner);
       result = internal_isSubTypeOf(boxedAssigner, boxedAssignee, true);
     }
+    // additionally check regular expressions
+    if (!result) {
+      if (assignee.isRegExType() || assigner.isRegExType()) {
+        result = regExIsCompatible(assignee, assigner);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * isCompatible if one of the arguments is a SymTypeOfRegex
+   *
+   * @return if false, it can still be compatible due to other typing rules
+   */
+  protected boolean regExIsCompatible(
+      SymTypeExpression assignee,
+      SymTypeExpression assigner) {
+    boolean result;
+    if (assignee.isRegExType() && SymTypeRelations.isString(assigner)) {
+      result = true;
+    }
+    else if (assignee.isRegExType() && assigner.isRegExType()) {
+      // note: this is a heuristic, we would need a solution
+      // to the inclusion problem for regular expressions.
+      // Otherwise, a isSubTypeOf-check can be used
+      result = true;
+    }
+    else {
+      // (String, RegEx) is handled in isSubTypeOf
+      result = false;
+    }
     return result;
   }
 
@@ -171,6 +202,10 @@ public class SymTypeCompatibilityCalculator {
           (SymTypeOfFunction) superType,
           subTypeIsSoft
       );
+    }
+    // regEx
+    else if (superType.isRegExType() || subType.isRegExType()) {
+      result = regExIsSubTypeOf(subType, superType);
     }
     // objects
     else if (
@@ -440,6 +475,40 @@ public class SymTypeCompatibilityCalculator {
                 subTypeIsSoft
             );
       }
+    }
+    return result;
+  }
+
+  /**
+   * whether one type is the subType of another is
+   * if at least one of them is a SymTypeOfRegEx
+   */
+  protected boolean regExIsSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  ) {
+    boolean result;
+    if (SymTypeRelations.isString(superType) && subType.isRegExType()) {
+      result = true;
+    }
+    else if (superType.isRegExType()) {
+      if (subType.isRegExType()) {
+        // this is incomplete,
+        // R"(a|e)" can be considered a subtype of R"(a|e|o)".
+        // R"(a|e)y", R"(ay|ey)" are subtypes of each other.
+        // And each regex is a subtype of itself.
+        // However, this would require an implementation
+        // that solves the inclusion problem for regular expressions...
+        // s.a. "The Inclusion Problem for Regular Expressions"
+        //   - Dag Hovland (2010)
+        result = false;
+      }
+      else {
+        result = false;
+      }
+    }
+    else {
+      result = false;
     }
     return result;
   }

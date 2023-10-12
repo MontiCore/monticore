@@ -8,6 +8,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypeOfWildcard;
 import de.monticore.types.check.SymTypePrimitive;
@@ -35,6 +36,10 @@ public interface ISymTypeVisitor {
   }
 
   default void visit(SymTypeOfObject object) {
+  }
+
+  default void visit(SymTypeOfRegEx regex) {
+
   }
 
   default void visit(SymTypeOfUnion union) {
