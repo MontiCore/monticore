@@ -40,6 +40,9 @@ and combining their information to the SymTypeExpression currently calculated.
       (subclass of SymTypeExpression,
       represents non-primitive non-generic nominal data types,
       e.g., `java.lang.String`)
+    * [SymTypeOfRegEx](../types/check/SymTypeOfRegEx.java)
+      (subclass of SymTypeExpression, represents subsets of Strings,
+      e.g., `R"gr(a|e)y"`)
     * [SymTypeOfUnion](../types/check/SymTypeOfUnion.java)
       (subclass of SymTypeExpression, represents unions of types,
       e.g., `TreeInnerNode | TreeLeaf`)

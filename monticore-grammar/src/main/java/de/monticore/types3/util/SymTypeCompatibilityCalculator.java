@@ -501,7 +501,7 @@ public class SymTypeCompatibilityCalculator {
         // that solves the inclusion problem for regular expressions...
         // s.a. "The Inclusion Problem for Regular Expressions"
         //   - Dag Hovland (2010)
-        result = false;
+        result = subType.deepEquals(superType);
       }
       else {
         result = false;

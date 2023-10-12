@@ -61,6 +61,7 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
   def g = it
   def taskname = "generateGrammar${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
   def withDSTLGen = ("true").equals(getProperty('genTR')) && !["ODRuleGeneration", "ODRules", "TFBasisExts", "TFCommons",  // Do not generate TR grammars for TR-component grammars
+                                                               "RegExType", "RegularExpressions", // https://git.rwth-aachen.de/monticore/monticore/-/issues/3576
                                                                "Grammar", "Grammar_WithConcepts"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
   task "$taskname"(type: MCTask) {
     grammar = file g
@@ -125,6 +126,7 @@ def grammarDependencies = ext {
   MCJavaLiterals = ["MCCommonLiterals"]
   UMLStereotype = ["MCCommonLiterals"]
   MCArrayStatements = ["MCVarDeclarationStatements"]
+  RegularExpressions = ["MCCommonLiterals"]
 
   // two dependencies
   Cardinality = ["MCBasics", "MCCommonLiterals"]
@@ -135,6 +137,7 @@ def grammarDependencies = ext {
   MCCommonLiterals = ["MCBasics", "MCLiteralsBasis"]
   MCLowLevelStatements = ["MCStatementsBasis", "MCBasics"]
   MCAssertStatements = ["MCStatementsBasis", "ExpressionsBasis"]
+  RegExType = ["RegularExpressions", "MCBasicTypes"]
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]

@@ -33,6 +33,7 @@ packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
 * `de.monticore`
 * `de.monticore.expressions`
 * `de.monticore.literals`
+* `de.monticore.regex`
 * `de.monticore.statements`
 * `de.monticore.symbols`
 * `de.monticore.types`
@@ -137,7 +138,7 @@ The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siun
 
 * Example type definitions: `km/h<long>`
 
-### [RegExType.mc4](https://git.rwth-aachen.de/monticore/languages/regex) (stable)
+### [RegExType.mc4](regex/RegExType.mc4) (stable)
 
 Embedded in `R"..."` a regular expressions
 can be used as ordinary type to constrain the values allowed for stored variables, attributes, 
@@ -145,8 +146,6 @@ parameters. Types are e.g. , such as `R"[a-z]"` (single character) or `R"^([01][
 A typecheck for these types can only be executed at runtime and e.g. issue
 exceptions (or trigger repair functions) if violated. The static typecheck only uses `String` as 
 underlying carrier type.
-
-This grammar resides in the [MontiCore/RegEx][RegEx] project.
 
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
