@@ -2,7 +2,6 @@ package de.monticore.expressions.bitexpressions.types3;
 
 import com.google.common.base.Preconditions;
 import de.monticore.expressions.bitexpressions._ast.ASTBinaryAndExpression;
-import de.monticore.expressions.bitexpressions._ast.ASTBinaryExpression;
 import de.monticore.expressions.bitexpressions._ast.ASTBinaryOrOpExpression;
 import de.monticore.expressions.bitexpressions._ast.ASTBinaryXorExpression;
 import de.monticore.expressions.bitexpressions._ast.ASTLeftShiftExpression;
@@ -15,6 +14,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.util.TypeVisitorLifting;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -24,28 +24,42 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTLeftShiftExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveShift(expr, "<<");
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((leftPar, rightPar) -> this.deriveShift(expr, leftPar, rightPar, "<<"))
+        .apply(left, right);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTRightShiftExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveShift(expr, ">>");
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((leftPar, rightPar) -> this.deriveShift(expr, leftPar, rightPar, ">>"))
+        .apply(left, right);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTLogicalRightShiftExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveShift(expr, ">>>");
-    getType4Ast().setTypeOfExpression(expr, symType);
-  }
-
-  protected SymTypeExpression deriveShift(ASTShiftExpression expr, String op) {
-    // calculate the type of inner expressions
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((leftPar, rightPar) -> this.deriveShift(expr, leftPar, rightPar, ">>>"))
+        .apply(left, right);
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  protected SymTypeExpression deriveShift(
+      ASTShiftExpression expr, SymTypeExpression left, SymTypeExpression right, String op) {
+    // calculate the type of inner expressions
 
     // result of inner type computation should be present
     if (left.isObscureType() || right.isObscureType()) {
@@ -109,37 +123,40 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTBinaryAndExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveBinary(expr, expr.getOperator());
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((leftPar, rightPar) -> calculateTypeBinary(
+            leftPar, rightPar, expr.getOperator(), expr.get_SourcePositionStart()))
+        .apply(left, right);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTBinaryOrOpExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveBinary(expr, expr.getOperator());
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((leftPar, rightPar) -> calculateTypeBinary(
+            leftPar, rightPar, expr.getOperator(), expr.get_SourcePositionStart()))
+        .apply(left, right);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTBinaryXorExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.deriveBinary(expr, expr.getOperator());
-    getType4Ast().setTypeOfExpression(expr, symType);
-  }
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
 
-  protected SymTypeExpression deriveBinary(ASTBinaryExpression expr, String operator) {
-    // calculate the type of inner expressions
-    SymTypeExpression leftRes = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
-    SymTypeExpression rightRes = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-
-    // result of inner type computation should be present
-    if (leftRes.isObscureType() || rightRes.isObscureType()) {
-      // if left or right obscure then error already logged
-      return SymTypeExpressionFactory.createObscureType();
-    }
-    else {
-      return calculateTypeBinary(leftRes, rightRes, operator, expr.get_SourcePositionStart());
-    }
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((leftPar, rightPar) -> calculateTypeBinary(
+            leftPar, rightPar, expr.getOperator(), expr.get_SourcePositionStart()))
+        .apply(left, right);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   protected SymTypeExpression calculateTypeBinary(SymTypeExpression leftResult,

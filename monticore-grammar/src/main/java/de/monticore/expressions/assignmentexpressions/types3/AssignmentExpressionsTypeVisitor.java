@@ -9,11 +9,11 @@ import de.monticore.expressions.assignmentexpressions._ast.ASTDecSuffixExpressio
 import de.monticore.expressions.assignmentexpressions._ast.ASTIncPrefixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTIncSuffixExpression;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsVisitor2;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.util.TypeVisitorLifting;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -23,48 +23,45 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTIncSuffixExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.affix(expr.getExpression(), "++",
-        expr.get_SourcePositionStart());
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((innerPar) -> this.affix(innerPar, "++",
+            expr.get_SourcePositionStart()))
+        .apply(inner);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTDecSuffixExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.affix(expr.getExpression(), "--",
-        expr.get_SourcePositionStart());
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((innerPar) -> this.affix(innerPar, "--",
+            expr.get_SourcePositionStart()))
+        .apply(inner);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTIncPrefixExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.affix(expr.getExpression(), "++",
-        expr.get_SourcePositionStart());
-    getType4Ast().setTypeOfExpression(expr, symType);
+    SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((innerPar) -> this.affix(innerPar, "++",
+            expr.get_SourcePositionStart()))
+        .apply(inner);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTDecPrefixExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.affix(expr.getExpression(), "--",
-        expr.get_SourcePositionStart());
-    getType4Ast().setTypeOfExpression(expr, symType);
-  }
-
-  protected SymTypeExpression affix(ASTExpression expr, String op, SourcePosition pos) {
-    // calculate the type of the inner expressions
-    SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr);
-
-    // result of inner type computation should be present
-    if (inner.isObscureType()) {
-      // if inner obscure then error already logged
-      return SymTypeExpressionFactory.createObscureType();
-    }
-    else {
-      // else check with signature
-      return affix(inner, op, pos);
-    }
+    SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((innerPar) -> this.affix(innerPar, "--",
+            expr.get_SourcePositionStart()))
+        .apply(inner);
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   protected SymTypeExpression affix(SymTypeExpression inner, String op, SourcePosition pos) {
@@ -82,24 +79,19 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTAssignmentExpression expr) {
     Preconditions.checkNotNull(expr);
-    SymTypeExpression symType = this.derive(expr);
-    getType4Ast().setTypeOfExpression(expr, symType);
-  }
-
-  protected SymTypeExpression derive(ASTAssignmentExpression expr) {
-    // calculate the type of inner expressions
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
 
-    // result of inner type computation should be present
-    if (left.isObscureType() || right.isObscureType()) {
-      // if left or right obscure then error already logged
-      return SymTypeExpressionFactory.createObscureType();
-    }
-    else {
-      // else compare the inner results
-      return assignment(left, right, expr.getOperator(), expr.get_SourcePositionStart());
-    }
+    SymTypeExpression result = TypeVisitorLifting
+        .liftDefault((leftPar, rightPar) -> derive(expr, leftPar, rightPar))
+        .apply(left, right);
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  protected SymTypeExpression derive(
+      ASTAssignmentExpression expr, SymTypeExpression left, SymTypeExpression right) {
+    return assignment(left, right, expr.getOperator(), expr.get_SourcePositionStart());
+
   }
 
   protected SymTypeExpression assignment(SymTypeExpression left,
