@@ -11,6 +11,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypeOfWildcard;
 import de.monticore.types.check.SymTypePrimitive;
@@ -129,6 +130,13 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
   public void visit(SymTypeOfObject symType) {
     pushTransformedSymType(
         SymTypeExpressionFactory.createTypeObject(symType.getTypeInfo())
+    );
+  }
+
+  @Override
+  public void visit(SymTypeOfRegEx symType) {
+    pushTransformedSymType(
+        SymTypeExpressionFactory.createTypeRegEx((symType.getRegExString()))
     );
   }
 

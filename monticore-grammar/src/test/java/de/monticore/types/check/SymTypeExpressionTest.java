@@ -94,6 +94,10 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teInter1;
 
+  static SymTypeExpression teRegEx1;
+
+  static SymTypeExpression teRegEx2;
+
   static SymTypeExpression teObscure;
 
   @Before
@@ -171,6 +175,8 @@ public class SymTypeExpressionTest {
 
     teInter1 = createIntersection(teInt, teDouble);
 
+    teRegEx1 = createTypeRegEx("gr(a|e)y");
+
     teObscure = createObscureType();
 
   }
@@ -210,6 +216,7 @@ public class SymTypeExpressionTest {
     assertTrue(teUnion1.isValidType());
     assertTrue(teInter1.isIntersectionType());
     assertTrue(teInter1.isValidType());
+    assertTrue(teRegEx1.isRegExType());
     assertTrue(teObscure.isObscureType());
     assertFalse(teObscure.isValidType());
   }
@@ -240,6 +247,7 @@ public class SymTypeExpressionTest {
     assertEquals("(double, int...) -> void", teFunc4.print());
     assertEquals("(double | int)", teUnion1.print());
     assertEquals("(double & int)", teInter1.print());
+    assertEquals("R\"gr(a|e)y\"", teRegEx1.print());
   }
 
   @Test
@@ -451,6 +459,12 @@ public class SymTypeExpressionTest {
         intersected1Types.get(1).getAsJsonObject().getStringMember( "kind"));
     assertEquals("int",
         intersected1Types.get(1).getAsJsonObject().getStringMember( "primitiveName"));
+
+    result = JsonParser.parse(teRegEx1.printAsJson());
+    assertTrue(result.isJsonObject());
+    JsonObject teRegEx1Json = result.getAsJsonObject();
+    assertEquals("de.monticore.types.check.SymTypeOfRegEx", teRegEx1Json.getStringMember("kind"));
+    assertEquals("gr(a|e)y", teRegEx1Json.getStringMember("regex"));
   }
 
   @Test
@@ -510,6 +524,7 @@ public class SymTypeExpressionTest {
     assertFalse(teFunc3.hasTypeInfo());
     assertFalse(teFunc4.hasTypeInfo());
     assertFalse(teUnion1.hasTypeInfo());
+    assertFalse(teRegEx1.hasTypeInfo());
     assertFalse(teObscure.hasTypeInfo());
   }
 
@@ -571,6 +586,10 @@ public class SymTypeExpressionTest {
     assertTrue(teInter1.deepClone() instanceof SymTypeOfIntersection);
     assertTrue(teInter1.deepClone().isIntersectionType());
     assertEquals(teInter1.print(), teInter1.deepClone().print());
+
+    assertTrue(teRegEx1.deepClone() instanceof SymTypeOfRegEx);
+    assertTrue(teRegEx1.deepClone().isRegExType());
+    assertEquals(teRegEx1.print(), teRegEx1.deepClone().print());
   }
 
   @Test
@@ -658,6 +677,9 @@ public class SymTypeExpressionTest {
 
     SymTypeOfIntersection tInter2 = createIntersection(Set.of(teInt, teDouble, teArr1));
     assertEquals("(Human[] & double & int)", tInter2.print());
+
+    SymTypeOfRegEx tRegEx1 = createTypeRegEx("rege(x(es)?|xps?)");
+    assertEquals("R\"rege(x(es)?|xps?)\"", tRegEx1.print());
   }
 
   @Test

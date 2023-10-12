@@ -77,7 +77,8 @@ public class SymTypeExpressionDeSerTest {
 
   SymTypeOfUnion teUnion1;
 
-  
+  SymTypeOfRegEx teRegEx1;
+
   @Before
   public void init() {
     LogStub.init();
@@ -144,6 +145,8 @@ public class SymTypeExpressionDeSerTest {
 
     teUnion1 = createUnion(teInt, teDouble);
 
+    teRegEx1 = createTypeRegEx("gr(a|e)y");
+
     scope.add(new OOTypeSymbol("A"));
     scope.add(new OOTypeSymbol("B"));
     scope.add(new OOTypeSymbol("Human"));
@@ -189,6 +192,7 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerialization(teFun3);
     performRoundTripSerialization(teFun4);
     performRoundTripSerialization(teUnion1);
+    performRoundTripSerialization(teRegEx1);
 
     performRoundTripSerializationSymTypePrimitive(teDouble);
     performRoundTripSerializationSymTypePrimitive(teInt);
@@ -210,6 +214,7 @@ public class SymTypeExpressionDeSerTest {
     performRoundTripSerializationSymTypeOfFunction(teFun3);
     performRoundTripSerializationSymTypeOfFunction(teFun4);
     performRoundTripSerializationSymTypeOfUnion(teUnion1);
+    performRoundTripSerializationSymTypeOfRegEx(teRegEx1);
   }
 
   protected void performRoundTripSerialization(SymTypeExpression expr) {
@@ -222,7 +227,8 @@ public class SymTypeExpressionDeSerTest {
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), deserialized.print());
     assertEquals(expr.printAsJson(), deserialized.printAsJson());
-    if (!(deserialized instanceof SymTypeOfWildcard)) {
+    if (!(deserialized instanceof SymTypeOfWildcard)
+        && !(deserialized instanceof SymTypeOfRegEx)) {
       TypeSymbol expectedTS = deserialized.getTypeInfo();
       TypeSymbol actualTS = expr.getTypeInfo();
       assertEquals(expectedTS.getName(), actualTS.getName());
@@ -302,7 +308,7 @@ public class SymTypeExpressionDeSerTest {
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
     assertEquals(expectedTS.getName(), actualTS.getName());
-  
+
     //assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -336,6 +342,18 @@ public class SymTypeExpressionDeSerTest {
     assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
+  protected void performRoundTripSerializationSymTypeOfRegEx(SymTypeOfRegEx expr) {
+    SymTypeOfRegExDeSer deser = new SymTypeOfRegExDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized);
+    assertNotNull(deserialized);
+
+    assertTrue(expr.deepEquals(deserialized));
+    assertEquals(deser.serialize(expr), deser.serialize((SymTypeOfRegEx) deserialized));
+  }
+
   @Test
   public void testRoundtrip2() {
     performRoundtrip2(teDouble);
@@ -363,6 +381,7 @@ public class SymTypeExpressionDeSerTest {
     performRoundtrip2(teFun3);
     performRoundtrip2(teFun4);
     performRoundtrip2(teUnion1);
+    performRoundtrip2(teRegEx1);
   }
 
   protected void performRoundtrip2(SymTypeExpression expr) {
@@ -376,7 +395,8 @@ public class SymTypeExpressionDeSerTest {
     // and assert that the serialized and deserialized symtype expression equals the one before
     assertEquals(expr.print(), loaded.print());
     assertEquals(expr.printAsJson(), loaded.printAsJson());
-    if (!(loaded instanceof SymTypeOfWildcard)) {
+    if (!(loaded instanceof SymTypeOfWildcard)
+        && !(loaded instanceof SymTypeOfRegEx)) {
       TypeSymbol expectedTS = loaded.getTypeInfo();
       TypeSymbol actualTS = expr.getTypeInfo();
       assertEquals(expectedTS.getName(), actualTS.getName());
@@ -478,6 +498,10 @@ public class SymTypeExpressionDeSerTest {
     SymTypeOfUnionDeSer symTypeOfUnionDeser = new SymTypeOfUnionDeSer();
     symTypeOfUnionDeser.deserialize(invalidJsonForSerializing2);
     assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x9E2F7"));
+
+    SymTypeOfRegExDeSer symTypeOfRegExDeSer = new SymTypeOfRegExDeSer();
+    symTypeOfRegExDeSer.deserialize(invalidJsonForSerializing2);
+    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x9E2F9"));
   }
 
 }
