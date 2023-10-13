@@ -74,25 +74,25 @@ public abstract class CompKindExpression {
     LinkedHashMap<VariableSymbol, ASTExpression> parameterBindings = new LinkedHashMap<>();
     // We know LinkedHashMaps are ordered by insertion time. As we rely on the fact that the ordering of the
     // arguments is consistent with the ordering in the map, the following iteration ensures it:
-    for (int i = 0; i < this.getTypeInfo().getParameters().size(); i++) {
+    for (int i = 0; i < this.getTypeInfo().getParametersList().size(); i++) {
       if (i < parameterArguments.size()) // Deal with wrong number of parameters through cocos
         if (parameterArguments.get(i) instanceof ASTAssignmentExpression
           && ((ASTAssignmentExpression) parameterArguments.get(i)).getLeft() instanceof ASTNameExpression) {
           keywordExpressionMap.put(((ASTNameExpression) ((ASTAssignmentExpression) parameterArguments.get(i))
             .getLeft()).getName(), parameterArguments.get(i));
         } else {
-          parameterBindings.put(this.getTypeInfo().getParameters().get(i), parameterArguments.get(i));
+          parameterBindings.put(this.getTypeInfo().getParametersList().get(i), parameterArguments.get(i));
           firstKeywordArgument++;
         }
     }
 
     // iterate over keyword-based arguments (CoCo assures that no position-based argument occurs
     // after the first keyword-based argument)
-    for (int j = firstKeywordArgument; j < this.getTypeInfo().getParameters().size(); j++) {
-      if (keywordExpressionMap.containsKey(this.getTypeInfo().getParameters().get(j).getName()) &&
-        !parameterBindings.containsKey(this.getTypeInfo().getParameters().get(j))) {
-        parameterBindings.put(this.getTypeInfo().getParameters().get(j),
-          keywordExpressionMap.get(this.getTypeInfo().getParameters().get(j).getName()));
+    for (int j = firstKeywordArgument; j < this.getTypeInfo().getParametersList().size(); j++) {
+      if (keywordExpressionMap.containsKey(this.getTypeInfo().getParametersList().get(j).getName()) &&
+        !parameterBindings.containsKey(this.getTypeInfo().getParametersList().get(j))) {
+        parameterBindings.put(this.getTypeInfo().getParametersList().get(j),
+          keywordExpressionMap.get(this.getTypeInfo().getParametersList().get(j).getName()));
       }
     }
 
