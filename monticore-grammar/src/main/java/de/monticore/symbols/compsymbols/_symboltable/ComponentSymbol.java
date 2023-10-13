@@ -17,33 +17,18 @@ import java.util.stream.Collectors;
 
 public class ComponentSymbol extends ComponentSymbolTOP {
 
-  protected List<VariableSymbol> parameters;
-
   public ComponentSymbol(String name) {
     super(name);
   }
 
-  public List<VariableSymbol> getParameters() {
-    return this.parameters;
-  }
-
   public Optional<VariableSymbol> getParameter(@NonNull String name) {
     Preconditions.checkNotNull(name);
-    for (VariableSymbol parameter : this.getParameters()) {
+    for (VariableSymbol parameter : this.getParametersList()) {
       if (parameter.getName().equals(name)) return Optional.of(parameter);
     }
     return Optional.empty();
   }
 
-  public void addParameter(@NonNull VariableSymbol parameter) {
-    Preconditions.checkNotNull(parameter);
-    Preconditions.checkArgument(this.getSpannedScope().getLocalVariableSymbols().contains(parameter));
-    this.parameters.add(parameter);
-  }
-
-  public boolean hasParameters() {
-    return !this.getParameters().isEmpty();
-  }
 
   public List<TypeVarSymbol> getTypeParameters() {
     return this.getSpannedScope().getLocalTypeVarSymbols();
