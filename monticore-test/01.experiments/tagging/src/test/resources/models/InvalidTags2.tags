@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags InvalidTags2 for Simple {
+  tag A with NotAStateTag; // A state ("A") may not be tagged by the simple NotAStateTag
+}
+

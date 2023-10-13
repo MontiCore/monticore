@@ -24,6 +24,7 @@ if (!hasProperty('bootstrap')) {
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
 def trafoOutDir = "$buildDir/generated-sources/monticore/trafo"
+def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
 
 
 sourceSets {
@@ -41,6 +42,9 @@ sourceSets {
   trafo {
     java.srcDirs = [trafoOutDir]
   }
+  tagging {
+    java.srcDirs = [taggingOutDir]
+  }
 }
 
 dependencies {
@@ -49,12 +53,15 @@ dependencies {
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
   testImplementation "junit:junit:$junit_version"
   trafoCompileOnly project(path)
-  // use compileOnly as the trafo-artifact is only an extension to the default artifact
-  // ensure the trafoCompileOnly dependency line is below the trafo sourceset definition
+  taggingCompileOnly project(path)
+  // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
 }
 
 task generate {}
 task generateTR {}
+task generateTagDef {}
+task generateTagSchema {}
+
 
 // one task per file
 fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
@@ -63,6 +70,8 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
   def withDSTLGen = ("true").equals(getProperty('genTR')) && !["ODRuleGeneration", "ODRules", "TFBasisExts", "TFCommons",  // Do not generate TR grammars for TR-component grammars
                                                                "RegExType", "RegularExpressions", // https://git.rwth-aachen.de/monticore/monticore/-/issues/3576
                                                                "Grammar", "Grammar_WithConcepts"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
+  def withTagGen = ("true").equals(getProperty('genTagging')) && !["TagSchema", "Tags", "Grammar", "Grammar_WithConcepts", "ODRuleGeneration", "ODRules", 
+                                                                   "TFBasisExts", "TFCommons"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
   task "$taskname"(type: MCTask) {
     grammar = file g
     outputDir = file grammarOutDir
@@ -91,6 +100,39 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
       dependsOn(generate)
     }
     generateTR.dependsOn("${taskname}TR")
+  }
+  if (withTagGen) {   // run MC on the tag grammars
+    task "${taskname}TagDef"(type: MCTask) {
+      outputDir = file taggingOutDir
+      grammar = getTagDefinitionFile(g, file(grammarOutDir))
+      modelPath(grammarOutDir)
+      modelPath(file("src/main/grammars").toString())
+      if (findProperty("ci") != null) {
+        script = "de/monticore/monticore_noreports.groovy"
+      }
+      def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
+      def tagGrammarIncludingPackage = file(grammarOutDir).toURI().relativize(file(grammar).toURI()).toString()
+      outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
+      outputs.upToDateWhen { incCheck(tagGrammarIncludingPackage) }
+      genTag = true // Generate Tagging-Infrastructure
+      dependsOn(generate)
+    }
+    generateTagDef.dependsOn("${taskname}TagDef")
+    task "${taskname}TagSchema"(type: MCTask) {
+      outputDir = file taggingOutDir
+      grammar = getTagSchemaFile(g, file(grammarOutDir))
+      modelPath(grammarOutDir)
+      modelPath(file("src/main/grammars").toString())
+      if (findProperty("ci") != null) {
+        script = "de/monticore/monticore_noreports.groovy"
+      }
+      def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
+      def tagGrammarIncludingPackage = file(grammarOutDir).toURI().relativize(file(grammar).toURI()).toString()
+      outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
+      outputs.upToDateWhen { incCheck(tagGrammarIncludingPackage) }
+      dependsOn(generate)
+    }
+    generateTagSchema.dependsOn("${taskname}TagSchema")
   }
 }
 
@@ -142,6 +184,8 @@ def grammarDependencies = ext {
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
   TFBasisExts = ["JavaLight", "MCSimpleGenericTypes", "MCCommonLiterals"]
+  Tags = ["MCBasics", "BasicSymbols", "MCCommonLiterals"]
+  TagSchema = ["MCBasics", "MCBasicTypes", "MCCommonLiterals"]
 
   // four dependencies
   MCCommon = ["Cardinality", "Completeness", "UMLModifier", "UMLStereotype"]
@@ -159,7 +203,7 @@ def grammarDependencies = ext {
 }
 
 compileJava {
-  tasks.findAll { task -> task.name.startsWith("generateGrammar") && !task.name.contains("TR") }.each {
+  tasks.findAll { task -> task.name.startsWith("generateGrammar") && !task.name.contains("TR") && !task.name.contains("TagDef") && !task.name.contains("TagSchema") }.each {
     def grammarName = it.getName().substring('generateGrammar'.length())
     def dependsOnGrammars = grammarDependencies[grammarName].collect { name -> tasks["generateGrammar${name}"] }
     it.dependsOn dependsOnGrammars
@@ -174,6 +218,8 @@ compileTestJava {
 
 compileJava.dependsOn generate
 compileTrafoJava.dependsOn generateTR
+compileTaggingJava.dependsOn generateTagDef
+compileTaggingJava.dependsOn generateTagSchema
 
 sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
 jar.dependsOn(sourcesJar)
@@ -469,5 +515,31 @@ if (("true").equals(getProperty('genTR'))) {
   }
   artifacts {
     trafo(trafoJar)
+  }
+}
+if (("true").equals(getProperty('genTagging'))) {
+  // Bundle and publish the generated tagging artifacts separately as monticore-grammar-tagging
+  tasks.register('taggingJar', Jar) {
+    from sourceSets.tagging.output
+    group 'build'
+  }
+  tasks.register('taggingSourcesJar', Jar) {
+    from sourceSets.tagging.java
+    group 'build'
+  }
+  publishing {
+    publications {
+      "tagging"(MavenPublication) {
+        artifactId = project.name + "-tagging"
+        artifact tasks.taggingJar { appendix 'tagging' }
+        artifact tasks.taggingSourcesJar { appendix 'tagging'; classifier 'sources' }
+      }
+    }
+  }
+  configurations {
+    tagging
+  }
+  artifacts {
+    tagging(taggingJar)
   }
 }

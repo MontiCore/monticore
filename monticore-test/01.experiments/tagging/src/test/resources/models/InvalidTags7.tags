@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags InvalidTags7 for Simple {
+  tag A with Exception {type="Type";}; // Missing complex msg
+}

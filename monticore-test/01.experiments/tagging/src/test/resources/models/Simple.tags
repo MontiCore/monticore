@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags Simple for Simple {
+
+    tag Simple with Method = "App.call()";
+
+    tag A with Monitored;
+
+    tag B.BA with Invalid; // Does not work, as B is not a scope
+    within B {
+        tag BB with Invalid; // Does not work, as B is not a scope
+    }
+    tag BA with StateTag1;
+    tag BB with StateTag2;
+
+
+    tag C with VerboseLog = "doLogC";
+    tag C.CA with StateTag1;
+    within C {
+        tag CB with StateTag2;
+        tag [CA - x > CB;] with Log="timestamp";
+    }
+
+    tag D with WildcardedTag;
+
+    tag D with Complex {
+                    ofInt="12",
+                    ofString="foo",
+                    ofBoolean="true",
+                    Exception{type="t", msg="m";};
+    };
+}

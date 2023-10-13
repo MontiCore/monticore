@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags InvalidTagsPrivate for Simple {
+    tag A with PrivateTag; // the PrivateTag may only be used within complex tags
+}
+

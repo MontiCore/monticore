@@ -79,6 +79,10 @@ while (grammarIterator.hasNext()) {
 
     // M7: Decorate class diagrams
     decoratedCD = decorateEmfCD(glex, mcScope, cd, handcodedPath)
+    if (genTag) {
+      // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
+      decoratedCD = decorateTagCD(glex, mcScope, cd, handcodedPath, decoratedCD, astGrammar)
+    }
 
     // groovy script hook point
     hook(gh2, glex, astGrammar, decoratedCD, cd)
@@ -95,6 +99,11 @@ while (grammarIterator.hasNext()) {
     } else {
       // Generate a DSTL (ending in TR.mc4)
       generateDSTLanguage(astGrammar, out, modelPathHC)
+    }
+
+    if (!genTag) {
+      // Generate the tagging grammars (ending in TagSchema.mc4 and TagDefinition.mc4)
+      generateTaggingLanguages(astGrammar, out, modelPathHC)
     }
 
     // M9: Write reports to files

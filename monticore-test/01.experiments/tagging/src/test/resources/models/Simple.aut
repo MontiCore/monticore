@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton Simple {
+
+  state A   <<initial>>;
+    A - x > B;
+    A - y > A;
+
+  state B   <<final>> {
+    state BA;
+    state BB;
+  }
+    B - x > A;
+    B - y > A;
+
+  scopedstate C {
+    state CA <<initial>>;
+    state CB;
+    CA - x > CB;
+  }
+
+  state D;
+
+  state E;
+  E - a > E;
+
+}

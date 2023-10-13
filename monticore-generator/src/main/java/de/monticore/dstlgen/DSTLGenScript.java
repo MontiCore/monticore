@@ -56,7 +56,6 @@ import java.util.stream.Collectors;
  */
 public class DSTLGenScript {
 
-  protected final String HC_SUFFIX = "HC";
   protected final String LOG_ID = "DSTLGenScript";
   protected final String modelFileExtension = "mtr";
 
@@ -104,7 +103,7 @@ public class DSTLGenScript {
   public Optional<ASTMCGrammar> parseGrammarHC(ASTMCGrammar grammar, MCPath paths) {
     List<String> trGrammarNames = new ArrayList<>(grammar.getPackageList());
     trGrammarNames.add("tr");
-    trGrammarNames.add(grammar.getName() + "TR" + HC_SUFFIX + ".mc4");
+    trGrammarNames.add(grammar.getName() + "TRHC.mc4");
 
     Path trGrammarPath = Paths.get(trGrammarNames.stream().collect(Collectors.joining(File.separator)));
     Optional<URL> hwGrammar = paths.find(trGrammarPath.toString());

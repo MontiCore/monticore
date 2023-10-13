@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.fqn;
+
+grammar FQNEnhancedAutomata extends de.monticore.fqn.FQNAutomata {
+    start Automaton;
+    symbol RedState implements ScopedStateElement =
+      "red" "state" Name
+
+      (("<<" ["initial"] ">>" ) | ("<<" ["final"] ">>" ))*
+
+      ( ("{" (State | Transition)* "}") | ";") ;
+
+
+    /** A ASTTransition represents a transitio0n
+        @attribute from Name of the state from which the transitions starts
+        @attribute input Activation signal for this transition
+        @attribute to Name of the state to which the transitions goes
+    */
+    RedTransition implements ScopedStateElement =
+      "red" from:Name "-" input:Name ">" to:Name ";" ;
+
+
+    symbol scope RedScopedState implements ScopedStateElement =
+      "red" "scopedstate" Name "{" ScopedStateElement* "}" ;
+
+
+}

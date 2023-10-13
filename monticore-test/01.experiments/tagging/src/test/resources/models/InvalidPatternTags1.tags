@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags InvalidPatternTags1 for Simple {
+  tag [A - x > B;] with InvalidTag;
+}

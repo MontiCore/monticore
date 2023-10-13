@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tagging;
+
+/**
+ * Grammar for tagging of non-functional properties
+ */
+grammar Tags extends de.monticore.MCBasics, de.monticore.literals.MCCommonLiterals, de.monticore.types.MCBasicTypes  {
+  scope TagUnit =
+    ("package" package:MCQualifiedName ";")?
+    MCImportStatement*
+    ("conforms" "to" conformsTo:(MCQualifiedName || ",")+ ";")?
+
+    "tags" Name ("for" targetModel:ModelElementIdentifier)?
+    "{" (contexts:Context | tags:TargetElement)* "}"
+  ;
+
+  scope Context = "within" ModelElementIdentifier "{"
+   (contexts:Context | tags:TargetElement)*
+  "}";
+
+  interface ModelElementIdentifier;
+
+  // to identify elements by a FQN (elements with a name and/or symbol)
+  DefaultIdent implements ModelElementIdentifier = MCQualifiedName;
+  astrule DefaultIdent = method public String getIdentifies() { throw new IllegalStateException("DefaultIdent#getIdentifies() called"); };
+
+  interface Tag;
+
+  TargetElement = "tag" (ModelElementIdentifier || ",")+ "with" (Tag || ",")+ ";";
+
+  SimpleTag implements Tag = Name;
+  ValuedTag implements Tag = Name "=" value:String;
+  ComplexTag implements Tag = Name "{" (Tag ("," Tag)* ";")? "}";
+}

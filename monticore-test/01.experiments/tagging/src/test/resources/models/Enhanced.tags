@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to EnhancedAutomataSchema;
+
+tags Enhanced for Enhanced {
+
+    tag Enhanced with Method = "App.call()";
+
+    tag A with Monitored;
+
+    tag B.BA with Invalid; // Does not work, as B is not a scope
+    within B {
+        tag BB with Invalid; // Does not work, as B is not a scope
+    }
+    tag BA with StateTag1;
+    tag BB with StateTag2;
+
+
+    tag C with Log = "doLogC";
+    tag C.CA with StateTag1;
+    within C {
+        tag CB with StateTag2;
+        tag [CA - x > CB;] with Log="timestamp";
+    }
+
+    tag D with WildcardedTag;
+
+    // Inherited
+    tag RE with StateTag1;
+    tag RC.CA with StateTag1;
+    within RC {
+        tag RCB with StateTag2;
+        tag [CA - x > RCB;] with Log="timestamp";
+    }
+
+    tag RE with RedStateTag;
+}

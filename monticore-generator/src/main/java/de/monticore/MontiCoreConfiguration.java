@@ -96,6 +96,7 @@ public final class MontiCoreConfiguration implements Configuration {
   public static final String REPORT_LONG = "report";
   public static final String REPORT_BASE_LONG = "report_base";
   public static final String GENDST_LONG = "genDST";
+  public static final String GENTAG_LONG = "genTag";
   public static final String HELP_LONG = "help";
 
   protected final CommandLine cmdConfig;
@@ -390,6 +391,15 @@ public final class MontiCoreConfiguration implements Configuration {
   }
 
   /**
+   * Getter for the optional tagging generation.
+   *
+   * @return Optional boolean for the tagging generation
+   */
+  public Optional<Boolean> getGenTag() {
+    return getAsBoolean(GENTAG_LONG);
+  }
+
+  /**
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings
    */
@@ -430,6 +440,14 @@ public final class MontiCoreConfiguration implements Configuration {
           .map(p-> (JsonElement) new JsonBoolean(p))
           .orElse(new JsonNull());
       result.putMember(GENDST_LONG, dstlGen);
+    }
+
+    // GenTag
+    {
+      JsonElement tagGen = this.getGenTag()
+              .map(p-> (JsonElement) new JsonBoolean(p))
+              .orElse(new JsonNull());
+      result.putMember(GENTAG_LONG, tagGen);
     }
 
     // Custom Script set?

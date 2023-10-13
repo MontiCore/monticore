@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags InvalidTags4 for Simple {
+  tag C.CA with NotAStateTag; // A state ("C.CA") may not be tagged by the simple NotAStateTag
+}
+

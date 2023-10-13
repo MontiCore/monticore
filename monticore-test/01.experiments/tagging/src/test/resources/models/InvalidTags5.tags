@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags InvalidTags5 for Simple {
+  tag C.CA with Method = "doStuff()"; // A state ("C.CA") may not be tagged by the valued Method
+}
+

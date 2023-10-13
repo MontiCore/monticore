@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags Simple for Simple {
+
+    tag A with Method = "App.call()";
+
+    tag Simple with Monitored;
+
+}
