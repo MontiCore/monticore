@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags InvalidComplexTags2 for Simple {
+   tag D with Complex {
+                    ofInt="12",
+                    ofString="foo",
+                    ofBoolean="true",
+                    Exception{type="t", msg="m";},
+                    yetAnotherState="12";
+    };
+}

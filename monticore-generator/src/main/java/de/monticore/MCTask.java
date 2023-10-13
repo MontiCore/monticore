@@ -4,8 +4,11 @@ package de.monticore;
 
 import com.google.common.collect.Iterables;
 import de.monticore.cli.MontiCoreTool;
+import de.monticore.codegen.cd2java._tagging.TaggingConstants;
 import de.monticore.mcbasics.MCBasicsMill;
 import de.monticore.dstlgen.util.DSTLPathUtil;
+import de.monticore.symboltable.serialization.json.*;
+import de.monticore.tagging.TagGenerator;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
@@ -119,7 +122,10 @@ public abstract class MCTask extends DefaultTask {
 
   // Whether the grammar is a TR grammar and transformation related artifacts should be generated
   public boolean isDSTL = false;
-  
+
+  // Whether tagging related artifacts should be generated (the grammar must be a tagdef or tagschema grammar)
+  public boolean genTag = false;
+
   @OutputDirectory
   public DirectoryProperty getOutputDir() {
     return outputDir;
@@ -241,6 +247,11 @@ public abstract class MCTask extends DefaultTask {
   @Input
   public boolean isDSTL() {
     return isDSTL;
+  }
+
+  @Input
+  public boolean getGenTag() {
+    return genTag;
   }
 
   public void handcodedPath(String... paths) {
@@ -380,6 +391,8 @@ public abstract class MCTask extends DefaultTask {
     }
     params.add("-genDST");
     params.add(Boolean.toString(isDSTL));
+    params.add("-genTag");
+    params.add(Boolean.toString(genTag));
     if (configTemplate != null) {
       String cfgTemplateStr = configTemplate.toString();
       params.add("-ct");
@@ -465,7 +478,7 @@ public abstract class MCTask extends DefaultTask {
     String base = this.getProject().getProjectDir().toPath().toAbsolutePath().toString();
     return IncChecker.incCheck(inout, grammar, getLogger(), "mc4", base);
   }
-/**
+  /**
    * Returns the path to the TR grammar.
    * Please ensure that the outputDir is previously set
    * @param originalGrammar the original grammar file
@@ -479,6 +492,33 @@ public abstract class MCTask extends DefaultTask {
             modelPath.isEmpty() ? List.of(getProject().getLayout().getProjectDirectory().file("src/main/grammars").toString()) : modelPath,
             originalGrammar).toString());
   }
+  /**
+   * Returns the path to the Tag Def grammar.
+   * Please ensure that the outputDir is previously set
+   * @param originalGrammar the original grammar file
+   * @return the tag def grammar
+   */
+  public File getTagDefinitionFile(File originalGrammar, @Nullable File outputDir) {
+    return new File((outputDir == null ? this.outputDir.get().getAsFile() : outputDir.toString())
+            + "/"
+            + TagGenerator.getTagGrammar(
+            modelPath.isEmpty() ? List.of(getProject().getLayout().getProjectDirectory().file("src/main/grammars").toString()) : modelPath,
+            originalGrammar, TaggingConstants.TAGDEFINITION_SUFFIX).toString());
+  }
+  /**
+   * Returns the path to the Tag Def grammar.
+   * Please ensure that the outputDir is previously set
+   * @param originalGrammar the original grammar file
+   * @return the tag def grammar
+   */
+  public File getTagSchemaFile(File originalGrammar, @Nullable File outputDir) {
+    return new File((outputDir == null ? this.outputDir.get().getAsFile() : outputDir.toString())
+            + "/"
+            + TagGenerator.getTagGrammar(
+            modelPath.isEmpty() ? List.of(getProject().getLayout().getProjectDirectory().file("src/main/grammars").toString()) : modelPath,
+            originalGrammar, TaggingConstants.TAGSCHEMA_SUFFIX).toString());
+  }
+
   protected File fromBasePath(String filePath) {
     File file = new File(filePath);
     return !file.isAbsolute()

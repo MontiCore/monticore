@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to EnhancedAutomataSchema;
+
+tags InvalidEnhancedTags1 for Enhanced {
+  tag Simple with RedStateTag; // Only extended/red states are allowed here
+}

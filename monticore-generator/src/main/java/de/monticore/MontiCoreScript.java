@@ -60,6 +60,7 @@ import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecora
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
+import de.monticore.codegen.cd2java._tagging.*;
 import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.cli.CDCLIDecorator;
 import de.monticore.codegen.cd2java.cli.CLIDecorator;
@@ -109,6 +110,7 @@ import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.tagging.TagGenerator;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.configuration.Configuration;
@@ -694,7 +696,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     return decoratedCD;
   }
 
-  public void decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+  public ASTCDCompilationUnit decorateTagCD(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                         List<ASTCDCompilationUnit> cds, MCPath handCodedPath, ASTCDCompilationUnit decoratedCD, ASTMCGrammar astGrammar) {
+    decorateTagging(glex, cdScope, cds.get(0), decoratedCD, handCodedPath, astGrammar);
+    return decoratedCD;
+  }
+
+
+    public void decorateForSymbolTablePackage(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
                                             ASTCDCompilationUnit astClassDiagram, ASTCDCompilationUnit symbolClassDiagramm,
                                             ASTCDCompilationUnit scopeClassDiagramm,
                                             ASTCDCompilationUnit decoratedCD, MCPath handCodedPath) {
@@ -894,6 +903,52 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     cdAuxiliaryDecorator.decorate(cd, decoratedCD);
   }
+
+  public void decorateTagging(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,
+                                ASTCDCompilationUnit cd, ASTCDCompilationUnit decoratedCD,
+                                MCPath handCodedPath, ASTMCGrammar astTagGrammar){
+    generateTagging(cd, decoratedCD, glex, handCodedPath, astTagGrammar);
+  }
+
+  protected void generateTagging(ASTCDCompilationUnit cd, ASTCDCompilationUnit decoratedCD,
+                                   GlobalExtensionManagement glex, MCPath handCodedPath, ASTMCGrammar astTagGrammar) {
+    ASTMCGrammar originalGrammar = getOriginalGrammarFromTagGrammar(astTagGrammar).get();
+
+    SymbolTableService symbolTableService = new SymbolTableService(cd);
+    VisitorService visitorService = new VisitorService(cd);
+    ParserService parserService = new ParserService(cd);
+    AbstractService abstractService = new AbstractService<>(cd);
+
+    TaggerDecorator taggerDecorator = new TaggerDecorator(glex, abstractService, visitorService, originalGrammar);
+    TagConformsToSchemaCoCoDecorator tagCoCoDecorator = new TagConformsToSchemaCoCoDecorator(glex, abstractService, visitorService, originalGrammar);
+    CDTaggingDecorator taggingDecorator = new CDTaggingDecorator(glex, taggerDecorator, tagCoCoDecorator);
+
+    taggingDecorator.decorate(cd, decoratedCD);
+  }
+
+  protected ASTCDCompilationUnit deriveTaggingCD(ASTMCGrammar astGrammar, ICD4AnalysisGlobalScope cdScope ) {
+    return new MC2CDTaggingTranslation(cdScope).apply(getOriginalGrammarFromTagGrammar(astGrammar).get());
+  }
+
+  // Find & load the grammar A for given ATagDefinition grammar
+  protected Optional<ASTMCGrammar> getOriginalGrammarFromTagGrammar(ASTMCGrammar astTagGrammar) {
+    String originalGrammarName;
+    if (astTagGrammar.getSymbol().getName().endsWith(TaggingConstants.TAGDEFINITION_SUFFIX)) {
+      originalGrammarName = astTagGrammar.getSymbol().getFullName().substring(0, astTagGrammar.getSymbol().getFullName().length() - TaggingConstants.TAGDEFINITION_SUFFIX.length());
+    }else if (astTagGrammar.getSymbol().getName().endsWith(TaggingConstants.TAGSCHEMA_SUFFIX)) {
+      originalGrammarName = astTagGrammar.getSymbol().getFullName().substring(0, astTagGrammar.getSymbol().getFullName().length() - TaggingConstants.TAGSCHEMA_SUFFIX.length());
+    }else{
+      Log.error("0xA1018 Unable to generate Tagging infrastructure on non TagSchema/TagDef Grammar:" + astTagGrammar.getSymbol().getFullName());
+      return Optional.empty();
+    }
+    Optional<MCGrammarSymbol> originalGrammarOpt = GrammarFamilyMill.globalScope().resolveMCGrammar(originalGrammarName);
+    if (originalGrammarOpt.isEmpty()){
+      Log.error("0xA1026 Failed to resolve original grammar " + originalGrammarName + " of tag grammar " + astTagGrammar.getSymbol().getFullName());
+      return Optional.empty();
+    }
+    return Optional.of(originalGrammarOpt.get().getAstNode());
+  }
+
 
   public void decoratePrettyPrinter(GlobalExtensionManagement glex, ASTCDCompilationUnit input, ICD4AnalysisScope cdScope,
                                     ASTCDCompilationUnit prettyPrintCD, ASTCDCompilationUnit decoratedCD,
@@ -1307,6 +1362,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
+   * Generate the TagSchema and TagDefinition grammars and output them as mc4 files
+   */
+  public void generateTaggingLanguages(ASTMCGrammar astGrammar, File outputDirectory, MCPath modelPathHC) throws IOException {
+    TagGenerator.generateTaggingLanguages(astGrammar, outputDirectory, modelPathHC);
+  }
+
+  /**
    * Instantiates the glex and initializes it with all available default
    * options based on the current configuration.
    *
@@ -1408,6 +1470,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(MODELPATH_LONG, modelPath);
           builder.addVariable(HANDCODEDMODELPATH_LONG, handcodedModelPath);
           builder.addVariable(GENDST_LONG, mcConfig.getGenDST().orElse(false)); // no transformation infrastructure generation by default
+          builder.addVariable(GENTAG_LONG, mcConfig.getGenTag().orElse(false)); // no tagging generation by default
           builder.addVariable(OUT_LONG, mcConfig.getOut());
           builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
           builder.addVariable(REPORT_LONG, mcConfig.getReport());

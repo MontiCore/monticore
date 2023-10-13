@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+
+
+tags NonConformingTags for Simple {
+  tag A with Exception {type="Type";}; // Missing complex msg
+  tag Simple with Method; // Value missing
+  tag BA with NotAStateTag; // A state ("BA") may not be tagged by the simple NotAStateTag
+  tag D with Complex {
+                      ofInt="12",
+                   // ofString="foo", // - missing inner tag
+                      ofBoolean="true",
+                      Exception{type="t", msg="m";};
+      };
+  tag [A - x > B;] with InvalidTag;
+}

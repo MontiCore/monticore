@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+tagschema AutomataSchema {
+  tagtype Monitored for State;
+  tagtype StateTag1 for State;
+  tagtype StateTag2 for State;
+  tagtype Invalid for State;
+  tagtype Log:["timestamp" | "callerID"] for Transition;
+  tagtype VerboseLog:String for ScopedState;
+  tagtype Method:String for Automaton;
+  tagtype Exception for State {
+    type:String,
+    msg:String;
+  }
+  tagtype Complex for State {
+    ofInt:int,
+    ofString:String,
+    ofBoolean:Boolean,
+    ofException:Exception;
+  }
+  private tagtype PrivateTag for State;
+  tagtype WildcardedTag for *;
+
+  tagtype AAAAA for State;
+  tagtype AAAAA for Automaton;
+}

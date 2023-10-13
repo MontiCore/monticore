@@ -1,0 +1,72 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tagging;
+
+
+component grammar TagSchema
+    extends  de.monticore.MCBasics, de.monticore.literals.MCCommonLiterals, de.monticore.types.MCBasicTypes {
+  symbol scope TagSchema =
+    ("package" package:MCQualifiedName ";")?
+    "tagschema" Name "{" TagType* "}" ;
+
+  /**
+   * The various tag-types which can be used
+   * @attribute private this type can only be used within other tag types and not as a first level type
+   */
+  interface symbol TagType;
+  symbolrule TagType =
+        r__private:boolean
+        scopeWildcard:boolean
+        scopes: List<String>;
+
+  /**
+   * Ways to identify a scope in a tagschema (mainly the name of the nonterminal)
+   */
+  interface ScopeIdentifier;
+
+  /** scope for a tagschema
+   * @attribute scopeIdentifier the productions targeted by this tagtype (mainly the name of the production)
+   * @attribute wildcard if all productions may be targeted by this tagtype
+   */
+  TagScope = "for" ( (ScopeIdentifier || ",")+ | wildcard:["*"]) ;
+
+
+  /** A simple tag type, known by a pre-determined name
+   * @attribute name the name of the simple tag type
+   */
+  symbol SimpleTagType implements TagType =
+    ["private"]? "tagtype" Name TagScope? ";" ;
+
+  /** A tag type with a pre-determined name and arbitrary value
+   * @attribute name the name of the valued tag type
+   * @attribute type the type (Integer, Boolean, or String) for the value
+   */
+  symbol ValuedTagType implements TagType =
+    ["private"]? "tagtype" Name ":" type:["int"|"String"|"Boolean"] TagScope? ";" ;
+  symbolrule ValuedTagType = type:int;
+
+  /** A tag type with a pre-determined name and set of pre-determined values
+   * @attribute name the name of the enumerated tag type
+   * @attribute strings the list of allowed values
+   */
+  symbol EnumeratedTagType implements TagType =
+    ["private"]? "tagtype" Name ":"  "[" (String || "|")+ "]" TagScope? ";" ;
+  symbolrule EnumeratedTagType = values:List<String>;
+
+  /** A complex tag type, known by a pre-determined name and a number of inner variables
+   * @attribute name the name of the complex tag type
+   */
+  symbol scope ComplexTagType implements TagType =
+    ["private"]? "tagtype" Name TagScope?
+    "{" (Reference || ",")+ ";" "}" ;
+
+  symbol Reference = Name ":" ReferenceTyp iteration:["?"|"+"|"*"]? ;
+  symbolrule Reference =
+    referenceType: int
+    referencedTag: Optional<String>;
+
+  /**
+   * @attribute type if the type is a primitive-ish type, such as with valued tag types
+   * @attribute name if the reference is to another complex tag type (@TagType)
+   */
+  ReferenceTyp = type:["int"|"String"|"Boolean"] | Name@TagType ;
+}

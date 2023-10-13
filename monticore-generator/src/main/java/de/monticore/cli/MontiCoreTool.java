@@ -404,6 +404,13 @@ public class MontiCoreTool {
             .desc("Specifies if transformation infrastructure should be generated for the given TR grammar.")
             .build());
 
+    // toggle tagging generation
+    options.addOption(Option.builder(GENTAG_LONG)
+            .argName("boolean")
+            .hasArg(true)
+            .desc("Specifies if tagging infrastructure should be generated for the given tagging grammar.")
+            .build());
+
     // help dialog
     options.addOption(Option.builder(HELP)
         .longOpt(HELP_LONG)

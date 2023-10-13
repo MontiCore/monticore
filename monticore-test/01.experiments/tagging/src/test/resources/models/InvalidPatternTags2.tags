@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+conforms to AutomataSchema;
+
+tags InvalidPatternTags2 for Simple {
+   within C {
+      tag [CA - x > CB;] with InvalidValueTag="timestamp";
+  }
+}
