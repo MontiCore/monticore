@@ -38,10 +38,6 @@ public class ComponentSymbol extends ComponentSymbolTOP {
     return !this.getTypeParameters().isEmpty();
   }
 
-  public List<PortSymbol> getPorts() {
-    return this.getSpannedScope().getLocalPortSymbols();
-  }
-
   /**
    * Returns the port of this component that matches the given name, if it
    * exists. Does not consider inherited ports.
@@ -66,7 +62,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public Optional<PortSymbol> getPort(@NonNull String name, boolean searchSuper) {
     Preconditions.checkNotNull(name);
-    for (PortSymbol port : searchSuper ? this.getAllPorts() : this.getPorts()) {
+    for (PortSymbol port : searchSuper ? this.getAllPorts() : this.getPortsList()) {
       if (port.getName().equals(name)) return Optional.of(port);
     }
     return Optional.empty();
@@ -79,7 +75,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getIncomingPorts() {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPorts()) {
+    for (PortSymbol port : this.getPortsList()) {
       if (port.isIncoming()) {
         result.add(port);
       }
@@ -125,7 +121,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getOutgoingPorts() {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPorts()) {
+    for (PortSymbol port : this.getPortsList()) {
       if (port.isOutgoing()) {
         result.add(port);
       }
@@ -174,7 +170,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getPorts(boolean incoming, boolean outgoing) {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPorts()) {
+    for (PortSymbol port : this.getPortsList()) {
       if (port.isIncoming() == incoming && port.isOutgoing() == outgoing) {
         result.add(port);
       }
@@ -188,7 +184,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all ports of this component
    */
   public Set<PortSymbol> getAllPorts() {
-    Set<PortSymbol> result = new HashSet<>(this.getPorts());
+    Set<PortSymbol> result = new HashSet<>(this.getPortsList());
     for (CompKindExpression superComponent : this.getSuperComponentsList()) {
       result.addAll(superComponent.getTypeInfo().getAllPorts());
     }
@@ -241,10 +237,6 @@ public class ComponentSymbol extends ComponentSymbolTOP {
       }
     }
     return result;
-  }
-
-  public boolean hasPorts() {
-    return !this.getPorts().isEmpty();
   }
 
   /**

@@ -12,6 +12,7 @@ component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
     superComponents: de.monticore.types.check.CompKindExpression*
     refinements: de.monticore.types.check.CompKindExpression*
     parameters: de.monticore.symbols.basicsymbols._symboltable.VariableSymbol*
+    ports: de.monticore.symbols.compsymbols._symboltable.PortSymbol*
   ;
 
   interface symbol Subcomponent = Name;
