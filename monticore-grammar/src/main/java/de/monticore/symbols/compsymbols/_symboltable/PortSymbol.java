@@ -10,8 +10,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class PortSymbol extends PortSymbolTOP {
 
-  protected Boolean delayed = null;
-
   protected PortSymbol(String name) {
     super(name);
   }
@@ -55,25 +53,8 @@ public class PortSymbol extends PortSymbolTOP {
   }
 
   @Override
-  public Timing getTiming() {
-    return this.timing;
-  }
-
-  @Override
   public void setTiming(@Nullable Timing timing) {
     this.timing = timing;
-  }
-
-  public Boolean getDelayed() {
-    return this.isDelayed();
-  }
-
-  public boolean isDelayed() {
-    return this.delayed;
-  }
-
-  public void setDelayed(@Nullable Boolean delayed) {
-    this.delayed = delayed;
   }
 
   public boolean isStronglyCausal() {
