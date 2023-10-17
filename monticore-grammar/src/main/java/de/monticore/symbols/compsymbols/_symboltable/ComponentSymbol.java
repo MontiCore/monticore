@@ -9,6 +9,7 @@ import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -184,9 +185,20 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all ports of this component
    */
   public Set<PortSymbol> getAllPorts() {
+    return this.getAllPorts(new HashSet<>());
+  }
+
+  protected Set<PortSymbol> getAllPorts(Collection<ComponentSymbol> visited) {
+    visited.add(this);
     Set<PortSymbol> result = new HashSet<>(this.getPortsList());
     for (CompKindExpression superComponent : this.getSuperComponentsList()) {
-      result.addAll(superComponent.getTypeInfo().getAllPorts());
+      if (visited.contains(superComponent.getTypeInfo())) continue;
+      for (PortSymbol port : superComponent.getTypeInfo().getAllPorts(visited)) {
+        // Shadow super ports
+        if (result.stream().noneMatch(e -> e.getName() == port.getName())) {
+          result.add(port);
+        }
+      }
     }
     return result;
   }
