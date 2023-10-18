@@ -8,9 +8,29 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 public class StatisticsHandler {
+
+  protected static final ExecutorService reportSendingExecutorService;
+
+  static {
+    reportSendingExecutorService = Executors.newCachedThreadPool();
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      // just before the JVM runtime shuts down
+      try {
+        // no longer accept new reports to be submitted
+        reportSendingExecutorService.shutdown();
+        // and wait up to 60 seconds for all reports to be sent
+        reportSendingExecutorService.awaitTermination(60, TimeUnit.SECONDS);
+      } catch (InterruptedException ignored) {
+      }
+    }));
+  }
 
   private static void sendRequest(URI url, String data, String type) throws IOException, InterruptedException {
     HttpURLConnection connection = (HttpURLConnection) url.toURL().openConnection();
@@ -44,9 +64,12 @@ public class StatisticsHandler {
   }
 
   public static void storeReport(String report, String type) {
-    try {
-      sendRequest(new URI("https://" + "build.se.rwth-aachen.de" + ":8844"), report, type);
-    } catch (Exception ignored) {
-    }
+    CompletableFuture.runAsync(() -> {
+      try {
+        sendRequest(new URI("https://" + "build.se.rwth-aachen.de" + ":8844"), report, type);
+      } catch (Exception ignored) {
+      }
+    }, reportSendingExecutorService);
   }
+
 }
