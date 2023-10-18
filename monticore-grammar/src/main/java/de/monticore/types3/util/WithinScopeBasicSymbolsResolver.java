@@ -232,7 +232,7 @@ public class WithinScopeBasicSymbolsResolver {
     // in Java the type variable is preferred
     // e.g. class C<U>{class U{} U v;} //new C<Float>().v has type Float
     if (optTypeVar.isPresent() && optObj.isPresent()) {
-      Log.info("found type variable and object type for \""
+      Log.trace("found type variable and object type for \""
               + name
               + "\", selecting type variable",
           "TypeVisitor");
