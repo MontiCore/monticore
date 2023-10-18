@@ -126,7 +126,7 @@ public class SymTypeUnboxingVisitor extends SymTypeDeepCloneVisitor {
       Optional<TypeSymbol> unboxedTypeSymbolOpt =
           BasicSymbolsMill.globalScope().resolveType(unboxedName);
       if (!unboxedTypeSymbolOpt.isPresent()) {
-        Log.info("symbol for unboxed type "
+        Log.debug("symbol for unboxed type "
                 + unboxedName
                 + " is not found for type "
                 + name

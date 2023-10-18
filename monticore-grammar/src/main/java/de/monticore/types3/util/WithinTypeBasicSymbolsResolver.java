@@ -389,7 +389,7 @@ public class WithinTypeBasicSymbolsResolver {
     }
     // extension point
     else {
-      Log.info("tried to get the spanned scope of "
+      Log.debug("tried to get the spanned scope of "
               + type.printFullName()
               + " which is currently not supported",
           LOG_NAME

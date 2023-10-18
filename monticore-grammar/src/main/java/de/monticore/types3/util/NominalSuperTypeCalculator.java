@@ -43,7 +43,7 @@ public class NominalSuperTypeCalculator {
    */
   public List<SymTypeExpression> getNominalSuperTypes(SymTypeExpression thisType) {
     if (!isSupported(thisType)) {
-      Log.info("tried to get list of nominal super types "
+      Log.debug("tried to get list of nominal super types "
               + "of unsupported type: " + thisType.printFullName(),
           LOG_NAME);
       return Collections.emptyList();
@@ -109,7 +109,7 @@ public class NominalSuperTypeCalculator {
     }
     // extension point
     else {
-      Log.info("tried to get nominal supertypes of "
+      Log.debug("tried to get nominal supertypes of "
               + thisType.printFullName()
               + " which is currently not supported",
           LOG_NAME

@@ -134,7 +134,7 @@ public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
       Optional<TypeSymbol> boxedTypeSymbolOpt =
           BasicSymbolsMill.globalScope().resolveType(boxedName);
       if (!boxedTypeSymbolOpt.isPresent()) {
-        Log.info("symbol for boxed type "
+        Log.debug("symbol for boxed type "
                 + boxedName
                 + " is not found for type "
                 + name
