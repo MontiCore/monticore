@@ -386,6 +386,10 @@ checkArtifactsMCCommon.dependsOn(checkArtifactsUMLStereotype)
 checkArtifactsUMLModifier.dependsOn(checkArtifactsUMLStereotype)
 checkArtifactsUMLStereotype.dependsOn(checkArtifactsMCCommonLiterals)
 
+checkArtifactsRegularExpressions.dependsOn(checkArtifactsMCCommonLiterals)
+
+checkArtifactsRegExType.dependsOn(checkArtifactsRegularExpressions)
+
 ///////////// dependencies between show artifacts tasks ///////////////////////
 
 showArtifactsAssignmentExpressions.dependsOn(showArtifactsExpressionsBasis)
@@ -466,6 +470,10 @@ showArtifactsMCCommon.dependsOn(showArtifactsUMLModifier)
 showArtifactsMCCommon.dependsOn(showArtifactsUMLStereotype)
 showArtifactsUMLModifier.dependsOn(showArtifactsUMLStereotype)
 showArtifactsUMLStereotype.dependsOn(showArtifactsMCCommonLiterals)
+
+showArtifactsRegularExpressions.dependsOn(showArtifactsMCCommonLiterals)
+
+showArtifactsRegExType.dependsOn(showArtifactsRegularExpressions)
 
 java {
   registerFeature('grammars') {
