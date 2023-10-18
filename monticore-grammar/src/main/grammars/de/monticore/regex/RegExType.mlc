@@ -1,6 +1,6 @@
 package de.monticore.regex;
 
-mlc MCCommonLiterals {
+mlc RegExType {
 
   export "$projectDir/src/main/grammars" {
     include "de/monticore/regex/RegExType.mc4";
