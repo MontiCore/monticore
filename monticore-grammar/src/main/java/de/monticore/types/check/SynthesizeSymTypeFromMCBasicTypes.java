@@ -106,6 +106,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
     if (matches.isEmpty()) {
       return Optional.empty();
     } else {
+      /* TODO: Enable once CD4A resolving is fixed
       if (matches.size() > 1) {
         Log.error("0xA0325 Reference " + qName.getQName()
             + " matches multiple type variables: "
@@ -113,6 +114,8 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
           qName.get_SourcePositionStart()
         );
       }
+      */
+
       SymTypeVariable symType = SymTypeExpressionFactory.createTypeVariable(matches.get(0));
       return Optional.of(symType);
     }
