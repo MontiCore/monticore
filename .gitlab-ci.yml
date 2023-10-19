@@ -248,6 +248,14 @@ trigger-ocl-dev:
   only:
     - dev
 
+trigger-montifun-dev:
+  stage: trigger_languages
+  trigger:
+    project: monticore/languages/montifun
+    branch: dev
+  only:
+    - dev
+
 trigger-siunits-dev:
   stage: trigger_languages
   trigger:
@@ -351,6 +359,14 @@ trigger-ocl-master:
   trigger:
     project: monticore/languages/OCL
     branch: master
+  only:
+    - master
+
+trigger-montifun-main:
+  stage: trigger_languages
+  trigger:
+    project: monticore/languages/montifun
+    branch: main
   only:
     - master
 
