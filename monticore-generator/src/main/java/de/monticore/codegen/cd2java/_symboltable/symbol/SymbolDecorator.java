@@ -153,6 +153,10 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .addCDMember(createDetermineFullName(scopeInterface))
             .build();
 
+    // Only add a toString method, if not already present on the input CD
+    if (symbolClass.getCDMethodList().stream().noneMatch(x->x.getName().equals("toString") && x.getCDParameterList().isEmpty()))
+      symbolClass.addCDMember(createToString(symbolName));
+
     // add only for scope spanning symbols
     if (hasScope || hasInheritedScope) {
       ASTCDAttribute spannedScopeAttribute = createSpannedScopeAttribute();
@@ -311,6 +315,15 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), stringType, "determineFullName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DetermineFullName",
             scopeInterface));
+    return method;
+  }
+
+  protected ASTCDMethod createToString(String symbolName) {
+    ASTMCType stringType = getMCTypeFacade().createStringType();
+
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), stringType, "toString");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "ToString",
+            symbolName));
     return method;
   }
 

@@ -51,6 +51,8 @@ public class AutomataSymbolsTest {
     assertEquals("ping",s1.getName());
     assertEquals("",s1.getPackageName());
     assertEquals("ping",s1.getFullName());
+    // Test the generated toString method()
+    assertEquals("StateSymbol{fullName='ping', sourcePosition=<0,0>}",s1.toString());
     assertTrue(Log.getFindings().isEmpty());
   }
   
