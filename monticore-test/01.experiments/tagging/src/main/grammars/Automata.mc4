@@ -8,7 +8,7 @@ grammar Automata extends de.monticore.MCBasics {
     @attribute transitions List of transitions
 */
 symbol Automaton =
-  "automaton" Name "{" (State | Transition | ScopedState)* "}" ;
+  "automaton" Name "{" (State | Transition | ScopedState)* "}" NotQuiteAutomataProductions? ;
 
 /** A ASTState represents a state of a finite automaton
     @attribute name Name of state
@@ -38,5 +38,16 @@ symbol scope ScopedState implements ScopedStateElement =
   "scopedstate" Name "{" ScopedStateElement* "}" ;
 
 interface ScopedStateElement;
+
+// We use a keyword to differentiate between NotQuiteAutomataProductions and its inner productions
+NotQuiteAutomataProductions = "somekey" (RandomSymbolInterface | AnotherSymbolProd | YetAnotherSymbolProd)*;
+
+interface symbol scope RandomSymbolInterface;
+scope SomeScopeProd implements RandomSymbolInterface = "SomeScopeProd" Name;
+SomeProd implements RandomSymbolInterface = "SomeProd" Name;
+
+symbol AnotherSymbolProd = "AnotherSymbolProd" Name;
+
+YetAnotherSymbolProd extends AnotherSymbolProd = "YetAnotherSymbolProd" Name;
 
 }

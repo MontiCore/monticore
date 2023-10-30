@@ -23,4 +23,7 @@ automaton Simple {
   state E;
   E - a > E;
 
+  state Dup;
+  scopedstate Dup { }
+
 }

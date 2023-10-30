@@ -89,7 +89,7 @@ public class TaggerDecorator extends AbstractDecorator {
     elements.add(taggerClass);
 
     for (ProdSymbol prodSymbol : originalGrammar.getSymbol().getProds()) {
-      if (prodSymbol.isIsInterface() || prodSymbol.isIsExternal() || prodSymbol.isIsLexerProd()) continue;
+      if (prodSymbol.isIsExternal() || prodSymbol.isIsLexerProd()) continue;
 
       // Skip left recursive productions
       // DISCUSS: Support for left-recursive
@@ -98,8 +98,6 @@ public class TaggerDecorator extends AbstractDecorator {
 
       taggerInterface.addAllCDMembers(createITaggerMethods(prodSymbol, taggerClass.getName()));
       taggerClass.addAllCDMembers(createTaggerMethods(prodSymbol, isSymbolLike));
-
-      elements.add(createTravCheckerClass(prodSymbol));
     }
 
     ASTCDMethod method = cdMethodFacade.createMethod(PROTECTED.build(), mcTypeFacade.createQualifiedType(IScope.class.getName()),
@@ -206,8 +204,7 @@ public class TaggerDecorator extends AbstractDecorator {
             mcTypeFacade.createBasicGenericTypeOf(Stream.class.getName(), ASTTargetElement.class.getName()),
             "findTargetsBy",
             cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "ast"),
-            cdParameterFacade.createParameter(astFQN, "element"),
-            cdParameterFacade.createParameter("TravChecker" + prodSymbol.getName(), "travChecker")
+            cdParameterFacade.createParameter(astFQN, "element")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.FindTargetsBy"));
 
@@ -216,8 +213,7 @@ public class TaggerDecorator extends AbstractDecorator {
               mcTypeFacade.createBasicGenericTypeOf(Stream.class.getName(), ASTTargetElement.class.getName()),
               "findTargetsBy",
               cdParameterFacade.createParameter(ASTContext.class.getName(), "ast"),
-              cdParameterFacade.createParameter(astFQN, "element"),
-              cdParameterFacade.createParameter("TravChecker" + prodSymbol.getName(), "travChecker")
+              cdParameterFacade.createParameter(astFQN, "element")
       )));
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.FindTargetsBy"));
     }
@@ -226,32 +222,11 @@ public class TaggerDecorator extends AbstractDecorator {
             mcTypeFacade.createBooleanType(),
             "isIdentified",
             cdParameterFacade.createParameter(ASTModelElementIdentifier.class.getName(), "elementIdentifier"),
-            cdParameterFacade.createParameter(astFQN, "element"),
-            cdParameterFacade.createParameter("TravChecker" + prodSymbol.getName(), "travChecker")
+            cdParameterFacade.createParameter(astFQN, "element")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.IsIdentified"));
 
     return methods;
-  }
-
-  // The TravChecker, a class used to check if an AST element is present
-  protected ASTCDClass createTravCheckerClass(ProdSymbol prodSymbol) {
-    final String symbolASTFQN = getASTPackageName(prodSymbol) + ".AST" + StringTransformations.capitalize(prodSymbol.getName());
-    String traverserPkg = getPackageName(originalGrammar.getSymbol());
-    traverserPkg += "tagdefinition._visitor." + originalGrammar.getName() + "TagDefinitionTraverser";
-
-    ASTCDClass clazz = CD4CodeMill.cDClassBuilder().setName("TravChecker" + StringTransformations.capitalize(prodSymbol.getName()))
-            .setModifier(PACKAGE_PRIVATE.build())
-            .build();
-    clazz.addCDMember(cdAttributeFacade.createAttribute(PROTECTED_FINAL.build(), mcTypeFacade.createArrayType(mcTypeFacade.createBooleanType(), 1), "ret"));
-    clazz.addCDMember(cdAttributeFacade.createAttribute(PROTECTED_FINAL.build(), mcTypeFacade.createQualifiedType(traverserPkg), "traverser"));
-    clazz.addCDMember(cdAttributeFacade.createAttribute(PROTECTED.build(), mcTypeFacade.createQualifiedType(symbolASTFQN), "element"));
-
-    ASTCDConstructor constructor = cdConstructorFacade.createDefaultConstructor(PUBLIC.build(), clazz);
-    clazz.addCDMember(constructor);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("tagging.travchecker.TravCheckerConstructor", prodSymbol.getName(), originalGrammar.getName(), getPackageName(originalGrammar.getSymbol())));
-
-    return clazz;
   }
 
   /**

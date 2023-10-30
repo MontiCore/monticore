@@ -117,7 +117,7 @@ public class TagGenerator {
       File relFile = relP.toFile();
       return new File(relFile.getParent(), relFile.getName().replace(".mc4", tagtype +".mc4"));
     }
-    Log.error("0xA5C01 Could not determine Tagging path for grammar " + grammar);
+    Log.error("0xA5C11 Could not determine Tagging path for grammar " + grammar);
     return null;
   }
 }

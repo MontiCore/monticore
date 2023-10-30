@@ -4,7 +4,6 @@ List< ASTTag> tags = new ArrayList<>();
 
 List< String> scopeStack = getScopeDifferences(symbol.getEnclosingScope(), getArtifactScope(symbol.getEnclosingScope()));
 
-TravChecker${prodname} travChecker = new TravChecker${prodname}();
 
 List< ASTContext> contexts;
 if (scopeStack.isEmpty()) {

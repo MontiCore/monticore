@@ -5,13 +5,10 @@ ${tc.signature("prodname", "hasName")}
 
 List< String> scopeStack = getScopeDifferences(model.getEnclosingScope(), getArtifactScope(model.getEnclosingScope()));
 
-<#if !hasName>
-TravChecker${prodname} travChecker = new TravChecker${prodname}();
-</#if>
 
 List< ASTContext> contexts;
 if (scopeStack.isEmpty()) {
-    if( findTargetsBy(astTagUnit, model<#if hasName>.getName()<#else>, travChecker</#if>).map(x -> x.getTagList().remove(astTag)).filter(x -> x).findFirst()
+    if( findTargetsBy(astTagUnit, model<#if hasName>.getName()</#if>).map(x -> x.getTagList().remove(astTag)).filter(x -> x).findFirst()
     .orElse(false)) {
         return true;
     }
@@ -48,7 +45,7 @@ if (scopeStack.isEmpty()) {
         }
     }
     for (ASTContext context : contexts) {
-        if (findTargetsBy(context, <#if hasName>scopeStack.get(0)<#else>model, travChecker</#if>).map(x -> x.getTagList().remove(astTag)).filter(x -> x).findFirst()
+        if (findTargetsBy(context, <#if hasName>scopeStack.get(0)<#else>model</#if>).map(x -> x.getTagList().remove(astTag)).filter(x -> x).findFirst()
         .orElse(false)) {
             return true;
         }

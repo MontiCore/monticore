@@ -6,12 +6,10 @@ List< ASTTag> tags = new ArrayList<>();
 
 List< String> scopeStack = getScopeDifferences(model.getEnclosingScope(), getArtifactScope(model.getEnclosingScope()));
 
-TravChecker${prodname} travChecker = new TravChecker${prodname}();
-
 List< ASTContext> contexts;
 if (scopeStack.isEmpty()) {
     <#if hasName>findTargetsBy(astTagUnit, model.getName()).forEach(t -> tags.addAll(t.getTagList()));</#if>
-    findTargetsBy(astTagUnit, model, travChecker).forEach(t -> tags.addAll(t.getTagList()));
+    findTargetsBy(astTagUnit, model).forEach(t -> tags.addAll(t.getTagList()));
 } else {
     // within/context must always be on scopes, so we can use name matching instead of pattern matching
     <#if hasName>scopeStack.add(model.getName());</#if>
@@ -40,7 +38,7 @@ if (scopeStack.isEmpty()) {
         <#if hasName>
             findTargetsBy(context, scopeStack.get(0)).forEach(t -> tags.addAll(t.getTagList()));
         <#else>
-            findTargetsBy(context, model, travChecker).forEach(t -> tags.addAll(t.getTagList()));
+            findTargetsBy(context, model).forEach(t -> tags.addAll(t.getTagList()));
         </#if>
     }
 
