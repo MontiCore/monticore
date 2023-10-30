@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+automaton NotQuiteAutomata { }
+// This test "model" is inspired by the inheritance of productions, such as CDs
+somekey
+  SomeScopeProd SPP1
+  SomeProd SP1
+  AnotherSymbolProd ASP1
+  YetAnotherSymbolProd YASP1
+
+  SomeScopeProd SPP2
+  SomeProd SP2
+  AnotherSymbolProd ASP2
+  YetAnotherSymbolProd YASP2

@@ -4,6 +4,8 @@ import automata.AutomataMill;
 import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._ast.ASTTransition;
+import automata._symboltable.ScopedStateSymbol;
+import automata._symboltable.StateSymbol;
 import automata._tagging.AutomataTagger;
 import automata._tagging.IAutomataTagger;
 import automata._visitor.AutomataTraverser;
@@ -23,6 +25,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class TagTest {
 
@@ -189,6 +192,22 @@ public class TagTest {
   public void testStateDSymbol() {
     List<ASTTag> tags = automataTagger.getTags(states.get("D").getSymbol(), tagDefinition);
     Assert.assertEquals(2, tags.size());
+    assertSimpleTag(tags.get(0), "WildcardedTag");
+  }
+
+  @Test
+  public void testDupSymbols() {
+    Optional<StateSymbol> stateSymbolOpt = model.getEnclosingScope().resolveState("Dup");
+    Assert.assertTrue(stateSymbolOpt.isPresent());
+    Optional<ScopedStateSymbol> scopedStateSymbolOpt = model.getEnclosingScope().resolveScopedState("Dup");
+    Assert.assertTrue(scopedStateSymbolOpt.isPresent());
+    // Discuss if this type-unaware duplication is desired?
+    List<ASTTag> tags = automataTagger.getTags(stateSymbolOpt.get(), tagDefinition);
+    Assert.assertEquals(1, tags.size());
+    assertSimpleTag(tags.get(0), "WildcardedTag");
+
+    tags = automataTagger.getTags(scopedStateSymbolOpt.get(), tagDefinition);
+    Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "WildcardedTag");
   }
 

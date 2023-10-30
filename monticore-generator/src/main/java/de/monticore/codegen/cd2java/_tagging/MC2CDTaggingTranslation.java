@@ -76,8 +76,8 @@ public class MC2CDTaggingTranslation implements Function<ASTMCGrammar, ASTCDComp
             .build();
 
     for (ProdSymbol prodSymbol : originalGrammar.getSymbol().getProds()) {
-      // only add tagging methods for concrete productions
-      if (prodSymbol.isIsInterface() || prodSymbol.isIsExternal() || prodSymbol.isIsLexerProd()) continue;
+      // only add tagging methods for concrete productions and symbol interfaces
+      if (prodSymbol.isIsExternal() || prodSymbol.isIsLexerProd()) continue;
       // that are not left recursive
       // DISCUSS: left recursive tagging?
       if (prodSymbol.isIsDirectLeftRecursive() || prodSymbol.isIsIndirectLeftRecursive()) continue;

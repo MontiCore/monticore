@@ -5,10 +5,7 @@ import de.monticore.ast.Comment;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.codegen.cd2java._tagging.TaggingConstants;
 import de.monticore.grammar.grammar.GrammarMill;
-import de.monticore.grammar.grammar._ast.ASTClassProd;
-import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTMCGrammarBuilder;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
+import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
@@ -17,6 +14,7 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.statements.mcreturnstatements.MCReturnStatementsMill;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,12 +57,30 @@ public class TagDefinitionDerivVisitor implements GrammarVisitor2 {
   public void visit(ASTClassProd node) {
     if (node.getSymbol().isIsDirectLeftRecursive() || node.getSymbol().isIsIndirectLeftRecursive()) {
       grammar.add_PostComment(new Comment("/* Unable to create a TagDef Identifier for left-recursive production " + node.getName() + " */"));
+      Log.warn("0xA5C12 Unable to create a TagDef Identifier for left-recursive production " + node.getName(), node.get_SourcePositionStart());
       return;
     }
+    createSpecificIdentifier(node);
+  }
+
+  @Override
+  public void visit(ASTInterfaceProd node) {
+    if (node.getSymbol().isIsDirectLeftRecursive() || node.getSymbol().isIsIndirectLeftRecursive()) {
+      grammar.add_PostComment(new Comment("/* Unable to create a TagDef Identifier for left-recursive interface " + node.getName() + " */"));
+      Log.warn("0xA5C13 Unable to create a TagDef Identifier for left-recursive interface " + node.getName(), node.get_SourcePositionStart());
+      return;
+    }
+    createSpecificIdentifier(node);
+  }
+
+  protected void createSpecificIdentifier(ASTProd node) {
     boolean ignore = node.getSymbol().isIsSymbolDefinition() || hasName(node);
     ASTClassProd classProd = GrammarMill.classProdBuilder().setName(node.getName() + "Identifier")
             .addSuperInterfaceRule(GrammarMill.ruleReferenceBuilder().setName("ModelElementIdentifier").build())
-            .addAlt(GrammarMill.altBuilder().addComponent(terminal("[")).addComponent(GrammarMill.nonTerminalBuilder().setName(node.getName()).build()).addComponent(terminal(("]"))).build())
+            .addAlt(GrammarMill.altBuilder()
+                    .addComponent(terminal("["))
+                    .addComponent(GrammarMill.nonTerminalBuilder().setName(node.getName()).setUsageName("identifiesElement").build())
+                    .addComponent(terminal(("]"))).build())
             .build();
 
     if (ignore) {
@@ -100,7 +116,7 @@ public class TagDefinitionDerivVisitor implements GrammarVisitor2 {
             .build();
   }
 
-  protected boolean hasName(ASTClassProd node) {
+  protected boolean hasName(ASTProd node) {
     // If the production symbol has a single name production
     boolean isFirstName = true;
     for (RuleComponentSymbol comp : node.getSymbol().getProdComponents()) {

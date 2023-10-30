@@ -31,4 +31,6 @@ tags Simple for Simple {
                     ofBoolean="true",
                     Exception{type="t", msg="m";};
     };
+
+    tag Dup with WildcardedTag; // targets two symbols
 }
