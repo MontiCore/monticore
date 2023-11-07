@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.codegen.cd2java.interpreter.InterpreterConstants;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.cd.facade.CDMethodFacade;
 import de.monticore.cd.facade.CDParameterFacade;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
+import static de.monticore.codegen.cd2java.interpreter.InterpreterConstants.INTERPRETER_NAME_SUFFIX;
 
 public class VisitorService extends AbstractService<VisitorService> {
 
@@ -202,6 +204,58 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public ASTMCQualifiedType getHandlerType() {
     return getHandlerType(getCDSymbol());
+  }
+
+  /**
+   * interpreter name e.g. AutomataInterpreter
+   */
+
+  public String getInterpreterSimpleName() {
+    return getInterpreterSimpleName(getCDSymbol());
+  }
+
+  public String getInterpreterSimpleName(DiagramSymbol cdDefinitionSymbol) {
+    return cdDefinitionSymbol.getName() + INTERPRETER_NAME_SUFFIX;
+  }
+
+  public String getInterpreterFullName() {
+    return getInterpreterFullName(getCDSymbol());
+  }
+
+  public String getInterpreterFullName(DiagramSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getInterpreterSimpleName(cdDefinitionSymbol);
+  }
+
+  public ASTMCQualifiedType getInterpreterType() {
+    return getInterpreterType(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getInterpreterType(DiagramSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getInterpreterInterfaceFullName(cdSymbol));
+  }
+
+  public String getInterpreterInterfaceSimpleName() {
+    return getInterpreterInterfaceSimpleName(getCDSymbol());
+  }
+
+  public String getInterpreterInterfaceSimpleName(DiagramSymbol cdDefinitionSymbol) {
+    return "I" + cdDefinitionSymbol.getName() + INTERPRETER_NAME_SUFFIX;
+  }
+
+  public String getInterpreterInterfaceFullName() {
+    return getInterpreterInterfaceFullName(getCDSymbol());
+  }
+
+  public String getInterpreterInterfaceFullName(DiagramSymbol cdDefinitionSymbol) {
+    return getPackage(cdDefinitionSymbol) + "." + getInterpreterInterfaceSimpleName(cdDefinitionSymbol);
+  }
+
+  public ASTMCQualifiedType getInterpreterInterfaceType() {
+    return getInterpreterInterfaceType(getCDSymbol());
+  }
+
+  public ASTMCQualifiedType getInterpreterInterfaceType(DiagramSymbol cdSymbol) {
+    return getMCTypeFacade().createQualifiedType(getInterpreterInterfaceFullName(cdSymbol));
   }
 
   /**

@@ -53,7 +53,9 @@ public class ASTEmfDecorator extends ASTDecorator {
     changedClass.getCDInterfaceUsage().addInterface(this.astService.getASTBaseInterface());
     // have to use the changed one here because this one will get the TOP prefix
     changedClass.addCDMember(createAcceptTraverserMethod(changedClass));
+    changedClass.addCDMember(createEvaluateInterpreterMethod(changedClass));
     changedClass.addAllCDMembers(createAcceptTraverserSuperMethods(changedClass));
+    changedClass.addAllCDMembers(createEvaluateInterpreterSuperMethods(changedClass));
     changedClass.addCDMember(getConstructMethod(originalClass));
     changedClass.addAllCDMembers(createEMethods(originalClass));
 
