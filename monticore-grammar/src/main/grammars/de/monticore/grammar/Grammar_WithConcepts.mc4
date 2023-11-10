@@ -29,13 +29,4 @@ grammar Grammar_WithConcepts  extends
     
   JavaCode = ClassBodyDeclaration*;
 
-  ExtType = MCType;
-
-  ExtReturnType = MCReturnType;
-
-  ExtTypeArgument = "<" (MCTypeArgument || ",")+ ">"*;
-
-  // Empty TypeParameters
-  ExtTypeParameters = ;
-
 }

@@ -62,7 +62,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derCommonExpressions.setType4Ast(type4Ast);
     visitors.derExpressionBasis.setType4Ast(type4Ast);
     visitors.derLambdaExpressions.setType4Ast(type4Ast);
-    visitors.derCombineExpressionsWithLiterals.setType4Ast(type4Ast);
     visitors.derOfMCCommonLiterals.setType4Ast(type4Ast);
     // MCTypes
     visitors.synMCArrayTypes.setType4Ast(type4Ast);
@@ -84,8 +83,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derCommonExpressions = new CommonExpressionsTypeVisitor();
     visitors.derExpressionBasis = new ExpressionBasisTypeVisitor();
     visitors.derLambdaExpressions = new LambdaExpressionsTypeVisitor();
-    visitors.derCombineExpressionsWithLiterals =
-        new CombineExpressionsWithLiteralsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     // MCTypes
     visitors.synMCArrayTypes = new MCArrayTypesTypeVisitor();
@@ -151,7 +148,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.setCommonExpressionsHandler(visitors.derCommonExpressions);
     traverser.add4ExpressionsBasis(visitors.derExpressionBasis);
     traverser.add4LambdaExpressions(visitors.derLambdaExpressions);
-    traverser.add4CombineExpressionsWithLiterals(visitors.derCombineExpressionsWithLiterals);
     traverser.add4MCCommonLiterals(visitors.derOfMCCommonLiterals);
     // MCTypes
     traverser.add4MCArrayTypes(visitors.synMCArrayTypes);
@@ -179,8 +175,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public ExpressionBasisTypeVisitor derExpressionBasis;
 
     public LambdaExpressionsTypeVisitor derLambdaExpressions;
-
-    public CombineExpressionsWithLiteralsTypeVisitor derCombineExpressionsWithLiterals;
 
     public MCCommonLiteralsTypeVisitor derOfMCCommonLiterals;
 
