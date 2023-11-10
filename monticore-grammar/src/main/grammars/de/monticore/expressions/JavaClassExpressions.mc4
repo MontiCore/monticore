@@ -10,7 +10,7 @@ import de.monticore.types.*;
 
 /**
  * This grammar defines Java specific class expressions like super,
- * this, type cast, etc.
+ * this, etc.
  *
  * This grammar should only be included, when a mapping to Java is
  * intended and the full power of Java should be available in the
@@ -32,13 +32,15 @@ import de.monticore.types.*;
  * * --  expressions/LambdaExpressions.mc4
  * * --  expressions/OCLExpressions.mc4
  * * --  expressions/SetExpressions.mc4
+ * * --  expressions/UglyExpressions.mc4
  *
 */
 
 component grammar JavaClassExpressions
           extends CommonExpressions,
           MCVarDeclarationStatements,
-          MCFullGenericTypes {
+          MCFullGenericTypes,
+          UglyExpressions {
 
   /*=================================================================*/
 
@@ -48,18 +50,11 @@ component grammar JavaClassExpressions
   ThisExpression implements Expression <280> =
     Expression "." "this";
 
-  ArrayExpression implements Expression <250> =
-    Expression "[" indexExpression:Expression "]";
-
   SuperExpression implements Expression <270> =
     Expression "." "super" SuperSuffix;
 
   GenericInvocationExpression implements Expression <260> =
     Expression "." PrimaryGenericInvocationExpression;
-
-  // casting expression uses a type
-  TypeCastExpression implements Expression <230> =
-    "(" MCType ")" Expression;
 
   PrimarySuperExpression implements Expression <330> =
     "super";
@@ -105,8 +100,8 @@ component grammar JavaClassExpressions
   /*=================================================================*/
 
   // instance of needs a type or pattern as argument
-  InstanceofExpression implements Expression <140> =
-    Expression "instanceof" (MCType | Pattern);
+  InstanceofPatternExpression implements Expression <140> =
+    Expression "instanceof" Pattern;
 
   interface Pattern;
 

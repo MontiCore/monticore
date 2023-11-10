@@ -27,6 +27,8 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
 
   private DeriveSymTypeOfCombineExpressions deriveSymTypeOfCombineExpressions;
 
+  private DeriveSymTypeOfUglyExpressions deriveSymTypeOfUglyExpressions;
+
   private FullSynthesizeFromCombineExpressionsWithLiterals synthesizer;
 
   public FullDeriveFromCombineExpressionsWithLiterals(){
@@ -51,6 +53,7 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
     deriveSymTypeOfJavaClassExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfLambdaExpressions.setTypeCheckResult(typeCheckResult);
     deriveSymTypeOfCombineExpressions.setTypeCheckResult(typeCheckResult);
+    deriveSymTypeOfUglyExpressions.setTypeCheckResult(typeCheckResult);
   }
 
   /**
@@ -68,6 +71,7 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
     deriveSymTypeOfLambdaExpressions = new DeriveSymTypeOfLambdaExpressions();
     deriveSymTypeOfLambdaExpressions.setSynthesize(synthesizer);
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(synthesizer);
+    deriveSymTypeOfUglyExpressions = new DeriveSymTypeOfUglyExpressions(synthesizer);
     setTypeCheckResult(getTypeCheckResult());
 
     traverser.add4CommonExpressions(deriveSymTypeOfCommonExpressions);
@@ -86,5 +90,7 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
     traverser.setJavaClassExpressionsHandler(deriveSymTypeOfJavaClassExpressions);
     traverser.add4CombineExpressionsWithLiterals(deriveSymTypeOfCombineExpressions);
     traverser.setCombineExpressionsWithLiteralsHandler(deriveSymTypeOfCombineExpressions);
+    traverser.add4UglyExpressions(deriveSymTypeOfUglyExpressions);
+    traverser.setUglyExpressionsHandler(deriveSymTypeOfUglyExpressions);
   }
 }
