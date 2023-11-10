@@ -6,6 +6,7 @@ package de.monticore.expressions;
 
 import de.monticore.expressions.*;
 import de.monticore.statements.*;
+import de.monticore.types.*;
 
 /**
  * This grammar defines Java specific class expressions like super,
@@ -35,26 +36,9 @@ import de.monticore.statements.*;
 */
 
 component grammar JavaClassExpressions
-          extends CommonExpressions, MCVarDeclarationStatements {
-
-
-  /*=================================================================*/
-
-  /*
-   * The following are several extension points that allow to fill in the
-   * the desired type system:
-   *  e.g. the complete type system of java (extending MCFullGenericType)
-   *  or any smaller variant
-  */
-
-  // Types
-  external ExtType;
-
-  // Types including a void return type
-  external ExtReturnType;
-
-  // Type arguments
-  external ExtTypeArgument;
+          extends CommonExpressions,
+          MCVarDeclarationStatements,
+          MCFullGenericTypes {
 
   /*=================================================================*/
 
@@ -75,7 +59,7 @@ component grammar JavaClassExpressions
 
   // casting expression uses a type
   TypeCastExpression implements Expression <230> =
-    "(" ExtType ")" Expression;
+    "(" MCType ")" Expression;
 
   PrimarySuperExpression implements Expression <330> =
     "super";
@@ -86,10 +70,10 @@ component grammar JavaClassExpressions
   interface Creator ;
 
   AnonymousClass implements Creator
-      =  ExtType Arguments;
+      =   MCType Arguments;
 
   ArrayCreator implements Creator
-      =   ExtType ArrayDimensionSpecifier;
+      =   MCType ArrayDimensionSpecifier;
 
   interface ArrayDimensionSpecifier ;
 
@@ -101,11 +85,11 @@ component grammar JavaClassExpressions
 
   // access of class object uses a type
   ClassExpression implements Expression <360> =
-    ExtReturnType "." "class";
+    MCReturnType "." "class";
 
   // generic invocation may specify type arguments
   PrimaryGenericInvocationExpression implements Expression <370> =
-    "<"(ExtTypeArgument||",")+">" GenericInvocationSuffix;
+    "<"(MCTypeArgument||",")+">" GenericInvocationSuffix;
 
   GenericInvocationSuffix
     =   ["super"] SuperSuffix
@@ -115,14 +99,14 @@ component grammar JavaClassExpressions
 
   SuperSuffix
     =   Arguments
-    |   "." ("<"(ExtTypeArgument||",")+">")? Name Arguments?
+    |   "." ("<"(MCTypeArgument||",")+">")? Name Arguments?
     ;
 
   /*=================================================================*/
 
   // instance of needs a type or pattern as argument
   InstanceofExpression implements Expression <140> =
-    Expression "instanceof" (ExtType | Pattern);
+    Expression "instanceof" (MCType | Pattern);
 
   interface Pattern;
 
