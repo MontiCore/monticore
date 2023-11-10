@@ -97,92 +97,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   }
 
   @Override
-  public void traverse(ASTArrayExpression node) {
-    SymTypeExpression indexResult = acceptThisAndReturnSymTypeExpression(node.getIndexExpression());
-    if(getTypeCheckResult().isType()){
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0253 the expression at source position "+node.getIndexExpression().get_SourcePositionStart()+" cannot be a type");
-      return;
-    }
-    SymTypeExpression arrayTypeResult = acceptThisAndReturnSymTypeExpression(node.getExpression());
-    if(getTypeCheckResult().isType()){
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0255 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
-      return;
-    }
-
-    if(!indexResult.isObscureType() && !arrayTypeResult.isObscureType()){
-      SymTypeExpression wholeResult = calculateArrayExpression(node, arrayTypeResult, indexResult);
-      storeResultOrLogError(wholeResult, node, "0xA0257");
-    }else{
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
-  }
-
-  protected SymTypeExpression calculateArrayExpression(ASTArrayExpression node, SymTypeExpression arrayTypeResult, SymTypeExpression indexResult) {
-    SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
-    //the type of the index has to be an integral type
-    if(indexResult.isPrimitive() && ((SymTypePrimitive)indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray){
-      SymTypeArray arrayResult = (SymTypeArray) arrayTypeResult;
-      wholeResult = getCorrectResultArrayExpression(node.getEnclosingScope(), indexResult, arrayTypeResult, arrayResult);
-    }
-    return wholeResult;
-  }
-
-  protected SymTypeExpression getCorrectResultArrayExpression(IExpressionsBasisScope scope, SymTypeExpression indexResult, SymTypeExpression arrayTypeResult, SymTypeArray arrayResult) {
-    SymTypeExpression wholeResult;
-    if(arrayResult.getDim()>1){
-      //case 1: A[][] bar -> bar[3] returns the type A[] -> decrease the dimension of the array by 1
-      wholeResult = SymTypeExpressionFactory.createTypeArray(arrayTypeResult.getTypeInfo().getName(),getScope(scope),arrayResult.getDim()-1,indexResult);
-    }else {
-      //case 2: A[] bar -> bar[3] returns the type A
-      //determine whether the result has to be a constant, generic or object
-      if(arrayResult.getTypeInfo().getTypeParameterList().isEmpty()){
-        //if the return type is a primitive
-        if(SymTypePrimitive.boxMap.containsKey(arrayResult.getTypeInfo().getName())){
-          wholeResult = SymTypeExpressionFactory.createPrimitive(arrayResult.getTypeInfo().getName());
-        }else {
-          //if the return type is an object
-          wholeResult = SymTypeExpressionFactory.createTypeObject(arrayResult.getTypeInfo().getName(), getScope(scope));
-        }
-      }else {
-        //the return type must be a generic
-        List<SymTypeExpression> typeArgs = Lists.newArrayList();
-        for(TypeVarSymbol s : arrayResult.getTypeInfo().getTypeParameterList()){
-          typeArgs.add(SymTypeExpressionFactory.createTypeVariable(s.getName(),getScope(scope)));
-        }
-        wholeResult = SymTypeExpressionFactory.createGenerics(arrayResult.getTypeInfo().getName(), getScope(scope), typeArgs);
-        wholeResult = replaceTypeVariables(wholeResult,typeArgs,((SymTypeOfGenerics)arrayResult.getArgument()).getArgumentList());
-      }
-    }
-    return wholeResult;
-  }
-
-  protected SymTypeExpression replaceTypeVariables(SymTypeExpression wholeResult, List<SymTypeExpression> typeArgs, List<SymTypeExpression> argumentList) {
-    Map<SymTypeExpression,SymTypeExpression> map = Maps.newHashMap();
-    if(typeArgs.size()!=argumentList.size()){
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA2297 Different amount of type variables and type arguments");
-    }else{
-      for(int i = 0;i<typeArgs.size();i++){
-        map.put(typeArgs.get(i),argumentList.get(i));
-      }
-
-      List<SymTypeExpression> oldArgs = ((SymTypeOfGenerics) wholeResult).getArgumentList();
-      List<SymTypeExpression> newArgs = Lists.newArrayList();
-      for (SymTypeExpression oldArg : oldArgs) {
-        newArgs.add(map.getOrDefault(oldArg, oldArg));
-      }
-      ((SymTypeOfGenerics) wholeResult).setArgumentList(newArgs);
-    }
-    return wholeResult;
-  }
-
-  @Override
   public void traverse(ASTClassExpression node) {
     //only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); the result is the type "Class"
@@ -274,50 +188,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   }
 
   @Override
-  public void traverse(ASTTypeCastExpression node) {
-    //innerResult is the SymTypeExpression of the type that will be casted into another type
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(node.getExpression());
-    if(getTypeCheckResult().isType()){
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0262 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
-      return;
-    }
-    //castResult is the SymTypeExpression of the type the innerResult will be casted to
-    SymTypeExpression castResult;
-
-    //castResult is the type in the brackets -> (ArrayList) list
-
-    deprecated_traverse(node.getMCType());
-    if(getTypeCheckResult().isPresentResult()){
-      castResult = getTypeCheckResult().getResult();
-    }else{
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0265 the type at source position "+node.getMCType().get_SourcePositionStart()+" cannot be calculated");
-      return;
-    }
-
-    if(!innerResult.isObscureType() && !castResult.isObscureType()) {
-      //wholeResult will be the result of the whole expression
-      SymTypeExpression wholeResult = calculateTypeCastExpression(node, castResult, innerResult);
-
-      storeResultOrLogError(wholeResult, node, "0xA0266");
-    }else{
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
-  }
-
-  protected SymTypeExpression calculateTypeCastExpression(ASTTypeCastExpression node, SymTypeExpression castResult, SymTypeExpression innerResult) {
-    if(compatible(castResult,innerResult)|| compatible(innerResult,castResult)){
-      return castResult;
-    }
-    return SymTypeExpressionFactory.createObscureType();
-  }
-
-  @Override
-  public void traverse(ASTInstanceofExpression node) {
+  public void traverse(ASTInstanceofPatternExpression node) {
     SymTypeExpression expressionResult = acceptThisAndReturnSymTypeExpression(node.getExpression());
     if(getTypeCheckResult().isType()) {
       getTypeCheckResult().reset();
@@ -329,13 +200,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     SymTypeExpression typeResult = SymTypeExpressionFactory.createObscureType();
 
     //calculate right type: type that the expression should be an instance of
-    deprecated_traverse(node.getMCType());
+    ASTMCType mcType = ((ASTTypePattern) node.getPattern()).getLocalVariableDeclaration().getMCType();
+    deprecated_traverse(mcType);
     if(getTypeCheckResult().isPresentResult()){
       if(!getTypeCheckResult().isType()) {
         if(!getTypeCheckResult().getResult().isObscureType()) {
           getTypeCheckResult().reset();
           getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-          Log.error("0xA0269 the expression at source position " + node.getMCType().get_SourcePositionStart() + " must be a type");
+          Log.error("0xA0269 the expression at source position " + mcType.get_SourcePositionStart() + " must be a type");
           return;
         }
       }else{

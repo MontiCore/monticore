@@ -1,0 +1,64 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.expressions;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.expressions.*;
+import de.monticore.types.*;
+
+/**
+ * This grammar defines expressions that are considered "ugly", e.g.,
+ * instanceof and typecasting.
+ * person instanceof Student
+ * (Student)person
+ *
+ * Not part of this grammar are Java-like pattern, e.g.,
+ * person instanceof Student student
+ *
+ * There are also other kinds of expressions defined in the
+ * grammars mentioned below. These expression definitions can safely be
+ * composed if desired.
+ *
+ * This grammar is part of a hierarchy of expressions, namely
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  --  expressions/OptionalExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
+ * * --  expressions/LambdaExpressions.mc4
+ * * --  expressions/OCLExpressions.mc4
+ * * --  expressions/SetExpressions.mc4
+ *
+*/
+
+component grammar UglyExpressions
+          extends MCBasicTypes,
+                  ExpressionsBasis {
+
+  /*=================================================================*/
+
+  /**
+   * ASTTypeCastExpression casts an expression to a given type
+   *   @attribute MCType
+   *              type to cast the expression to
+   *   @attribute Expression
+   *              the expression that should be casted
+   */
+  TypeCastExpression implements Expression <200> =
+    "(" MCType ")" Expression;
+
+  /**
+   * InstanceofExpression checks if an expression has a certain type
+   *   evaluates to true if the expression has the type given by MCType
+   *   otherwise evaluates to false
+   *
+   *   @attribute Expression
+   *              expression whose type is to be checked
+   *   @attribute MCType
+   *              type against which the expression should be checked
+   */
+  InstanceofExpression implements Expression <150> =
+    Expression "instanceof" MCType;
+
+}

@@ -1,12 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
+import de.monticore.expressions.commonexpressions._ast.ASTArrayAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsFullPrettyPrinter;
 import de.monticore.expressions.testjavaclassexpressions.TestJavaClassExpressionsMill;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;
+import de.monticore.expressions.uglyexpressions._ast.ASTInstanceofExpression;
+import de.monticore.expressions.uglyexpressions._ast.ASTTypeCastExpression;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -153,7 +156,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTArrayExpression result = JavaClassExpressionsMill.arrayExpressionBuilder()
+    ASTArrayAccessExpression result = JavaClassExpressionsMill.arrayAccessExpressionBuilder()
             .setExpression(a.get())
             .setIndexExpression(b.get())
             .build();
