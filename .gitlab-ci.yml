@@ -402,6 +402,17 @@ trigger-od-master:
   only:
     - master
 
+# A lite version of the MontiVerse to detect the results of potential changes before they are merged
+trigger-montiverse-ci:
+  stage: test
+  trigger:
+    project: monticore/montiverseci
+  variables:
+    MONTICORE_BRANCH: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+    FULL_MC: "false" # Do not run the experiments in the MontiVerse pipeline
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
 pages:
   stage: report
   dependencies: []
