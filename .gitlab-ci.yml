@@ -411,8 +411,8 @@ trigger-montiverse-ci:
     MONTICORE_BRANCH: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
     FULL_MC: "false" # Do not run the experiments in the MontiVerse pipeline
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_EVENT_TYPE == 'detached' || $CI_MERGE_REQUEST_EVENT_TYPE == 'merged_result')
+    
 pages:
   stage: report
   dependencies: []
