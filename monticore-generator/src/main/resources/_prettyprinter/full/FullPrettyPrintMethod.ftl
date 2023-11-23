@@ -5,4 +5,7 @@
 getPrinter().clearBuffer();
 getTraverser().clearTraversedElements();
 node.accept(getTraverser());
-return getPrinter().getContent().stripTrailing();
+
+// do not overzealous strip trailing linebreaks, only trailing spaces within the last line
+getPrinter().stripTrailing();
+return getPrinter().getContent();
