@@ -69,7 +69,6 @@ public class TagSchemaSerializationTest {
 
       IFQNEnhancedAutomataTagSchemaArtifactScope copy = schemaSymbols2Json.deserialize(serialized);
 
-      System.err.println(copy);
       String serializedCopy = schemaSymbols2Json.serialize(copy);
 
       Assert.assertEquals(serialized, serializedCopy);
