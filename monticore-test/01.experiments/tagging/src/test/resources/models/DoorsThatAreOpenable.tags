@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+tags DoorsThatAreOpenable {
+  tag TheDoor with Openable;
+  tag ASingleDoor with Openable;
+}
