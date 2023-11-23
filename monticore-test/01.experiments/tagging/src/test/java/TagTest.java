@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,28 +65,28 @@ public class TagTest {
 
   @Test
   public void testAutomaton() {
-    List<ASTTag> tags = automataTagger.getTags(model, tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(model, Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertValuedTag(tags.get(0), "Method", "App.call()");
   }
 
   @Test
   public void testAutomatonSymbol() {
-    List<ASTTag> tags = automataTagger.getTags(model.getSymbol(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(model.getSymbol(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertValuedTag(tags.get(0), "Method", "App.call()");
   }
 
   @Test
   public void testStateA() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("A"), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("A"), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "Monitored");
   }
 
   @Test
   public void testStateASymbol() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("A").getSymbol(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("A").getSymbol(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "Monitored");
   }
@@ -93,82 +94,82 @@ public class TagTest {
 
   @Test
   public void testStateB() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("B"), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("B"), Collections.singleton(tagDefinition));
     Assert.assertEquals(0, tags.size());
   }
 
   @Test
   public void testStateBSymbol() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("B").getSymbol(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("B").getSymbol(), Collections.singleton(tagDefinition));
     Assert.assertEquals(0, tags.size());
   }
 
   @Test
   public void testStateBA() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("BA"), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("BA"), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag1");
   }
 
   @Test
   public void testStateBASymbol() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("BA").getSymbol(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("BA").getSymbol(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag1");
   }
 
   @Test
   public void testStateBB() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("BB"), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("BB"), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag2");
   }
 
   @Test
   public void testStateBBSymbol() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("BB").getSymbol(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("BB").getSymbol(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag2");
   }
 
   @Test
   public void testSomeScopeC() {
-    List<ASTTag> tags = automataTagger.getTags(model.getEnclosingScope().resolveScopedState("C").get().getAstNode(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(model.getEnclosingScope().resolveScopedState("C").get().getAstNode(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertValuedTag(tags.get(0), "VerboseLog", "doLogC");
   }
 
   @Test
   public void testSomeScopeCSymbol() {
-    List<ASTTag> tags = automataTagger.getTags(model.getEnclosingScope().resolveScopedState("C").get(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(model.getEnclosingScope().resolveScopedState("C").get(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertValuedTag(tags.get(0), "VerboseLog", "doLogC");
   }
 
   @Test
   public void testStateC_CA() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("C.CA"), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("C.CA"), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag1");
   }
 
   @Test
   public void testStateC_CASymbol() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("C.CA").getSymbol(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("C.CA").getSymbol(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag1");
   }
 
   @Test
   public void testStateC_CB() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("C.CB"), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("C.CB"), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag2");
   }
 
   @Test
   public void testStateC_CBSymbol() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("C.CB").getSymbol(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("C.CB").getSymbol(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag2");
   }
@@ -176,21 +177,21 @@ public class TagTest {
   @Test
   public void testSomeScopeC_Transition() {
     List<ASTTag> tags = automataTagger.getTags((ASTTransition) model.getEnclosingScope().resolveScopedState("C").get().getAstNode()
-            .getScopedStateElement(2), tagDefinition);
+            .getScopedStateElement(2), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertValuedTag(tags.get(0), "Log", "timestamp");
   }
 
   @Test
   public void testStateD() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("D"), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("D"), Collections.singleton(tagDefinition));
     Assert.assertEquals(2, tags.size());
     assertSimpleTag(tags.get(0), "WildcardedTag");
   }
 
   @Test
   public void testStateDSymbol() {
-    List<ASTTag> tags = automataTagger.getTags(states.get("D").getSymbol(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(states.get("D").getSymbol(), Collections.singleton(tagDefinition));
     Assert.assertEquals(2, tags.size());
     assertSimpleTag(tags.get(0), "WildcardedTag");
   }
@@ -202,11 +203,11 @@ public class TagTest {
     Optional<ScopedStateSymbol> scopedStateSymbolOpt = model.getEnclosingScope().resolveScopedState("Dup");
     Assert.assertTrue(scopedStateSymbolOpt.isPresent());
     // Discuss if this type-unaware duplication is desired?
-    List<ASTTag> tags = automataTagger.getTags(stateSymbolOpt.get(), tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(stateSymbolOpt.get(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "WildcardedTag");
 
-    tags = automataTagger.getTags(scopedStateSymbolOpt.get(), tagDefinition);
+    tags = automataTagger.getTags(scopedStateSymbolOpt.get(), Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "WildcardedTag");
   }
@@ -214,34 +215,34 @@ public class TagTest {
   @Test
   public void testAddStateE() {
     ASTState stateE = states.get("E");
-    List<ASTTag> tags = automataTagger.getTags(stateE, tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(stateE, Collections.singleton(tagDefinition));
     Assert.assertEquals(0, tags.size());
     // Add new Tag
     ASTTag tag = TagsMill.simpleTagBuilder().setName("TestTag").build();
     automataTagger.addTag(stateE, tagDefinition, tag);
-    tags = automataTagger.getTags(stateE, tagDefinition);
+    tags = automataTagger.getTags(stateE, Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "TestTag");
     // Remove tag again
     automataTagger.removeTag(stateE, tagDefinition, tag);
-    tags = automataTagger.getTags(stateE, tagDefinition);
+    tags = automataTagger.getTags(stateE, Collections.singleton(tagDefinition));
     Assert.assertEquals(0, tags.size());
   }
 
   @Test
   public void testAddTransition() {
     ASTTransition transition = model.getTransitionList().stream().filter(e->e.getFrom().equals("E") && e.getTo().equals("E")).findAny().get();
-    List<ASTTag> tags = automataTagger.getTags(transition, tagDefinition);
+    List<ASTTag> tags = automataTagger.getTags(transition, Collections.singleton(tagDefinition));
     Assert.assertEquals(0, tags.size());
     // Add new Tag
     ASTTag tag = TagsMill.simpleTagBuilder().setName("TestTag").build();
     automataTagger.addTag(transition, tagDefinition, tag);
-    tags = automataTagger.getTags(transition, tagDefinition);
+    tags = automataTagger.getTags(transition, Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "TestTag");
     // Remove tag again
     automataTagger.removeTag(transition, tagDefinition, tag);
-    tags = automataTagger.getTags(transition, tagDefinition);
+    tags = automataTagger.getTags(transition, Collections.singleton(tagDefinition));
     Assert.assertEquals(0, tags.size());
   }
 

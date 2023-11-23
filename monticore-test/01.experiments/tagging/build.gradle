@@ -78,3 +78,25 @@ task generateEnhancedFQNTagSchema (type: MCTask, dependsOn: generateEnhancedFQN)
   def uptoDate = incCheck("de/monticore/fqn/FQNEnhancedAutomataTagSchema.mc4")
   outputs.upToDateWhen { uptoDate }
 }
+
+//
+task generateCDBasis4Tags (type: MCTask) {
+  grammar = file "$projectDir/$grammarDir/de/monticore/tagtest/CDBasis4Tags.mc4"
+  outputDir = file outDir
+  def uptoDate = incCheck("de/monticore/tagtest/CDBasis4Tags.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
+task generateCDBasis4TagsTagDefinition (type: MCTask, dependsOn: generateCDBasis4Tags) {
+  grammar = file "$grammarOutDir/de/monticore/tagtest/CDBasis4TagsTagDefinition.mc4"
+  outputDir = file outDir
+  def uptoDate = incCheck("de/monticore/tagtest/CDBasis4TagsTagDefinition.mc4")
+  outputs.upToDateWhen { uptoDate }
+  genTag = true // generate tagging related infrastructure, such as the Taggers
+}
+task generateCDBasis4TagsTagSchema (type: MCTask, dependsOn: generateCDBasis4Tags) {
+  grammar = file "$grammarOutDir/de/monticore/tagtest/CDBasis4TagsTagSchema.mc4"
+  outputDir = file outDir
+  def uptoDate = incCheck("de/monticore/tagtest/CDBasis4TagsTagSchema.mc4")
+  outputs.upToDateWhen { uptoDate }
+}

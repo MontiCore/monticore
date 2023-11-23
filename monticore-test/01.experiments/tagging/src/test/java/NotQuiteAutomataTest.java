@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,9 +122,9 @@ public class NotQuiteAutomataTest {
     doTest((ASTYetAnotherSymbolProd) nodes.get("YetAnotherSymbolProd YASP2"), automataTagger::getTags, "YASPTag");
   }
 
-  protected <A extends ASTNode> void doTest(A ast, BiFunction<A, ASTTagUnit, List<ASTTag>> getTags, String name) {
+  protected <A extends ASTNode> void doTest(A ast, BiFunction<A, Iterable<ASTTagUnit>, List<ASTTag>> getTags, String name) {
     Assert.assertNotNull(ast);
-    List<ASTTag> tags = getTags.apply(ast, tagDefinition);
+    List<ASTTag> tags = getTags.apply(ast, Collections.singleton(tagDefinition));
     Assert.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), name);
   }
