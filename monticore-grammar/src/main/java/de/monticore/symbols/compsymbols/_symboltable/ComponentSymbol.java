@@ -10,7 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -185,12 +185,12 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all ports of this component
    */
   public Set<PortSymbol> getAllPorts() {
-    return this.getAllPorts(new HashSet<>());
+    return this.getAllPorts(new LinkedHashSet<>());
   }
 
   protected Set<PortSymbol> getAllPorts(Collection<ComponentSymbol> visited) {
     visited.add(this);
-    Set<PortSymbol> result = new HashSet<>(this.getPortsList());
+    Set<PortSymbol> result = new LinkedHashSet<>(this.getPortsList());
     for (CompKindExpression superComponent : this.getSuperComponentsList()) {
       if (visited.contains(superComponent.getTypeInfo())) continue;
       for (PortSymbol port : superComponent.getTypeInfo().getAllPorts(visited)) {
@@ -209,7 +209,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all incoming ports of this component
    */
   public Set<PortSymbol> getAllIncomingPorts() {
-    Set<PortSymbol> result = new HashSet<>();
+    Set<PortSymbol> result = new LinkedHashSet<>();
     for (PortSymbol port : this.getAllPorts()) {
       if (port.isIncoming()) {
         result.add(port);
@@ -224,7 +224,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all outgoing ports of this component
    */
   public Set<PortSymbol> getAllOutgoingPorts() {
-    Set<PortSymbol> result = new HashSet<>();
+    Set<PortSymbol> result = new LinkedHashSet<>();
     for (PortSymbol port : this.getAllPorts()) {
       if (port.isOutgoing()) {
         result.add(port);
@@ -242,7 +242,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all ports of this component with the given direction
    */
   public Set<PortSymbol> getAllPorts(boolean incoming, boolean outgoing) {
-    Set<PortSymbol> result = new HashSet<>();
+    Set<PortSymbol> result = new LinkedHashSet<>();
     for (PortSymbol port : this.getAllPorts()) {
       if (port.isIncoming() == incoming && port.isOutgoing() == outgoing) {
         result.add(port);
