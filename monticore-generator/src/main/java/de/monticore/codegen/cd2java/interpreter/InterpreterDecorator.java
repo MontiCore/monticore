@@ -16,7 +16,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 
@@ -30,12 +29,12 @@ import static de.monticore.codegen.cd2java.interpreter.InterpreterConstants.*;
 
 public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
-  protected final VisitorService visitorService;
+  protected final VisitorService service;
   private final MCTypeFacade typeFacade;
 
-  public InterpreterDecorator(GlobalExtensionManagement glex, VisitorService visitorService) {
+  public InterpreterDecorator(GlobalExtensionManagement glex, VisitorService service) {
     super(glex);
-    this.visitorService = visitorService;
+    this.service = service;
     typeFacade = MCTypeFacade.getInstance();
   }
 
@@ -46,93 +45,73 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
-    String interpreterName = getInterpreterName(visitorService.getCDName());
     ASTCDInterfaceUsage interfaceUsage = getSuperInterface();
     List<ASTCDAttribute> superInterpreters = getInterpreterAttributes();
+    List<ASTCDConstructor> constructors = getConstructors(superInterpreters);
     List<ASTCDMember> realThisComponents = getRealThisComponents();
-    ASTCDMethod interpretMethod = getInterpretMethod();
     List<ASTCDMethod> interpretMethods = getInterpretMethods();
-    List<ASTCDConstructor> constructors = getConstructors(interpreterName, superInterpreters);
 
     return CD4CodeMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setName(interpreterName)
+        .setName(service.getInterpreterSimpleName())
         .setCDInterfaceUsage(interfaceUsage)
         .addAllCDMembers(superInterpreters)
         .addAllCDMembers(constructors)
         .addAllCDMembers(realThisComponents)
-        .addCDMember(interpretMethod)
         .addAllCDMembers(interpretMethods)
         .build();
   }
 
-  public List<ASTCDConstructor> getConstructors(String interpreterName, List<ASTCDAttribute> superInterpreters) {
+  public List<ASTCDConstructor> getConstructors(List<ASTCDAttribute> superInterpreters) {
     ASTCDParameter parameter = CDParameterFacade.getInstance().createParameter(
-        typeFacade.createQualifiedType(MODELINTERPRETER_FULLNAME),
-        "realThis");
+        typeFacade.createQualifiedType(MODELINTERPRETER_FULLNAME), "realThis");
 
+    String interpreterName = service.getInterpreterSimpleName();
     ASTCDConstructor constructorNoParams = CDConstructorFacade.getInstance().createConstructor(PUBLIC.build(), interpreterName);
     ASTCDConstructor constructorRealThis = CDConstructorFacade.getInstance().createConstructor(PUBLIC.build(), interpreterName, parameter);
 
     List<String> names = superInterpreters.stream().map(ASTCDAttribute::getName).collect(Collectors.toList());
     List<String> types = superInterpreters.stream().map(a -> a.getMCType().printType()).collect(Collectors.toList());
 
-    replaceTemplate(EMPTY_BODY, constructorRealThis, new TemplateHookPoint("interpreter.ConstructorRealThis"));
+    replaceTemplate(EMPTY_BODY, constructorRealThis, new StringHookPoint("this.setRealThis(realThis);"));
     replaceTemplate(EMPTY_BODY, constructorNoParams, new TemplateHookPoint("interpreter.ConstructorNoParams", names, types));
 
     return List.of(constructorNoParams, constructorRealThis);
   }
 
   public List<ASTCDMethod> getInterpretMethods() {
-    List<ASTCDMethod> methods = new ArrayList<>();
-    for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
-      List<String> superTypes = typeSymbol.getSuperTypesList()
-          .stream()
-          .filter(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).checkLazyLoadDelegate())
-          .map(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).lazyLoadDelegate())
-          .filter(t -> t instanceof CDTypeSymbol)
-          .map(s -> visitorService.createASTFullName((CDTypeSymbol) s))
-          .collect(Collectors.toList());
+    List<ASTCDParameter> parameters = new ArrayList<>();
 
-      methods.add(createInterpretMethod(typeSymbol, superTypes));
+    for (CDTypeSymbol typeSymbol: service.getAllCDTypes()) {
+      parameters.add(CDParameterFacade.getInstance()
+          .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER));
     }
 
-    return methods;
-  }
+    for (DiagramSymbol diagramSymbol: service.getSuperCDsTransitive()) {
+      for (CDTypeSymbol typeSymbol : service.getAllCDTypes(diagramSymbol)) {
+        parameters.add(CDParameterFacade.getInstance()
+            .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER));
+      }
+    }
 
-  public ASTCDMethod createInterpretMethod(CDTypeSymbol typeSymbol, List<String> superTypes) {
+    parameters.add(CDParameterFacade.getInstance()
+        .createParameter(typeFacade.
+            createQualifiedType(NODE_TYPE), NODE_PARAMETER));
+
     ASTMCReturnType returnType = CD4CodeMill.mCReturnTypeBuilder()
         .setMCType(typeFacade.createQualifiedType(VALUE_FULLNAME)).build();
-    ASTCDParameter parameter = CDParameterFacade.getInstance()
-        .createParameter(visitorService.createASTFullName(typeSymbol), NODE_PARAMETER);
 
-    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(
-        PUBLIC.build(),
-        returnType,
-        "interpret",
-        List.of(parameter));
+    List<ASTCDMethod> methods = parameters.stream()
+        .map(parameter -> CDMethodFacade.getInstance().createMethod(
+            PUBLIC.build(), returnType, "interpret", parameter))
+        .collect(Collectors.toList());
 
-    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return null;"));
+    methods.forEach(method ->
+        this.replaceTemplate(
+            EMPTY_BODY, method, new StringHookPoint(
+                "return new " + NOT_A_VALUE_FULLNAME + "();")));
 
-    return method;
-  }
-
-  public ASTCDMethod getInterpretMethod() {
-    ASTMCReturnType returnType = CD4CodeMill.mCReturnTypeBuilder()
-        .setMCType(typeFacade.createQualifiedType(VALUE_FULLNAME))
-        .build();
-    ASTCDParameter parameter = CDParameterFacade.getInstance()
-        .createParameter(typeFacade.createQualifiedType(NODE_TYPE), "node");
-
-    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(
-        PUBLIC.build(),
-        returnType,
-        "interpret",
-        List.of(parameter));
-
-    replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return null;"));
-
-    return method;
+    return methods;
   }
 
   public List<ASTCDMember> getRealThisComponents() {
@@ -145,7 +124,7 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
             "realThis");
     components.add(realThisAttribute);
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, service);
     components.addAll(methodDecorator.decorate(realThisAttribute));
 
     return components;
@@ -153,27 +132,20 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   public List<ASTCDAttribute> getInterpreterAttributes() {
     List<ASTCDAttribute> interpreters = new ArrayList<>();
-    for (DiagramSymbol symbol : visitorService.getSuperCDsTransitive()) {
-      String interpreterName = getInterpreterName(symbol.getName());
-      String packageName = symbol.getFullName().toLowerCase() + "." + VisitorConstants.VISITOR_PACKAGE;
-
+    for (DiagramSymbol symbol : service.getSuperCDsTransitive()) {
       interpreters.add(CDAttributeFacade.getInstance().createAttribute(
           PROTECTED.build(),
-          typeFacade.createQualifiedType(packageName + "." + interpreterName),
-          uncapFirst(interpreterName)));
+          typeFacade.createQualifiedType(service.getInterpreterFullName(symbol)),
+          uncapFirst(service.getInterpreterSimpleName(symbol))));
     }
     return interpreters;
   }
 
   public ASTCDInterfaceUsage getSuperInterface() {
-    ASTCDInterfaceUsage interfaceUsage = CDInterfaceUsageFacade.getInstance()
-        .createCDInterfaceUsage(MODELINTERPRETER_FULLNAME);
-    interfaceUsage.addInterface(typeFacade.createQualifiedType(visitorService.getInterpreterInterfaceFullName()));
-    return interfaceUsage;
-  }
-
-  public String getInterpreterName(String grammarName) {
-    return grammarName + INTERPRETER_NAME_SUFFIX;
+    return CDInterfaceUsageFacade.getInstance()
+        .createCDInterfaceUsage(
+            MODELINTERPRETER_FULLNAME,
+            service.getInterpreterInterfaceFullName());
   }
 
   protected String uncapFirst(String s) {

@@ -75,7 +75,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     changedClass.addCDMember(createAcceptTraverserMethod(changedClass));
     changedClass.addCDMember(createEvaluateInterpreterMethod(changedClass));
     changedClass.addAllCDMembers(createAcceptTraverserSuperMethods(originalClass));
-    changedClass.addAllCDMembers(createEvaluateInterpreterSuperMethods(originalClass));
+  //  changedClass.addAllCDMembers(createEvaluateInterpreterSuperMethods(originalClass));
     changedClass.addCDMember(getConstructMethod(originalClass));
     if (!originalClass.isPresentCDExtendUsage()) {
       changedClass.setCDExtendUsage(
@@ -153,15 +153,14 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
   }
 
   protected ASTCDMethod createEvaluateInterpreterMethod(ASTCDClass astClass) {
-    String interpreterType = visitorService.getPackage() +
-        "." + visitorService.getCDName() + InterpreterConstants.INTERPRETER_NAME_SUFFIX;
+    String interpreterType = visitorService.getInterpreterInterfaceFullName();
     ASTCDParameter parameter = getCDParameterFacade().createParameter(interpreterType, "interpreter");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), InterpreterConstants.VALUE_FULLNAME, "evaluate", parameter);
     replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.Evaluate", astClass));
     return method;
   }
 
-  protected List<ASTCDMethod> createEvaluateInterpreterSuperMethods(ASTCDClass astClass) {
+  /*protected List<ASTCDMethod> createEvaluateInterpreterSuperMethods(ASTCDClass astClass) {
     List<ASTCDMethod> methods = new ArrayList<>();
     for (DiagramSymbol symbol : visitorService.getSuperCDsTransitive()) {
       String interpreterType = visitorService.getPackage(symbol) +
@@ -172,7 +171,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       methods.add(method);
     }
     return methods;
-  }
+  }*/
 
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
