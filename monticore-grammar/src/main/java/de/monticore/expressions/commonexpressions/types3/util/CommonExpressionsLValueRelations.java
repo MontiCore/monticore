@@ -24,6 +24,9 @@ public class CommonExpressionsLValueRelations implements ILValueRelations {
     else if (dispatcher.isASTFieldAccessExpression(expression)) {
       result = true;
     }
+    else if (dispatcher.isASTArrayAccessExpression(expression)) {
+      result = true;
+    }
     else {
       result = false;
     }
