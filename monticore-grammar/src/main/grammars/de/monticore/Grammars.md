@@ -198,7 +198,7 @@ Some snipets for operators defined in expressions:
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
     LambdaExp:     i->i   (a,b)->a+b
     SIUnits:       5km  3,2m/s  22l  2.400J  
-    Ugly:          .instanceof.  (.).
+    Ugly:          .instanceof.  (.). new
     JavaClass:     this  .[.]  super
 
 
@@ -288,7 +288,7 @@ modeling language.
 
 ### [UglyExpressions.mc4](expressions/UglyExpressions.mc4) (stable)
 * This grammar defines expressions deemed 'ugly' like
-  instanceof, type cast
+  instanceof, type cast, new 
 
 ## Literals: List of Grammars in package `de.monticore.literals`
 
