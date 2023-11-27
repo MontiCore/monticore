@@ -59,23 +59,6 @@ component grammar JavaClassExpressions
   PrimarySuperExpression implements Expression <330> =
     "super";
 
-  CreatorExpression implements Expression <235> =
-    "new" Creator;
-
-  interface Creator ;
-
-  AnonymousClass implements Creator
-      =   MCType Arguments;
-
-  ArrayCreator implements Creator
-      =   MCType ArrayDimensionSpecifier;
-
-  interface ArrayDimensionSpecifier ;
-
-  ArrayDimensionByExpression implements ArrayDimensionSpecifier
-      =   ("[" Expression "]")+ (dim:"[" "]")*
-      ;
-
   /*=================================================================*/
 
   // access of class object uses a type
