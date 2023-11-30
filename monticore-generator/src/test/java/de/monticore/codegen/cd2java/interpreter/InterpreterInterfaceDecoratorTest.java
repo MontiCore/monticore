@@ -1,22 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.codegen.cd2java._visitor;
+package de.monticore.codegen.cd2java.interpreter;
 
-import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
-import de.monticore.codegen.cd2java.interpreter.InterpreterConstants;
-import de.monticore.codegen.cd2java.interpreter.InterpreterDecorator;
-import de.monticore.codegen.cd2java.interpreter.InterpreterInterfaceDecorator;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
