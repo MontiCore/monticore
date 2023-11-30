@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -10,13 +11,17 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.interpreter.InterpreterConstants;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 
 /**
@@ -65,6 +70,8 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalInput);
     changedInput.addAllCDMembers(addScopeMethods(scopeAttributes));
 
+    changedInput.addCDMember(createEvaluateInterpreterMethod(changedInput));
+
     // if a ast has a symbol definition without a name, the getName has to be implemented manually
     // add getName method that is abstract
     if (astService.isSymbolWithoutName(originalInput)) {
@@ -98,7 +105,14 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
       scopeMethods.addAll(methods);
     }
     return scopeMethods;
+  }
 
+  protected ASTCDMethod createEvaluateInterpreterMethod(ASTCDInterface input) {
+    String interpreterType = visitorService.getInterpreterInterfaceFullName();
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(interpreterType, "interpreter");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), InterpreterConstants.VALUE_FULLNAME, "evaluate", parameter);
+    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.Evaluate", input));
+    return method;
   }
 
 }

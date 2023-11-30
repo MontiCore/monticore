@@ -18,7 +18,6 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
@@ -75,7 +74,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     changedClass.addCDMember(createAcceptTraverserMethod(changedClass));
     changedClass.addCDMember(createEvaluateInterpreterMethod(changedClass));
     changedClass.addAllCDMembers(createAcceptTraverserSuperMethods(originalClass));
-  //  changedClass.addAllCDMembers(createEvaluateInterpreterSuperMethods(originalClass));
+ //   changedClass.addAllCDMembers(createEvaluateInterpreterSuperMethods(originalClass));
     changedClass.addCDMember(getConstructMethod(originalClass));
     if (!originalClass.isPresentCDExtendUsage()) {
       changedClass.setCDExtendUsage(
@@ -160,18 +159,19 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     return method;
   }
 
-  /*protected List<ASTCDMethod> createEvaluateInterpreterSuperMethods(ASTCDClass astClass) {
+  /*
+  protected List<ASTCDMethod> createEvaluateInterpreterSuperMethods(ASTCDClass astClass) {
     List<ASTCDMethod> methods = new ArrayList<>();
     for (DiagramSymbol symbol : visitorService.getSuperCDsTransitive()) {
-      String interpreterType = visitorService.getPackage(symbol) +
-          "." + symbol.getName() + InterpreterConstants.INTERPRETER_NAME_SUFFIX;
+      String interpreterType = visitorService.getInterpreterInterfaceFullName(symbol);
       ASTCDParameter parameter = getCDParameterFacade().createParameter(interpreterType, "interpreter");
       ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), InterpreterConstants.VALUE_FULLNAME, "evaluate", parameter);
       replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.Evaluate", astClass));
       methods.add(method);
     }
     return methods;
-  }*/
+  }
+  */
 
   protected ASTCDMethod getConstructMethod(ASTCDClass astClass) {
     ASTCDMethod constructMethod;
