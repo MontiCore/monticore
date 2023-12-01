@@ -1,0 +1,62 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.types.*;
+
+/**
+ * This grammar introduces structural types
+ *
+ * Union types: A|B
+ * Intersection types: A&B
+ * Tuple types: (A, B)
+ *
+ * This grammar is part of a hierarchy of types, namely
+ * * types.MCBasicTypes.mc4
+ *   * types/MCStructuralTypes.mc4
+ *
+*/
+component grammar MCStructuralTypes
+          extends MCBasicTypes {
+
+
+  /*=================================================================*/
+
+  /** ASTMCUnionType represents union types.
+   *
+   * Values of a union type are of (at least one of) the types in the union.
+   * Example:
+   * String | int var = "Person";
+   * String | int var = 3;
+   */
+  MCUnionType implements MCType =
+    MCType "|" (MCType || "|")+ |
+    "(" MCType "|" (MCType || "|")+ ")"
+  ;
+
+  /** ASTMCIntersectionType represents intersection types.
+   *
+   * Values of an intersection type are of all the types in the intersection.
+   * Example:
+   * Let Car and Boat not be in a subtyping relationship.
+   * Car c = amphibianVehicle;
+   * Boat b = amphibianVehicle;
+   * Car & Boat a = amphibianVehicle;
+   */
+  MCIntersectionType implements MCType =
+    MCType "&" (MCType || "&")+ |
+    "(" MCType "&" (MCType || "&")+ ")"
+  ;
+
+  /** ASTMCTupleType represents tuple types.
+   *
+   * Values of a tuple type are a tuple of values of the types in the tuple.
+   * Example:
+   * (float, float) vec2 = (1.1f, -2.0f);
+   */
+  MCTupleType implements MCType =
+    "(" MCType "," (MCType || ",")+ ")"
+  ;
+
+}

@@ -163,6 +163,7 @@ def grammarDependencies = ext {
   StreamExpressions = ["CommonExpressions"]
   MCExceptionStatements = ["MCCommonStatements"]
   MCFunctionTypes = ["MCBasicTypes"]
+  MCStructuralTypes = ["MCBasicTypes"]
   OOSymbols = ["BasicSymbols"]
   TFCommons = ["TFBasisExts"]
   MCJavaLiterals = ["MCCommonLiterals"]
