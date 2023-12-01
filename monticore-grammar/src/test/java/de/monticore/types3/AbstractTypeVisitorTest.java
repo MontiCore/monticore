@@ -199,18 +199,24 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
 
   protected ASTExpression parseExpr(String exprStr) throws IOException {
     Optional<ASTExpression> astExpression = parseStringExpr(exprStr);
-    assertTrue(astExpression.isPresent());
+    assertTrue(getAllFindingsAsString(), astExpression.isPresent());
     return astExpression.get();
   }
 
   protected ASTMCType parseMCType(String typeStr) throws IOException {
     Optional<ASTMCType> mcType = parseStringMCType(typeStr);
-    assertTrue(mcType.isPresent());
+    assertTrue(getAllFindingsAsString(), mcType.isPresent());
     return mcType.get();
   }
 
   protected void checkExpr(String exprStr, String expectedType)
       throws IOException {
+    checkExpr(exprStr, expectedType, true);
+  }
+
+  protected void checkExpr(
+      String exprStr, String expectedType, boolean allowNormalization
+  ) throws IOException {
     ASTExpression astexpr = parseExpr(exprStr);
     generateScopes(astexpr);
     calculateTypes(astexpr);
@@ -219,10 +225,16 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
         getType4Ast().hasTypeOfExpression(astexpr));
     SymTypeExpression type = getType4Ast().getTypeOfExpression(astexpr);
     assertNoFindings();
-    assertEquals("Wrong type for expression " + exprStr,
-        expectedType,
-        type.printFullName()
-    );
+    // usually, type normalization is expected and (basically) always allowed
+    // for specific tests, however, it may be required to disable this
+    boolean equalsNormalized =
+        expectedType.equals(SymTypeRelations.normalize(type).printFullName());
+    if (!allowNormalization || !equalsNormalized) {
+      assertEquals("Wrong type for expression " + exprStr,
+          expectedType,
+          type.printFullName()
+      );
+    }
   }
 
   protected void checkType(String typeStr, String expectedType)
