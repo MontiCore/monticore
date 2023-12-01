@@ -117,17 +117,10 @@ that it assumes that the mode `REGEX` has already been switched on
 (and will be switched off) by the calling nonterminal.
 This is provided by the nonterminal `RegExLiteral` in the grammar.
 
-The [TestRegularExpressions](../../../../../test/grammars/de/monticore/regex/TestRegularExpressions.mc4)
-grammar contains an example that uses
-the [RegularExpressions](./RegularExpressions.mc4) grammar.
-
 ## Context Conditions for the RegularExpressions language
 
-* [```RangeHasLowerOrUpperBound```](../../../../java/de/monticore/regex/regularexpressions/_cocos/RageHasLowerOrUpperBound.java)  
-ensures that the nonterminal **RangeQualification**
-* is bounded in at least one direction.
-* [```RegExTypeCheckCoCo```](../../../../java/de/monticore/regex/types/check/cocos/RegExTypeCheckCoCo.java)  
-checks compatibility of types for the usage of regular expression types.
+* [```RangeHasLowerOrUpperBound```](../../../../java/de/monticore/regex/regularexpressions/cocos/RangeHasLowerOrUpperBound.java)  
+ensures that the nonterminal **RangeQualification** is bounded in at least one direction.
 
 ## Symbol Table for the RegularExpressions language
 
