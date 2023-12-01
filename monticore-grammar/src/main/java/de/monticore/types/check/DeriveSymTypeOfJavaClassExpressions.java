@@ -4,8 +4,6 @@ package de.monticore.types.check;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsHandler;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
@@ -14,6 +12,9 @@ import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -30,6 +31,18 @@ import static de.monticore.types.check.TypeCheck.compatible;
 public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpression implements JavaClassExpressionsVisitor2, JavaClassExpressionsHandler {
 
   protected JavaClassExpressionsTraverser traverser;
+
+  protected ISynthesize synthesize;
+
+  @Deprecated
+  public DeriveSymTypeOfJavaClassExpressions() {
+    // default behaviour, as this class had no synthezises beforehand
+    synthesize = new FullSynthesizeFromMCFullGenericTypes();
+  }
+
+  public DeriveSymTypeOfJavaClassExpressions(ISynthesize synthesize) {
+    this.synthesize = synthesize;
+  }
 
   @Override
   public JavaClassExpressionsTraverser getTraverser() {
@@ -82,92 +95,6 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   }
 
   @Override
-  public void traverse(ASTArrayExpression node) {
-    SymTypeExpression indexResult = acceptThisAndReturnSymTypeExpression(node.getIndexExpression());
-    if(getTypeCheckResult().isType()){
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0253 the expression at source position "+node.getIndexExpression().get_SourcePositionStart()+" cannot be a type");
-      return;
-    }
-    SymTypeExpression arrayTypeResult = acceptThisAndReturnSymTypeExpression(node.getExpression());
-    if(getTypeCheckResult().isType()){
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0255 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
-      return;
-    }
-
-    if(!indexResult.isObscureType() && !arrayTypeResult.isObscureType()){
-      SymTypeExpression wholeResult = calculateArrayExpression(node, arrayTypeResult, indexResult);
-      storeResultOrLogError(wholeResult, node, "0xA0257");
-    }else{
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
-  }
-
-  protected SymTypeExpression calculateArrayExpression(ASTArrayExpression node, SymTypeExpression arrayTypeResult, SymTypeExpression indexResult) {
-    SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
-    //the type of the index has to be an integral type
-    if(indexResult.isPrimitive() && ((SymTypePrimitive)indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray){
-      SymTypeArray arrayResult = (SymTypeArray) arrayTypeResult;
-      wholeResult = getCorrectResultArrayExpression(node.getEnclosingScope(), indexResult, arrayTypeResult, arrayResult);
-    }
-    return wholeResult;
-  }
-
-  protected SymTypeExpression getCorrectResultArrayExpression(IExpressionsBasisScope scope, SymTypeExpression indexResult, SymTypeExpression arrayTypeResult, SymTypeArray arrayResult) {
-    SymTypeExpression wholeResult;
-    if(arrayResult.getDim()>1){
-      //case 1: A[][] bar -> bar[3] returns the type A[] -> decrease the dimension of the array by 1
-      wholeResult = SymTypeExpressionFactory.createTypeArray(arrayTypeResult.getTypeInfo().getName(),getScope(scope),arrayResult.getDim()-1,indexResult);
-    }else {
-      //case 2: A[] bar -> bar[3] returns the type A
-      //determine whether the result has to be a constant, generic or object
-      if(arrayResult.getTypeInfo().getTypeParameterList().isEmpty()){
-        //if the return type is a primitive
-        if(SymTypePrimitive.boxMap.containsKey(arrayResult.getTypeInfo().getName())){
-          wholeResult = SymTypeExpressionFactory.createPrimitive(arrayResult.getTypeInfo().getName());
-        }else {
-          //if the return type is an object
-          wholeResult = SymTypeExpressionFactory.createTypeObject(arrayResult.getTypeInfo().getName(), getScope(scope));
-        }
-      }else {
-        //the return type must be a generic
-        List<SymTypeExpression> typeArgs = Lists.newArrayList();
-        for(TypeVarSymbol s : arrayResult.getTypeInfo().getTypeParameterList()){
-          typeArgs.add(SymTypeExpressionFactory.createTypeVariable(s.getName(),getScope(scope)));
-        }
-        wholeResult = SymTypeExpressionFactory.createGenerics(arrayResult.getTypeInfo().getName(), getScope(scope), typeArgs);
-        wholeResult = replaceTypeVariables(wholeResult,typeArgs,((SymTypeOfGenerics)arrayResult.getArgument()).getArgumentList());
-      }
-    }
-    return wholeResult;
-  }
-
-  protected SymTypeExpression replaceTypeVariables(SymTypeExpression wholeResult, List<SymTypeExpression> typeArgs, List<SymTypeExpression> argumentList) {
-    Map<SymTypeExpression,SymTypeExpression> map = Maps.newHashMap();
-    if(typeArgs.size()!=argumentList.size()){
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA2297 Different amount of type variables and type arguments");
-    }else{
-      for(int i = 0;i<typeArgs.size();i++){
-        map.put(typeArgs.get(i),argumentList.get(i));
-      }
-
-      List<SymTypeExpression> oldArgs = ((SymTypeOfGenerics) wholeResult).getArgumentList();
-      List<SymTypeExpression> newArgs = Lists.newArrayList();
-      for (SymTypeExpression oldArg : oldArgs) {
-        newArgs.add(map.getOrDefault(oldArg, oldArg));
-      }
-      ((SymTypeOfGenerics) wholeResult).setArgumentList(newArgs);
-    }
-    return wholeResult;
-  }
-
-  @Override
   public void traverse(ASTClassExpression node) {
     //only type allowed --> check that Expression is no field or method
     //traverse the inner expression, check that it is a type (how?); the result is the type "Class"
@@ -175,7 +102,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
     SymTypeExpression innerResult = SymTypeExpressionFactory.createObscureType();
 
-    node.getExtReturnType().accept(getTraverser());
+    deprecated_traverse(node.getMCReturnType());
     if(getTypeCheckResult().isPresentResult()){
       innerResult = getTypeCheckResult().getResult();
       wholeResult = SymTypeExpressionFactory.createGenerics("Class", getScope(node.getEnclosingScope()), innerResult);
@@ -236,7 +163,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   protected SymTypeExpression handleSuperSuffix(ASTSuperSuffix superSuffix, SymTypeExpression superClass){
     if (superSuffix.isPresentArguments()) {
       //case 1 -> Expression.super.<TypeArgument>Method(Args)
-      List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getExtTypeArgumentList());
+      List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getMCTypeArgumentList());
       List<FunctionSymbol> methods = superClass.getMethodList(superSuffix.getName(), false, AccessModifier.ALL_INCLUSION);
       if (!methods.isEmpty() && null != superSuffix.getArguments()) {
         //check if the methods fit and return the right returntype
@@ -259,49 +186,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   }
 
   @Override
-  public void traverse(ASTTypeCastExpression node) {
-    //innerResult is the SymTypeExpression of the type that will be casted into another type
-    SymTypeExpression innerResult = acceptThisAndReturnSymTypeExpression(node.getExpression());
-    if(getTypeCheckResult().isType()){
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0262 the expression at source position "+node.getExpression().get_SourcePositionStart()+" cannot be a type");
-      return;
-    }
-    //castResult is the SymTypeExpression of the type the innerResult will be casted to
-    SymTypeExpression castResult;
-
-    //castResult is the type in the brackets -> (ArrayList) list
-    node.getExtType().accept(getTraverser());
-    if(getTypeCheckResult().isPresentResult()){
-      castResult = getTypeCheckResult().getResult();
-    }else{
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-      Log.error("0xA0265 the type at source position "+node.getExtType().get_SourcePositionStart()+" cannot be calculated");
-      return;
-    }
-
-    if(!innerResult.isObscureType() && !castResult.isObscureType()) {
-      //wholeResult will be the result of the whole expression
-      SymTypeExpression wholeResult = calculateTypeCastExpression(node, castResult, innerResult);
-
-      storeResultOrLogError(wholeResult, node, "0xA0266");
-    }else{
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-    }
-  }
-
-  protected SymTypeExpression calculateTypeCastExpression(ASTTypeCastExpression node, SymTypeExpression castResult, SymTypeExpression innerResult) {
-    if(compatible(castResult,innerResult)|| compatible(innerResult,castResult)){
-      return castResult;
-    }
-    return SymTypeExpressionFactory.createObscureType();
-  }
-
-  @Override
-  public void traverse(ASTInstanceofExpression node) {
+  public void traverse(ASTInstanceofPatternExpression node) {
     SymTypeExpression expressionResult = acceptThisAndReturnSymTypeExpression(node.getExpression());
     if(getTypeCheckResult().isType()) {
       getTypeCheckResult().reset();
@@ -313,13 +198,14 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     SymTypeExpression typeResult = SymTypeExpressionFactory.createObscureType();
 
     //calculate right type: type that the expression should be an instance of
-    node.getExtType().accept(getTraverser());
+    ASTMCType mcType = ((ASTTypePattern) node.getPattern()).getLocalVariableDeclaration().getMCType();
+    deprecated_traverse(mcType);
     if(getTypeCheckResult().isPresentResult()){
       if(!getTypeCheckResult().isType()) {
         if(!getTypeCheckResult().getResult().isObscureType()) {
           getTypeCheckResult().reset();
           getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
-          Log.error("0xA0269 the expression at source position " + node.getExtType().get_SourcePositionStart() + " must be a type");
+          Log.error("0xA0269 the expression at source position " + mcType.get_SourcePositionStart() + " must be a type");
           return;
         }
       }else{
@@ -412,7 +298,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     //the only case where you can calculate a result is Expression.<TypeArguments>method()
     //because the other cases of the GenericInvocationSuffix can only be calculated if the expression
     //is a PrimaryGenericInvocationExpression
-    List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getPrimaryGenericInvocationExpression().getExtTypeArgumentList());
+    List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getPrimaryGenericInvocationExpression().getMCTypeArgumentList());
 
     //search in the scope of the type that before the "." for a method that has the right name
     if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
@@ -434,17 +320,17 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     return fittingMethods.stream().filter(m -> m instanceof MethodSymbol).filter(m -> ((MethodSymbol) m).isIsStatic()).collect(Collectors.toList());
   }
 
-  protected List<SymTypeExpression> calculateTypeArguments(List<ASTExtTypeArgumentExt> extTypeArgumentList) {
+  protected List<SymTypeExpression> calculateTypeArguments(List<ASTMCTypeArgument> extTypeArgumentList) {
     //calculate each TypeArgument and return the results in a list
     List<SymTypeExpression> typeArgsList = Lists.newArrayList();
-    for (ASTExtTypeArgumentExt astExtTypeArgumentExt : extTypeArgumentList) {
-      astExtTypeArgumentExt.accept(getTraverser());
+    for (ASTMCTypeArgument astMCTypeArgument : extTypeArgumentList) {
+      deprecated_traverse(astMCTypeArgument);
       if (getTypeCheckResult().isPresentResult()) {
         typeArgsList.add(getTypeCheckResult().getResult());
       } else {
         getTypeCheckResult().reset();
         typeArgsList.add(SymTypeExpressionFactory.createObscureType());
-        Log.error("0xA0283 the type argument at source position " + astExtTypeArgumentExt.get_SourcePositionStart() + " cannot be calculated");
+        Log.error("0xA0283 the type argument at source position " + astMCTypeArgument.get_SourcePositionStart() + " cannot be calculated");
       }
     }
     return typeArgsList;
@@ -539,7 +425,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         if(!methods.isEmpty() && node.getGenericInvocationSuffix().isPresentArguments()){
           //check if the methods fit and return the right returntype
           ASTArguments args = node.getGenericInvocationSuffix().getArguments();
-          List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
+          List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getMCTypeArgumentList());
           if(!typeArgsList.isEmpty()){
             getTypeCheckResult().unsetType();
           }
@@ -556,7 +442,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           if (!methods.isEmpty() && null != node.getGenericInvocationSuffix().getArguments()) {
             //check if the constructors fit and return the right returntype
             ASTArguments args = node.getGenericInvocationSuffix().getArguments();
-            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getMCTypeArgumentList());
             wholeResult = checkMethodsAndReplaceTypeVariables(methods, args, typeArgsList);
           }
         }
@@ -574,7 +460,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
             //check if the constructors fit and return the right returntype
             ASTArguments args = superSuffix.getArguments();
-            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getExtTypeArgumentList());
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getMCTypeArgumentList());
             wholeResult = checkMethodsAndReplaceTypeVariables(methods,args,typeArgsList);
           }
         }
@@ -597,132 +483,59 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     return Optional.empty();
   }
 
-  @Override
-  public void traverse(ASTAnonymousClass creator){
-    SymTypeExpression extType;
-    SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
-    creator.getExtType().accept(getTraverser());
-    if(getTypeCheckResult().isPresentResult()){
-      extType = getTypeCheckResult().getResult();
+  // Warning: deprecated and wrong behavior
+  // (it does not set whether it's an expression or type identifier)
+  // this is fixed in typecheck 3
+  // and exists only here like this to not change the behaviour of typecheck1
+
+  @Deprecated
+  public void deprecated_traverse(ASTMCType type){
+    SymTypeExpression wholeResult = null;
+    TypeCheckResult result = synthesize.synthesizeType(type);
+    if(result.isPresentResult()){
+      wholeResult=result.getResult();
+    }
+    if(wholeResult!=null){
+      getTypeCheckResult().setResult(wholeResult);
+      getTypeCheckResult().setType();
     }else{
       getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(wholeResult);
-      logError("0xA1311",creator.getExtType().get_SourcePositionStart());
-      return;
-    }
-
-    if(!extType.isObscureType()) {
-
-      if (!extType.isPrimitive()) {
-        //see if there is a constructor fitting for the arguments
-        List<FunctionSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName(), false, AccessModifier.ALL_INCLUSION);
-        if (!constructors.isEmpty()) {
-          if (testForCorrectArguments(constructors, creator.getArguments())) {
-            wholeResult = extType;
-          }
-        } else if (creator.getArguments().isEmptyExpressions()) {
-          //no constructor in this class -> default constructor without arguments, only possible if arguments in creator are empty
-          wholeResult = extType;
-        }
-      }
-
-      getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(wholeResult);
-      if (wholeResult.isObscureType()) {
-        logError("0xA1312", creator.get_SourcePositionStart());
-      }
     }
   }
 
-  @Override
-  public void traverse(ASTArrayCreator creator){
-    SymTypeExpression extTypeResult;
-    SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
-
-    creator.getExtType().accept(getTraverser());
-    if(getTypeCheckResult().isPresentResult()){
-      extTypeResult = getTypeCheckResult().getResult();
+  @Deprecated
+  public void deprecated_traverse(ASTMCReturnType returnType){
+    SymTypeExpression wholeResult = null;
+    if(returnType.isPresentMCVoidType()){
+      wholeResult = SymTypeExpressionFactory.createTypeVoid();
+    }else if(returnType.isPresentMCType()){
+      TypeCheckResult res = synthesize.synthesizeType(returnType);
+      if(res.isPresentResult()){
+        wholeResult = res.getResult();
+      }
+    }
+    if(wholeResult!=null){
+      getTypeCheckResult().setResult(wholeResult);
+      getTypeCheckResult().setType();
     }else{
       getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(wholeResult);
-      logError("0xA0314", creator.getExtType().get_SourcePositionStart());
-      return;
     }
+  }
 
-    if(!extTypeResult.isObscureType()) {
-      //the definition of the Arrays are based on the assumption that ExtType is not an array
-      if (!extTypeResult.isArrayType()) {
-        if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression) {
-          ASTArrayDimensionByExpression arrayInitializer = (ASTArrayDimensionByExpression) creator.getArrayDimensionSpecifier();
-          int dim = arrayInitializer.getDimList().size() + arrayInitializer.getExpressionList().size();
-          //teste dass alle Expressions integer-zahl sind
-          for (ASTExpression expr : arrayInitializer.getExpressionList()) {
-            expr.accept(getTraverser());
-            if (getTypeCheckResult().isPresentResult()) {
-              SymTypeExpression result = getTypeCheckResult().getResult();
-              if (result.isPrimitive()) {
-                if (!((SymTypePrimitive) result).isIntegralType()) {
-                  getTypeCheckResult().reset();
-                  getTypeCheckResult().setResult(wholeResult);
-                  logError("0xA0315", expr.get_SourcePositionStart());
-                  return;
-                }
-              } else {
-                getTypeCheckResult().reset();
-                getTypeCheckResult().setResult(wholeResult);
-                logError("0xA0316", expr.get_SourcePositionStart());
-                return;
-              }
-            } else {
-              getTypeCheckResult().reset();
-              getTypeCheckResult().setResult(wholeResult);
-              logError("0xA0317", expr.get_SourcePositionStart());
-              return;
-            }
-          }
-          wholeResult = SymTypeExpressionFactory.createTypeArray(extTypeResult.getTypeInfo(), dim, extTypeResult);
-        }
+  @Deprecated
+  public void deprecated_traverse(ASTMCTypeArgument typeArgument){
+    SymTypeExpression wholeResult = null;
+    if(typeArgument.getMCTypeOpt().isPresent()){
+      TypeCheckResult res = synthesize.synthesizeType(typeArgument.getMCTypeOpt().get());
+      if(res.isPresentResult()){
+        wholeResult = res.getResult();
       }
-
+    }
+    if(wholeResult!=null){
+      getTypeCheckResult().setResult(wholeResult);
+      getTypeCheckResult().setType();
+    }else{
       getTypeCheckResult().reset();
-      getTypeCheckResult().setResult(wholeResult);
-      if (wholeResult.isObscureType()) {
-        logError("0xA0318", creator.get_SourcePositionStart());
-      }
     }
-  }
-
-  protected List<SymTypeExpression> calculateCorrectArguments(ASTArguments args) {
-    List<SymTypeExpression> argList = Lists.newArrayList();
-    for(int i = 0;i<args.getExpressionList().size();i++){
-      args.getExpression(i).accept(getTraverser());
-      if(getTypeCheckResult().isPresentResult()){
-        argList.add(getTypeCheckResult().getResult());
-      }else{
-        getTypeCheckResult().reset();
-        argList.add(SymTypeExpressionFactory.createObscureType());
-        logError("0xA0313",args.getExpressionList().get(i).get_SourcePositionStart());
-      }
-    }
-    return argList;
-  }
-
-  protected boolean testForCorrectArguments(List<FunctionSymbol> constructors, ASTArguments arguments) {
-    List<SymTypeExpression> symTypeOfArguments = calculateCorrectArguments(arguments);
-    outer: for(FunctionSymbol constructor: constructors){
-      if(constructor.getParameterList().size() == symTypeOfArguments.size()){
-        //get the types of the constructor arguments
-        List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(VariableSymbol::getType).collect(Collectors.toList());
-        for(int i = 0;i<constructorArguments.size();i++){
-          if(!compatible(constructorArguments.get(i),symTypeOfArguments.get(i))){
-            //wrong constructor, argument is not compatible to constructor definition
-            continue outer;
-          }
-        }
-        //if this is reached, then the arguments match a constructor's arguments -> return true
-        return true;
-      }
-    }
-    return false;
   }
 }

@@ -1205,8 +1205,8 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
 
   @Test
   public void failDeriveFromCreatorExpressionArrayCreator1() throws IOException {
-    //Test mit ArrayInitByExpression, keine ganzzahl in Array (z.B. new String[3.4])
-    checkError("new String[3.4]", "0xA0315");
+    //Test mit ArrayInitByExpression, keine ganzzahl in Array (z.B. new int[3.4])
+    checkError("new int[3.4]", "0xA0315");
   }
 
 }

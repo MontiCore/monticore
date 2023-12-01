@@ -12,9 +12,11 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
+import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.util.FunctionRelations;
@@ -356,6 +358,51 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     getType4Ast().setTypeOfExpression(expr,
         getType4Ast().getPartialTypeOfExpr(expr.getExpression())
     );
+  }
+
+  // Array
+
+  @Override
+  public void endVisit(ASTArrayAccessExpression expr) {
+    SymTypeExpression innerType = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression indexType = getType4Ast().getPartialTypeOfExpr(expr.getIndexExpression());
+    SymTypeExpression result = TypeVisitorLifting.liftDefault(
+        (innerArg, indexArg) -> calculateArrayAccess(expr, innerArg, indexArg)
+    ).apply(innerType, indexType);
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  protected SymTypeExpression calculateArrayAccess(
+      ASTArrayAccessExpression expr,
+      SymTypeExpression toBeAccessed,
+      SymTypeExpression indexType) {
+    SymTypeExpression result;
+    if (!toBeAccessed.isArrayType()) {
+      Log.error(
+          "0xFD3F6 trying a qualified access on "
+              + toBeAccessed.printFullName()
+              + " which is not a type "
+              + "applicable to qualified accesses",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    else if (SymTypeRelations.isIntegralType(indexType) &&
+        toBeAccessed.isArrayType()) {
+      result = toBeAccessed.asArrayType().cloneWithLessDim(1);
+    }
+    else {
+      Log.error(
+          "0xFDF86 trying to access expression of type "
+              + toBeAccessed.printFullName()
+              + "with qualifier of type "
+              + indexType.printFullName()
+              + " which is not applicable",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    return result;
   }
 
   // Field/MethodAccess

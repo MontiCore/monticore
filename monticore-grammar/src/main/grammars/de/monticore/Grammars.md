@@ -198,7 +198,8 @@ Some snipets for operators defined in expressions:
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
     LambdaExp:     i->i   (a,b)->a+b
     SIUnits:       5km  3,2m/s  22l  2.400J  
-    JavaClass:     this  .[.]  (.).  super  .instanceof.
+    Ugly:          .instanceof.  (.). new
+    JavaClass:     this  .[.]  super
 
 
 ### [ExpressionsBasis.mc4](expressions/ExpressionsBasis.mc4) (stable)
@@ -214,7 +215,8 @@ these interfaces in various forms.
 expressions. 
 * This is a subset of Java as well as OCL/P, 
 mainly for arithmetic, comparisons, variable use (v), 
-attribute use (o.att), method call (foo(arg,arg2)) and brackets (exp).
+attribute use (o.att), method call (foo(arg,arg2)),
+array access (v[i]), and brackets (exp).
 
 
 ### [AssignmentExpressions.mc4](expressions/AssignmentExpressions.mc4) (stable)
@@ -279,12 +281,14 @@ as they allow math oriented style of specification.
 
 ### [JavaClassExpressions.mc4](expressions/JavaClassExpressions.mc4) (stable)
 * This grammar defines Java specific class expressions like super, 
-this, type cast, etc.
+this, etc.
 * This grammar should only be included, when a mapping to Java is
 intended and the full power of Java should be available in the 
 modeling language.
 
-
+### [UglyExpressions.mc4](expressions/UglyExpressions.mc4) (stable)
+* This grammar defines expressions deemed 'ugly' like
+  instanceof, type cast, new 
 
 ## Literals: List of Grammars in package `de.monticore.literals`
 

@@ -34,8 +34,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
 
   protected LambdaExpressionsTypeVisitor derLambdaExpressions;
 
-  protected CombineExpressionsWithLiteralsTypeVisitor derCombineExpressionsWithLiterals;
-
   protected MCCommonLiteralsTypeVisitor derOfMCCommonLiterals;
 
   // MCTypes
@@ -63,7 +61,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
     derCommonExpressions = new CommonExpressionsTypeVisitor();
     derExpressionBasis = new ExpressionBasisTypeVisitor();
     derLambdaExpressions = new LambdaExpressionsTypeVisitor();
-    derCombineExpressionsWithLiterals = new CombineExpressionsWithLiteralsTypeVisitor();
     derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     // MCTypes
     synMCArrayTypes = new MCArrayTypesTypeVisitor();
@@ -109,7 +106,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
     traverser.setCommonExpressionsHandler(derCommonExpressions);
     traverser.add4ExpressionsBasis(derExpressionBasis);
     traverser.add4LambdaExpressions(derLambdaExpressions);
-    traverser.add4CombineExpressionsWithLiterals(derCombineExpressionsWithLiterals);
     traverser.add4MCCommonLiterals(derOfMCCommonLiterals);
     // MCTypes
     traverser.add4MCArrayTypes(synMCArrayTypes);
@@ -129,7 +125,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserProvider {
     derCommonExpressions.setType4Ast(type4Ast);
     derExpressionBasis.setType4Ast(type4Ast);
     derLambdaExpressions.setType4Ast(type4Ast);
-    derCombineExpressionsWithLiterals.setType4Ast(type4Ast);
     derOfMCCommonLiterals.setType4Ast(type4Ast);
     // MCTypes
     synMCArrayTypes.setType4Ast(type4Ast);

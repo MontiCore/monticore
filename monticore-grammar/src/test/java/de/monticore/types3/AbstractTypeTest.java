@@ -19,11 +19,17 @@ public class AbstractTypeTest {
   }
 
   protected static void assertNoFindings() {
-    assertTrue(Log.getFindings().stream()
-            .map(Finding::buildMsg)
-            .collect(Collectors.joining(System.lineSeparator())),
-        Log.getFindings().isEmpty()
-    );
+    assertTrue(getAllFindingsAsString(), Log.getFindings().isEmpty());
+  }
+
+  /**
+   * @return all findings as one String
+   */
+  protected static String getAllFindingsAsString() {
+    return Log.getFindings().stream()
+        .map(Finding::buildMsg)
+        .collect(Collectors.joining(System.lineSeparator()))
+        ;
   }
 
 }

@@ -26,6 +26,9 @@ import de.monticore.expressions.javaclassexpressions._symboltable.IJavaClassExpr
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsTraverser;
 import de.monticore.expressions.javaclassexpressions._visitor.JavaClassExpressionsVisitor2;
 import de.monticore.expressions.lambdaexpressions._symboltable.ILambdaExpressionsScope;
+import de.monticore.expressions.uglyexpressions._ast.ASTInstanceofExpression;
+import de.monticore.expressions.uglyexpressions._ast.ASTTypeCastExpression;
+import de.monticore.expressions.uglyexpressions._visitor.UglyExpressionsVisitor2;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.literals.mccommonliterals._symboltable.IMCCommonLiteralsScope;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
@@ -58,7 +61,7 @@ import de.monticore.types.mcsimplegenerictypes._symboltable.IMCSimpleGenericType
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesVisitor2;
 
 public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2, CommonExpressionsVisitor2, JavaClassExpressionsVisitor2, LambdaExpressionsVisitor2, BitExpressionsVisitor2,
-    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2, MCArrayTypesVisitor2, MCFullGenericTypesVisitor2, MCFunctionTypesVisitor2, MCCommonLiteralsVisitor2 {
+    ExpressionsBasisVisitor2, MCBasicTypesVisitor2, MCCollectionTypesVisitor2, MCSimpleGenericTypesVisitor2, MCArrayTypesVisitor2, MCFullGenericTypesVisitor2, MCFunctionTypesVisitor2, MCCommonLiteralsVisitor2, UglyExpressionsVisitor2 {
 
   private IScope scope;
 
@@ -223,6 +226,11 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
     expr.setEnclosingScope((IExpressionsBasisScope) scope);
   }
 
+  @Override
+  public void visit(ASTArrayAccessExpression expr){
+    expr.setEnclosingScope((IJavaClassExpressionsScope) scope);
+  }
+
   /*************************************************BIT EXPRESSIONS****************************************************/
 
   @Override
@@ -263,8 +271,6 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
     expr.getLiteral().setEnclosingScope((IExpressionsBasisScope) scope);
   }
 
-
-
   @Override
   public void visit(ASTNameExpression expr){
     expr.setEnclosingScope((IExpressionsBasisScope) scope);
@@ -289,11 +295,6 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
 
   @Override
   public void visit(ASTThisExpression expr){
-    expr.setEnclosingScope((IJavaClassExpressionsScope) scope);
-  }
-
-  @Override
-  public void visit(ASTArrayExpression expr){
     expr.setEnclosingScope((IJavaClassExpressionsScope) scope);
   }
 
