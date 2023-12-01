@@ -8,8 +8,8 @@ import de.monticore.types.*;
 /**
  * This grammar introduces structural types
  *
- * Union types: A|B, (A|B)
- * Intersection types: A&B, (A&B)
+ * Union types: A|B
+ * Intersection types: A&B
  * Tuple types: (A, B)
  *
  * This grammar is part of a hierarchy of types, namely
