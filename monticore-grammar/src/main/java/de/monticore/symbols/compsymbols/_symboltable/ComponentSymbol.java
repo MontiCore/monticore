@@ -314,17 +314,4 @@ public class ComponentSymbol extends ComponentSymbolTOP {
       }
     }
   }
-
-  @Override
-  public boolean equals(Object other) {
-    if(other instanceof ComponentSymbol) {
-      return ((ComponentSymbol)other).getFullName().equals(this.getFullName());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.getFullName().hashCode();
-  }
 }
