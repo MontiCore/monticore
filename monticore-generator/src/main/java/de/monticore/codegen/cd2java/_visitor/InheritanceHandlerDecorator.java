@@ -131,15 +131,23 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
    * @return The corresponding handle methods for the scope
    */
   protected List<ASTCDMethod> getScopeHandleMethods(ASTCDDefinition astcdDefinition, String handlerSimpleTypeName) {
-    List<ASTCDMethod> handleMethods = new ArrayList<ASTCDMethod>();
-    List<String> superScopesTransitive = new ArrayList<String>();
+    List<ASTCDMethod> handleMethods = new ArrayList<>();
+    List<String> superScopesTransitive = new ArrayList<>();
+    List<String> superArtifactScopesTransitive = new ArrayList<>();
+    List<String> superGlobalScopesTransitive = new ArrayList<>();
     for (DiagramSymbol cd : visitorService.getSuperCDsTransitive()) {
       superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
+      superArtifactScopesTransitive.add(symbolTableService.getArtifactScopeInterfaceFullName(cd));
+      superGlobalScopesTransitive.add(symbolTableService.getGlobalScopeInterfaceFullName(cd));
     }
+
     // remove last element as it is covered by the handle call of the original handler
     superScopesTransitive.remove(superScopesTransitive.size() - 1);
     superScopesTransitive.add(I_SCOPE);
-    
+
+    superArtifactScopesTransitive.remove(superArtifactScopesTransitive.size() - 1);
+    superGlobalScopesTransitive.remove(superGlobalScopesTransitive.size() - 1);
+
     // handle language scope
     ASTCDMethod handleScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getScopeInterfaceType());
     handleMethods.add(handleScopeMethod);
@@ -148,14 +156,32 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
             handlerSimpleTypeName, superScopesTransitive));
     
     // handle language artifact scope
-    List<String> superScopesTransitiveForAS = new ArrayList<String>();
+    List<String> superScopesTransitiveForAS = new ArrayList<>();
     superScopesTransitiveForAS.add(symbolTableService.getScopeInterfaceFullName());
-    superScopesTransitiveForAS.addAll(superScopesTransitive);
+    for (int i = 0; i < superScopesTransitive.size() - 1; i++) {
+      superScopesTransitiveForAS.add(superScopesTransitive.get(i));
+      superScopesTransitiveForAS.add(superArtifactScopesTransitive.get(i));
+    }
+    superScopesTransitiveForAS.add(superScopesTransitive.get(superScopesTransitive.size() - 1));
     ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
     handleMethods.add(handleArtifactScopeMethod);
     replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod,
             new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE,
                     handlerSimpleTypeName, superScopesTransitiveForAS));
+
+    // handle language global scope
+    List<String> superScopesTransitiveForGS = new ArrayList<>();
+    superScopesTransitiveForGS.add(symbolTableService.getScopeInterfaceFullName());
+    for (int i = 0; i < superScopesTransitive.size() - 1; i++) {
+      superScopesTransitiveForGS.add(superScopesTransitive.get(i));
+      superScopesTransitiveForGS.add(superGlobalScopesTransitive.get(i));
+    }
+    superScopesTransitiveForGS.add(superScopesTransitive.get(superScopesTransitive.size() - 1));
+    ASTCDMethod handleGlobalScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getGlobalScopeInterfaceType());
+    handleMethods.add(handleGlobalScopeMethod);
+    replaceTemplate(EMPTY_BODY, handleGlobalScopeMethod,
+        new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE,
+            handlerSimpleTypeName, superScopesTransitiveForGS));
 
     return handleMethods;
   }
