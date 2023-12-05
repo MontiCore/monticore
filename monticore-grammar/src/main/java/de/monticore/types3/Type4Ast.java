@@ -7,7 +7,6 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -85,13 +84,6 @@ public class Type4Ast {
     return internal_hasTypeOfExpression((ASTNode) astLit);
   }
 
-  /**
-   * whether a type has been calculated for the signed literal
-   */
-  public boolean hasTypeOfExpression(ASTSignedLiteral astSignLit) {
-    return internal_hasTypeOfExpression((ASTNode) astSignLit);
-  }
-
   protected boolean internal_hasTypeOfExpression(ASTNode node) {
     if (!getExpression2Type().containsKey(node)) {
       return false;
@@ -152,13 +144,6 @@ public class Type4Ast {
     return internal_getTypeOfExpression((ASTNode) astLit);
   }
 
-  /**
-   * gets the type information of the signed literal
-   */
-  public SymTypeExpression getTypeOfExpression(ASTSignedLiteral astSignLit) {
-    return internal_getTypeOfExpression((ASTNode) astSignLit);
-  }
-
   protected SymTypeExpression internal_getTypeOfExpression(ASTNode node) {
     if (internal_hasTypeOfExpression(node)) {
       return getExpression2Type().get(node);
@@ -176,10 +161,6 @@ public class Type4Ast {
 
   public SymTypeExpression getPartialTypeOfExpr(ASTLiteral astLit) {
     return internal_getPartialTypeOfExpr((ASTNode) astLit);
-  }
-
-  public SymTypeExpression getPartialTypeOfExpr(ASTSignedLiteral astSignLit) {
-    return internal_getPartialTypeOfExpr((ASTNode) astSignLit);
   }
 
   /**
@@ -306,13 +287,6 @@ public class Type4Ast {
       SymTypeExpression typeExpr
   ) {
     internal_setTypeOfExpression((ASTNode) astLit, typeExpr);
-  }
-
-  public void setTypeOfExpression(
-      ASTSignedLiteral astSignLit,
-      SymTypeExpression typeExpr
-  ) {
-    internal_setTypeOfExpression((ASTNode) astSignLit, typeExpr);
   }
 
   protected void internal_setTypeOfExpression(
