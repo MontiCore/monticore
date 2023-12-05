@@ -5,6 +5,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -41,6 +42,10 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass handlerClass;
 
+  private GlobalExtensionManagement glex;
+
+  private GeneratorSetup generatorSetup;
+
   private static final String AST_AUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
 
   private static final String AST_TRANSITION = "de.monticore.codegen.ast.automaton._ast.ASTTransition";
@@ -55,16 +60,22 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
 
   @Before
   public void setUp() {
+    this.glex = new GlobalExtensionManagement();
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
     this.glex.setGlobalValue("service", new VisitorService(decoratedCompilationUnit));
+    this.glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
 
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
     MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
+
+    generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    CD4C.init(generatorSetup);
 
     InheritanceHandlerDecorator decorator = new InheritanceHandlerDecorator(this.glex, methodDecorator,
         visitorService, symbolTableService);
@@ -94,7 +105,7 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(11, handlerClass.getCDMethodList().size());
+    assertEquals(12, handlerClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -181,10 +192,8 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGeneratedCode() {
-    GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-    CD4C.init(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.INTERFACE, handlerClass, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
@@ -215,7 +224,7 @@ public class InheritanceHandlerDecoratorTest extends DecoratorTestCase {
         visitorService, symbolTableService);
     ASTCDClass handlerClass = decorator.decorate(decoratedCompilationUnit);
 
-    assertEquals(13, handlerClass.getCDMethodList().size());
+    assertEquals(14, handlerClass.getCDMethodList().size());
     List<ASTCDMethod> handleMethods = getMethodsBy("handle", 1, handlerClass);
 
     ASTMCType astType = this.mcTypeFacade.createQualifiedType("de.monticore.codegen._ast_emf.automata._ast.ASTTransitionWithAction");
