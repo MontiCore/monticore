@@ -1,16 +1,16 @@
-package de.monticore.expressions.optionaloperators.types3;
+package de.monticore.ocl.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalEqualsExpression;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalExpressionPrefix;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalGreaterEqualExpression;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalGreaterThanExpression;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalLessEqualExpression;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalLessThanExpression;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalNotEqualsExpression;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalNotSimilarExpression;
-import de.monticore.expressions.optionaloperators._ast.ASTOptionalSimilarExpression;
-import de.monticore.expressions.optionaloperators._visitor.OptionalOperatorsVisitor2;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalExpressionPrefix;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalGreaterEqualExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalGreaterThanExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalLessEqualExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalLessThanExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalNotEqualsExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalNotSimilarExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalSimilarExpression;
+import de.monticore.ocl.optionaloperators._visitor.OptionalOperatorsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;

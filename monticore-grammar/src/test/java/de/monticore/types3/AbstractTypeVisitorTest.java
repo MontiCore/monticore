@@ -10,8 +10,8 @@ import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsL
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
 import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
-import de.monticore.expressions.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
-import de.monticore.expressions.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
+import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
+import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;

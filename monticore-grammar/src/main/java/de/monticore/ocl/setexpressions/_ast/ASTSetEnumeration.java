@@ -1,7 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.expressions.setexpressions._ast;
+package de.monticore.ocl.setexpressions._ast;
 
-public class ASTSetComprehension extends ASTSetComprehensionTOP {
+public class ASTSetEnumeration extends ASTSetEnumerationTOP {
 
   public boolean isSet() {
     return getOpeningBracket().equals("{");

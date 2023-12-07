@@ -1,12 +1,12 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.expressions.setexpressions.symboltable;
+package de.monticore.ocl.setexpressions.symboltable;
 
-import de.monticore.expressions.setexpressions._ast.ASTGeneratorDeclaration;
-import de.monticore.expressions.setexpressions._ast.ASTSetVariableDeclaration;
-import de.monticore.expressions.setexpressions._symboltable.ISetExpressionsScope;
-import de.monticore.expressions.setexpressions._visitor.SetExpressionsHandler;
-import de.monticore.expressions.setexpressions._visitor.SetExpressionsTraverser;
-import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor2;
+import de.monticore.ocl.setexpressions._ast.ASTGeneratorDeclaration;
+import de.monticore.ocl.setexpressions._ast.ASTSetVariableDeclaration;
+import de.monticore.ocl.setexpressions._symboltable.ISetExpressionsScope;
+import de.monticore.ocl.setexpressions._visitor.SetExpressionsHandler;
+import de.monticore.ocl.setexpressions._visitor.SetExpressionsTraverser;
+import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols._visitor.BasicSymbolsVisitor2;
 import de.monticore.types.check.IDerive;
@@ -71,7 +71,7 @@ public class SetExpressionsSymbolTableCompleter implements
     initialize_SetVariableDeclaration(node.getSymbol(), node);
   }
 
-  public void initialize_SetVariableDeclaration(
+  protected void initialize_SetVariableDeclaration(
       VariableSymbol symbol, ASTSetVariableDeclaration ast) {
     symbol.setIsReadOnly(false);
     if (ast.isPresentMCType()) {
@@ -117,7 +117,7 @@ public class SetExpressionsSymbolTableCompleter implements
     initialize_GeneratorDeclaration(node.getSymbol(), node);
   }
 
-  public void initialize_GeneratorDeclaration(VariableSymbol symbol, ASTGeneratorDeclaration ast) {
+  protected void initialize_GeneratorDeclaration(VariableSymbol symbol, ASTGeneratorDeclaration ast) {
     symbol.setIsReadOnly(false);
     if (ast.isPresentMCType()) {
       ast.getMCType().setEnclosingScope(symbol.getEnclosingScope());

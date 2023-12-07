@@ -1,14 +1,14 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.expressions.oclexpressions.symboltable;
+package de.monticore.ocl.oclexpressions.symboltable;
 
-import de.monticore.expressions.oclexpressions._ast.ASTInDeclaration;
-import de.monticore.expressions.oclexpressions._ast.ASTInDeclarationVariable;
-import de.monticore.expressions.oclexpressions._ast.ASTOCLVariableDeclaration;
-import de.monticore.expressions.oclexpressions._ast.ASTTypeIfExpression;
-import de.monticore.expressions.oclexpressions._symboltable.IOCLExpressionsScope;
-import de.monticore.expressions.oclexpressions._visitor.OCLExpressionsHandler;
-import de.monticore.expressions.oclexpressions._visitor.OCLExpressionsTraverser;
-import de.monticore.expressions.oclexpressions._visitor.OCLExpressionsVisitor2;
+import de.monticore.ocl.oclexpressions._ast.ASTInDeclaration;
+import de.monticore.ocl.oclexpressions._ast.ASTInDeclarationVariable;
+import de.monticore.ocl.oclexpressions._ast.ASTOCLVariableDeclaration;
+import de.monticore.ocl.oclexpressions._ast.ASTTypeIfExpression;
+import de.monticore.ocl.oclexpressions._symboltable.IOCLExpressionsScope;
+import de.monticore.ocl.oclexpressions._visitor.OCLExpressionsHandler;
+import de.monticore.ocl.oclexpressions._visitor.OCLExpressionsTraverser;
+import de.monticore.ocl.oclexpressions._visitor.OCLExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols._visitor.BasicSymbolsVisitor2;
 import de.monticore.types.check.IDerive;
@@ -21,12 +21,9 @@ import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 public class OCLExpressionsSymbolTableCompleter
-    implements BasicSymbolsVisitor2, OCLExpressionsVisitor2, OCLExpressionsHandler {
-  protected static final String USED_BUT_UNDEFINED =
-      "0xB0028: Type '%s' is used but not defined.";
-
-  protected static final String DEFINED_MUTLIPLE_TIMES =
-      "0xB0031: Type '%s' is defined more than once.";
+    implements BasicSymbolsVisitor2,
+    OCLExpressionsVisitor2,
+    OCLExpressionsHandler {
 
   protected OCLExpressionsTraverser traverser;
 
