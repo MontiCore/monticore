@@ -1,4 +1,4 @@
-package de.monticore.ocl.types3;
+package de.monticore.ocl.optionaloperators.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
