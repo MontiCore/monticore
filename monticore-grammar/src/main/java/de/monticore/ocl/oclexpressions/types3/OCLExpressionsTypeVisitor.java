@@ -2,22 +2,22 @@
  *  (c) https://github.com/MontiCore/monticore
  */
 
-package de.monticore.expressions.oclexpressions.types3;
+package de.monticore.ocl.oclexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTAnyExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTEquivalentExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTExistsExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTForallExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTIfThenElseExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTImpliesExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTInDeclaration;
-import de.monticore.expressions.oclexpressions._ast.ASTIterateExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTLetinExpression;
-import de.monticore.expressions.oclexpressions._ast.ASTOCLAtPreQualification;
-import de.monticore.expressions.oclexpressions._ast.ASTOCLTransitiveQualification;
-import de.monticore.expressions.oclexpressions._ast.ASTTypeIfExpression;
-import de.monticore.expressions.oclexpressions._visitor.OCLExpressionsVisitor2;
+import de.monticore.ocl.oclexpressions._ast.ASTAnyExpression;
+import de.monticore.ocl.oclexpressions._ast.ASTEquivalentExpression;
+import de.monticore.ocl.oclexpressions._ast.ASTExistsExpression;
+import de.monticore.ocl.oclexpressions._ast.ASTForallExpression;
+import de.monticore.ocl.oclexpressions._ast.ASTIfThenElseExpression;
+import de.monticore.ocl.oclexpressions._ast.ASTImpliesExpression;
+import de.monticore.ocl.oclexpressions._ast.ASTInDeclaration;
+import de.monticore.ocl.oclexpressions._ast.ASTIterateExpression;
+import de.monticore.ocl.oclexpressions._ast.ASTLetinExpression;
+import de.monticore.ocl.oclexpressions._ast.ASTOCLAtPreQualification;
+import de.monticore.ocl.oclexpressions._ast.ASTOCLTransitiveQualification;
+import de.monticore.ocl.oclexpressions._ast.ASTTypeIfExpression;
+import de.monticore.ocl.oclexpressions._visitor.OCLExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -246,7 +246,7 @@ public class OCLExpressionsTypeVisitor extends AbstractTypeVisitor
     if (exprResult.isObscureType()) {
       result = createObscureType();
     }
-    else if (!isCollection(exprResult)) {
+    else if (!isSetOrList(exprResult)) {
       Log.error(
           "0xFD292 expected a collection for 'any', but got "
               + exprResult.getTypeInfo(),
@@ -345,7 +345,7 @@ public class OCLExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression result;
 
     if (expressionResult.isPresent()
-        && !isCollection(expressionResult.get())) {
+        && !isSetOrList(expressionResult.get())) {
       Log.error(
           "0xFD297 expected collection after 'in', but got "
               + expressionResult.get().printFullName(),
@@ -425,7 +425,7 @@ public class OCLExpressionsTypeVisitor extends AbstractTypeVisitor
    * whether a type is a collection-type,
    * this differs between languages (s.a. OCL)
    */
-  protected boolean isCollection(SymTypeExpression type) {
+  protected boolean isSetOrList(SymTypeExpression type) {
     return MCCollectionSymTypeRelations.isList(type) ||
         MCCollectionSymTypeRelations.isSet(type);
   }

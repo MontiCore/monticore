@@ -1,25 +1,28 @@
 // (c) https://github.com/MontiCore/monticore
 
-package de.monticore.expressions.oclexpressions._prettyprint;
+package de.monticore.ocl.oclexpressions._prettyprint;
 
-import de.monticore.expressions.oclexpressions._ast.ASTInDeclaration;
-import de.monticore.expressions.oclexpressions._ast.ASTInDeclarationVariable;
+import de.monticore.ocl.oclexpressions._ast.ASTInDeclaration;
+import de.monticore.ocl.oclexpressions._ast.ASTInDeclarationVariable;
+import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.Iterator;
 
 public class OCLExpressionsPrettyPrinter extends OCLExpressionsPrettyPrinterTOP {
-  public OCLExpressionsPrettyPrinter(IndentPrinter printer, boolean printComments) {
+
+  public OCLExpressionsPrettyPrinter(
+      IndentPrinter printer, boolean printComments) {
     super(printer, printComments);
   }
 
-  // The following overriden methods are required, as the auto generation of pretty printers failed
-  // here
+  // The following overriden methods are required,
+  // as the auto generation of pretty printers failed here
 
   @Override
   public void handle(ASTInDeclaration node) {
     if (this.isPrintComments()) {
-      de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
+      CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
     if (node.isPresentMCType()) {
       node.getMCType().accept(getTraverser());
@@ -39,7 +42,7 @@ public class OCLExpressionsPrettyPrinter extends OCLExpressionsPrettyPrinterTOP 
     }
 
     if (this.isPrintComments()) {
-      de.monticore.prettyprint.CommentPrettyPrinter.printPostComments(node, getPrinter());
+      CommentPrettyPrinter.printPostComments(node, getPrinter());
     }
   }
 }

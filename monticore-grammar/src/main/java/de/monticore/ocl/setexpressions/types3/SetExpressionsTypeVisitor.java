@@ -1,9 +1,9 @@
-package de.monticore.expressions.setexpressions.types3;
+package de.monticore.ocl.setexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.setexpressions.SetExpressionsMill;
-import de.monticore.expressions.setexpressions._ast.*;
-import de.monticore.expressions.setexpressions._visitor.SetExpressionsVisitor2;
+import de.monticore.ocl.setexpressions.SetExpressionsMill;
+import de.monticore.ocl.setexpressions._ast.*;
+import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;

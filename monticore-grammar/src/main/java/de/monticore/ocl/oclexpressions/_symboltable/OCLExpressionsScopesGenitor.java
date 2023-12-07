@@ -1,11 +1,11 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.expressions.oclexpressions._symboltable;
+package de.monticore.ocl.oclexpressions._symboltable;
 
-import de.monticore.expressions.oclexpressions.OCLExpressionsMill;
-import de.monticore.expressions.oclexpressions._ast.ASTInDeclaration;
-import de.monticore.expressions.oclexpressions._ast.ASTInDeclarationVariable;
-import de.monticore.expressions.oclexpressions._ast.ASTOCLVariableDeclaration;
-import de.monticore.expressions.oclexpressions._ast.ASTTypeIfExpression;
+import de.monticore.ocl.oclexpressions.OCLExpressionsMill;
+import de.monticore.ocl.oclexpressions._ast.ASTInDeclaration;
+import de.monticore.ocl.oclexpressions._ast.ASTInDeclarationVariable;
+import de.monticore.ocl.oclexpressions._ast.ASTOCLVariableDeclaration;
+import de.monticore.ocl.oclexpressions._ast.ASTTypeIfExpression;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.logging.Log;
 

@@ -1,10 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.expressions.setexpressions._prettyprint;
+package de.monticore.ocl.setexpressions._prettyprint;
 
-import de.monticore.expressions.setexpressions._ast.ASTSetCollectionItem;
-import de.monticore.expressions.setexpressions._ast.ASTSetComprehension;
-import de.monticore.expressions.setexpressions._ast.ASTSetComprehensionItem;
-import de.monticore.expressions.setexpressions._ast.ASTSetEnumeration;
+import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
+import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
+import de.monticore.ocl.setexpressions._ast.ASTSetComprehensionItem;
+import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 
