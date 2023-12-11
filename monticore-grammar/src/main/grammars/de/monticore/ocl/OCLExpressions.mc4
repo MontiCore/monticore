@@ -31,10 +31,6 @@ import de.monticore.symbols.*;
  * * --  ocl/SetExpressions.mc4
  * * --  ocl/OptionalOperators.mc4
  *
- * Care: other grammars may include a syntactically similar casting
- * function. The parser then only takes one alternative (dependend
- * on the priority (which is here <200>). 
- *
  * Note that it may be useful to use the "nokeyword"-keyword statement
  * for a variety of keywords used here, such as "implies", "forall", "in"
 */
@@ -239,18 +235,6 @@ component grammar OCLExpressions
   InDeclarationVariable implements Variable = Name;
 
   /*=================================================================*/
-
-  /**
-   * ASTOCLArrayQualification is used to access elements of 
-   *   an array of elements. 
-   *
-   *   @attribute Expression
-   *              The expression whose elements will be accessed
-   *   @attribute arguments
-   *              The expression defining which element to access
-   */
-  OCLArrayQualification implements Expression <250> =
-    Expression ("[" arguments:Expression "]")+;
 
   /**
    * ASTOCLAtPreQualification
