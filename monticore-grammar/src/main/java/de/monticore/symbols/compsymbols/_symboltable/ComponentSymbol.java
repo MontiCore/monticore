@@ -24,15 +24,14 @@ public class ComponentSymbol extends ComponentSymbolTOP {
 
   public Optional<VariableSymbol> getParameter(@NonNull String name) {
     Preconditions.checkNotNull(name);
-    for (VariableSymbol parameter : this.getParametersList()) {
+    for (VariableSymbol parameter : this.getParameters()) {
       if (parameter.getName().equals(name)) return Optional.of(parameter);
     }
     return Optional.empty();
   }
 
-
-  public List<TypeVarSymbol> getTypeParameters() {
-    return this.getSpannedScope().getLocalTypeVarSymbols();
+  public boolean hasParameters() {
+    return !this.getParameters().isEmpty();
   }
 
   public boolean hasTypeParameter() {
@@ -63,7 +62,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public Optional<PortSymbol> getPort(@NonNull String name, boolean searchSuper) {
     Preconditions.checkNotNull(name);
-    for (PortSymbol port : searchSuper ? this.getAllPorts() : this.getPortsList()) {
+    for (PortSymbol port : searchSuper ? this.getAllPorts() : this.getPorts()) {
       if (port.getName().equals(name)) return Optional.of(port);
     }
     return Optional.empty();
@@ -76,7 +75,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getIncomingPorts() {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPortsList()) {
+    for (PortSymbol port : this.getPorts()) {
       if (port.isIncoming()) {
         result.add(port);
       }
@@ -122,7 +121,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getOutgoingPorts() {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPortsList()) {
+    for (PortSymbol port : this.getPorts()) {
       if (port.isOutgoing()) {
         result.add(port);
       }
@@ -171,7 +170,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getPorts(boolean incoming, boolean outgoing) {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPortsList()) {
+    for (PortSymbol port : this.getPorts()) {
       if (port.isIncoming() == incoming && port.isOutgoing() == outgoing) {
         result.add(port);
       }
@@ -190,12 +189,12 @@ public class ComponentSymbol extends ComponentSymbolTOP {
 
   protected Set<PortSymbol> getAllPorts(Collection<ComponentSymbol> visited) {
     visited.add(this);
-    Set<PortSymbol> result = new LinkedHashSet<>(this.getPortsList());
+    Set<PortSymbol> result = new LinkedHashSet<>(this.getPorts());
     for (CompKindExpression superComponent : this.getSuperComponentsList()) {
       if (visited.contains(superComponent.getTypeInfo())) continue;
       for (PortSymbol port : superComponent.getTypeInfo().getAllPorts(visited)) {
         // Shadow super ports
-        if (result.stream().noneMatch(e -> e.getName() == port.getName())) {
+        if (result.stream().noneMatch(e -> e.getName().equals(port.getName()))) {
           result.add(port);
         }
       }
@@ -251,11 +250,8 @@ public class ComponentSymbol extends ComponentSymbolTOP {
     return result;
   }
 
-  /**
-   * @return a {@code List} of the subcomponents of this component
-   */
-  public List<SubcomponentSymbol> getSubcomponents() {
-    return this.getSpannedScope().getLocalSubcomponentSymbols();
+  public boolean hasPorts() {
+    return !this.getPorts().isEmpty();
   }
 
   /**
