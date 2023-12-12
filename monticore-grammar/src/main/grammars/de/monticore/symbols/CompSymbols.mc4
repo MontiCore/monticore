@@ -8,11 +8,31 @@ component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
 
   interface scope symbol Component = Name;
 
+  /**
+   * Associations to add-ons are expressed as custom getters.
+   */
   symbolrule Component =
     superComponents: de.monticore.types.check.CompKindExpression*
     refinements: de.monticore.types.check.CompKindExpression*
-    parameters: de.monticore.symbols.basicsymbols._symboltable.VariableSymbol*
-    ports: de.monticore.symbols.compsymbols._symboltable.PortSymbol*
+
+    method public List<de.monticore.symbols.basicsymbols._symboltable.VariableSymbol> getParameters() {
+      return this.getSpannedScope().getLocalVariableSymbols();
+    }
+
+    method public List<de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol> getTypeParameters() {
+      return this.getSpannedScope().getLocalTypeVarSymbols();
+    }
+
+    method public List<de.monticore.symbols.compsymbols._symboltable.PortSymbol> getPorts() {
+      return this.getSpannedScope().getLocalPortSymbols();
+    }
+
+    /**
+     * @return a List of the subcomponents of this component
+     */
+    method public List<de.monticore.symbols.compsymbols._symboltable.SubcomponentSymbol> getSubcomponents() {
+      return this.getSpannedScope().getLocalSubcomponentSymbols();
+    }
   ;
 
   interface symbol Subcomponent = Name;
