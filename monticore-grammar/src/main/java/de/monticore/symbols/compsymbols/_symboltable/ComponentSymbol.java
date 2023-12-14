@@ -18,8 +18,14 @@ import java.util.stream.Collectors;
 
 public class ComponentSymbol extends ComponentSymbolTOP {
 
+  protected List<VariableSymbol> parameters = new ArrayList<>();
+
   public ComponentSymbol(String name) {
     super(name);
+  }
+
+  public List<VariableSymbol> getParameters() {
+    return this.parameters;
   }
 
   public Optional<VariableSymbol> getParameter(@NonNull String name) {
@@ -28,6 +34,12 @@ public class ComponentSymbol extends ComponentSymbolTOP {
       if (parameter.getName().equals(name)) return Optional.of(parameter);
     }
     return Optional.empty();
+  }
+
+  public void addParameter(@NonNull VariableSymbol parameter) {
+    Preconditions.checkNotNull(parameter);
+    Preconditions.checkArgument(this.getSpannedScope().getLocalVariableSymbols().contains(parameter));
+    this.parameters.add(parameter);
   }
 
   public boolean hasParameters() {

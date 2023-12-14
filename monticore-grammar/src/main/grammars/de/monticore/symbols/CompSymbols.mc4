@@ -9,15 +9,11 @@ component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
   interface scope symbol Component = Name;
 
   /**
-   * Associations to add-ons are expressed as custom getters.
+   * Associations to add-ons are expressed as custom getters except parameters which require further configuration.
    */
   symbolrule Component =
     superComponents: de.monticore.types.check.CompKindExpression*
     refinements: de.monticore.types.check.CompKindExpression*
-
-    method public List<de.monticore.symbols.basicsymbols._symboltable.VariableSymbol> getParameters() {
-      return this.getSpannedScope().getLocalVariableSymbols();
-    }
 
     method public List<de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol> getTypeParameters() {
       return this.getSpannedScope().getLocalTypeVarSymbols();
