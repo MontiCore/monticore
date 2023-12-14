@@ -137,6 +137,7 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
         VariableSymbol paramSym = (VariableSymbol) deSer.deserialize(param.getAsJsonObject());
 
         paramOwner.getSpannedScope().add(paramSym);
+        paramOwner.addParameter(paramSym);
 
       } else {
         Log.error(String.format(
