@@ -162,15 +162,15 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
     if (symType.hasTypeVarSymbol()) {
       result = SymTypeExpressionFactory.createTypeVariable(
           symType.getTypeVarSymbol(),
-          symType.getLowerBound(),
-          symType.getUpperBound()
+          symType.getStoredLowerBound(),
+          symType.getStoredUpperBound()
       );
     }
     else {
       result = SymTypeExpressionFactory.createTypeVariable(
           null,
-          symType.getLowerBound(),
-          symType.getUpperBound()
+          symType.getStoredLowerBound(),
+          symType.getStoredUpperBound()
       );
     }
     pushTransformedSymType(result);
