@@ -42,6 +42,10 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teVarB;
 
+  static SymTypeExpression teVarUpper;
+
+  static SymTypeExpression teVarLower;
+
   static SymTypeExpression teP;
 
   static SymTypeExpression teH;  // on purpose: package missing
@@ -121,6 +125,10 @@ public class SymTypeExpressionTest {
     teIntA = createTypeObject("java.lang.Integer",scope);
 
     teVarB = createTypeVariable("B", scope);
+
+    teVarUpper = createTypeVariable(null, teIntA, createBottomType());
+
+    teVarLower = createTypeVariable(null, createTopType(), teIntA);
 
     teP = createTypeObject("de.x.Person", scope);
 
@@ -226,6 +234,7 @@ public class SymTypeExpressionTest {
     assertEquals("double", teDouble.print());
     assertEquals("int", teInt.print());
     assertEquals("A", teVarA.print());
+    assertEquals("__INTERNAL_TYPEVARIABLE", teVarUpper.print());
     assertEquals("de.x.Person", teP.print());
     assertEquals("void", teVoid.print());
     assertEquals("null", teNull.print());
@@ -499,6 +508,8 @@ public class SymTypeExpressionTest {
     assertFalse(SymTypeExpressionFactory.createPrimitive((TypeSymbol) null).hasTypeInfo());
     assertTrue(teVarA.hasTypeInfo());
     assertTrue(teVarB.hasTypeInfo());
+    assertFalse(teVarUpper.hasTypeInfo());
+    assertFalse(teVarLower.hasTypeInfo());
     assertTrue(teIntA.hasTypeInfo());
     assertFalse(SymTypeExpressionFactory.createTypeObject(null).hasTypeInfo());
     assertTrue(teP.hasTypeInfo());
@@ -545,6 +556,16 @@ public class SymTypeExpressionTest {
     assertFalse(teVarA.deepClone().isPrimitive());
     assertTrue(teVarA.deepClone().isTypeVariable());
     assertEquals(teVarA.print(),teVarA.deepClone().print());
+
+    assertTrue(teVarUpper.deepClone() instanceof SymTypeVariable);
+    assertFalse(teVarUpper.deepClone().isPrimitive());
+    assertTrue(teVarUpper.deepClone().isTypeVariable());
+    assertEquals(teVarUpper.print(),teVarUpper.deepClone().print());
+
+    assertTrue(teVarLower.deepClone() instanceof SymTypeVariable);
+    assertFalse(teVarLower.deepClone().isPrimitive());
+    assertTrue(teVarLower.deepClone().isTypeVariable());
+    assertEquals(teVarLower.print(),teVarLower.deepClone().print());
 
     //SymTypePrimitive
     assertTrue(teInt.deepClone() instanceof SymTypePrimitive);
