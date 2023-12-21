@@ -57,7 +57,7 @@ tasks.withType(JavaCompile) {
 }
 
 task testReport(type: TestReport) {
-  destinationDir = file("$buildDir/reports/allTests")
+  destinationDirectory = file("$buildDir/reports/allTests")
   // Include the results from the 'test' task
-  reportOn tasks.withType(Test)
+  testResults.from(tasks.withType(Test).each({it.getBinaryResultsDirectory()}))
 }
