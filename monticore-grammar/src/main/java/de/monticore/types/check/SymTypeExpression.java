@@ -178,6 +178,30 @@ public abstract class SymTypeExpression {
     return null;
   }
 
+  // Am I an SIUnit type (e.g., "km/h")
+  public boolean isSIUnitType() {
+    return false;
+  }
+
+  public SymTypeOfSIUnit asSIUnitType() {
+    Log.error("0xFDAAC internal error: "
+        + "tried to convert non-SIUnit type to a SIUnit type");
+    return null;
+  }
+
+  // Am I a numeric with SIUnit type (e.g., "km/h<float>")
+  public boolean isNumericWithSIUnitType() {
+    return false;
+  }
+
+  public SymTypeOfNumericWithSIUnit asNumericWithSIUnitType() {
+    Log.error("0xFDAAD internal error: "
+        + "tried to convert non-numeric-with-SIUnit type "
+        + "to a numeric-with-SIUnit type"
+    );
+    return null;
+  }
+
   /**
    * Am I a tuple type (e.g. "(String, int)")
    */
