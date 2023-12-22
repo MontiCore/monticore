@@ -94,6 +94,14 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teFunc4;
 
+  static SymTypeExpression teSIUnit1;
+
+  static SymTypeExpression teSIUnit2;
+
+  static SymTypeExpression teNumWithSIUnit1;
+
+  static SymTypeExpression teNumWithSIUnit2;
+
   static SymTypeExpression teUnion1;
 
   static SymTypeExpression teInter1;
@@ -181,6 +189,17 @@ public class SymTypeExpressionTest {
 
     teFunc4 = createFunction(teVoid, Lists.newArrayList(teDouble, teInt), true);
 
+    teSIUnit1 = createSIUnit(
+        List.of(createSIUnitBasic("m")),
+        List.of(createSIUnitBasic("s", "m", 2))
+    );
+
+    teSIUnit2 = createSIUnit(List.of(), List.of());
+
+    teNumWithSIUnit1 = createNumericWithSIUnit((SymTypeOfSIUnit) teSIUnit1, teInt);
+
+    teNumWithSIUnit2 = createNumericWithSIUnit((SymTypeOfSIUnit) teSIUnit2, teInt);
+
     teUnion1 = createUnion(teInt, teDouble);
 
     teInter1 = createIntersection(teInt, teDouble);
@@ -224,6 +243,8 @@ public class SymTypeExpressionTest {
     assertFalse(teUpperBound.isValidType());
     assertTrue(teFunc1.isFunctionType());
     assertTrue(teFunc1.isValidType());
+    assertTrue(teSIUnit1.isSIUnitType());
+    assertTrue(teNumWithSIUnit1.isNumericWithSIUnitType());
     assertTrue(teUnion1.isUnionType());
     assertTrue(teUnion1.isValidType());
     assertTrue(teInter1.isIntersectionType());
@@ -259,6 +280,9 @@ public class SymTypeExpressionTest {
     assertEquals("(double, int) -> int", teFunc2.print());
     assertEquals("((double, int) -> int) -> () -> void", teFunc3.print());
     assertEquals("(double, int...) -> void", teFunc4.print());
+    assertEquals("m/ms^2", teSIUnit1.print());
+    assertEquals("1", teSIUnit2.print());
+    assertEquals("m/ms^2<int>", teNumWithSIUnit1.print());
     assertEquals("double | int", teUnion1.print());
     assertEquals("double & int", teInter1.print());
     assertEquals("(int, double)", teTuple1.print());
@@ -556,6 +580,8 @@ public class SymTypeExpressionTest {
     assertFalse(teFunc2.hasTypeInfo());
     assertFalse(teFunc3.hasTypeInfo());
     assertFalse(teFunc4.hasTypeInfo());
+    assertFalse(teSIUnit1.hasTypeInfo());
+    assertFalse(teNumWithSIUnit1.hasTypeInfo());
     assertFalse(teUnion1.hasTypeInfo());
     assertFalse(teTuple1.hasTypeInfo());
     assertFalse(teRegEx1.hasTypeInfo());
@@ -620,6 +646,16 @@ public class SymTypeExpressionTest {
     assertTrue(teFunc3.deepClone() instanceof SymTypeOfFunction);
     assertTrue(teFunc3.deepClone().isFunctionType());
     assertEquals(teFunc3.print(), teFunc3.deepClone().print());
+
+    // SymTypeOfSIUnit
+    assertTrue(teSIUnit1.deepClone() instanceof SymTypeOfSIUnit);
+    assertTrue(teSIUnit1.deepClone().isSIUnitType());
+    assertEquals(teSIUnit1.print(), teSIUnit1.deepClone().print());
+
+    // SymTypeOfNumericWithSIUnit
+    assertTrue(teNumWithSIUnit1.deepClone() instanceof SymTypeOfNumericWithSIUnit);
+    assertTrue(teNumWithSIUnit1.deepClone().isNumericWithSIUnitType());
+    assertEquals(teNumWithSIUnit1.print(), teNumWithSIUnit1.deepClone().print());
 
     //SymTypeOfUnion
     assertTrue(teUnion1.deepClone() instanceof SymTypeOfUnion);
@@ -714,6 +750,36 @@ public class SymTypeExpressionTest {
 
     SymTypeOfFunction tFunc4 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(teDouble, teInt), true);
     assertEquals("(double, int...) -> void", tFunc4.print());
+
+    SIUnitBasic tSIUnitBasic1 = createSIUnitBasic("m");
+    assertEquals("m", tSIUnitBasic1.print());
+
+    SIUnitBasic tSIUnitBasic2 = createSIUnitBasic("s", 2);
+    assertEquals("s^2", tSIUnitBasic2.print());
+
+    SIUnitBasic tSIUnitBasic3 = createSIUnitBasic("g", "m", -2);
+    assertEquals("mg^-2", tSIUnitBasic3.print());
+
+    SymTypeOfSIUnit tSIUnit1 = createSIUnit(List.of(tSIUnitBasic1), List.of());
+    assertEquals("m", tSIUnit1.print());
+
+    SymTypeOfSIUnit tSIUnit2 = createSIUnit(List.of(), List.of(tSIUnitBasic2));
+    assertEquals("1/s^2", tSIUnit2.print());
+
+    SymTypeOfSIUnit tSIUnit3 = createSIUnit(
+        List.of(tSIUnitBasic1),
+        List.of(tSIUnitBasic2, tSIUnitBasic3)
+    );
+    assertEquals("m/(s^2*mg^-2)", tSIUnit3.print());
+
+    SymTypeOfNumericWithSIUnit tNumSIUnit1 =
+        createNumericWithSIUnit(tSIUnit1, teInt);
+    assertEquals("m<int>", tNumSIUnit1.print());
+
+    SymTypeOfNumericWithSIUnit tNumSIUnit2 = createNumericWithSIUnit(
+        List.of(tSIUnitBasic1), List.of(tSIUnitBasic2, tSIUnitBasic3), teInt
+    );
+    assertEquals("m/(s^2*mg^-2)<int>", tNumSIUnit2.print());
 
     SymTypeOfUnion tUnion1 = createUnion(teInt, teDouble);
     assertEquals("double | int", tUnion1.print());
