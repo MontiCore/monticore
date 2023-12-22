@@ -192,7 +192,7 @@ public class SIUnitTypeRelations {
   }
 
   protected boolean calculateIsOfDimensionOne(SymTypeOfSIUnit siUnit) {
-    SymTypeOfSIUnit siUnitNormalized = normalize(siUnit);
+    SymTypeOfSIUnit siUnitNormalized = internal_normalize(siUnit);
     return siUnitNormalized.getNumerator().size() == 0 &&
         siUnitNormalized.getDenominator().size() == 0;
   }
