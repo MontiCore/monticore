@@ -102,7 +102,6 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._cocos.GrammarFamilyCoCoChecker;
-import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyGlobalScope;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyArtifactScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
@@ -293,7 +292,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory The output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, ASTMCGrammar grammar,
-                             GrammarFamilyGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
+                             IGrammarFamilyGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
                              File outputDirectory) {
     // first cd (representing AST package) is relevant
     // -> will be only one cd in the future
@@ -308,7 +307,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
-                             GrammarFamilyGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
+                             IGrammarFamilyGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
                              File outputDirectory) {
     Log.errorIfNull(
             grammar,
@@ -323,7 +322,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, GrammarFamilyGlobalScope symbolTable,
+  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, IGrammarFamilyGlobalScope symbolTable,
                              MCPath handcodedPath, MCPath templatePath, File outputDirectory,
                              boolean embeddedJavaCode, Languages lang) {
     Log.errorIfNull(
