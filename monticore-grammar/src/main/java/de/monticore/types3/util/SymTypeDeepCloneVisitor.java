@@ -2,21 +2,7 @@
 package de.monticore.types3.util;
 
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.types.check.SymTypeArray;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeObscure;
-import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.SymTypeOfIntersection;
-import de.monticore.types.check.SymTypeOfNull;
-import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.SymTypeOfRegEx;
-import de.monticore.types.check.SymTypeOfUnion;
-import de.monticore.types.check.SymTypeOfWildcard;
-import de.monticore.types.check.SymTypePrimitive;
-import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types.check.SymTypeVoid;
+import de.monticore.types.check.*;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -137,6 +123,15 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
   public void visit(SymTypeOfRegEx symType) {
     pushTransformedSymType(
         SymTypeExpressionFactory.createTypeRegEx((symType.getRegExString()))
+    );
+  }
+
+  @Override
+  public void visit(SymTypeOfTuple symType) {
+    List<SymTypeExpression> clonedListedTypes =
+        applyToCollection(symType.getTypeList());
+    pushTransformedSymType(
+        SymTypeExpressionFactory.createTuple(clonedListedTypes)
     );
   }
 
