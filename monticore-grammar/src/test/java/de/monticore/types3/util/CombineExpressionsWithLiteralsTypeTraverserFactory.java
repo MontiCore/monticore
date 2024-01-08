@@ -22,6 +22,7 @@ import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcfullgenerictypes.types3.MCFullGenericTypesTypeVisitor;
 import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
+import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 
 public class CombineExpressionsWithLiteralsTypeTraverserFactory {
@@ -78,6 +79,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.synMCFullGenericTypes.setType4Ast(type4Ast);
     visitors.synMCFunctionTypes.setType4Ast(type4Ast);
     visitors.synMCSimpleGenericTypes.setType4Ast(type4Ast);
+    visitors.synMCStructuralTypes.setType4Ast(type4Ast);
     visitors.synRegExType.setType4Ast(type4Ast);
   }
 
@@ -103,6 +105,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.synMCFullGenericTypes = new MCFullGenericTypesTypeVisitor();
     visitors.synMCFunctionTypes = new MCFunctionTypesTypeVisitor();
     visitors.synMCSimpleGenericTypes = new MCSimpleGenericTypesTypeVisitor();
+    visitors.synMCStructuralTypes = new MCStructuralTypesTypeVisitor();
     visitors.synRegExType = new RegExTypeTypeVisitor();
     return visitors;
   }
@@ -175,6 +178,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.add4MCFullGenericTypes(visitors.synMCFullGenericTypes);
     traverser.add4MCFunctionTypes(visitors.synMCFunctionTypes);
     traverser.add4MCSimpleGenericTypes(visitors.synMCSimpleGenericTypes);
+    traverser.add4MCStructuralTypes(visitors.synMCStructuralTypes);
     traverser.add4RegExType(visitors.synRegExType);
   }
 
@@ -218,6 +222,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public MCFunctionTypesTypeVisitor synMCFunctionTypes;
 
     public MCSimpleGenericTypesTypeVisitor synMCSimpleGenericTypes;
+
+    public MCStructuralTypesTypeVisitor synMCStructuralTypes;
 
     public RegExTypeTypeVisitor synRegExType;
   }
