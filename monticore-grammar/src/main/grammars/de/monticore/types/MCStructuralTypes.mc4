@@ -32,7 +32,7 @@ component grammar MCStructuralTypes
    */
   MCUnionType implements MCType =
     MCType "|" (MCType || "|")+ |
-    "(" MCType "|" (MCType || "|")+ ")"
+    parenthesis:"(" MCType "|" (MCType || "|")+ ")"
   ;
 
   /** ASTMCIntersectionType represents intersection types.
@@ -46,7 +46,7 @@ component grammar MCStructuralTypes
    */
   MCIntersectionType implements MCType =
     MCType "&" (MCType || "&")+ |
-    "(" MCType "&" (MCType || "&")+ ")"
+    parenthesis:"(" MCType "&" (MCType || "&")+ ")"
   ;
 
   /** ASTMCTupleType represents tuple types.
