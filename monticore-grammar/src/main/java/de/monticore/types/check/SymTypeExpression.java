@@ -173,6 +173,19 @@ public abstract class SymTypeExpression {
   }
 
   /**
+   * Am I a tuple type (e.g. "(String, int)")
+   */
+  public boolean isTupleType() {
+    return false;
+  }
+
+  public SymTypeOfTuple asTupleType() {
+    Log.error("0xFDAAD internal error: "
+        + "tried to convert non-tuple-type to a tuple type");
+    return null;
+  }
+
+  /**
    * Am I an union type (e.g. "(A|B)")?
    */
   public boolean isUnionType() {
