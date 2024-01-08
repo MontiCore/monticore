@@ -295,6 +295,10 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     return getFirstErrorCodes(Log.getErrorCount());
   }
 
+  protected boolean hasErrorCode(String code) {
+    return getAllErrorCodes().stream().anyMatch(code::equals);
+  }
+
   protected void assertHasErrorCode(String code) {
     assertTrue(
         "Error \"" + code + "\" expected, "
@@ -304,7 +308,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
             .map(Finding::buildMsg)
             .collect(Collectors.joining(System.lineSeparator()))
             + System.lineSeparator(),
-        getAllErrorCodes().stream().anyMatch(code::equals)
+        hasErrorCode(code)
     );
   }
 
