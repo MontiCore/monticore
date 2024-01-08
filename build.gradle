@@ -82,8 +82,8 @@ subprojects {
       }
     }
     reports {
-      junitXml.enabled = false
-      html.enabled = false
+      junitXml.required = false
+      html.required = false
     }
   }
 
