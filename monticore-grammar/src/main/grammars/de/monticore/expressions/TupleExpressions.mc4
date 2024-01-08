@@ -1,0 +1,47 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.expressions;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.expressions.*;
+
+component grammar TupleExpressions
+          extends ExpressionsBasis {
+
+  /**
+   * This grammar defines tupel expressions, e.g.
+   * ("Hello", 1)
+   *
+   * Tuples expressions are ordered lists of at least two expressions.
+   *
+   * There are also other kinds of expressions defined in the
+   * grammars mentioned below. These expression definitions can safely be
+   * composed if desired.
+   *
+   * This grammar is part of a hierarchy of expressions, namely
+   * * expressions/ExpressionsBasis.mc4
+   * * --  expressions/CommonExpressions.mc4
+   * * --  --  expressions/JavaClassExpressions.mc4
+   * * --  --  expressions/OptionalExpressions.mc4
+   * * --  expressions/AssignmentExpressions.mc4
+   * * --  expressions/BitExpressions.mc4
+   * * --  expressions/LambdaExpressions.mc4
+   * * --  expressions/OCLExpressions.mc4
+   * * --  expressions/SetExpressions.mc4
+   * * --  expressions/TupleExpressions.mc4
+   *
+  */
+
+  /** ASTMCTupleExpression represents tuple expressions.
+   *
+   * Tuple expression are a tuple of expressions.
+   * The type is the tuple of the types of the expression in the tuple.
+   *
+   * Example:
+   * (1.1f, -2.0f)
+   */
+  MCTupleExpression implements Expression =
+    "(" Expression "," (Expression || ",")+ ")"
+  ;
+
+}
