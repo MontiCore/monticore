@@ -1,19 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
+import de.monticore.expressions.commonexpressions._ast.ASTArrayAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.*;
 import de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsFullPrettyPrinter;
-import de.monticore.expressions.testjavaclassexpressions.TestJavaClassExpressionsMill;
-import de.monticore.expressions.testjavaclassexpressions._ast.ASTExtType;
 import de.monticore.expressions.testjavaclassexpressions._parser.TestJavaClassExpressionsParser;
+import de.monticore.expressions.uglyexpressions._ast.ASTInstanceofExpression;
+import de.monticore.expressions.uglyexpressions._ast.ASTTypeCastExpression;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -99,9 +100,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     String output = prettyPrinter.prettyprint(ast);
 
-    // does not print 'Integer' because functionality for type printing has to be added over delegation form
-    // prettyprinter of langauge that fills the external
-    assertEquals(".class", output);
+    assertEquals("Integer.class", output);
   }
 
   @Test
@@ -113,27 +112,23 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     String output = prettyPrinter.prettyprint(ast);
 
-    // does not print 'Integer' because functionality for type printing has to be added over delegation form
-    // prettyprinter of langauge that fills the external
-    assertEquals("<>super(a)", output);
+    assertEquals("<Integer>super(a)", output);
   }
 
   @Test
   public void testInstanceofExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTExtType> type = parser.parse_StringExtType("Integer");
+    Optional<ASTMCType> type = parser.parse_StringMCType("Integer");
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(type.isPresent());
     ASTInstanceofExpression result = JavaClassExpressionsMill.instanceofExpressionBuilder()
             .setExpression(a.get())
-            .setExtType(type.get())
+            .setMCType(type.get())
             .build();
     String output = prettyPrinter.prettyprint(result);
 
-    // does not print 'Integer' because functionality for type printing has to be added over delegation form
-    // prettyprinter of langauge that fills the external
-    assertEquals("a instanceof", output);
+    assertEquals("a instanceof Integer", output);
   }
 
   @Test
@@ -159,7 +154,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(a.isPresent());
     assertTrue(b.isPresent());
-    ASTArrayExpression result = JavaClassExpressionsMill.arrayExpressionBuilder()
+    ASTArrayAccessExpression result = JavaClassExpressionsMill.arrayAccessExpressionBuilder()
             .setExpression(a.get())
             .setIndexExpression(b.get())
             .build();
@@ -203,9 +198,7 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     String output = prettyPrinter.prettyprint(result);
 
-    // does not print 'd' because functionality for type printing has to be added over delegation form
-    // prettyprinter of langauge that fills the external
-    assertEquals("a.<>c(b)", output);
+    assertEquals("a.<D>c(b)", output);
   }
 
   @Test
@@ -260,31 +253,5 @@ public class JavaClassExpressionsPrettyPrinterTest {
     assertTrue(ast.deepEquals(result.get()));
 
     assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testCreatorExpression() throws IOException {
-    Optional<ASTCreatorExpression> result = parser.parse_StringCreatorExpression("new Integer(a,b)");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTCreatorExpression ast = result.get();
-
-    String output = prettyPrinter.prettyprint(ast);
-
-    // does not print 'Integer' because functionality for type printing has to be added over delegation from
-    // prettyprinter of language that fills the external
-    assertEquals("new(a,b)", output);
-  }
-
-  @Test
-  public void testCreatorExpression2() throws IOException {
-    Optional<ASTCreatorExpression> result = parser.parse_StringCreatorExpression("new double[a][]");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
-    ASTCreatorExpression ast = result.get();
-    String output = prettyPrinter.prettyprint(ast);
-    // does not print 'double' because functionality for type printing has to be added over delegation from
-    // prettyprinter of language that fills the external
-    assertEquals("new[a][]", output);
   }
 }
