@@ -3,16 +3,21 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.expressions.javaclassexpressions._ast.ASTInstanceofPatternExpression;
+import de.monticore.expressions.javaclassexpressions._ast.ASTTypePattern;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.helpers.*;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -1249,4 +1254,96 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     //should never happen, no valid result, error will be handled in traverse
     return SymTypeExpressionFactory.createObscureType();
   }
+
+  @Override
+  public void traverse(ASTArrayAccessExpression node) {
+    SymTypeExpression indexResult = acceptThisAndReturnSymTypeExpression(node.getIndexExpression());
+    if (getTypeCheckResult().isType()) {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      Log.error("0xA0253 the expression at source position " + node.getIndexExpression().get_SourcePositionStart() + " cannot be a type");
+      return;
+    }
+    SymTypeExpression arrayTypeResult = acceptThisAndReturnSymTypeExpression(node.getExpression());
+    if (getTypeCheckResult().isType()) {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      Log.error("0xA0255 the expression at source position " + node.getExpression().get_SourcePositionStart() + " cannot be a type");
+      return;
+    }
+
+    if (!indexResult.isObscureType() && !arrayTypeResult.isObscureType()) {
+      SymTypeExpression wholeResult = calculateArrayExpression(node, arrayTypeResult, indexResult);
+      storeResultOrLogError(wholeResult, node, "0xA0257");
+    }
+    else {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+    }
+  }
+
+  protected SymTypeExpression calculateArrayExpression(ASTArrayAccessExpression node, SymTypeExpression arrayTypeResult, SymTypeExpression indexResult) {
+    SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
+    //the type of the index has to be an integral type
+    if (indexResult.isPrimitive() && ((SymTypePrimitive) indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray) {
+      SymTypeArray arrayResult = (SymTypeArray) arrayTypeResult;
+      wholeResult = getCorrectResultArrayExpression(node.getEnclosingScope(), indexResult, arrayTypeResult, arrayResult);
+    }
+    return wholeResult;
+  }
+
+  protected SymTypeExpression getCorrectResultArrayExpression(IExpressionsBasisScope scope, SymTypeExpression indexResult, SymTypeExpression arrayTypeResult, SymTypeArray arrayResult) {
+    SymTypeExpression wholeResult;
+    if (arrayResult.getDim() > 1) {
+      //case 1: A[][] bar -> bar[3] returns the type A[] -> decrease the dimension of the array by 1
+      wholeResult = SymTypeExpressionFactory.createTypeArray(arrayTypeResult.getTypeInfo().getName(), getScope(scope), arrayResult.getDim() - 1, indexResult);
+    }
+    else {
+      //case 2: A[] bar -> bar[3] returns the type A
+      //determine whether the result has to be a constant, generic or object
+      if (arrayResult.getTypeInfo().getTypeParameterList().isEmpty()) {
+        //if the return type is a primitive
+        if (SymTypePrimitive.boxMap.containsKey(arrayResult.getTypeInfo().getName())) {
+          wholeResult = SymTypeExpressionFactory.createPrimitive(arrayResult.getTypeInfo().getName());
+        }
+        else {
+          //if the return type is an object
+          wholeResult = SymTypeExpressionFactory.createTypeObject(arrayResult.getTypeInfo().getName(), getScope(scope));
+        }
+      }
+      else {
+        //the return type must be a generic
+        List<SymTypeExpression> typeArgs = Lists.newArrayList();
+        for (TypeVarSymbol s : arrayResult.getTypeInfo().getTypeParameterList()) {
+          typeArgs.add(SymTypeExpressionFactory.createTypeVariable(s.getName(), getScope(scope)));
+        }
+        wholeResult = SymTypeExpressionFactory.createGenerics(arrayResult.getTypeInfo().getName(), getScope(scope), typeArgs);
+        wholeResult = replaceTypeVariables(wholeResult, typeArgs, ((SymTypeOfGenerics) arrayResult.getArgument()).getArgumentList());
+      }
+    }
+    return wholeResult;
+  }
+
+  protected SymTypeExpression replaceTypeVariables(SymTypeExpression wholeResult, List<SymTypeExpression> typeArgs, List<SymTypeExpression> argumentList) {
+    Map<SymTypeExpression, SymTypeExpression> map = Maps.newHashMap();
+    if (typeArgs.size() != argumentList.size()) {
+      getTypeCheckResult().reset();
+      getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
+      Log.error("0xA2297 Different amount of type variables and type arguments");
+    }
+    else {
+      for (int i = 0; i < typeArgs.size(); i++) {
+        map.put(typeArgs.get(i), argumentList.get(i));
+      }
+
+      List<SymTypeExpression> oldArgs = ((SymTypeOfGenerics) wholeResult).getArgumentList();
+      List<SymTypeExpression> newArgs = Lists.newArrayList();
+      for (SymTypeExpression oldArg : oldArgs) {
+        newArgs.add(map.getOrDefault(oldArg, oldArg));
+      }
+      ((SymTypeOfGenerics) wholeResult).setArgumentList(newArgs);
+    }
+    return wholeResult;
+  }
+
 }

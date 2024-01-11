@@ -171,7 +171,6 @@ def grammarDependencies = ext {
 
   // two dependencies
   Cardinality = ["MCBasics", "MCCommonLiterals"]
-  JavaClassExpressions = ["CommonExpressions", "MCVarDeclarationStatements"]
   ExpressionsBasis = ["MCBasics", "MCLiteralsBasis"]
   Grammar = ["MCCommonLiterals", "MCSimpleGenericTypes"]
   MCReturnStatements = ["MCStatementsBasis", "ExpressionsBasis"]
@@ -179,6 +178,7 @@ def grammarDependencies = ext {
   MCLowLevelStatements = ["MCStatementsBasis", "MCBasics"]
   MCAssertStatements = ["MCStatementsBasis", "ExpressionsBasis"]
   RegExType = ["RegularExpressions", "MCBasicTypes"]
+  UglyExpressions = ["CommonExpressions", "MCBasicTypes"]
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
@@ -187,6 +187,7 @@ def grammarDependencies = ext {
   TagSchema = ["MCBasics", "MCBasicTypes", "MCCommonLiterals"]
 
   // four dependencies
+  JavaClassExpressions = ["CommonExpressions", "MCFullGenericTypes", "MCVarDeclarationStatements", "UglyExpressions"]
   MCCommon = ["Cardinality", "Completeness", "UMLModifier", "UMLStereotype"]
   ODRules = ["TFBasisExts", "MCCommonLiterals", "MCJavaLiterals", "UMLStereotype"]
   MCVarDeclarationStatements = ["MCStatementsBasis", "MCBasicTypes", "ExpressionsBasis", "OOSymbols"]

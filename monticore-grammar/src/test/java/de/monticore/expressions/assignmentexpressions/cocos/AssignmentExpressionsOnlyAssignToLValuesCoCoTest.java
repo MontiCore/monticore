@@ -72,6 +72,26 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
   }
 
   @Test
+  public void testArrayAccessExprAssignments() throws IOException {
+    testValid("a[0] = 42");
+    testValid("a[0] += 0");
+    testValid("a[0] -= 0");
+    testValid("a[0] *= 0");
+    testValid("a[0] /= 0");
+    testValid("a[0] &= 0");
+    testValid("a[0] |= 0");
+    testValid("a[0] ^= 0");
+    testValid("a[0] >>= 0");
+    testValid("a[0] >>>= 0");
+    testValid("a[0] <<= 0");
+    testValid("a[0] %= 0");
+    testValid("a[0]++");
+    testValid("a[0]--");
+    testValid("--a[0]");
+    testValid("++a[0]");
+  }
+
+  @Test
   public void testLiteralAssignments() throws IOException {
     testInvalid("true = true");
     testInvalid("'a' = 'a'");

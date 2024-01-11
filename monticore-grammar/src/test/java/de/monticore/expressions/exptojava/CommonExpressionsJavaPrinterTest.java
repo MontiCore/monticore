@@ -6,6 +6,7 @@ import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsFullPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.testcommonexpressions.TestCommonExpressionsMill;
 import de.monticore.expressions.testcommonexpressions._parser.TestCommonExpressionsParser;
 import de.monticore.prettyprint.IndentPrinter;
@@ -469,5 +470,25 @@ public class CommonExpressionsJavaPrinterTest {
   
     assertTrue(Log.getFindings().isEmpty());
   }
-  
+
+  @Test
+  public void testArrayExpression() throws IOException {
+    Optional<ASTExpression> a = parser.parse_StringExpression("a");
+    Optional<ASTExpression> b = parser.parse_StringExpression("b");
+    assertFalse(parser.hasErrors());
+    assertTrue(a.isPresent());
+    assertTrue(b.isPresent());
+    ASTArrayAccessExpression result =
+        CommonExpressionsMill.arrayAccessExpressionBuilder()
+        .setExpression(a.get())
+        .setIndexExpression(b.get())
+        .build();
+
+    String output = javaPrinter.prettyprint(result);
+
+    assertEquals("a[b]", output);
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
 }
