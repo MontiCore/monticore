@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.combineexpressionswithliterals._cocos;
 
-import de.monticore.expressions.combineexpressionswithliterals._ast.ASTExtReturnType;
 import de.monticore.expressions.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.expressions.javaclassexpressions._cocos.JavaClassExpressionsASTClassExpressionCoCo;
 import de.monticore.prettyprint.IndentPrinter;
@@ -23,12 +22,11 @@ public class NoClassExpressionForGenerics implements JavaClassExpressionsASTClas
 
   @Override
   public void check(ASTClassExpression node) {
-    checkNoGeneric((ASTExtReturnType) node.getExtReturnType());
+    checkNoGeneric(node.getMCReturnType());
   }
 
-  private void checkNoGeneric(ASTExtReturnType extreturnType){
+  private void checkNoGeneric(ASTMCReturnType returnType){
     MCSimpleGenericTypesFullPrettyPrinter prettyPrinter = new MCSimpleGenericTypesFullPrettyPrinter(new IndentPrinter());
-    ASTMCReturnType returnType = extreturnType.getMCReturnType();
     if(returnType.isPresentMCType()){
       ASTMCType type = returnType.getMCType();
       if(type instanceof ASTMCGenericType){

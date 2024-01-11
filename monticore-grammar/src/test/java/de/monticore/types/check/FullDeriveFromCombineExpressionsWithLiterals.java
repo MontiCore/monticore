@@ -63,8 +63,8 @@ public class FullDeriveFromCombineExpressionsWithLiterals extends AbstractDerive
     deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
     deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     deriveSymTypeOfBitExpressions = new DeriveSymTypeOfBitExpressions();
-    deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions();
     synthesizer = new FullSynthesizeFromCombineExpressionsWithLiterals();
+    deriveSymTypeOfJavaClassExpressions = new DeriveSymTypeOfJavaClassExpressions(synthesizer);
     deriveSymTypeOfLambdaExpressions = new DeriveSymTypeOfLambdaExpressions();
     deriveSymTypeOfLambdaExpressions.setSynthesize(synthesizer);
     deriveSymTypeOfCombineExpressions = new DeriveSymTypeOfCombineExpressions(synthesizer);
