@@ -8,6 +8,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpressionsBasisNode;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.expressions.javaclassexpressions._prettyprint.JavaClassExpressionsPrettyPrinter;
+import de.monticore.expressions.uglyexpressions._prettyprint.UglyExpressionsPrettyPrinter;
 import de.monticore.javalight._prettyprint.JavaLightPrettyPrinter;
 import de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.literals.mcjavaliterals._prettyprint.MCJavaLiteralsPrettyPrinter;
@@ -89,6 +90,9 @@ public class TFExpressionFullPrettyPrinter {
     traverser.setJavaClassExpressionsHandler(javaClassExpressionsPrettyPrinter);
     traverser.add4JavaClassExpressions(javaClassExpressionsPrettyPrinter);
 
+    UglyExpressionsPrettyPrinter uglyExpressionsPrettyPrinter = new UglyExpressionsPrettyPrinter(out, true);
+    traverser.setUglyExpressionsHandler(uglyExpressionsPrettyPrinter);
+    traverser.add4UglyExpressions(uglyExpressionsPrettyPrinter);
 
     // Custom handling of the name expression
     ExpressionsBasisPrettyPrinter expressionsBasisPrettyPrinter =
