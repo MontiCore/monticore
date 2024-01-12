@@ -292,6 +292,8 @@ modeling language.
   that is convenient when developing, but not so easy to test.
   'new' e.g. should be avoided, because in tests one might use
   a mock (from a subclass) instead.
+* The ugly expressions are not included in the usual logic and other
+  expressions, and only there to complete the Java expression syntax.
 
 ## Literals: List of Grammars in package `de.monticore.literals`
 
