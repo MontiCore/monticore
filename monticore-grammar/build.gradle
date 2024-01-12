@@ -312,7 +312,9 @@ checkArtifactsBitExpressions.dependsOn(checkArtifactsExpressionsBasis)
 checkArtifactsCommonExpressions.dependsOn(checkArtifactsExpressionsBasis)
 checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCBasics)
 checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCLiteralsBasis)
+
 checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsCommonExpressions)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCFullGenericTypes)
 
 checkArtifactsAntlr.dependsOn(checkArtifactsMCBasics)
 checkArtifactsGrammar.dependsOn(checkArtifactsMCCommonLiterals)
@@ -390,6 +392,9 @@ checkArtifactsRegularExpressions.dependsOn(checkArtifactsMCCommonLiterals)
 
 checkArtifactsRegExType.dependsOn(checkArtifactsRegularExpressions)
 
+checkArtifactsUglyExpressions.dependsOn(checkArtifactsCommonExpressions)
+checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
+
 ///////////// dependencies between show artifacts tasks ///////////////////////
 
 showArtifactsAssignmentExpressions.dependsOn(showArtifactsExpressionsBasis)
@@ -397,7 +402,9 @@ showArtifactsBitExpressions.dependsOn(showArtifactsExpressionsBasis)
 showArtifactsCommonExpressions.dependsOn(showArtifactsExpressionsBasis)
 showArtifactsExpressionsBasis.dependsOn(showArtifactsMCBasics)
 showArtifactsExpressionsBasis.dependsOn(showArtifactsMCLiteralsBasis)
+
 showArtifactsJavaClassExpressions.dependsOn(showArtifactsCommonExpressions)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCFullGenericTypes)
 
 showArtifactsAntlr.dependsOn(showArtifactsMCBasics)
 showArtifactsGrammar.dependsOn(showArtifactsMCCommonLiterals)
@@ -474,6 +481,9 @@ showArtifactsUMLStereotype.dependsOn(showArtifactsMCCommonLiterals)
 showArtifactsRegularExpressions.dependsOn(showArtifactsMCCommonLiterals)
 
 showArtifactsRegExType.dependsOn(showArtifactsRegularExpressions)
+
+showArtifactsUglyExpressions.dependsOn(showArtifactsExpressionsBasis)
+showArtifactsUglyExpressions.dependsOn(showArtifactsMCBasicTypes)
 
 java {
   registerFeature('grammars') {

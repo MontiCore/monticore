@@ -1,6 +1,6 @@
 package de.monticore.expressions;
 
-mlc JavaClassExpressions {
+mlc UglyExpressions {
 
   //export the grammar
   export "$projectDir/src/main/grammars" {
@@ -20,7 +20,7 @@ mlc JavaClassExpressions {
   }
 
   promote {
-    mlc "de.monticore.expressions.CommonExpressions";
-    mlc "de.monticore.types.MCBasicTypes"
+    mlc "de.monticore.expressions.ExpressionsBasis";
+    mlc "de.monticore.types.MCBasicTypes";
   }
 }
