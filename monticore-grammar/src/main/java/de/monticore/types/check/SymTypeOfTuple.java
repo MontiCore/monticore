@@ -33,6 +33,11 @@ public class SymTypeOfTuple extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeOfTuple asTupleType() {
+    return this;
+  }
+
+  @Override
   public String print() {
     final StringBuilder r = new StringBuilder();
     r.append("(");
