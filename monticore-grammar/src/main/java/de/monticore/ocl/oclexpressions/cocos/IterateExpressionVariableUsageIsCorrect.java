@@ -14,7 +14,7 @@ public class IterateExpressionVariableUsageIsCorrect
     if (!node.getName().equals(variableName)) {
       Log.error(
           String.format(
-              "0xOCL020 variable declared in IterateExpression must be used as accumulator variable"),
+              "0x0C1CC variable declared in IterateExpression must be used as accumulator variable"),
           node.get_SourcePositionStart());
     }
   }
