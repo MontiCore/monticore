@@ -18,6 +18,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.check.SymTypeOfTuple;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
@@ -377,19 +378,15 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression toBeAccessed,
       SymTypeExpression indexType) {
     SymTypeExpression result;
-    if (!toBeAccessed.isArrayType()) {
-      Log.error(
-          "0xFD3F6 trying a qualified access on "
-              + toBeAccessed.printFullName()
-              + " which is not a type "
-              + "applicable to qualified accesses",
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd());
-      result = createObscureType();
+    if (toBeAccessed.isTupleType()) {
+      result = calculateArrayAccessForTuple(
+          expr, toBeAccessed.asTupleType(), indexType
+      );
     }
-    else if (SymTypeRelations.isIntegralType(indexType) &&
-        toBeAccessed.isArrayType()) {
-      result = toBeAccessed.asArrayType().cloneWithLessDim(1);
+    else if (toBeAccessed.isArrayType()) {
+      result = calculateArrayAccessForArray(
+          expr, toBeAccessed.asArrayType(), indexType
+      );
     }
     else {
       Log.error(
@@ -398,6 +395,87 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
               + "with qualifier of type "
               + indexType.printFullName()
               + " which is not applicable",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    return result;
+  }
+
+  protected SymTypeExpression calculateArrayAccessForTuple(
+      ASTArrayAccessExpression expr,
+      SymTypeOfTuple toBeAccessed,
+      SymTypeExpression indexType
+  ) {
+    SymTypeExpression result;
+    // for tuples, the type is directly dependent on the value provided;
+    // thus, only literals are supported
+    if (SymTypeRelations.isIntegralType(indexType)) {
+      // todo be replaced by the interpreter as soon as available
+      try {
+        String indexStr =
+            BasicSymbolsMill.prettyPrint(expr.getIndexExpression(), false);
+        int index = Integer.parseInt(indexStr);
+        if (index >= 0 && index < toBeAccessed.asTupleType().sizeTypes()) {
+          result = toBeAccessed.asTupleType().getType(index);
+        }
+        else {
+          Log.error("0xFD3F0 trying to use an index of value "
+                  + index + " to access a tuple of size "
+                  + toBeAccessed.asTupleType().sizeTypes()
+                  + ": " + toBeAccessed.printFullName(),
+              expr.get_SourcePositionStart(),
+              expr.get_SourcePositionEnd()
+          );
+          result = createObscureType();
+        }
+      }
+      catch (NumberFormatException e) {
+        // one COULD return the union of the types included in the tuple,
+        // but it is not quite clear,
+        // why one would iterate over a tuple in the first case,
+        // thus this case is not supported
+
+        // it additionally does not support constants defined elsewhere,
+        // e.g., myTuple[MY_ELEMENT_INDEX],
+        // this would require values in the SymTab
+        Log.error("0xFD3F1 trying to access a tuple"
+                + " without int literal, "
+                + "(currently) only integral literals are supported",
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd()
+        );
+        result = createObscureType();
+      }
+    }
+    else {
+      Log.error(
+          "0xFD3F3 trying a qualified access on tuple "
+              + toBeAccessed.printFullName()
+              + " which is not a type "
+              + "applicable to qualified accesses",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    return result;
+  }
+
+  protected SymTypeExpression calculateArrayAccessForArray(
+      ASTArrayAccessExpression expr,
+      SymTypeArray toBeAccessed,
+      SymTypeExpression indexType
+  ) {
+    SymTypeExpression result;
+    if (SymTypeRelations.isIntegralType(indexType)) {
+      result = toBeAccessed.asArrayType().cloneWithLessDim(1);
+    }
+    else {
+      Log.error(
+          "0xFD3F6 trying a qualified access on array "
+              + toBeAccessed.printFullName()
+              + " which is not a type "
+              + "applicable to qualified accesses",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd());
       result = createObscureType();
