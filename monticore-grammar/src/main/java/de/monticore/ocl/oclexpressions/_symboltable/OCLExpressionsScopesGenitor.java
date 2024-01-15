@@ -13,6 +13,7 @@ public class OCLExpressionsScopesGenitor extends OCLExpressionsScopesGenitorTOP 
 
   @Override
   public void visit(ASTOCLVariableDeclaration node) {
+    // this is handled in the endVisit
   }
 
   @Override
@@ -48,6 +49,7 @@ public class OCLExpressionsScopesGenitor extends OCLExpressionsScopesGenitorTOP 
 
   @Override
   public void visit(ASTInDeclaration node) {
+    // this is handled in endVisit
   }
 
   @Override
@@ -81,5 +83,6 @@ public class OCLExpressionsScopesGenitor extends OCLExpressionsScopesGenitorTOP 
 
   @Override
   public void visit(ASTInDeclarationVariable node) {
+    // this is handled in endVisit(ASTInDeclaration node)
   }
 }
