@@ -406,7 +406,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     }
     SymTypeExpression mCType =
         getType4Ast().getPartialTypeOfTypeId(varDecl.getMCType());
-    // error already logged?
+    // check if an error already has been logged
     if (mCType.isObscureType()) {
       return false;
     }
