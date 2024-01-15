@@ -10,6 +10,7 @@ import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeVi
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorTypeVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
+import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
@@ -64,6 +65,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derCommonExpressions.setType4Ast(type4Ast);
     visitors.derExpressionBasis.setType4Ast(type4Ast);
     visitors.derLambdaExpressions.setType4Ast(type4Ast);
+    visitors.derTupleExpressions.setType4Ast(type4Ast);
     visitors.derUglyExpressions.setType4Ast(type4Ast);
     visitors.derOfMCCommonLiterals.setType4Ast(type4Ast);
     // MCTypes
@@ -87,6 +89,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derCommonExpressions = new CommonExpressionsTypeVisitor();
     visitors.derExpressionBasis = new ExpressionBasisTypeVisitor();
     visitors.derLambdaExpressions = new LambdaExpressionsTypeVisitor();
+    visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
     visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     // MCTypes
@@ -157,6 +160,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.setCommonExpressionsHandler(visitors.derCommonExpressions);
     traverser.add4ExpressionsBasis(visitors.derExpressionBasis);
     traverser.add4LambdaExpressions(visitors.derLambdaExpressions);
+    traverser.add4TupleExpressions(visitors.derTupleExpressions);
     traverser.add4UglyExpressions(visitors.derUglyExpressions);
     traverser.add4MCCommonLiterals(visitors.derOfMCCommonLiterals);
     // MCTypes
@@ -186,6 +190,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public ExpressionBasisTypeVisitor derExpressionBasis;
 
     public LambdaExpressionsTypeVisitor derLambdaExpressions;
+
+    public TupleExpressionsTypeVisitor derTupleExpressions;
 
     public UglyExpressionsTypeVisitor derUglyExpressions;
 
