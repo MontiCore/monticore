@@ -15,6 +15,7 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -23,6 +24,8 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
@@ -30,6 +33,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -59,6 +63,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
     SymbolSurrogateDecorator decorator = new SymbolSurrogateDecorator(this.glex,
         new SymbolTableService(decoratedCompilationUnit),
+        new VisitorService(decoratedCompilationUnit),
         new MethodDecorator(glex, new SymbolTableService(decoratedCompilationUnit)),
         new MandatoryMutatorSymbolSurrogateDecorator(glex));
     //creates ScopeSpanningSymbol
@@ -132,7 +137,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(9, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(11, symbolClassAutomaton.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -243,4 +248,17 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
   
     assertTrue(Log.getFindings().isEmpty());
   }
+
+  @Test
+  public void testAcceptMethods() {
+    List<ASTCDMethod> methods = getMethodsBy("accept", symbolClassAutomaton);
+    assertEquals(2, methods.size());
+    for (ASTCDMethod method: methods) {
+      assertEquals(1, method.sizeCDParameters());
+      assertTrue(method.getMCReturnType().isPresentMCVoidType());
+    }
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
 }

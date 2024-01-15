@@ -93,8 +93,8 @@ DeprecatedTest extends DecoratorTestCase {
 
     symbolBuilderDecorator = new SymbolBuilderDecorator(glex, symbolTableService, builderDecorator);
 
-    symbolSurrogateDecorator = new SymbolSurrogateDecorator(this.glex, symbolTableService, methodDecorator,
-        new MandatoryMutatorSymbolSurrogateDecorator(glex));
+    symbolSurrogateDecorator = new SymbolSurrogateDecorator(this.glex, symbolTableService, visitorService,
+            methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
 
     symbolSurrogateBuilderDecorator = new SymbolSurrogateBuilderDecorator(this.glex, symbolTableService,
         new AccessorDecorator(glex, symbolTableService));
