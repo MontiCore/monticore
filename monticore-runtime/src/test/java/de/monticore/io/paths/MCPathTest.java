@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.io.paths;
 
+import de.se_rwth.commons.Files;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -18,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 
 import static org.junit.Assert.*;
 
@@ -194,5 +198,49 @@ public class MCPathTest {
     assertFalse(mp.find("java/util/List.class").isPresent());
     assertTrue(Log.getFindings().isEmpty());
   }
+
+  @Test
+  public void testCachedAmbiguous() {
+    // Test if the mcpath-caches are invalidated when adding new entries
+    Log.clearFindings();
+    MCPath path = new MCPath();
+    path.addEntry(Paths.get("src/test/resources/paths/1/a"));
+    assertTrue(path.find("AFile", "txt").isPresent());
+    assertEquals(0, Log.getErrorCount());
+    path.addEntry(Paths.get("src/test/resources/paths/2/a"));
+    assertTrue(path.find("AFile", "txt").isEmpty());
+    List<Finding> findings = Log.getFindings().stream().filter(f -> f.getMsg().startsWith("0xA1294")).collect(Collectors.toList());
+    assertEquals(1, findings.size());
+    assertEquals("0xA1294 The following entries for the file `" + "AFile\\.txt" + "` are ambiguous:"
+        + "\n" + "{" + Paths.get("src/test/resources/paths/1/a/AFile.txt").toUri().toString().replaceAll("///","/") + ",\n"
+        + Paths.get("src/test/resources/paths/2/a/AFile.txt").toUri().toString().replaceAll("///","/") + "}", findings.get(0).getMsg());
+  }
+
+  @Test
+  public void testCachedSym() throws IOException {
+    // Test if the mcpath-jar-cache respects removal
+    Log.clearFindings();
+    File tempF = Files.createTempDir();
+    tempF.mkdirs();
+    File jar = new File(tempF, "test.jar");
+
+    FileOutputStream fout = new FileOutputStream(jar);
+    JarOutputStream jarOut = new JarOutputStream(fout);
+    jarOut.putNextEntry(new ZipEntry("de/mc/")); // Folders must end with "/".
+    jarOut.putNextEntry(new ZipEntry("de/mc/A.test.sym"));
+    jarOut.write("{}".getBytes());
+    jarOut.closeEntry();
+
+    jarOut.close();
+    fout.close();
+
+    MCPath path = new MCPath();
+    path.addEntry(jar.toPath());
+
+    assertTrue(path.find("de.mc.A", ".*sym").isPresent());
+    path.removeEntry(jar.toPath());
+    assertFalse("removeEntry was not completed", path.find("de.mc.A", ".*sym").isPresent());
+  }
+
   
 }

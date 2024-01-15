@@ -2,6 +2,9 @@
 
 package de.monticore.io.paths;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import de.monticore.AmbiguityException;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.MontiCoreClassLoader;
@@ -9,17 +12,15 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
+import javax.annotation.Nonnull;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.*;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A ModelPath encapsulates the domain of accessible models inside the running
@@ -53,11 +54,13 @@ public final class MCPath {
   public void addEntry(Path entry) {
     Optional<URL> url = toURL(entry);
     if(url.isPresent() && !classloaderMap.containsValue(url.get())){
+      invalidateCaches();
       classloaderMap.put(new MontiCoreClassLoader(new URL[] { url.get() }, null), url.get());
     }
   }
 
   public void removeEntry(Path entry) {
+    invalidateCaches();
     Optional<URLClassLoader> urlClassLoader = toURL(entry)
         .flatMap(url -> classloaderMap.entrySet().stream()
             .filter(e -> e.getValue().equals(url))
@@ -78,6 +81,15 @@ public final class MCPath {
     return classloaderMap.isEmpty();
   }
 
+  // We cache the result of the find method, using a record-ish class to ensure
+  final LoadingCache<FindCacheKey, Optional<URL>> findCache = CacheBuilder.newBuilder()
+          .build(new CacheLoader<>() {
+            @Override @Nonnull
+            public Optional<URL> load(@Nonnull FindCacheKey key) {
+              return do_find(key);
+            }
+          });
+
   /**
    * Method for calculating a list of files located in an entry of the passed model path,
    * with the passed qualified model name, and the passed regular expression over the file extension.
@@ -93,9 +105,42 @@ public final class MCPath {
    * @return
    */
   public Optional<URL> find(String qualifiedName, String fileExtRegEx) {
+    return findCache.getUnchecked(new FindCacheKey(qualifiedName, fileExtRegEx));
+  }
+
+  // This cache is only for symbol table files within jars
+  // and avoids using native I/O to search within the jar files directory
+  final LoadingCache<Path, CachedPath> jarSymCache = CacheBuilder.newBuilder()
+      .build(new CacheLoader<>() {
+        @Override @Nonnull
+        public CachedPath load(@Nonnull Path path) throws Exception {
+          return getCachedPathForSymsInJar(path);
+        }
+      });
+
+  CachedPath getCachedPathForSymsInJar(Path p) throws IOException {
+    // Cache missed for a jar file
+    FileSystem fs = getJarFS(p.toFile());
+    // Next, collect all .*sym files within that jar
+    Pattern pattern = Pattern.compile(".*\\..*sym");
+    CachedPath cachedPath = new CachedPath(fs.toString());
+    Files.walkFileTree(fs.getPath("/"), new SimpleFileVisitor<>() {
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+        Path absoluteFile = file.toAbsolutePath();
+        if (pattern.matcher(absoluteFile.toString()).matches())
+          cachedPath.absolutePaths.add(absoluteFile);
+        return FileVisitResult.CONTINUE;
+      }
+    });
+
+    return cachedPath;
+  }
+
+  Optional<URL> do_find(FindCacheKey k) {
     // calculate the folderPath (e.g., "foo/bar") and fileNameRegEx (e.g., "Car.*sym")
-    String folderPath = Names.getPathFromQualifiedName(qualifiedName);
-    String fileNameRegEx = Names.getSimpleName(qualifiedName) + "\\." + fileExtRegEx;
+    String folderPath = Names.getPathFromQualifiedName(k.qualifiedName);
+    String fileNameRegEx = Names.getSimpleName(k.qualifiedName) + "\\." + k.fileExtRegEx;
 
     // initialize a file filter filtering for the regular expression
     FileFilter filter = new RegexFileFilter(fileNameRegEx);
@@ -105,15 +150,27 @@ public final class MCPath {
     for (Path p : getEntries()) {
       if(p.toString().endsWith(".jar")){
         String path = "/" + folderPath.replaceAll("\\\\", "/") + "/" + fileNameRegEx;
-        GlobExpressionEvaluator evaluator = new GlobExpressionEvaluator(path, getJarFS(p.toFile()), true);
-        resolvedURLs.addAll(evaluator.evaluate(p.toFile()).stream().map(uri -> {
-          try {
-            return uri.toURL();
-          } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-          }
-        }).collect(Collectors.toList()));
+        if (k.fileExtRegEx.equals(".*sym")) {
+          // For .jar entries with a *.sym file extension regex, we cache the jar entries
+          jarSymCache.getUnchecked(p).getCandidates(path).map(uri -> {
+            try {
+              return uri.toURL();
+            } catch (MalformedURLException e) {
+              throw new RuntimeException(e);
+            }
+          }).forEach(resolvedURLs::add);
+        } else {
+          // otherwise, we open the jar file and search for a matching file-entry within
+          GlobExpressionEvaluator evaluator = new GlobExpressionEvaluator(path, getJarFS(p.toFile()), true);
+          resolvedURLs.addAll(evaluator.evaluate(p.toFile()).stream().map(uri -> {
+            try {
+              return uri.toURL();
+            } catch (MalformedURLException e) {
+              e.printStackTrace();
+              return null;
+            }
+          }).collect(Collectors.toList()));
+        }
       }
       File folder = p.resolve(folderPath).toFile(); //e.g., "src/test/resources/foo/bar"
       if (folder.exists() && folder.isDirectory()) {
@@ -208,6 +265,7 @@ public final class MCPath {
   }
 
   public void close(){
+    invalidateCaches();
     classloaderMap.keySet().stream().forEach(c -> {
       try {
         c.close();
@@ -216,6 +274,11 @@ public final class MCPath {
         Log.error("0xA1035 An exception occurred while trying to close a class loader!", e);
       }
     });
+  }
+
+  void invalidateCaches() {
+    jarSymCache.invalidateAll();
+    findCache.invalidateAll();
   }
 
   // A List of all file systems opened for jars.
@@ -254,5 +317,67 @@ public final class MCPath {
       }
     }
     openedJarFileSystems.clear();
+  }
+
+  /**
+   * Key for the find(Str,Str) cache
+   * With an equals and hashCode implementation
+   */
+  protected static class FindCacheKey {
+    protected final String qualifiedName, fileExtRegEx;
+
+    public FindCacheKey(String qualifiedName, String fileExtRegEx) {
+      this.qualifiedName = qualifiedName;
+      this.fileExtRegEx = fileExtRegEx;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      FindCacheKey that = (FindCacheKey) o;
+      return qualifiedName.equals(that.qualifiedName) && fileExtRegEx.equals(that.fileExtRegEx);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(qualifiedName, fileExtRegEx);
+    }
+  }
+
+  /**
+   * Cached directory of *.sym paths of a jar file,
+   * used to avoid repeated lookup of the files within a JAR using native I/O
+   */
+  static class CachedPath {
+    // *.sym paths
+    final Set<Path> absolutePaths = new HashSet<>();
+    // path of the filesystem, which will be removed in the filter
+    final String replacedFS;
+
+    public CachedPath(String replacedFS) {
+      this.replacedFS = replacedFS;
+    }
+
+    /**
+     * @param path the path regex, see {@link GlobExpressionEvaluator}
+     * @return a stream of URIs matching against this path
+     */
+    Stream<URI> getCandidates(String path) {
+      path = path.replaceAll(Pattern.quote(replacedFS.replaceAll("\\\\", "/")), "");
+
+      Pattern pattern = Pattern.compile(path);
+
+      return absolutePaths.stream().filter(p -> pattern.matcher(p.toString()).matches()).map(this::toURL);
+    }
+
+    URI toURL(Path path) {
+      URI uri = path.toUri();
+      // this takes care of white spaces in files, especially jars, if they are double encoded
+      if (uri.toString().contains("%2520")) {
+        uri = URI.create(uri.toString().replaceAll("%2520", "%20"));
+      }
+      return uri;
+    }
   }
 }
