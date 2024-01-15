@@ -32,7 +32,7 @@ component grammar TupleExpressions
    *
   */
 
-  /** ASTMCTupleExpression represents tuple expressions.
+  /** ASTTupleExpression represents tuple expressions.
    *
    * Tuple expression are a tuple of expressions.
    * The type is the tuple of the types of the expression in the tuple.
@@ -40,7 +40,7 @@ component grammar TupleExpressions
    * Example:
    * (1.1f, -2.0f)
    */
-  MCTupleExpression implements Expression =
+  TupleExpression implements Expression =
     "(" Expression "," (Expression || ",")+ ")"
   ;
 
