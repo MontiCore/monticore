@@ -148,6 +148,7 @@ def grammarDependencies = ext {
   MCSynchronizedStatements = ["MCCommonStatements"]
   CommonExpressions = ["ExpressionsBasis"]
   BitExpressions = ["ExpressionsBasis"]
+  OptionalOperators = ["CommonExpressions"]
   MCBasicTypes = ["MCBasics"]
   MCFullGenericTypes = ["MCSimpleGenericTypes"]
   ODRuleGeneration = ["MCFullGenericTypes"]
@@ -182,6 +183,8 @@ def grammarDependencies = ext {
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
+  OCLExpressions = ["BasicSymbols", "ExpressionsBasis", "MCBasicTypes"]
+  SetExpressions = ["BasicSymbols", "ExpressionsBasis", "MCBasicTypes"]
   TFBasisExts = ["JavaLight", "MCSimpleGenericTypes", "MCCommonLiterals"]
   Tags = ["MCBasics", "BasicSymbols", "MCCommonLiterals"]
   TagSchema = ["MCBasics", "MCBasicTypes", "MCCommonLiterals"]

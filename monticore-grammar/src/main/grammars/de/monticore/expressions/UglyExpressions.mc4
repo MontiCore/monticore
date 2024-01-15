@@ -27,9 +27,9 @@ import de.monticore.types.*;
  * * --  --  expressions/OptionalExpressions.mc4
  * * --  expressions/AssignmentExpressions.mc4
  * * --  expressions/BitExpressions.mc4
- * * --  expressions/LambdaExpressions.mc4
- * * --  expressions/OCLExpressions.mc4
- * * --  expressions/SetExpressions.mc4
+ * * --  ocl/LambdaExpressions.mc4
+ * * --  ocl/OCLExpressions.mc4
+ * * --  ocl/SetExpressions.mc4
  *
 */
 

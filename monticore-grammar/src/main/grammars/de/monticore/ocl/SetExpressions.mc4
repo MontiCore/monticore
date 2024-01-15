@@ -1,0 +1,178 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.ocl;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.expressions.*;
+import de.monticore.types.*;
+import de.monticore.symbols.*;
+
+/**
+ * This grammar defines set expressions, such as
+ * union, intersect, setand, setor and set comprehension.
+ *
+ * Set expressions can savely (i.e. as conservative extension) 
+ * be composed if with other forms of expressions  
+ * given in the MontiCore core project.
+ * Especially common expressions should be added.
+ *
+ * This grammar is part of a hierarchy of expressions, namely
+ * * expressions/ExpressionsBasis.mc4
+ * * --  expressions/CommonExpressions.mc4
+ * * --  --  expressions/JavaClassExpressions.mc4
+ * * --  expressions/AssignmentExpressions.mc4
+ * * --  expressions/BitExpressions.mc4
+ * * --  ocl/OCLExpressions.mc4
+ * * --  ocl/SetExpressions.mc4
+ * * --  ocl/OptionalOperators.mc4
+ *
+*/
+
+component grammar SetExpressions
+          extends ExpressionsBasis,
+                  MCBasicTypes,
+                  BasicSymbols
+{
+  /*=================================================================*/
+
+  SetInExpression implements Expression <150> =
+    elem:Expression
+    operator:"isin"
+    set:Expression;
+
+  SetNotInExpression implements Expression <150> =
+    elem:Expression
+    operator:"notin"
+    set:Expression;
+
+  /*=================================================================*/
+
+  UnionExpression implements Expression <180> =
+    left:Expression
+    operator:"union"
+    right:Expression;
+
+  IntersectionExpression implements Expression <180> =
+    left:Expression
+    operator:"intersect"
+    right:Expression;
+
+  SetMinusExpression implements Expression <180> =
+    left:Expression
+    operator:"\\"
+    right:Expression;
+
+  /*=================================================================*/
+
+  // sets of sets united (i.e. flattened) and intersected
+  SetUnionExpression implements Expression <170> =
+    "union" set:Expression;
+
+  SetIntersectionExpression implements Expression <170> =
+    "intersect" set:Expression;
+
+  /*=================================================================*/
+
+  // Logical expressions extended to sets of arguments
+  SetAndExpression implements Expression <130> =
+    "setand" set:Expression;
+
+  SetOrExpression implements Expression <130> =
+    "setor" set:Expression;
+
+  /*=================================================================*/
+
+  SetVariableDeclaration implements Variable =
+    MCType? Name (dim:"[" "]")* ("=" Expression)?;
+
+  /*=================================================================*/
+
+  /**
+   * ASTSetComprehension defines a comprehension with given
+   *   characteristic.
+   *   @attribute set
+   *              Optional type Set of comprehension
+   *   @attribute left
+   *              A comprehension-item (e.g. "x*x" or "x in Y") that describes
+   *              or introduces the elements stored in the set.
+   *   @attribute setComprehensionItems
+   *              Characterization of comprehension as a list of
+   *              comprehension-items. This can be generators, vardefinitions
+   *              or filters.
+   *   Example:
+   *        {x * x | x in y, x < 10}
+   *   Note that we assume at least one generator (e.g. x in Y) in this AST.
+   */
+  scope (non_exporting) SetComprehension implements Expression  <40> =
+    ( set:key("Set")?
+      openingBracket:"{" left:SetComprehensionItem "|"
+                  (SetComprehensionItem || ",")+ "}" ) |
+    ( openingBracket:"[" left:SetComprehensionItem "|"
+                  (SetComprehensionItem || ",")+ "]" )
+    ;
+
+  /**
+   * ASTSetComprehensionItem defines the items that can occur 
+   * on the right hand side of a comprehension.
+   * This can be 
+   *   Boolean expressions that act as filter, e.g. x < 6
+   *   introductions on new local variables that act as
+   *     intermediate result, e.g. int y = 2*x
+   *   and generators that introduce a new variable and let them
+   *     range over a set of values, e.g.  x in S,
+   *     y in {3..10}, z in Set{3,5,10..20}
+   */
+  SetComprehensionItem =
+    Expression |
+    SetVariableDeclaration |
+    GeneratorDeclaration
+    ;
+  
+  /**
+   * ASTGeneratorDeclaration defines a generator that introduces a new
+   *   variable and lets it range over a set
+   *   @attribute MCType
+   *              Optional type of variable
+   *   @attribute Name
+   *              Name of the variable
+   *   @attribute Expression
+   *              Expression that describes or references a set
+   */
+  GeneratorDeclaration implements Variable =
+    MCType? Name "in" Expression;
+
+  /**
+   * ASTSetEnumeration is used for an enumeration of
+   *   comprehension elements. Note that collection items are optional.
+   *   @attribute set
+   *              Optional type Set of comprehension
+   *   @attribute setCollectionItems
+   *              Enumerated elements as a list separated by , (comma).
+   *              (e.g.: "1..3, x, y..z")
+   *   Examples:
+   *        {1 .. 3, x+1 .. 10, 2*y, 21}    defines a set
+   *        [1..3],  [a..b]             defines a list
+   */
+  SetEnumeration implements Expression  <40> =
+    ( set:key("Set")?
+      openingBracket:"{" (SetCollectionItem || ",")* "}" ) |
+    ( openingBracket:"[" (SetCollectionItem || ",")* "]" )
+    ;
+
+  /**
+   * SetCollectionItem is used to enumerate Lists and Sets.
+   * It can be a value or a range
+   */
+  interface SetCollectionItem;
+
+  // individual value
+  SetValueItem implements SetCollectionItem =
+    Expression
+    ;
+
+  // range of values
+  SetValueRange implements SetCollectionItem =
+    lowerBound:Expression ".." upperBound:Expression
+    ;
+}
