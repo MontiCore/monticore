@@ -382,7 +382,8 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
 
   protected boolean checkSetVariableDeclaration(ASTSetVariableDeclaration varDecl) {
     // note: this differs from OCL,
-    // in OCL, 'Type name' is valid an uses all instances of Type
+    // in OCL, 'Type name' is valid and uses all instances of Type
+    // we require an expression to be present as well.
 
     // Expression
     if (!varDecl.isPresentExpression()) {
