@@ -13,6 +13,7 @@ import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVi
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
 import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsTypeVisitor;
+import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
@@ -70,6 +71,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derOCLExpressions.setType4Ast(type4Ast);
     visitors.derOptionalOperators.setType4Ast(type4Ast);
     visitors.derSetExpressions.setType4Ast(type4Ast);
+    visitors.derTupleExpressions.setType4Ast(type4Ast);
     visitors.derUglyExpressions.setType4Ast(type4Ast);
     visitors.derOfMCCommonLiterals.setType4Ast(type4Ast);
     // MCTypes
@@ -96,6 +98,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
     visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
     visitors.derSetExpressions = new SetExpressionsTypeVisitor();
+    visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
     visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     // MCTypes
@@ -169,6 +172,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.add4OCLExpressions(visitors.derOCLExpressions);
     traverser.add4OptionalOperators(visitors.derOptionalOperators);
     traverser.add4SetExpressions(visitors.derSetExpressions);
+    traverser.add4TupleExpressions(visitors.derTupleExpressions);
     traverser.add4UglyExpressions(visitors.derUglyExpressions);
     traverser.add4MCCommonLiterals(visitors.derOfMCCommonLiterals);
     // MCTypes
@@ -204,6 +208,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public OptionalOperatorsTypeVisitor derOptionalOperators;
 
     public SetExpressionsTypeVisitor derSetExpressions;
+
+    public TupleExpressionsTypeVisitor derTupleExpressions;
 
     public UglyExpressionsTypeVisitor derUglyExpressions;
 
