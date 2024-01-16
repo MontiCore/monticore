@@ -24,17 +24,18 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void deriveFromInstanceOfExpression() throws IOException {
-    // same type
-    checkExpr("varPerson instanceof Person", "boolean");
     // subType
+    checkExpr("varPerson instanceof Student", "boolean");
+    checkExpr("varPerson instanceof CsStudent", "boolean");
+    // same type (redundant)
+    checkExpr("varPerson instanceof Person", "boolean");
+    // superType (redundant)
     checkExpr("varStudent instanceof Person", "boolean");
     checkExpr("varCsStudent instanceof Person", "boolean");
   }
 
   @Test
   public void testInvalidInstanceOfExpression() throws IOException {
-    // subType
-    checkErrorExpr("varPerson instanceof Student", "0xFD203");
     // unrelated type
     checkErrorExpr("varintList instanceof Person", "0xFD203");
   }
@@ -43,10 +44,17 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   public void deriveFromTypeCastExpression() throws IOException {
     // same type
     checkExpr("(Person)varPerson", "Person");
-    // subType
-    checkExpr("(int)varfloat", "int");
+    // downcasting
+    checkExpr("(Student)varPerson", "Student");
+    checkExpr("(CsStudent)varPerson", "CsStudent");
+    // upcasting
     checkExpr("(Person)varStudent", "Person");
     checkExpr("(Person)varCsStudent", "Person");
+    // cast numbers
+    checkExpr("(int)varfloat", "int");
+    checkExpr("(float)varint", "float");
+    checkExpr("(char)varshort", "char");
+    checkExpr("(short)varchar", "short");
     // un-/boxing
     checkExpr("(int)varInteger", "int");
     checkExpr("(java.lang.Integer)varint", "java.lang.Integer");
@@ -54,8 +62,6 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void testInvalidTypeCastExpression() throws IOException {
-    // subType
-    checkErrorExpr("(Student)varPerson", "0xFD204");
     // unrelated type
     checkErrorExpr("(Person)varintList", "0xFD204");
   }

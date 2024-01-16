@@ -81,15 +81,19 @@ public class UglyExpressionsTypeVisitor
       // allow to cast numbers down, e.g., (int) 5.0 or (byte) 5
       result = typeResult;
     }
-    else if (SymTypeRelations.isSubTypeOf(exprResult, typeResult)) {
-      // check whether typecast is possible
+    else if (
+        SymTypeRelations.isSubTypeOf(typeResult, exprResult) || // downcast
+            SymTypeRelations.isSubTypeOf(exprResult, typeResult) // upcast
+    ) {
+      // check typecast is possible
       result = typeResult;
     }
     else {
-      Log.error(
-          String.format(
-              "0xFD204 The expression of type '%s' " + "can't be cast to the given type '%s'.",
-              exprResult.printFullName(), typeResult.printFullName()),
+      Log.error("0xFD204 The expression of type '"
+              + exprResult.printFullName()
+              + "' cannot be cast to the given type '"
+              + typeResult.printFullName()
+              + "'",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd());
       result = createObscureType();
@@ -107,7 +111,16 @@ public class UglyExpressionsTypeVisitor
       result = createObscureType();
     }
     else {
-      if (SymTypeRelations.isSubTypeOf(exprResult, typeResult)) {
+      if (SymTypeRelations.isSubTypeOf(typeResult, exprResult)) {
+        result = SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
+      }
+      else if (SymTypeRelations.isSubTypeOf(exprResult, typeResult)) {
+        Log.trace(expr.get_SourcePositionStart().toString() + ": "
+                + "Found redundant instanceof-expression, "
+                + "expression of type " + exprResult.printFullName()
+                + " is always an instance of " + typeResult.printFullName(),
+            LOG_NAME
+        );
         result = SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
       }
       else {
