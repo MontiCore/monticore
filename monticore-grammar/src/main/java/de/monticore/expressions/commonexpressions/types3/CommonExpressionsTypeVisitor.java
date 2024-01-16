@@ -520,9 +520,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected void fieldAccessCustomTraverse(ASTFieldAccessExpression expr) {
     if (isSeriesOfNames(expr)) {
-      if (getTypeDispatcher().isASTFieldAccessExpression(expr.getExpression())) {
+      if (expr.getExpression() instanceof ASTFieldAccessExpression) {
         ASTFieldAccessExpression innerFieldAccessExpr =
-            getTypeDispatcher().asASTFieldAccessExpression(expr.getExpression());
+            (ASTFieldAccessExpression)(expr.getExpression());
         fieldAccessCustomTraverse(innerFieldAccessExpr);
         // if expression or type identifier has been found,
         // continue to require further results
@@ -531,8 +531,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
                 !getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression());
         calculateFieldAccess(innerFieldAccessExpr, resultsAreOptional);
       }
-      else if (getTypeDispatcher().isASTNameExpression(expr.getExpression())) {
-        ASTNameExpression nameExpr = getTypeDispatcher().asASTNameExpression(expr.getExpression());
+      else if (expr.getExpression() instanceof ASTNameExpression) {
+        ASTNameExpression nameExpr = (ASTNameExpression)(expr.getExpression());
         Optional<SymTypeExpression> nameAsExprType =
             calculateExprQName(nameExpr);
         Optional<SymTypeExpression> nameAsTypeIdType =
@@ -966,11 +966,11 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    * e.g., class C<T>{T t;} C<Float>.t = 3.2;
    */
   protected Optional<String> getExprAsQName(ASTExpression expr) {
-    if (getTypeDispatcher().isASTNameExpression(expr)) {
+    if (expr instanceof ASTNameExpression) {
       ASTNameExpression nameExpr = (ASTNameExpression) expr;
       return Optional.of(nameExpr.getName());
     }
-    else if (getTypeDispatcher().isASTFieldAccessExpression(expr)) {
+    else if (expr instanceof ASTFieldAccessExpression) {
       ASTFieldAccessExpression fieldAccessExpression =
           (ASTFieldAccessExpression) expr;
       return getExprAsQName(fieldAccessExpression.getExpression())
@@ -987,12 +987,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    * does the expression have a form like a.b.c.d?
    */
   protected boolean isSeriesOfNames(ASTExpression expr) {
-    if (getTypeDispatcher().isASTNameExpression(expr)) {
+    if (expr instanceof ASTNameExpression) {
       return true;
     }
-    if (getTypeDispatcher().isASTFieldAccessExpression(expr)) {
+    if (expr instanceof ASTFieldAccessExpression) {
       return isSeriesOfNames(
-          getTypeDispatcher().asASTFieldAccessExpression(expr).getExpression()
+          ((ASTFieldAccessExpression)expr).getExpression()
       );
     }
     else {
