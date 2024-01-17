@@ -235,7 +235,6 @@ trigger-ma-dev:
   trigger:
     project: monticore/montiarc/core
     branch: develop
-    strategy: depend
   only:
     - dev
 
