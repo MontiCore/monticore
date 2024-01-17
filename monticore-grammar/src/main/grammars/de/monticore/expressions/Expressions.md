@@ -20,17 +20,20 @@ with basic assignments.
 with common expressions like `+` and `-`.
 * [BitExpressions](BitExpressions.mc4): Extends `ExpressionsBasis` 
 with bit expressions like `&` or `<<`.
+* [SetExpressions](../ocl/SetExpressions.mc4): Extends `ExpressionBasis`
+with set expressions like `{a * a | a in b, a < 10}`.
 * [LambdaExpressions](LambdaExpressions.mc4): Extends `ExpressionBasis` 
 with lambda expressions like `a -> a + 2`.
+* [OCLExpressions](../ocl/OCLExpressions.mc4): Extends `ExpressionsBasis`
+with OCL expressions like `a implies b`.
+* [UglyExpressions](UglyExpressions.mc4): Extends `ExpressionBasis`
+  with expressions like `instanceof` and `(Person)a`.
+* [OptionalOperators](../ocl/OptionalOperators.mc4): Extends `CommonExpressions`
+  with expressions for optionals like `a ?: 0`
 * [JavaClassExpressions](JavaClassExpressions.mc4): Extends `CommonExpressions` 
 with Java expressions like `new`.
-
-The OCL project defines additional expression languages:
-
-* [OCL-OCLExpressions]: Extends `ExpressionsBasis` to introduce OCL to
-MontiCore.
-* [OCL-SetExpressions]: Extends `ExpressionsBasis` for working with sets using
-OCL.
+* [StreamExpressions](StreamExpressions.mc4): Extends `CommonExpressions`
+with stream expressions like `a : b`.
 
 Furthermore, composite SI unit expressions are defined in the SI Units project:
 

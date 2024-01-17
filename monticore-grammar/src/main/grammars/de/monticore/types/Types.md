@@ -66,6 +66,13 @@ This language component provides rules to express array types like `Person[]` or
 `int[][]`. As array types are orthogonal to generic types, `MCArrayTypes` can be
 combined with any of the above language components.
 
+## [`MCFunctionTypes`](MCFunctionTypes.mc4)
+
+This language component provides rules to express function types
+like `int -> int` or `(String -> int) -> void`.
+As function types are orthogonal to generic and array types,
+`MCFunctionTypes` can be combined with any of the above language components.
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
