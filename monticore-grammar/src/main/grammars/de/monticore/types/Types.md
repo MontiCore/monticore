@@ -73,6 +73,13 @@ like `int -> int` or `(String -> int) -> void`.
 As function types are orthogonal to generic and array types,
 `MCFunctionTypes` can be combined with any of the above language components.
 
+## [`RegExTypes`](../regex/RegExType.mc4)
+
+This language component provides rules to express regular expression types
+like `R"gr(a\|e)y"` or `R"rege(x(es)?\|xps?)"`.
+RegEx types are further documented in [`RegEx`](../regex/RegEx.md).
+`RegExTypes` can be combined with any of the above language components.
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
