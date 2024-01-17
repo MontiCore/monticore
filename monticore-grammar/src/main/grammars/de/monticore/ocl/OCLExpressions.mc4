@@ -21,15 +21,10 @@ import de.monticore.symbols.*;
  * given in the MontiCore core project.
  * Especially common expressions should be added.
  *
- * This grammar is part of a hierarchy of expressions, namely
- * * expressions/ExpressionsBasis.mc4
- * * --  expressions/CommonExpressions.mc4
- * * --  --  expressions/JavaClassExpressions.mc4
- * * --  expressions/AssignmentExpressions.mc4
- * * --  expressions/BitExpressions.mc4
- * * --  ocl/OCLExpressions.mc4
- * * --  ocl/SetExpressions.mc4
- * * --  ocl/OptionalOperators.mc4
+ * This grammar is part of a hierarchy of expressions, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
  *
  * Note that it may be useful to use the "nokeyword"-keyword statement
  * for a variety of keywords used here, such as "implies", "forall", "in"
