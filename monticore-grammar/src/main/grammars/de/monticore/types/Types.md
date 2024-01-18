@@ -62,23 +62,18 @@ types such as `Person<?>`, `Map<Person<String>, ? extends Person>`, and
 
 ## [`MCArrayTypes`](MCArrayTypes.mc4)
 
-This language component provides rules to express array types like `Person[]` or
-`int[][]`. As array types are orthogonal to generic types, `MCArrayTypes` can be
+This language component allows to express array types like `Person[]` or
+`int[][]`. As array types are orthogonal to other kinds of 
+types, `MCArrayTypes` can be
 combined with any of the above language components.
 
 ## [`MCFunctionTypes`](MCFunctionTypes.mc4)
 
-This language component provides rules to express function types
+This language component allows developers to express function types
 like `int -> int` or `(String -> int) -> void`.
-As function types are orthogonal to generic and array types,
+Function types are independent from and not interfering with 
+generic and array types,
 `MCFunctionTypes` can be combined with any of the above language components.
-
-## [`RegExTypes`](../regex/RegExType.mc4)
-
-This language component provides rules to express regular expression types
-like `R"gr(a\|e)y"` or `R"rege(x(es)?\|xps?)"`.
-RegEx types are further documented in [`RegEx`](../regex/RegEx.md).
-`RegExTypes` can be combined with any of the above language components.
 
 ## Further Information
 
