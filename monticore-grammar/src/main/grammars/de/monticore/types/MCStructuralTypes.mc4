@@ -15,22 +15,23 @@ import de.monticore.types.*;
  * This grammar is part of a hierarchy of types, namely
  * * types.MCBasicTypes.mc4
  *   * types/MCStructuralTypes.mc4
+ *   * types/MCFunctionTypes.mc4
+ *   * types/MCCollectionTypes.mc4
+ *     * types/MCSimpleGenericTypes.mc4
+ *       * types/MCFullGenericTypes.mc4
  *
 */
 component grammar MCStructuralTypes
           extends MCBasicTypes {
 
-
-  /*=================================================================*/
-
   /** ASTMCUnionType represents union types.
    *
    * Values of a union type are of (at least one of) the types in the union.
    * Example:
-   * String | int var = "Person";
-   * String | int var = 3;
+   * String | int var1 = "Person";
+   * String | int var2 = 3;
    */
-  MCUnionType implements MCType =
+  MCUnionType implements MCType <140> =
     MCType "|" (MCType || "|")+ |
     parenthesis:"(" MCType "|" (MCType || "|")+ ")"
   ;
@@ -55,7 +56,7 @@ component grammar MCStructuralTypes
    * Example:
    * (float, float) vec2 = (1.1f, -2.0f);
    */
-  MCTupleType implements MCType =
+  MCTupleType implements MCType <30> =
     "(" MCType "," (MCType || ",")+ ")"
   ;
 
