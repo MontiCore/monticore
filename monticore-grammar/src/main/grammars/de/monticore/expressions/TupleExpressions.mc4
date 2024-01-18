@@ -9,7 +9,7 @@ component grammar TupleExpressions
           extends ExpressionsBasis {
 
 /**
- * This grammar defines tupel expressions, e.g.
+ * This grammar defines tuple expressions, e.g.
  * ("Hello", 1)
  *
  * Tuples expressions are ordered lists of at least two expressions.
