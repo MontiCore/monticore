@@ -1,0 +1,23 @@
+package de.monticore.expressions;
+
+mlc TupleExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/TupleExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/tupleexpressions/**.java";
+  }
+
+  // export the handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/expressions/tupleexpressions/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.ExpressionsBasis";
+  }
+}
