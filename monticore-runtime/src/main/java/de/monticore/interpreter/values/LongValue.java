@@ -3,16 +3,16 @@ package de.monticore.interpreter.values;
 
 import de.monticore.interpreter.Value;
 
-public class FloatResult implements Value {
+public class LongValue implements Value {
 
-  protected float value;
+  protected long value;
 
-  public FloatResult(float value) {
+  public LongValue(long value) {
     this.value = value;
   }
 
   @Override
-  public boolean isFloat() {
+  public boolean isLong() {
     return true;
   }
 
@@ -28,12 +28,12 @@ public class FloatResult implements Value {
 
   @Override
   public String asString() {
-    return Float.toString(value);
+    return Long.toString(value);
   }
 
   @Override
   public long asLong() {
-    return (long) value;
+    return value;
   }
 
   @Override

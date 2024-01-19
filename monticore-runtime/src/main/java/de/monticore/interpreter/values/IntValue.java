@@ -3,11 +3,11 @@ package de.monticore.interpreter.values;
 
 import de.monticore.interpreter.Value;
 
-public class IntResult implements Value {
+public class IntValue implements Value {
 
   protected int value;
 
-  public IntResult(int value) {
+  public IntValue(int value) {
     this.value = value;
   }
 

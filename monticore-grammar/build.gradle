@@ -273,6 +273,8 @@ task showArtifacts {}
 task checkArtifacts {}
 configurations { MLC }
 dependencies {
+
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
   MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
 }
 StringJoiner joiner = new StringJoiner(" ")

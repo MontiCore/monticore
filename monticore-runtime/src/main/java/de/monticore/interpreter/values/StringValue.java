@@ -3,17 +3,27 @@ package de.monticore.interpreter.values;
 
 import de.monticore.interpreter.Value;
 
-public class ObjectResult implements Value {
+public class StringValue implements Value {
 
-  protected Object value;
+  protected String value;
 
-  public ObjectResult(Object value) {
+  public StringValue(String value) {
     this.value = value;
+  }
+
+  @Override
+  public boolean isString() {
+    return true;
   }
 
   @Override
   public boolean isObject() {
     return true;
+  }
+
+  @Override
+  public String asString() {
+    return value;
   }
 
   @Override

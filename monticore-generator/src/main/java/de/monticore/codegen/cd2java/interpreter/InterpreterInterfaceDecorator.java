@@ -55,8 +55,10 @@ public class InterpreterInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     List<ASTCDParameter> parameters = new ArrayList<>();
 
     for (CDTypeSymbol typeSymbol : service.getAllCDTypes()) {
-      parameters.add(CDParameterFacade.getInstance()
-          .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER));
+      if (typeSymbol.isIsClass() || typeSymbol.isIsInterface()) {
+        parameters.add(CDParameterFacade.getInstance()
+            .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER));
+      }
     }
     parameters.add(CDParameterFacade.getInstance()
         .createParameter(MCTypeFacade.getInstance()

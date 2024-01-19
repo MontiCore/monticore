@@ -13,11 +13,15 @@ public interface Value {
     return false;
   }
 
-  default boolean isDouble() {
+  default boolean isLong() {
     return false;
   }
 
-  default boolean isString() {
+  default boolean isFloat() {
+    return false;
+  }
+
+  default boolean isDouble() {
     return false;
   }
 
@@ -25,16 +29,12 @@ public interface Value {
     return false;
   }
 
+  default boolean isString() {
+    return false;
+  }
+
+
   default boolean isObject() {
-    return false;
-  }
-
-
-  default boolean isLong() {
-    return false;
-  }
-
-  default boolean isFloat() {
     return false;
   }
 

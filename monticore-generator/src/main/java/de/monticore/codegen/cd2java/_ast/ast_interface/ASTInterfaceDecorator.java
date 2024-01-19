@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java._ast.ast_interface;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractTransformer;
@@ -15,6 +16,7 @@ import de.monticore.codegen.cd2java.interpreter.InterpreterConstants;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.util.ArrayList;
@@ -71,6 +73,7 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     changedInput.addAllCDMembers(addScopeMethods(scopeAttributes));
 
     changedInput.addCDMember(createEvaluateInterpreterMethod(changedInput));
+    changedInput.addCDMember(createEvaluateInterpreterSuperMethod(changedInput));
 
     // if a ast has a symbol definition without a name, the getName has to be implemented manually
     // add getName method that is abstract
@@ -107,11 +110,36 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     return scopeMethods;
   }
 
-  protected ASTCDMethod createEvaluateInterpreterMethod(ASTCDInterface input) {
+  protected ASTCDMethod createEvaluateInterpreterMethod(ASTCDInterface astClass) {
     String interpreterType = visitorService.getInterpreterInterfaceFullName();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(interpreterType, "interpreter");
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), InterpreterConstants.VALUE_FULLNAME, "evaluate", parameter);
-    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.ast_class.Evaluate", input));
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(
+        interpreterType,
+        "interpreter");
+    ASTCDMethod method = getCDMethodFacade().createMethod(
+        PUBLIC.build(),
+        InterpreterConstants.VALUE_FULLNAME,
+        "evaluate", parameter);
+    String astName = astClass.getName().substring(0, astClass.getName().contains("TOP")
+        ? astClass.getName().lastIndexOf("TOP")
+        : astClass.getName().length());
+    replaceTemplate(EMPTY_BODY, method,
+        new StringHookPoint(String.format("return interpreter.interpret((%s)this);", astName)));
+    return method;
+  }
+
+  protected ASTCDMethod createEvaluateInterpreterSuperMethod(ASTCDInterface astClass) {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(
+        InterpreterConstants.MODELINTERPRETER_FULLNAME,
+        "interpreter");
+    ASTCDMethod method = getCDMethodFacade().createMethod(
+        PUBLIC.build(),
+        InterpreterConstants.VALUE_FULLNAME,
+        "evaluate",
+        parameter);
+    replaceTemplate(EMPTY_BODY, method,
+        new TemplateHookPoint(
+            "_ast.ast_class.Evaluate",
+            astClass, visitorService.getInterpreterInterfaceFullName()));
     return method;
   }
 

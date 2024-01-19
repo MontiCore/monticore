@@ -50,6 +50,7 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     List<ASTCDConstructor> constructors = getConstructors(superInterpreters);
     List<ASTCDMember> realThisComponents = getRealThisComponents();
     List<ASTCDMethod> interpretMethods = getInterpretMethods();
+    List<ASTCDMember> contextMembers = createMapMembers();
 
     return CD4CodeMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
@@ -58,6 +59,7 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .addAllCDMembers(superInterpreters)
         .addAllCDMembers(constructors)
         .addAllCDMembers(realThisComponents)
+        .addAllCDMembers(contextMembers)
         .addAllCDMembers(interpretMethods)
         .build();
   }
@@ -80,38 +82,71 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   public List<ASTCDMethod> getInterpretMethods() {
-    List<ASTCDParameter> parameters = new ArrayList<>();
-
-    for (CDTypeSymbol typeSymbol: service.getAllCDTypes()) {
-      parameters.add(CDParameterFacade.getInstance()
-          .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER));
-    }
-
-    for (DiagramSymbol diagramSymbol: service.getSuperCDsTransitive()) {
-      for (CDTypeSymbol typeSymbol : service.getAllCDTypes(diagramSymbol)) {
-        parameters.add(CDParameterFacade.getInstance()
-            .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER));
-      }
-    }
-
-    parameters.add(CDParameterFacade.getInstance()
-        .createParameter(typeFacade.
-            createQualifiedType(NODE_TYPE), NODE_PARAMETER));
-
+    List<ASTCDMethod> methods = new ArrayList<>();
     ASTMCReturnType returnType = CD4CodeMill.mCReturnTypeBuilder()
         .setMCType(typeFacade.createQualifiedType(VALUE_FULLNAME)).build();
 
-    List<ASTCDMethod> methods = parameters.stream()
-        .map(parameter -> CDMethodFacade.getInstance().createMethod(
-            PUBLIC.build(), returnType, "interpret", parameter))
-        .collect(Collectors.toList());
-
-    methods.forEach(method ->
+    for (CDTypeSymbol typeSymbol : service.getAllCDTypes()) {
+      if (typeSymbol.isIsClass() || typeSymbol.isIsInterface()) {
+        ASTCDParameter parameter = CDParameterFacade.getInstance()
+            .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
+        ASTCDMethod method = CDMethodFacade.getInstance().createMethod(
+            PUBLIC.build(), returnType, "interpret", parameter);
         this.replaceTemplate(
-            EMPTY_BODY, method, new StringHookPoint(
-                "return new " + NOT_A_VALUE_FULLNAME + "();")));
+            EMPTY_BODY, method, new StringHookPoint("return node.evaluate(getRealThis());"));
+        methods.add(method);
+      }
+    }
+
+    for (DiagramSymbol diagramSymbol : service.getSuperCDsTransitive()) {
+      String interpreterName = uncapFirst(service.getInterpreterSimpleName(diagramSymbol));
+      for (CDTypeSymbol typeSymbol : service.getAllCDTypes(diagramSymbol)) {
+        if (typeSymbol.isIsClass() || typeSymbol.isIsInterface()) {
+          ASTCDParameter parameter = CDParameterFacade.getInstance()
+              .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
+          ASTCDMethod method = CDMethodFacade.getInstance().createMethod(
+              PUBLIC.build(), returnType, "interpret", parameter);
+          this.replaceTemplate(
+              EMPTY_BODY, method, new StringHookPoint(
+                  String.format("return %s.interpret(node);",
+                      interpreterName)));
+          methods.add(method);
+        }
+      }
+    }
+
+    ASTCDParameter parameter = CDParameterFacade.getInstance()
+        .createParameter(typeFacade.
+            createQualifiedType(NODE_TYPE), NODE_PARAMETER);
+    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(
+        PUBLIC.build(), returnType, "interpret", parameter);
+    this.replaceTemplate(
+        EMPTY_BODY, method, new StringHookPoint(
+            String.format("return new %s();", NOT_A_VALUE_FULLNAME)));
+    methods.add(method);
 
     return methods;
+  }
+
+  public List<ASTCDMember> createMapMembers() {
+    List<ASTCDMember> members = new ArrayList<>();
+
+    members.add(CDAttributeFacade.getInstance().createAttribute(
+        PROTECTED.build(),
+        typeFacade.createMapTypeOf(SYMBOL_FULLNAME, VALUE_FULLNAME),
+        "context"));
+
+    ASTCDParameter symbolParameter = CDParameterFacade.getInstance().createParameter(SYMBOL_FULLNAME, "symbol");
+    ASTCDParameter valueParameter = CDParameterFacade.getInstance().createParameter(VALUE_FULLNAME, "value");
+    ASTCDMethod storeMethod = CDMethodFacade.getInstance().createMethod(
+        PUBLIC.build(), "store", symbolParameter, valueParameter);
+    this.replaceTemplate(EMPTY_BODY, storeMethod, new StringHookPoint("context.put(symbol, value);"));
+    members.add(storeMethod);
+
+    ASTCDMethod loadMethod = CDMethodFacade.getInstance().createMethod(PUBLIC.build(), VALUE_FULLNAME, "load", symbolParameter);
+    this.replaceTemplate(EMPTY_BODY, loadMethod, new StringHookPoint("return this.context.get(symbol);"));
+
+    return members;
   }
 
   public List<ASTCDMember> getRealThisComponents() {
