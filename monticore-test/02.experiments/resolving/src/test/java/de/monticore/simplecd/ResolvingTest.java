@@ -3,9 +3,16 @@ package de.monticore.simplecd;
 
 import de.monticore.simplecd._ast.ASTCDCompilationUnit;
 import de.monticore.simplecd._parser.SimpleCDParser;
-import de.monticore.simplecd._symboltable.*;
+import de.monticore.simplecd._symboltable.CDClassSymbol;
+import de.monticore.simplecd._symboltable.ISimpleCDArtifactScope;
+import de.monticore.simplecd._symboltable.ISimpleCDScope;
+import de.monticore.simplecd._symboltable.SimpleCDScopesGenitorDelegator;
+import de.monticore.simplecd._symboltable.SimpleCDSymbolTableCompleter;
 import de.monticore.simplecd._visitor.SimpleCDTraverser;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,11 +23,16 @@ import static org.junit.Assert.assertTrue;
 
 public class ResolvingTest {
 
+  @BeforeClass
+  public static void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+
   protected Optional<ASTCDCompilationUnit> parseAndTransform(String model){
     SimpleCDParser parser = SimpleCDMill.parser();
     try {
       Optional<ASTCDCompilationUnit> unit = parser.parse(model);
-      SimpleCDTraverser traverser = SimpleCDMill.traverser();
       if(unit.isPresent()){
         return Optional.of(unit.get());
       }

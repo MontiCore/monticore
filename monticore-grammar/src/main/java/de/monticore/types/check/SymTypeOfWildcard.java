@@ -73,20 +73,6 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   }
 
   @Override
-  public SymTypeOfWildcard deepClone() {
-    SymTypeOfWildcard clone;
-    if (hasBound()) {
-      clone = new SymTypeOfWildcard(getBound().deepClone(), isUpper());
-    }
-    else {
-      clone = new SymTypeOfWildcard(null, false);
-    }
-    clone.typeSymbol = this.typeSymbol;
-    clone.functionList = this.functionList;
-    return clone;
-  }
-
-  @Override
   public boolean isValidType() {
     return false;
   }

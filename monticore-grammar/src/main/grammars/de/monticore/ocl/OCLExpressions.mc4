@@ -1,0 +1,256 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.ocl;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.expressions.*;
+import de.monticore.types.*;
+import de.monticore.symbols.*;
+
+/**
+ * This grammar defines expressions typical to UMLs OCL
+ *
+ * This includes among others the 
+ *   * typeif, forall and exists quantifiers,
+ *   * set selection with any, iteration,
+ *   * @pre and transitive closure **
+ *
+ * OCL expressions can savely (i.e. as conservative extension) 
+ * be composed if with other forms of expressions  
+ * given in the MontiCore core project.
+ * Especially common expressions should be added.
+ *
+ * This grammar is part of a hierarchy of expressions, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
+ *
+ * Note that it may be useful to use the "nokeyword"-keyword statement
+ * for a variety of keywords used here, such as "implies", "forall", "in"
+*/
+
+component grammar OCLExpressions
+          extends ExpressionsBasis,
+                  MCBasicTypes,
+                  BasicSymbols
+{
+  /**
+   * ASTOCLVariableDeclaration defines a variable
+   *   @attribute MCType
+   *              type of the variable
+   *   @attribute Name
+   *              name of the variable
+   *   @attribute Expression
+   *              initial value of the variable
+   */
+  OCLVariableDeclaration implements Variable =
+    MCType? Name (dim:"[" "]")* ("=" Expression)?;
+
+  /*=================================================================*/
+
+  /**
+   * ASTTypeIfExpression
+   *   Type-safe version of type-cast for variables.
+   *     typeif m instanceof Subtype 
+   *       then (m known here as Subtype)
+   *       else (m here as only Supertype)
+   *
+   *  @attribute Name
+   *             Name of a variable of which the type should be checked
+   *  @attribute MCType
+   *             The type to which the variable should be compared
+   *  @attribute thenExpression
+   *             resulting expression in which the variable can be used with
+   *             the type defined by MCType (if the type check returns true),
+   *             as such TypeIfThenExpression is used to shadow the variable
+   *             with the more concrete typing
+   *  @attribute elseExpression
+   *             resulting expression which will be evaluated if the variable
+   *             is not of the type defined by MCType
+   *
+   *   Example: 
+   *     typeif bm instanceof BidMesssage 
+   *     then   bm.auction==copper912 
+   *     else   false
+   */
+  TypeIfExpression implements Expression <100> =
+    "typeif" Name@Variable "instanceof" MCType
+    "then"   thenExpression:TypeIfThenExpression
+    "else"   elseExpression:Expression
+    ;
+  scope (shadowing non_exporting) TypeIfThenExpression = Expression;
+
+  /**
+   * IfThenElseExpression defines a case distinction operator.
+   *   If the condition is true, thenExpression will be returned,
+   *   otherwise the elseExpression will be returned.
+   *
+   *   @attribute condition
+   *              the condition to be evaluated
+   *   @attribute thenExpression
+   *              the expression to return if the condition is true
+   *   @attribute elseExpression
+   *              the expression to return if the condition is false
+   */
+  IfThenElseExpression implements Expression <100> =
+    "if"   condition:Expression
+    "then" thenExpression:Expression
+    "else" elseExpression:Expression
+    ;
+
+
+  /*=================================================================*/
+
+  /**
+   * ASTImpliesExpression defines a logical implies operator.
+   *   Example: a.startTime >= Time.now() implies a.numberOfBids == 0
+   */
+  ImpliesExpression implements Expression <116> =
+    left:Expression
+    "implies"
+    right:Expression
+    ;
+
+  /** 
+   * ASTEquivalentExpression defines a logical equals operator.
+   *   Example: sa.equals(sb) <=> sa==sb
+   */
+  EquivalentExpression implements Expression <115> =
+    left:Expression operator:"<=>" right:Expression;
+
+
+  /*=================================================================*/
+
+  /**
+   * ASTForAllExpression defines a quantified expression for collections e.g.
+   *   "forall x in Y : ...".
+   *   @attribute InDeclaration
+   *              List of collection variable declarations, e.g:
+   *                "forall a in A: ..."
+   *                "forall a in List <..> : ..."
+   *                "forall a: ..."
+   *   @attribute OCLExpression
+   *              The body of forall iteration as an expression.
+   */
+  scope (non_exporting) ForallExpression implements Expression <90> =
+    "forall"
+    (InDeclaration || ",")+
+    ":"
+    Expression
+    ;
+
+  /**
+   * ASTExistsExpression defines a quantified expression for collections e.g.
+   *   "exists x in Y : ...".
+   *   @attribute InDeclaration
+   *              List of collection variable declarations, e.g:
+   *                "exists a in A: ..."
+   *                "exists a in List <..> : ..."
+   *                "exists a: ..."
+   *   @attribute OCLExpression
+   *              The body of exists iteration as an expression.
+   */
+  scope (non_exporting) ExistsExpression implements Expression <90> =
+    "exists"
+    (InDeclaration || ",")+
+    ":"
+    Expression
+    ;
+
+  /**
+   * ASTOCLAnyExpression selects an element from a non-empty collection e.g.
+   *   any x in set or any Auction. The result is underspecified.
+   *   @attribute OCLExpression
+   *              A collection defined by an expression.
+   */
+  AnyExpression implements Expression <100> =
+    "any" Expression;
+
+
+  /*=================================================================*/
+
+  /**
+   * ASTLetinExpression are used to define local vars or methods. The defined
+   *   vars and methods are visible in the in-expression body.
+   *   @attribute letDeclaration
+   *              A list of variable declarations.
+   *   @attribute expression
+   *              An expression where previous declarations are used.
+   */
+  scope (non_exporting) LetinExpression implements Expression <100> =
+    "let" (OCLVariableDeclaration || ";")+
+    "in" Expression ;
+
+  /**
+   * ASTIterateExpression is used to iterate collections. It differs from
+   * Java5-Iterator.
+   *   Example:
+   *       iterate{ elem in Auction; int acc=0 : acc = acc+elem.numberOfBids }.
+   *   @attribute iterationDeclarator
+   *              The elements of a collection that will be iterated as an
+   *              OCLCollectionVarDeclaration.
+   *   @attribute init
+   *              Definiton of a accumulation variable as an
+   *              OCLVariableDeclaration.
+   *   @attribute Name
+   *              Name of the accumulation assignment variable. This has to be
+   *              the variable introduced by init:OCLVariableDeclaration
+   *   @attribute value
+   *              Right hand of the accumulation as an expression.
+   */
+  scope (non_exporting) IterateExpression implements Expression <100> =
+    "iterate" "{"
+    iteration:InDeclaration ";"
+    init:OCLVariableDeclaration ":"
+    Name@Variable "=" value:Expression
+    "}";
+
+  /*=================================================================*/
+
+  /**
+   * ASTInDeclaration defines a collection like "int x in y" or "Auction a" as
+   *   shortform of "Auction a in Auction.allInstances").
+   */
+  InDeclaration =
+      MCType  (InDeclarationVariable || ",")+
+    | MCType? (InDeclarationVariable || ",")+ ("in" Expression)
+    ;
+
+  /**
+   * ASTInDeclarationVariable defines the name of the variable
+   * used in the InDeclaration nonterminal
+   * ASTInDeclarationVariable also creates VariableSymbols.
+   *
+   * @attribute Name
+   *            name of the variable.
+   * 
+   * Variable defines an according symbol.
+   */
+  InDeclarationVariable implements Variable = Name;
+
+  /*=================================================================*/
+
+  /**
+   * ASTOCLAtPreQualification
+   *   Value of the expression in the precondition
+   *   Example: post: messageList == messageList@pre.add(m)
+   */
+  OCLAtPreQualification implements Expression <400> =
+    Expression atpre:["@pre"];
+
+  /**
+   * ASTOCLTransitiveQualification
+   *   Transitive closure of an association. The operator ** is 
+   *   only directly applied to a reflexive association. It 
+   *   cannot be applied on chains of associations of the form (a.b.c)**
+   *   The transitive closure of an association is also calculated if the
+   *   association’s source and target are not identical or even if they 
+   *   are not subclasses of each other. In that case, the transitive 
+   *   closure is identical to the initial association.
+   *   Example: this.clique = this.friend**
+   */
+  OCLTransitiveQualification implements Expression <400> =
+    Expression transitive:["**"];
+    
+}

@@ -16,6 +16,7 @@ public class MCCollectionSymTypeRelations extends SymTypeRelations {
   protected static MCCollectionTypeRelations mcCollectionTypeRelations;
 
   public static void init() {
+    Log.trace("init MCCollectionSymTypeRelations", "TypeCheck setup");
     SymTypeRelations.init();
     mcCollectionTypeRelations = new MCCollectionTypeRelations();
   }

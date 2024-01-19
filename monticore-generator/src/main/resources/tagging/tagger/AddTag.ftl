@@ -9,7 +9,7 @@ astTagUnit.addTags(
                 TagsMill.mCQualifiedNameBuilder().setPartsList(de.se_rwth.commons.Splitters.QUALIFIED_NAME_DELIMITERS.splitToList(model.getSymbol().getFullName())).build()
             ).build()
             <#else>
-            ${package}tagdefinition.${grammarname}TagDefinitionMill.${prodname?uncap_first}IdentifierBuilder().set${prodname?cap_first}(model).build()
+            ${package}tagdefinition.${grammarname}TagDefinitionMill.${prodname?uncap_first}IdentifierBuilder().setIdentifiesElement(model).build()
             </#if>
         )
         .addTag(astTag)

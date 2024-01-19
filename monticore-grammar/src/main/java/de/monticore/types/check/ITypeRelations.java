@@ -28,9 +28,6 @@ public interface ITypeRelations {
    * @param left  Super-Type
    * @param right Sub-Type (assignment-compatible to supertype?)
    * <p>
-   * TODO: Probably needs to be extended for free type-variable assignments
-   * (because it may be that they get unified over time: e.g. Map<a,List<c>> and Map<long,b>
-   * are compatible, by refining the assignments a-> long, b->List<c>
    */
   boolean compatible(SymTypeExpression left, SymTypeExpression right);
 

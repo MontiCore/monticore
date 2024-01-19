@@ -6,9 +6,12 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis.CDBasisMill;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnitBuilder;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractCreator;
-import de.monticore.codegen.cd2java.CoreTemplates;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -24,14 +27,14 @@ import de.monticore.umlmodifier.UMLModifierMill;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 
-import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
-import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompilationUnit> {
 
@@ -154,7 +157,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     fullPrettyPrinterCDClass.addCDMember(createPrettyPrintNodeMethod());
 
     for (ASTCDClass cdClass : cdCompilationUnit.getCDDefinition().getCDClassesList()) {
-      this.replaceTemplate(ANNOTATIONS, cdClass, CoreTemplates.createAnnotationsHookPoint(cdClass.getModifier()));
+      this.replaceTemplate(ANNOTATIONS, cdClass, decorationHelper.createAnnotationsHookPoint(cdClass.getModifier()));
     }
 
     return cdCompilationUnit;

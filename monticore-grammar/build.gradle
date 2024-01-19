@@ -68,7 +68,6 @@ fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
   def g = it
   def taskname = "generateGrammar${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
   def withDSTLGen = ("true").equals(getProperty('genTR')) && !["ODRuleGeneration", "ODRules", "TFBasisExts", "TFCommons",  // Do not generate TR grammars for TR-component grammars
-                                                               "RegExType", "RegularExpressions", // https://git.rwth-aachen.de/monticore/monticore/-/issues/3576
                                                                "Grammar", "Grammar_WithConcepts"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
   def withTagGen = ("true").equals(getProperty('genTagging')) && !["TagSchema", "Tags", "Grammar", "Grammar_WithConcepts", "ODRuleGeneration", "ODRules", 
                                                                    "TFBasisExts", "TFCommons"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
@@ -149,6 +148,7 @@ def grammarDependencies = ext {
   MCSynchronizedStatements = ["MCCommonStatements"]
   CommonExpressions = ["ExpressionsBasis"]
   BitExpressions = ["ExpressionsBasis"]
+  OptionalOperators = ["CommonExpressions"]
   MCBasicTypes = ["MCBasics"]
   MCFullGenericTypes = ["MCSimpleGenericTypes"]
   ODRuleGeneration = ["MCFullGenericTypes"]
@@ -172,7 +172,6 @@ def grammarDependencies = ext {
 
   // two dependencies
   Cardinality = ["MCBasics", "MCCommonLiterals"]
-  JavaClassExpressions = ["CommonExpressions", "MCVarDeclarationStatements"]
   ExpressionsBasis = ["MCBasics", "MCLiteralsBasis"]
   Grammar = ["MCCommonLiterals", "MCSimpleGenericTypes"]
   MCReturnStatements = ["MCStatementsBasis", "ExpressionsBasis"]
@@ -180,14 +179,18 @@ def grammarDependencies = ext {
   MCLowLevelStatements = ["MCStatementsBasis", "MCBasics"]
   MCAssertStatements = ["MCStatementsBasis", "ExpressionsBasis"]
   RegExType = ["RegularExpressions", "MCBasicTypes"]
+  UglyExpressions = ["CommonExpressions", "MCBasicTypes"]
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
+  OCLExpressions = ["BasicSymbols", "ExpressionsBasis", "MCBasicTypes"]
+  SetExpressions = ["BasicSymbols", "ExpressionsBasis", "MCBasicTypes"]
   TFBasisExts = ["JavaLight", "MCSimpleGenericTypes", "MCCommonLiterals"]
   Tags = ["MCBasics", "BasicSymbols", "MCCommonLiterals"]
   TagSchema = ["MCBasics", "MCBasicTypes", "MCCommonLiterals"]
 
   // four dependencies
+  JavaClassExpressions = ["CommonExpressions", "MCFullGenericTypes", "MCVarDeclarationStatements", "UglyExpressions"]
   MCCommon = ["Cardinality", "Completeness", "UMLModifier", "UMLStereotype"]
   ODRules = ["TFBasisExts", "MCCommonLiterals", "MCJavaLiterals", "UMLStereotype"]
   MCVarDeclarationStatements = ["MCStatementsBasis", "MCBasicTypes", "ExpressionsBasis", "OOSymbols"]
@@ -314,7 +317,9 @@ checkArtifactsBitExpressions.dependsOn(checkArtifactsExpressionsBasis)
 checkArtifactsCommonExpressions.dependsOn(checkArtifactsExpressionsBasis)
 checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCBasics)
 checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCLiteralsBasis)
+
 checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsCommonExpressions)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCFullGenericTypes)
 
 checkArtifactsAntlr.dependsOn(checkArtifactsMCBasics)
 checkArtifactsGrammar.dependsOn(checkArtifactsMCCommonLiterals)
@@ -388,6 +393,13 @@ checkArtifactsMCCommon.dependsOn(checkArtifactsUMLStereotype)
 checkArtifactsUMLModifier.dependsOn(checkArtifactsUMLStereotype)
 checkArtifactsUMLStereotype.dependsOn(checkArtifactsMCCommonLiterals)
 
+checkArtifactsRegularExpressions.dependsOn(checkArtifactsMCCommonLiterals)
+
+checkArtifactsRegExType.dependsOn(checkArtifactsRegularExpressions)
+
+checkArtifactsUglyExpressions.dependsOn(checkArtifactsCommonExpressions)
+checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
+
 ///////////// dependencies between show artifacts tasks ///////////////////////
 
 showArtifactsAssignmentExpressions.dependsOn(showArtifactsExpressionsBasis)
@@ -395,7 +407,9 @@ showArtifactsBitExpressions.dependsOn(showArtifactsExpressionsBasis)
 showArtifactsCommonExpressions.dependsOn(showArtifactsExpressionsBasis)
 showArtifactsExpressionsBasis.dependsOn(showArtifactsMCBasics)
 showArtifactsExpressionsBasis.dependsOn(showArtifactsMCLiteralsBasis)
+
 showArtifactsJavaClassExpressions.dependsOn(showArtifactsCommonExpressions)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCFullGenericTypes)
 
 showArtifactsAntlr.dependsOn(showArtifactsMCBasics)
 showArtifactsGrammar.dependsOn(showArtifactsMCCommonLiterals)
@@ -468,6 +482,13 @@ showArtifactsMCCommon.dependsOn(showArtifactsUMLModifier)
 showArtifactsMCCommon.dependsOn(showArtifactsUMLStereotype)
 showArtifactsUMLModifier.dependsOn(showArtifactsUMLStereotype)
 showArtifactsUMLStereotype.dependsOn(showArtifactsMCCommonLiterals)
+
+showArtifactsRegularExpressions.dependsOn(showArtifactsMCCommonLiterals)
+
+showArtifactsRegExType.dependsOn(showArtifactsRegularExpressions)
+
+showArtifactsUglyExpressions.dependsOn(showArtifactsExpressionsBasis)
+showArtifactsUglyExpressions.dependsOn(showArtifactsMCBasicTypes)
 
 java {
   registerFeature('grammars') {

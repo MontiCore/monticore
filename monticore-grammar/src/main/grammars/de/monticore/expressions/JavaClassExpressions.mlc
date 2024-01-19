@@ -21,5 +21,6 @@ mlc JavaClassExpressions {
 
   promote {
     mlc "de.monticore.expressions.CommonExpressions";
+    mlc "de.monticore.types.MCFullGenericTypes";
   }
 }

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+tags NotQuiteAutomata for NotQuiteAutomata {
+
+    tag SPP1 with SPPTag;
+    tag SP1 with SPTag;
+    tag ASP1 with ASPTag;
+    tag YASP1 with YASPTag;
+
+    // test concrete syntax
+    tag [SomeScopeProd SPP2] with SPPTag;
+    tag [SomeProd SP2] with SPTag;
+    tag [AnotherSymbolProd ASP2] with ASPTag;
+    tag [YetAnotherSymbolProd YASP2] with YASPTag;
+}

@@ -165,11 +165,17 @@ MontiCore generated builder classes for each global scope class. The instances o
 
 We highly recommend instantiating global scope classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages.
 
-#### SymbolTableCreator Interface
-TODO: SymbolTableCreator Interface is about to be changed
+#### ScopeGenitor Class
+The scope genitor creates the skeleton of the scope tree for the model and instantiates all its
+symbols. Additionally, it connects the scope and symbol objects with their AST nodes. The scope genitor does not initialize any additional attributes of
+the scope and symbol objects it created. These attributes have to be initialized manually.
 
-#### SymbolTableCreator Class
-TODO: SymbolTableCreator Class is about to be changed
+#### ScopeGenitorDelegator Class
+For instantiating symbol tables in the context of language composition, MontiCore generates a ScopesGenitorDelegator class for each language. This class instantiates a
+traverser of a language and adds scope genitors of the current language and all inherited
+languages. It further provides a createFromAST method that delegates to the respective
+method from the scopes genitor. The scopes genitor delegator is instantiated through the
+method scopesGenitorDelegator() of a language's mill.
 
 #### Common Symbol Interface
 The common symbol interface of a language extends the MontiCore runtime class `ISymbol` and provides

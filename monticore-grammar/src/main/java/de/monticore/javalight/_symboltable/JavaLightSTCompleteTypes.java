@@ -126,12 +126,12 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCReturnType ast) {
-    if (ast.isPresentMCType()) {
-      return createTypeLoader(ast.getMCType());
-    } else {
-      // TODO Bessere Lösung
-      return SymTypeExpressionFactory.createTypeObject("void", (IOOSymbolsScope) ast.getEnclosingScope());
+    FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
+    // Start visitor
+    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
+    if(typeCheckResult.isPresentResult()){
+      return typeCheckResult.getResult();
     }
-
+    return new SymTypeOfNull();
   }
 }

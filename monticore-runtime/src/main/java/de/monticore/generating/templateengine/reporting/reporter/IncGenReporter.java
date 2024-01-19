@@ -13,9 +13,16 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class IncGenReporter extends AReporter {
+  public static final String MISSING = "not found";
+
+  public static final String GEN_ERROR = "error during generation";
 
   protected Set<Path> modelFiles = new OrderedHashSet<>();
 

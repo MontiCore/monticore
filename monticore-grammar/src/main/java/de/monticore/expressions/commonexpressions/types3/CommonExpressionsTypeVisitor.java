@@ -12,9 +12,11 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
+import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.util.FunctionRelations;
@@ -358,6 +360,51 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     );
   }
 
+  // Array
+
+  @Override
+  public void endVisit(ASTArrayAccessExpression expr) {
+    SymTypeExpression innerType = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression indexType = getType4Ast().getPartialTypeOfExpr(expr.getIndexExpression());
+    SymTypeExpression result = TypeVisitorLifting.liftDefault(
+        (innerArg, indexArg) -> calculateArrayAccess(expr, innerArg, indexArg)
+    ).apply(innerType, indexType);
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  protected SymTypeExpression calculateArrayAccess(
+      ASTArrayAccessExpression expr,
+      SymTypeExpression toBeAccessed,
+      SymTypeExpression indexType) {
+    SymTypeExpression result;
+    if (!toBeAccessed.isArrayType()) {
+      Log.error(
+          "0xFD3F6 trying a qualified access on "
+              + toBeAccessed.printFullName()
+              + " which is not a type "
+              + "applicable to qualified accesses",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    else if (SymTypeRelations.isIntegralType(indexType) &&
+        toBeAccessed.isArrayType()) {
+      result = toBeAccessed.asArrayType().cloneWithLessDim(1);
+    }
+    else {
+      Log.error(
+          "0xFDF86 trying to access expression of type "
+              + toBeAccessed.printFullName()
+              + "with qualifier of type "
+              + indexType.printFullName()
+              + " which is not applicable",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    return result;
+  }
+
   // Field/MethodAccess
 
   @Override
@@ -473,9 +520,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected void fieldAccessCustomTraverse(ASTFieldAccessExpression expr) {
     if (isSeriesOfNames(expr)) {
-      if (getTypeDispatcher().isASTFieldAccessExpression(expr.getExpression())) {
+      if (expr.getExpression() instanceof ASTFieldAccessExpression) {
         ASTFieldAccessExpression innerFieldAccessExpr =
-            getTypeDispatcher().asASTFieldAccessExpression(expr.getExpression());
+            (ASTFieldAccessExpression)(expr.getExpression());
         fieldAccessCustomTraverse(innerFieldAccessExpr);
         // if expression or type identifier has been found,
         // continue to require further results
@@ -484,8 +531,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
                 !getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression());
         calculateFieldAccess(innerFieldAccessExpr, resultsAreOptional);
       }
-      else if (getTypeDispatcher().isASTNameExpression(expr.getExpression())) {
-        ASTNameExpression nameExpr = getTypeDispatcher().asASTNameExpression(expr.getExpression());
+      else if (expr.getExpression() instanceof ASTNameExpression) {
+        ASTNameExpression nameExpr = (ASTNameExpression)(expr.getExpression());
         Optional<SymTypeExpression> nameAsExprType =
             calculateExprQName(nameExpr);
         Optional<SymTypeExpression> nameAsTypeIdType =
@@ -919,11 +966,11 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    * e.g., class C<T>{T t;} C<Float>.t = 3.2;
    */
   protected Optional<String> getExprAsQName(ASTExpression expr) {
-    if (getTypeDispatcher().isASTNameExpression(expr)) {
+    if (expr instanceof ASTNameExpression) {
       ASTNameExpression nameExpr = (ASTNameExpression) expr;
       return Optional.of(nameExpr.getName());
     }
-    else if (getTypeDispatcher().isASTFieldAccessExpression(expr)) {
+    else if (expr instanceof ASTFieldAccessExpression) {
       ASTFieldAccessExpression fieldAccessExpression =
           (ASTFieldAccessExpression) expr;
       return getExprAsQName(fieldAccessExpression.getExpression())
@@ -940,12 +987,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    * does the expression have a form like a.b.c.d?
    */
   protected boolean isSeriesOfNames(ASTExpression expr) {
-    if (getTypeDispatcher().isASTNameExpression(expr)) {
+    if (expr instanceof ASTNameExpression) {
       return true;
     }
-    if (getTypeDispatcher().isASTFieldAccessExpression(expr)) {
+    if (expr instanceof ASTFieldAccessExpression) {
       return isSeriesOfNames(
-          getTypeDispatcher().asASTFieldAccessExpression(expr).getExpression()
+          ((ASTFieldAccessExpression)expr).getExpression()
       );
     }
     else {

@@ -10,6 +10,7 @@ import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ISymbol;
@@ -22,6 +23,9 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlstereotype._ast.ASTStereoValue;
+import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -274,4 +278,28 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
   }
 
+  public HookPoint createPackageHookPoint(final String... packageName) {
+    return createPackageHookPoint(Arrays.asList(packageName));
+  }
+
+  public HookPoint createPackageHookPoint(final List<String> packageName) {
+    return new StringHookPoint("package " + String.join(".", packageName) + ";");
+  }
+
+  public HookPoint createAnnotationsHookPoint(final ASTModifier modifier) {
+    String anno = "";
+    if (modifier.isPresentStereotype()) {
+      ASTStereotype stereo = modifier.getStereotype();
+      for (ASTStereoValue stereoValue : stereo.getValuesList()) {
+        if (MC2CDStereotypes.DEPRECATED.toString().equals(stereoValue.getName())) {
+          if (!stereoValue.getValue().isEmpty()) {
+            // Append tag for java api
+            anno = "/**\n * @deprecated " + stereoValue.getValue() + "\n **/\n";
+          }
+          anno += "@Deprecated";
+        }
+      }
+    }
+    return new StringHookPoint(anno);
+  }
 }

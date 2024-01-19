@@ -21,5 +21,6 @@ mlc AssignmentExpressions {
 
   promote {
     mlc "de.monticore.expressions.ExpressionsBasis";
+    include "$mp/com/google/common/base/Preconditions.class";
   }
 }

@@ -300,7 +300,6 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     return methods;
   }
 
-  // TODO (MB|ND): Kann man diese Methode durch etwas anderes ersetzen?
   protected List<CDTypeSymbol> getSuperTypesTransitive(CDTypeSymbol startType) {
     List<CDTypeSymbol> superTypes = new ArrayList();
     if (startType.isPresentSuperClass()) {

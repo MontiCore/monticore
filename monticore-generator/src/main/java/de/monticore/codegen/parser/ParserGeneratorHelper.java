@@ -399,23 +399,11 @@ public class ParserGeneratorHelper {
     // Default mode
     if (modeMap.containsKey("")) {
       for (String tokenName : modeMap.get("")) {
-        // TODO(MB): Wenn die Token beim Aufbau in der Symboltabelle nur einmal eingetragen sind, kann man
-        // den folgenden Check wieder rausnehmen
-        boolean isOverriden = false;
-        for (Entry<String, Collection<String>> e : grammarSymbol.getTokenModesWithInherited().entrySet()) {
-          if (!e.getKey().equals("")) {
-            if (e.getValue().contains(tokenName)) {
-              isOverriden = true;
-            }
-          }
-        }
-        if (!isOverriden) {
-          Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
-          if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
-            prodList.add((ASTLexProd) localToken.get().getAstNode());
-          } else {
-            grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
-          }
+        Optional<ProdSymbol> localToken = grammarSymbol.getSpannedScope().resolveProdDown(tokenName);
+        if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
+          prodList.add((ASTLexProd) localToken.get().getAstNode());
+        } else {
+          grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
         }
       }
     }

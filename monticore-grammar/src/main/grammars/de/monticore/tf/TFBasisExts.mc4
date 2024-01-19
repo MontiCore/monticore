@@ -4,13 +4,5 @@ package de.monticore.tf;
 component grammar TFBasisExts extends de.monticore.JavaLight,
                                     de.monticore.types.MCSimpleGenericTypes,
                                     de.monticore.literals.MCCommonLiterals {
-    @Override
-    ExtType = MCType;
-    @Override
-    ExtReturnType = MCReturnType;
-    @Override
-    ExtTypeArgument = MCTypeArgument;
-    @Override
-    ExtTypeParameters = MCType;
 
 }

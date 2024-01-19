@@ -9,7 +9,4 @@ grammar MyComplexBaseLanguage extends
         de.monticore.statements.MCFullJavaStatements,
         de.monticore.literals.MCJavaLiterals {
 
-    ExtType = MCType;
-    ExtReturnType = MCReturnType;
-    ExtTypeArgument = MCTypeArgument;
 }

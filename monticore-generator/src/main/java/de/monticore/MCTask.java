@@ -431,17 +431,6 @@ public abstract class MCTask extends DefaultTask {
   public void rebuildGrammar() {
     getLogger().info("out of date: " + grammar.get().getAsFile().getName());
     String[] p = getParameters();
-
-    System.setSecurityManager(new SecurityManager()
-    {
-      @Override public void checkExit(int status) {
-        throw new MCTaskError();
-      }
-      
-      @Override public void checkPermission(Permission perm) {
-        // Allow other activities by default
-      }
-    });
     try {
       // execute Monticore with the given parameters
       MontiCoreTool.main(p);

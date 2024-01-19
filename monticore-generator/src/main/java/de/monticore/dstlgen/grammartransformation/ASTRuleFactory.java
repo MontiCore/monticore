@@ -10,10 +10,9 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.StringTransformations;
@@ -77,10 +76,11 @@ public class ASTRuleFactory {
    * @return the ast rule as an ASTASTRule object
    */
   ASTASTRule createAstNegationProdForConstant(MCGrammarSymbol grammarSymbol, String name) {
-
+    // astrule AST_${nameWithPrefix }_Constant_Neg
     String nameWithPrefix = grammarSymbol.getName() + "_" + name;
-    final String tfAstRuleDecl = AST + nameWithPrefix + "_Constant_Neg = ;";
-    ASTASTRule tfAstRule = parseASTRule(tfAstRuleDecl);
+    ASTASTRule tfAstRule = GrammarMill.aSTRuleBuilder()
+            .setType(nameWithPrefix + "_Constant_Neg")
+            .build();
 
     // create method getLhs and getRhs
     String patternNameFirstToUpper = StringTransformations.capitalize(nameWithPrefix);
@@ -102,10 +102,11 @@ public class ASTRuleFactory {
    * @return the ast rule as an ASTASTRule object
    */
   ASTASTRule createAstOptionalProdForConstant(MCGrammarSymbol grammarSymbol, String name) {
-
+    // astrule {nameWithPrefix}_Constant_Opt
     String nameWithPrefix = grammarSymbol.getName() + "_" + name;
-    final String tfAstRuleDecl = AST + nameWithPrefix + "_Constant_Opt = ;";
-    ASTASTRule tfAstRule = parseASTRule(tfAstRuleDecl);
+    ASTASTRule tfAstRule = GrammarMill.aSTRuleBuilder()
+            .setType(nameWithPrefix + "_Constant_Opt")
+            .build();
 
     // create method getLhs and getRhs
     String patternNameFirstToUpper = StringTransformations.capitalize(nameWithPrefix);
@@ -120,11 +121,12 @@ public class ASTRuleFactory {
 
   public ASTASTRule createAstPatternProd(ASTAbstractProd srcNode,MCGrammarSymbol grammarSymbol) {
     final String name = srcNode.getName();
-    final String tfAstRuleDecl;
-    tfAstRuleDecl = AST + name + PATTERN_SUFFIX + " = ;";
+    // astrule ${name}_Pat
+    ASTASTRule tfAstRule = GrammarMill.aSTRuleBuilder()
+            .setType(name + PATTERN_SUFFIX)
+            .build();
     final String grammarPackage = Joiners.DOT.join(grammarSymbol.getAstNode().getPackageList())+
             "."+ grammarSymbol.getName().toLowerCase();
-    ASTASTRule tfAstRule = parseASTRule(tfAstRuleDecl);
 
     // create method getLhs and getRhs
     tfAstRule.getGrammarMethodList()
@@ -133,7 +135,7 @@ public class ASTRuleFactory {
         .add(createASTGrammarMethod(AST_PREFIX + name + PATTERN_SUFFIX, GET_LHS, RETURN_THIS));
     // create method _getTFElementType
     final String methodBody;
-    if (grammarPackage != null && !grammarPackage.startsWith(".")) {
+    if (!grammarPackage.startsWith(".")) {
       methodBody = "return " + grammarPackage + "._ast.AST" + name + CLASS_SUFFIX;
     }
     else {
@@ -157,13 +159,15 @@ public class ASTRuleFactory {
    */
   public ASTASTRule createAstProd(ASTProd srcNode, ProductionType type, boolean overridden, MCGrammarSymbol grammarSymbol) {
     final String name = srcNode.getName();
-    final String tfAstRuleDecl = AST + name + "_" + type.getNameString() + " = ;";
+    // astrule ${name}_${type.getNameString()}
+    ASTASTRule tfAstRule = GrammarMill.aSTRuleBuilder()
+            .setType(name + "_" + type.getNameString())
+            .build();
     String grammarPackage = Joiners.DOT.join(grammarSymbol.getAstNode().getPackageList());
     if(!grammarPackage.isEmpty()){
       grammarPackage += ".";
     }
     grammarPackage += grammarSymbol.getName().toLowerCase();
-    ASTASTRule tfAstRule = parseASTRule(tfAstRuleDecl);
 
     // create method _getTFElementType
     tfAstRule.getGrammarMethodList().add(buildASTGrammarMethodReturnFQNClass("Class", "_getTFElementType", grammarPackage +  "._ast.AST" + name));
@@ -260,7 +264,7 @@ public class ASTRuleFactory {
 
     for (ASTAdditionalAttribute attr : targetNode.getAdditionalAttributeList()) {
       ASTMCType ref = attr.getMCType();
-      String typeName = ref.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+      String typeName = ref.printType();
       if (typeName.equals(NAME)|| grammarSymbol.getProdWithInherited(typeName).isPresent()){
         attrsToBeRemoved.add(attr);
       }
@@ -281,14 +285,16 @@ public class ASTRuleFactory {
    * creates an AST rule for external production belonging to the production for the given type
    *
    * @param srcNode       the external production
-   * @param type          the productiuon type
+   * @param type          the production type
    * @return the newly created AST rule
    */
   public ASTASTRule createAstProd(ASTExternalProd srcNode, ProductionType type) {
     final String name = srcNode.getName();
-    final String tfAstRuleDecl = AST + name + "_" + type.getNameString() + " = ;";
 
-    ASTASTRule tfAstRule = parseASTRule(tfAstRuleDecl);
+    // atsrule ${name}_${type.getNameString()}
+    ASTASTRule tfAstRule = GrammarMill.aSTRuleBuilder()
+            .setType(name + "_" + type.getNameString())
+            .build();
 
     // create method _getTFElementType
     tfAstRule.getGrammarMethodList().add(createASTGrammarMethod("Class", "_getTFElementType", "return null;"));
@@ -302,12 +308,12 @@ public class ASTRuleFactory {
     return tfAstRule;
   }
   
-  public ASTASTRule createAstExternalProd(ASTExternalProd srcNode){
-    final String name = srcNode.getName();
-    final String tfAstRuleDecl = AST + "ITF" + name + " astextends de.monticore.tf.ast.ITFElement" + " ;";
-  
-    ASTASTRule tfAstRule = parseASTRule(tfAstRuleDecl);
-    return  tfAstRule;
+  public ASTASTRule createAstExternalProd(ASTExternalProd srcNode) {
+    // astrule ${scrNode.getName()}_Constant_Op astextends de.monticore.tf.ast.ITFElement
+    return GrammarMill.aSTRuleBuilder()
+            .setType(srcNode.getName() + "_Constant_Opt")
+            .addASTSuperClass(MCTypeFacade.getInstance().createQualifiedType("de.monticore.tf.ast.ITFElement"))
+            .build();
   }
 
 
@@ -318,17 +324,6 @@ public class ASTRuleFactory {
             .build())
         .build();
   }
-
-  protected ASTASTRule parseASTRule(String tfAstElementProduction) {
-    Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();
-    try {
-      return p.parse_StringASTRule(tfAstElementProduction).get();
-    }
-    catch (IOException e) {
-      throw new RuntimeException("0xF1000 Unable to create ASTRule for" + tfAstElementProduction);
-    }
-  }
-
 
   protected ASTAction parseAction(String methodBody) {
     Grammar_WithConceptsParser p = Grammar_WithConceptsMill.parser();

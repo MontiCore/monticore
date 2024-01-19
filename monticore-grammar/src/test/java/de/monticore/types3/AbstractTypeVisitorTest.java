@@ -6,15 +6,22 @@ import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
+import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
 import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
+import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
+import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.types.check.IDerive;
+import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
+import de.monticore.types.check.types3wrapper.TypeCheck3AsISynthesize;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.monticore.types3.util.DefsTypesForTests;
@@ -50,10 +57,21 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
 
   protected ITraverser typeMapTraverser;
 
+  @Deprecated
   protected ITraverser scopeGenitor;
 
+  protected ITraverser symbolTableCompleter;
+
+  /**
+   * @deprecated this is not the genitor, but the completer
+   */
+  @Deprecated
   protected ITraverser getScopeGenitor() {
     return scopeGenitor;
+  }
+
+  protected ITraverser getSymbolTableCompleter() {
+    return symbolTableCompleter;
   }
 
   protected ITraverser getTypeMapTraverser() {
@@ -70,15 +88,39 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     type4Ast = new Type4Ast();
     typeMapTraverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
         .createTraverser(type4Ast);
-    CombineExpressionsWithLiteralsTraverser combinedScopesGenitor =
+    setupSymbolTableCompleter(typeMapTraverser, type4Ast);
+  }
+
+  protected void setupSymbolTableCompleter(
+      ITraverser typeMapTraverser, Type4Ast type4Ast) {
+    CombineExpressionsWithLiteralsTraverser combinedScopesCompleter =
         CombineExpressionsWithLiteralsMill.traverser();
-    combinedScopesGenitor.add4LambdaExpressions(
+    IDerive deriver = new TypeCheck3AsIDerive(
+        typeMapTraverser, type4Ast, new CommonExpressionsLValueRelations()
+    );
+    ISynthesize synthesizer = new TypeCheck3AsISynthesize(
+        typeMapTraverser, type4Ast
+    );
+    combinedScopesCompleter.add4LambdaExpressions(
         new LambdaExpressionsSTCompleteTypes2(
             typeMapTraverser,
             getType4Ast()
         )
     );
-    scopeGenitor = combinedScopesGenitor;
+    OCLExpressionsSymbolTableCompleter oclExprCompleter =
+        new OCLExpressionsSymbolTableCompleter();
+    oclExprCompleter.setDeriver(deriver);
+    oclExprCompleter.setSynthesizer(synthesizer);
+    combinedScopesCompleter.add4OCLExpressions(oclExprCompleter);
+    combinedScopesCompleter.setOCLExpressionsHandler(oclExprCompleter);
+    SetExpressionsSymbolTableCompleter setExprCompleter =
+        new SetExpressionsSymbolTableCompleter();
+    setExprCompleter.setDeriver(deriver);
+    setExprCompleter.setSynthesizer(synthesizer);
+    combinedScopesCompleter.add4SetExpressions(setExprCompleter);
+    combinedScopesCompleter.setSetExpressionsHandler(setExprCompleter);
+    symbolTableCompleter = combinedScopesCompleter;
+    scopeGenitor = combinedScopesCompleter;
   }
 
   /**
@@ -144,7 +186,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
             .createFromAST(rootNode);
     rootScope.setName("fooRoot");
     // complete the symbol table
-    expr.accept(getScopeGenitor());
+    expr.accept(getSymbolTableCompleter());
   }
 
   protected void generateScopes(ASTMCType mcType) {
@@ -199,18 +241,24 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
 
   protected ASTExpression parseExpr(String exprStr) throws IOException {
     Optional<ASTExpression> astExpression = parseStringExpr(exprStr);
-    assertTrue(astExpression.isPresent());
+    assertTrue(getAllFindingsAsString(), astExpression.isPresent());
     return astExpression.get();
   }
 
   protected ASTMCType parseMCType(String typeStr) throws IOException {
     Optional<ASTMCType> mcType = parseStringMCType(typeStr);
-    assertTrue(mcType.isPresent());
+    assertTrue(getAllFindingsAsString(), mcType.isPresent());
     return mcType.get();
   }
 
   protected void checkExpr(String exprStr, String expectedType)
       throws IOException {
+    checkExpr(exprStr, expectedType, true);
+  }
+
+  protected void checkExpr(
+      String exprStr, String expectedType, boolean allowNormalization
+  ) throws IOException {
     ASTExpression astexpr = parseExpr(exprStr);
     generateScopes(astexpr);
     calculateTypes(astexpr);
@@ -219,10 +267,16 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
         getType4Ast().hasTypeOfExpression(astexpr));
     SymTypeExpression type = getType4Ast().getTypeOfExpression(astexpr);
     assertNoFindings();
-    assertEquals("Wrong type for expression " + exprStr,
-        expectedType,
-        type.printFullName()
-    );
+    // usually, type normalization is expected and (basically) always allowed
+    // for specific tests, however, it may be required to disable this
+    boolean equalsNormalized =
+        expectedType.equals(SymTypeRelations.normalize(type).printFullName());
+    if (!allowNormalization || !equalsNormalized) {
+      assertEquals("Wrong type for expression " + exprStr,
+          expectedType,
+          type.printFullName()
+      );
+    }
   }
 
   protected void checkType(String typeStr, String expectedType)

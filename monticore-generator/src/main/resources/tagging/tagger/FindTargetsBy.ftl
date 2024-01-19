@@ -2,4 +2,4 @@
 ${tc.signature()}
 return ast.getTagsList().stream()
 .filter(t -> t.getModelElementIdentifierList().stream()
-.anyMatch(i -> isIdentified(i, element, travChecker)));
+.anyMatch(i -> isIdentified(i, element)));

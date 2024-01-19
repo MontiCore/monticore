@@ -299,20 +299,6 @@ public class DefsTypeBasic {
    * We deliberately choose Java 10 here and take methods from:
    * https://docs.oracle.com/javase/10/docs/api/java/util/Arrays.html
    *
-   * TODO RE, ggf. mit ND zusammen
-   * TODO RE,AB: 1) Besseres Verfahren überlegen, wie man Vordefinierte Signaturen einliest
-   *          (zB durch handgeschriebene Symtabs, die man der RTE beilegt,
-   *          oder auch doch durch Java Code wie den hier?)
-   *          Das untenstehende beispiel ist grausam schlecht)
-   *
-   * TODO RE: 2) Die Liste ist unvollständig --> irgendwie vervollstänndigen
-   *       wenige übersetzte beispiele:
-   *           int i[]; i.length; i.toString(); i.equals(Object i); i.wait(long 3,int 3);
-   *
-   * TODO RE,AB: (mittelfristig) 2) Konfigurierbarkeit ist zB notwendig
-   *        mit der Target-Java-Version (denn die Checks
-   *        müssen nicht nach Java 10 gehen, sondern evtl. eine frühere Version ...)
-   *
    */
   public static OOTypeSymbol _array;
   // SymTypeExpression _arraySymType  cannot be defined, because Arrays are generics and have varying arguments
@@ -322,10 +308,6 @@ public class DefsTypeBasic {
   }
   
   public static void link_array() {
-     // TODO: Offen, Array ist eigentlich generisch?
-     // zur Zeit aber, leerer Typparameter: .setTypeParameter(new ArrayList<>());
-     // die aktuell gelisteten Methoden haben auch keine generischen argumente
-
     MethodSymbol m; FieldSymbol f;
 
     // toString()

@@ -56,9 +56,6 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
 
     // serialize symbolrule attributes
     serializeSuperComponents(toSerialize.getSuperComponentsList(), s2j);
-    serializeRefinements(toSerialize.getRefinementsList(), s2j);
-    serializeParameters(toSerialize.getParametersList(), s2j);
-    serializePorts(toSerialize.getPortsList(), s2j);
 
     // Don't serialize the spanned scope (because it carries private information)
     // Instead, serialize type parameters and normal parameters separately.
@@ -95,42 +92,43 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
 
   @Override
   protected  void serializeAddons(ComponentSymbol toSerialize, CompSymbolsSymbols2Json s2j) {
+    serializeParameters(toSerialize, s2j);
+    serializePorts(toSerialize, s2j);
     serializeTypeParameters(toSerialize, s2j);
     serializeSubcomponents(toSerialize, s2j);
   }
 
   @Override
   protected void deserializeAddons(ComponentSymbol symbol, JsonObject symbolJson) {
+    deserializeParameters(symbol, symbolJson);
+    deserializePorts(symbol, symbolJson);
     deserializeTypeParameters(symbol, symbolJson);
   }
 
-  @Override
-  protected void serializeParameters(List<VariableSymbol> parameters, CompSymbolsSymbols2Json s2j) {
+  protected void serializeParameters(@NonNull ComponentSymbol paramOwner, @NonNull CompSymbolsSymbols2Json s2j) {
     JsonPrinter printer = s2j.getJsonPrinter();
+
     printer.beginArray(PARAMETERS);
-    parameters.forEach(p -> p.accept(s2j.getTraverser()));
+    paramOwner.getParameters().forEach(p -> p.accept(s2j.getTraverser()));
     printer.endArray();
   }
 
-  @Override
-  protected void serializePorts(@NonNull List<PortSymbol> ports, @NonNull CompSymbolsSymbols2Json s2j) {
+  protected void serializePorts(@NonNull ComponentSymbol portOwner, @NonNull CompSymbolsSymbols2Json s2j) {
     JsonPrinter printer = s2j.getJsonPrinter();
 
     printer.beginArray(PORTS);
-    ports.forEach(p -> p.accept(s2j.getTraverser()));
+    portOwner.getPorts().forEach(p -> p.accept(s2j.getTraverser()));
     printer.endArray();
   }
 
   /**
-   * @param symbolJson the component which owns the parameters, encoded as JSON.
+   * @param paramOwner     the component which owns the parameter.
+   * @param paramOwnerJson the component which owns the parameters, encoded as JSON.
    */
-  @Override
-  protected List<VariableSymbol> deserializeParameters(@NonNull JsonObject symbolJson) {
+  protected void deserializeParameters(@NonNull ComponentSymbol paramOwner, @NonNull JsonObject paramOwnerJson) {
     final String varSerializeKind = VariableSymbol.class.getCanonicalName();
 
-    List<JsonElement> params = symbolJson.getArrayMemberOpt(PARAMETERS).orElseGet(Collections::emptyList);
-
-    List<VariableSymbol> result = new ArrayList<>(params.size());
+    List<JsonElement> params = paramOwnerJson.getArrayMemberOpt(PARAMETERS).orElseGet(Collections::emptyList);
 
     for (JsonElement param : params) {
       String paramJsonKind = JsonDeSers.getKind(param.getAsJsonObject());
@@ -138,7 +136,8 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
         ISymbolDeSer deSer = CompSymbolsMill.globalScope().getSymbolDeSer(varSerializeKind);
         VariableSymbol paramSym = (VariableSymbol) deSer.deserialize(param.getAsJsonObject());
 
-        result.add(paramSym);
+        paramOwner.getSpannedScope().add(paramSym);
+        paramOwner.addParameter(paramSym);
 
       } else {
         Log.error(String.format(
@@ -147,20 +146,16 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
         ));
       }
     }
-
-    return result;
   }
 
   /**
-   * @param symbolJson the component which owns the ports, encoded as JSON.
+   * @param portOwner      the component which owns the parameter.
+   * @param paramOwnerJson the component which owns the parameters, encoded as JSON.
    */
-  @Override
-  protected List<PortSymbol> deserializePorts(@NonNull JsonObject symbolJson) {
+  protected void deserializePorts(@NonNull ComponentSymbol portOwner, @NonNull JsonObject paramOwnerJson) {
     final String portSerializeKind = PortSymbol.class.getCanonicalName();
 
-    List<JsonElement> ports = symbolJson.getArrayMemberOpt(PORTS).orElseGet(Collections::emptyList);
-
-    List<PortSymbol> result = new ArrayList<>(ports.size());
+    List<JsonElement> ports = paramOwnerJson.getArrayMemberOpt(PORTS).orElseGet(Collections::emptyList);
 
     for (JsonElement port : ports) {
       String portJasonKind = JsonDeSers.getKind(port.getAsJsonObject());
@@ -168,7 +163,7 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
         ISymbolDeSer deSer = CompSymbolsMill.globalScope().getSymbolDeSer(portSerializeKind);
         PortSymbol portSym = (PortSymbol) deSer.deserialize(port.getAsJsonObject());
 
-        result.add(portSym);
+        portOwner.getSpannedScope().add(portSym);
 
       } else {
         Log.error(String.format(
@@ -177,8 +172,6 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
         ));
       }
     }
-
-    return result;
   }
 
   protected void serializeTypeParameters(@NonNull ComponentSymbol typeParamOwner, CompSymbolsSymbols2Json s2j) {

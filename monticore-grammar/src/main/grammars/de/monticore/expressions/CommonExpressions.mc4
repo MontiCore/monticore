@@ -10,7 +10,8 @@ import de.monticore.expressions.*;
  * This grammar defines a typical standard set of operations for
  * expressions. This is a subset of Java as well as OCL/P,
  * mainly for arithmetic, comparisons, variable use (v),
- * attribute use (o.att), method call (foo(arg,arg2)) and brackets (exp).
+ * attribute use (o.att), method call (foo(arg,arg2)), brackets (exp),
+ * and array access (v[2]).
  *
  * There are also other kinds of expressions defined in the
  * grammars mentioned below. These expression definitions can savely be
@@ -22,16 +23,10 @@ import de.monticore.expressions.*;
  * This modularity of expressions and associated types greatly eases
  * the reuse of type structures in languages similar to Java
  *
- * This grammar is part of a hierarchy of expressions, namely
- * * expressions/ExpressionsBasis.mc4
- * * --  expressions/CommonExpressions.mc4
- * * --  --  expressions/JavaClassExpressions.mc4
- * * --  --  expressions/OptionalExpressions.mc4
- * * --  expressions/AssignmentExpressions.mc4
- * * --  expressions/BitExpressions.mc4
- * * --  expressions/LambdaExpressions.mc4
- * * --  expressions/OCLExpressions.mc4
- * * --  expressions/SetExpressions.mc4
+ * This grammar is part of a hierarchy of expressions, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
  *
 */
 
@@ -141,5 +136,10 @@ component grammar CommonExpressions
 
   BracketExpression implements Expression <310>
     =  "(" Expression ")";
+
+  /*=================================================================*/
+
+  ArrayAccessExpression implements Expression <250> =
+    Expression "[" indexExpression:Expression "]";
 
 }

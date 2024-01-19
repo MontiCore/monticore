@@ -5,7 +5,11 @@ import com.google.common.collect.Lists;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -23,9 +27,13 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.CoreTemplates.createAnnotationsHookPoint;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
-import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SCOPE_SPANNING_SYMBOL;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOL;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_AST_INHERITANCE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_SYMTAB_INHERITANCE_TEMPLATE;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 
 /**
  * creates a InheritanceVisitor class from a grammar
@@ -64,8 +72,8 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
         .addAllCDMembers(getScopeHandleMethods(input.getCDDefinition(), handlerSimpleName))
         .addAllCDMembers(getSymbolHandleMethods(input.getCDDefinition(), handlerSimpleName))
         .build();
-    
-    this.replaceTemplate(ANNOTATIONS, cdClass, createAnnotationsHookPoint(cdClass.getModifier()));
+
+    this.replaceTemplate(ANNOTATIONS, cdClass, decorationHelper.createAnnotationsHookPoint(cdClass.getModifier()));
     CD4C.getInstance().addImport(cdClass, "de.monticore.ast.ASTNode");
     CD4C.getInstance().addImport(cdClass, "de.monticore.ast.ASTCNode");
     return cdClass;
@@ -123,15 +131,23 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
    * @return The corresponding handle methods for the scope
    */
   protected List<ASTCDMethod> getScopeHandleMethods(ASTCDDefinition astcdDefinition, String handlerSimpleTypeName) {
-    List<ASTCDMethod> handleMethods = new ArrayList<ASTCDMethod>();
-    List<String> superScopesTransitive = new ArrayList<String>();
+    List<ASTCDMethod> handleMethods = new ArrayList<>();
+    List<String> superScopesTransitive = new ArrayList<>();
+    List<String> superArtifactScopesTransitive = new ArrayList<>();
+    List<String> superGlobalScopesTransitive = new ArrayList<>();
     for (DiagramSymbol cd : visitorService.getSuperCDsTransitive()) {
       superScopesTransitive.add(symbolTableService.getScopeInterfaceFullName(cd));
+      superArtifactScopesTransitive.add(symbolTableService.getArtifactScopeInterfaceFullName(cd));
+      superGlobalScopesTransitive.add(symbolTableService.getGlobalScopeInterfaceFullName(cd));
     }
+
     // remove last element as it is covered by the handle call of the original handler
     superScopesTransitive.remove(superScopesTransitive.size() - 1);
     superScopesTransitive.add(I_SCOPE);
-    
+
+    superArtifactScopesTransitive.remove(superArtifactScopesTransitive.size() - 1);
+    superGlobalScopesTransitive.remove(superGlobalScopesTransitive.size() - 1);
+
     // handle language scope
     ASTCDMethod handleScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getScopeInterfaceType());
     handleMethods.add(handleScopeMethod);
@@ -140,14 +156,32 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
             handlerSimpleTypeName, superScopesTransitive));
     
     // handle language artifact scope
-    List<String> superScopesTransitiveForAS = new ArrayList<String>();
+    List<String> superScopesTransitiveForAS = new ArrayList<>();
     superScopesTransitiveForAS.add(symbolTableService.getScopeInterfaceFullName());
-    superScopesTransitiveForAS.addAll(superScopesTransitive);
+    for (int i = 0; i < superScopesTransitive.size() - 1; i++) {
+      superScopesTransitiveForAS.add(superScopesTransitive.get(i));
+      superScopesTransitiveForAS.add(superArtifactScopesTransitive.get(i));
+    }
+    superScopesTransitiveForAS.add(superScopesTransitive.get(superScopesTransitive.size() - 1));
     ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
     handleMethods.add(handleArtifactScopeMethod);
     replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod,
             new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE,
                     handlerSimpleTypeName, superScopesTransitiveForAS));
+
+    // handle language global scope
+    List<String> superScopesTransitiveForGS = new ArrayList<>();
+    superScopesTransitiveForGS.add(symbolTableService.getScopeInterfaceFullName());
+    for (int i = 0; i < superScopesTransitive.size() - 1; i++) {
+      superScopesTransitiveForGS.add(superScopesTransitive.get(i));
+      superScopesTransitiveForGS.add(superGlobalScopesTransitive.get(i));
+    }
+    superScopesTransitiveForGS.add(superScopesTransitive.get(superScopesTransitive.size() - 1));
+    ASTCDMethod handleGlobalScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getGlobalScopeInterfaceType());
+    handleMethods.add(handleGlobalScopeMethod);
+    replaceTemplate(EMPTY_BODY, handleGlobalScopeMethod,
+        new TemplateHookPoint(HANDLE_SYMTAB_INHERITANCE_TEMPLATE,
+            handlerSimpleTypeName, superScopesTransitiveForGS));
 
     return handleMethods;
   }

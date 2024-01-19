@@ -11,13 +11,18 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDClassBuilder;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
+import de.monticore.codegen.cd2java._visitor.VisitorConstants;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.umlmodifier._ast.ASTModifier;
@@ -29,7 +34,9 @@ import java.util.stream.Collectors;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
+import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
 /**
  * creates a SymbolLoader class from a grammar
@@ -39,16 +46,19 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   
   protected static final String TEMPLATE_PATH = "_symboltable.symbolsurrogate.";
   protected SymbolTableService symbolTableService;
+  protected VisitorService visitorService;
   protected MethodDecorator methodDecorator;
   protected MandatoryMutatorSymbolSurrogateDecorator symbolSurrogateMethodDecorator;
   
   public SymbolSurrogateDecorator(final GlobalExtensionManagement glex,
                                   final SymbolTableService symbolTableService,
+                                  final VisitorService visitorService,
                                   final MethodDecorator methodDecorator,
                                   final MandatoryMutatorSymbolSurrogateDecorator symbolSurrogateMethodDecorator) {
     super(glex);
     this.methodDecorator = methodDecorator;
     this.symbolTableService = symbolTableService;
+    this.visitorService = visitorService;
     this.symbolSurrogateMethodDecorator = symbolSurrogateMethodDecorator;
   }
   
@@ -83,7 +93,9 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
             .map(a -> a.deepClone())
             .collect(Collectors.toList());
     List<ASTCDMethod> delegateSymbolRuleMethods = createOverriddenMethodDelegates(symbolRuleMethods);
-    
+
+    List<ASTCDMethod> delegateAccecptMethods = createOverriddenMethodDelegates(createAcceptTraverserMethods(symbolInput));
+
     ASTCDAttribute delegateAttribute = createDelegateAttribute(symbolFullName);
     
     ASTCDAttribute nameAttribute = createNameAttribute();
@@ -101,6 +113,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addCDMember(createConstructor(symbolSurrogateSimpleName))
       .addAllCDMembers(nameMethods)
       .addAllCDMembers(delegateSymbolRuleAttributeMethods)
+      .addAllCDMembers(delegateAccecptMethods)
       .addCDMember(createGetFullNameMethod())
       .addCDMember(createOverridenDeterminePackageName())
       .addCDMember(createOverridenDetermineFullName())
@@ -238,5 +251,21 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DetermineFullName"));
     return method;
   }
-  
+
+
+  protected List<ASTCDMethod> createAcceptTraverserMethods(ASTCDClass symbolInput) {
+    List<ASTCDMethod> result = new ArrayList<>();
+    ASTMCQualifiedType visitorType = getMCTypeFacade().createQualifiedType(visitorService.getTraverserInterfaceFullName());
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(visitorType, VISITOR_PREFIX);
+    result.add(getCDMethodFacade().createMethod(PUBLIC.build(), ACCEPT_METHOD, parameter));
+
+    // accept methods for super visitors
+    List<ASTMCQualifiedType> l = this.visitorService.getAllTraverserInterfacesTypesInHierarchy();
+    l.add(getMCTypeFacade().createQualifiedType(VisitorConstants.ITRAVERSER_FULL_NAME));
+    for (ASTMCType superVisitorType : l) {
+      ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
+      result.add(this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter));
+    }
+    return result;
+  }
 }

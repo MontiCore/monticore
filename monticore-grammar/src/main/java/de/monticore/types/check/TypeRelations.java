@@ -104,7 +104,6 @@ public class TypeRelations implements ITypeRelations {
           return true;
         }
         if (type.isGenericType() && superType.isGenericType()) {
-          //TODO check recursively, this is only a hotfix, see #2977
           SymTypeOfGenerics typeGen = (SymTypeOfGenerics) type;
           SymTypeOfGenerics supTypeGen = (SymTypeOfGenerics) superType;
           if (typeGen.printTypeWithoutTypeArgument()

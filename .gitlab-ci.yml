@@ -195,7 +195,6 @@ trigger-cd4a-dev:
   trigger:
     project: monticore/cd4analysis/cd4analysis
     branch: develop
-    strategy: depend
   only:
     - dev
 
@@ -236,7 +235,6 @@ trigger-ma-dev:
   trigger:
     project: monticore/montiarc/core
     branch: develop
-    strategy: depend
   only:
     - dev
 
@@ -245,6 +243,14 @@ trigger-ocl-dev:
   trigger:
     project: monticore/languages/OCL
     branch: develop
+  only:
+    - dev
+
+trigger-montifun-dev:
+  stage: trigger_languages
+  trigger:
+    project: monticore/languages/montifun
+    branch: dev
   only:
     - dev
 
@@ -354,6 +360,14 @@ trigger-ocl-master:
   only:
     - master
 
+trigger-montifun-main:
+  stage: trigger_languages
+  trigger:
+    project: monticore/languages/montifun
+    branch: main
+  only:
+    - master
+
 trigger-siunits-master:
   stage: trigger_languages
   trigger:
@@ -386,6 +400,17 @@ trigger-od-master:
   only:
     - master
 
+# A lite version of the MontiVerse to detect the results of potential changes before they are merged
+trigger-montiverse-ci:
+  stage: test
+  trigger:
+    project: monticore/montiverseci
+  variables:
+    MONTICORE_BRANCH: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+    FULL_MC: "false" # Do not run the experiments in the MontiVerse pipeline
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && ($CI_MERGE_REQUEST_EVENT_TYPE == 'detached' || $CI_MERGE_REQUEST_EVENT_TYPE == 'merged_result')
+    
 pages:
   stage: report
   dependencies: []

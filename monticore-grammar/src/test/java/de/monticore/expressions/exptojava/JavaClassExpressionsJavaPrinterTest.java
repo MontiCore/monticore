@@ -87,25 +87,6 @@ public class JavaClassExpressionsJavaPrinterTest {
   }
   
   @Test
-  public void testArrayExpression() throws IOException {
-    Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Optional<ASTExpression> b = parser.parse_StringExpression("b");
-    assertFalse(parser.hasErrors());
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
-    ASTArrayExpression result = JavaClassExpressionsMill.arrayExpressionBuilder()
-      .setExpression(a.get())
-      .setIndexExpression(b.get())
-      .build();
-    
-    String output = javaPrinter.prettyprint(result);
-    
-    assertEquals("a[b]", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
   public void testSuperExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
     Optional<ASTSuperSuffix> b = parser.parse_StringSuperSuffix("(b)");

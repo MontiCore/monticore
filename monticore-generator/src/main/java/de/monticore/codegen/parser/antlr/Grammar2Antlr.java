@@ -930,6 +930,16 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
           addToAction(positionActions.startPosition());
           // Action for determining positions of comments (First set position)
           addToAction("setActiveBuilder(_builder);\n");
+          if (!leftRecursionDetector.isAlternativeLeftRecursive(alt, interfacename)) {
+            // If the alternative is left-recursive, the code may only
+            // be saved later. With left-recursive rules, Antlr expects the first
+            // element to be the recursive element.
+            // Code is also not allowed at this point.
+            // But for the other rules it is necessary that the code
+            // is saved first
+            addActionToCodeSection();
+            endCodeSection();
+          }
         }
         alt.accept(getTraverser());
         if (embeddedJavaCode) {

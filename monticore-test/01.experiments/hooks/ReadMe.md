@@ -21,9 +21,7 @@ Remark 3: Neither the written nor the resulting code are optimized
 according to software engineering best practices, but for presentable
 results (e.g. in slides).
 
-## Technical realization 
-
-TODO XXX
+## Technical realization
 
 * Main class 
 [`AutomataTool`](src/main/java/automata/AutomataTool.java) reads in 

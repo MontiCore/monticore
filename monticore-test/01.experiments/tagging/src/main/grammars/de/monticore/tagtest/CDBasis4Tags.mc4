@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tagtest;
+
+grammar CDBasis4Tags extends de.monticore.MCBasics, de.monticore.symbols.OOSymbols, de.monticore.types.MCBasicTypes,
+    de.monticore.UMLStereotype, de.monticore.UMLModifier {
+
+    CDCompilationUnit =
+      CDDefinition;
+
+
+    interface CDElement;
+    interface symbol scope CDType extends CDElement, OOType;
+
+
+    scope symbol CDPackage implements CDElement =
+      "package" MCQualifiedName "{"
+        CDElement*
+      "}";
+
+    scope CDClass implements CDType =
+      Modifier "class" Name
+      ( "{"
+          CDMember*
+        "}"
+      | ";" );
+
+  interface CDMember;
+
+  CDAttribute implements CDMember, Field = Modifier MCType Name ";";
+
+  CDDefinition implements Diagram =
+    Modifier "classdiagram" Name "{" CDElement* "}";
+
+
+}

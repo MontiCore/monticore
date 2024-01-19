@@ -14,6 +14,7 @@ import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.Names;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -112,8 +113,8 @@ public class NodeTreeDecoratedReporter extends AReporter {
   @Override
   public void reportTemplateStart(String templatename, ASTNode ast) {
     String aident = compactStr(ast);
-    MapUtil.incMapValue(nodeVisits, aident);
-    MapUtil.addToListMap(astNodeExtraInfos, aident, USED_TEMPLATE + " "
+    nodeVisits.merge(aident, 1 , Integer::sum);
+    astNodeExtraInfos.computeIfAbsent(aident,k->new ArrayList<String>()).add(USED_TEMPLATE + " "
         + ReportingHelper.getTemplateName(templatename));
   }
   
@@ -124,8 +125,8 @@ public class NodeTreeDecoratedReporter extends AReporter {
     if (qualifiedfilename != null) {
       qualifiedfilename = Names.getSimpleName(qualifiedfilename);
     }
-    MapUtil.incMapValue(nodeVisits, aident);
-    MapUtil.addToListMap(astNodeExtraInfos, aident, GENERATES_FILE + " \""
+    nodeVisits.merge(aident, 1, Integer::sum);
+    astNodeExtraInfos.computeIfAbsent(aident,k->new ArrayList<String>()).add(GENERATES_FILE + " \""
         + qualifiedfilename + "." + fileextension + "\"");
   }
   
@@ -222,8 +223,8 @@ public class NodeTreeDecoratedReporter extends AReporter {
     if (hp != null) {
       if (hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
-        MapUtil.incMapValue(nodeVisits, aident);
-        MapUtil.addToListMap(astNodeExtraInfos, aident, SPECIFIC_TEMPLATE_HOOKPOINT + " "
+        nodeVisits.merge(aident, 1, Integer::sum);
+        astNodeExtraInfos.computeIfAbsent(aident, k->new ArrayList<String>()).add(SPECIFIC_TEMPLATE_HOOKPOINT + " "
                 + getHookPointValue(hp));
       }
     }
@@ -239,8 +240,8 @@ public class NodeTreeDecoratedReporter extends AReporter {
       if (hp != null) {
         if (hp instanceof TemplateHookPoint) {
           String aident = compactStr(ast);
-          MapUtil.incMapValue(nodeVisits, aident);
-          MapUtil.addToListMap(astNodeExtraInfos, aident, TEMPLATE_HOOKPOINT + " "
+          nodeVisits.merge(aident, 1, Integer::sum);
+          astNodeExtraInfos.computeIfAbsent(aident,k->new ArrayList<String>()).add(TEMPLATE_HOOKPOINT + " "
               + getHookPointValue(hp));
         }
       }

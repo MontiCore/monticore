@@ -10,6 +10,10 @@ import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeVi
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorTypeVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
+import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
+import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
+import de.monticore.ocl.setexpressions.types3.SetExpressionsTypeVisitor;
+import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
 import de.monticore.types.mcarraytypes.types3.MCArrayTypesTypeVisitor;
@@ -62,7 +66,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derCommonExpressions.setType4Ast(type4Ast);
     visitors.derExpressionBasis.setType4Ast(type4Ast);
     visitors.derLambdaExpressions.setType4Ast(type4Ast);
-    visitors.derCombineExpressionsWithLiterals.setType4Ast(type4Ast);
+    visitors.derOCLExpressions.setType4Ast(type4Ast);
+    visitors.derOptionalOperators.setType4Ast(type4Ast);
+    visitors.derSetExpressions.setType4Ast(type4Ast);
+    visitors.derUglyExpressions.setType4Ast(type4Ast);
     visitors.derOfMCCommonLiterals.setType4Ast(type4Ast);
     // MCTypes
     visitors.synMCArrayTypes.setType4Ast(type4Ast);
@@ -84,8 +91,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derCommonExpressions = new CommonExpressionsTypeVisitor();
     visitors.derExpressionBasis = new ExpressionBasisTypeVisitor();
     visitors.derLambdaExpressions = new LambdaExpressionsTypeVisitor();
-    visitors.derCombineExpressionsWithLiterals =
-        new CombineExpressionsWithLiteralsTypeVisitor();
+    visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
+    visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
+    visitors.derSetExpressions = new SetExpressionsTypeVisitor();
+    visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     // MCTypes
     visitors.synMCArrayTypes = new MCArrayTypesTypeVisitor();
@@ -105,7 +114,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     VisitorList visitors = constructVisitors();
     visitors.derCommonExpressions =
         new CommonExpressionsTypeIdAsConstructorTypeVisitor();
-    WithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver =
+    OOWithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver =
         new OOWithinTypeBasicSymbolsResolver();
     WithinScopeBasicSymbolsResolver withinScopeResolver =
         new OOWithinScopeBasicSymbolsResolver();
@@ -117,6 +126,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     );
     visitors.derExpressionBasis.setWithinScopeResolver(
         withinScopeResolver
+    );
+    visitors.derUglyExpressions.setOOWithinTypeBasicSymbolsResolver(
+        withinTypeBasicSymbolsResolver
     );
     visitors.synMCBasicTypes.setWithinTypeResolver(
         withinTypeBasicSymbolsResolver
@@ -151,7 +163,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.setCommonExpressionsHandler(visitors.derCommonExpressions);
     traverser.add4ExpressionsBasis(visitors.derExpressionBasis);
     traverser.add4LambdaExpressions(visitors.derLambdaExpressions);
-    traverser.add4CombineExpressionsWithLiterals(visitors.derCombineExpressionsWithLiterals);
+    traverser.add4OCLExpressions(visitors.derOCLExpressions);
+    traverser.add4OptionalOperators(visitors.derOptionalOperators);
+    traverser.add4SetExpressions(visitors.derSetExpressions);
+    traverser.add4UglyExpressions(visitors.derUglyExpressions);
     traverser.add4MCCommonLiterals(visitors.derOfMCCommonLiterals);
     // MCTypes
     traverser.add4MCArrayTypes(visitors.synMCArrayTypes);
@@ -180,7 +195,13 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
     public LambdaExpressionsTypeVisitor derLambdaExpressions;
 
-    public CombineExpressionsWithLiteralsTypeVisitor derCombineExpressionsWithLiterals;
+    public OCLExpressionsTypeVisitor derOCLExpressions;
+
+    public OptionalOperatorsTypeVisitor derOptionalOperators;
+
+    public SetExpressionsTypeVisitor derSetExpressions;
+
+    public UglyExpressionsTypeVisitor derUglyExpressions;
 
     public MCCommonLiteralsTypeVisitor derOfMCCommonLiterals;
 

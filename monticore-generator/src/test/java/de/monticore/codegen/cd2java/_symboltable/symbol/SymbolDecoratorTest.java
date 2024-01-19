@@ -244,7 +244,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(20, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(21, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -559,7 +559,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(18, symbolClassState.getCDMethodList().size());
+    assertEquals(19, symbolClassState.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -655,7 +655,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(String.class, method.getMCReturnType().getMCType());
 
     assertTrue(method.isEmptyCDParameters());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 

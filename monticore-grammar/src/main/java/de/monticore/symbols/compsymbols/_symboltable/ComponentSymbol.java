@@ -9,7 +9,8 @@ import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -17,21 +18,32 @@ import java.util.stream.Collectors;
 
 public class ComponentSymbol extends ComponentSymbolTOP {
 
+  protected List<VariableSymbol> parameters = new ArrayList<>();
+
   public ComponentSymbol(String name) {
     super(name);
   }
 
+  public List<VariableSymbol> getParameters() {
+    return this.parameters;
+  }
+
   public Optional<VariableSymbol> getParameter(@NonNull String name) {
     Preconditions.checkNotNull(name);
-    for (VariableSymbol parameter : this.getParametersList()) {
+    for (VariableSymbol parameter : this.getParameters()) {
       if (parameter.getName().equals(name)) return Optional.of(parameter);
     }
     return Optional.empty();
   }
 
+  public void addParameter(@NonNull VariableSymbol parameter) {
+    Preconditions.checkNotNull(parameter);
+    Preconditions.checkArgument(this.getSpannedScope().getLocalVariableSymbols().contains(parameter));
+    this.parameters.add(parameter);
+  }
 
-  public List<TypeVarSymbol> getTypeParameters() {
-    return this.getSpannedScope().getLocalTypeVarSymbols();
+  public boolean hasParameters() {
+    return !this.getParameters().isEmpty();
   }
 
   public boolean hasTypeParameter() {
@@ -62,7 +74,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public Optional<PortSymbol> getPort(@NonNull String name, boolean searchSuper) {
     Preconditions.checkNotNull(name);
-    for (PortSymbol port : searchSuper ? this.getAllPorts() : this.getPortsList()) {
+    for (PortSymbol port : searchSuper ? this.getAllPorts() : this.getPorts()) {
       if (port.getName().equals(name)) return Optional.of(port);
     }
     return Optional.empty();
@@ -75,7 +87,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getIncomingPorts() {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPortsList()) {
+    for (PortSymbol port : this.getPorts()) {
       if (port.isIncoming()) {
         result.add(port);
       }
@@ -121,7 +133,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getOutgoingPorts() {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPortsList()) {
+    for (PortSymbol port : this.getPorts()) {
       if (port.isOutgoing()) {
         result.add(port);
       }
@@ -170,7 +182,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    */
   public List<PortSymbol> getPorts(boolean incoming, boolean outgoing) {
     List<PortSymbol> result = new ArrayList<>();
-    for (PortSymbol port : this.getPortsList()) {
+    for (PortSymbol port : this.getPorts()) {
       if (port.isIncoming() == incoming && port.isOutgoing() == outgoing) {
         result.add(port);
       }
@@ -184,9 +196,20 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all ports of this component
    */
   public Set<PortSymbol> getAllPorts() {
-    Set<PortSymbol> result = new HashSet<>(this.getPortsList());
+    return this.getAllPorts(new LinkedHashSet<>());
+  }
+
+  protected Set<PortSymbol> getAllPorts(Collection<ComponentSymbol> visited) {
+    visited.add(this);
+    Set<PortSymbol> result = new LinkedHashSet<>(this.getPorts());
     for (CompKindExpression superComponent : this.getSuperComponentsList()) {
-      result.addAll(superComponent.getTypeInfo().getAllPorts());
+      if (visited.contains(superComponent.getTypeInfo())) continue;
+      for (PortSymbol port : superComponent.getTypeInfo().getAllPorts(visited)) {
+        // Shadow super ports
+        if (result.stream().noneMatch(e -> e.getName().equals(port.getName()))) {
+          result.add(port);
+        }
+      }
     }
     return result;
   }
@@ -197,7 +220,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all incoming ports of this component
    */
   public Set<PortSymbol> getAllIncomingPorts() {
-    Set<PortSymbol> result = new HashSet<>();
+    Set<PortSymbol> result = new LinkedHashSet<>();
     for (PortSymbol port : this.getAllPorts()) {
       if (port.isIncoming()) {
         result.add(port);
@@ -212,7 +235,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all outgoing ports of this component
    */
   public Set<PortSymbol> getAllOutgoingPorts() {
-    Set<PortSymbol> result = new HashSet<>();
+    Set<PortSymbol> result = new LinkedHashSet<>();
     for (PortSymbol port : this.getAllPorts()) {
       if (port.isOutgoing()) {
         result.add(port);
@@ -230,7 +253,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * @return a {@code Set} of all ports of this component with the given direction
    */
   public Set<PortSymbol> getAllPorts(boolean incoming, boolean outgoing) {
-    Set<PortSymbol> result = new HashSet<>();
+    Set<PortSymbol> result = new LinkedHashSet<>();
     for (PortSymbol port : this.getAllPorts()) {
       if (port.isIncoming() == incoming && port.isOutgoing() == outgoing) {
         result.add(port);
@@ -239,11 +262,8 @@ public class ComponentSymbol extends ComponentSymbolTOP {
     return result;
   }
 
-  /**
-   * @return a {@code List} of the subcomponents of this component
-   */
-  public List<SubcomponentSymbol> getSubcomponents() {
-    return this.getSpannedScope().getLocalSubcomponentSymbols();
+  public boolean hasPorts() {
+    return !this.getPorts().isEmpty();
   }
 
   /**
@@ -301,18 +321,5 @@ public class ComponentSymbol extends ComponentSymbolTOP {
         return Optional.empty();
       }
     }
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if(other instanceof ComponentSymbol) {
-      return ((ComponentSymbol)other).getFullName().equals(this.getFullName());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.getFullName().hashCode();
   }
 }

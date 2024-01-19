@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java._tagging;
 
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDElement;
@@ -11,6 +10,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -18,6 +18,7 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 import de.monticore.symboltable.IScope;
 import de.monticore.tagging.tags._ast.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -26,7 +27,10 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -72,7 +76,7 @@ public class TaggerDecorator extends AbstractDecorator {
     if (!superInterfaces.isEmpty()) {
       taggerInterface.setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addAllSuperclass(superInterfaces).build());
     }
-
+    CD4C.getInstance().addImport(taggerInterface, "de.monticore.tagging.TagRepository");
 
     ASTCDClass taggerClass = CD4CodeMill.cDClassBuilder()
             .setModifier(PUBLIC.build())
@@ -83,22 +87,21 @@ public class TaggerDecorator extends AbstractDecorator {
     CD4C.getInstance().addImport(taggerClass, "de.monticore.tagging.tags.TagsMill");
     CD4C.getInstance().addImport(taggerClass, "de.monticore.tagging.tags._ast.ASTContext");
     CD4C.getInstance().addImport(taggerClass, "de.monticore.tagging.tags._ast.ASTTag");
+    CD4C.getInstance().addImport(taggerClass, "de.monticore.tagging.tags._ast.ASTTagUnit");
     CD4C.getInstance().addImport(taggerClass, "java.util.stream.Collectors");
     CD4C.getInstance().addImport(taggerClass, "de.se_rwth.commons.Joiners");
     elements.add(taggerClass);
 
     for (ProdSymbol prodSymbol : originalGrammar.getSymbol().getProds()) {
-      if (prodSymbol.isIsInterface() || prodSymbol.isIsExternal() || prodSymbol.isIsLexerProd()) continue;
+      if (prodSymbol.isIsExternal() || prodSymbol.isIsLexerProd()) continue;
 
       // Skip left recursive productions
       // DISCUSS: Support for left-recursive
       if (prodSymbol.isIsDirectLeftRecursive() || prodSymbol.isIsIndirectLeftRecursive()) continue;
-      boolean isSymbolLike = prodSymbol.isIsSymbolDefinition() || MC2CDTaggingTranslation.hasName(prodSymbol);
+      boolean isSymbolLike = prodSymbol.isIsSymbolDefinition() || MC2CDTaggingTranslation.hasName(prodSymbol) || isIndirectSymbol(prodSymbol);
 
       taggerInterface.addAllCDMembers(createITaggerMethods(prodSymbol, taggerClass.getName()));
       taggerClass.addAllCDMembers(createTaggerMethods(prodSymbol, isSymbolLike));
-
-      elements.add(createTravCheckerClass(prodSymbol));
     }
 
     ASTCDMethod method = cdMethodFacade.createMethod(PROTECTED.build(), mcTypeFacade.createQualifiedType(IScope.class.getName()),
@@ -120,20 +123,41 @@ public class TaggerDecorator extends AbstractDecorator {
 
 
   protected List<ASTCDMethod> createITaggerMethods(ProdSymbol prodSymbol, String clazzname) {
-    final String symbolASTFQN = getASTPackageName(prodSymbol) + ".AST" + StringTransformations.capitalize(prodSymbol.getName());
+    final String astFQN = getASTPackageName(prodSymbol) + ".AST" + StringTransformations.capitalize(prodSymbol.getName());
+    final String symbolFQN = getSymbolPackageName(prodSymbol) + "." + StringTransformations.capitalize(prodSymbol.getName()) + "Symbol";
 
     List<ASTCDMethod> methods = new ArrayList<>();
 
     ASTCDMethod m;
+    // I${Lang}Tagger.getTags(AST${prodSymbol.name} model, Iterable<ASTTagUnit> astTagUnits)
     methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
             "getTags",
-            cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"))));
+            cdParameterFacade.createParameter(astFQN, "model"),
+            cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit.class.getName()), "astTagUnits"))));
     this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.GetTags", clazzname));
+    // I${Lang}Tagger.getTags(AST${prodSymbol.name} model)
+    methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+            "getTags",
+            cdParameterFacade.createParameter(astFQN, "model"))));
+    this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.GetTagsFromRepo", clazzname));
+
+    if (prodSymbol.isIsSymbolDefinition()) {
+      // I${Lang}Tagger.getTags({prodSymbol.name}Symbol symbol, Iterable<ASTTagUnit> astTagUnits)
+      methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+              "getTags",
+              cdParameterFacade.createParameter(symbolFQN, "model"),
+              cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit.class.getName()), "astTagUnits"))));
+      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.GetTags", clazzname));
+      // I${Lang}Tagger.getTags({prodSymbol.name}Symbol symbol)
+      methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+              "getTags",
+              cdParameterFacade.createParameter(symbolFQN, "model"))));
+      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.GetTagsFromRepo", clazzname));
+    }
 
     methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createBooleanType(),
             "removeTag",
-            cdParameterFacade.createParameter(symbolASTFQN, "model"),
+            cdParameterFacade.createParameter(astFQN, "model"),
             cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
             cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
     )));
@@ -142,7 +166,7 @@ public class TaggerDecorator extends AbstractDecorator {
 
     methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(),
             "addTag",
-            cdParameterFacade.createParameter(symbolASTFQN, "model"),
+            cdParameterFacade.createParameter(astFQN, "model"),
             cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
             cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
     )));
@@ -152,42 +176,65 @@ public class TaggerDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDMethod> createTaggerMethods(ProdSymbol prodSymbol, boolean isSymbolLike) {
-    final String symbolASTFQN = getASTPackageName(prodSymbol) + ".AST" + StringTransformations.capitalize(prodSymbol.getName());
+    final String astFQN = getASTPackageName(prodSymbol) + ".AST" + StringTransformations.capitalize(prodSymbol.getName());
+    final String symbolFQN = getSymbolPackageName(prodSymbol) + "." + StringTransformations.capitalize(prodSymbol.getName()) + "Symbol";
 
     List<ASTCDMethod> methods = new ArrayList<>();
     ASTCDMethod method;
 
+    // ${Lang}Tagger.getTags(AST${prodSymbol.name} model, Iterable<ASTTagUnit> astTagUnits)
     methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
             mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
             "getTags",
-            cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"))));
+            cdParameterFacade.createParameter(astFQN, "model"),
+            cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit.class.getName()), "astTagUnits"))));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.GetTags", prodSymbol.getName(), isSymbolLike));
+
+    if (prodSymbol.isIsSymbolDefinition()) {
+      // ${Lang}Tagger.getTags(${prodSymbol.name}Symbol symbol, Iterable<ASTTagUnit> astTagUnits)
+      methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
+              mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+              "getTags",
+              cdParameterFacade.createParameter(symbolFQN, "symbol"),
+              cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit.class.getName()), "astTagUnits"))));
+      this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.GetTagsSymbol", prodSymbol.getName()));
+    }
 
     methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
             mcTypeFacade.createBooleanType(),
             "removeTag",
-            cdParameterFacade.createParameter(symbolASTFQN, "model"),
+            cdParameterFacade.createParameter(astFQN, "model"),
             cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
             cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.RemoveTag", prodSymbol.getName(), isSymbolLike));
 
-    methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
-            "addTag",
-            cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
-            cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
-    )));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.AddTag",
-            prodSymbol.getName(), originalGrammar.getName(), getPackageName(originalGrammar.getSymbol()), prodSymbol.isIsSymbolDefinition()));
+    if (!prodSymbol.isIsInterface()) {
+      methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
+              "addTag",
+              cdParameterFacade.createParameter(astFQN, "model"),
+              cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
+              cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
+      )));
+      this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.AddTag",
+              prodSymbol.getName(), originalGrammar.getName(), getPackageName(originalGrammar.getSymbol()), prodSymbol.isIsSymbolDefinition()));
+    }
+    if (prodSymbol.isIsSymbolDefinition()) {
+      methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
+              "addTag",
+              cdParameterFacade.createParameter(symbolFQN, "symbol"),
+              cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
+              cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
+      )));
+      this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.AddTagSymbol",
+              prodSymbol.getName(), originalGrammar.getName(), getPackageName(originalGrammar.getSymbol())));
+    }
 
     methods.add((method = cdMethodFacade.createMethod(PROTECTED.build(),
             mcTypeFacade.createBasicGenericTypeOf(Stream.class.getName(), ASTTargetElement.class.getName()),
             "findTargetsBy",
             cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "ast"),
-            cdParameterFacade.createParameter(symbolASTFQN, "element"),
-            cdParameterFacade.createParameter("TravChecker" + prodSymbol.getName(), "travChecker")
+            cdParameterFacade.createParameter(astFQN, "element")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.FindTargetsBy"));
 
@@ -196,8 +243,7 @@ public class TaggerDecorator extends AbstractDecorator {
               mcTypeFacade.createBasicGenericTypeOf(Stream.class.getName(), ASTTargetElement.class.getName()),
               "findTargetsBy",
               cdParameterFacade.createParameter(ASTContext.class.getName(), "ast"),
-              cdParameterFacade.createParameter(symbolASTFQN, "element"),
-              cdParameterFacade.createParameter("TravChecker" + prodSymbol.getName(), "travChecker")
+              cdParameterFacade.createParameter(astFQN, "element")
       )));
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.FindTargetsBy"));
     }
@@ -206,32 +252,11 @@ public class TaggerDecorator extends AbstractDecorator {
             mcTypeFacade.createBooleanType(),
             "isIdentified",
             cdParameterFacade.createParameter(ASTModelElementIdentifier.class.getName(), "elementIdentifier"),
-            cdParameterFacade.createParameter(symbolASTFQN, "element"),
-            cdParameterFacade.createParameter("TravChecker" + prodSymbol.getName(), "travChecker")
+            cdParameterFacade.createParameter(astFQN, "element")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.IsIdentified"));
 
     return methods;
-  }
-
-  // The TravChecker, a class used to check if an AST element is present
-  protected ASTCDClass createTravCheckerClass(ProdSymbol prodSymbol) {
-    final String symbolASTFQN = getASTPackageName(prodSymbol) + ".AST" + StringTransformations.capitalize(prodSymbol.getName());
-    String traverserPkg = getPackageName(originalGrammar.getSymbol());
-    traverserPkg += "tagdefinition._visitor." + originalGrammar.getName() + "TagDefinitionTraverser";
-
-    ASTCDClass clazz = CD4CodeMill.cDClassBuilder().setName("TravChecker" + StringTransformations.capitalize(prodSymbol.getName()))
-            .setModifier(PACKAGE_PRIVATE.build())
-            .build();
-    clazz.addCDMember(cdAttributeFacade.createAttribute(PROTECTED_FINAL.build(), mcTypeFacade.createArrayType(mcTypeFacade.createBooleanType(), 1), "ret"));
-    clazz.addCDMember(cdAttributeFacade.createAttribute(PROTECTED_FINAL.build(), mcTypeFacade.createQualifiedType(traverserPkg), "traverser"));
-    clazz.addCDMember(cdAttributeFacade.createAttribute(PROTECTED.build(), mcTypeFacade.createQualifiedType(symbolASTFQN), "element"));
-
-    ASTCDConstructor constructor = cdConstructorFacade.createDefaultConstructor(PUBLIC.build(), clazz);
-    clazz.addCDMember(constructor);
-    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("tagging.travchecker.TravCheckerConstructor", prodSymbol.getName(), originalGrammar.getName(), getPackageName(originalGrammar.getSymbol())));
-
-    return clazz;
   }
 
   /**
@@ -241,6 +266,15 @@ public class TaggerDecorator extends AbstractDecorator {
    */
   protected String getASTPackageName(ProdSymbol symbol) {
     return Names.getQualifiedName(symbol.getPackageName(), symbol.getEnclosingScope().getName().toLowerCase() + "." + ASTConstants.AST_PACKAGE);
+  }
+
+  /**
+   * Retrieve the symboltable package name of the original grammar of a production
+   * @param symbol the production's symbol
+   * @return the _symboltable package name
+   */
+  protected String getSymbolPackageName(ProdSymbol symbol) {
+    return Names.getQualifiedName(symbol.getPackageName(), symbol.getEnclosingScope().getName().toLowerCase() + "." + SymbolTableConstants.SYMBOL_TABLE_PACKAGE);
   }
 
   /**
@@ -261,5 +295,32 @@ public class TaggerDecorator extends AbstractDecorator {
    */
   protected String getPackageName(MCGrammarSymbol symbol) {
     return Names.getQualifiedName(symbol.getPackageName(), symbol.getName().toLowerCase());
+  }
+
+  // Does this production extend a symbol production
+  protected boolean isIndirectSymbol(ProdSymbol symbol){
+    if (symbol.isIsSymbolDefinition()) return true;
+    LinkedList<ProdSymbol> toCheck = new LinkedList<>();
+    Set<ProdSymbol> checked = new HashSet<>();
+    toCheck.add(symbol);
+    while (!toCheck.isEmpty()) {
+      ProdSymbol symbolToCheck = toCheck.removeFirst();
+      if (symbolToCheck.isIsSymbolDefinition()) return true;
+      for (ProdSymbolSurrogate surg : symbolToCheck.getSuperProds()){
+        ProdSymbol sym = surg.lazyLoadDelegate();
+        if (sym.isIsSymbolDefinition()) return true;
+        if (checked.contains(sym)) continue;
+        toCheck.add(sym);
+        checked.add(sym);
+      }
+      for (ProdSymbolSurrogate surg : symbolToCheck.getSuperInterfaceProds()){
+        ProdSymbol sym = surg.lazyLoadDelegate();
+        if (sym.isIsSymbolDefinition()) return true;
+        if (checked.contains(sym)) continue;
+        toCheck.add(sym);
+        checked.add(sym);
+      }
+    }
+    return false;
   }
 }

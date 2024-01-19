@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class GrammarDiffsTest {
   @BeforeClass
@@ -26,11 +28,8 @@ public class GrammarDiffsTest {
     Log.enableFailQuick(false);
   }
 
-  //todo: reactivate test
-  // line 45 has NullPointer exception, because inherited attribute from ITTerminal in Terminal
-  // if ASTTerminal_Name is not called in initializePackageContents, this should work
-
-  @Test @Ignore
+  @Ignore // TODO
+  @Test
   public void testAstGrammarDiffs() throws IOException {
     try {
       Optional<ASTMCGrammar> grammar1 = new ItTestGrammar_WithConceptsParser()

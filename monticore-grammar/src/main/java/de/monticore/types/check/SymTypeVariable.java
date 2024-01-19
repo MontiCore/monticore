@@ -83,17 +83,23 @@ public class SymTypeVariable extends SymTypeExpression {
   }
 
   /**
-   * a type variable only allows super types of its lower bound
+   * internal: only required to deepclone
    */
-  protected SymTypeExpression getStoredLowerBound() {
+  public SymTypeExpression getStoredLowerBound() {
     return lowerBound;
   }
 
+  /**
+   * a type variable only allows super types of its lower bound
+   */
   public SymTypeExpression getLowerBound() {
     return getStoredLowerBound();
   }
 
-  protected SymTypeExpression getStoredUpperBound() {
+  /**
+   * internal: only required to deepclone
+   */
+  public SymTypeExpression getStoredUpperBound() {
     return upperBound;
   }
 
@@ -196,12 +202,12 @@ public class SymTypeVariable extends SymTypeExpression {
     if (hasTypeVarSymbol()) {
       return new SymTypeVariable(
           getTypeVarSymbol(),
-          getLowerBound(),
-          getUpperBound()
+          getStoredLowerBound(),
+          getStoredUpperBound()
       );
     }
     else {
-      return new SymTypeVariable(null, getLowerBound(), getUpperBound());
+      return new SymTypeVariable(null, getStoredLowerBound(), getStoredUpperBound());
     }
   }
 

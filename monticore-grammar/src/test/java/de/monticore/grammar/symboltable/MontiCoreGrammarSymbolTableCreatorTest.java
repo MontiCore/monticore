@@ -122,7 +122,6 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     final ProdSymbolSurrogate superInterfaceScStructure = stateProd.getSuperInterfaceProds()
         .get(0);
     assertSame(scStructure, superInterfaceScStructure.lazyLoadDelegate());
-    // TODO PN generic resolving in super prod
     // AST
     testLinkBetweenSymbolAndAst(stateProd);
     

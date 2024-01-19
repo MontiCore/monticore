@@ -3,11 +3,12 @@
    Chapter 4
 */
 
-grammar MinimalExample extends de.monticore.MCBasics {
+grammar MinimalExample {
 
 // ----------------------- Startbeispiel
   A = "Hello" B ;
-  B = Name "!";
+  B = SimpleName "!";
+  C = "C" SimpleName CARDINALITY;
 
 // ----------------------- zwei Token
   token SimpleName = ('a'..'z'|'A'..'Z')+ ;
@@ -49,7 +50,6 @@ grammar MinimalExample extends de.monticore.MCBasics {
 
 // ----------------------- listing/WhiteSpaces.x
 
-  @Override
   token WS =
     (' '
     | '\t'
@@ -69,12 +69,9 @@ grammar MinimalExample extends de.monticore.MCBasics {
     A2 = b:NUMBER "," c:NUMBER*;
 
   // while Name is stored as a String
-    A1 = b:Name "," c:Name;
+    A1 = b:SimpleName "," c:SimpleName;
 
 // ----------------------- listing/LexicalsAdaptedTypes2.x
-
-// XXX,BUG Marita: folgendes klappt icht mehr
-// Wo liegt denn der Fehler?
 
 // token results get adapted:
 // type conversion to int
@@ -82,7 +79,7 @@ grammar MinimalExample extends de.monticore.MCBasics {
   token
     CARDINALITY = ('0'..'9')+ | '*' :
     x -> int : { // Java code:
-                 if (x.equals("*"))
+                 if ("*".equals(x.getText()))
                    return -1;
                  else
                    return Integer.parseInt(x.getText());
