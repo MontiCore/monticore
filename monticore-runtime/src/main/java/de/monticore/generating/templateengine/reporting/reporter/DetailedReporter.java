@@ -242,7 +242,7 @@ public class DetailedReporter extends AReporter {
   
   protected static String calculateLine(String value) {
     return ReportingHelper.formatLineToReportingLine(value,
-        ReportingConstants.REPORTING_ROW_LENGTH);;
+        ReportingConstants.REPORTING_ROW_LENGTH);
   }
   
   private void reportTemplateAction(ASTNode astNode, String templatename,
