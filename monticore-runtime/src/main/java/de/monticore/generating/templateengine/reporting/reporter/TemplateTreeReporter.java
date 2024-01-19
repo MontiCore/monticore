@@ -2,10 +2,6 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.CodeHookPoint;
 import de.monticore.generating.templateengine.HookPoint;
@@ -16,29 +12,33 @@ import de.monticore.generating.templateengine.reporting.commons.ReportingConstan
 import de.monticore.generating.templateengine.reporting.commons.ReportingHelper;
 import de.se_rwth.commons.Names;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+
 /**
  */
 public class TemplateTreeReporter extends AReporter {
   
-  static final String TEMPLATE_CALL_START = "+--";
+  public static final String TEMPLATE_CALL_START = "+--";
   
-  static final String STRING_HOOKPOINT = "+--SHP";
+  public static final String STRING_HOOKPOINT = "+--SHP";
   
-  static final String CODE_HOOKPOINT = "+--CHP";
+  public static final String CODE_HOOKPOINT = "+--CHP";
   
-  static final String TEMPLATE_HOOKPOINT = "+--THP";
+  public static final String TEMPLATE_HOOKPOINT = "+--THP";
   
-  static final String SPECIFIC_TEMPLATE_HOOKPOINT = "+--ATHP";
+  public static final String SPECIFIC_TEMPLATE_HOOKPOINT = "+--ATHP";
   
-  static final String SPECIFIC_STRING_HOOKPOINT = "+--ASHP";
+  public static final String SPECIFIC_STRING_HOOKPOINT = "+--ASHP";
   
-  static final String SPECIFIC_CODE_HOOKPOINT = "+--ACHP";
+  public static final String SPECIFIC_CODE_HOOKPOINT = "+--ACHP";
   
-  static final String INSTANTIATE_JAVA_CLASS = "+--inst";
+  public static final String INSTANTIATE_JAVA_CLASS = "+--inst";
   
-  static final String INDENTATION = "|  ";
+  public static final String INDENTATION = "|  ";
   
-  static final String SIMPLE_FILE_NAME = "09_TemplateTree";
+  public static final String SIMPLE_FILE_NAME = "09_TemplateTree";
   
   protected int currentIndentLevel = 0;
   
