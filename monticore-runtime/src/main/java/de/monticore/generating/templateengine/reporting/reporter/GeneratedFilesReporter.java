@@ -15,7 +15,7 @@ import java.io.File;
  */
 public class GeneratedFilesReporter extends AReporter {
   
-  static final String SIMPLE_FILE_NAME = "02_GeneratedFiles";
+  public static final String SIMPLE_FILE_NAME = "02_GeneratedFiles";
   
   static final String INDENT = Layouter.getSpaceString(40);
   

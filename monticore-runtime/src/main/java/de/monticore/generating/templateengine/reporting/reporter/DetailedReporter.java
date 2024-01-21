@@ -11,25 +11,25 @@ import java.util.List;
 
 public class DetailedReporter extends AReporter {
   
-  static final String GENERATED_FILE_OPENED = "+file";
+  public static final String GENERATED_FILE_OPENED = "+file";
   
-  static final String GENERATED_FILE_CLOSED = "-file";
+  public static final String GENERATED_FILE_CLOSED = "-file";
   
-  static final String TEMPLATE_CALLED = "+tpl";
+  public static final String TEMPLATE_CALLED = "+tpl";
   
-  static final String TEMPLATE_ENDED = "-tpl";
+  public static final String TEMPLATE_ENDED = "-tpl";
   
-  static final String INSTANTIATE_JAVA_CLASS = "inst";
+  public static final String INSTANTIATE_JAVA_CLASS = "inst";
   
-  static final String SET_GLOBAL_VARIABLE = "setv";
+  public static final String SET_GLOBAL_VARIABLE = "setv";
   
-  static final String ADD_GLOBAL_VARIABLE = "addv";
+  public static final String ADD_GLOBAL_VARIABLE = "addv";
   
-  static final String SIMPLE_FILE_NAME = "08_Detailed";
+  public static final String SIMPLE_FILE_NAME = "08_Detailed";
   
-  static final String ERROR = "err";
+  public static final String ERROR = "err";
   
-  static final String WARNING = "warn";
+  public static final String WARNING = "warn";
   
   protected ReportingRepository repository;
   

@@ -21,67 +21,67 @@ import java.util.Set;
  */
 public class SummaryReporter extends AReporter {
   
-  static final String NUM_TEMPLATE_INCLUDE = "template includes";
+  public static final String NUM_TEMPLATE_INCLUDE = "template includes";
   
-  static final String NUM_TEMPLATE_WRITE = "template writes";
+  public static final String NUM_TEMPLATE_WRITE = "template writes";
   
-  static final String NUM_GENERATED_FILES = "generated files";
+  public static final String NUM_GENERATED_FILES = "generated files";
   
-  static final String NUM_INSTANTIATIONS = "instantiations";
+  public static final String NUM_INSTANTIATIONS = "instantiations";
   
-  static final String NUM_VARIABLES = "variables";
+  public static final String NUM_VARIABLES = "variables";
   
-  static final String NUM_VARIABLE_ASSIGNMENTS = "variable assignments";
+  public static final String NUM_VARIABLE_ASSIGNMENTS = "variable assignments";
   
-  static final String NUM_WARNINGS = "warnings";
-
-  static final String NUM_USER_WARNINGS = "user warnings";
-
-  static final String NUM_ERRORS = "errors";
-
-  static final String NUM_USER_ERRORS = "user errors";
-
-  static final String NUM_INTERNAL_ERRORS = "internal errors";
-
-  static final String MAX_TEMPLATE_DEPTH = "max template depth";
+  public static final String NUM_WARNINGS = "warnings";
   
-  static final String MAX_AST_DEPTH = "max AST depth";
+  public static final String NUM_USER_WARNINGS = "user warnings";
   
-  static final String NUM_USED_TEMPLATES = "used standard templates";
+  public static final String NUM_ERRORS = "errors";
   
-  static final String NUM_UNUSED_TEMPLATES = "unused standard templates";
+  public static final String NUM_USER_ERRORS = "user errors";
   
-  static final String NUM_USED_HWTEMPLATES = "used handwritten templates";
+  public static final String NUM_INTERNAL_ERRORS = "internal errors";
   
-  static final String NUM_UNUSED_HWTEMPLATES = "unused handwritten templates";
+  public static final String MAX_TEMPLATE_DEPTH = "max template depth";
   
-  static final String NUM_ASTNODE_VISITS = "AST node visits";
+  public static final String MAX_AST_DEPTH = "max AST depth";
   
-  static final String NUM_ASTNODE_TYPES = "AST node types";
+  public static final String NUM_USED_TEMPLATES = "used standard templates";
   
-  static final String NUM_ASTNODE_INSTANCES = "AST node instances";
+  public static final String NUM_UNUSED_TEMPLATES = "unused standard templates";
   
-  static final String NUM_AST_SPECIFIC_REPLACEMENTS = "AST hook point sets";
+  public static final String NUM_USED_HWTEMPLATES = "used handwritten templates";
   
-  static final String NUM_AST_SPECIFIC_CALLS = "AST hook point calls";
+  public static final String NUM_UNUSED_HWTEMPLATES = "unused handwritten templates";
   
-  static final String NUM_SET_CODE_HOOKPOINTS = "code hook point sets";
+  public static final String NUM_ASTNODE_VISITS = "AST node visits";
   
-  static final String NUM_CALL_CODE_HOOKPOINTS = "code hook point calls";
+  public static final String NUM_ASTNODE_TYPES = "AST node types";
   
-  static final String NUM_SET_TEMPLATE_HOOKPOINTS = "template hook point sets";
+  public static final String NUM_ASTNODE_INSTANCES = "AST node instances";
   
-  static final String NUM_CALL_TEMPLATE_HOOKPOINTS = "template hook point calls";
+  public static final String NUM_AST_SPECIFIC_REPLACEMENTS = "AST hook point sets";
   
-  static final String NUM_SET_STRING_HOOKPOINTS = "string hook point sets";
+  public static final String NUM_AST_SPECIFIC_CALLS = "AST hook point calls";
   
-  static final String NUM_CALL_STRING_HOOKPOINTS = "string hook point calls";
+  public static final String NUM_SET_CODE_HOOKPOINTS = "code hook point sets";
   
-  static final String NUM_CALLS_EMPTY_HOOKPOINTS = "empty hook point calls";
+  public static final String NUM_CALL_CODE_HOOKPOINTS = "code hook point calls";
   
-  static final String NUM_CALLED_EMPTY_HOOKPOINTS = "empty hook point called";
+  public static final String NUM_SET_TEMPLATE_HOOKPOINTS = "template hook point sets";
   
-  static final String SIMPLE_FILE_NAME = "01_Summary";
+  public static final String NUM_CALL_TEMPLATE_HOOKPOINTS = "template hook point calls";
+  
+  public static final String NUM_SET_STRING_HOOKPOINTS = "string hook point sets";
+  
+  public static final String NUM_CALL_STRING_HOOKPOINTS = "string hook point calls";
+  
+  public static final String NUM_CALLS_EMPTY_HOOKPOINTS = "empty hook point calls";
+  
+  public static final String NUM_CALLED_EMPTY_HOOKPOINTS = "empty hook point called";
+  
+  public static final String SIMPLE_FILE_NAME = "01_Summary";
   
   protected int numTemplateIncludes;
   

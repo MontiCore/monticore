@@ -10,7 +10,7 @@ import java.io.File;
 
 public class SuccessfulReporter extends AReporter {
   
-  static final String SIMPLE_FILE_NAME = "19_Successful";
+  public static final String SIMPLE_FILE_NAME = "19_Successful";
   
   public SuccessfulReporter(String outputDir, String modelName) {
     super(outputDir

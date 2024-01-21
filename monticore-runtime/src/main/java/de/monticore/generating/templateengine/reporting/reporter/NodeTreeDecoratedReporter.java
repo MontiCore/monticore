@@ -24,21 +24,21 @@ import java.util.Map.Entry;
  */
 public class NodeTreeDecoratedReporter extends AReporter {
   
-  static final String INSTANTIATE_JAVA_CLASS = "inst";
+  public static final String INSTANTIATE_JAVA_CLASS = "inst";
   
-  static final String GENERATES_FILE = "generates";
+  public static final String GENERATES_FILE = "generates";
   
-  static final String USED_TEMPLATE = "template";
+  public static final String USED_TEMPLATE = "template";
   
-  static final String TEMPLATE_HOOKPOINT = "THP";
+  public static final String TEMPLATE_HOOKPOINT = "THP";
   
-  static final String SPECIFIC_TEMPLATE_HOOKPOINT = "ATHP";
+  public static final String SPECIFIC_TEMPLATE_HOOKPOINT = "ATHP";
   
-  static final String SPECIFIC_STRING_HOOKPOINT = "ASHP";
+  public static final String SPECIFIC_STRING_HOOKPOINT = "ASHP";
   
-  static final String SPECIFIC_CODE_HOOKPOINT = "ACHP";
+  public static final String SPECIFIC_CODE_HOOKPOINT = "ACHP";
   
-  static final String SIMPLE_FILE_NAME = "11_NodeTreeDecorated";
+  public static final String SIMPLE_FILE_NAME = "11_NodeTreeDecorated";
   
   protected ReportingRepository repository;
   

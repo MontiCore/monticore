@@ -13,7 +13,7 @@ import java.util.Map.Entry;
  */
 public class TemplatesReporter extends AReporter {
   
-  static final String SIMPLE_FILE_NAME = "04_Templates";
+  public static final String SIMPLE_FILE_NAME = "04_Templates";
   
   static final String INDENT = Layouter.getSpaceString(10);
   
