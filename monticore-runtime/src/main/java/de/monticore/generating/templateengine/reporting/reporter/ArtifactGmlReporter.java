@@ -12,7 +12,7 @@ import java.io.File;
  */
 public class ArtifactGmlReporter extends ArtifactReporter {
   
-  static final String SIMPLE_FILE_NAME = "15_ArtifactGml";
+  public static final String SIMPLE_FILE_NAME = "15_ArtifactGml";
 
   public ArtifactGmlReporter(String outputDir, String modelName) {
     super(outputDir + File.separator + modelName,

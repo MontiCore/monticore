@@ -2,28 +2,28 @@
 
 package de.monticore.generating.templateengine.reporting.reporter;
 
-import java.io.File;
-
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.reporting.commons.ReportingConstants;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
+
+import java.io.File;
 
 /**
  */
 public class TransformationReporter extends AReporter {
 
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportTransformationStart(java.lang.String)
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportTransformationStart(java.lang.String)
    */
   @Override
   public void reportTransformationStart(String transformationName) {
     writeLine("Start Trafo: " + transformationName);
   }
-
-  static final String SIMPLE_FILE_NAME = "14_Transformations";
-
-  static final String INDENT = "                                        ";
+  
+  public static final String SIMPLE_FILE_NAME = "14_Transformations";
+  
+  public static final String INDENT = "                                        ";
 
   protected ReportingRepository repository;
 

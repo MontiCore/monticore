@@ -23,7 +23,7 @@ public class HandWrittenCodeReporter extends AReporter {
   
   static final String UNUSED_HWC_FILES = "Unused Handwritten Code Files";
   
-  static final String SIMPLE_FILE_NAME = "03_HandwrittenCodeFiles";
+  public static final String SIMPLE_FILE_NAME = "03_HandwrittenCodeFiles";
   
   protected ReportingRepository repo;
   
@@ -37,7 +37,7 @@ public class HandWrittenCodeReporter extends AReporter {
   }
 
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportUseHandwrittenCodeFile(java.lang.String)
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportUseHandwrittenCodeFile(Path, Path)
    */
   @Override
   public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {

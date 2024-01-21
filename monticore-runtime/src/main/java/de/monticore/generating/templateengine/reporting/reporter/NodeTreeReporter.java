@@ -23,7 +23,7 @@ import java.util.Map.Entry;
  */
 public class NodeTreeReporter extends AReporter {
   
-  static final String SIMPLE_FILE_NAME = "10_NodeTree";
+  public static final String SIMPLE_FILE_NAME = "10_NodeTree";
   
   protected ReportingRepository repository;
   
