@@ -23,7 +23,11 @@ public class ForConditionHasBooleanType implements MCCommonStatementsASTForState
   
   @Override
   public void check(ASTForStatement node) {
-    
+
+    // todo replace with typedispatcher as soon as issues are fixed
+    if(node.getForControl() instanceof ASTCommonForControl) {
+      return;
+    }
     SymTypeExpression result = typeCheck.typeOf(((ASTCommonForControl)node.getForControl()).getCondition());
     
     if(!TypeCheck.isBoolean(result)){
