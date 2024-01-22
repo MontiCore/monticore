@@ -38,4 +38,16 @@ component grammar MCFunctionTypes
     MCReturnType
   ;
 
+  /** ASTMCFunctionTypeNoParentheses represents function types
+   * that have exactly one parameter without any parentheses.
+   *
+   * This non-terminal is separate from MCFunctionType
+   * to avoid Antlr issues due to mutual left recursion.
+   */
+  MCFunctionTypeNoParentheses implements MCType =
+    <rightassoc>
+    parameter:MCType "->"
+    MCReturnType
+  ;
+
 }

@@ -24,6 +24,11 @@ public class MCFunctionTypesTypeVisitorTest
   }
 
   @Test
+  public void symTypeFromAST_TestSimpleFunction3() throws IOException {
+    checkType("int -> int", "(int) -> int");
+  }
+
+  @Test
   public void symTypeFromAST_TestEllipticFunction1() throws IOException {
     checkTypeRoundTrip("(int...) -> int");
   }
