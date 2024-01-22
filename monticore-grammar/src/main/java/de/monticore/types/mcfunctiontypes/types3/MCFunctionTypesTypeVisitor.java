@@ -62,11 +62,6 @@ public class MCFunctionTypesTypeVisitor extends AbstractTypeVisitor
         getType4Ast().getPartialTypeOfTypeId(functionType.getParameter());
 
     if (!getType4Ast().hasTypeOfTypeIdentifier(functionType.getMCReturnType())) {
-      Log.error("0xE9BDD The return type of the function type"
-              + " could not be synthesized.",
-          functionType.getMCReturnType().get_SourcePositionStart(),
-          functionType.getMCReturnType().get_SourcePositionEnd()
-      );
       getType4Ast().setTypeOfTypeIdentifier(functionType,
           SymTypeExpressionFactory.createObscureType());
       return;
