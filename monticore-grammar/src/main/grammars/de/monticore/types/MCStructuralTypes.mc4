@@ -60,4 +60,12 @@ component grammar MCStructuralTypes
     "(" MCType "," (MCType || ",")+ ")"
   ;
 
+  /** ASTMCBracketType represents a type written in parentheses.
+   *
+   * The type is the type written inside the parentheses.
+   *
+  MCBracketType implements MCType <300> =
+    "(" MCType ")"
+  ;
+
 }
