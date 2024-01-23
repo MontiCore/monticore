@@ -32,8 +32,7 @@ component grammar MCStructuralTypes
    * String | int var2 = 3;
    */
   MCUnionType implements MCType <140> =
-    MCType "|" (MCType || "|")+ |
-    parenthesis:"(" MCType "|" (MCType || "|")+ ")"
+    left:MCType "|" right:MCType
   ;
 
   /** ASTMCIntersectionType represents intersection types.
@@ -45,9 +44,8 @@ component grammar MCStructuralTypes
    * Boat b = amphibianVehicle;
    * Car & Boat a = amphibianVehicle;
    */
-  MCIntersectionType implements MCType =
-    MCType "&" (MCType || "&")+ |
-    parenthesis:"(" MCType "&" (MCType || "&")+ ")"
+  MCIntersectionType implements MCType <160> =
+    left:MCType "&" right:MCType
   ;
 
   /** ASTMCTupleType represents tuple types.
