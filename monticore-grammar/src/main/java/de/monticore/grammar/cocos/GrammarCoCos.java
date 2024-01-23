@@ -99,6 +99,7 @@ public class GrammarCoCos {
     checker.addCoCo(new OverridingEnumNTs());
     checker.addCoCo(new OverridingNTs());
     checker.addCoCo(new OverridingAbstractNTs());
+    checker.addCoCo(new UniqueProdNamesForComp());
     checker.addCoCo(new UsedNTNotDefined());
     checker.addCoCo(new KeywordAlternativeName());
     checker.addCoCo(new NTDefinedByAtmostOneProduction());
