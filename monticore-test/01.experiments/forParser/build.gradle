@@ -23,6 +23,6 @@ fileTree(grammarDir).matching { include '**/*.mc4'}.each {
 }
 
 sourceSets {
-  main.java.srcDirs = [ "$projectDir/src/main/java" ]
+  main.java.srcDirs = [ "$projectDir/src/main/java", "$outDir" ]
 }
 
