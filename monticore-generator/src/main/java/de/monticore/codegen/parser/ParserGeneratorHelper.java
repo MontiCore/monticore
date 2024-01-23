@@ -27,6 +27,8 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -639,6 +641,38 @@ public class ParserGeneratorHelper {
       name = StringTransformations.uncapitalize(a.getName());
     }
     return name;
+  }
+
+  /**
+   * Fetch the super class for the ANTLR Lexer.
+   * By default, null
+   */
+  @SuppressWarnings("unused")
+  @Nullable
+  public String getLexerSuperClass() {
+    if (!astGrammar.isPresentGrammarOption() || astGrammar.getGrammarOption().isEmptyAntlrOptions()) {
+      return null;
+    }
+    return astGrammar.getGrammarOption().getAntlrOptionList().stream()
+            .filter(ASTAntlrOption::isPresentValue)
+            .filter(a -> a.getName().equals("LexerSuperClass")).map(ASTAntlrOption::getValue)
+            .findFirst().orElse(null);
+  }
+
+  /**
+   * Fetch the super class for the ANTLR Parser.
+   * By default, MCParser
+   */
+  @SuppressWarnings("unused")
+  @Nonnull
+  public String getParserSuperClass() {
+    if (!astGrammar.isPresentGrammarOption() || astGrammar.getGrammarOption().isEmptyAntlrOptions()) {
+      return "MCParser";
+    }
+    return astGrammar.getGrammarOption().getAntlrOptionList().stream()
+            .filter(ASTAntlrOption::isPresentValue)
+            .filter(a -> a.getName().equals("ParserSuperClass")).map(ASTAntlrOption::getValue)
+            .findFirst().orElse("MCParser");
   }
 
 }
