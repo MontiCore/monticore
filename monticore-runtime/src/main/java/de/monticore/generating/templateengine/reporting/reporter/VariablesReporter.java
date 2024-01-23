@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class VariablesReporter extends AReporter {
   
-  static final String SIMPLE_FILE_NAME = "07_Variables";
+  public static final String SIMPLE_FILE_NAME = "07_Variables";
   
   protected Map<String, Integer> var2asmt;
   

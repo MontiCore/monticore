@@ -20,7 +20,7 @@ import java.util.TreeSet;
  */
 public class NodeTypesReporter extends AReporter {
   
-  static final String SIMPLE_FILE_NAME = "12_TypesOfNodes";
+  public static final String SIMPLE_FILE_NAME = "12_TypesOfNodes";
   
   protected Map<String, Integer> nodeTypeCount = Maps.newTreeMap();
   

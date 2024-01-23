@@ -3,7 +3,6 @@
 package de.monticore.generating.templateengine.reporting.commons;
 
 import com.google.common.hash.Hashing;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -66,7 +65,7 @@ public class ReportingHelper {
   }
   
   public static String getTemplateName(String hookName) {
-    return Names.getSimpleName(hookName) + "."
+    return hookName + "."
         + ReportingConstants.TEMPLATE_FILE_EXTENSION;
   }
 
