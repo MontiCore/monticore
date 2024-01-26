@@ -11,7 +11,12 @@ import de.monticore.types3.util.SymTypeUnboxingVisitor;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.*;
+import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
+import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
+import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.Assert.assertEquals;
 
@@ -97,7 +102,7 @@ public class SymTypeUnboxingVisitorTest extends AbstractTypeTest {
             ), 1
         ),
         "Map<(Person | double | int),"
-            + "(T, Optional<int[]>) -> Person[][]>[]"
+            + "((T, Optional<int[]>) -> Person)[][]>[]"
     );
   }
 

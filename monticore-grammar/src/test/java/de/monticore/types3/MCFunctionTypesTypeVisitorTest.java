@@ -45,6 +45,6 @@ public class MCFunctionTypesTypeVisitorTest
 
   @Test
   public void symTypeFromAST_TestHigherOrderEllipticFunction() throws IOException {
-    checkTypeRoundTrip("int -> (() -> (int, long...) -> int...) -> void");
+    checkTypeRoundTrip("int -> ((() -> (int, long...) -> int)...) -> void");
   }
 }

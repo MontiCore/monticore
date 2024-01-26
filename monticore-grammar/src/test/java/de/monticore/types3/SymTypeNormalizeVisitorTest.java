@@ -49,7 +49,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
   @Test
   public void normalizeSimpleUnions() {
     // Tests normalization that is at max changing one level
-    check(createUnion(_personSymType, _carSymType), "(Car | Person)");
+    check(createUnion(_personSymType, _carSymType), "Car | Person");
     check(createUnion(_personSymType), "Person");
     check(createUnion(
         _personSymType, createTypeObject(_personSymType.getTypeInfo())
@@ -68,7 +68,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
   @Test
   public void normalizeSimpleIntersections() {
     // Tests normalization that is at max changing one level
-    check(createIntersection(_personSymType, _carSymType), "(Car & Person)");
+    check(createIntersection(_personSymType, _carSymType), "Car & Person");
     check(createIntersection(_personSymType), "Person");
     check(createIntersection(
         _personSymType, createTypeObject(_personSymType.getTypeInfo())
@@ -106,7 +106,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
             ),
             1
         ),
-        "(Car[][] | Person[][])"
+        "Car[][] | Person[][]"
     );
     check(
         createTypeArray(
@@ -116,7 +116,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
             ),
             1
         ),
-        "(Car[][] & Person[][])"
+        "Car[][] & Person[][]"
     );
     check(
         createTypeArray(
@@ -145,26 +145,26 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
     SymTypeOfIntersection inter2 = createIntersection(_personSymType, _intSymType);
 
     // unions
-    check(createUnion(union1, _personSymType), "(Car | Person)");
-    check(createUnion(union1, _intSymType), "(Car | Person | int)");
-    check(createUnion(union1, union2), "(Car | Person | int)");
+    check(createUnion(union1, _personSymType), "Car | Person");
+    check(createUnion(union1, _intSymType), "Car | Person | int");
+    check(createUnion(union1, union2), "Car | Person | int");
 
     // intersections
-    check(createIntersection(inter1, _personSymType), "(Car & Person)");
-    check(createIntersection(inter1, inter2), "(Car & Person & int)");
+    check(createIntersection(inter1, _personSymType), "Car & Person");
+    check(createIntersection(inter1, inter2), "Car & Person & int");
 
     // combine unions and intersections
     check(createUnion(inter1, _personSymType), "Person");
-    check(createUnion(inter1, _intSymType), "((Car & Person) | int)");
-    check(createUnion(inter1, union2), "(Person | int)");
-    check(createUnion(inter1, union1), "(Car | Person)");
-    check(createUnion(inter1, inter2), "((Car & Person) | (Person & int))");
+    check(createUnion(inter1, _intSymType), "(Car & Person) | int");
+    check(createUnion(inter1, union2), "Person | int");
+    check(createUnion(inter1, union1), "Car | Person");
+    check(createUnion(inter1, inter2), "(Car & Person) | (Person & int)");
 
     check(createIntersection(union1, _personSymType), "Person");
-    check(createIntersection(union1, _intSymType), "((Car & int) | (Person & int))");
-    check(createIntersection(union1, union2), "((Car & int) | Person)");
-    check(createIntersection(union1, inter1), "(Car & Person)");
-    check(createIntersection(union1, inter2), "(Person & int)");
+    check(createIntersection(union1, _intSymType), "(Car & int) | (Person & int)");
+    check(createIntersection(union1, union2), "(Car & int) | Person");
+    check(createIntersection(union1, inter1), "Car & Person");
+    check(createIntersection(union1, inter2), "Person & int");
 
     // normalize within arrays
     check(

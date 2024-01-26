@@ -259,8 +259,8 @@ public class SymTypeExpressionTest {
     assertEquals("(double, int) -> int", teFunc2.print());
     assertEquals("((double, int) -> int) -> () -> void", teFunc3.print());
     assertEquals("(double, int...) -> void", teFunc4.print());
-    assertEquals("(double | int)", teUnion1.print());
-    assertEquals("(double & int)", teInter1.print());
+    assertEquals("double | int", teUnion1.print());
+    assertEquals("double & int", teInter1.print());
     assertEquals("(int, double)", teTuple1.print());
     assertEquals("R\"gr(a|e)y\"", teRegEx1.print());
   }
@@ -707,25 +707,25 @@ public class SymTypeExpressionTest {
     assertEquals("() -> void", tFunc1.print());
 
     SymTypeOfFunction tFunc2 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(tFunc1, tFunc1));
-    assertEquals("(() -> void, () -> void) -> void", tFunc2.print());
+    assertEquals("((() -> void), (() -> void)) -> void", tFunc2.print());
 
     SymTypeOfFunction tFunc3 = SymTypeExpressionFactory.createFunction(tVoid, tFunc1, tFunc1);
-    assertEquals("(() -> void, () -> void) -> void", tFunc3.print());
+    assertEquals("((() -> void), (() -> void)) -> void", tFunc3.print());
 
     SymTypeOfFunction tFunc4 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(teDouble, teInt), true);
     assertEquals("(double, int...) -> void", tFunc4.print());
 
     SymTypeOfUnion tUnion1 = createUnion(teInt, teDouble);
-    assertEquals("(double | int)", tUnion1.print());
+    assertEquals("double | int", tUnion1.print());
 
     SymTypeOfUnion tUnion2 = createUnion(Set.of(teInt, teDouble, teArr1));
-    assertEquals("(Human[] | double | int)", tUnion2.print());
+    assertEquals("Human[] | double | int", tUnion2.print());
 
     SymTypeOfIntersection tInter1 = createIntersection(teInt, teDouble);
-    assertEquals("(double & int)", tInter1.print());
+    assertEquals("double & int", tInter1.print());
 
     SymTypeOfIntersection tInter2 = createIntersection(Set.of(teInt, teDouble, teArr1));
-    assertEquals("(Human[] & double & int)", tInter2.print());
+    assertEquals("Human[] & double & int", tInter2.print());
 
     SymTypeOfTuple tTuple1 = createTuple(teInt, teDouble);
     assertEquals("(int, double)", tTuple1.print());

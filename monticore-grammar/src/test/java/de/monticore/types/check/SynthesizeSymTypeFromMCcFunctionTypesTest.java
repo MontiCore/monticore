@@ -66,7 +66,7 @@ public class SynthesizeSymTypeFromMCcFunctionTypesTest {
   public void symTypeFromAST_TestHigherOrderEllipticFunction() throws IOException {
     testSynthesizePrintCompare(
         "(int) -> (() -> (int, long...) -> int...) -> void",
-        "int -> (() -> (int, long...) -> int...) -> void"
+        "int -> ((() -> (int, long...) -> int)...) -> void"
     );
   }
 
