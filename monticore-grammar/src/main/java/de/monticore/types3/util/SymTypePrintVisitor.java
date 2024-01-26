@@ -37,7 +37,9 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeArray symType) {
+    printOpeningBracketForInner(symType.getArgument());
     symType.getArgument().accept(this);
+    printClosingBracketForInner(symType.getArgument());
     for (int i = 1; i <= symType.getDim(); i++) {
       getPrint().append("[]");
     }
@@ -50,30 +52,44 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeOfFunction symType) {
-    boolean omitParenthesesAroundArguments =
-        symType.sizeArgumentTypes() == 1 &&
-            // we cannot recognize a function type correctly without parentheses
-            !symType.getArgumentType(0).isFunctionType() &&
-            // we cannot recognize a tuple type as such without parentheses
-            !symType.getArgumentType(0).isTupleType() &&
-            // int...->int seems less readable than (int...)->int
-            !symType.isElliptic();
-    if (!omitParenthesesAroundArguments) {
+    // print argument types
+    // special case to reduce the number of parentheses:
+    // int...->int seems less readable than (int...)->int
+    if (symType.sizeArgumentTypes() == 1 && !symType.isElliptic()) {
+      boolean omitParenthesesAroundArguments =
+          // we cannot recognize a function type correctly without parentheses
+          !symType.getArgumentType(0).isFunctionType() &&
+              // we cannot recognize a tuple type as such without parentheses
+              !symType.getArgumentType(0).isTupleType();
+      if (!omitParenthesesAroundArguments) {
+        getPrint().append("(");
+      }
+      symType.getArgumentType(0).accept(this);
+      if (!omitParenthesesAroundArguments) {
+        getPrint().append(')');
+      }
+    }
+    // standard case, guaranteed parentheses around arguments:
+    else {
       getPrint().append("(");
-    }
-    for (int i = 0; i < symType.sizeArgumentTypes(); i++) {
-      symType.getArgumentType(i).accept(this);
-      if (i < symType.sizeArgumentTypes() - 1) {
-        getPrint().append(", ");
+      for (int i = 0; i < symType.sizeArgumentTypes(); i++) {
+        SymTypeExpression innerType = symType.getArgumentType(i);
+        printOpeningBracketForInner(innerType);
+        innerType.accept(this);
+        printClosingBracketForInner(innerType);
+        if (i < symType.sizeArgumentTypes() - 1) {
+          getPrint().append(", ");
+        }
+        else if (symType.isElliptic()) {
+          getPrint().append("...");
+        }
       }
-      else if (symType.isElliptic()) {
-        getPrint().append("...");
-      }
-    }
-    if (!omitParenthesesAroundArguments) {
       getPrint().append(")");
     }
     getPrint().append(" -> ");
+    // MCFunction Type is right-associative
+    // and unions/intersection have a higher precedence,
+    // thus, no parentheses are required
     symType.getType().accept(this);
   }
 
@@ -82,7 +98,10 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
     getPrint().append(printTypeSymbol(symType.getTypeInfo()));
     getPrint().append('<');
     for (int i = 0; i < symType.sizeArguments(); i++) {
-      symType.getArgument(i).accept(this);
+      SymTypeExpression innerType = symType.getArgument(i);
+      printOpeningBracketForInner(innerType);
+      innerType.accept(this);
+      printClosingBracketForInner(innerType);
       if (i < symType.sizeArguments() - 1) {
         getPrint().append(',');
       }
@@ -92,13 +111,13 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeOfIntersection symType) {
-    getPrint().append("(");
     Collection<String> printedTypes = new ArrayList<>();
     for (SymTypeExpression type : symType.getIntersectedTypeSet()) {
       String typePrinted = calculate(type);
-      // As function's '->' has a lower precedence than '&',
+      // As function's '->' has a lower precedence than '&'
+      // and unions, and intersections are missing them for better readability
       // parentheses are added
-      if (type.isFunctionType()) {
+      if (isTypePrintedAsInfix(type)) {
         typePrinted = "(" + typePrinted + ")";
       }
       printedTypes.add(typePrinted);
@@ -108,7 +127,6 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
         .sorted()
         .collect(Collectors.joining(" & "))
     );
-    getPrint().append(")");
   }
 
   @Override
@@ -132,22 +150,27 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
   @Override
   public void visit(SymTypeOfTuple symType) {
     getPrint().append("(");
-    getPrint().append(symType.streamTypes()
-        .map(SymTypeExpression::print)
-        .collect(Collectors.joining(", "))
-    );
+    for (int i = 0; i < symType.sizeTypes(); i++) {
+      SymTypeExpression innerType = symType.getType(i);
+      printOpeningBracketForInner(innerType);
+      innerType.accept(this);
+      printClosingBracketForInner(innerType);
+      if (i < symType.sizeTypes() - 1) {
+        getPrint().append(", ");
+      }
+    }
     getPrint().append(")");
   }
 
   @Override
   public void visit(SymTypeOfUnion symType) {
-    getPrint().append("(");
     Collection<String> printedTypes = new ArrayList<>();
     for (SymTypeExpression type : symType.getUnionizedTypeSet()) {
       String typePrinted = calculate(type);
-      // As function's '->' has a lower precedence than '|',
+      // As function's '->' has a lower precedence than '&'
+      // and unions, and intersections are missing them for better readability
       // parentheses are added
-      if (type.isFunctionType()) {
+      if (isTypePrintedAsInfix(type)) {
         typePrinted = "(" + typePrinted + ")";
       }
       printedTypes.add(typePrinted);
@@ -157,7 +180,6 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
         .sorted()
         .collect(Collectors.joining(" | "))
     );
-    getPrint().append(")");
   }
 
   @Override
@@ -190,7 +212,9 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
       else {
         getPrint().append(" super ");
       }
+      printOpeningBracketForInner(symType.getBound());
       symType.getBound().accept(this);
+      printClosingBracketForInner(symType.getBound());
     }
   }
 
@@ -219,6 +243,33 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
     // restore stack
     this.print = oldPrint;
     return result;
+  }
+
+  /**
+   * prints an opening bracket if required for the inner type
+   */
+  protected void printOpeningBracketForInner(SymTypeExpression symType) {
+    if (isTypePrintedAsInfix(symType)) {
+      getPrint().append('(');
+    }
+  }
+
+  /**
+   * prints a closing bracket if required for the inner type
+   */
+  protected void printClosingBracketForInner(SymTypeExpression symType) {
+    if (isTypePrintedAsInfix(symType)) {
+      getPrint().append(')');
+    }
+  }
+
+  /**
+   * returns whether the type is printed as TypeA 'operator' TypeB
+   */
+  protected boolean isTypePrintedAsInfix(SymTypeExpression symType) {
+    return symType.isFunctionType() ||
+        symType.isUnionType() ||
+        symType.isIntersectionType();
   }
 
 }
