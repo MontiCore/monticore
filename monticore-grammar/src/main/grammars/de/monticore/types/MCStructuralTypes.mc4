@@ -11,6 +11,7 @@ import de.monticore.types.*;
  * Union types: A|B
  * Intersection types: A&B
  * Tuple types: (A, B)
+ * Bracket types: (A)
  *
  * This grammar is part of a hierarchy of types, namely
  * * types.MCBasicTypes.mc4
