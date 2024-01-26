@@ -66,9 +66,17 @@ public class MCStructuralTypesTypeVisitorTest
 
   @Test
   public void symTypeFromAST_TestUnionAndFunction() throws IOException {
-    checkType("(float | int) -> char | byte", "((float | int)) -> (byte | char)");
-    checkType("((float | int)) -> char | byte", "((float | int)) -> (byte | char)");
-    checkType("float | (int) -> char | byte", "((int) -> (byte | char) | float)");
+    checkType("float | int -> byte | char", "(float | int) -> (byte | char)");
+    checkType("(float) | int -> byte | char", "(float | int) -> (byte | char)");
+    checkType("(float | int) -> byte | char", "(float | int) -> (byte | char)");
+    checkType("(float | int -> byte) | char", "(((float | int) -> byte) | char)");
+    checkType("(float | int -> byte | char)", "(float | int) -> (byte | char)");
+    checkType("float | (int) -> byte | char", "(float | int) -> (byte | char)");
+    checkType("float | (int -> byte) | char", "((int -> byte) | char | float)");
+    checkType("float | (int -> byte | char)", "((int -> (byte | char)) | float)");
+    checkType("float | int -> (byte) | char", "(float | int) -> (byte | char)");
+    checkType("float | int -> (byte | char)", "(float | int) -> (byte | char)");
+    checkType("float | int -> byte | (char)", "(float | int) -> (byte | char)");
   }
 
 }

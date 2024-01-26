@@ -106,7 +106,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
         .anyMatch(p -> p.equals("() -> t")));
     assertTrue(constructors.stream()
         .map(SymTypeOfFunction::printFullName)
-        .anyMatch(p -> p.equals("(t) -> t")));
+        .anyMatch(p -> p.equals("t -> t")));
 
     assertNoFindings();
   }
@@ -169,7 +169,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
     assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
 
     type = calculateTypeWithinScope("t", innerOOType.getSpannedScope());
-    assertEquals("((float) -> t.t & (int) -> t.t)", type.printFullName());
+    assertEquals("((float -> t.t) & (int -> t.t))", type.printFullName());
 
     assertNoFindings();
   }

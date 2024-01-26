@@ -15,7 +15,7 @@ public class MCFunctionTypesTypeVisitorTest
 
   @Test
   public void symTypeFromAST_TestSimpleFunction1() throws IOException {
-    checkTypeRoundTrip("(int) -> int");
+    checkType("(int) -> int", "int -> int");
   }
 
   @Test
@@ -25,7 +25,7 @@ public class MCFunctionTypesTypeVisitorTest
 
   @Test
   public void symTypeFromAST_TestSimpleFunction3() throws IOException {
-    checkType("int -> int", "(int) -> int");
+    checkType("int -> int", "int -> int");
   }
 
   @Test
@@ -40,11 +40,11 @@ public class MCFunctionTypesTypeVisitorTest
 
   @Test
   public void symTypeFromAST_TestHigherOrderFunction1() throws IOException {
-    checkTypeRoundTrip("((int) -> void) -> () -> int");
+    checkTypeRoundTrip("(int -> void) -> () -> int");
   }
 
   @Test
   public void symTypeFromAST_TestHigherOrderEllipticFunction() throws IOException {
-    checkTypeRoundTrip("(int) -> (() -> (int, long...) -> int...) -> void");
+    checkTypeRoundTrip("int -> (() -> (int, long...) -> int...) -> void");
   }
 }

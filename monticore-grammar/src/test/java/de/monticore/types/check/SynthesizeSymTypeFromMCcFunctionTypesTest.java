@@ -6,6 +6,7 @@ import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineE
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
 import de.monticore.types.mcfunctiontypestest._parser.MCFunctionTypesTestParser;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,7 +39,7 @@ public class SynthesizeSymTypeFromMCcFunctionTypesTest {
 
   @Test
   public void symTypeFromAST_TestSimpleFunction1() throws IOException {
-    testSynthesizePrintCompare("(int) -> int");
+    testSynthesizePrintCompare("(int) -> int", "int -> int");
   }
 
   @Test
@@ -57,19 +59,26 @@ public class SynthesizeSymTypeFromMCcFunctionTypesTest {
 
   @Test
   public void symTypeFromAST_TestHigherOrderFunction1() throws IOException {
-    testSynthesizePrintCompare("((int) -> void) -> () -> int");
+    testSynthesizePrintCompare("(int -> void) -> () -> int");
   }
 
   @Test
   public void symTypeFromAST_TestHigherOrderEllipticFunction() throws IOException {
-    testSynthesizePrintCompare("(int) -> (() -> (int, long...) -> int...) -> void");
+    testSynthesizePrintCompare(
+        "(int) -> (() -> (int, long...) -> int...) -> void",
+        "int -> (() -> (int, long...) -> int...) -> void"
+    );
   }
 
   protected ASTMCFunctionType parse(String mcTypeStr) throws IOException {
     MCFunctionTypesTestParser parser = new MCFunctionTypesTestParser();
     Optional<ASTMCFunctionType> typeOpt = parser.parse_StringMCFunctionType(mcTypeStr);
     assertNotNull(typeOpt);
-    assertTrue(typeOpt.isPresent());
+    assertTrue(Log.getFindings().stream()
+            .map(Finding::toString)
+            .collect(Collectors.joining("\n")),
+        typeOpt.isPresent()
+    );
     assertEquals(0, Log.getFindingsCount());
     return typeOpt.get();
   }
@@ -105,9 +114,14 @@ public class SynthesizeSymTypeFromMCcFunctionTypesTest {
 
   protected void testSynthesizePrintCompare(String mcTypeStr) throws IOException {
     // The symTypeExpression is to be printed the same way as the MCType
+    testSynthesizePrintCompare(mcTypeStr, mcTypeStr);
+  }
+
+  protected void testSynthesizePrintCompare(String mcTypeStr, String expected)
+      throws IOException {
     ASTMCFunctionType mcType = parse(mcTypeStr);
     SymTypeOfFunction symType = synthesizeType(mcType);
-    assertEquals(mcTypeStr, symType.printFullName());
+    assertEquals(expected, symType.printFullName());
   }
 
 }

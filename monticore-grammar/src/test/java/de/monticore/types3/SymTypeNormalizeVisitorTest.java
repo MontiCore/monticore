@@ -60,7 +60,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
             createFunction(_personSymType, _shortSymType),
             createFunction(_studentSymType, _intSymType)
         ),
-        "(int) -> Student"
+        "int -> Student"
     );
     assertNoFindings();
   }
@@ -79,7 +79,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
             createFunction(_personSymType, _shortSymType),
             createFunction(_studentSymType, _intSymType)
         ),
-        "(short) -> Person"
+        "short -> Person"
     );
     assertNoFindings();
   }
