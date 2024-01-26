@@ -86,47 +86,6 @@ public class SymTypeOfFunction extends SymTypeExpression {
     this(null, returnType, argumentTypes, elliptic);
   }
 
-  /**
-   * print: Umwandlung in einen kompakten String
-   */
-  @Override
-  public String print() {
-    final StringBuilder r = new StringBuilder();
-    r.append("(");
-    for (int i = 0; i < argumentTypes.size(); i++) {
-      r.append(argumentTypes.get(i).print());
-      if (i < argumentTypes.size() - 1) {
-        r.append(", ");
-      }
-      else if (isElliptic()) {
-        r.append("...");
-      }
-    }
-    r.append(")");
-    r.append(" -> ");
-    r.append(returnType.print());
-    return r.toString();
-  }
-
-  @Override
-  public String printFullName() {
-    final StringBuilder r = new StringBuilder();
-    r.append("(");
-    for (int i = 0; i < argumentTypes.size(); i++) {
-      r.append(argumentTypes.get(i).printFullName());
-      if (i < argumentTypes.size() - 1) {
-        r.append(", ");
-      }
-      else if (isElliptic()) {
-        r.append("...");
-      }
-    }
-    r.append(")");
-    r.append(" -> ");
-    r.append(returnType.printFullName());
-    return r.toString();
-  }
-
   @Override
   public boolean isFunctionType() {
     return true;
@@ -174,7 +133,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   /**
    * @return the return type of the function
-   * NOT the actual type of the function itself
+   *     NOT the actual type of the function itself
    */
   public SymTypeExpression getType() {
     return returnType;

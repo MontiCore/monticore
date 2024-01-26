@@ -38,30 +38,6 @@ public class SymTypeOfTuple extends SymTypeExpression {
   }
 
   @Override
-  public String print() {
-    final StringBuilder r = new StringBuilder();
-    r.append("(");
-    r.append(streamTypes()
-        .map(SymTypeExpression::print)
-        .collect(Collectors.joining(", "))
-    );
-    r.append(")");
-    return r.toString();
-  }
-
-  @Override
-  public String printFullName() {
-    final StringBuilder r = new StringBuilder();
-    r.append("(");
-    r.append(streamTypes()
-        .map(SymTypeExpression::printFullName)
-        .collect(Collectors.joining(", "))
-    );
-    r.append(")");
-    return r.toString();
-  }
-
-  @Override
   public boolean deepEquals(SymTypeExpression sym) {
     if (!sym.isTupleType()) {
       return false;

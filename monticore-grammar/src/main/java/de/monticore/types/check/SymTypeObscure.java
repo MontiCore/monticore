@@ -12,16 +12,6 @@ import java.util.List;
 public class SymTypeObscure extends SymTypeExpression {
 
   @Override
-  public String print() {
-    return "Obscure";
-  }
-
-  @Override
-  public String printFullName() {
-    return "Obscure";
-  }
-
-  @Override
   public SymTypeExpression deepClone() {
     return new SymTypeObscure();
   }

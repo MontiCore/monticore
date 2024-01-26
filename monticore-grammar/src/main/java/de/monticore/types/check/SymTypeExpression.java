@@ -11,6 +11,8 @@ import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
+import de.monticore.types3.util.SymTypePrintFullNameVisitor;
+import de.monticore.types3.util.SymTypePrintVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -27,13 +29,17 @@ public abstract class SymTypeExpression {
   /**
    * print: Conversion to a compact string, such as "int", "Person", "List< A >"
    */
-  public abstract String print();
+  public String print() {
+    return new SymTypePrintVisitor().calculate(this);
+  }
 
   /**
    * printFullName: prints the full name of the symbol, such as "java.util.List<java.lang.String>"
    * @return
    */
-  public abstract String printFullName();
+  public String printFullName() {
+    return new SymTypePrintFullNameVisitor().calculate(this);
+  }
   
   /**
    * printAsJson: Umwandlung in einen kompakten Json String
