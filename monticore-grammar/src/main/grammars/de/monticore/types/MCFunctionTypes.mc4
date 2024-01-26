@@ -32,7 +32,7 @@ component grammar MCFunctionTypes
     )? ")"
   ;
 
-  MCFunctionType implements MCType =
+  MCFunctionType implements MCType <80> =
     <rightassoc>
     MCFunctionParTypes "->"
     MCReturnType
@@ -44,7 +44,7 @@ component grammar MCFunctionTypes
    * This non-terminal is separate from MCFunctionType
    * to avoid Antlr issues due to mutual left recursion.
    */
-  MCFunctionTypeNoParentheses implements MCType =
+  MCFunctionTypeNoParentheses implements MCType <60> =
     <rightassoc>
     parameter:MCType "->"
     MCReturnType
