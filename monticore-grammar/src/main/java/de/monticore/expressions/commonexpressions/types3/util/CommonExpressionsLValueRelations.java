@@ -3,6 +3,7 @@ package de.monticore.expressions.commonexpressions.types3.util;
 
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
+import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
 
@@ -15,7 +16,7 @@ public class CommonExpressionsLValueRelations implements ILValueRelations {
    */
   @Override
   public boolean isLValue(ASTExpression expression) {
-    CommonExpressionsTypeDispatcher dispatcher =
+    ICommonExpressionsTypeDispatcher dispatcher =
         CommonExpressionsMill.typeDispatcher();
     boolean result;
     if (dispatcher.isASTNameExpression(expression)) {

@@ -4,10 +4,10 @@ package de.monticore.expressions.assignmentexpressions.cocos;
 import de.monticore.expressions.assignmentexpressions.AssignmentExpressionsMill;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTAssignmentExpressionCoCo;
-import de.monticore.expressions.assignmentexpressions._util.AssignmentExpressionsTypeDispatcher;
+import de.monticore.expressions.assignmentexpressions._util.IAssignmentExpressionsTypeDispatcher;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
-import de.monticore.literals.mccommonliterals._util.MCCommonLiteralsTypeDispatcher;
+import de.monticore.literals.mccommonliterals._util.IMCCommonLiteralsTypeDispatcher;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.TypeCheckResult;
 import de.se_rwth.commons.logging.Log;
@@ -24,9 +24,9 @@ public class LiteralAssignmentMatchesRegExExpressionCoCo implements
   @Override
   public void check(ASTAssignmentExpression node) {
     TypeCheckResult leftResult = derive.deriveType(node.getLeft());
-    AssignmentExpressionsTypeDispatcher expressionsDispatcher =
+    IAssignmentExpressionsTypeDispatcher expressionsDispatcher =
         AssignmentExpressionsMill.typeDispatcher();
-    MCCommonLiteralsTypeDispatcher literalDispatcher =
+    IMCCommonLiteralsTypeDispatcher literalDispatcher =
         MCCommonLiteralsMill.typeDispatcher();
 
     if (leftResult.isPresentResult()) {

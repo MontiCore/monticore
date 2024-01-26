@@ -3,7 +3,6 @@ package de.monticore.codegen.cd2java.typedispatcher;
 
 import de.monticore.cd.facade.*;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code._util.CD4CodeTypeDispatcher;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.*;
@@ -16,23 +15,17 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherConstants.*;
-
 
 public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
@@ -58,420 +51,333 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
 
     String handlerName = getTypeDispatcherName(visitorService.getCDName());
 
-    List<ASTCDAttribute> optASTAttributes = optASTAttributes();
-    List<ASTCDAttribute> boolASTAttributes = boolASTAttributes();
-    List<ASTCDAttribute> optScopeAttributes = optScopeAttributes();
-    List<ASTCDAttribute> boolScopeAttributes = boolScopeAttributes();
-    List<ASTCDAttribute> optSymbolAttributes = optSymbolAttributes();
-    List<ASTCDAttribute> boolSymbolAttributes = boolSymbolAttributes();
-
-    List<ASTCDAttribute> superDispatchers = getDispatcherAttributes();
+    List<AttributeName> attributeNames = getAttributeNames();
+    List<ASTCDAttribute> optAttributes = createAttributesFromNames(attributeNames);
 
     List<ASTCDMethod> methods = new ArrayList<>();
 
-    methods.add(createResetMethod(superDispatchers,
-        optASTAttributes,
-        boolASTAttributes,
-        optScopeAttributes,
-        boolScopeAttributes,
-        optSymbolAttributes,
-        boolSymbolAttributes));
-
-    methods.addAll(isMethodsForAttributes(boolASTAttributes, NODE_TYPE, NODE_PARAMETER));
-    methods.addAll(isMethodsForAttributes(boolScopeAttributes, SCOPE_TYPE, SCOPE_PARAMETER));
-    methods.addAll(isMethodsForAttributes(boolSymbolAttributes, SYMBOL_TYPE, SYMBOL_PARAMETER));
-
-    methods.addAll(asMethodsForAttributes(optASTAttributes, NODE_TYPE, NODE_PARAMETER));
-    methods.addAll(asMethodsForAttributes(optScopeAttributes, SCOPE_TYPE, SCOPE_PARAMETER));
-    methods.addAll(asMethodsForAttributes(optSymbolAttributes, SYMBOL_TYPE, SYMBOL_PARAMETER));
-
-    methods.addAll(isMethodsForSuperLanguages(methods));
-    methods.addAll(asMethodsForSuperLanguages(methods));
-
+    methods.add(createResetMethod(optAttributes));
+    methods.addAll(createIsAsMethods(attributeNames));
     methods.addAll(createHandleMethods());
 
     ASTCDClass dispatcher = CD4CodeMill.cDClassBuilder()
         .setName(handlerName)
         .setModifier(PUBLIC.build())
         .setCDInterfaceUsage(getInterfaceUsage())
-        .addAllCDMembers(superDispatchers)
-        .addAllCDMembers(optASTAttributes)
-        .addAllCDMembers(boolASTAttributes)
-        .addAllCDMembers(optScopeAttributes)
-        .addAllCDMembers(boolScopeAttributes)
-        .addAllCDMembers(optSymbolAttributes)
-        .addAllCDMembers(boolSymbolAttributes)
-        .addCDMember(createConstructor(handlerName, superDispatchers))
+        .addAllCDMembers(optAttributes)
+        .addCDMember(createConstructor(handlerName))
         .addAllCDMembers(addTraverserElements())
         .addAllCDMembers(methods)
         .build();
 
-    addGettersAndSetters(boolASTAttributes, dispatcher);
-    addGettersAndSetters(boolScopeAttributes, dispatcher);
-    addGettersAndSetters(boolSymbolAttributes, dispatcher);
-    addGettersAndSetters(optASTAttributes, dispatcher);
-    addGettersAndSetters(optScopeAttributes, dispatcher);
-    addGettersAndSetters(optSymbolAttributes, dispatcher);
+    addGettersAndSetters(optAttributes, dispatcher);
 
     return dispatcher;
   }
 
-  protected List<ASTCDAttribute> getDispatcherAttributes() {
-    List<ASTCDAttribute> dispatchers = new ArrayList<>();
+  protected List<AttributeName> getAttributeNames() {
+    List<AttributeName> names = new ArrayList<>();
 
-    for (DiagramSymbol type : visitorService.getSuperCDsTransitive()) {
-      String pkg = type.getFullName().toLowerCase() + "." + UTILS_PACKAGE;
-      String superName = getTypeDispatcherName(type.getName());
-
-      dispatchers.add(CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(),
-          MCTypeFacade.getInstance().createQualifiedType(pkg + "." + superName),
-          uncapFirst(superName)));
-    }
-
-    return dispatchers;
-  }
-
-  protected List<ASTCDAttribute> optASTAttributes() {
-    List<ASTCDAttribute> attributes = new ArrayList<>();
-    Set<String> attributeNames = new HashSet<>();
-    for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
-      ASTCDAttribute optional = createOptional(visitorService.createASTFullName(typeSymbol), typeSymbol.getName());
-      if (!attributeNames.contains(optional.getName())) {
-        attributes.add(optional);
-        attributeNames.add(optional.getName());
+    for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes()) {
+      if (names.stream().map(n -> n.simpleName)
+          .noneMatch(n -> n.equals(typeSymbol.getName()))) {
+        names.add(new AttributeName(
+            typeSymbol.getName(),
+            visitorService.createASTFullName(typeSymbol),
+            NODE_TYPE, NODE_PARAMETER));
       }
     }
-    return attributes;
-  }
 
-  protected List<ASTCDAttribute> boolASTAttributes() {
-    List<ASTCDAttribute> attributes = new ArrayList<>();
-    Set<String> attributeNames = new HashSet<>();
-    for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
-      ASTCDAttribute aBoolean = createBoolean(typeSymbol.getName());
-      if (!attributeNames.contains(aBoolean.getName())) {
-        attributes.add(aBoolean);
-        attributeNames.add(aBoolean.getName());
+    for (String symbol : symbolTableService.retrieveSymbolNamesFromCD()) {
+      if (names.stream().map(n -> n.simpleName)
+          .noneMatch(n -> n.equals(symbolTableService.getSimpleNameFromSymbolName(symbol)))) {
+        names.add(new AttributeName(
+            symbolTableService.getSimpleNameFromSymbolName(symbol),
+            symbol, SYMBOL_TYPE, SYMBOL_PARAMETER
+        ));
       }
     }
-    return attributes;
-  }
 
-  protected List<ASTCDAttribute> optScopeAttributes() {
-    List<ASTCDAttribute> attributes = new ArrayList<>();
-
-    attributes.add(createOptional(symbolTableService.getArtifactScopeInterfaceFullName(),
-        symbolTableService.getArtifactScopeInterfaceSimpleName()));
-    attributes.add(createOptional(symbolTableService.getGlobalScopeInterfaceFullName(),
-        symbolTableService.getGlobalScopeInterfaceSimpleName()));
-    attributes.add(createOptional(symbolTableService.getScopeInterfaceFullName(),
-        symbolTableService.getScopeInterfaceSimpleName()));
-
-    return attributes;
-  }
-
-  protected List<ASTCDAttribute> boolScopeAttributes() {
-    List<ASTCDAttribute> attributes = new ArrayList<>();
-
-    attributes.add(createBoolean(symbolTableService.getArtifactScopeInterfaceSimpleName()));
-    attributes.add(createBoolean(symbolTableService.getGlobalScopeInterfaceSimpleName()));
-    attributes.add(createBoolean(symbolTableService.getScopeInterfaceSimpleName()));
-
-    return attributes;
-  }
-
-  protected List<ASTCDAttribute> optSymbolAttributes() {
-    List<ASTCDAttribute> attributes = new ArrayList<>();
-    for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
-      attributes.add(createOptional(symbol, symbolTableService.getSimpleNameFromSymbolName(symbol)));
+    if (names.stream().map(n -> n.simpleName)
+        .noneMatch(n -> n.equals(symbolTableService.getScopeInterfaceFullName()))) {
+      names.add(new AttributeName(
+          symbolTableService.getScopeInterfaceSimpleName(),
+          symbolTableService.getScopeInterfaceFullName(),
+          SCOPE_TYPE, SCOPE_PARAMETER
+      ));
     }
-    return attributes;
-  }
 
-  protected List<ASTCDAttribute> boolSymbolAttributes() {
-    List<ASTCDAttribute> attributes = new ArrayList<>();
-    for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
-      attributes.add(createBoolean(symbolTableService.getSimpleNameFromSymbolName(symbol)));
+    if (names.stream().map(n -> n.simpleName)
+        .noneMatch(n -> n.equals(symbolTableService.getArtifactScopeInterfaceFullName()))) {
+      names.add(new AttributeName(
+          symbolTableService.getArtifactScopeInterfaceSimpleName(),
+          symbolTableService.getArtifactScopeInterfaceFullName(),
+          SCOPE_TYPE, SCOPE_PARAMETER
+      ));
     }
+
+    if (names.stream().map(n -> n.simpleName)
+        .noneMatch(n -> n.equals(symbolTableService.getGlobalScopeInterfaceFullName()))) {
+      names.add(new AttributeName(
+          symbolTableService.getGlobalScopeInterfaceSimpleName(),
+          symbolTableService.getGlobalScopeInterfaceFullName(),
+          SCOPE_TYPE, SCOPE_PARAMETER
+      ));
+    }
+
+    for (DiagramSymbol diagramSymbol : visitorService.getSuperCDsTransitive()) {
+      for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(diagramSymbol)) {
+        if (names.stream().map(n -> n.simpleName)
+            .noneMatch(n -> n.equals(typeSymbol.getName()))) {
+          names.add(new AttributeName(
+              typeSymbol.getName(),
+              visitorService.createASTFullName(typeSymbol),
+              NODE_TYPE, NODE_PARAMETER));
+        }
+      }
+
+      for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(diagramSymbol)) {
+        if (names.stream().map(n -> n.simpleName)
+            .noneMatch(n -> n.equals(symbolTableService.getSimpleNameFromSymbolName(symbol)))) {
+          names.add(new AttributeName(
+              symbolTableService.getSimpleNameFromSymbolName(symbol),
+              symbol, SYMBOL_TYPE, SYMBOL_PARAMETER
+          ));
+        }
+      }
+
+      if (names.stream().map(n -> n.simpleName)
+          .noneMatch(n -> n.equals(symbolTableService.getScopeInterfaceFullName()))) {
+        names.add(new AttributeName(
+            symbolTableService.getScopeInterfaceSimpleName(diagramSymbol),
+            symbolTableService.getScopeInterfaceFullName(diagramSymbol),
+            SCOPE_TYPE, SCOPE_PARAMETER
+        ));
+      }
+
+      if (names.stream().map(n -> n.simpleName)
+          .noneMatch(n -> n.equals(symbolTableService.getArtifactScopeInterfaceFullName()))) {
+        names.add(new AttributeName(
+            symbolTableService.getArtifactScopeInterfaceSimpleName(diagramSymbol),
+            symbolTableService.getArtifactScopeInterfaceFullName(diagramSymbol),
+            SCOPE_TYPE, SCOPE_PARAMETER
+        ));
+      }
+
+      if (names.stream().map(n -> n.simpleName)
+          .noneMatch(n -> n.equals(symbolTableService.getGlobalScopeInterfaceFullName()))) {
+        names.add(new AttributeName(
+            symbolTableService.getGlobalScopeInterfaceSimpleName(diagramSymbol),
+            symbolTableService.getGlobalScopeInterfaceFullName(diagramSymbol),
+            SCOPE_TYPE, SCOPE_PARAMETER
+        ));
+      }
+    }
+
+    return names;
+  }
+
+  protected List<ASTCDAttribute> createAttributesFromNames(List<AttributeName> names) {
+    List<ASTCDAttribute> attributes = new ArrayList<>();
+
+    for (AttributeName name : names) {
+      attributes.add(createOptional(name));
+    }
+
     return attributes;
   }
 
-  protected ASTCDAttribute createOptional(String type, String name) {
+  protected ASTCDAttribute createOptional(AttributeName name) {
     return CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(),
-        MCTypeFacade.getInstance().createOptionalTypeOf(type),
-        "opt" + name);
+        MCTypeFacade.getInstance().createOptionalTypeOf(name.fullName),
+        String.format("opt%s", name.simpleName));
   }
 
-  protected ASTCDAttribute createBoolean(String type) {
-    return CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(),
-        MCTypeFacade.getInstance().createBooleanType(),
-        "is" + type);
-  }
-
-  protected ASTCDMethod createResetMethod(List<ASTCDAttribute> superDispatchers,
-                                          List<ASTCDAttribute> optASTAttributes,
-                                          List<ASTCDAttribute> boolASTAttributes,
-                                          List<ASTCDAttribute> optScopeAttributes,
-                                          List<ASTCDAttribute> boolScopeAttributes,
-                                          List<ASTCDAttribute> optSymbolAttributes,
-                                          List<ASTCDAttribute> boolSymbolAttributes) {
-
-    ASTCDMethod resetMethod = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
-        CD4CodeMill.mCReturnTypeBuilder().setMCVoidType(MCTypeFacade.getInstance().createVoidType()).build(),
+  protected ASTCDMethod createResetMethod(List<ASTCDAttribute> optAttributes) {
+    ASTCDMethod resetMethod = CDMethodFacade.getInstance().createMethod(
+        PUBLIC.build(),
+        CD4CodeMill.mCReturnTypeBuilder()
+            .setMCVoidType(MCTypeFacade.getInstance().createVoidType())
+            .build(),
         "reset");
 
-    List<ASTCDAttribute> optionals = new ArrayList<>();
-    List<ASTCDAttribute> booleans = new ArrayList<>();
-
-    optionals.addAll(optASTAttributes);
-    optionals.addAll(optScopeAttributes);
-    optionals.addAll(optSymbolAttributes);
-
-    booleans.addAll(boolASTAttributes);
-    booleans.addAll(boolScopeAttributes);
-    booleans.addAll(boolSymbolAttributes);
-
     replaceTemplate(EMPTY_BODY, resetMethod,
-        new TemplateHookPoint("dispatcher.Reset",
-            booleans, optionals, superDispatchers));
+        new TemplateHookPoint("dispatcher.Reset", optAttributes));
 
     return resetMethod;
   }
 
-
-  protected List<ASTCDMethod> isMethodsForAttributes(List<ASTCDAttribute> attributes, String parameterType, String parameterName) {
+  protected List<ASTCDMethod> createIsAsMethods(List<AttributeName> names) {
     List<ASTCDMethod> methods = new ArrayList<>();
-    List<String> names = attributes.stream().map(ASTCDAttribute::getName).collect(Collectors.toList());
 
-    for (String name : names) {
+    CDMethodFacade methodFacade = CDMethodFacade.getInstance();
+    CDParameterFacade parameterFacade = CDParameterFacade.getInstance();
+    MCTypeFacade typeFacade = MCTypeFacade.getInstance();
 
-      ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
-          CD4CodeMill.mCReturnTypeBuilder().setMCType(MCTypeFacade.getInstance().createBooleanType()).build(),
-          name,
-          CDParameterFacade.getInstance().createParameter(MCTypeFacade.getInstance().createQualifiedType(parameterType),
-              parameterName));
+    for (AttributeName name : names) {
+      ASTCDMethod isMethod = methodFacade.createMethod(
+          PUBLIC.build(),
+          typeFacade.createBooleanType(),
+          String.format("is%s", name.simpleName),
+          parameterFacade.createParameter(name.type, name.parameterName));
 
-      replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("dispatcher.IsAST",
-          name,
-          parameterName,
-          "this"));
+      replaceTemplate(EMPTY_BODY, isMethod, new TemplateHookPoint(
+          "dispatcher.IsMethod", name.simpleName, name.parameterName));
 
-      methods.add(method);
+      methods.add(isMethod);
+
+      ASTCDMethod asMethod = methodFacade.createMethod(
+          PUBLIC.build(),
+          typeFacade.createQualifiedType(name.fullName),
+          String.format("as%s", name.simpleName),
+          parameterFacade.createParameter(name.type, name.parameterName));
+
+      replaceTemplate(EMPTY_BODY, asMethod, new TemplateHookPoint(
+          "dispatcher.AsMethod", name.simpleName, name.parameterName));
+
+      methods.add(asMethod);
     }
-    return methods;
-  }
-
-  protected List<ASTCDMethod> isMethodsForSuperLanguages(List<ASTCDMethod> presentMethods) {
-    List<ASTCDMethod> methods = new ArrayList<>();
-    List<String> methodNames = presentMethods.stream().map(ASTCDMethod::getName).collect(Collectors.toList());
-
-    for (DiagramSymbol superLanguage : visitorService.getSuperCDsTransitive()) {
-      for (TypeSymbol typeSymbol : visitorService.getAllCDTypes(superLanguage)) {
-        String name = "is" + typeSymbol.getName();
-        if (!methodNames.contains(name)) {
-          methodNames.add(name);
-          methods = isMethodsForSuperLanguages(methods, name, NODE_TYPE, NODE_PARAMETER, superLanguage);
-        }
-      }
-
-      for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(superLanguage)) {
-        String name = "is" + symbolTableService.getSimpleNameFromSymbolName(symbol);
-        if (!methodNames.contains(name)) {
-          methods = isMethodsForSuperLanguages(methods, name, SYMBOL_TYPE, SYMBOL_PARAMETER, superLanguage);
-          methodNames.add(name);
-        }
-      }
-      if (!methodNames.contains("is" + symbolTableService.getArtifactScopeInterfaceSimpleName())) {
-        methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getArtifactScopeInterfaceSimpleName(),
-            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
-        methodNames.add("is" + symbolTableService.getArtifactScopeInterfaceSimpleName());
-      }
-      if (!methodNames.contains("is" + symbolTableService.getGlobalScopeInterfaceSimpleName())) {
-        methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getGlobalScopeInterfaceSimpleName(),
-            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
-        methodNames.add("is" + symbolTableService.getGlobalScopeInterfaceSimpleName());
-      }
-      if (!methodNames.contains("is" + symbolTableService.getScopeInterfaceSimpleName())) {
-        methods = isMethodsForSuperLanguages(methods, "is" + symbolTableService.getScopeInterfaceSimpleName(),
-            SCOPE_TYPE, SCOPE_PARAMETER, superLanguage);
-        methodNames.add("is" + symbolTableService.getScopeInterfaceSimpleName());
-      }
-    }
-
-    return methods;
-  }
-
-  protected List<ASTCDMethod> isMethodsForSuperLanguages(List<ASTCDMethod> methods, String name,
-                                                         String parameterType, String parameterName,
-                                                         DiagramSymbol superLanguage) {
-    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
-        MCTypeFacade.getInstance().createBooleanType(), name,
-        CDParameterFacade.getInstance().createParameter(MCTypeFacade.getInstance().createQualifiedType(parameterType),
-            parameterName));
-
-    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("dispatcher.IsAST",
-        name,
-        parameterName,
-        getTypeDispatcherName(superLanguage.getName())));
-
-    methods.add(method);
-
-    return methods;
-  }
-
-  protected List<ASTCDMethod> asMethodsForAttributes(List<ASTCDAttribute> attributes, String parameterType, String parameterName) {
-    List<ASTCDMethod> methods = new ArrayList<>();
-    for (ASTCDAttribute attribute : attributes) {
-      String name = attribute.getName();
-      name = name.substring(name.indexOf("opt") + 3);
-
-      CD4CodeTypeDispatcher dispatcher = new CD4CodeTypeDispatcher();
-      ASTMCGenericType result = dispatcher.asASTMCGenericType(attribute.getMCType());
-
-      ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
-          result.getMCTypeArgument(0).getMCTypeOpt().get(),
-          "as" + name, CDParameterFacade.getInstance().createParameter(MCTypeFacade.getInstance()
-              .createQualifiedType(parameterType), parameterName));
-
-      replaceTemplate(EMPTY_BODY, method,
-          new TemplateHookPoint("dispatcher.AsAST", name, parameterName, "this"));
-
-      methods.add(method);
-    }
-    return methods;
-  }
-
-  protected List<ASTCDMethod> asMethodsForSuperLanguages(List<ASTCDMethod> presentMethods) {
-    List<ASTCDMethod> methods = new ArrayList<>();
-    List<String> methodNames = presentMethods.stream().map(ASTCDMethod::getName).collect(Collectors.toList());
-
-    for (DiagramSymbol superLanguage : visitorService.getSuperCDsTransitive()) {
-      for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(superLanguage)) {
-        String name = typeSymbol.getName();
-        if (!methodNames.contains("as" + name)) {
-          methodNames.add("as" + name);
-          methods = asMethodsForSuperLanguages(methods, name, visitorService.createASTFullName(typeSymbol),
-              NODE_TYPE, NODE_PARAMETER, superLanguage);
-        }
-      }
-
-      for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(superLanguage)) {
-        String name = symbolTableService.getSimpleNameFromSymbolName(symbol);
-        if (!methodNames.contains("as" + name)) {
-          methods = asMethodsForSuperLanguages(methods, name, symbol,
-              SYMBOL_TYPE, SYMBOL_PARAMETER, superLanguage);
-          methodNames.add("as" + name);
-        }
-      }
-      if (!methodNames.contains("as" + symbolTableService.getArtifactScopeInterfaceSimpleName())) {
-        methods = asMethodsForSuperLanguages(methods, symbolTableService.getArtifactScopeInterfaceSimpleName(),
-            symbolTableService.getArtifactScopeInterfaceFullName(), SCOPE_TYPE,
-            SCOPE_PARAMETER, superLanguage);
-        methodNames.add("as" + symbolTableService.getArtifactScopeInterfaceSimpleName());
-      }
-      if (!methodNames.contains("as" + symbolTableService.getGlobalScopeInterfaceSimpleName())) {
-        methods = asMethodsForSuperLanguages(methods, symbolTableService.getGlobalScopeInterfaceSimpleName(),
-            symbolTableService.getGlobalScopeInterfaceFullName(), SCOPE_TYPE,
-            SCOPE_PARAMETER, superLanguage);
-        methodNames.add("as" + symbolTableService.getGlobalScopeInterfaceSimpleName());
-      }
-      if (!methodNames.contains("as" + symbolTableService.getScopeInterfaceSimpleName())) {
-        methods = asMethodsForSuperLanguages(methods, symbolTableService.getScopeInterfaceSimpleName(),
-            symbolTableService.getScopeInterfaceFullName(), SCOPE_TYPE,
-            SCOPE_PARAMETER, superLanguage);
-        methodNames.add("as" + symbolTableService.getScopeInterfaceSimpleName());
-      }
-    }
-
-    return methods;
-  }
-
-  protected List<ASTCDMethod> asMethodsForSuperLanguages(List<ASTCDMethod> methods, String name, String type, String parameterType, String parameterName, DiagramSymbol superLanguage) {
-    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(),
-        MCTypeFacade.getInstance().createQualifiedType(type), "as" + name,
-        CDParameterFacade.getInstance().createParameter(MCTypeFacade.getInstance()
-            .createQualifiedType(parameterType), parameterName));
-
-    replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint("dispatcher.AsAST",
-            name,
-            parameterName,
-            getTypeDispatcherName(superLanguage.getName())));
-
-    methods.add(method);
 
     return methods;
   }
 
   protected List<ASTCDMethod> createHandleMethods() {
     List<ASTCDMethod> methods = new ArrayList<>();
+    List<String> handleParameter = new ArrayList<>();
 
-    handleMethod(methods,
+    methods.add(handleMethod(
         symbolTableService.getArtifactScopeInterfaceSimpleName(),
-        symbolTableService.getArtifactScopeInterfaceType(),
+        symbolTableService.getArtifactScopeInterfaceFullName(), SCOPE_PARAMETER,
         symbolTableService.getSuperCDsTransitive().stream()
             .map(symbolTableService::getArtifactScopeInterfaceFullName)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList())));
+    handleParameter.add(symbolTableService.getArtifactScopeInterfaceSimpleName());
 
-    handleMethod(methods,
+    methods.add(handleMethod(
         symbolTableService.getGlobalScopeInterfaceSimpleName(),
-        symbolTableService.getGlobalScopeInterfaceType(),
+        symbolTableService.getGlobalScopeInterfaceFullName(), SCOPE_PARAMETER,
         symbolTableService.getSuperCDsTransitive().stream()
             .map(symbolTableService::getGlobalScopeInterfaceFullName)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList())));
+    handleParameter.add(symbolTableService.getGlobalScopeInterfaceSimpleName());
 
-    handleMethod(methods,
+    methods.add(handleMethod(
         symbolTableService.getScopeInterfaceSimpleName(),
-        symbolTableService.getScopeInterfaceType(),
+        symbolTableService.getScopeInterfaceFullName(), SCOPE_PARAMETER,
         symbolTableService.getSuperCDsTransitive().stream()
             .map(symbolTableService::getScopeInterfaceFullName)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList())));
+    handleParameter.add(symbolTableService.getScopeInterfaceSimpleName());
 
-    for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(symbolTableService.getCDSymbol())) {
-      handleMethod(methods,
+    for (String symbol : symbolTableService.retrieveSymbolNamesFromCD()) {
+      methods.add(handleMethod(
           symbolTableService.getSimpleNameFromSymbolName(symbol),
-          MCTypeFacade.getInstance().createQualifiedType(symbol),
-          List.of(symbolTableService.getCommonSymbolInterfaceFullName(), SYMBOL_TYPE));
+          symbol, SYMBOL_PARAMETER,
+          List.of(symbolTableService.getCommonSymbolInterfaceFullName(), SYMBOL_TYPE)));
+      handleParameter.add(symbolTableService.getSimpleNameFromSymbolName(symbol));
     }
 
-    for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(visitorService.getCDSymbol())) {
-      List<String> superTypes = typeSymbol.getSuperTypesList()
-          .stream()
-          .filter(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).checkLazyLoadDelegate())
-          .map(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).lazyLoadDelegate())
-          .filter(t -> t instanceof CDTypeSymbol)
-          .map(s -> visitorService.createASTFullName((CDTypeSymbol) s))
-          .collect(Collectors.toList());
-
-      handleMethod(methods,
+    for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes()) {
+      List<String> superTypes = getSuperTypes(typeSymbol);
+      methods.add(handleMethod(
           typeSymbol.getName(),
-          MCTypeFacade.getInstance().createQualifiedType(visitorService.createASTFullName(typeSymbol)),
-          superTypes);
+          visitorService.createASTFullName(typeSymbol),
+          NODE_PARAMETER, superTypes));
+      handleParameter.add(typeSymbol.getName());
     }
+
+    for (DiagramSymbol diagramSymbol : visitorService.getSuperCDsTransitive()) {
+      if (!handleParameter.contains(symbolTableService.getArtifactScopeInterfaceSimpleName(diagramSymbol))) {
+        methods.add(handleMethod(
+            symbolTableService.getArtifactScopeInterfaceSimpleName(diagramSymbol),
+            symbolTableService.getArtifactScopeInterfaceFullName(diagramSymbol), SCOPE_PARAMETER,
+            symbolTableService.getSuperCDsTransitive(diagramSymbol).stream()
+                .map(symbolTableService::getArtifactScopeInterfaceFullName)
+                .collect(Collectors.toList())));
+        handleParameter.add(symbolTableService.getArtifactScopeInterfaceSimpleName(diagramSymbol));
+      }
+
+      if (!handleParameter.contains(symbolTableService.getGlobalScopeInterfaceSimpleName(diagramSymbol))) {
+        methods.add(handleMethod(
+            symbolTableService.getGlobalScopeInterfaceSimpleName(diagramSymbol),
+            symbolTableService.getGlobalScopeInterfaceFullName(diagramSymbol), SCOPE_PARAMETER,
+            symbolTableService.getSuperCDsTransitive(diagramSymbol).stream()
+                .map(symbolTableService::getGlobalScopeInterfaceFullName)
+                .collect(Collectors.toList())));
+        handleParameter.add(symbolTableService.getGlobalScopeInterfaceSimpleName(diagramSymbol));
+      }
+
+      if (!handleParameter.contains(symbolTableService.getScopeInterfaceSimpleName(diagramSymbol))) {
+        methods.add(handleMethod(
+            symbolTableService.getScopeInterfaceSimpleName(diagramSymbol),
+            symbolTableService.getScopeInterfaceFullName(diagramSymbol), SCOPE_PARAMETER,
+            symbolTableService.getSuperCDsTransitive(diagramSymbol).stream()
+                .map(symbolTableService::getScopeInterfaceFullName)
+                .collect(Collectors.toList())));
+        handleParameter.add(symbolTableService.getScopeInterfaceSimpleName(diagramSymbol));
+      }
+
+      for (String symbol : symbolTableService.retrieveSymbolNamesFromCD(diagramSymbol)) {
+        if (!handleParameter.contains(symbolTableService.getSimpleNameFromSymbolName(symbol))) {
+          methods.add(handleMethod(
+              symbolTableService.getSimpleNameFromSymbolName(symbol),
+              symbol, SYMBOL_PARAMETER,
+              List.of(symbolTableService.getCommonSymbolInterfaceFullName(diagramSymbol), SYMBOL_TYPE)));
+          handleParameter.add(symbolTableService.getSimpleNameFromSymbolName(symbol));
+        }
+      }
+
+      for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(diagramSymbol)) {
+        if (!handleParameter.contains(typeSymbol.getName())) {
+          List<String> superTypes = getSuperTypes(typeSymbol);
+          methods.add(handleMethod(
+              typeSymbol.getName(),
+              visitorService.createASTFullName(typeSymbol),
+              NODE_PARAMETER, superTypes));
+          handleParameter.add(typeSymbol.getName());
+        }
+      }
+    }
+
     return methods;
   }
 
-  protected void handleMethod(List<ASTCDMethod> methods, String typeName, ASTMCType type, List<String> superTypes) {
-    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(PUBLIC.build(), CD4CodeMill.mCReturnTypeBuilder()
-        .setMCVoidType(MCTypeFacade.getInstance().createVoidType()).build(), "handle",
-        CDParameterFacade.getInstance().createParameter(type, "node"));
-
-    replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint("dispatcher.Handle", typeName, superTypes, getTypeDispatcherName(visitorService.getCDName())));
-
-    methods.add(method);
+  protected List<String> getSuperTypes(CDTypeSymbol typeSymbol) {
+    return typeSymbol.getSuperTypesList()
+        .stream()
+        .filter(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).checkLazyLoadDelegate())
+        .map(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).lazyLoadDelegate())
+        .filter(t -> t instanceof CDTypeSymbol)
+        .map(s -> visitorService.createASTFullName((CDTypeSymbol) s))
+        .collect(Collectors.toList());
   }
 
-  protected ASTCDConstructor createConstructor(String name, List<ASTCDAttribute> superDispatchers) {
+  protected ASTCDMethod handleMethod(String typeName,
+                                     String type,
+                                     String parameterName,
+                                     List<String> superTypes) {
+    ASTCDMethod method = CDMethodFacade.getInstance().createMethod(
+        PUBLIC.build(),
+        CD4CodeMill.mCReturnTypeBuilder()
+            .setMCVoidType(MCTypeFacade.getInstance().createVoidType()).build(), "handle",
+        CDParameterFacade.getInstance().createParameter(type, parameterName));
+
+    replaceTemplate(EMPTY_BODY, method,
+        new TemplateHookPoint(
+            "dispatcher.Handle",
+            typeName, superTypes, parameterName));
+
+    return method;
+  }
+
+  protected ASTCDConstructor createConstructor(String name) {
     ASTCDConstructor constructor = CDConstructorFacade.getInstance().createConstructor(PUBLIC.build(), name);
 
-    replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("dispatcher.Constructor",
-        visitorService.getTraverserInterfaceFullName(),
-        visitorService.getMillFullName(),
-        superDispatchers.stream().map(ASTCDAttribute::getName).collect(Collectors.toList()),
-        superDispatchers.stream().map(a -> a.getMCType().printType()).collect(Collectors.toList()),
-        visitorService.getSuperCDsTransitive().stream().map(DiagramSymbol::getName).collect(Collectors.toList()),
-        visitorService.getCDName()));
+    replaceTemplate(EMPTY_BODY, constructor,
+        new TemplateHookPoint("dispatcher.Constructor",
+            visitorService.getTraverserInterfaceFullName(),
+            visitorService.getMillFullName(),
+            visitorService.getCDName()));
 
     return constructor;
   }
@@ -505,7 +411,9 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
 
   protected ASTCDInterfaceUsage getInterfaceUsage() {
     return CDInterfaceUsageFacade.getInstance()
-        .createCDInterfaceUsage(visitorService.getHandlerFullName());
+        .createCDInterfaceUsage(
+            visitorService.getHandlerFullName(),
+            String.format("I%s", getTypeDispatcherName(visitorService.getCDName())));
   }
 
   protected void addGettersAndSetters(List<ASTCDAttribute> attributes, ASTCDType type) {
@@ -515,8 +423,20 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     }
   }
 
-  protected String uncapFirst(String s) {
-    return s.isEmpty() ? s : s.substring(0, 1).toLowerCase() + s.substring(1);
-  }
+  protected static class AttributeName {
 
+    protected String simpleName;
+    protected String fullName;
+
+    protected String type;
+
+    protected String parameterName;
+
+    public AttributeName(String simpleName, String fullName, String type, String parameterName) {
+      this.simpleName = simpleName;
+      this.fullName = fullName;
+      this.type = type;
+      this.parameterName = parameterName;
+    }
+  }
 }

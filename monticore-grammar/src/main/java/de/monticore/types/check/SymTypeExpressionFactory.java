@@ -9,6 +9,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
+import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -327,7 +328,7 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeExpression createFromSymbol(TypeSymbol typeSymbol) {
-    BasicSymbolsTypeDispatcher typeDispatcher =
+    IBasicSymbolsTypeDispatcher typeDispatcher =
         BasicSymbolsMill.typeDispatcher();
     if(typeDispatcher.isTypeVar(typeSymbol)) {
       return createTypeVariable((TypeVarSymbol) typeSymbol);

@@ -5,6 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
+import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
@@ -409,7 +410,7 @@ public class Type4Ast {
    * whether the expression represents a qualified name
    */
   protected boolean isQNameExpr(ASTExpression expr) {
-    CommonExpressionsTypeDispatcher typeDispatcher =
+    ICommonExpressionsTypeDispatcher typeDispatcher =
         CommonExpressionsMill.typeDispatcher();
     if (typeDispatcher.isASTNameExpression(expr)) {
       return true;
