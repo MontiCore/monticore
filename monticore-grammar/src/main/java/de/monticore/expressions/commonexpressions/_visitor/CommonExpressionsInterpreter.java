@@ -486,6 +486,25 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   }
 
   @Override
+  public Value interpret(ASTPlusPrefixExpression node) {
+    Value expr = node.getExpression().evaluate(getRealThis());
+
+    if (expr.isObject() || expr.isBoolean() || expr.isString()) {
+      Log.error("Plus Prefix operation is not applicable for these types.");
+    } else if (expr.isInt()) {
+      return ValueFactory.createValue(expr.asInt());
+    } else if (expr.isLong()) {
+      return ValueFactory.createValue(+expr.asLong());
+    } else if (expr.isDouble()) {
+      return ValueFactory.createValue(+expr.asDouble());
+    } else if (expr.isFloat()) {
+      return ValueFactory.createValue(+expr.asFloat());
+    } else if (expr.isChar()) {
+      return ValueFactory.createValue(+expr.asChar());
+    }
+    return new NotAValue();
+  }
+  @Override
   public Value interpret(ASTEqualsExpression node) {
     Value left = node.getLeft().evaluate(getRealThis());
     Value right = node.getRight().evaluate(getRealThis());
@@ -1078,27 +1097,24 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   /*=================================================================*/
   @Override
   public Value interpret(ASTBracketExpression node) {
-    Value res = node.getExpression().evaluate(getRealThis());
-
-    if (res.isInt()) {
-      return ValueFactory.createValue(res.asInt());
-    } else if (res.isDouble()) {
-      return ValueFactory.createValue(res.asDouble());
-    } else if (res.isChar()) {
-      return ValueFactory.createValue(res.asChar());
-    } else if (res.isString()) {
-      return ValueFactory.createValue(res.asString());
-    } else if (res.isObject()) {
-      return ValueFactory.createValue(res.asObject());
-    } else if (res.isFloat()) {
-      return ValueFactory.createValue(res.asFloat());
-    } else if (res.isLong()) {
-      return ValueFactory.createValue(res.asLong());
-    } else {
-      return ValueFactory.createValue(res.asBoolean());
-    }
+    return node.getExpression().evaluate(getRealThis());
   }
 
+  @Override
+  public Value interpret(ASTConditionalExpression node) {
+    Value condition = node.getCondition().evaluate(getRealThis());
+    if (!condition.isBoolean()) {
+      Log.error("Condition of Ternary Operator has to be a Boolean Type");
+    }
+
+    if (condition.asBoolean()) {
+      return node.getTrueExpression().evaluate(getRealThis());
+    } else if (!condition.asBoolean()){
+      return node.getFalseExpression().evaluate(getRealThis());
+    } else {
+      return new NotAValue();
+    }
+  }
 
   /*=================================================================*/
   //Field Access operation

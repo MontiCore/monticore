@@ -849,6 +849,12 @@ public class CommonExpressionsInterpreterTest {
   }
 
   @Test
+  public void testConditionalExpression() {
+    testValidExpression("(true) ? 1 : 2", ValueFactory.createValue(1));
+    testValidExpression("5 <= 10%5 || !true && true ? (3 + 2 * 2) / 14.0 : ((1 > 2L) && ('z' <= 15.243f))", ValueFactory.createValue(false));
+  }
+
+  @Test
   public void testCombinedExpressions() {
     testValidExpression("((1 > 2L) && ('z' <= 15.243f)) || true", ValueFactory.createValue(true));
     testValidExpression("(3 + 2 * 2) / 14.0", ValueFactory.createValue(0.5));
