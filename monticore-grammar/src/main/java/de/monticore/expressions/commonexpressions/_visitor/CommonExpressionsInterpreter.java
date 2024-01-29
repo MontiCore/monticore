@@ -115,7 +115,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
         Log.error("Plus operation is not applicable for these types.");
       }
     } else if (left.isLong() || right.isLong()) {
-      if (left.isLong() || right.isLong()) {
+      if (left.isLong() && right.isLong()) {
         return ValueFactory.createValue(left.asLong() + right.asLong());
       } else if (left.isChar()) {
         return ValueFactory.createValue(left.asChar() + right.asLong());

@@ -6,6 +6,8 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsInterpreter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.interpreter.Value;
+import de.monticore.interpreter.ValueFactory;
+import de.monticore.interpreter.values.NotAValue;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -26,1588 +28,875 @@ public class CommonExpressionsInterpreterTest {
     LogStub.init();
     Log.clearFindings();
     Log.enableFailQuick(false);
-
-    /*
-    DefsTypesForTests.setup();
-    InterpretationResFactory factory = new InterpretationResFactory();
-    interpreter.store(CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-        .setType(DefsTypesForTests._personSymType)
-        .setName("a")
-        .setFullName("a")
-        .setPackageName("")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-        .setAccessModifier(AccessModifier.ALL_INCLUSION)
-        .build(), factory.createInterpretationRes(PERSON_A));
-    interpreter.store(CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-        .setType(DefsTypesForTests._personSymType)
-        .setName("b")
-        .setFullName("b")
-        .setPackageName("")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-        .setAccessModifier(AccessModifier.ALL_INCLUSION)
-        .build(), factory.createInterpretationRes(PERSON_B));
-    interpreter.store(CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-        .setType(DefsTypesForTests._personSymType)
-        .setName("c")
-        .setFullName("c")
-        .setPackageName("")
-        .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-        .setAccessModifier(AccessModifier.ALL_INCLUSION)
-        .build(), factory.createInterpretationRes(PERSON_C));
-    */
   }
 
   @Test
-  public void testInterpretPlusExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true + false");
+  public void testInterpretPlusExpression() {
+    testInvalidExpression("true + false");
+    testInvalidExpression("true + 1");
+    testInvalidExpression("1 + false");
+    testInvalidExpression("true + 1L");
+    testInvalidExpression("1L + false");
+    testInvalidExpression("true + 1.2f");
+    testInvalidExpression("1.5f + false");
+    testInvalidExpression("true + 1.2");
+    testInvalidExpression("1.5 + false");
+    testInvalidExpression("true + 'a'");
+    testInvalidExpression("'a' + false");
+    testValidExpression("true + \"a\"", ValueFactory.createValue("truea"));
+    testValidExpression("\"a\" + false", ValueFactory.createValue("afalse"));
+
+    testValidExpression("1 + 2", ValueFactory.createValue(3));
+    testValidExpression("1L + 2", ValueFactory.createValue(3L));
+    testValidExpression("1 + 2L", ValueFactory.createValue(3L));
+    testValidExpression("1.5f + 2", ValueFactory.createValue(3.5f));
+    testValidExpression("1 + 1.2f", ValueFactory.createValue(2.2f));
+    testValidExpression("1.5 + 2", ValueFactory.createValue(3.5));
+    testValidExpression("1 + 1.2", ValueFactory.createValue(2.2));
+    testValidExpression("'a' + 2", ValueFactory.createValue(99));
+    testValidExpression("1 + 'a'", ValueFactory.createValue(98));
+    testValidExpression("\"a\" + 2", ValueFactory.createValue("a2"));
+    testValidExpression("1 + \"a\"", ValueFactory.createValue("1a"));
+
+    testValidExpression("1L + 2L", ValueFactory.createValue(3L));
+    testValidExpression("1.2f + 2L", ValueFactory.createValue(3.2f));
+    testValidExpression("1L + 1.5f", ValueFactory.createValue(2.5f));
+    testValidExpression("1L + 1.2", ValueFactory.createValue(2.2));
+    testValidExpression("1.5 + 2L", ValueFactory.createValue(3.5));
+    testValidExpression("1L + 'a'", ValueFactory.createValue(98L));
+    testValidExpression("'a' + 2L", ValueFactory.createValue(99L));
+    testValidExpression("1L + \"a\"", ValueFactory.createValue("1a"));
+    testValidExpression("\"a\" + 2L", ValueFactory.createValue("a2"));
+
+    testValidExpression("1.2f + 1.5f", ValueFactory.createValue(2.7f));
+    testValidExpression("1.2 + 1.5f", ValueFactory.createValue(2.7));
+    testValidExpression("1.2f + 1.5", ValueFactory.createValue(2.7));
+    testValidExpression("'a' + 1.5f", ValueFactory.createValue(98.5f));
+    testValidExpression("1.2f + 'a'", ValueFactory.createValue(98.2f));
+    testValidExpression("\"a\" + 1.5f", ValueFactory.createValue("a1.5"));
+    testValidExpression("1.2f + \"a\"", ValueFactory.createValue("1.2a"));
+
+    testValidExpression("1.2 + 1.5", ValueFactory.createValue(2.7));
+    testValidExpression("'a' + 1.5", ValueFactory.createValue(98.5));
+    testValidExpression("1.2 + 'a'", ValueFactory.createValue(98.2));
+    testValidExpression("\"a\" + 1.5", ValueFactory.createValue("a1.5"));
+    testValidExpression("1.2 + \"a\"", ValueFactory.createValue("1.2a"));
+
+    testValidExpression("'a' + 'a'", ValueFactory.createValue(194));
+    testValidExpression("\"a\" + 'b'", ValueFactory.createValue("ab"));
+    testValidExpression("'c' + \"a\"", ValueFactory.createValue("ca"));
+
+    testValidExpression("\"a\" + \"b\"", ValueFactory.createValue("ab"));
+  }
+
+  @Test
+  public void testInterpretBracketExpression() {
+    testValidExpression("(true)", ValueFactory.createValue(true));
+    testValidExpression("(1)", ValueFactory.createValue(1));
+    testValidExpression("(2L)", ValueFactory.createValue(2L));
+    testValidExpression("(2.5f)", ValueFactory.createValue(2.5f));
+    testValidExpression("(3.14)", ValueFactory.createValue(3.14));
+    testValidExpression("('a')", ValueFactory.createValue('a'));
+    testValidExpression("(\"abc\")", ValueFactory.createValue("abc"));
+  }
+
+  @Test
+  public void testInterpretMinusExpression() {
+    testInvalidExpression("true - false");
+    testInvalidExpression("true - 1");
+    testInvalidExpression("1 - false");
+    testInvalidExpression("true - 1L");
+    testInvalidExpression("1L - false");
+    testInvalidExpression("true - 1.2f");
+    testInvalidExpression("1.5f - false");
+    testInvalidExpression("true - 1.2");
+    testInvalidExpression("1.5 - false");
+    testInvalidExpression("true - 'a'");
+    testInvalidExpression("'a' - false");
+    testInvalidExpression("true - \"a\"");
+    testInvalidExpression("\"a\" - false");
+
+    testValidExpression("1 - 2", ValueFactory.createValue(-1));
+    testValidExpression("1L - 2", ValueFactory.createValue(-1L));
+    testValidExpression("1 - 2L", ValueFactory.createValue(-1L));
+    testValidExpression("1.5f - 2", ValueFactory.createValue(-0.5f));
+    testValidExpression("1 - 1.2f", ValueFactory.createValue(-0.2f));
+    testValidExpression("1.5 - 2", ValueFactory.createValue(-0.5));
+    testValidExpression("1 - 1.2", ValueFactory.createValue(-0.2));
+    testValidExpression("'a' - 2", ValueFactory.createValue(95));
+    testValidExpression("1 - 'a'", ValueFactory.createValue(-96));
+    testInvalidExpression("\"a\" - 2");
+    testInvalidExpression("1 - \"a\"");
+
+    testValidExpression("1L - 2L", ValueFactory.createValue(-1L));
+    testValidExpression("1.2f - 2L", ValueFactory.createValue(-0.8f));
+    testValidExpression("1L - 1.5f", ValueFactory.createValue(-0.5f));
+    testValidExpression("1L - 1.2", ValueFactory.createValue(-0.2));
+    testValidExpression("1.5 - 2L", ValueFactory.createValue(-0.5));
+    testValidExpression("1L - 'a'", ValueFactory.createValue(-96L));
+    testValidExpression("'a' - 2L", ValueFactory.createValue(95L));
+    testInvalidExpression("1L - \"a\"");
+    testInvalidExpression("\"a\" - 2L");
+
+    testValidExpression("1.2f - 1.5f", ValueFactory.createValue(-0.3f));
+    testValidExpression("1.2 - 1.5f", ValueFactory.createValue(-0.3));
+    testValidExpression("1.2f - 1.5", ValueFactory.createValue(-0.3));
+    testValidExpression("'a' - 1.5f", ValueFactory.createValue(95.5f));
+    testValidExpression("1.2f - 'a'", ValueFactory.createValue(-95.8f));
+    testInvalidExpression("\"a\" - 1.5f");
+    testInvalidExpression("1.2f - \"a\"");
+
+    testValidExpression("1.2 - 1.5", ValueFactory.createValue(-0.3));
+    testValidExpression("'a' - 1.5", ValueFactory.createValue(95.5));
+    testValidExpression("1.2 - 'a'", ValueFactory.createValue(-95.8));
+    testInvalidExpression("\"a\" - 1.5");
+    testInvalidExpression("1.2 - \"a\"");
+
+    testValidExpression("'a' - 'a'", ValueFactory.createValue(0));
+    testInvalidExpression("\"a\" - 'a'");
+    testInvalidExpression("'a' - \"a\"");
+
+    testInvalidExpression("\"a\" - \"a\"");
+  }
+
+  @Test
+  public void testInterpretMultExpression() {
+    testInvalidExpression("true * false");
+    testInvalidExpression("true * 1");
+    testInvalidExpression("1 * false");
+    testInvalidExpression("true * 1L");
+    testInvalidExpression("1L * false");
+    testInvalidExpression("true * 1.2f");
+    testInvalidExpression("1.5f * false");
+    testInvalidExpression("true * 1.2");
+    testInvalidExpression("1.5 * false");
+    testInvalidExpression("true * 'a'");
+    testInvalidExpression("'a' * false");
+    testInvalidExpression("true * \"a\"");
+    testInvalidExpression("\"a\" * false");
+
+    testValidExpression("1 * 2", ValueFactory.createValue(2));
+    testValidExpression("1L * 2", ValueFactory.createValue(2L));
+    testValidExpression("1 * 2L", ValueFactory.createValue(2L));
+    testValidExpression("1.5f * 2", ValueFactory.createValue(3.f));
+    testValidExpression("1 * 1.2f", ValueFactory.createValue(1.2f));
+    testValidExpression("1.5 * 2", ValueFactory.createValue(3.));
+    testValidExpression("1 * 1.2", ValueFactory.createValue(1.2));
+    testValidExpression("'a' * 2", ValueFactory.createValue(194));
+    testValidExpression("1 * 'a'", ValueFactory.createValue(97));
+    testInvalidExpression("\"a\" * 2");
+    testInvalidExpression("1 * \"a\"");
+
+    testValidExpression("1L * 2L", ValueFactory.createValue(2L));
+    testValidExpression("1.2f * 2L", ValueFactory.createValue(2.4f));
+    testValidExpression("1L * 1.5f", ValueFactory.createValue(1.5f));
+    testValidExpression("1L * 1.2", ValueFactory.createValue(1.2));
+    testValidExpression("1.5 * 2L", ValueFactory.createValue(3.0));
+    testValidExpression("1L * 'a'", ValueFactory.createValue(97L));
+    testValidExpression("'a' * 2L", ValueFactory.createValue(194L));
+    testInvalidExpression("1L * \"a\"");
+    testInvalidExpression("\"a\" * 2L");
+
+    testValidExpression("1.2f * 1.5f", ValueFactory.createValue(1.8f));
+    testValidExpression("1.2 * 1.5f", ValueFactory.createValue(1.8));
+    testValidExpression("1.2f * 1.5", ValueFactory.createValue(1.8));
+    testValidExpression("'a' * 1.5f", ValueFactory.createValue(145.5f));
+    testValidExpression("1.2f * 'a'", ValueFactory.createValue(116.4f));
+    testInvalidExpression("\"a\" * 1.5f");
+    testInvalidExpression("1.2f * \"a\"");
+
+    testValidExpression("1.2 * 1.5", ValueFactory.createValue(1.8));
+    testValidExpression("'a' * 1.5", ValueFactory.createValue(145.5));
+    testValidExpression("1.2 * 'a'", ValueFactory.createValue(116.4));
+    testInvalidExpression("\"a\" * 1.5");
+    testInvalidExpression("1.2 * \"a\"");
+
+    testValidExpression("'a' * 'a'", ValueFactory.createValue(9409));
+    testInvalidExpression("\"a\" * 'a'");
+    testInvalidExpression("'a' * \"a\"");
+
+    testInvalidExpression("\"a\" * \"a\"");
+  }
+
+  @Test
+  public void testInterpretDivideExpression() {
+    testInvalidExpression("true / false");
+    testInvalidExpression("true / 1");
+    testInvalidExpression("1 / false");
+    testInvalidExpression("true / 1L");
+    testInvalidExpression("1L / false");
+    testInvalidExpression("true / 1.2f");
+    testInvalidExpression("1.5f / false");
+    testInvalidExpression("true / 1.2");
+    testInvalidExpression("1.5 / false");
+    testInvalidExpression("true / 'a'");
+    testInvalidExpression("'a' / false");
+    testInvalidExpression("true / \"a\"");
+    testInvalidExpression("\"a\" / false");
+
+    testValidExpression("1 / 2", ValueFactory.createValue(0));
+    testValidExpression("1L / 2", ValueFactory.createValue(0L));
+    testValidExpression("1 / 2L", ValueFactory.createValue(0L));
+    testValidExpression("1.5f / 2", ValueFactory.createValue(0.75f));
+    testValidExpression("3 / 1.5f", ValueFactory.createValue(2.f));
+    testValidExpression("1.5 / 2", ValueFactory.createValue(0.75));
+    testValidExpression("3 / 1.5", ValueFactory.createValue(2.));
+    testValidExpression("'a' / 2", ValueFactory.createValue(48));
+    testValidExpression("1 / 'a'", ValueFactory.createValue(0));
+    testInvalidExpression("\"a\" / 2");
+    testInvalidExpression("1 / \"a\"");
+
+    testValidExpression("1L / 2L", ValueFactory.createValue(0L));
+    testValidExpression("1.2f / 2L", ValueFactory.createValue(0.6f));
+    testValidExpression("3L / 1.5f", ValueFactory.createValue(2.f));
+    testValidExpression("3L / 1.5", ValueFactory.createValue(2.));
+    testValidExpression("3.0 / 2L", ValueFactory.createValue(1.5));
+    testValidExpression("1L / 'a'", ValueFactory.createValue(0));
+    testValidExpression("'a' / 2L", ValueFactory.createValue(48));
+    testInvalidExpression("1L / \"a\"");
+    testInvalidExpression("\"a\" / 2L");
+
+    testValidExpression("1.2f / 1.5f", ValueFactory.createValue(0.8f));
+    testValidExpression("1.2 / 1.5f", ValueFactory.createValue(0.8));
+    testValidExpression("1.2f / 1.5", ValueFactory.createValue(0.8));
+    testValidExpression("'a' / 0.5f", ValueFactory.createValue(194.f));
+    testValidExpression("194.0f / 'a'", ValueFactory.createValue(2.f));
+    testInvalidExpression("\"a\" / 1.5f");
+    testInvalidExpression("1.2f / \"a\"");
+
+    testValidExpression("1.2 / 1.5", ValueFactory.createValue(0.8));
+    testValidExpression("'a' / 2.0", ValueFactory.createValue(48.5));
+    testValidExpression("97.0 / 'a'", ValueFactory.createValue(1.));
+    testInvalidExpression("\"a\" / 1.5");
+    testInvalidExpression("1.2 / \"a\"");
+
+    testValidExpression("'a' / 'a'", ValueFactory.createValue(1));
+    testInvalidExpression("\"a\" / 'a'");
+    testInvalidExpression("'a' / \"a\"");
+
+    testInvalidExpression("\"a\" / \"a\"");
+
+    testInvalidExpression("1 / 0");
+    testInvalidExpression("'a' / 0");
+    testInvalidExpression("1L / 0");
+    testInvalidExpression("1 / 0L");
+    testInvalidExpression("1L / 0L");
+    testInvalidExpression("'a' / 0L");
+  }
+
+  @Test
+  public void testInterpretModuloExpression() {
+    testInvalidExpression("true % false");
+    testInvalidExpression("true % 1");
+    testInvalidExpression("1 % false");
+    testInvalidExpression("true % 1L");
+    testInvalidExpression("1L % false");
+    testInvalidExpression("true % 1.2f");
+    testInvalidExpression("1.5f % false");
+    testInvalidExpression("true % 1.2");
+    testInvalidExpression("1.5 % false");
+    testInvalidExpression("true % 'a'");
+    testInvalidExpression("'a' % false");
+    testInvalidExpression("true % \"a\"");
+    testInvalidExpression("\"a\" % false");
+
+    testValidExpression("1 % 2", ValueFactory.createValue(1));
+    testValidExpression("1L % 2", ValueFactory.createValue(1));
+    testValidExpression("1 % 2L", ValueFactory.createValue(1L));
+    testValidExpression("1.5f % 2", ValueFactory.createValue(1.5f));
+    testValidExpression("1 % 1.2f", ValueFactory.createValue(1.0f));
+    testValidExpression("1.5 % 2", ValueFactory.createValue(1.5));
+    testValidExpression("1 % 1.2", ValueFactory.createValue(1.0));
+    testValidExpression("'a' % 2", ValueFactory.createValue(1));
+    testValidExpression("1 % 'a'", ValueFactory.createValue(1));
+    testInvalidExpression("\"a\" % 2");
+    testInvalidExpression("1 % \"a\"");
+
+    testValidExpression("1L % 2L", ValueFactory.createValue(1L));
+    testValidExpression("1.2f % 2L", ValueFactory.createValue(1.2f));
+    testValidExpression("1L % 1.5f", ValueFactory.createValue(1.0f));
+    testValidExpression("1L % 1.2", ValueFactory.createValue(1.0));
+    testValidExpression("1.5 % 2L", ValueFactory.createValue(1.5));
+    testValidExpression("1L % 'a'", ValueFactory.createValue(1L));
+    testValidExpression("'a' % 2L", ValueFactory.createValue(1L));
+    testInvalidExpression("1L % \"a\"");
+    testInvalidExpression("\"a\" % 2L");
+
+    testValidExpression("1.2f % 1.5f", ValueFactory.createValue(1.2f));
+    testValidExpression("1.2 % 1.5f", ValueFactory.createValue(1.2));
+    testValidExpression("1.2f % 1.5", ValueFactory.createValue(1.2));
+    testValidExpression("'a' % 1.5f", ValueFactory.createValue(1.0f));
+    testValidExpression("1.2f % 'a'", ValueFactory.createValue(1.2f));
+    testInvalidExpression("\"a\" % 1.5f");
+    testInvalidExpression("1.2f % \"a\"");
+
+    testValidExpression("1.2 % 1.5", ValueFactory.createValue(1.2));
+    testValidExpression("'a' % 1.5", ValueFactory.createValue(1.0));
+    testValidExpression("1.2 % 'a'", ValueFactory.createValue(1.2));
+    testInvalidExpression("\"a\" % 1.5");
+    testInvalidExpression("1.2 % \"a\"");
+
+    testValidExpression("'a' % 'a'", ValueFactory.createValue(0));
+    testInvalidExpression("\"a\" % 'a'");
+    testInvalidExpression("'a' % \"a\"");
+
+    testInvalidExpression("\"a\" % \"a\"");
+  }
+
+  @Test
+  public void testInterpretEqualsExpression() {
+    testValidExpression("true == false", ValueFactory.createValue(false));
+    testInvalidExpression("true == 1");
+    testInvalidExpression("1 == false");
+    testInvalidExpression("true == 1L");
+    testInvalidExpression("1L == false");
+    testInvalidExpression("true == 1.2f");
+    testInvalidExpression("1.5f == false");
+    testInvalidExpression("true == 1.2");
+    testInvalidExpression("1.5 == false");
+    testInvalidExpression("true == 'a'");
+    testInvalidExpression("'a' == false");
+    testInvalidExpression("true == \"a\"");
+    testInvalidExpression("\"a\" == false");
+
+    testValidExpression("1 == 2", ValueFactory.createValue(false));
+    testValidExpression("1L == 2", ValueFactory.createValue(false));
+    testValidExpression("1 == 2L", ValueFactory.createValue(false));
+    testValidExpression("1.5f == 2", ValueFactory.createValue(false));
+    testValidExpression("1 == 1.2f", ValueFactory.createValue(false));
+    testValidExpression("1.5 == 2", ValueFactory.createValue(false));
+    testValidExpression("1 == 1.2", ValueFactory.createValue(false));
+    testValidExpression("'a' == 2", ValueFactory.createValue(false));
+    testValidExpression("1 == 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" == 2");
+    testInvalidExpression("1 == \"a\"");
+
+    testValidExpression("1L == 2L", ValueFactory.createValue(false));
+    testValidExpression("1.2f == 2L", ValueFactory.createValue(false));
+    testValidExpression("1L == 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1L == 1.2", ValueFactory.createValue(false));
+    testValidExpression("1.5 == 2L", ValueFactory.createValue(false));
+    testValidExpression("1L == 'a'", ValueFactory.createValue(false));
+    testValidExpression("'a' == 2L", ValueFactory.createValue(false));
+    testInvalidExpression("1L == \"a\"");
+    testInvalidExpression("\"a\" == 2L");
+
+    testValidExpression("1.2f == 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2 == 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2f == 1.5", ValueFactory.createValue(false));
+    testValidExpression("'a' == 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2f == 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" == 1.5f");
+    testInvalidExpression("1.2f == \"a\"");
+
+    testValidExpression("1.2 == 1.5", ValueFactory.createValue(false));
+    testValidExpression("'a' == 1.5", ValueFactory.createValue(false));
+    testValidExpression("1.2 == 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" == 1.5");
+    testInvalidExpression("1.2 == \"a\"");
+
+    testValidExpression("'a' == 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" == 'a'");
+    testInvalidExpression("'a' == \"a\"");
+
+    testInvalidExpression("\"a\" == \"a\"");
+  }
+
+  @Test
+  public void testInterpretNotEqualsExpression() {
+    testValidExpression("true != false", ValueFactory.createValue(true));
+    testInvalidExpression("true != 1");
+    testInvalidExpression("1 != false");
+    testInvalidExpression("true != 1L");
+    testInvalidExpression("1L != false");
+    testInvalidExpression("true != 1.2f");
+    testInvalidExpression("1.5f != false");
+    testInvalidExpression("true != 1.2");
+    testInvalidExpression("1.5 != false");
+    testInvalidExpression("true != 'a'");
+    testInvalidExpression("'a' != false");
+    testInvalidExpression("true != \"a\"");
+    testInvalidExpression("\"a\" != false");
+
+    testValidExpression("1 != 2", ValueFactory.createValue(true));
+    testValidExpression("1L != 2", ValueFactory.createValue(true));
+    testValidExpression("1 != 2L", ValueFactory.createValue(true));
+    testValidExpression("1.5f != 2", ValueFactory.createValue(true));
+    testValidExpression("1 != 1.2f", ValueFactory.createValue(true));
+    testValidExpression("1.5 != 2", ValueFactory.createValue(true));
+    testValidExpression("1 != 1.2", ValueFactory.createValue(true));
+    testValidExpression("'a' != 2", ValueFactory.createValue(true));
+    testValidExpression("1 != 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" != 2");
+    testInvalidExpression("1 != \"a\"");
+
+    testValidExpression("1L != 2L", ValueFactory.createValue(true));
+    testValidExpression("1.2f != 2L", ValueFactory.createValue(true));
+    testValidExpression("1L != 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1L != 1.2", ValueFactory.createValue(true));
+    testValidExpression("1.5 != 2L", ValueFactory.createValue(true));
+    testValidExpression("1L != 'a'", ValueFactory.createValue(true));
+    testValidExpression("'a' != 2L", ValueFactory.createValue(true));
+    testInvalidExpression("1L != \"a\"");
+    testInvalidExpression("\"a\" != 2L");
+
+    testValidExpression("1.2f != 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2 != 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2f != 1.5", ValueFactory.createValue(true));
+    testValidExpression("'a' != 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2f != 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" != 1.5f");
+    testInvalidExpression("1.2f != \"a\"");
+
+    testValidExpression("1.2 != 1.5", ValueFactory.createValue(true));
+    testValidExpression("'a' != 1.5", ValueFactory.createValue(true));
+    testValidExpression("1.2 != 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" != 1.5");
+    testInvalidExpression("1.2 != \"a\"");
+
+    testValidExpression("'a' != 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" != 'a'");
+    testInvalidExpression("'a' != \"a\"");
+
+    testInvalidExpression("\"a\" != \"a\"");
+  }
+
+  @Test
+  public void testInterpretLessThanExpression() {
+    testInvalidExpression("true < false");
+    testInvalidExpression("true < 1");
+    testInvalidExpression("1 < false");
+    testInvalidExpression("true < 1L");
+    testInvalidExpression("1L < false");
+    testInvalidExpression("true < 1.2f");
+    testInvalidExpression("1.5f < false");
+    testInvalidExpression("true < 1.2");
+    testInvalidExpression("1.5 < false");
+    testInvalidExpression("true < 'a'");
+    testInvalidExpression("'a' < false");
+    testInvalidExpression("true < \"a\"");
+    testInvalidExpression("\"a\" < false");
+
+    testValidExpression("1 < 2", ValueFactory.createValue(true));
+    testValidExpression("1L < 2", ValueFactory.createValue(true));
+    testValidExpression("1 < 2L", ValueFactory.createValue(true));
+    testValidExpression("1.5f < 2", ValueFactory.createValue(true));
+    testValidExpression("1 < 1.2f", ValueFactory.createValue(true));
+    testValidExpression("1.5 < 2", ValueFactory.createValue(true));
+    testValidExpression("1 < 1.2", ValueFactory.createValue(true));
+    testValidExpression("'a' < 2", ValueFactory.createValue(false));
+    testValidExpression("1 < 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" < 2");
+    testInvalidExpression("1 < \"a\"");
+
+    testValidExpression("1L < 2L", ValueFactory.createValue(true));
+    testValidExpression("1.2f < 2L", ValueFactory.createValue(true));
+    testValidExpression("1L < 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1L < 1.2", ValueFactory.createValue(true));
+    testValidExpression("1.5 < 2L", ValueFactory.createValue(true));
+    testValidExpression("1L < 'a'", ValueFactory.createValue(true));
+    testValidExpression("'a' < 2L", ValueFactory.createValue(false));
+    testInvalidExpression("1L < \"a\"");
+    testInvalidExpression("\"a\" < 2L");
+
+    testValidExpression("1.2f < 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2 < 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2f < 1.5", ValueFactory.createValue(true));
+    testValidExpression("'a' < 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2f < 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" < 1.5f");
+    testInvalidExpression("1.2f < \"a\"");
+
+    testValidExpression("1.2 < 1.5", ValueFactory.createValue(true));
+    testValidExpression("'a' < 1.5", ValueFactory.createValue(false));
+    testValidExpression("1.2 < 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" < 1.5");
+    testInvalidExpression("1.2 < \"a\"");
+
+    testValidExpression("'a' < 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" < 'a'");
+    testInvalidExpression("'a' < \"a\"");
+
+    testInvalidExpression("\"a\" < \"a\"");
+  }
+
+  @Test
+  public void testInterpretGreaterThanExpression() {
+    testInvalidExpression("true > false");
+    testInvalidExpression("true > 1");
+    testInvalidExpression("1 > false");
+    testInvalidExpression("true > 1L");
+    testInvalidExpression("1L > false");
+    testInvalidExpression("true > 1.2f");
+    testInvalidExpression("1.5f > false");
+    testInvalidExpression("true > 1.2");
+    testInvalidExpression("1.5 > false");
+    testInvalidExpression("true > 'a'");
+    testInvalidExpression("'a' > false");
+    testInvalidExpression("true > \"a\"");
+    testInvalidExpression("\"a\" > false");
+
+    testValidExpression("1 > 2", ValueFactory.createValue(false));
+    testValidExpression("1L > 2", ValueFactory.createValue(false));
+    testValidExpression("1 > 2L", ValueFactory.createValue(false));
+    testValidExpression("1.5f > 2", ValueFactory.createValue(false));
+    testValidExpression("1 > 1.2f", ValueFactory.createValue(false));
+    testValidExpression("1.5 > 2", ValueFactory.createValue(false));
+    testValidExpression("1 > 1.2", ValueFactory.createValue(false));
+    testValidExpression("'a' > 2", ValueFactory.createValue(true));
+    testValidExpression("1 > 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" > 2");
+    testInvalidExpression("1 > \"a\"");
+
+    testValidExpression("1L > 2L", ValueFactory.createValue(false));
+    testValidExpression("1.2f > 2L", ValueFactory.createValue(false));
+    testValidExpression("1L > 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1L > 1.2", ValueFactory.createValue(false));
+    testValidExpression("1.5 > 2L", ValueFactory.createValue(false));
+    testValidExpression("1L > 'a'", ValueFactory.createValue(false));
+    testValidExpression("'a' > 2L", ValueFactory.createValue(true));
+    testInvalidExpression("1L > \"a\"");
+    testInvalidExpression("\"a\" > 2L");
+
+    testValidExpression("1.2f > 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2 > 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2f > 1.5", ValueFactory.createValue(false));
+    testValidExpression("'a' > 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2f > 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" > 1.5f");
+    testInvalidExpression("1.2f > \"a\"");
+
+    testValidExpression("1.2 > 1.5", ValueFactory.createValue(false));
+    testValidExpression("'a' > 1.5", ValueFactory.createValue(true));
+    testValidExpression("1.2 > 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" > 1.5");
+    testInvalidExpression("1.2 > \"a\"");
+
+    testValidExpression("'a' > 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" > 'a'");
+    testInvalidExpression("'a' > \"a\"");
+
+    testInvalidExpression("\"a\" > \"a\"");
+  }
+
+  @Test
+  public void testInterpretGreaterEqualExpression() {
+    testInvalidExpression("true >= false");
+    testInvalidExpression("true >= 1");
+    testInvalidExpression("1 >= false");
+    testInvalidExpression("true >= 1L");
+    testInvalidExpression("1L >= false");
+    testInvalidExpression("true >= 1.2f");
+    testInvalidExpression("1.5f >= false");
+    testInvalidExpression("true >= 1.2");
+    testInvalidExpression("1.5 >= false");
+    testInvalidExpression("true >= 'a'");
+    testInvalidExpression("'a' >= false");
+    testInvalidExpression("true >= \"a\"");
+    testInvalidExpression("\"a\" >= false");
+
+    testValidExpression("1 >= 2", ValueFactory.createValue(false));
+    testValidExpression("1L >= 2", ValueFactory.createValue(false));
+    testValidExpression("1 >= 2L", ValueFactory.createValue(false));
+    testValidExpression("1.5f >= 2", ValueFactory.createValue(false));
+    testValidExpression("1 >= 1.2f", ValueFactory.createValue(false));
+    testValidExpression("1.5 >= 2", ValueFactory.createValue(false));
+    testValidExpression("1 >= 1.2", ValueFactory.createValue(false));
+    testValidExpression("'a' >= 2", ValueFactory.createValue(true));
+    testValidExpression("1 >= 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" >= 2");
+    testInvalidExpression("1 >= \"a\"");
+
+    testValidExpression("1L >= 2L", ValueFactory.createValue(false));
+    testValidExpression("1.2f >= 2L", ValueFactory.createValue(false));
+    testValidExpression("1L >= 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1L >= 1.2", ValueFactory.createValue(false));
+    testValidExpression("1.5 >= 2L", ValueFactory.createValue(false));
+    testValidExpression("1L >= 'a'", ValueFactory.createValue(false));
+    testValidExpression("'a' >= 2L", ValueFactory.createValue(true));
+    testInvalidExpression("1L >= \"a\"");
+    testInvalidExpression("\"a\" >= 2L");
+
+    testValidExpression("1.2f >= 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2 >= 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2f >= 1.5", ValueFactory.createValue(false));
+    testValidExpression("'a' >= 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2f >= 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" >= 1.5f");
+    testInvalidExpression("1.2f >= \"a\"");
+
+    testValidExpression("1.2 >= 1.5", ValueFactory.createValue(false));
+    testValidExpression("'a' >= 1.5", ValueFactory.createValue(true));
+    testValidExpression("1.2 >= 'a'", ValueFactory.createValue(false));
+    testInvalidExpression("\"a\" >= 1.5");
+    testInvalidExpression("1.2 >= \"a\"");
+
+    testValidExpression("'a' >= 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" >= 'a'");
+    testInvalidExpression("'a' >= \"a\"");
+
+    testInvalidExpression("\"a\" >= \"a\"");
+  }
+
+  @Test
+  public void testInterpretLessEqualExpression() {
+    testInvalidExpression("true <= false");
+    testInvalidExpression("true <= 1");
+    testInvalidExpression("1 <= false");
+    testInvalidExpression("true <= 1L");
+    testInvalidExpression("1L <= false");
+    testInvalidExpression("true <= 1.2f");
+    testInvalidExpression("1.5f <= false");
+    testInvalidExpression("true <= 1.2");
+    testInvalidExpression("1.5 <= false");
+    testInvalidExpression("true <= 'a'");
+    testInvalidExpression("'a' <= false");
+    testInvalidExpression("true <= \"a\"");
+    testInvalidExpression("\"a\" <= false");
+
+    testValidExpression("1 <= 2", ValueFactory.createValue(true));
+    testValidExpression("1L <= 2", ValueFactory.createValue(true));
+    testValidExpression("1 <= 2L", ValueFactory.createValue(true));
+    testValidExpression("1.5f <= 2", ValueFactory.createValue(true));
+    testValidExpression("1 <= 1.2f", ValueFactory.createValue(true));
+    testValidExpression("1.5 <= 2", ValueFactory.createValue(true));
+    testValidExpression("1 <= 1.2", ValueFactory.createValue(true));
+    testValidExpression("'a' <= 2", ValueFactory.createValue(false));
+    testValidExpression("1 <= 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" <= 2");
+    testInvalidExpression("1 <= \"a\"");
+
+    testValidExpression("1L <= 2L", ValueFactory.createValue(true));
+    testValidExpression("1.2f <= 2L", ValueFactory.createValue(true));
+    testValidExpression("1L <= 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1L <= 1.2", ValueFactory.createValue(true));
+    testValidExpression("1.5 <= 2L", ValueFactory.createValue(true));
+    testValidExpression("1L <= 'a'", ValueFactory.createValue(true));
+    testValidExpression("'a' <= 2L", ValueFactory.createValue(false));
+    testInvalidExpression("1L <= \"a\"");
+    testInvalidExpression("\"a\" <= 2L");
+
+    testValidExpression("1.2f <= 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2 <= 1.5f", ValueFactory.createValue(true));
+    testValidExpression("1.2f <= 1.5", ValueFactory.createValue(true));
+    testValidExpression("'a' <= 1.5f", ValueFactory.createValue(false));
+    testValidExpression("1.2f <= 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" <= 1.5f");
+    testInvalidExpression("1.2f <= \"a\"");
+
+    testValidExpression("1.2 <= 1.5", ValueFactory.createValue(true));
+    testValidExpression("'a' <= 1.5", ValueFactory.createValue(false));
+    testValidExpression("1.2 <= 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" <= 1.5");
+    testInvalidExpression("1.2 <= \"a\"");
+
+    testValidExpression("'a' <= 'a'", ValueFactory.createValue(true));
+    testInvalidExpression("\"a\" <= 'a'");
+    testInvalidExpression("'a' <= \"a\"");
+
+    testInvalidExpression("\"a\" <= \"a\"");
+  }
+
+  @Test
+  public void testInterpretBooleanNotExpression() {
+    testInvalidExpression("~true");
+    testValidExpression("~1", ValueFactory.createValue(-2));
+    testValidExpression("~-5", ValueFactory.createValue(4));
+    testValidExpression("~708", ValueFactory.createValue(-709));
+    testValidExpression("~1L", ValueFactory.createValue(-2L));
+    testValidExpression("~-5L", ValueFactory.createValue(4L));
+    testValidExpression("~708L", ValueFactory.createValue(-709L));
+    testInvalidExpression("~1.2f");
+    testInvalidExpression("~1.5");
+    testValidExpression("~'a'", ValueFactory.createValue(-98));
+    testInvalidExpression("~\"a\"");
+  }
+
+  @Test
+  public void testInterpretLogicalNotExpression() {
+    testValidExpression("!true", ValueFactory.createValue(false));
+    testValidExpression("!false", ValueFactory.createValue(true));
+    testInvalidExpression("!1");
+    testInvalidExpression("!1L");
+    testInvalidExpression("!1.2f");
+    testInvalidExpression("!1.5");
+    testInvalidExpression("!'a'");
+    testInvalidExpression("!\"a\"");
+  }
+
+  @Test
+  public void testInterpretLogicalAndOpExpression() {
+    testValidExpression("true && true", ValueFactory.createValue(true));
+    testValidExpression("false && false", ValueFactory.createValue(false));
+    testValidExpression("true && false", ValueFactory.createValue(false));
+    testValidExpression("false && true", ValueFactory.createValue(false));
+    testInvalidExpression("true && 1");
+    testInvalidExpression("1 && false");
+    testInvalidExpression("true && 1L");
+    testInvalidExpression("1L && false");
+    testInvalidExpression("true && 1.2f");
+    testInvalidExpression("1.5f && false");
+    testInvalidExpression("true && 1.2");
+    testInvalidExpression("1.5 && false");
+    testInvalidExpression("true && 'a'");
+    testInvalidExpression("'a' && false");
+    testInvalidExpression("true && \"a\"");
+    testInvalidExpression("\"a\" && false");
+
+    testInvalidExpression("1 && 2");
+    testInvalidExpression("1L && 2");
+    testInvalidExpression("1 && 2L");
+    testInvalidExpression("1.5f && 2");
+    testInvalidExpression("1 && 1.2f");
+    testInvalidExpression("1.5 && 2");
+    testInvalidExpression("1 && 1.2");
+    testInvalidExpression("'a' && 2");
+    testInvalidExpression("1 && 'a'");
+    testInvalidExpression("\"a\" && 2");
+    testInvalidExpression("1 && \"a\"");
+
+    testInvalidExpression("1L && 2L");
+    testInvalidExpression("1.2f && 2L");
+    testInvalidExpression("1L && 1.5f");
+    testInvalidExpression("1L && 1.2");
+    testInvalidExpression("1.5 && 2L");
+    testInvalidExpression("1L && 'a'");
+    testInvalidExpression("'a' && 2L");
+    testInvalidExpression("1L && \"a\"");
+    testInvalidExpression("\"a\" && 2L");
+
+    testInvalidExpression("1.2f && 1.5f");
+    testInvalidExpression("1.2 && 1.5f");
+    testInvalidExpression("1.2f && 1.5");
+    testInvalidExpression("'a' && 1.5f");
+    testInvalidExpression("1.2f && 'a'");
+    testInvalidExpression("\"a\" && 1.5f");
+    testInvalidExpression("1.2f && \"a\"");
+
+    testInvalidExpression("1.2 && 1.5");
+    testInvalidExpression("'a' && 1.5");
+    testInvalidExpression("1.2 && 'a'");
+    testInvalidExpression("\"a\" && 1.5");
+    testInvalidExpression("1.2 && \"a\"");
+
+    testInvalidExpression("'a' && 'a'");
+    testInvalidExpression("\"a\" && 'a'");
+    testInvalidExpression("'a' && \"a\"");
+
+    testInvalidExpression("\"a\" && \"a\"");
+  }
+
+  @Test
+  public void testInterpretLogicalOrOpExpression() {
+    testValidExpression("true || true", ValueFactory.createValue(true));
+    testValidExpression("false || false", ValueFactory.createValue(false));
+    testValidExpression("true || false", ValueFactory.createValue(true));
+    testValidExpression("false || true", ValueFactory.createValue(true));
+    testInvalidExpression("true || 1");
+    testInvalidExpression("1 || false");
+    testInvalidExpression("true || 1L");
+    testInvalidExpression("1L || false");
+    testInvalidExpression("true || 1.2f");
+    testInvalidExpression("1.5f || false");
+    testInvalidExpression("true || 1.2");
+    testInvalidExpression("1.5 || false");
+    testInvalidExpression("true || 'a'");
+    testInvalidExpression("'a' || false");
+    testInvalidExpression("true || \"a\"");
+    testInvalidExpression("\"a\" || false");
+
+    testInvalidExpression("1 || 2");
+    testInvalidExpression("1L || 2");
+    testInvalidExpression("1 || 2L");
+    testInvalidExpression("1.5f || 2");
+    testInvalidExpression("1 || 1.2f");
+    testInvalidExpression("1.5 || 2");
+    testInvalidExpression("1 || 1.2");
+    testInvalidExpression("'a' || 2");
+    testInvalidExpression("1 || 'a'");
+    testInvalidExpression("\"a\" || 2");
+    testInvalidExpression("1 || \"a\"");
+
+    testInvalidExpression("1L || 2L");
+    testInvalidExpression("1.2f || 2L");
+    testInvalidExpression("1L || 1.5f");
+    testInvalidExpression("1L || 1.2");
+    testInvalidExpression("1.5 || 2L");
+    testInvalidExpression("1L || 'a'");
+    testInvalidExpression("'a' || 2L");
+    testInvalidExpression("1L || \"a\"");
+    testInvalidExpression("\"a\" || 2L");
+
+    testInvalidExpression("1.2f || 1.5f");
+    testInvalidExpression("1.2 || 1.5f");
+    testInvalidExpression("1.2f || 1.5");
+    testInvalidExpression("'a' || 1.5f");
+    testInvalidExpression("1.2f || 'a'");
+    testInvalidExpression("\"a\" || 1.5f");
+    testInvalidExpression("1.2f || \"a\"");
+
+    testInvalidExpression("1.2 || 1.5");
+    testInvalidExpression("'a' || 1.5");
+    testInvalidExpression("1.2 || 'a'");
+    testInvalidExpression("\"a\" || 1.5");
+    testInvalidExpression("1.2 || \"a\"");
+
+    testInvalidExpression("'a' || 'a'");
+    testInvalidExpression("\"a\" || 'a'");
+    testInvalidExpression("'a' || \"a\"");
+
+    testInvalidExpression("\"a\" || \"a\"");
+  }
+
+  @Test
+  public void testCombinedExpressions() {
+    testValidExpression("((1 > 2L) && ('z' <= 15.243f)) || true", ValueFactory.createValue(true));
+    testValidExpression("(3 + 2 * 2) / 14.0", ValueFactory.createValue(0.5));
+    testValidExpression("true && false || !true", ValueFactory.createValue(false));
+  }
+
+  protected void testValidExpression(String expr, Value expected) {
+    Log.clearFindings();
+    Value interpretationResult = null;
+    try {
+      interpretationResult = parseExpressionAndInterpret(expr);
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    }
+    assertNotNull(interpretationResult);
+    assertTrue(Log.getFindings().isEmpty());
+    if (interpretationResult.isBoolean()) {
+      assertEquals(interpretationResult.asBoolean(), expected.asBoolean());
+    } else if (interpretationResult.isInt()) {
+      assertEquals(interpretationResult.asInt(), expected.asInt());
+    } else if (interpretationResult.isLong()) {
+      assertEquals(interpretationResult.asLong(), expected.asLong());
+    } else if (interpretationResult.isFloat()) {
+      assertEquals(interpretationResult.asFloat(), expected.asFloat(), delta);
+    } else if (interpretationResult.isDouble()) {
+      assertEquals(interpretationResult.asDouble(), expected.asDouble(), delta);
+    } else if (interpretationResult.isChar()) {
+      assertEquals(interpretationResult.asChar(), expected.asChar());
+    } else if (interpretationResult.isString()) {
+      assertEquals(interpretationResult.asString(), expected.asString());
+    } else if (interpretationResult.isObject()) {
+      assertEquals(interpretationResult.asObject(), expected.asObject());
+    }
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  protected void testInvalidExpression(String expr) {
+    Log.clearFindings();
+    Value interpretationResult = null;
+    try {
+      interpretationResult = parseExpressionAndInterpret(expr);
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    }
+    assertNotNull(interpretationResult);
     assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true + 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 + false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true + 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L + false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true + 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f + false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true + 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 + false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true + 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' + false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true + \"a\"");
-    assertEquals(result.asString(), "truea");
-    result = parseExpressionAndInterpret("\"a\" + false");
-    assertEquals(result.asString(), "afalse");
-
-    result = parseExpressionAndInterpret("1 + 2");
-    assertEquals(result.asInt(), 3);
-    result = parseExpressionAndInterpret("1L + 2");
-    assertEquals(result.asLong(), 3L);
-    result = parseExpressionAndInterpret("1 + 2L");
-    assertEquals(result.asLong(), 3L);
-    result = parseExpressionAndInterpret("1.5f + 2");
-    assertEquals(result.asFloat(), 3.5f);
-    result = parseExpressionAndInterpret("1 + 1.2f");
-    assertEquals(result.asFloat(), 2.2f);
-    result = parseExpressionAndInterpret("1.5 + 2");
-    assertEquals(result.asDouble(), 3.5);
-    result = parseExpressionAndInterpret("1 + 1.2");
-    assertEquals(result.asDouble(), 2.2);
-    result = parseExpressionAndInterpret("'a' + 2");
-    assertEquals(result.asInt(), 99);
-    result = parseExpressionAndInterpret("1 + 'a'");
-    assertEquals(result.asInt(), 98);
-    result = parseExpressionAndInterpret("\"a\" + 2");
-    assertEquals(result.asString(), "a2");
-    result = parseExpressionAndInterpret("1 + \"a\"");
-    assertEquals(result.asString(), "1a");
-
-    result = parseExpressionAndInterpret("1L + 2L");
-    assertEquals(result.asLong(), 3L);
-    result = parseExpressionAndInterpret("1.2f + 2L");
-    assertEquals(result.asFloat(), 3.2f);
-    result = parseExpressionAndInterpret("1L + 1.5f");
-    assertEquals(result.asFloat(), 2.5f);
-    result = parseExpressionAndInterpret("1L + 1.2");
-    assertEquals(result.asDouble(), 2.2);
-    result = parseExpressionAndInterpret("1.5 + 2L");
-    assertEquals(result.asDouble(), 3.5);
-    result = parseExpressionAndInterpret("1L + 'a'");
-    assertEquals(result.asLong(), 98L);
-    result = parseExpressionAndInterpret("'a' + 2L");
-    assertEquals(result.asLong(), 99L);
-    result = parseExpressionAndInterpret("1L + \"a\"");
-    assertEquals(result.asString(), "1a");
-    result = parseExpressionAndInterpret("\"a\" + 2L");
-    assertEquals(result.asString(), "a2");
-
-    result = parseExpressionAndInterpret("1.2f + 1.5f");
-    assertEquals(result.asFloat(), 2.7f);
-    result = parseExpressionAndInterpret("1.2 + 1.5f");
-    assertEquals(result.asDouble(), 2.7);
-    result = parseExpressionAndInterpret("1.2f + 1.5");
-    assertEquals(result.asDouble(), 2.7, delta);
-    result = parseExpressionAndInterpret("'a' + 1.5f");
-    assertEquals(result.asFloat(), 98.5f);
-    result = parseExpressionAndInterpret("1.2f + 'a'");
-    assertEquals(result.asFloat(), 98.2f);
-    result = parseExpressionAndInterpret("\"a\" + 1.5f");
-    assertEquals(result.asString(), "a1.5");
-    result = parseExpressionAndInterpret("1.2f + \"a\"");
-    assertEquals(result.asString(), "1.2a");
-
-    result = parseExpressionAndInterpret("1.2 + 1.5");
-    assertEquals(result.asDouble(), 2.7);
-    result = parseExpressionAndInterpret("'a' + 1.5");
-    assertEquals(result.asDouble(), 98.5);
-    result = parseExpressionAndInterpret("1.2 + 'a'");
-    assertEquals(result.asDouble(), 98.2);
-    result = parseExpressionAndInterpret("\"a\" + 1.5");
-    assertEquals(result.asString(), "a1.5");
-    result = parseExpressionAndInterpret("1.2 + \"a\"");
-    assertEquals(result.asString(), "1.2a");
-
-    result = parseExpressionAndInterpret("'a' + 'a'");
-    assertEquals(result.asInt(), 194);
-    result = parseExpressionAndInterpret("\"a\" + 'a'");
-    assertEquals(result.asString(), "aa");
-    result = parseExpressionAndInterpret("'a' + \"a\"");
-    assertEquals(result.asString(), "aa");
-
-    result = parseExpressionAndInterpret("\"a\" + \"a\"");
-    assertEquals(result.asString(), "aa");
+    assertTrue(interpretationResult instanceof NotAValue);
   }
-
-  @Test
-  public void testInterpretBracketExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("(true)");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("(1)");
-    assertEquals(result.asInt(), 1);
-    result = parseExpressionAndInterpret("(2L)");
-    assertEquals(result.asLong(), 2L);
-    result = parseExpressionAndInterpret("(2.5f)");
-    assertEquals(result.asFloat(), 2.5f);
-    result = parseExpressionAndInterpret("(3.14)");
-    assertEquals(result.asDouble(), 3.14);
-    result = parseExpressionAndInterpret("('a')");
-    assertEquals(result.asChar(), 'a');
-    result = parseExpressionAndInterpret("(\"abc\")");
-    assertEquals(result.asString(), "abc");
-  }
-
-  @Test
-  public void testInterpretMinusExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true - false");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true - 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 - false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true - 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L - false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true - 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f - false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true - 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 - false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true - 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' - false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true - \"a\"");
-    assertEquals(Log.getFindings().size(), 12);
-    result = parseExpressionAndInterpret("\"a\" - false");
-    assertEquals(Log.getFindings().size(), 13);
-
-
-    result = parseExpressionAndInterpret("1 - 2");
-    assertEquals(result.asInt(), -1);
-    result = parseExpressionAndInterpret("1L - 2");
-    assertEquals(result.asLong(), -1L);
-    result = parseExpressionAndInterpret("1 - 2L");
-    assertEquals(result.asLong(), -1L);
-    result = parseExpressionAndInterpret("1.5f - 2");
-    assertEquals(result.asFloat(), -0.5f);
-    result = parseExpressionAndInterpret("1 - 1.2f");
-    assertEquals(result.asFloat(), -0.2f, delta);
-    result = parseExpressionAndInterpret("1.5 - 2");
-    assertEquals(result.asDouble(), -0.5);
-    result = parseExpressionAndInterpret("1 - 1.2");
-    assertEquals(result.asDouble(), -0.2, delta);
-    result = parseExpressionAndInterpret("'a' - 2");
-    assertEquals(result.asInt(), 95);
-    result = parseExpressionAndInterpret("1 - 'a'");
-    assertEquals(result.asInt(), -96);
-    result = parseExpressionAndInterpret("\"a\" - 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 - \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-
-    result = parseExpressionAndInterpret("1L - 2L");
-    assertEquals(result.asLong(), -1L);
-    result = parseExpressionAndInterpret("1.2f - 2L");
-    assertEquals(result.asFloat(), -0.8f, delta);
-    result = parseExpressionAndInterpret("1L - 1.5f");
-    assertEquals(result.asFloat(), -0.5f);
-    result = parseExpressionAndInterpret("1L - 1.2");
-    assertEquals(result.asDouble(), -0.2, delta);
-    result = parseExpressionAndInterpret("1.5 - 2L");
-    assertEquals(result.asDouble(), -0.5);
-    result = parseExpressionAndInterpret("1L - 'a'");
-    assertEquals(result.asLong(), -96L);
-    result = parseExpressionAndInterpret("'a' - 2L");
-    assertEquals(result.asLong(), 95L);
-    result = parseExpressionAndInterpret("1L - \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("\"a\" - 2L");
-    assertEquals(Log.getFindings().size(), 17);
-
-    result = parseExpressionAndInterpret("1.2f - 1.5f");
-    assertEquals(result.asFloat(), -0.3f, delta);
-    result = parseExpressionAndInterpret("1.2 - 1.5f");
-    assertEquals(result.asDouble(), -0.3, delta);
-    result = parseExpressionAndInterpret("1.2f - 1.5");
-    assertEquals(result.asDouble(), -0.3, delta);
-    result = parseExpressionAndInterpret("'a' - 1.5f");
-    assertEquals(result.asFloat(), 95.5f);
-    result = parseExpressionAndInterpret("1.2f - 'a'");
-    assertEquals(result.asFloat(), -95.8f);
-    result = parseExpressionAndInterpret("\"a\" - 1.5f");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1.2f - \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
-
-    result = parseExpressionAndInterpret("1.2 - 1.5");
-    assertEquals(result.asDouble(), -0.3, delta);
-    result = parseExpressionAndInterpret("'a' - 1.5");
-    assertEquals(result.asDouble(), 95.5);
-    result = parseExpressionAndInterpret("1.2 - 'a'");
-    assertEquals(result.asDouble(), -95.8);
-    result = parseExpressionAndInterpret("\"a\" - 1.5");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1.2 - \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
-
-    result = parseExpressionAndInterpret("'a' - 'a'");
-    assertEquals(result.asInt(), 0);
-    result = parseExpressionAndInterpret("\"a\" - 'a'");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("'a' - \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("\"a\" - \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
-  }
-
-  @Test
-  public void testInterpretMultExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true * false");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true * 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 * false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true * 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L * false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true * 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f * false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true * 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 * false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true * 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' * false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true * \"a\"");
-    assertEquals(Log.getFindings().size(), 12);
-    result = parseExpressionAndInterpret("\"a\" * false");
-    assertEquals(Log.getFindings().size(), 13);
-
-
-    result = parseExpressionAndInterpret("1 * 2");
-    assertEquals(result.asInt(), 2);
-    result = parseExpressionAndInterpret("1L * 2");
-    assertEquals(result.asLong(), 2L);
-    result = parseExpressionAndInterpret("1 * 2L");
-    assertEquals(result.asLong(), 2L);
-    result = parseExpressionAndInterpret("1.5f * 2");
-    assertEquals(result.asFloat(), 3.f);
-    result = parseExpressionAndInterpret("1 * 1.2f");
-    assertEquals(result.asFloat(), 1.2f);
-    result = parseExpressionAndInterpret("1.5 * 2");
-    assertEquals(result.asDouble(), 3.);
-    result = parseExpressionAndInterpret("1 * 1.2");
-    assertEquals(result.asDouble(), 1.2);
-    result = parseExpressionAndInterpret("'a' * 2");
-    assertEquals(result.asInt(), 194);
-    result = parseExpressionAndInterpret("1 * 'a'");
-    assertEquals(result.asInt(), 97);
-    result = parseExpressionAndInterpret("\"a\" * 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 * \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-
-    result = parseExpressionAndInterpret("1L * 2L");
-    assertEquals(result.asLong(), 2L);
-    result = parseExpressionAndInterpret("1.2f * 2L");
-    assertEquals(result.asFloat(), 2.4f);
-    result = parseExpressionAndInterpret("1L * 1.5f");
-    assertEquals(result.asFloat(), 1.5f);
-    result = parseExpressionAndInterpret("1L * 1.2");
-    assertEquals(result.asDouble(), 1.2);
-    result = parseExpressionAndInterpret("1.5 * 2L");
-    assertEquals(result.asDouble(), 3.0);
-    result = parseExpressionAndInterpret("1L * 'a'");
-    assertEquals(result.asLong(), 97L);
-    result = parseExpressionAndInterpret("'a' * 2L");
-    assertEquals(result.asLong(), 194L);
-    result = parseExpressionAndInterpret("1L * \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("\"a\" * 2L");
-    assertEquals(Log.getFindings().size(), 17);
-
-    result = parseExpressionAndInterpret("1.2f * 1.5f");
-    assertEquals(result.asFloat(), 1.8f, delta);
-    result = parseExpressionAndInterpret("1.2 * 1.5f");
-    assertEquals(result.asDouble(), 1.8, delta);
-    result = parseExpressionAndInterpret("1.2f * 1.5");
-    assertEquals(result.asDouble(), 1.8, delta);
-    result = parseExpressionAndInterpret("'a' * 1.5f");
-    assertEquals(result.asFloat(), 145.5f);
-    result = parseExpressionAndInterpret("1.2f * 'a'");
-    assertEquals(result.asFloat(), 116.4f);
-    result = parseExpressionAndInterpret("\"a\" * 1.5f");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1.2f * \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
-
-    result = parseExpressionAndInterpret("1.2 * 1.5");
-    assertEquals(result.asDouble(), 1.8, delta);
-    result = parseExpressionAndInterpret("'a' * 1.5");
-    assertEquals(result.asDouble(), 145.5);
-    result = parseExpressionAndInterpret("1.2 * 'a'");
-    assertEquals(result.asDouble(), 116.4, delta);
-    result = parseExpressionAndInterpret("\"a\" * 1.5");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1.2 * \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
-
-    result = parseExpressionAndInterpret("'a' * 'a'");
-    assertEquals(result.asInt(), 9409);
-    result = parseExpressionAndInterpret("\"a\" * 'a'");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("'a' * \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("\"a\" * \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
-  }
-
-  @Test
-  public void testInterpretDivideExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true / false");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true / 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 / false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true / 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L / false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true / 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f / false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true / 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 / false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true / 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' / false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true / \"a\"");
-    assertEquals(Log.getFindings().size(), 12);
-    result = parseExpressionAndInterpret("\"a\" / false");
-    assertEquals(Log.getFindings().size(), 13);
-
-
-    result = parseExpressionAndInterpret("1 / 2");
-    assertEquals(result.asInt(), 0);
-    result = parseExpressionAndInterpret("1L / 2");
-    assertEquals(result.asLong(), 0L);
-    result = parseExpressionAndInterpret("1 / 2L");
-    assertEquals(result.asLong(), 0L);
-    result = parseExpressionAndInterpret("1.5f / 2");
-    assertEquals(result.asFloat(), 0.75f);
-    result = parseExpressionAndInterpret("3 / 1.5f");
-    assertEquals(result.asFloat(), 2.f);
-    result = parseExpressionAndInterpret("1.5 / 2");
-    assertEquals(result.asDouble(), 0.75);
-    result = parseExpressionAndInterpret("3 / 1.5");
-    assertEquals(result.asDouble(), 2.);
-    result = parseExpressionAndInterpret("'a' / 2");
-    assertEquals(result.asInt(), 48);
-    result = parseExpressionAndInterpret("1 / 'a'");
-    assertEquals(result.asInt(), 0);
-    result = parseExpressionAndInterpret("\"a\" / 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 / \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-
-    result = parseExpressionAndInterpret("1L / 2L");
-    assertEquals(result.asLong(), 0L);
-    result = parseExpressionAndInterpret("1.2f / 2L");
-    assertEquals(result.asFloat(), 0.6f);
-    result = parseExpressionAndInterpret("3L / 1.5f");
-    assertEquals(result.asFloat(), 2.f);
-    result = parseExpressionAndInterpret("3L / 1.5");
-    assertEquals(result.asDouble(), 2.);
-    result = parseExpressionAndInterpret("3.0 / 2L");
-    assertEquals(result.asDouble(), 1.5);
-    result = parseExpressionAndInterpret("1L / 'a'");
-    assertEquals(result.asLong(), 0);
-    result = parseExpressionAndInterpret("'a' / 2L");
-    assertEquals(result.asLong(), 48);
-    result = parseExpressionAndInterpret("1L / \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("\"a\" / 2L");
-    assertEquals(Log.getFindings().size(), 17);
-
-    result = parseExpressionAndInterpret("1.2f / 1.5f");
-    assertEquals(result.asFloat(), 0.8f);
-    result = parseExpressionAndInterpret("1.2 / 1.5f");
-    assertEquals(result.asDouble(), 0.8, delta);
-    result = parseExpressionAndInterpret("1.2f / 1.5");
-    assertEquals(result.asDouble(), 0.8, delta);
-    result = parseExpressionAndInterpret("'a' / 0.5f");
-    assertEquals(result.asFloat(), 194.f);
-    result = parseExpressionAndInterpret("194.0f / 'a'");
-    assertEquals(result.asFloat(), 2.f);
-    result = parseExpressionAndInterpret("\"a\" / 1.5f");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1.2f / \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
-
-    result = parseExpressionAndInterpret("1.2 / 1.5");
-    assertEquals(result.asDouble(), 0.8, delta);
-    result = parseExpressionAndInterpret("'a' / 2.0");
-    assertEquals(result.asDouble(), 48.5);
-    result = parseExpressionAndInterpret("97.0 / 'a'");
-    assertEquals(result.asDouble(), 1.);
-    result = parseExpressionAndInterpret("\"a\" / 1.5");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1.2 / \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
-
-    result = parseExpressionAndInterpret("'a' / 'a'");
-    assertEquals(result.asInt(), 1);
-    result = parseExpressionAndInterpret("\"a\" / 'a'");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("'a' / \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("\"a\" / \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
-
-    result = parseExpressionAndInterpret("1 / 0");
-    assertEquals(Log.getFindings().size(), 25);
-    result = parseExpressionAndInterpret("'a' / 0");
-    assertEquals(Log.getFindings().size(), 26);
-    result = parseExpressionAndInterpret("1L / 0");
-    assertEquals(Log.getFindings().size(), 27);
-    result = parseExpressionAndInterpret("1 / 0L");
-    assertEquals(Log.getFindings().size(), 28);
-    result = parseExpressionAndInterpret("1L / 0L");
-    assertEquals(Log.getFindings().size(), 29);
-    result = parseExpressionAndInterpret("'a' / 0L");
-    assertEquals(Log.getFindings().size(), 30);
-  }
-
-  @Test
-  public void testInterpretModuloExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true % false");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true % 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 % false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true % 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L % false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true % 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f % false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true % 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 % false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true % 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' % false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true % \"a\"");
-    assertEquals(Log.getFindings().size(), 12);
-    result = parseExpressionAndInterpret("\"a\" % false");
-    assertEquals(Log.getFindings().size(), 13);
-
-
-    result = parseExpressionAndInterpret("1 % 2");
-    assertEquals(result.asInt(), 1);
-    result = parseExpressionAndInterpret("1L % 2");
-    assertEquals(result.asLong(), 1);
-    result = parseExpressionAndInterpret("1 % 2L");
-    assertEquals(result.asLong(), 1L);
-    result = parseExpressionAndInterpret("1.5f % 2");
-    assertEquals(result.asFloat(), 1.5f);
-    result = parseExpressionAndInterpret("1 % 1.2f");
-    assertEquals(result.asFloat(), 1.0f);
-    result = parseExpressionAndInterpret("1.5 % 2");
-    assertEquals(result.asDouble(), 1.5);
-    result = parseExpressionAndInterpret("1 % 1.2");
-    assertEquals(result.asDouble(), 1.0);
-    result = parseExpressionAndInterpret("'a' % 2");
-    assertEquals(result.asInt(), 1);
-    result = parseExpressionAndInterpret("1 % 'a'");
-    assertEquals(result.asInt(), 1);
-    result = parseExpressionAndInterpret("\"a\" % 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 % \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-
-    result = parseExpressionAndInterpret("1L % 2L");
-    assertEquals(result.asLong(), 1L);
-    result = parseExpressionAndInterpret("1.2f % 2L");
-    assertEquals(result.asFloat(), 1.2f);
-    result = parseExpressionAndInterpret("1L % 1.5f");
-    assertEquals(result.asFloat(), 1.0f);
-    result = parseExpressionAndInterpret("1L % 1.2");
-    assertEquals(result.asDouble(), 1.0);
-    result = parseExpressionAndInterpret("1.5 % 2L");
-    assertEquals(result.asDouble(), 1.5);
-    result = parseExpressionAndInterpret("1L % 'a'");
-    assertEquals(result.asLong(), 1L);
-    result = parseExpressionAndInterpret("'a' % 2L");
-    assertEquals(result.asLong(), 1L);
-    result = parseExpressionAndInterpret("1L % \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("\"a\" % 2L");
-    assertEquals(Log.getFindings().size(), 17);
-
-    result = parseExpressionAndInterpret("1.2f % 1.5f");
-    assertEquals(result.asFloat(), 1.2f, delta);
-    result = parseExpressionAndInterpret("1.2 % 1.5f");
-    assertEquals(result.asDouble(), 1.2);
-    result = parseExpressionAndInterpret("1.2f % 1.5");
-    assertEquals(result.asDouble(), 1.2, delta);
-    result = parseExpressionAndInterpret("'a' % 1.5f");
-    assertEquals(result.asFloat(), 1.0f);
-    result = parseExpressionAndInterpret("1.2f % 'a'");
-    assertEquals(result.asFloat(), 1.2f);
-    result = parseExpressionAndInterpret("\"a\" % 1.5f");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1.2f % \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
-
-    result = parseExpressionAndInterpret("1.2 % 1.5");
-    assertEquals(result.asDouble(), 1.2);
-    result = parseExpressionAndInterpret("'a' % 1.5");
-    assertEquals(result.asDouble(), 1.0);
-    result = parseExpressionAndInterpret("1.2 % 'a'");
-    assertEquals(result.asDouble(), 1.2);
-    result = parseExpressionAndInterpret("\"a\" % 1.5");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1.2 % \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
-
-    result = parseExpressionAndInterpret("'a' % 'a'");
-    assertEquals(result.asInt(), 0);
-    result = parseExpressionAndInterpret("\"a\" % 'a'");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("'a' % \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("\"a\" % \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
-  }
-
-  @Test
-  public void testInterpretEqualsExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true == false");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("true == 1");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("1 == false");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("true == 1L");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("1L == false");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("true == 1.2f");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("1.5f == false");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("true == 1.2");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("1.5 == false");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("true == 'a'");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("'a' == false");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("true == \"a\"");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("\"a\" == false");
-    assertEquals(Log.getFindings().size(), 12);
-
-
-    result = parseExpressionAndInterpret("1 == 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L == 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 == 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5f == 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 == 1.2f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 == 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 == 1.2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' == 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 == 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" == 2");
-    assertEquals(Log.getFindings().size(), 13);
-    result = parseExpressionAndInterpret("1 == \"a\"");
-    assertEquals(Log.getFindings().size(), 14);
-
-    result = parseExpressionAndInterpret("1L == 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f == 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L == 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L == 1.2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 == 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L == 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' == 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L == \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-    result = parseExpressionAndInterpret("\"a\" == 2L");
-    assertEquals(Log.getFindings().size(), 16);
-
-    result = parseExpressionAndInterpret("1.2f == 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 == 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f == 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' == 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f == 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" == 1.5f");
-    assertEquals(Log.getFindings().size(), 17);
-    result = parseExpressionAndInterpret("1.2f == \"a\"");
-    assertEquals(Log.getFindings().size(), 18);
-
-    result = parseExpressionAndInterpret("1.2 == 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' == 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 == 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" == 1.5");
-    assertEquals(Log.getFindings().size(), 19);
-    result = parseExpressionAndInterpret("1.2 == \"a\"");
-    assertEquals(Log.getFindings().size(), 20);
-
-    result = parseExpressionAndInterpret("'a' == 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" == 'a'");
-    assertEquals(Log.getFindings().size(), 21);
-    result = parseExpressionAndInterpret("'a' == \"a\"");
-    assertEquals(Log.getFindings().size(), 22);
-
-    result = parseExpressionAndInterpret("\"a\" == \"a\"");
-    assertFalse(result.asBoolean());
-  }
-
-  @Test
-  public void testInterpretNotEqualsExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true != false");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("true != 1");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("1 != false");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("true != 1L");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("1L != false");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("true != 1.2f");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("1.5f != false");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("true != 1.2");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("1.5 != false");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("true != 'a'");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("'a' != false");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("true != \"a\"");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("\"a\" != false");
-    assertEquals(Log.getFindings().size(), 12);
-
-
-    result = parseExpressionAndInterpret("1 != 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L != 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 != 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5f != 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 != 1.2f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 != 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 != 1.2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' != 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 != 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" != 2");
-    assertEquals(Log.getFindings().size(), 13);
-    result = parseExpressionAndInterpret("1 != \"a\"");
-    assertEquals(Log.getFindings().size(), 14);
-
-    result = parseExpressionAndInterpret("1L != 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f != 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L != 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L != 1.2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 != 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L != 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' != 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L != \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-    result = parseExpressionAndInterpret("\"a\" != 2L");
-    assertEquals(Log.getFindings().size(), 16);
-
-    result = parseExpressionAndInterpret("1.2f != 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 != 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f != 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' != 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f != 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" != 1.5f");
-    assertEquals(Log.getFindings().size(), 17);
-    result = parseExpressionAndInterpret("1.2f != \"a\"");
-    assertEquals(Log.getFindings().size(), 18);
-
-    result = parseExpressionAndInterpret("1.2 != 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' != 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 != 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" != 1.5");
-    assertEquals(Log.getFindings().size(), 19);
-    result = parseExpressionAndInterpret("1.2 != \"a\"");
-    assertEquals(Log.getFindings().size(), 20);
-
-    result = parseExpressionAndInterpret("'a' != 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" != 'a'");
-    assertEquals(Log.getFindings().size(), 21);
-    result = parseExpressionAndInterpret("'a' != \"a\"");
-    assertEquals(Log.getFindings().size(), 22);
-
-    result = parseExpressionAndInterpret("\"a\" != \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-  }
-
-  @Test
-  public void testInterpretLessThanExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true < false");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true < 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 < false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true < 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L < false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true < 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f < false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true < 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 < false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true < 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' < false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true < \"a\"");
-    assertEquals(Log.getFindings().size(), 12);
-    result = parseExpressionAndInterpret("\"a\" < false");
-    assertEquals(Log.getFindings().size(), 13);
-
-
-    result = parseExpressionAndInterpret("1 < 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L < 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 < 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5f < 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 < 1.2f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 < 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 < 1.2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' < 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 < 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" < 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 < \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-
-    result = parseExpressionAndInterpret("1L < 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f < 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L < 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L < 1.2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 < 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L < 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' < 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L < \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("\"a\" < 2L");
-    assertEquals(Log.getFindings().size(), 17);
-
-    result = parseExpressionAndInterpret("1.2f < 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 < 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f < 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' < 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f < 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" < 1.5f");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1.2f < \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
-
-    result = parseExpressionAndInterpret("1.2 < 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' < 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 < 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" < 1.5");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1.2 < \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
-
-    result = parseExpressionAndInterpret("'a' < 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" < 'a'");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("'a' < \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("\"a\" < \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
-  }
-
-  @Test
-  public void testInterpretGreaterThanExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true > false");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true > 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 > false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true > 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L > false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true > 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f > false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true > 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 > false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true > 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' > false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true > \"a\"");
-    assertEquals(Log.getFindings().size(), 12);
-    result = parseExpressionAndInterpret("\"a\" > false");
-    assertEquals(Log.getFindings().size(), 13);
-
-
-    result = parseExpressionAndInterpret("1 > 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L > 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 > 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5f > 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 > 1.2f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 > 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 > 1.2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' > 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 > 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" > 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 > \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-
-    result = parseExpressionAndInterpret("1L > 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f > 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L > 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L > 1.2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 > 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L > 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' > 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L > \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("\"a\" > 2L");
-    assertEquals(Log.getFindings().size(), 17);
-
-    result = parseExpressionAndInterpret("1.2f > 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 > 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f > 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' > 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f > 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" > 1.5f");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1.2f > \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
-
-    result = parseExpressionAndInterpret("1.2 > 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' > 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 > 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" > 1.5");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1.2 > \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
-
-    result = parseExpressionAndInterpret("'a' > 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" > 'a'");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("'a' > \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("\"a\" > \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
-  }
-
-  @Test
-  public void testInterpretGreaterEqualExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true >= false");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true >= 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 >= false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true >= 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L >= false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true >= 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f >= false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true >= 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 >= false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true >= 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' >= false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true >= \"a\"");
-    assertEquals(Log.getFindings().size(), 12);
-    result = parseExpressionAndInterpret("\"a\" >= false");
-    assertEquals(Log.getFindings().size(), 13);
-
-
-    result = parseExpressionAndInterpret("1 >= 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L >= 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 >= 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5f >= 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 >= 1.2f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 >= 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 >= 1.2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' >= 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 >= 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" >= 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 >= \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-
-    result = parseExpressionAndInterpret("1L >= 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f >= 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L >= 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L >= 1.2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 >= 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L >= 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' >= 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L >= \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("\"a\" >= 2L");
-    assertEquals(Log.getFindings().size(), 17);
-
-    result = parseExpressionAndInterpret("1.2f >= 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 >= 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f >= 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' >= 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f >= 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" >= 1.5f");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1.2f >= \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
-
-    result = parseExpressionAndInterpret("1.2 >= 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' >= 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 >= 'a'");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" >= 1.5");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1.2 >= \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
-
-    result = parseExpressionAndInterpret("'a' >= 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" >= 'a'");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("'a' >= \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("\"a\" >= \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
-  }
-
-  @Test
-  public void testInterpretLessEqualExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true <= false");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("true <= 1");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("1 <= false");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("true <= 1L");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("1L <= false");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("true <= 1.2f");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("1.5f <= false");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("true <= 1.2");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("1.5 <= false");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("true <= 'a'");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("'a' <= false");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("true <= \"a\"");
-    assertEquals(Log.getFindings().size(), 12);
-    result = parseExpressionAndInterpret("\"a\" <= false");
-    assertEquals(Log.getFindings().size(), 13);
-
-
-    result = parseExpressionAndInterpret("1 <= 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L <= 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 <= 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5f <= 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 <= 1.2f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 <= 2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1 <= 1.2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' <= 2");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1 <= 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" <= 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 <= \"a\"");
-    assertEquals(Log.getFindings().size(), 15);
-
-    result = parseExpressionAndInterpret("1L <= 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f <= 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L <= 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L <= 1.2");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.5 <= 2L");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1L <= 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' <= 2L");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1L <= \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("\"a\" <= 2L");
-    assertEquals(Log.getFindings().size(), 17);
-
-    result = parseExpressionAndInterpret("1.2f <= 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 <= 1.5f");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f <= 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' <= 1.5f");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f <= 'a'"); //MARKER
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" <= 1.5f");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1.2f <= \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
-
-    result = parseExpressionAndInterpret("1.2 <= 1.5");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("'a' <= 1.5");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2 <= 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" <= 1.5");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1.2 <= \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
-
-    result = parseExpressionAndInterpret("'a' <= 'a'");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("\"a\" <= 'a'");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("'a' <= \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("\"a\" <= \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
-  }
-
-  @Test
-  public void testInterpretBooleanNotExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("~true");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("~1");
-    assertEquals(result.asInt(), -2);
-    result = parseExpressionAndInterpret("~-5");
-    assertEquals(result.asInt(), 4);
-    result = parseExpressionAndInterpret("~708");
-    assertEquals(result.asInt(), -709);
-    result = parseExpressionAndInterpret("~1L");
-    assertEquals(result.asLong(), -2L);
-    result = parseExpressionAndInterpret("~-5L");
-    assertEquals(result.asLong(), 4L);
-    result = parseExpressionAndInterpret("~708L");
-    assertEquals(result.asLong(), -709L);
-    result = parseExpressionAndInterpret("~1.2f");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("~1.5");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("~'a'");
-    assertEquals(result.asInt(), -98);
-    result = parseExpressionAndInterpret("~\"a\"");
-    assertEquals(Log.getFindings().size(), 4);
-  }
-
-  @Test
-  public void testInterpretLogicalNotExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("!true");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("!false");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("!1");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("!1L");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("!1.2f");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("!1.5");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("!'a'");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("!\"a\"");
-    assertEquals(Log.getFindings().size(), 6);
-  }
-
-  @Test
-  public void testInterpretLogicalAndOpExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true && true");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("false && false");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("true && false");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("false && true");
-    assertFalse(result.asBoolean());
-
-    result = parseExpressionAndInterpret("true && 1");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("1 && false");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("true && 1L");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("1L && false");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("true && 1.2f");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("1.5f && false");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("true && 1.2");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("1.5 && false");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("true && 'a'");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("'a' && false");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("true && \"a\"");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("\"a\" && false");
-    assertEquals(Log.getFindings().size(), 12);
-
-
-    result = parseExpressionAndInterpret("1 && 2");
-    assertEquals(Log.getFindings().size(), 13);
-    result = parseExpressionAndInterpret("1L && 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 && 2L");
-    assertEquals(Log.getFindings().size(), 15);
-    result = parseExpressionAndInterpret("1.5f && 2");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("1 && 1.2f");
-    assertEquals(Log.getFindings().size(), 17);
-    result = parseExpressionAndInterpret("1.5 && 2");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1 && 1.2");
-    assertEquals(Log.getFindings().size(), 19);
-    result = parseExpressionAndInterpret("'a' && 2");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1 && 'a'");
-    assertEquals(Log.getFindings().size(), 21);
-    result = parseExpressionAndInterpret("\"a\" && 2");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("1 && \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("1L && 2L");
-    assertEquals(Log.getFindings().size(), 24);
-    result = parseExpressionAndInterpret("1.2f && 2L");
-    assertEquals(Log.getFindings().size(), 25);
-    result = parseExpressionAndInterpret("1L && 1.5f");
-    assertEquals(Log.getFindings().size(), 26);
-    result = parseExpressionAndInterpret("1L && 1.2");
-    assertEquals(Log.getFindings().size(), 27);
-    result = parseExpressionAndInterpret("1.5 && 2L");
-    assertEquals(Log.getFindings().size(), 28);
-    result = parseExpressionAndInterpret("1L && 'a'");
-    assertEquals(Log.getFindings().size(), 29);
-    result = parseExpressionAndInterpret("'a' && 2L");
-    assertEquals(Log.getFindings().size(), 30);
-    result = parseExpressionAndInterpret("1L && \"a\"");
-    assertEquals(Log.getFindings().size(), 31);
-    result = parseExpressionAndInterpret("\"a\" && 2L");
-    assertEquals(Log.getFindings().size(), 32);
-
-    result = parseExpressionAndInterpret("1.2f && 1.5f");
-    assertEquals(Log.getFindings().size(), 33);
-    result = parseExpressionAndInterpret("1.2 && 1.5f");
-    assertEquals(Log.getFindings().size(), 34);
-    result = parseExpressionAndInterpret("1.2f && 1.5");
-    assertEquals(Log.getFindings().size(), 35);
-    result = parseExpressionAndInterpret("'a' && 1.5f");
-    assertEquals(Log.getFindings().size(), 36);
-    result = parseExpressionAndInterpret("1.2f && 'a'");
-    assertEquals(Log.getFindings().size(), 37);
-    result = parseExpressionAndInterpret("\"a\" && 1.5f");
-    assertEquals(Log.getFindings().size(), 38);
-    result = parseExpressionAndInterpret("1.2f && \"a\"");
-    assertEquals(Log.getFindings().size(), 39);
-
-    result = parseExpressionAndInterpret("1.2 && 1.5");
-    assertEquals(Log.getFindings().size(), 40);
-    result = parseExpressionAndInterpret("'a' && 1.5");
-    assertEquals(Log.getFindings().size(), 41);
-    result = parseExpressionAndInterpret("1.2 && 'a'");
-    assertEquals(Log.getFindings().size(), 42);
-    result = parseExpressionAndInterpret("\"a\" && 1.5");
-    assertEquals(Log.getFindings().size(), 43);
-    result = parseExpressionAndInterpret("1.2 && \"a\"");
-    assertEquals(Log.getFindings().size(), 44);
-
-    result = parseExpressionAndInterpret("'a' && 'a'");
-    assertEquals(Log.getFindings().size(), 45);
-    result = parseExpressionAndInterpret("\"a\" && 'a'");
-    assertEquals(Log.getFindings().size(), 46);
-    result = parseExpressionAndInterpret("'a' && \"a\"");
-    assertEquals(Log.getFindings().size(), 47);
-
-    result = parseExpressionAndInterpret("\"a\" && \"a\"");
-    assertEquals(Log.getFindings().size(), 48);
-  }
-
-  @Test
-  public void testInterpretLogicalOrOpExpression() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("true || true");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("false || false");
-    assertFalse(result.asBoolean());
-    result = parseExpressionAndInterpret("true || false");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("false || true");
-    assertTrue(result.asBoolean());
-
-    result = parseExpressionAndInterpret("true || 1");
-    assertEquals(Log.getFindings().size(), 1);
-    result = parseExpressionAndInterpret("1 || false");
-    assertEquals(Log.getFindings().size(), 2);
-    result = parseExpressionAndInterpret("true || 1L");
-    assertEquals(Log.getFindings().size(), 3);
-    result = parseExpressionAndInterpret("1L || false");
-    assertEquals(Log.getFindings().size(), 4);
-    result = parseExpressionAndInterpret("true || 1.2f");
-    assertEquals(Log.getFindings().size(), 5);
-    result = parseExpressionAndInterpret("1.5f || false");
-    assertEquals(Log.getFindings().size(), 6);
-    result = parseExpressionAndInterpret("true || 1.2");
-    assertEquals(Log.getFindings().size(), 7);
-    result = parseExpressionAndInterpret("1.5 || false");
-    assertEquals(Log.getFindings().size(), 8);
-    result = parseExpressionAndInterpret("true || 'a'");
-    assertEquals(Log.getFindings().size(), 9);
-    result = parseExpressionAndInterpret("'a' || false");
-    assertEquals(Log.getFindings().size(), 10);
-    result = parseExpressionAndInterpret("true || \"a\"");
-    assertEquals(Log.getFindings().size(), 11);
-    result = parseExpressionAndInterpret("\"a\" || false");
-    assertEquals(Log.getFindings().size(), 12);
-
-
-    result = parseExpressionAndInterpret("1 || 2");
-    assertEquals(Log.getFindings().size(), 13);
-    result = parseExpressionAndInterpret("1L || 2");
-    assertEquals(Log.getFindings().size(), 14);
-    result = parseExpressionAndInterpret("1 || 2L");
-    assertEquals(Log.getFindings().size(), 15);
-    result = parseExpressionAndInterpret("1.5f || 2");
-    assertEquals(Log.getFindings().size(), 16);
-    result = parseExpressionAndInterpret("1 || 1.2f");
-    assertEquals(Log.getFindings().size(), 17);
-    result = parseExpressionAndInterpret("1.5 || 2");
-    assertEquals(Log.getFindings().size(), 18);
-    result = parseExpressionAndInterpret("1 || 1.2");
-    assertEquals(Log.getFindings().size(), 19);
-    result = parseExpressionAndInterpret("'a' || 2");
-    assertEquals(Log.getFindings().size(), 20);
-    result = parseExpressionAndInterpret("1 || 'a'");
-    assertEquals(Log.getFindings().size(), 21);
-    result = parseExpressionAndInterpret("\"a\" || 2");
-    assertEquals(Log.getFindings().size(), 22);
-    result = parseExpressionAndInterpret("1 || \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
-
-    result = parseExpressionAndInterpret("1L || 2L");
-    assertEquals(Log.getFindings().size(), 24);
-    result = parseExpressionAndInterpret("1.2f || 2L");
-    assertEquals(Log.getFindings().size(), 25);
-    result = parseExpressionAndInterpret("1L || 1.5f");
-    assertEquals(Log.getFindings().size(), 26);
-    result = parseExpressionAndInterpret("1L || 1.2");
-    assertEquals(Log.getFindings().size(), 27);
-    result = parseExpressionAndInterpret("1.5 || 2L");
-    assertEquals(Log.getFindings().size(), 28);
-    result = parseExpressionAndInterpret("1L || 'a'");
-    assertEquals(Log.getFindings().size(), 29);
-    result = parseExpressionAndInterpret("'a' || 2L");
-    assertEquals(Log.getFindings().size(), 30);
-    result = parseExpressionAndInterpret("1L || \"a\"");
-    assertEquals(Log.getFindings().size(), 31);
-    result = parseExpressionAndInterpret("\"a\" || 2L");
-    assertEquals(Log.getFindings().size(), 32);
-
-    result = parseExpressionAndInterpret("1.2f || 1.5f");
-    assertEquals(Log.getFindings().size(), 33);
-    result = parseExpressionAndInterpret("1.2 || 1.5f");
-    assertEquals(Log.getFindings().size(), 34);
-    result = parseExpressionAndInterpret("1.2f || 1.5");
-    assertEquals(Log.getFindings().size(), 35);
-    result = parseExpressionAndInterpret("'a' || 1.5f");
-    assertEquals(Log.getFindings().size(), 36);
-    result = parseExpressionAndInterpret("1.2f || 'a'");
-    assertEquals(Log.getFindings().size(), 37);
-    result = parseExpressionAndInterpret("\"a\" || 1.5f");
-    assertEquals(Log.getFindings().size(), 38);
-    result = parseExpressionAndInterpret("1.2f || \"a\"");
-    assertEquals(Log.getFindings().size(), 39);
-
-    result = parseExpressionAndInterpret("1.2 || 1.5");
-    assertEquals(Log.getFindings().size(), 40);
-    result = parseExpressionAndInterpret("'a' || 1.5");
-    assertEquals(Log.getFindings().size(), 41);
-    result = parseExpressionAndInterpret("1.2 || 'a'");
-    assertEquals(Log.getFindings().size(), 42);
-    result = parseExpressionAndInterpret("\"a\" || 1.5");
-    assertEquals(Log.getFindings().size(), 43);
-    result = parseExpressionAndInterpret("1.2 || \"a\"");
-    assertEquals(Log.getFindings().size(), 44);
-
-    result = parseExpressionAndInterpret("'a' || 'a'");
-    assertEquals(Log.getFindings().size(), 45);
-    result = parseExpressionAndInterpret("\"a\" || 'a'");
-    assertEquals(Log.getFindings().size(), 46);
-    result = parseExpressionAndInterpret("'a' || \"a\"");
-    assertEquals(Log.getFindings().size(), 47);
-
-    result = parseExpressionAndInterpret("\"a\" || \"a\"");
-    assertEquals(Log.getFindings().size(), 48);
-  }
-
-  @Test
-  public void testCombinedExpressions() throws IOException {
-    Value result;
-    assertEquals(Log.getFindings().size(), 0);
-    result = parseExpressionAndInterpret("((1 > 2L) && ('z' <= 15.243f)) || true");
-    assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("(3 + 2 * 2) / 14.0");
-    assertEquals(result.asDouble(), 0.5, delta);
-    result = parseExpressionAndInterpret("true && false || !true");
-    assertFalse(result.asBoolean());
-  }
-
 
   protected Value parseExpressionAndInterpret(String expr) throws IOException {
     CombineExpressionsWithLiteralsInterpreter interpreter = new CombineExpressionsWithLiteralsInterpreter();
