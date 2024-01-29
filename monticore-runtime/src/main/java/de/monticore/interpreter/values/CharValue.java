@@ -13,6 +13,11 @@ public class CharValue implements Value {
   }
 
   @Override
+  public boolean isChar() {
+    return true;
+  }
+
+  @Override
   public int asInt() {
     return value;
   }

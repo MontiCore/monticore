@@ -1,60 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions._visitor;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.expressions.assignmentexpressions._ast.*;
-import de.monticore.expressions.bitexpressions._ast.*;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._ast.*;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsInterpreter;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.ICombineExpressionsWithLiteralsInterpreter;
-import de.monticore.expressions.commonexpressions._ast.*;
-import de.monticore.expressions.expressionsbasis._ast.*;
-import de.monticore.expressions.javaclassexpressions._ast.*;
-import de.monticore.expressions.lambdaexpressions._ast.*;
-import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.interpreter.Value;
-import de.monticore.interpreter.values.NotAValue;
-import de.monticore.literals.mccommonliterals._ast.*;
-import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.literals.mcliteralsbasis._ast.ASTMCLiteralsBasisNode;
-import de.monticore.literals.mcliteralsbasis._ast.MCLiteralsBasisLiterals;
-import de.monticore.mcbasics._ast.ASTMCBasicsNode;
-import de.monticore.mcbasics._ast.MCBasicsLiterals;
-import de.monticore.regex.regextype._ast.ASTRegExType;
-import de.monticore.regex.regextype._ast.ASTRegExTypeNode;
-import de.monticore.regex.regextype._ast.RegExTypeLiterals;
-import de.monticore.regex.regularexpressions._ast.*;
-import de.monticore.statements.mcstatementsbasis._ast.*;
-import de.monticore.statements.mcvardeclarationstatements._ast.*;
-import de.monticore.symbols.basicsymbols._ast.*;
-import de.monticore.symbols.oosymbols._ast.*;
-import de.monticore.symboltable.ISymbol;
-import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
-import de.monticore.types.mcarraytypes._ast.ASTMCArrayTypesNode;
-import de.monticore.types.mcarraytypes._ast.MCArrayTypesLiterals;
-import de.monticore.types.mcbasictypes._ast.*;
-import de.monticore.types.mccollectiontypes._ast.*;
-import de.monticore.types.mcfullgenerictypes._ast.*;
-import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionParTypes;
-import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
-import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypesNode;
-import de.monticore.types.mcfunctiontypes._ast.MCFunctionTypesLiterals;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
-import de.monticore.types.mcsimplegenerictypes._ast.ASTMCSimpleGenericTypesNode;
-import de.monticore.types.mcsimplegenerictypes._ast.MCSimpleGenericTypesLiterals;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Stack;
 
 import static junit.framework.TestCase.*;
 
@@ -500,11 +458,11 @@ public class CommonExpressionsInterpreterTest {
     result = parseExpressionAndInterpret("'a' / 2");
     assertEquals(result.asInt(), 48);
     result = parseExpressionAndInterpret("1 / 'a'");
-    assertEquals(Log.getFindings().size(), 14);
+    assertEquals(result.asInt(), 0);
     result = parseExpressionAndInterpret("\"a\" / 2");
-    assertEquals(Log.getFindings().size(), 15);
+    assertEquals(Log.getFindings().size(), 14);
     result = parseExpressionAndInterpret("1 / \"a\"");
-    assertEquals(Log.getFindings().size(), 16);
+    assertEquals(Log.getFindings().size(), 15);
 
     result = parseExpressionAndInterpret("1L / 2L");
     assertEquals(result.asLong(), 0L);
@@ -521,9 +479,9 @@ public class CommonExpressionsInterpreterTest {
     result = parseExpressionAndInterpret("'a' / 2L");
     assertEquals(result.asLong(), 48);
     result = parseExpressionAndInterpret("1L / \"a\"");
-    assertEquals(Log.getFindings().size(), 19);
+    assertEquals(Log.getFindings().size(), 16);
     result = parseExpressionAndInterpret("\"a\" / 2L");
-    assertEquals(Log.getFindings().size(), 20);
+    assertEquals(Log.getFindings().size(), 17);
 
     result = parseExpressionAndInterpret("1.2f / 1.5f");
     assertEquals(result.asFloat(), 0.8f);
@@ -536,9 +494,9 @@ public class CommonExpressionsInterpreterTest {
     result = parseExpressionAndInterpret("194.0f / 'a'");
     assertEquals(result.asFloat(), 2.f);
     result = parseExpressionAndInterpret("\"a\" / 1.5f");
-    assertEquals(Log.getFindings().size(), 21);
+    assertEquals(Log.getFindings().size(), 18);
     result = parseExpressionAndInterpret("1.2f / \"a\"");
-    assertEquals(Log.getFindings().size(), 22);
+    assertEquals(Log.getFindings().size(), 19);
 
     result = parseExpressionAndInterpret("1.2 / 1.5");
     assertEquals(result.asDouble(), 0.8, delta);
@@ -547,32 +505,32 @@ public class CommonExpressionsInterpreterTest {
     result = parseExpressionAndInterpret("97.0 / 'a'");
     assertEquals(result.asDouble(), 1.);
     result = parseExpressionAndInterpret("\"a\" / 1.5");
-    assertEquals(Log.getFindings().size(), 23);
+    assertEquals(Log.getFindings().size(), 20);
     result = parseExpressionAndInterpret("1.2 / \"a\"");
-    assertEquals(Log.getFindings().size(), 24);
+    assertEquals(Log.getFindings().size(), 21);
 
     result = parseExpressionAndInterpret("'a' / 'a'");
     assertEquals(result.asInt(), 1);
     result = parseExpressionAndInterpret("\"a\" / 'a'");
-    assertEquals(Log.getFindings().size(), 25);
+    assertEquals(Log.getFindings().size(), 22);
     result = parseExpressionAndInterpret("'a' / \"a\"");
-    assertEquals(Log.getFindings().size(), 26);
+    assertEquals(Log.getFindings().size(), 23);
 
     result = parseExpressionAndInterpret("\"a\" / \"a\"");
-    assertEquals(Log.getFindings().size(), 27);
+    assertEquals(Log.getFindings().size(), 24);
 
     result = parseExpressionAndInterpret("1 / 0");
-    assertEquals(Log.getFindings().size(), 28);
+    assertEquals(Log.getFindings().size(), 25);
     result = parseExpressionAndInterpret("'a' / 0");
-    assertEquals(Log.getFindings().size(), 29);
+    assertEquals(Log.getFindings().size(), 26);
     result = parseExpressionAndInterpret("1L / 0");
-    assertEquals(Log.getFindings().size(), 30);
+    assertEquals(Log.getFindings().size(), 27);
     result = parseExpressionAndInterpret("1 / 0L");
-    assertEquals(Log.getFindings().size(), 31);
+    assertEquals(Log.getFindings().size(), 28);
     result = parseExpressionAndInterpret("1L / 0L");
-    assertEquals(Log.getFindings().size(), 32);
+    assertEquals(Log.getFindings().size(), 29);
     result = parseExpressionAndInterpret("'a' / 0L");
-    assertEquals(Log.getFindings().size(), 33);
+    assertEquals(Log.getFindings().size(), 30);
   }
 
   @Test
@@ -905,7 +863,7 @@ public class CommonExpressionsInterpreterTest {
     assertEquals(Log.getFindings().size(), 22);
 
     result = parseExpressionAndInterpret("\"a\" != \"a\"");
-    assertTrue(result.asBoolean());
+    assertEquals(Log.getFindings().size(), 23);
   }
 
   @Test
@@ -1212,12 +1170,12 @@ public class CommonExpressionsInterpreterTest {
     assertFalse(result.asBoolean());
     result = parseExpressionAndInterpret("'a' >= 1.5f");
     assertTrue(result.asBoolean());
-    result = parseExpressionAndInterpret("1.2f >= 'a'"); //MARKER
+    result = parseExpressionAndInterpret("1.2f >= 'a'");
     assertFalse(result.asBoolean());
     result = parseExpressionAndInterpret("\"a\" >= 1.5f");
-    assertEquals(Log.getFindings().size(), 20);
+    assertEquals(Log.getFindings().size(), 18);
     result = parseExpressionAndInterpret("1.2f >= \"a\"");
-    assertEquals(Log.getFindings().size(), 21);
+    assertEquals(Log.getFindings().size(), 19);
 
     result = parseExpressionAndInterpret("1.2 >= 1.5");
     assertFalse(result.asBoolean());
@@ -1226,19 +1184,19 @@ public class CommonExpressionsInterpreterTest {
     result = parseExpressionAndInterpret("1.2 >= 'a'");
     assertFalse(result.asBoolean());
     result = parseExpressionAndInterpret("\"a\" >= 1.5");
-    assertEquals(Log.getFindings().size(), 22);
+    assertEquals(Log.getFindings().size(), 20);
     result = parseExpressionAndInterpret("1.2 >= \"a\"");
-    assertEquals(Log.getFindings().size(), 23);
+    assertEquals(Log.getFindings().size(), 21);
 
     result = parseExpressionAndInterpret("'a' >= 'a'");
     assertTrue(result.asBoolean());
     result = parseExpressionAndInterpret("\"a\" >= 'a'");
-    assertEquals(Log.getFindings().size(), 24);
+    assertEquals(Log.getFindings().size(), 22);
     result = parseExpressionAndInterpret("'a' >= \"a\"");
-    assertEquals(Log.getFindings().size(), 25);
+    assertEquals(Log.getFindings().size(), 23);
 
     result = parseExpressionAndInterpret("\"a\" >= \"a\"");
-    assertEquals(Log.getFindings().size(), 26);
+    assertEquals(Log.getFindings().size(), 24);
   }
 
   @Test
@@ -1361,13 +1319,13 @@ public class CommonExpressionsInterpreterTest {
     result = parseExpressionAndInterpret("~1");
     assertEquals(result.asInt(), -2);
     result = parseExpressionAndInterpret("~-5");
-    assertEquals(result.asInt(), -6);
+    assertEquals(result.asInt(), 4);
     result = parseExpressionAndInterpret("~708");
     assertEquals(result.asInt(), -709);
     result = parseExpressionAndInterpret("~1L");
     assertEquals(result.asLong(), -2L);
     result = parseExpressionAndInterpret("~-5L");
-    assertEquals(result.asLong(), -6L);
+    assertEquals(result.asLong(), 4L);
     result = parseExpressionAndInterpret("~708L");
     assertEquals(result.asLong(), -709L);
     result = parseExpressionAndInterpret("~1.2f");
@@ -1659,47 +1617,4 @@ public class CommonExpressionsInterpreterTest {
     final ASTExpression ast = optAST.get();
     return interpreter.interpret(ast);
   }
-
-  protected static class CommonExpressionsWithLiteralsFullInterpreter extends CombineExpressionsWithLiteralsInterpreter {
-
-  /*
-    protected Map<ISymbol, Value> context = new HashMap<>();
-
-    @Override
-    public Value interpret(ASTExpression n) {
-      return n.evaluate(this);
-    }
-
-    @Override
-    public void setRealThis(ModelInterpreter realThis) {
-      Log.error("The full interpreter already is the realThis instance and thus can't be set again.");
-    }
-
-    @Override
-    public void store(ISymbol s, Value res) {
-      context.put(s, res);
-    }
-
-    @Override
-    public Value load(ISymbol s) {
-      return context.get(s);
-    }
-  }
-
-  protected static class Person {
-    String name;
-
-    public Person(String name) {
-      this.name = name;
-    }
-
-    @Override
-    public String toString() {
-      return name+":Person";
-    }
-  }
-  */
-  }
-
-
 }

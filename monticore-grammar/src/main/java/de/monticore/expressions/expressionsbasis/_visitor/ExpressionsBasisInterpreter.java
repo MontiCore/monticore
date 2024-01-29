@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis._visitor;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.Value;
@@ -27,6 +28,11 @@ public class ExpressionsBasisInterpreter extends ExpressionsBasisInterpreterTOP 
       return load(symbol.get());
     }
     return new NotAValue();
+  }
+
+  @Override
+  public Value interpret(ASTLiteralExpression n) {
+    return n.getLiteral().evaluate(getRealThis());
   }
 
 }

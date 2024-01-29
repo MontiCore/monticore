@@ -88,7 +88,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       } else if (left.isChar()) {
         return ValueFactory.createValue(left.asChar() + right.asDouble());
       } else if (right.isChar()) {
-        return ValueFactory.createValue(left.asInt() + right.asChar());
+        return ValueFactory.createValue(left.asDouble() + right.asChar());
       } else if (left.isLong()) {
         return ValueFactory.createValue(left.asLong() + right.asDouble());
       } else if (right.isLong()) {
@@ -298,6 +298,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       if (left.isInt() && right.isInt()) {
         if (right.asInt() == 0) {
           Log.error("Division by 0 is not supported.");
+          return new NotAValue();
         }
         return ValueFactory.createValue(left.asInt() / right.asInt());
       } else if (left.isDouble()) {
@@ -307,21 +308,25 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       } else if (left.isChar()) {
         if (right.asInt() == 0) {
           Log.error("Division by 0 is not supported.");
+          return new NotAValue();
         }
         return ValueFactory.createValue(left.asChar() / right.asInt());
       } else if (right.isChar()) {
         if (right.asInt() == 0) {
           Log.error("Division by 0 is not supported.");
+          return new NotAValue();
         }
         return ValueFactory.createValue(left.asInt() / right.asChar());
       } else if (left.isLong()) {
         if (right.asInt() == 0) {
           Log.error("Division by 0 is not supported.");
+          return new NotAValue();
         }
         return ValueFactory.createValue(left.asLong() / right.asInt());
       } else if (right.isLong()) {
         if (right.asLong() == 0) {
           Log.error("Division by 0 is not supported.");
+          return new NotAValue();
         }
         return ValueFactory.createValue(left.asInt() / right.asLong());
       } else if (left.isFloat()) {
@@ -349,6 +354,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       if (left.isLong() && right.isLong()) {
         if (right.asLong() == 0) {
           Log.error("Division by 0 is not supported.");
+          return new NotAValue();
         }
         return ValueFactory.createValue(left.asLong() / right.asLong());
       } else if (left.isFloat()) {
@@ -358,13 +364,15 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       } else if (left.isChar()) {
         if (right.asLong() == 0) {
           Log.error("Division by 0 is not supported.");
+          return new NotAValue();
         }
         return ValueFactory.createValue(left.asChar() / right.asLong());
       } else if (right.isChar()) {
         if (right.asChar() == 0) {
           Log.error("Division by 0 is not supported.");
+          return new NotAValue();
         }
-        return ValueFactory.createValue(left.asChar() / right.asLong());
+        return ValueFactory.createValue(left.asLong() / right.asChar());
       }
     } else if (left.isFloat() || right.isFloat()) {
       if (left.isFloat() && right.isFloat()) {
@@ -377,6 +385,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     } else if (left.isChar() && right.isChar()) {
       if (right.asChar() == 0) {
         Log.error("Division by 0 is not supported.");
+        return new NotAValue();
       }
       return ValueFactory.createValue(left.asChar() / right.asChar());
     }
@@ -452,6 +461,26 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       }
     } else if (left.isChar() && right.isChar()) {
       return ValueFactory.createValue(left.asChar() % right.asChar());
+    }
+    return new NotAValue();
+  }
+
+  @Override
+  public Value interpret(ASTMinusPrefixExpression node) {
+    Value expr = node.getExpression().evaluate(getRealThis());
+
+    if (expr.isObject() || expr.isBoolean() || expr.isString()) {
+      Log.error("Minus Prefix operation is not applicable for these types.");
+    } else if (expr.isInt()) {
+      return ValueFactory.createValue(-expr.asInt());
+    } else if (expr.isLong()) {
+      return ValueFactory.createValue(-expr.asLong());
+    } else if (expr.isDouble()) {
+      return ValueFactory.createValue(-expr.asDouble());
+    } else if (expr.isFloat()) {
+      return ValueFactory.createValue(-expr.asFloat());
+    } else if (expr.isChar()) {
+      return ValueFactory.createValue(-expr.asChar());
     }
     return new NotAValue();
   }
@@ -884,7 +913,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       } else if (left.isChar()) {
         return ValueFactory.createValue(left.asChar() >= right.asFloat());
       } else if (right.isChar()) {
-        return ValueFactory.createValue(left.asChar() >= right.asFloat());
+        return ValueFactory.createValue(left.asFloat() >= right.asChar());
       } else if (left.isLong()) {
         return ValueFactory.createValue(left.asLong() >= right.asFloat());
       } else if (right.isLong()) {
@@ -935,6 +964,22 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       } else if (right.isLong()) {
         return ValueFactory.createValue(left.asInt() <= right.asLong());
       }
+    } else if (left.isLong() || right.isLong()) {
+      if (left.isLong() && right.isLong()) {
+        return ValueFactory.createValue(left.asLong() <= right.asLong());
+      } else if (left.isDouble()) {
+        return ValueFactory.createValue(left.asDouble() <= right.asLong());
+      } else if (right.isDouble()) {
+        return ValueFactory.createValue(left.asLong() <= right.asDouble());
+      } else if (left.isChar()) {
+        return ValueFactory.createValue(left.asChar() <= right.asLong());
+      } else if (right.isChar()) {
+        return ValueFactory.createValue(left.asLong() <= right.asChar());
+      } else if (left.isFloat()) {
+        return ValueFactory.createValue(left.asFloat() <= right.asLong());
+      } else if (right.isFloat()) {
+        return ValueFactory.createValue(left.asLong() <= right.asFloat());
+      }
     } else if (left.isDouble() || right.isDouble()) {
       if (left.isDouble() && right.isDouble()) {
         return ValueFactory.createValue(left.asDouble() <= right.asDouble());
@@ -973,11 +1018,11 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     if (res.isFloat() || res.isObject() || res.isString() || res.isDouble() || res.isBoolean()) {
       Log.error("Logical Not operation is not applicable for these types.");
     } else if (res.isChar()) {
-      return ValueFactory.createValue(res.asChar());
+      return ValueFactory.createValue(~res.asChar());
     } else if (res.isInt()) {
-      return ValueFactory.createValue(res.asInt());
+      return ValueFactory.createValue(~res.asInt());
     } else if (res.isLong()) {
-      return ValueFactory.createValue(res.asLong());
+      return ValueFactory.createValue(~res.asLong());
     }
     return new NotAValue();
   }
@@ -1059,9 +1104,9 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   //Field Access operation
   /*=================================================================*/
   @Override
-  public Value interpret(ASTFieldAccessExpression node){
-    String expression = CommonExpressionsMill.prettyPrint(node,false);
-    Optional<VariableSymbol> symbol = ((IBasicSymbolsScope)node.getEnclosingScope()).resolveVariable(expression);
+  public Value interpret(ASTFieldAccessExpression node) {
+    String expression = CommonExpressionsMill.prettyPrint(node, false);
+    Optional<VariableSymbol> symbol = ((IBasicSymbolsScope) node.getEnclosingScope()).resolveVariable(expression);
     if (symbol.isPresent()) {
       return load(symbol.get());
     }
