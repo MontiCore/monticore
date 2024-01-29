@@ -3,7 +3,7 @@ package de.monticore.types;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
-import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypeNoParentheses;
+import de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType;
 import de.monticore.types.mcfunctiontypestest.MCFunctionTypesTestMill;
 import de.monticore.types.mcfunctiontypestest._parser.MCFunctionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
@@ -51,7 +51,7 @@ public class MCFunctionTypesTest {
 
   @Test
   public void testWithInputFunctionType1() throws IOException {
-    ASTMCFunctionTypeNoParentheses type =
+    ASTMCUnaryFunctionType type =
         parseMCFunctionTypeNoParentheses("int -> void");
     assertEquals("void", type.getMCReturnType().printType());
     assertEquals("int", type.getParameter().printType());
@@ -117,21 +117,21 @@ public class MCFunctionTypesTest {
 
   @Test
   public void testHigherOrderFunctionType3() throws IOException {
-    ASTMCFunctionTypeNoParentheses type =
+    ASTMCUnaryFunctionType type =
         parseMCFunctionTypeNoParentheses("int -> long -> void");
     assertEquals("int", type.getParameter().printType());
     assertTrue(type.getMCReturnType().isPresentMCType());
     ASTMCType returnType = type.getMCReturnType().getMCType();
-    assertTrue(returnType instanceof ASTMCFunctionTypeNoParentheses);
-    ASTMCFunctionTypeNoParentheses returnFuncType =
-        (ASTMCFunctionTypeNoParentheses) returnType;
+    assertTrue(returnType instanceof ASTMCUnaryFunctionType);
+    ASTMCUnaryFunctionType returnFuncType =
+        (ASTMCUnaryFunctionType) returnType;
     assertEquals("long", returnFuncType.getParameter().printType());
     assertEquals("void", returnFuncType.getMCReturnType().printType());
   }
 
   @Test
   public void testHigherOrderFunctionType5() throws IOException {
-    ASTMCFunctionTypeNoParentheses type =
+    ASTMCUnaryFunctionType type =
         parseMCFunctionTypeNoParentheses("int -> (long -> void) -> long");
     assertEquals("int", type.getParameter().printType());
     assertEquals("(long->void)->long", type.getMCReturnType().printType());
@@ -148,16 +148,16 @@ public class MCFunctionTypesTest {
     return type;
   }
 
-  protected ASTMCFunctionTypeNoParentheses parseMCFunctionTypeNoParentheses(
+  protected ASTMCUnaryFunctionType parseMCFunctionTypeNoParentheses(
       String mcTypeStr
   ) throws IOException {
     MCFunctionTypesTestParser parser = new MCFunctionTypesTestParser();
     Optional<ASTMCType> typeOpt = parser.parse_StringMCType(mcTypeStr);
     assertNotNull(typeOpt);
     assertTrue(typeOpt.isPresent());
-    assertTrue(typeOpt.get() instanceof ASTMCFunctionTypeNoParentheses);
-    ASTMCFunctionTypeNoParentheses type =
-        (ASTMCFunctionTypeNoParentheses) typeOpt.get();
+    assertTrue(typeOpt.get() instanceof ASTMCUnaryFunctionType);
+    ASTMCUnaryFunctionType type =
+        (ASTMCUnaryFunctionType) typeOpt.get();
     assertEquals(0, Log.getFindingsCount());
     return type;
   }

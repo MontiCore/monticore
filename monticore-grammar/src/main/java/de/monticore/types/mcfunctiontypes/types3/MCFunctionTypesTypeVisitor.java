@@ -5,7 +5,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
-import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypeNoParentheses;
+import de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -49,7 +49,7 @@ public class MCFunctionTypesTypeVisitor extends AbstractTypeVisitor
   }
 
   @Override
-  public void endVisit(ASTMCFunctionTypeNoParentheses functionType) {
+  public void endVisit(ASTMCUnaryFunctionType functionType) {
     SymTypeExpression symType;
 
     if (getType4Ast().getPartialTypeOfTypeId(functionType.getParameter())

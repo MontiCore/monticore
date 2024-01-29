@@ -4,7 +4,7 @@ package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
-import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionTypeNoParentheses;
+import de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2;
@@ -77,7 +77,7 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
     functionType.setDefiningSymbol(symType.getTypeInfo());
   }
 
-  public void handle(ASTMCFunctionTypeNoParentheses functionType) {
+  public void handle(ASTMCUnaryFunctionType functionType) {
     SymTypeExpression symType;
 
     functionType.getParameter().accept(getTraverser());

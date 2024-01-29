@@ -5,8 +5,8 @@ import de.monticore.symboltable.ISymbol;
 
 import java.util.Optional;
 
-public class ASTMCFunctionTypeNoParentheses
-    extends ASTMCFunctionTypeNoParenthesesTOP {
+public class ASTMCUnaryFunctionType
+    extends ASTMCUnaryFunctionTypeTOP {
 
   protected ISymbol definingSymbol;
 
