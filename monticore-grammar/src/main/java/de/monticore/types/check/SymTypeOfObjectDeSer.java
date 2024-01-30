@@ -2,6 +2,8 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -28,9 +30,22 @@ public class SymTypeOfObjectDeSer {
   }
 
   public SymTypeOfObject deserialize(JsonObject serialized) {
+    return deserialize(serialized, null);
+  }
+
+  /**
+   * @param enclosingScope can be null
+   */
+  public SymTypeOfObject deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasStringMember(SERIALIZED_OBJNAME)) {
       String objName = serialized.getStringMember(SERIALIZED_OBJNAME);
-      return SymTypeExpressionFactory.createTypeObject(objName, BasicSymbolsMill.globalScope());
+      if (enclosingScope == null) {
+        // support deprecated behavior
+        enclosingScope = BasicSymbolsMill.globalScope();
+      }
+      TypeSymbolSurrogate typeSym = new TypeSymbolSurrogate(objName);
+      typeSym.setEnclosingScope(enclosingScope);
+      return SymTypeExpressionFactory.createTypeObject(typeSym);
     }
     Log.error("0x823F4 Internal error: Cannot load \""
         + serialized + "\" as  SymTypeOfObject!");

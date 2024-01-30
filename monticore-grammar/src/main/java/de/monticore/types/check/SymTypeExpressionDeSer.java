@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -79,25 +80,44 @@ public class SymTypeExpressionDeSer {
     printer.array(memberName, member, SymTypeExpression::printAsJson);
   }
 
+  @Deprecated
   public static SymTypeExpression deserializeMember(String memberName, JsonObject json) {
-    return getInstance().deserialize(json.getMember(memberName));
+    return deserializeMember(memberName, json, null);
   }
 
-  public static Optional<SymTypeExpression> deserializeOptionalMember(String memberName,
-      JsonObject json) {
+  public static SymTypeExpression deserializeMember(String memberName,
+      JsonObject json, IBasicSymbolsScope enclosingScope) {
+    return getInstance().deserialize(json.getMember(memberName), enclosingScope);
+  }
+
+  @Deprecated
+  public static Optional<SymTypeExpression> deserializeOptionalMember(
+      String memberName, JsonObject json) {
+    return deserializeOptionalMember(memberName, json, null);
+  }
+
+    public static Optional<SymTypeExpression> deserializeOptionalMember(
+        String memberName, JsonObject json, IBasicSymbolsScope enclosingScope) {
     if (json.hasMember(memberName)) {
-      return Optional.of(getInstance().deserialize(json.getMember(memberName)));
+      return Optional.of(getInstance()
+          .deserialize(json.getMember(memberName), enclosingScope));
     }
     else {
       return Optional.empty();
     }
   }
 
+  @Deprecated
   public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json) {
+    return deserializeListMember(memberName, json, null);
+  }
+
+  public static List<SymTypeExpression> deserializeListMember(
+      String memberName, JsonObject json, IBasicSymbolsScope enclosingScope) {
     List<SymTypeExpression> result = new ArrayList<>();
     if (json.hasMember(memberName)) {
       for (JsonElement e : json.getArrayMember(memberName)) {
-        result.add(getInstance().deserialize(e));
+        result.add(getInstance().deserialize(e, enclosingScope));
       }
     }
     return result;
@@ -190,7 +210,13 @@ public class SymTypeExpressionDeSer {
     return deserialize(JsonParser.parse(serialized));
   }
 
+  @Deprecated
   public SymTypeExpression deserialize(JsonElement serialized) {
+    return deserialize(serialized, null);
+  }
+
+  public SymTypeExpression deserialize(JsonElement serialized,
+      IBasicSymbolsScope enclosingScope) {
 
     // void and null are stored as strings
     if (serialized.isJsonString()) {
@@ -207,27 +233,27 @@ public class SymTypeExpressionDeSer {
       JsonObject o = serialized.getAsJsonObject();
       switch (JsonDeSers.getKind(o)) {
         case SymTypeArrayDeSer.SERIALIZED_KIND:
-          return symTypeArrayDeSer.deserialize(o);
+          return symTypeArrayDeSer.deserialize(o, enclosingScope);
         case SymTypePrimitiveDeSer.SERIALIZED_KIND:
           return symTypePrimitiveDeSer.deserialize(o);
         case SymTypeOfGenericsDeSer.SERIALIZED_KIND:
-          return symTypeOfGenericsDeSer.deserialize(o);
+          return symTypeOfGenericsDeSer.deserialize(o, enclosingScope);
         case SymTypeOfIntersectionDeSer.SERIALIZED_KIND:
-          return symTypeOfIntersectionDeSer.deserialize(o);
+          return symTypeOfIntersectionDeSer.deserialize(o, enclosingScope);
         case SymTypeOfObjectDeSer.SERIALIZED_KIND:
-          return symTypeOfObjectDeSer.deserialize(o);
+          return symTypeOfObjectDeSer.deserialize(o, enclosingScope);
         case SymTypeOfRegExDeSer.SERIALIZED_KIND:
           return symTypeOfRegExDeSer.deserialize(o);
         case SymTypeOfTupleDeSer.SERIALIZED_KIND:
           return symTypeOfTupleDeSer.deserialize(o);
         case SymTypeOfUnionDeSer.SERIALIZED_KIND:
-          return symTypeOfUnionDeSer.deserialize(o);
+          return symTypeOfUnionDeSer.deserialize(o, enclosingScope);
         case SymTypeVariableDeSer.SERIALIZED_KIND:
-          return symTypeVariableDeSer.deserialize(o);
+          return symTypeVariableDeSer.deserialize(o, enclosingScope);
         case SymTypeOfWildcardDeSer.SERIALIZED_KIND:
-          return symTypeOfWildcardDeSer.deserialize(o);
+          return symTypeOfWildcardDeSer.deserialize(o, enclosingScope);
         case SymTypeOfFunctionDeSer.SERIALIZED_KIND:
-          return symTypeOfFunctionDeSer.deserialize(o);
+          return symTypeOfFunctionDeSer.deserialize(o, enclosingScope);
       }
     }
 
