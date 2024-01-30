@@ -6,12 +6,12 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
 <#list symbolRuleAttribute as attr>
   <#if genHelper.isOptional(attr.getMCType())>
   if (deserialize${attr.getName()?cap_first}(symbolJson).isPresent()) {
-    builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson).get());
+    builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scope, symbolJson).get());
   } else {
     builder.${genHelper.getPlainSetter(attr)}Absent();
   }
   <#else>
-  builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(symbolJson));
+  builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scope, symbolJson));
   </#if>
 </#list>
 

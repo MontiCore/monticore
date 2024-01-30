@@ -79,6 +79,8 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         .createQualifiedType(s2jName), "s2j");
     ASTCDParameter jsonParam = getCDParameterFacade().createParameter(getMCTypeFacade()
         .createQualifiedType(JSON_OBJECT), "symbolJson");
+    ASTCDParameter scopeParam = getCDParameterFacade().createParameter(
+        getMCTypeFacade().createQualifiedType(iScopeName), "scope");
 
     boolean spansScope = symbolTableService.hasSymbolSpannedScope(symbolClass);
     List<ASTCDAttribute> attr = symbolClass.getCDAttributeList();
@@ -95,9 +97,11 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         .addCDMember(createSerializeAddonsMethod(symParam, s2jParam))
 
         //deserialization
-        .addCDMember(createDeserializeMethod(symType, millName, symName, jsonParam, attr,
+        .addCDMember(createDeserializeMethod(symType, millName, symName, scopeParam, jsonParam, attr,
             spansScope, iScopeName, deSerName))
-        .addAllCDMembers(createDeserializeAttrMethods(attr, jsonParam))
+        .addCDMember(createDeserializeMethodWrapper(symType, millName, symName, jsonParam, attr,
+            spansScope, iScopeName, deSerName))
+        .addAllCDMembers(createDeserializeAttrMethods(attr, jsonParam, scopeParam))
         .addCDMember(createDeserializeAddons(sym2Param, jsonParam))
 
         .build();
@@ -161,23 +165,39 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   ////////////////////////////// DESERIALIZATON ////////////////////////////////////////////////////
 
   protected ASTCDMethod createDeserializeMethod(ASTMCQualifiedType type, String symTabMill,
-      String symbolFullName, ASTCDParameter jsonParam,
+      String symbolFullName, ASTCDParameter scopeParam, ASTCDParameter jsonParam,
       List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeName,
       String deSerFullName) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
-        .createMethod(PUBLIC.build(), type, DESERIALIZE, jsonParam);
+        .createMethod(PUBLIC.build(), type, DESERIALIZE, scopeParam, jsonParam);
     this.replaceTemplate(EMPTY_BODY, deserializeMethod,
         new TemplateHookPoint(DESER_TEMPL, symTabMill, symbolFullName,
             Names.getSimpleName(symbolFullName), symbolRuleAttributes, spansScope, scopeName, deSerFullName));
     return deserializeMethod;
   }
 
+  protected ASTCDMethod createDeserializeMethodWrapper(ASTMCQualifiedType type, String symTabMill,
+      String symbolFullName, ASTCDParameter jsonParam,
+      List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeName,
+      String deSerFullName) {
+    ASTCDMethod deserializeMethod = getCDMethodFacade()
+        .createMethod(PUBLIC.build(), type, DESERIALIZE, jsonParam);
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod, new StringHookPoint(
+        "return this." + DESERIALIZE + "(null, " + jsonParam.getName() + ");"
+    ));
+    return deserializeMethod;
+  }
+
   protected List<ASTCDMethod> createDeserializeAttrMethods(
-      List<ASTCDAttribute> attributeList, ASTCDParameter scopeJsonParam) {
+      List<ASTCDAttribute> attributeList, ASTCDParameter scopeJsonParam, ASTCDParameter scopeParam) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributeList) {
       String methodName = DESERIALIZE + StringTransformations.capitalize(attr.getName());
       ASTCDMethod method = getCDMethodFacade()
+          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeParam, scopeJsonParam);
+      // create wrapper function offering the deprecated interface
+      // this one does not take the enclosing scope
+      ASTCDMethod wrapperMethod = getCDMethodFacade()
           .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeJsonParam);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
@@ -185,10 +205,21 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
           .getDeserialHook(attr.printType(), attr.getName(), "symbolJson");
       if (impl.isPresent()) {
         this.replaceTemplate(EMPTY_BODY, method, impl.get());
+        String deprecatedWrapperImpl = "return this." + methodName +
+            "(null, " + scopeJsonParam.getName() + ");";
+        this.replaceTemplate(EMPTY_BODY, wrapperMethod,
+            new StringHookPoint(deprecatedWrapperImpl));
       }
       else {
-        makeMethodAbstract(method, attr);
+        // keep the original behavior:
+        // an abstract method without a scope parameter is created
+        makeMethodAbstract(wrapperMethod, attr);
+        String deprecatedImpl = "return this." + methodName +
+            "(" + scopeJsonParam.getName() + ");";
+        this.replaceTemplate(EMPTY_BODY, method,
+            new StringHookPoint(deprecatedImpl));
       }
+      methodList.add(wrapperMethod);
       methodList.add(method);
     }
     return methodList;
