@@ -19,13 +19,13 @@ public class CommonExpressionsLValueRelations implements ILValueRelations {
     ICommonExpressionsTypeDispatcher dispatcher =
         CommonExpressionsMill.typeDispatcher();
     boolean result;
-    if (dispatcher.isASTNameExpression(expression)) {
+    if (dispatcher.isExpressionsBasisASTNameExpression(expression)) {
       result = true;
     }
-    else if (dispatcher.isASTFieldAccessExpression(expression)) {
+    else if (dispatcher.isCommonExpressionsASTFieldAccessExpression(expression)) {
       result = true;
     }
-    else if (dispatcher.isASTArrayAccessExpression(expression)) {
+    else if (dispatcher.isCommonExpressionsASTArrayAccessExpression(expression)) {
       result = true;
     }
     else {

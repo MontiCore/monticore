@@ -31,11 +31,11 @@ public class LiteralAssignmentMatchesRegExExpressionCoCo implements
 
     if (leftResult.isPresentResult()) {
       if (leftResult.getResult().isRegExType() &&
-          expressionsDispatcher.isASTLiteralExpression(node.getRight())) {
+          expressionsDispatcher.isExpressionsBasisASTLiteralExpression(node.getRight())) {
         ASTLiteralExpression literalExpression =
-            expressionsDispatcher.asASTLiteralExpression(node.getRight());
-        if (literalDispatcher.isASTStringLiteral(literalExpression.getLiteral())) {
-          String s = literalDispatcher.asASTStringLiteral(literalExpression)
+            expressionsDispatcher.asExpressionsBasisASTLiteralExpression(node.getRight());
+        if (literalDispatcher.isMCCommonLiteralsASTStringLiteral(literalExpression.getLiteral())) {
+          String s = literalDispatcher.asMCCommonLiteralsASTStringLiteral(literalExpression.getLiteral())
               .getSource();
           String regex = leftResult.getResult().asRegExType().getRegExString();
 

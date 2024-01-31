@@ -44,8 +44,8 @@ public class OOWithinScopeBasicSymbolsResolver
 
   protected Predicate<FunctionSymbol> getIsConstructorPredicate() {
     return f -> {
-      if (OOSymbolsMill.typeDispatcher().isMethod(f)) {
-        MethodSymbol m = OOSymbolsMill.typeDispatcher().asMethod(f);
+      if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(f)) {
+        MethodSymbol m = OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(f);
         if (m.isIsConstructor()) {
           return true;
         }

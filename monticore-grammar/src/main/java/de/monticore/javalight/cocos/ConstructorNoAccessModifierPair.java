@@ -30,7 +30,7 @@ public class ConstructorNoAccessModifierPair implements JavaLightASTConstructorD
     int mod = 0;
 
     for (ASTMCModifier modifier : modifiers) {
-      ASTJavaModifier javaModifier = JavaLightMill.typeDispatcher().asASTJavaModifier(modifier);
+      ASTJavaModifier javaModifier = JavaLightMill.typeDispatcher().asMCCommonStatementsASTJavaModifier(modifier);
 
       if (javaModifier.getModifier() >= ASTConstantsMCCommonStatements.PRIVATE
           && javaModifier.getModifier() <=  ASTConstantsMCCommonStatements.PUBLIC) {

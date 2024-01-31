@@ -303,9 +303,9 @@ public class WithinTypeBasicSymbolsResolver {
         .collect(Collectors.toList());
     // prefer variables to concrete types in the same scope,
     // e.g., class A<B>{class B{} B b = new B();} is not valid Java
-    if (resolved.stream().anyMatch(getTypeDispatcher()::isTypeVar)) {
+    if (resolved.stream().anyMatch(getTypeDispatcher()::isBasicSymbolsTypeVar)) {
       resolved = resolved.stream()
-          .filter(Predicate.not(getTypeDispatcher()::isTypeVar))
+          .filter(Predicate.not(getTypeDispatcher()::isBasicSymbolsTypeVar))
           .collect(Collectors.toList());
     }
     if (resolved.size() > 1) {

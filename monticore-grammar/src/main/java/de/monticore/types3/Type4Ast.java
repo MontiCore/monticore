@@ -412,12 +412,12 @@ public class Type4Ast {
   protected boolean isQNameExpr(ASTExpression expr) {
     ICommonExpressionsTypeDispatcher typeDispatcher =
         CommonExpressionsMill.typeDispatcher();
-    if (typeDispatcher.isASTNameExpression(expr)) {
+    if (typeDispatcher.isExpressionsBasisASTNameExpression(expr)) {
       return true;
     }
-    else if (typeDispatcher.isASTFieldAccessExpression(expr)) {
+    else if (typeDispatcher.isCommonExpressionsASTFieldAccessExpression(expr)) {
       return isQNameExpr(
-          typeDispatcher.asASTFieldAccessExpression(expr).getExpression()
+          typeDispatcher.asCommonExpressionsASTFieldAccessExpression(expr).getExpression()
       );
     }
     else {

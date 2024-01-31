@@ -71,9 +71,11 @@ public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompi
   public List<ASTCDMethod> methodsForAST() {
     List<ASTCDMethod> methods = new ArrayList<>();
 
-    for (CDTypeSymbol symbol: visitorService.getAllCDTypes()) {
+    for (CDTypeSymbol symbol : visitorService.getAllCDTypes()) {
       createMethods(
-          methods, symbol.getName(), visitorService.createASTFullName(symbol),
+          methods,
+          visitorService.getCDName() + symbol.getName(),
+          visitorService.createASTFullName(symbol),
           NODE_TYPE, NODE_PARAMETER);
     }
 
@@ -84,9 +86,11 @@ public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompi
   public List<ASTCDMethod> methodsForSymbols() {
     List<ASTCDMethod> methods = new ArrayList<>();
 
-    for (String symbol: symbolTableService.retrieveSymbolNamesFromCD()) {
+    for (String symbol : symbolTableService.retrieveSymbolNamesFromCD()) {
       createMethods(
-          methods, symbolTableService.getSimpleNameFromSymbolName(symbol), symbol,
+          methods,
+          visitorService.getCDName() + symbolTableService.getSimpleNameFromSymbolName(symbol),
+          symbol,
           SYMBOL_TYPE, SYMBOL_PARAMETER);
     }
 
@@ -96,21 +100,21 @@ public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompi
   public List<ASTCDMethod> methodsForScopes() {
     List<ASTCDMethod> methods = new ArrayList<>();
 
-      createMethods(
-          methods,
-          symbolTableService.getScopeInterfaceSimpleName(),
-          symbolTableService.getScopeInterfaceFullName(),
-          SCOPE_TYPE, SCOPE_PARAMETER);
+    createMethods(
+        methods,
+        visitorService.getCDName() + symbolTableService.getScopeInterfaceSimpleName(),
+        symbolTableService.getScopeInterfaceFullName(),
+        SCOPE_TYPE, SCOPE_PARAMETER);
 
     createMethods(
         methods,
-        symbolTableService.getGlobalScopeInterfaceSimpleName(),
+        visitorService.getCDName() + symbolTableService.getGlobalScopeInterfaceSimpleName(),
         symbolTableService.getGlobalScopeInterfaceFullName(),
         SCOPE_TYPE, SCOPE_PARAMETER);
 
     createMethods(
         methods,
-        symbolTableService.getArtifactScopeInterfaceSimpleName(),
+        visitorService.getCDName() + symbolTableService.getArtifactScopeInterfaceSimpleName(),
         symbolTableService.getArtifactScopeInterfaceFullName(),
         SCOPE_TYPE, SCOPE_PARAMETER);
 
@@ -146,8 +150,10 @@ public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompi
                   symbol.getFullName().toLowerCase() + "." + UTILS_PACKAGE,
                   getTypeDispatcherInterfaceName(symbol.getName()))));
     }
+    superTypes.add(typeFacade.createQualifiedType(visitorService.getHandlerFullName()));
 
-    return CDExtendUsageFacade.getInstance().createCDExtendUsage(superTypes);
+    return CDExtendUsageFacade.getInstance().createCDExtendUsage(
+        superTypes);
   }
 
   public String getTypeDispatcherInterfaceName(String name) {

@@ -66,16 +66,16 @@ public class FunctionCallArgumentsMatchesRegExCoCo implements
               SymTypeExpression parameterType = f.getArgumentType(i);
 
               if (parameterType.isRegExType() &&
-                  expressionsDispatcher.isASTLiteralExpression(argumentNode)) {
+                  expressionsDispatcher.isExpressionsBasisASTLiteralExpression(argumentNode)) {
 
                 ASTLiteral literal = expressionsDispatcher
-                        .asASTLiteralExpression(argumentNode).getLiteral();
+                        .asExpressionsBasisASTLiteralExpression(argumentNode).getLiteral();
 
                 IMCCommonLiteralsTypeDispatcher literalsDispatcher =
                     MCCommonLiteralsMill.typeDispatcher();
 
-                if (literalsDispatcher.isASTStringLiteral(literal)) {
-                  String s = literalsDispatcher.asASTStringLiteral(literal).getSource();
+                if (literalsDispatcher.isMCCommonLiteralsASTStringLiteral(literal)) {
+                  String s = literalsDispatcher.asMCCommonLiteralsASTStringLiteral(literal).getSource();
                   String regex = parameterType.asRegExType().getRegExString();
 
                   if (!s.matches(regex)) {
