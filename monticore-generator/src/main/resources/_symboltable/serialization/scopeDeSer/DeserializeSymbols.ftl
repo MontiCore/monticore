@@ -20,7 +20,7 @@ ${tc.signature("symbolMap", "mill", "errorCode", "scopeDeserName", "scopeInterfa
       );
 
       deSer = new SymbolWithScopeOfUnknownKindDeSer(this, ${mill}::scope);
-      SymbolWithScopeOfUnknownKind s0 = (SymbolWithScopeOfUnknownKind) deSer.deserialize(scope, symbol);
+      SymbolWithScopeOfUnknownKind s0 = (SymbolWithScopeOfUnknownKind) deSer.deserialize(symbol);
       scope.add(s0);
       scope.addSubScope((${scopeInterfaceName}) s0.getSpannedScope());
     }
