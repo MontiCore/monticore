@@ -16,6 +16,7 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -129,7 +130,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             scopeRuleAttrList))
         .addCDMember(
             createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName, scopeDeSerName, scopeInterfaceName))
-        .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, scopeJsonParam))
+        .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, scopeParam, scopeJsonParam))
         .addAllCDMembers(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
     if(generateAbstractClass){
@@ -234,11 +235,15 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   }
 
   protected List<ASTCDMethod> createDeserializeAttrMethods(
-      List<ASTCDAttribute> attributeList, ASTCDParameter scopeJsonParam) {
+      List<ASTCDAttribute> attributeList, ASTCDParameter scopeParam, ASTCDParameter scopeJsonParam) {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributeList) {
       String methodName = DESERIALIZE + StringTransformations.capitalize(attr.getName());
       ASTCDMethod method = getCDMethodFacade()
+          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeParam, scopeJsonParam);
+      // create wrapper function offering the deprecated interface
+      // this one does not take the enclosing scope
+      ASTCDMethod wrapperMethod = getCDMethodFacade()
           .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeJsonParam);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
@@ -246,10 +251,21 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
           .getDeserialHook(attr.printType(), attr.getName(), "scopeJson");
       if (impl.isPresent()) {
         this.replaceTemplate(EMPTY_BODY, method, impl.get());
+        String deprecatedWrapperImpl = "return this." + methodName +
+            "(null, " + scopeJsonParam.getName() + ");";
+        this.replaceTemplate(EMPTY_BODY, wrapperMethod,
+            new StringHookPoint(deprecatedWrapperImpl));
       }
       else {
-        makeMethodAbstract(method,attr);
+        // keep the original behavior:
+        // an abstract method without a scope parameter is created
+        makeMethodAbstract(wrapperMethod, attr);
+        String deprecatedImpl = "return this." + methodName +
+            "(" + scopeJsonParam.getName() + ");";
+        this.replaceTemplate(EMPTY_BODY, method,
+            new StringHookPoint(deprecatedImpl));
       }
+      methodList.add(wrapperMethod);
       methodList.add(method);
     }
     return methodList;
