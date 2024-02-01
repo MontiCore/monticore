@@ -77,7 +77,7 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodSize() {
-    assertEquals(8, millClass.getCDMethodList().size());
+    assertEquals(9, millClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
