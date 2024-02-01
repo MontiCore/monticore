@@ -92,7 +92,8 @@ public class MillForSuperDecoratorTest extends DecoratorTestCase {
     getMethodBy("_inheritanceTraverser", millClass);
     getMethodBy("_parser", millClass);
     getMethodBy("_prettyPrint", millClass);
-  
+    getMethodBy("_typeDispatcher", millClass);
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
