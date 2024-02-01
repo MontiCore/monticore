@@ -17,7 +17,14 @@ public class TypeVarSymbolDeSer extends TypeVarSymbolDeSerTOP {
 
   @Override
   public List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson) {
-    return SymTypeExpressionDeSer.deserializeListMember("superTypes", symbolJson);
+    // support deprecated behavior
+    return deserializeSuperTypes(null, symbolJson);
+  }
+
+  @Override
+  public List<SymTypeExpression> deserializeSuperTypes(
+      IBasicSymbolsScope scope, JsonObject symbolJson) {
+    return SymTypeExpressionDeSer.deserializeListMember("superTypes", symbolJson, scope);
   }
 
 }
