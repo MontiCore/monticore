@@ -215,7 +215,8 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     
     assertEquals(1, grammar.getSuperGrammars().size());
     MCGrammarSymbolSurrogate superGrammarRef = grammar.getSuperGrammars().get(0);
-    assertEquals("de.monticore.Statechart", superGrammarRef.getName());
+    assertEquals("Statechart", superGrammarRef.getName());
+    assertEquals("de.monticore.Statechart", superGrammarRef.getFullName());
     testGrammarSymbolOfStatechart(superGrammarRef.lazyLoadDelegate());
     
     ProdSymbol firstProd = grammar.getProd("First").orElse(null);

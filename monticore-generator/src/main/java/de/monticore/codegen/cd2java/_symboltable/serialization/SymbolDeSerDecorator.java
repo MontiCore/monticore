@@ -40,6 +40,8 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
   protected static final String DESER_TEMPL = "_symboltable.serialization.symbolDeSer.Deserialize4SymbolDeSer";
 
+  protected static final String DESER_IS_TEMPL = "_symboltable.serialization.symbolDeSer.DeserializeIScope4SymbolDeSer";
+
   protected ASTMCType string = getMCTypeFacade().createStringType();
 
   protected final SymbolTableService symbolTableService;
@@ -99,7 +101,9 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
         //deserialization
         .addCDMember(createDeserializeMethod(symType, millName, symName, scopeParam, jsonParam, attr,
             spansScope, iScopeName, deSerName))
-        .addCDMember(createDeserializeMethodWrapper(symType, millName, symName, jsonParam, attr,
+        .addCDMember(createDeserializeMethodWrapper(symType, millName, symName, scopeParam, jsonParam, attr,
+            spansScope, iScopeName, deSerName))
+        .addCDMember(createDeserializeMethodWrapper2(symType, millName, symName, scopeParam, jsonParam, attr,
             spansScope, iScopeName, deSerName))
         .addAllCDMembers(createDeserializeAttrMethods(attr, jsonParam, scopeParam))
         .addCDMember(createDeserializeAddons(sym2Param, jsonParam))
@@ -177,7 +181,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
   }
 
   protected ASTCDMethod createDeserializeMethodWrapper(ASTMCQualifiedType type, String symTabMill,
-      String symbolFullName, ASTCDParameter jsonParam,
+      String symbolFullName, ASTCDParameter scopeParam, ASTCDParameter jsonParam,
       List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeName,
       String deSerFullName) {
     ASTCDMethod deserializeMethod = getCDMethodFacade()
@@ -185,6 +189,20 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     this.replaceTemplate(EMPTY_BODY, deserializeMethod, new StringHookPoint(
         "return this." + DESERIALIZE + "(null, " + jsonParam.getName() + ");"
     ));
+    return deserializeMethod;
+  }
+
+  protected ASTCDMethod createDeserializeMethodWrapper2(ASTMCQualifiedType type, String symTabMill,
+      String symbolFullName, ASTCDParameter scopeParam, ASTCDParameter jsonParam,
+      List<ASTCDAttribute> symbolRuleAttributes, boolean spansScope, String scopeName,
+      String deSerFullName) {
+    ASTCDParameter iScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade()
+        .createQualifiedType(I_SCOPE), "enclosingScope");
+    ASTCDMethod deserializeMethod = getCDMethodFacade()
+        .createMethod(PUBLIC.build(), type, DESERIALIZE, iScopeParam, jsonParam);
+    String errorCode = symbolTableService.getGeneratedErrorCode(DESERIALIZE);
+    this.replaceTemplate(EMPTY_BODY, deserializeMethod,
+        new TemplateHookPoint(DESER_IS_TEMPL, scopeParam.getMCType().printType(), errorCode));
     return deserializeMethod;
   }
 

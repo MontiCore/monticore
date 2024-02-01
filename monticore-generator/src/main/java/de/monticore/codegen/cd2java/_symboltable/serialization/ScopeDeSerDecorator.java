@@ -42,6 +42,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
   public static final String DESERIALIZE_S_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeScope";
 
+  public static final String DESERIALIZE_IS_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeIScope";
+
   public static final String DESERIALIZE_SYMBOLS_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeSymbols";
 
   public static final String SERIALIZES2J_TEMPL = "_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer";
@@ -89,6 +91,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
     ASTCDParameter scopeParam = getCDParameterFacade().createParameter(getMCTypeFacade()
         .createQualifiedType(scopeInterfaceName), "toSerialize");
+    ASTCDParameter enclosingScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade()
+        .createQualifiedType(scopeInterfaceName), "enclosingScope");
     ASTCDParameter scopeVarParam = getCDParameterFacade()
         .createParameter(symbolTableService.getScopeInterfaceType(), SCOPE_VAR);
     ASTCDParameter asParam = getCDParameterFacade().createParameter(getMCTypeFacade()
@@ -130,7 +134,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             scopeRuleAttrList))
         .addCDMember(
             createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName, scopeDeSerName, scopeInterfaceName))
-        .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, scopeParam, scopeJsonParam))
+        .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, enclosingScopeParam, scopeJsonParam))
         .addAllCDMembers(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
     if(generateAbstractClass){
@@ -241,7 +245,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       String methodName = DESERIALIZE + StringTransformations.capitalize(attr.getName());
       ASTCDMethod method = getCDMethodFacade()
           .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeParam, scopeJsonParam);
-      // create wrapper function offering the deprecated interface
+      // create wrapper functions offering the deprecated interface
       // this one does not take the enclosing scope
       ASTCDMethod wrapperMethod = getCDMethodFacade()
           .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeJsonParam);
@@ -265,7 +269,18 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         this.replaceTemplate(EMPTY_BODY, method,
             new StringHookPoint(deprecatedImpl));
       }
+
+      // this wrapper takes the IScope and checks its type
+      ASTCDParameter iScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade()
+          .createQualifiedType(I_SCOPE), scopeParam.getName());
+      ASTCDMethod wrapperMethod2 = getCDMethodFacade()
+          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, iScopeParam, scopeJsonParam);
+      String errorCode = symbolTableService.getGeneratedErrorCode(methodName);
+      this.replaceTemplate(EMPTY_BODY, wrapperMethod2, new TemplateHookPoint(
+          DESERIALIZE_IS_TEMPL, methodName, scopeParam.getMCType().printType(), errorCode));
+
       methodList.add(wrapperMethod);
+      methodList.add(wrapperMethod2);
       methodList.add(method);
     }
     return methodList;
