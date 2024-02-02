@@ -19,6 +19,8 @@ import java.util.Optional;
  */
 public class SymTypeExpressionDeSer {
 
+  protected static final String LOG_NAME = "SymTypeExpressionDeSer";
+
   /**
    * The singleton that DeSerializes all SymTypeExpressions.
    * It is stateless and can be reused recursively.
@@ -82,7 +84,9 @@ public class SymTypeExpressionDeSer {
 
   @Deprecated
   public static SymTypeExpression deserializeMember(String memberName, JsonObject json) {
-    return deserializeMember(memberName, json, null);
+    Log.debug("Using globalscope to deserialize \""
+        + memberName + "\". This may create incorrect surrogates.", LOG_NAME);
+    return deserializeMember(memberName, json, BasicSymbolsMill.globalScope());
   }
 
   public static SymTypeExpression deserializeMember(String memberName,
@@ -93,7 +97,9 @@ public class SymTypeExpressionDeSer {
   @Deprecated
   public static Optional<SymTypeExpression> deserializeOptionalMember(
       String memberName, JsonObject json) {
-    return deserializeOptionalMember(memberName, json, null);
+    Log.debug("Using globalscope to deserialize \""
+        + memberName + "\". This may create incorrect surrogates.", LOG_NAME);
+    return deserializeOptionalMember(memberName, json, BasicSymbolsMill.globalScope());
   }
 
     public static Optional<SymTypeExpression> deserializeOptionalMember(
@@ -109,7 +115,9 @@ public class SymTypeExpressionDeSer {
 
   @Deprecated
   public static List<SymTypeExpression> deserializeListMember(String memberName, JsonObject json) {
-    return deserializeListMember(memberName, json, null);
+    Log.debug("Using globalscope to deserialize \""
+        + memberName + "\". This may create incorrect surrogates.", LOG_NAME);
+    return deserializeListMember(memberName, json, BasicSymbolsMill.globalScope());
   }
 
   public static List<SymTypeExpression> deserializeListMember(
@@ -212,7 +220,9 @@ public class SymTypeExpressionDeSer {
 
   @Deprecated
   public SymTypeExpression deserialize(JsonElement serialized) {
-    return deserialize(serialized, null);
+    Log.debug("Using globalscope to deserialize \n"
+        + serialized + "\nThis may create incorrect surrogates.", LOG_NAME);
+    return deserialize(serialized, BasicSymbolsMill.globalScope());
   }
 
   public SymTypeExpression deserialize(JsonElement serialized,
