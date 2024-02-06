@@ -44,10 +44,12 @@ public class CommentsTest {
     Assert.assertTrue(ast.isPresent());
     Assert.assertFalse(parser.hasErrors());
 
-    Assert.assertEquals(1, ast.get().get_PreCommentList().size());
-    Assert.assertEquals("// (c) https://github.com/MontiCore/monticore", ast.get().get_PreCommentList().get(0).getText());
 
     ASTMethodDeclaration m = (ASTMethodDeclaration) ast.get();
+
+    Assert.assertEquals(1, m.get_PreCommentList().size());
+    Assert.assertEquals("// (c) https://github.com/MontiCore/monticore", m.get_PreCommentList().get(0).getText());
+
     Assert.assertEquals(1, m.sizeMCModifiers());
     Assert.assertEquals(1, m.getMCModifier(0).get_PostCommentList().size());
     Assert.assertEquals("/* after doStuff:mod */", m.getMCModifier(0).get_PostCommentList().get(0).getText());
