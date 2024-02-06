@@ -20,7 +20,7 @@ import java.util.Optional;
  * This test should document the current comment behavior
  * Note: some comments are not correctly transferred to the AST
  */
-public class CommentsTest {
+public class CommentsOnASTTest {
 
   @BeforeClass
   public static void setup() {

@@ -1,8 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 public /* after doStuff:mod */ void /* after doStuff:type */ doStuff() /* after doStuff:name */ {
-  // First doStuff
+  // First doStuff (missing)
   int /* after i:type */ i  /* after i:name */ =  /* after i:op */ 12  /* after i:val */;
 
-  // Final doStuff
+  // Final doStuff (missing)
 }
-// After doStuff
+// After doStuff (missing)
