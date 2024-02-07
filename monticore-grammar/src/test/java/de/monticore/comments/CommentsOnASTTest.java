@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -40,6 +41,10 @@ public class CommentsOnASTTest {
 
   @Test
   public void testComments() throws IOException {
+    File f = new File("src/test/resources/de/monticore/comments/CommentsTest.jlight");
+    System.err.println("Testing " + f.getAbsolutePath());
+    System.err.println("exists " + f.exists());
+    System.err.println("exists parent " + f.getParentFile().exists());
     Optional<ASTJavaMethod> ast = parser.parse("src/test/resources/de/monticore/comments/CommentsTest.jlight");
     Assert.assertTrue(ast.isPresent());
     Assert.assertFalse(parser.hasErrors());
