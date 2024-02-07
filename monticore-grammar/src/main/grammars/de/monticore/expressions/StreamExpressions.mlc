@@ -12,12 +12,8 @@ mlc StreamExpressions {
     include "de/monticore/expressions/streamexpressions/**.java";
   }
 
-  // export the prettyprinter
-  export "$projectDir/src/main/java" {
-    include "de/monticore/expressions/prettyprint/StreamExpressions*.java";
-  }
-
   promote {
     mlc "de.monticore.expressions.CommonExpressions";
   }
+
 }

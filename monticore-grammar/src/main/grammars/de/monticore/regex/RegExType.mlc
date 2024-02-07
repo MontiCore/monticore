@@ -14,5 +14,16 @@ mlc RegExType {
     include "de/monticore/regex/regextype/**.java";
   }
 
-  uses mlc "de.monticore.regex.RegularExpressions";
+  promote {
+    mlc "de.monticore.literals.MCCommonLiterals";
+    mlc "de.monticore.types.MCBasicTypes";
+  }
+
+  uses {
+    mlc "de.monticore.regex.RegularExpressions";
+
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionFactory.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeOfRegEx.java";
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+  }
 }
