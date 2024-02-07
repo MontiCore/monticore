@@ -23,4 +23,8 @@ mlc UMLModifier {
     mlc "de.monticore.UMLStereotype";
   }
 
+  uses {
+    include "$projectDir/src/main/java/de/monticore/literals/prettyprint/MCCommonLiteralsPrettyPrinter.java";
+  }
+
 }

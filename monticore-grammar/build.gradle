@@ -283,6 +283,7 @@ configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
 joiner.add "$projectDir/target/symbols"
 String mp = joiner.toString()
 
+///////////// MLC tasks - Start ///////////////////////
 // two tasks per MLC file
 // each task needs to depend on all internally promoted MLCs
 fileTree("src").matching { include '**/*.mlc' }.each {
@@ -311,15 +312,23 @@ fileTree("src").matching { include '**/*.mlc' }.each {
 ///////////// dependencies between check artifacts tasks ///////////////////////
 
 checkArtifactsAssignmentExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsBitExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsCommonExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCBasics)
 checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCLiteralsBasis)
+checkArtifactsExpressionsBasis.dependsOn(checkArtifactsBasicSymbols)
 
 checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsCommonExpressions)
 checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCFullGenericTypes)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsUglyExpressions)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCVarDeclarationStatements)
 
 checkArtifactsAntlr.dependsOn(checkArtifactsMCBasics)
+
 checkArtifactsGrammar.dependsOn(checkArtifactsMCCommonLiterals)
 checkArtifactsGrammar.dependsOn(checkArtifactsMCSimpleGenericTypes)
 checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsGrammar)
@@ -331,69 +340,100 @@ checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsJavaLight)
 checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsAntlr)
 checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsCommonExpressions)
 checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsBitExpressions)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsUglyExpressions)
 
 checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsMCLiteralsBasis)
+checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsMCBasics)
+checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsBasicSymbols)
+
 checkArtifactsMCLiteralsBasis.dependsOn(checkArtifactsMCBasics)
+
 checkArtifactsMCJavaLiterals.dependsOn(checkArtifactsMCCommonLiterals)
 
 checkArtifactsMCArrayStatements.dependsOn(checkArtifactsMCVarDeclarationStatements)
 checkArtifactsMCAssertStatements.dependsOn(checkArtifactsMCStatementsBasis)
 checkArtifactsMCAssertStatements.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsMCCommonStatements.dependsOn(checkArtifactsMCVarDeclarationStatements)
+
 checkArtifactsMCExceptionStatements.dependsOn(checkArtifactsMCCommonStatements)
+
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCAssertStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCExceptionStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCLowLevelStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCReturnStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCSynchronizedStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCArrayStatements)
+
 checkArtifactsMCLowLevelStatements.dependsOn(checkArtifactsMCStatementsBasis)
+
 checkArtifactsMCReturnStatements.dependsOn(checkArtifactsMCStatementsBasis)
 checkArtifactsMCReturnStatements.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsMCStatementsBasis.dependsOn(checkArtifactsMCBasics)
+
 checkArtifactsMCSynchronizedStatements.dependsOn(checkArtifactsMCCommonStatements)
+
 checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsMCStatementsBasis)
 checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsMCBasicTypes)
 checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsExpressionsBasis)
 checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsOOSymbols)
 
 checkArtifactsBasicSymbols.dependsOn(checkArtifactsMCBasics)
+
 checkArtifactsOOSymbols.dependsOn(checkArtifactsBasicSymbols)
 
 checkArtifactsODRuleGeneration.dependsOn(checkArtifactsMCFullGenericTypes)
+
 checkArtifactsODRules.dependsOn(checkArtifactsMCFullGenericTypes)
 checkArtifactsODRules.dependsOn(checkArtifactsTFBasisExts)
 checkArtifactsODRules.dependsOn(checkArtifactsMCJavaLiterals)
 checkArtifactsODRules.dependsOn(checkArtifactsUMLStereotype)
+checkArtifactsODRules.dependsOn(checkArtifactsUglyExpressions)
+checkArtifactsODRules.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsTFBasisExts.dependsOn(checkArtifactsMCSimpleGenericTypes)
 checkArtifactsTFBasisExts.dependsOn(checkArtifactsMCCommonLiterals)
 checkArtifactsTFBasisExts.dependsOn(checkArtifactsJavaLight)
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsUglyExpressions)
+
 checkArtifactsTFCommons.dependsOn(checkArtifactsTFBasisExts)
+checkArtifactsTFCommons.dependsOn(checkArtifactsUglyExpressions)
 
 checkArtifactsMCArrayTypes.dependsOn(checkArtifactsMCBasicTypes)
+
 checkArtifactsMCBasicTypes.dependsOn(checkArtifactsMCBasics)
 checkArtifactsMCBasicTypes.dependsOn(checkArtifactsOOSymbols)
+
 checkArtifactsMCCollectionTypes.dependsOn(checkArtifactsMCBasicTypes)
+
 checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
+
 checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
 
 checkArtifactsCardinality.dependsOn(checkArtifactsMCBasics)
 checkArtifactsCardinality.dependsOn(checkArtifactsMCCommonLiterals)
+
 checkArtifactsJavaLight.dependsOn(checkArtifactsAssignmentExpressions)
 checkArtifactsJavaLight.dependsOn(checkArtifactsJavaClassExpressions)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCCommonStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCArrayStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsUglyExpressions)
+
 checkArtifactsMCCommon.dependsOn(checkArtifactsCardinality)
 checkArtifactsMCCommon.dependsOn(checkArtifactsCompleteness)
 checkArtifactsMCCommon.dependsOn(checkArtifactsUMLModifier)
 checkArtifactsMCCommon.dependsOn(checkArtifactsUMLStereotype)
+
 checkArtifactsUMLModifier.dependsOn(checkArtifactsUMLStereotype)
+
 checkArtifactsUMLStereotype.dependsOn(checkArtifactsMCCommonLiterals)
 
 checkArtifactsRegularExpressions.dependsOn(checkArtifactsMCCommonLiterals)
 
 checkArtifactsRegExType.dependsOn(checkArtifactsRegularExpressions)
+checkArtifactsRegExType.dependsOn(checkArtifactsMCBasicTypes)
 
 checkArtifactsUglyExpressions.dependsOn(checkArtifactsCommonExpressions)
 checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
@@ -401,15 +441,23 @@ checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
 ///////////// dependencies between show artifacts tasks ///////////////////////
 
 showArtifactsAssignmentExpressions.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsBitExpressions.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsCommonExpressions.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsExpressionsBasis.dependsOn(showArtifactsMCBasics)
 showArtifactsExpressionsBasis.dependsOn(showArtifactsMCLiteralsBasis)
+showArtifactsExpressionsBasis.dependsOn(showArtifactsBasicSymbols)
 
 showArtifactsJavaClassExpressions.dependsOn(showArtifactsCommonExpressions)
 showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCFullGenericTypes)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsUglyExpressions)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCStatementsBasis)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCVarDeclarationStatements)
 
 showArtifactsAntlr.dependsOn(showArtifactsMCBasics)
+
 showArtifactsGrammar.dependsOn(showArtifactsMCCommonLiterals)
 showArtifactsGrammar.dependsOn(showArtifactsMCSimpleGenericTypes)
 showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsGrammar)
@@ -421,72 +469,105 @@ showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsJavaLight)
 showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsAntlr)
 showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsCommonExpressions)
 showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsBitExpressions)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsUglyExpressions)
 
 showArtifactsMCCommonLiterals.dependsOn(showArtifactsMCLiteralsBasis)
+showArtifactsMCCommonLiterals.dependsOn(showArtifactsMCBasics)
+showArtifactsMCCommonLiterals.dependsOn(showArtifactsBasicSymbols)
+
 showArtifactsMCLiteralsBasis.dependsOn(showArtifactsMCBasics)
+
 showArtifactsMCJavaLiterals.dependsOn(showArtifactsMCCommonLiterals)
 
 showArtifactsMCArrayStatements.dependsOn(showArtifactsMCVarDeclarationStatements)
 showArtifactsMCAssertStatements.dependsOn(showArtifactsMCStatementsBasis)
 showArtifactsMCAssertStatements.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsMCCommonStatements.dependsOn(showArtifactsMCVarDeclarationStatements)
+
 showArtifactsMCExceptionStatements.dependsOn(showArtifactsMCCommonStatements)
+
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCAssertStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCExceptionStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCLowLevelStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCReturnStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCSynchronizedStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCArrayStatements)
+
 showArtifactsMCLowLevelStatements.dependsOn(showArtifactsMCStatementsBasis)
+
 showArtifactsMCReturnStatements.dependsOn(showArtifactsMCStatementsBasis)
 showArtifactsMCReturnStatements.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsMCStatementsBasis.dependsOn(showArtifactsMCBasics)
+
 showArtifactsMCSynchronizedStatements.dependsOn(showArtifactsMCCommonStatements)
+
 showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsMCStatementsBasis)
 showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsMCBasicTypes)
 showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsExpressionsBasis)
 showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsOOSymbols)
 
 showArtifactsBasicSymbols.dependsOn(showArtifactsMCBasics)
+
 showArtifactsOOSymbols.dependsOn(showArtifactsBasicSymbols)
 
 showArtifactsODRuleGeneration.dependsOn(showArtifactsMCFullGenericTypes)
+
 showArtifactsODRules.dependsOn(showArtifactsMCFullGenericTypes)
 showArtifactsODRules.dependsOn(showArtifactsTFBasisExts)
 showArtifactsODRules.dependsOn(showArtifactsMCJavaLiterals)
 showArtifactsODRules.dependsOn(showArtifactsUMLStereotype)
+showArtifactsODRules.dependsOn(showArtifactsUglyExpressions)
+showArtifactsODRules.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsTFBasisExts.dependsOn(showArtifactsMCSimpleGenericTypes)
 showArtifactsTFBasisExts.dependsOn(showArtifactsMCCommonLiterals)
 showArtifactsTFBasisExts.dependsOn(showArtifactsJavaLight)
+showArtifactsTFBasisExts.dependsOn(showArtifactsUglyExpressions)
+
 showArtifactsTFCommons.dependsOn(showArtifactsTFBasisExts)
+showArtifactsTFCommons.dependsOn(showArtifactsUglyExpressions)
 
 showArtifactsMCArrayTypes.dependsOn(showArtifactsMCBasicTypes)
+
 showArtifactsMCBasicTypes.dependsOn(showArtifactsMCBasics)
 showArtifactsMCBasicTypes.dependsOn(showArtifactsOOSymbols)
+
 showArtifactsMCCollectionTypes.dependsOn(showArtifactsMCBasicTypes)
+
 showArtifactsMCFullGenericTypes.dependsOn(showArtifactsMCSimpleGenericTypes)
+
 showArtifactsMCSimpleGenericTypes.dependsOn(showArtifactsMCCollectionTypes)
 
 showArtifactsCardinality.dependsOn(showArtifactsMCBasics)
 showArtifactsCardinality.dependsOn(showArtifactsMCCommonLiterals)
+
 showArtifactsJavaLight.dependsOn(showArtifactsAssignmentExpressions)
 showArtifactsJavaLight.dependsOn(showArtifactsJavaClassExpressions)
 showArtifactsJavaLight.dependsOn(showArtifactsMCCommonStatements)
 showArtifactsJavaLight.dependsOn(showArtifactsMCArrayStatements)
 showArtifactsJavaLight.dependsOn(showArtifactsMCReturnStatements)
+showArtifactsJavaLight.dependsOn(showArtifactsUglyExpressions)
+
 showArtifactsMCCommon.dependsOn(showArtifactsCardinality)
 showArtifactsMCCommon.dependsOn(showArtifactsCompleteness)
 showArtifactsMCCommon.dependsOn(showArtifactsUMLModifier)
 showArtifactsMCCommon.dependsOn(showArtifactsUMLStereotype)
+
 showArtifactsUMLModifier.dependsOn(showArtifactsUMLStereotype)
+
 showArtifactsUMLStereotype.dependsOn(showArtifactsMCCommonLiterals)
 
 showArtifactsRegularExpressions.dependsOn(showArtifactsMCCommonLiterals)
 
 showArtifactsRegExType.dependsOn(showArtifactsRegularExpressions)
+showArtifactsRegExType.dependsOn(showArtifactsMCBasicTypes)
 
-showArtifactsUglyExpressions.dependsOn(showArtifactsExpressionsBasis)
+showArtifactsUglyExpressions.dependsOn(showArtifactsCommonExpressions)
 showArtifactsUglyExpressions.dependsOn(showArtifactsMCBasicTypes)
+
+///////////// MLC tasks - End ///////////////////////
 
 java {
   registerFeature('grammars') {

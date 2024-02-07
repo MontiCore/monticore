@@ -12,15 +12,28 @@ mlc ExpressionsBasis {
     include "de/monticore/expressions/expressionsbasis/**.java";
   }
 
-  // export the prettyprinter
+  // export handwritten code
   export "$projectDir/src/main/java" {
-    include "de/monticore/expressions/prettyprint/ExpressionsBasis*.java";
-    include "de/monticore/expressions/exptojava/ExpressionsBasis*.java";
-    include "de/monticore/types/check/DeriveSymTypeOfExpression.java";
+    include "de/monticore/expressions/expressionsbasis/**.java";
   }
 
   promote {
     mlc "de.monticore.MCBasics";
     mlc "de.monticore.literals.MCLiteralsBasis";
   }
+
+  uses {
+    mlc "de.monticore.symbols.BasicSymbols";
+
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionFactory.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeOfFunction.java";
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/NameExpressionTypeCalculator.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/OOWithinScopeBasicSymbolsResolver.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/OOWithinTypeBasicSymbolsResolver.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/TypeContextCalculator.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/WithinScopeBasicSymbolsResolver.java";
+  }
+
 }

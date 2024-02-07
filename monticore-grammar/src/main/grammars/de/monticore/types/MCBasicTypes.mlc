@@ -30,4 +30,14 @@ mlc MCBasicTypes {
   promote {
     include "$projectDir/src/main/java/de/monticore/types/check/*.java";
   }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/NameExpressionTypeCalculator.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/TypeContextCalculator.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/WithinScopeBasicSymbolsResolver.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/WithinTypeBasicSymbolsResolver.java";
+    include "$mp/com/google/common/base/Preconditions.class";
+    include "$mp/org/apache/commons/lang3/StringUtils.class";
+  }
 }

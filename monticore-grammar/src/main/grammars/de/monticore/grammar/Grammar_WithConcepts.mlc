@@ -10,8 +10,6 @@ mlc Grammar_WithConcepts {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/grammar/grammar_withconcepts/**.java";
-    include "de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
-    include "de/monticore/grammar/prettyprint/Grammar_WithConceptsPrettyPrinter.java";
 
     // CoCos
     include "de/monticore/grammar/cocos/**.java";
@@ -33,4 +31,9 @@ mlc Grammar_WithConcepts {
     mlc "de.monticore.expressions.CommonExpressions";
     mlc "de.monticore.expressions.BitExpressions";
   }
+
+  uses {
+    mlc "de.monticore.expressions.UglyExpressions";
+  }
+
 }

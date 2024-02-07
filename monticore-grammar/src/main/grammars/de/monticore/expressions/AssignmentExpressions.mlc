@@ -12,15 +12,9 @@ mlc AssignmentExpressions {
     include "de/monticore/expressions/assignmentexpressions/**.java";
   }
 
-  // export the prettyprinter
-  export "$projectDir/src/main/java" {
-    include "de/monticore/expressions/prettyprint/AssignmentExpressions*.java";
-    include "de/monticore/expressions/exptojava/AssignmentExpressions*.java";
-    include "de/monticore/types/check/DeriveSymTypeOfAssignmentExpressions.java";
-  }
-
   promote {
     mlc "de.monticore.expressions.ExpressionsBasis";
     include "$mp/com/google/common/base/Preconditions.class";
   }
+
 }
