@@ -2,7 +2,7 @@
 
 plugins {
   id "java-library"
-  id "monticore" version "$version" // MontiCore Plugin
+  id "de.monticore.generator" version "$version" // MontiCore Plugin
 }
 
 description = 'MontiCore: EMF Grammar'
@@ -46,66 +46,31 @@ def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
 
 sourceSets {
-  main.java.srcDirs = [ srcDir, grammarOutDir]
+  main.java.srcDirs = [ srcDir]
   test.java.srcDirs = [ testDir, testGrammarOutDir]
 }
 
 task generate {}
 
-// one task per grammar file
-fileTree(grammarDir).matching { include '**/*.mc4'}.each {
-  def g = it
-  def taskname = "generateGrammar${it.getName().substring(0,it.getName().lastIndexOf('.'))}"
-  task  "$taskname" (type: MCTask) {
-    dependsOn(copySrc, copyTest, copyTestResources)
-    script = "de/monticore/monticore_emf.groovy"
-    grammar = file g
-    outputDir = file grammarOutDir
-    modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
-    handcodedPath srcDir
-    def uptoDate = incCheck(getGrammarInclPackage(grammarDir, g))
-    outputs.upToDateWhen { uptoDate }
-  }
-  generate.dependsOn ("$taskname")
+generateMCGrammars {
+  grammar.setFrom(file grammarDir)
+  script = "de/monticore/monticore_emf.groovy"
+  modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
+  handcodedPath srcDir
+  dependsOn(copySrc, copyTest, copyTestResources)
 }
 
-compileJava.dependsOn generate
-
-task generateTest {}
 def testGrammars = "${project(':monticore-grammar').projectDir}/src/test/grammars"
-// one task per file
-fileTree(testGrammars).matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    dependsOn(copySrc, copyTest, copyTestResources)
-    grammar = file g
-    outputDir = file testGrammarOutDir
-    handcodedPath srcDir, testDir
-    script = "de/monticore/monticore_emf.groovy"
-    modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/test/grammars", "${project(':monticore-grammar').projectDir}/src/main/examples"
-    def grammarIncludingPackage = file(testGrammars).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-  generateTest.dependsOn ("generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}")
-}
-
 def exampleGrammars = "${project(':monticore-grammar').projectDir}/src/main/examples"
 
-fileTree(exampleGrammars).matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    dependsOn(copySrc, copyTest, copyTestResources)
-    grammar = file g
-    outputDir = file testGrammarOutDir
-    script = "de/monticore/monticore_emf.groovy"
-    handcodedPath srcDir, testDir
-    modelPath "$grammarDir", "${project(':monticore-grammar').projectDir}/src/main/examples"
-    def grammarIncludingPackage = file(exampleGrammars).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-  generateTest.dependsOn ("generateTest${it.getName().substring(0,it.getName().lastIndexOf('.'))}")
+tasks.register("generateMCTestGrammars", de.monticore.gradle.gen.MCGenTask.class) {
+  grammar.setFrom(file testGrammars)
+  grammar.from(file exampleGrammars)
+  outputDir = file testGrammarOutDir
+  script = "de/monticore/monticore_emf.groovy"
+  modelPath("$grammarDir", "${project(':monticore-grammar').projectDir}/src/test/grammars", "${project(':monticore-grammar').projectDir}/src/main/examples")
+  handcodedPath(srcDir, testDir)
+  dependsOn(copySrc, copyTest, copyTestResources)
 }
 
 test {
@@ -121,8 +86,8 @@ test {
   exclude '**/MCType2SymTypeExpressionTest.class'
 }
 
-compileTestJava.dependsOn (generateTest)
 
-String getGrammarInclPackage(String grammarDir, File grammarFile ){
-  return file(grammarDir).toURI().relativize(grammarFile.toURI()).toString()
-}
+compileJava.dependsOn (tasks.named("copySrc"))
+compileTestJava.dependsOn (tasks.named("copyTest"))
+compileTestJava.dependsOn (tasks.named("copyTestResources"))
+compileTestJava.dependsOn (tasks.named("generateMCTestGrammars"))

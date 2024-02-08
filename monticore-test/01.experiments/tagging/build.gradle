@@ -1,3 +1,5 @@
+import de.monticore.MCTask
+
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: tagging'
 
@@ -100,3 +102,12 @@ task generateCDBasis4TagsTagSchema (type: MCTask, dependsOn: generateCDBasis4Tag
   def uptoDate = incCheck("de/monticore/tagtest/CDBasis4TagsTagSchema.mc4")
   outputs.upToDateWhen { uptoDate }
 }
+
+// (Legacy) Setup for MCTasks
+sourceSets {
+  main.java.srcDirs += [ outDir ]
+}
+compileJava {
+  dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+

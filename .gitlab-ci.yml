@@ -34,7 +34,7 @@ build:
   stage: build
   script:
     - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
-    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -PgenTR=true -PgenEMF=true -PgenTagging=true -i"
+    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -PgenTR=true -PgenEMF=true -PgenTagging=true -i --max-workers=4 --stacktrace"
   artifacts:
     paths:
       - ".gradle"
@@ -69,7 +69,7 @@ test_01experiments:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -PgenEMF=true -Pci"
+    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -PgenEMF=true -Pci --max-workers=4 --stacktrace"
   only:
     - merge_requests
     - branches
@@ -81,7 +81,7 @@ test_02experiments:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/02.experiments build $GRADLE_OPTS -PgenEMF=true -Pci"
+    - "gradle -p monticore-test/02.experiments build $GRADLE_OPTS -PgenEMF=true -Pci --max-workers=4 --stacktrace"
   only:
     - merge_requests
     - branches
@@ -93,7 +93,7 @@ test_it:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/it build $GRADLE_OPTS -Pci"
+    - "gradle -p monticore-test/it build $GRADLE_OPTS -Pci --max-workers=4 --stacktrace"
 # This check must run in a stage where the monticore-generator was executed, otherwise no relevant file handles are opened.
 # Problems can be investigated on small examples projects with https://github.com/jenkinsci/lib-file-leak-detector
     - echo "Checking that all file handles in the target folder are closed"
@@ -109,7 +109,7 @@ test_it_emf:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/it build -PbuildProfile=emf -PgenEMF=true $GRADLE_OPTS -Pci"
+    - "gradle -p monticore-test/it build -PbuildProfile=emf -PgenEMF=true $GRADLE_OPTS -Pci --max-workers=4 --stacktrace"
   only:
     - merge_requests
     - branches
@@ -121,7 +121,7 @@ test_grammar_it:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/monticore-grammar-it build $GRADLE_OPTS -PgenEMF=true -Pci"
+    - "gradle -p monticore-test/monticore-grammar-it build $GRADLE_OPTS -PgenEMF=true -Pci --max-workers=4 --stacktrace"
   only:
     - merge_requests
     - branches
@@ -133,7 +133,7 @@ test_montitrans:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -PgenTR=true -PgenEMF=true -PgenTagging=true -Pci"
+    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -PgenTR=true -PgenEMF=true -PgenTagging=true -Pci --max-workers=4 --stacktrace"
   only:
     - merge_requests
     - branches
@@ -145,7 +145,7 @@ deploy:
   dependencies:
     - build
   script:
-    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -PgenTR=true -PgenEMF=true -PgenTagging=true -Pci"
+    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -PgenTR=true -PgenEMF=true -PgenTagging=true -Pci --max-workers=4"
   only:
     - dev
   except:
