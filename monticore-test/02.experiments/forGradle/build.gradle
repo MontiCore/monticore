@@ -1,25 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: forGradle'
 
-task  generate (type: MCTask) {
-    grammar = file "$grammarDir/MyLang.mc4"
-    outputDir = file outDir
-    // grammar and outputDir configured as before
-    modelPath "$projectDir/grammars", "$projectDir/grammars2"
-    def uptoDate = incCheck("MyLang.mc4")
-    outputs.upToDateWhen { uptoDate }
-}
 
-task  generateSuper1 (type: MCTask) {
-  grammar = file "$projectDir/grammars/Super1.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("Super1.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
-
-task  generateSuper2 (type: MCTask) {
-  grammar = file "$projectDir/grammars2/Super2.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("Super2.mc4")
-  outputs.upToDateWhen { uptoDate }
+generateMCGrammars {
+  // also test if we can generate into a different directory
+  outputDir = file "$buildDir/generated-sources/in-a-different-directory/monticore/sourcecode"
+  // Build all grammars from two directories
+  grammar.from("$projectDir/grammars", "$projectDir/grammars2")
+  // Also required both directories to be added to the ModelPath
+  modelPath("$projectDir/grammars", "$projectDir/grammars2")
 }

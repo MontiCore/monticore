@@ -3,6 +3,7 @@
 package de.monticore;
 
 import com.google.common.collect.Sets;
+import de.monticore.gradle.AMontiCoreConfiguration;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
  * derived from (1) its command line arguments, and (2) system properties (not
  * implemented yet).
  */
-public final class MontiCoreConfiguration implements Configuration {
+public final class MontiCoreConfiguration extends AMontiCoreConfiguration implements Configuration {
 
   public static final String MC4_EXTENSION = "mc4";
 
@@ -58,46 +59,23 @@ public final class MontiCoreConfiguration implements Configuration {
 
   public static final String DEFAULT_GRAMMAR_PATH = "grammars";
 
+  public static final String GROOVYHOOK1 = "gh1";
+
+  public static final String GROOVYHOOK2 = "gh2";
+
+  public static final String HELP = "h";
+
+  public static final String GROOVYHOOK1_LONG = "groovyHook1";
+
+  public static final String GROOVYHOOK2_LONG = "groovyHook2";
+
+  public static final String HELP_LONG = "help";
+
+
   /**
    * Constants for the allowed CLI options in their long and short froms.
    * Stored in constants as they are used multiple times in MontiCore.
    */
-  public static final String GRAMMAR = "g";
-  public static final String OUT = "o";
-  public static final String TOOL_JAR_NAME = "tn";
-  public static final String MODELPATH = "mp";
-  public static final String HANDCODEDPATH = "hcp";
-  public static final String HANDCODEDMODELPATH = "hcg";
-  public static final String SCRIPT = "sc";
-  public static final String GROOVYHOOK1 = "gh1";
-  public static final String GROOVYHOOK2 = "gh2";
-  public static final String TEMPLATEPATH = "fp";
-  public static final String CONFIGTEMPLATE = "ct";
-  public static final String DEV = "d";
-  public static final String CUSTOMLOG = "cl";
-  public static final String REPORT = "r";
-
-  public static final String REPORT_BASE = "rb";
-  public static final String HELP = "h";
-
-  public static final String GRAMMAR_LONG = "grammar";
-  public static final String OUT_LONG = "out";
-  public static final String TOOL_JAR_NAME_LONG = "toolName";
-  public static final String MODELPATH_LONG = "modelPath";
-  public static final String HANDCODEDPATH_LONG = "handcodedPath";
-  public static final String HANDCODEDMODELPATH_LONG = "modelPathHC";
-  public static final String SCRIPT_LONG = "script";
-  public static final String GROOVYHOOK1_LONG = "groovyHook1";
-  public static final String GROOVYHOOK2_LONG = "groovyHook2";
-  public static final String TEMPLATEPATH_LONG = "templatePath";
-  public static final String CONFIGTEMPLATE_LONG = "configTemplate";
-  public static final String DEV_LONG = "dev";
-  public static final String CUSTOMLOG_LONG = "customLog";
-  public static final String REPORT_LONG = "report";
-  public static final String REPORT_BASE_LONG = "report_base";
-  public static final String GENDST_LONG = "genDST";
-  public static final String GENTAG_LONG = "genTag";
-  public static final String HELP_LONG = "help";
 
   protected final CommandLine cmdConfig;
 

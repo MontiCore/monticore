@@ -2,7 +2,7 @@
 import de.monticore.MCTask
 
 plugins{
-  id "monticore"  //Monticore Plugin
+  id "de.monticore.generator"  //Monticore Plugin
   id "jacoco"
 }
 
@@ -25,20 +25,8 @@ dependencies {
 }
 
 buildDir = file("$projectDir/target")
-ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
-sourceSets.main.java.srcDirs += [ outDir ]
 
-// one task per file
-fileTree(grammarDir).matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    grammar = file g
-    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-}
+// The grammars of this subproject are built by the generateMCGrammars MCGenTask
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }

@@ -6,13 +6,8 @@ sonarqube {
   skipProject = true
 }
 
-task generate (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/Automata.mc4"
-  outputDir = file outDir
+// Modify the generateMCGrammars MCGenTask: Add the groovyHooks
+generateMCGrammars {
   groovyHook1 = file "$projectDir/gs1.groovy"
   groovyHook2 = file "$projectDir/gs2.groovy"
-  def uptoDate = incCheck("Automata.mc4")
-  outputs.upToDateWhen { uptoDate }
 }
-
-

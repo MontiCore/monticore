@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "monticore" 
+  id "de.monticore.generator"
   id "jacoco"
 }
 
