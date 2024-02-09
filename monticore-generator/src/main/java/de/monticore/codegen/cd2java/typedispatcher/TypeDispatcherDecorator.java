@@ -165,7 +165,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
 
   protected ASTCDMethod createResetMethod(List<ASTCDAttribute> optAttributes) {
     ASTCDMethod resetMethod = cdMethodFacade.createMethod(
-        PUBLIC.build(),
+        PROTECTED.build(),
         CD4CodeMill.mCReturnTypeBuilder()
             .setMCVoidType(mcTypeFacade.createVoidType())
             .build(),
