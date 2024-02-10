@@ -148,8 +148,12 @@ public class FileReaderWriter {
     try {
       Reporting.reportOpenInputFile(sourcePath.toString());
       URLConnection conn = sourcePath.openConnection();
-      if(conn instanceof JarURLConnection){
-        openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
+      if (conn instanceof JarURLConnection) {
+        synchronized (SharedCloseable.class) {
+          // We have to ensure the JarURLConnection#getJarFile and new SharedCloseable are performed atomic.
+          // Otherwise, the backing JarFile might be closed in between.
+          openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
+        }
       }
       Reader reader = new InputStreamReader(conn.getInputStream(), charset.name());
       content = _readFromFile(reader);
