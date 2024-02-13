@@ -72,7 +72,7 @@ combined with any of the above language components.
 This language component allows developers to express function types
 like `int -> int` or `(String -> int) -> void`.
 Function types are independent from and not interfering with 
-generic and array types,
+generic and array types. Thus
 `MCFunctionTypes` can be combined with any of the above language components.
 
 ## Further Information
