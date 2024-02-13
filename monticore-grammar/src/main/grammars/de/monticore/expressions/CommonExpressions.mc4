@@ -44,11 +44,11 @@ component grammar CommonExpressions
 
   /*=================================================================*/
   /** CallExpression is a Method-Call like foo()
-  * Expression on the left can be an expression, like:
-  * a Class-Name: A.f(), variable-Name a.f(),
-  * BracketExpression ("foo"+"Bar").toLowerCase()
-  * an expression with value of type function: f()() or a[0]()
-  * or other Method Calls: * c.getA().getB()
+   * Expression on the left can be an expression, like:
+   * a Class-Name: A.f(), variable-Name a.f(),
+   * BracketExpression ("foo"+"Bar").toLowerCase()
+   * an expression with value of type function: f()() or a[0]()
+   * or other Method Calls: * c.getA().getB()
   */
   CallExpression implements Expression <240> =
     Expression Arguments;
