@@ -51,16 +51,13 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
     else {
       result += getNumerator().stream()
           .map(SIUnitBasic::print)
-          .collect(Collectors.joining("*"));
+          .collect(Collectors.joining());
     }
-    String denominatorStr = getDenominator().stream()
-        .map(SIUnitBasic::print)
-        .collect(Collectors.joining("*"));
-    if (getDenominator().size() == 1) {
+    if (getDenominator().size() >= 1) {
+      String denominatorStr = getDenominator().stream()
+          .map(SIUnitBasic::print)
+          .collect(Collectors.joining());
       result += "/" + denominatorStr;
-    }
-    else if (getDenominator().size() > 1) {
-      result += "/(" + denominatorStr + ")";
     }
     return result;
   }

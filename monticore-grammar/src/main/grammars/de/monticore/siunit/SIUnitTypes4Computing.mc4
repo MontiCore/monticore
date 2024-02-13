@@ -32,7 +32,7 @@ component grammar SIUnitTypes4Computing extends
         de.monticore.types.MCBasicTypes,
          de.monticore.siunit.SIUnitTypes4Math {
 
-    interface SIUnitType4ComputingInt extends MCType =
+    interface SIUnitType4ComputingInt extends MCType <10> =
         MCPrimitiveType SIUnit;
 
     SIUnitType4Computing implements SIUnitType4ComputingInt =

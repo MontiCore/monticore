@@ -17,6 +17,7 @@ import de.monticore.types.check.SymTypeOfSIUnit;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -29,7 +30,7 @@ import static de.monticore.siunit.siunits._parser.SIUnitsAntlrParser.unitWithout
 /**
  * Helper, to convert ASTSIUnits to SymTypeExpressions
  */
-public class SIUnitSymTypeExpressionFactory {
+public class ASTSIUnit2SymTypeExprConverter {
 
   // reuse the definitions given by SIUnits.mc4
   /**
@@ -41,7 +42,14 @@ public class SIUnitSymTypeExpressionFactory {
    * Unit (no prefix)
    */
   protected static final String NO_PREFIX_UNIT_PATTERN =
-      unitWithPrefix + "|" + unitWithoutPrefix;
+      unitWithoutPrefix + "|" + unitWithPrefix;
+  /**
+   * Unit (no prefix), preferred.
+   * In the String "min", 'min' ought to be matched, not 'm'.
+   * To guarantee this, this pattern is applied first.
+   */
+  protected static final String NO_PREFIX_PREFERED_UNIT_PATTERN =
+      "(ha|min|mol|Np|dB|Hz|Wb|lm|lx|Bq|Sv)";
   /**
    * Prefix (no unit)
    */
@@ -52,8 +60,9 @@ public class SIUnitSymTypeExpressionFactory {
   protected static final String INTERNAL_LOGIC_ERROR =
       "0x51210 internal error: Could not evaluate SIUnit input,"
           + "but it was expected to be evaluable."
-          + " This is most likely an internal programming error."
-      + " Input: ";
+          + " This is most likely an internal programming error, "
+          + " or the SIUnits.mc4 has been changed."
+          + " Input: ";
 
   public static SymTypeOfSIUnit createSIUnit(ASTSIUnit ast) {
     List<SIUnitBasic> numerator;
@@ -154,6 +163,7 @@ public class SIUnitSymTypeExpressionFactory {
    * and converts it into a list of SIUnitBasic
    */
   protected static List<SIUnitBasic> string2SIUnitBasics(String inputStr) {
+    List<SIUnitBasic> result = new ArrayList<>();
     // We COULD write a grammar for this method,
     // but it would be useful for this method only.
     // Runtime can be improved if required.
@@ -161,37 +171,57 @@ public class SIUnitSymTypeExpressionFactory {
     // we have prefixes and units in a list,
     // they need to be split
     // "^" to match only start of String
-    Pattern prefixPat = Pattern.compile("^" + PREFIX_PATTERN);
-    Pattern unitWithPrefixPat = Pattern.compile("^" + PREFIX_UNIT_PATTERN);
-    Pattern unitWithoutPrefixPat = Pattern.compile("^" + NO_PREFIX_UNIT_PATTERN);
-    // longest potential finding of a unit (with prefix) is 5 chars long,
+    Pattern prefixPat =
+        Pattern.compile("^" + PREFIX_PATTERN);
+    Pattern unitWithPrefixPat =
+        Pattern.compile("^" + PREFIX_UNIT_PATTERN);
+    Pattern unitWithoutPrefixPat =
+        Pattern.compile("^" + NO_PREFIX_UNIT_PATTERN);
+    Pattern unitWithoutPrefixPrefPat =
+        Pattern.compile("^" + NO_PREFIX_PREFERED_UNIT_PATTERN);
+    // hint: longest potential finding of a unit (with prefix) is 5 chars long,
     // e.g., "dakat"
     String toBeParsed = inputStr;
     while (!toBeParsed.isEmpty()) {
       Optional<String> prefix = Optional.empty();
-      Optional<String> unit = Optional.empty();
+      String unit;
+      // start by searching for prefix + unit
       Matcher unitWithPrefixMat = unitWithPrefixPat.matcher(toBeParsed);
       if (unitWithPrefixMat.find()) {
         String prefixedUnit = unitWithPrefixMat.group();
         Matcher prefixMat = prefixPat.matcher(prefixedUnit);
         if (prefixMat.find()) {
+          // remove the prefix
           prefix = Optional.of(prefixMat.group());
-          String prefixlesUnit =
-              prefixedUnit.substring(prefixMat.end() + 1);
-          Matcher unitMat = unitWithoutPrefixPat.matcher(prefixlesUnit);
-          if(unitMat.find()) {
-            unit = Optional.of(unitMat.group());
-          } else {
-            Log.error(INTERNAL_LOGIC_ERROR + inputStr);
-          }
-        } else {
+          toBeParsed = toBeParsed.substring(prefixMat.end());
+        }
+        else {
           Log.error(INTERNAL_LOGIC_ERROR + inputStr);
+          return Collections.emptyList();
         }
       }
-      else {
-
+      // search for unit without prefix,
+      // but prefer 'min' over 'm', etc.
+      Matcher unitMat = unitWithoutPrefixPrefPat.matcher(toBeParsed);
+      if (!unitMat.find()) {
+        unitMat = unitWithoutPrefixPat.matcher(toBeParsed);
+        if (!unitMat.find()) {
+          Log.error(INTERNAL_LOGIC_ERROR + inputStr);
+          return Collections.emptyList();
+        }
       }
+      // remove the unit
+      unit = unitMat.group();
+      toBeParsed = toBeParsed.substring(unitMat.end());
+      // construct the SIUnitBasic using the extracted (prefix +) unit
+      SIUnitBasic siUnitBasic =
+          SymTypeExpressionFactory.createSIUnitBasic(unit);
+      if (prefix.isPresent()) {
+        siUnitBasic.setPrefix(prefix.get());
+      }
+      result.add(siUnitBasic);
     }
+    return result;
   }
 
   protected static int getValue(ASTSignedLiteral lit) {

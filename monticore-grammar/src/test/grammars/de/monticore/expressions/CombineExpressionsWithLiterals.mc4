@@ -10,6 +10,7 @@ grammar CombineExpressionsWithLiterals extends
           de.monticore.ocl.OptionalOperators,
           de.monticore.ocl.SetExpressions,
           de.monticore.literals.MCCommonLiterals,
+          de.monticore.siunit.SIUnitLiterals,
           de.monticore.expressions.JavaClassExpressions,
           de.monticore.expressions.LambdaExpressions,
           de.monticore.expressions.TupleExpressions,
@@ -18,6 +19,8 @@ grammar CombineExpressionsWithLiterals extends
           de.monticore.types.MCFunctionTypes,
           de.monticore.types.MCStructuralTypes,
           de.monticore.regex.RegExType,
+          de.monticore.siunit.SIUnitTypes4Math,
+          de.monticore.siunit.SIUnitTypes4Computing,
           de.monticore.symbols.OOSymbols {
 
     Foo="bar" Expression;
