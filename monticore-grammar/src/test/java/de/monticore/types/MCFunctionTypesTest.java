@@ -54,7 +54,7 @@ public class MCFunctionTypesTest {
     ASTMCUnaryFunctionType type =
         parseMCFunctionTypeNoParentheses("int -> void");
     assertEquals("void", type.getMCReturnType().printType());
-    assertEquals("int", type.getParameter().printType());
+    assertEquals("int", type.getMCType().printType());
   }
 
   @Test
@@ -119,13 +119,13 @@ public class MCFunctionTypesTest {
   public void testHigherOrderFunctionType3() throws IOException {
     ASTMCUnaryFunctionType type =
         parseMCFunctionTypeNoParentheses("int -> long -> void");
-    assertEquals("int", type.getParameter().printType());
+    assertEquals("int", type.getMCType().printType());
     assertTrue(type.getMCReturnType().isPresentMCType());
     ASTMCType returnType = type.getMCReturnType().getMCType();
     assertTrue(returnType instanceof ASTMCUnaryFunctionType);
     ASTMCUnaryFunctionType returnFuncType =
         (ASTMCUnaryFunctionType) returnType;
-    assertEquals("long", returnFuncType.getParameter().printType());
+    assertEquals("long", returnFuncType.getMCType().printType());
     assertEquals("void", returnFuncType.getMCReturnType().printType());
   }
 
@@ -133,7 +133,7 @@ public class MCFunctionTypesTest {
   public void testHigherOrderFunctionType5() throws IOException {
     ASTMCUnaryFunctionType type =
         parseMCFunctionTypeNoParentheses("int -> (long -> void) -> long");
-    assertEquals("int", type.getParameter().printType());
+    assertEquals("int", type.getMCType().printType());
     assertEquals("(long->void)->long", type.getMCReturnType().printType());
   }
 

@@ -80,7 +80,7 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
   public void handle(ASTMCUnaryFunctionType functionType) {
     SymTypeExpression symType;
 
-    functionType.getParameter().accept(getTraverser());
+    functionType.getMCType().accept(getTraverser());
     SymTypeExpression parType = getTypeCheckResult().getResult();
     functionType.getMCReturnType().accept(getTraverser());
     SymTypeExpression retType = getTypeCheckResult().getResult();

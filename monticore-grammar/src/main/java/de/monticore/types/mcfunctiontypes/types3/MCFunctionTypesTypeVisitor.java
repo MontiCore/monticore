@@ -52,14 +52,14 @@ public class MCFunctionTypesTypeVisitor extends AbstractTypeVisitor
   public void endVisit(ASTMCUnaryFunctionType functionType) {
     SymTypeExpression symType;
 
-    if (getType4Ast().getPartialTypeOfTypeId(functionType.getParameter())
+    if (getType4Ast().getPartialTypeOfTypeId(functionType.getMCType())
         .isObscureType()) {
       getType4Ast().setTypeOfTypeIdentifier(functionType,
           SymTypeExpressionFactory.createObscureType());
       return;
     }
     SymTypeExpression parType =
-        getType4Ast().getPartialTypeOfTypeId(functionType.getParameter());
+        getType4Ast().getPartialTypeOfTypeId(functionType.getMCType());
 
     if (!getType4Ast().hasTypeOfTypeIdentifier(functionType.getMCReturnType())) {
       getType4Ast().setTypeOfTypeIdentifier(functionType,
