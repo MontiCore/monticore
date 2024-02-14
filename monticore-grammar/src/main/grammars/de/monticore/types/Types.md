@@ -15,6 +15,8 @@ the following language components:
 * [`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4)
 * [`MCFullGenericTypes`](MCFullGenericTypes.mc4)
 * [`MCArrayTypes`](MCArrayTypes.mc4)
+* [`MCFunctionTypes`](MCFunctionTypes.mc4)
+* [`MCStructuralTypes`](MCStructuralTypes.mc4)
  
 ## [`MCBasicTypes`](MCBasicTypes.mc4)
 
@@ -74,6 +76,15 @@ like `int -> int` or `(String -> int) -> void`.
 Function types are independent from and not interfering with 
 generic and array types,
 `MCFunctionTypes` can be combined with any of the above language components.
+
+## [`MCStructuralTypes`](MCStructuralTypes.mc4)
+
+This language component allows to express additional types
+that are defined by the combination of other types,
+like the union type `Foo | Bar` which is the type that is "`Foo` or `Bar`".
+As structural types are orthogonal to other kinds of types,
+`MCStructuralTypes` can be combined with any of the above
+language components.
 
 ## Further Information
 
