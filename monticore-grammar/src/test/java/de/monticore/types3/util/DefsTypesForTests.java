@@ -814,7 +814,7 @@ public class DefsTypesForTests {
   public static SIUnitBasic _Np_SIUnitBasic;
   public static SIUnitBasic _B_SIUnitBasic;
   public static SIUnitBasic _dB_SIUnitBasic;
-  public static SIUnitBasic _º_SIUnitBasic;
+  public static SIUnitBasic _degSym_SIUnitBasic;
   public static SIUnitBasic _deg_SIUnitBasic;
   public static SIUnitBasic _rad_SIUnitBasic;
   public static SIUnitBasic _sr_SIUnitBasic;
@@ -865,7 +865,7 @@ public class DefsTypesForTests {
     _Np_SIUnitBasic = createSIUnitBasic("Np");
     _B_SIUnitBasic = createSIUnitBasic("B");
     _dB_SIUnitBasic = createSIUnitBasic("dB");
-    _º_SIUnitBasic = createSIUnitBasic("º");
+    _degSym_SIUnitBasic = createSIUnitBasic("°");
     _deg_SIUnitBasic = createSIUnitBasic("deg");
     _rad_SIUnitBasic = createSIUnitBasic("rad");
     _sr_SIUnitBasic = createSIUnitBasic("sr");
@@ -926,7 +926,7 @@ public class DefsTypesForTests {
   public static SymTypeOfSIUnit _Np_SISymType;
   public static SymTypeOfSIUnit _B_SISymType;
   public static SymTypeOfSIUnit _dB_SISymType;
-  public static SymTypeOfSIUnit _º_SISymType;
+  public static SymTypeOfSIUnit _degSym_SISymType;
   public static SymTypeOfSIUnit _deg_SISymType;
   public static SymTypeOfSIUnit _rad_SISymType;
   public static SymTypeOfSIUnit _sr_SISymType;
@@ -977,7 +977,7 @@ public class DefsTypesForTests {
     _Np_SISymType = createSIUnit(List.of(_Np_SIUnitBasic), List.of());
     _B_SISymType = createSIUnit(List.of(_B_SIUnitBasic), List.of());
     _dB_SISymType = createSIUnit(List.of(_dB_SIUnitBasic), List.of());
-    _º_SISymType = createSIUnit(List.of(_º_SIUnitBasic), List.of());
+    _degSym_SISymType = createSIUnit(List.of(_degSym_SIUnitBasic), List.of());
     _deg_SISymType = createSIUnit(List.of(_deg_SIUnitBasic), List.of());
     _rad_SISymType = createSIUnit(List.of(_rad_SIUnitBasic), List.of());
     _sr_SISymType = createSIUnit(List.of(_sr_SIUnitBasic), List.of());
