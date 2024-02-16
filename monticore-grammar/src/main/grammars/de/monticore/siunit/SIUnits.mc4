@@ -199,7 +199,8 @@ grammar SIUnits extends de.monticore.literals.MCCommonLiterals {
        *  SI unit (group) starting with a prefix
        */
       public boolean isSIUnitWithPrefix(int i) {
-        String regex = "(" + prefix + unitWithPrefix + units + "*" + ")|" + units + "+";
+        String regex = prefix + unitWithPrefix +
+          "(" + prefix + unitWithPrefix + "|" + units + ")" + "*";
         return cmpTokenRegEx(i, regex);
       }
 
@@ -207,7 +208,9 @@ grammar SIUnits extends de.monticore.literals.MCCommonLiterals {
        *  SI unit (group) starting without a prefix
        */
       public boolean isSIUnitWithoutPrefix(int i) {
-        return cmpTokenRegEx(i, units + "+");
+        String regex = units +
+          "(" + prefix + unitWithPrefix + "|" + units + ")" + "*";
+        return cmpTokenRegEx(i, regex);
       }
 
       /* returns true iff the next token matches a
