@@ -74,7 +74,7 @@ public class SetAsListAdapter<E> implements List<E> {
 
   @Override
   public boolean addAll(int index, @Nonnull Collection<? extends E> c) {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -102,49 +102,49 @@ public class SetAsListAdapter<E> implements List<E> {
       if (i++ == index)
         return elem;
     }
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public E set(int index, E element) {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void add(int index, E element) {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public E remove(int index) {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public int indexOf(Object o) {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public int lastIndexOf(Object o) {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   @Nonnull
   public ListIterator<E> listIterator() {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   @Nonnull
   public ListIterator<E> listIterator(int index) {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   @Nonnull
   public List<E> subList(int fromIndex, int toIndex) {
-    throw new IllegalStateException();
+    throw new UnsupportedOperationException();
   }
 }
