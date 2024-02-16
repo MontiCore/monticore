@@ -8,7 +8,6 @@ import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
 import java.util.List;

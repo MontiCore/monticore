@@ -16,13 +16,12 @@ import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfTuple;
 import de.monticore.types3.AbstractTypeVisitor;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
-import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.TypeVisitorLifting;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
@@ -600,7 +599,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     if (isSeriesOfNames(expr)) {
       if (expr.getExpression() instanceof ASTFieldAccessExpression) {
         ASTFieldAccessExpression innerFieldAccessExpr =
-            (ASTFieldAccessExpression)(expr.getExpression());
+            (ASTFieldAccessExpression) (expr.getExpression());
         fieldAccessCustomTraverse(innerFieldAccessExpr);
         // if expression or type identifier has been found,
         // continue to require further results
@@ -610,7 +609,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         calculateFieldAccess(innerFieldAccessExpr, resultsAreOptional);
       }
       else if (expr.getExpression() instanceof ASTNameExpression) {
-        ASTNameExpression nameExpr = (ASTNameExpression)(expr.getExpression());
+        ASTNameExpression nameExpr = (ASTNameExpression) (expr.getExpression());
         Optional<SymTypeExpression> nameAsExprType =
             calculateExprQName(nameExpr);
         Optional<SymTypeExpression> nameAsTypeIdType =
@@ -1070,7 +1069,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
     if (expr instanceof ASTFieldAccessExpression) {
       return isSeriesOfNames(
-          ((ASTFieldAccessExpression)expr).getExpression()
+          ((ASTFieldAccessExpression) expr).getExpression()
       );
     }
     else {
