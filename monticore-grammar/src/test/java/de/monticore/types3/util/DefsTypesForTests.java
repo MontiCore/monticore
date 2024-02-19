@@ -787,7 +787,7 @@ public class DefsTypesForTests {
   public static SIUnitBasic _V_SIUnitBasic;
   public static SIUnitBasic _F_SIUnitBasic;
   public static SIUnitBasic _Ohm_SIUnitBasic;
-  public static SIUnitBasic _Ω_SIUnitBasic;
+  public static SIUnitBasic _ohm_SIUnitBasic;
   public static SIUnitBasic _S_SIUnitBasic;
   public static SIUnitBasic _Wb_SIUnitBasic;
   public static SIUnitBasic _T_SIUnitBasic;
@@ -809,8 +809,8 @@ public class DefsTypesForTests {
   public static SIUnitBasic _eV_SIUnitBasic;
   public static SIUnitBasic _Da_SIUnitBasic;
   public static SIUnitBasic _u_SIUnitBasic;
-  public static SIUnitBasic _ºC_SIUnitBasic;
-  public static SIUnitBasic _ªF_SIUnitBasic;
+  public static SIUnitBasic _celsius_SIUnitBasic;
+  public static SIUnitBasic _fahrenheit_SIUnitBasic;
   public static SIUnitBasic _Np_SIUnitBasic;
   public static SIUnitBasic _B_SIUnitBasic;
   public static SIUnitBasic _dB_SIUnitBasic;
@@ -838,7 +838,7 @@ public class DefsTypesForTests {
     _V_SIUnitBasic = createSIUnitBasic("V");
     _F_SIUnitBasic = createSIUnitBasic("F");
     _Ohm_SIUnitBasic = createSIUnitBasic("Ohm");
-    _Ω_SIUnitBasic = createSIUnitBasic("Ω");
+    _ohm_SIUnitBasic = createSIUnitBasic("Ω");
     _S_SIUnitBasic = createSIUnitBasic("S");
     _Wb_SIUnitBasic = createSIUnitBasic("Wb");
     _T_SIUnitBasic = createSIUnitBasic("T");
@@ -860,8 +860,8 @@ public class DefsTypesForTests {
     _eV_SIUnitBasic = createSIUnitBasic("eV");
     _Da_SIUnitBasic = createSIUnitBasic("Da");
     _u_SIUnitBasic = createSIUnitBasic("u");
-    _ºC_SIUnitBasic = createSIUnitBasic("ºC");
-    _ªF_SIUnitBasic = createSIUnitBasic("ªF");
+    _celsius_SIUnitBasic = createSIUnitBasic("ºC");
+    _fahrenheit_SIUnitBasic = createSIUnitBasic("ºF");
     _Np_SIUnitBasic = createSIUnitBasic("Np");
     _B_SIUnitBasic = createSIUnitBasic("B");
     _dB_SIUnitBasic = createSIUnitBasic("dB");
@@ -899,7 +899,7 @@ public class DefsTypesForTests {
   public static SymTypeOfSIUnit _V_SISymType;
   public static SymTypeOfSIUnit _F_SISymType;
   public static SymTypeOfSIUnit _Ohm_SISymType;
-  public static SymTypeOfSIUnit _Ω_SISymType;
+  public static SymTypeOfSIUnit _ohm_SISymType;
   public static SymTypeOfSIUnit _S_SISymType;
   public static SymTypeOfSIUnit _Wb_SISymType;
   public static SymTypeOfSIUnit _T_SISymType;
@@ -921,8 +921,8 @@ public class DefsTypesForTests {
   public static SymTypeOfSIUnit _eV_SISymType;
   public static SymTypeOfSIUnit _Da_SISymType;
   public static SymTypeOfSIUnit _u_SISymType;
-  public static SymTypeOfSIUnit _ºC_SISymType;
-  public static SymTypeOfSIUnit _ªF_SISymType;
+  public static SymTypeOfSIUnit _celsius_SISymType;
+  public static SymTypeOfSIUnit _fahrenheit_SISymType;
   public static SymTypeOfSIUnit _Np_SISymType;
   public static SymTypeOfSIUnit _B_SISymType;
   public static SymTypeOfSIUnit _dB_SISymType;
@@ -950,7 +950,7 @@ public class DefsTypesForTests {
     _V_SISymType = createSIUnit(List.of(_V_SIUnitBasic), List.of());
     _F_SISymType = createSIUnit(List.of(_F_SIUnitBasic), List.of());
     _Ohm_SISymType = createSIUnit(List.of(_Ohm_SIUnitBasic), List.of());
-    _Ω_SISymType = createSIUnit(List.of(_Ω_SIUnitBasic), List.of());
+    _ohm_SISymType = createSIUnit(List.of(_ohm_SIUnitBasic), List.of());
     _S_SISymType = createSIUnit(List.of(_S_SIUnitBasic), List.of());
     _Wb_SISymType = createSIUnit(List.of(_Wb_SIUnitBasic), List.of());
     _T_SISymType = createSIUnit(List.of(_T_SIUnitBasic), List.of());
@@ -972,8 +972,8 @@ public class DefsTypesForTests {
     _eV_SISymType = createSIUnit(List.of(_eV_SIUnitBasic), List.of());
     _Da_SISymType = createSIUnit(List.of(_Da_SIUnitBasic), List.of());
     _u_SISymType = createSIUnit(List.of(_u_SIUnitBasic), List.of());
-    _ºC_SISymType = createSIUnit(List.of(_ºC_SIUnitBasic), List.of());
-    _ªF_SISymType = createSIUnit(List.of(_ªF_SIUnitBasic), List.of());
+    _celsius_SISymType = createSIUnit(List.of(_celsius_SIUnitBasic), List.of());
+    _fahrenheit_SISymType = createSIUnit(List.of(_fahrenheit_SIUnitBasic), List.of());
     _Np_SISymType = createSIUnit(List.of(_Np_SIUnitBasic), List.of());
     _B_SISymType = createSIUnit(List.of(_B_SIUnitBasic), List.of());
     _dB_SISymType = createSIUnit(List.of(_dB_SIUnitBasic), List.of());
