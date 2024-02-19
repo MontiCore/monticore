@@ -15,8 +15,6 @@ import de.monticore.codegen.prettyprint.PrettyPrinterConstants;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.tagging.tags._ast.ASTTag;
-import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import de.se_rwth.commons.Joiners;
@@ -31,6 +29,9 @@ import static de.monticore.cd.facade.CDModifier.PACKAGE_PRIVATE_ABSTRACT;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class MC2CDTaggingTranslation implements Function<ASTMCGrammar, ASTCDCompilationUnit> {
+
+  protected final static String ASTTag = "de.monticore.tagging.tags._ast.ASTTag";
+  protected final static String ASTTagUnit = "de.monticore.tagging.tags._ast.ASTTagUnit";
 
   protected final ICD4AnalysisGlobalScope cdScope;
 
@@ -100,22 +101,22 @@ public class MC2CDTaggingTranslation implements Function<ASTMCGrammar, ASTCDComp
 
     List<ASTCDMethod> methods = new ArrayList<>();
 
-    methods.add(cdMethodFacade.createMethod(PACKAGE_PRIVATE_ABSTRACT.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+    methods.add(cdMethodFacade.createMethod(PACKAGE_PRIVATE_ABSTRACT.build(), mcTypeFacade.createListTypeOf(ASTTag),
             "getTag",
             cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit")));
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit")));
 
     methods.add(cdMethodFacade.createMethod(PACKAGE_PRIVATE_ABSTRACT.build(), mcTypeFacade.createBooleanType(),
             "removeTag",
             cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
             cdParameterFacade.createParameter(symbolASTFQN, "astTag")
     ));
 
     methods.add(cdMethodFacade.createMethod(PACKAGE_PRIVATE_ABSTRACT.build(),
             "addTag",
             cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
             cdParameterFacade.createParameter(symbolASTFQN, "astTag")
     ));
 
@@ -127,22 +128,22 @@ public class MC2CDTaggingTranslation implements Function<ASTMCGrammar, ASTCDComp
 
     List<ASTCDMethod> methods = new ArrayList<>();
 
-    methods.add(cdMethodFacade.createMethod(PUBLIC.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+    methods.add(cdMethodFacade.createMethod(PUBLIC.build(), mcTypeFacade.createListTypeOf(ASTTag),
             "getTag",
             cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit")));
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit")));
 
     methods.add(cdMethodFacade.createMethod(PUBLIC.build(), mcTypeFacade.createBooleanType(),
             "removeTag",
             cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
             cdParameterFacade.createParameter(symbolASTFQN, "astTag")
     ));
 
     methods.add(cdMethodFacade.createMethod(PUBLIC.build(),
             "addTag",
             cdParameterFacade.createParameter(symbolASTFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
             cdParameterFacade.createParameter(symbolASTFQN, "astTag")
     ));
 
