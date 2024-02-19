@@ -407,6 +407,30 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
   }
 
   @Test
+  public void isCompatibleNumericsAndSIUnits() {
+    assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _intSymType));
+    assertFalse(SymTypeRelations.isCompatible(_intSymType, _s_SISymType));
+    // TBD: SIUnit of dimension one
+  }
+
+  @Test
+  public void isCompatibleNumericsAndNumericWithSIUnits() {
+    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _intSymType));
+    assertFalse(SymTypeRelations.isCompatible(_intSymType, _s_int_SISymType));
+    assertTrue(SymTypeRelations.isCompatible(_deg_int_SISymType, _intSymType));
+    assertTrue(SymTypeRelations.isCompatible(_intSymType, _deg_int_SISymType));
+  }
+
+  @Test
+  public void isCompatibleSIUnits() {
+    assertTrue(SymTypeRelations.isCompatible(_s_SISymType, _s_SISymType));
+    assertTrue(SymTypeRelations.isCompatible(_Ohm_SISymType, _Ohm_SISymType));
+    assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _A_SISymType));
+    assertFalse(SymTypeRelations.isCompatible(_A_SISymType, _s_SISymType));
+    //TODO WIP
+  }
+
+  @Test
   public void isSubTypeBottom() {
     // bottom is subType of EVERY other type
     assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _bottomType));
@@ -653,6 +677,8 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     assertTrue(SymTypeRelations.isCompatible(_IntegerSymType, createTypeOfNull()));
     assertFalse(SymTypeRelations.isSubTypeOf(createTypeOfNull(), _personSymType));
     assertFalse(SymTypeRelations.isSubTypeOf(_personSymType, createTypeOfNull()));
+    assertFalse(SymTypeRelations.isSubTypeOf(_s_SISymType, _nullSymType));
+    assertFalse(SymTypeRelations.isSubTypeOf(_s_int_SISymType, _nullSymType));
   }
 
   /**
