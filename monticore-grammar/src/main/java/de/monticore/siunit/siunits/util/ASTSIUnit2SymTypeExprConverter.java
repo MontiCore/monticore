@@ -37,12 +37,12 @@ public class ASTSIUnit2SymTypeExprConverter {
    * Prefix with unit, only some units apply
    */
   protected static final String PREFIX_UNIT_PATTERN =
-      prefix + unitWithPrefix;
+      "(" + prefix + unitWithPrefix + ")";
   /**
    * Unit (no prefix)
    */
   protected static final String NO_PREFIX_UNIT_PATTERN =
-      unitWithoutPrefix + "|" + unitWithPrefix;
+      "(" + unitWithoutPrefix + "|" + unitWithPrefix + ")";
   /**
    * Unit (no prefix), preferred.
    * In the String "min", 'min' ought to be matched, not 'm'.
@@ -55,6 +55,11 @@ public class ASTSIUnit2SymTypeExprConverter {
    */
   protected static final String PREFIX_PATTERN =
       prefix;
+  /**
+   * SIUnit group
+   */
+  protected static final String GROUP_PATTERN =
+      "((" + PREFIX_UNIT_PATTERN + "|" + NO_PREFIX_UNIT_PATTERN + ")+)";
 
   // never expected to happen:
   protected static final String INTERNAL_LOGIC_ERROR =
@@ -163,6 +168,7 @@ public class ASTSIUnit2SymTypeExprConverter {
    * and converts it into a list of SIUnitBasic
    */
   protected static List<SIUnitBasic> string2SIUnitBasics(String inputStr) {
+    assertValidSIUnitGroup(inputStr);
     List<SIUnitBasic> result = new ArrayList<>();
     // We COULD write a grammar for this method,
     // but it would be useful for this method only.
@@ -171,14 +177,15 @@ public class ASTSIUnit2SymTypeExprConverter {
     // we have prefixes and units in a list,
     // they need to be split
     // "^" to match only start of String
+    // "(?!ol|in)" to avoid issues with "lmin/lmol" having "lm" matched
     Pattern prefixPat =
-        Pattern.compile("^" + PREFIX_PATTERN);
+        Pattern.compile("^" + PREFIX_PATTERN + "(?!ol|in)");
     Pattern unitWithPrefixPat =
-        Pattern.compile("^" + PREFIX_UNIT_PATTERN);
+        Pattern.compile("^" + PREFIX_UNIT_PATTERN + "(?!ol|in)");
     Pattern unitWithoutPrefixPat =
-        Pattern.compile("^" + NO_PREFIX_UNIT_PATTERN);
+        Pattern.compile("^" + NO_PREFIX_UNIT_PATTERN + "(?!ol|in)");
     Pattern unitWithoutPrefixPrefPat =
-        Pattern.compile("^" + NO_PREFIX_PREFERED_UNIT_PATTERN);
+        Pattern.compile("^" + NO_PREFIX_PREFERED_UNIT_PATTERN + "(?!ol|in)");
     // hint: longest potential finding of a unit (with prefix) is 5 chars long,
     // e.g., "dakat"
     String toBeParsed = inputStr;
@@ -222,6 +229,19 @@ public class ASTSIUnit2SymTypeExprConverter {
       result.add(siUnitBasic);
     }
     return result;
+  }
+
+  /**
+   * logs an error if the input is not a valid SIUnitGroup
+   */
+  protected static boolean assertValidSIUnitGroup(String inputStr) {
+    if (inputStr.matches(GROUP_PATTERN)) {
+      return true;
+    }
+    else {
+      Log.error("0x51211 Input \"" + inputStr + "\" is not a SI unit group");
+      return false;
+    }
   }
 
   protected static int getValue(ASTSignedLiteral lit) {
