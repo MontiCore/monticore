@@ -285,7 +285,7 @@ public class SIUnitTypeRelations {
     return SymTypeExpressionFactory.createSIUnit(numerator, denominator);
   }
 
-  static List<SIUnitBasic> convertToSIBaseUnits(SIUnitBasic unitBasic) {
+  protected static List<SIUnitBasic> convertToSIBaseUnits(SIUnitBasic unitBasic) {
     return getSIUnitTypeRelations().calculateConvertToSIBaseUnits(unitBasic);
   }
 
