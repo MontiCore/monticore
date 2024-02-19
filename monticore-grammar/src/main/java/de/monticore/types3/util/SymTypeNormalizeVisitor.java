@@ -5,6 +5,7 @@ import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types3.SymTypeRelations;
@@ -266,6 +267,19 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     }
 
     pushTransformedSymType(normalized);
+  }
+
+  @Override
+  public void visit(SymTypeOfNumericWithSIUnit numericWithSIUnit) {
+    if (SIUnitTypeRelations.isOfDimensionOne(numericWithSIUnit.getSIUnitType())) {
+      // remove the SIUnit part, if it holds no dimension other than "1"
+      // e.g. [m^2/m^2]<int> -> int
+      numericWithSIUnit.getNumericType().accept(this);
+    }
+    else {
+      // otherwise, normalize SIUnit and numeric type parts
+      super.visit(numericWithSIUnit);
+    }
   }
 
   @Override

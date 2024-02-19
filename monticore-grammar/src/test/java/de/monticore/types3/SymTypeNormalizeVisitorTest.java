@@ -14,6 +14,7 @@ import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
+import static de.monticore.types.check.SymTypeExpressionFactory.createNumericWithSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnitBasic;
@@ -285,6 +286,38 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
         "[skg/m]"
     );
     assertNoFindings();
+  }
+
+  @Test
+  public void normalizeNumericWithSIUnits() {
+    check(createNumericWithSIUnit(
+            List.of(_s_SIUnitBasic),
+            List.of(),
+            _intSymType
+        ),
+        "[s]<int>"
+    );
+    check(createNumericWithSIUnit(
+            List.of(createSIUnitBasic("s", 2)),
+            List.of(),
+            _intSymType
+        ),
+        "[s^2]<int>"
+    );
+    check(createNumericWithSIUnit(
+            List.of(createSIUnitBasic("s", -2)),
+            List.of(),
+            _intSymType
+        ),
+        "[1/s^2]<int>"
+    );
+    check(createNumericWithSIUnit(
+            List.of(_s_SIUnitBasic),
+            List.of(_s_SIUnitBasic),
+            _intSymType
+        ),
+        "int"
+    );
   }
 
   public void check(SymTypeExpression type, String expectedPrint) {
