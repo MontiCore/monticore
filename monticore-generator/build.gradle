@@ -171,11 +171,7 @@ gradlePlugin.plugins {
 }
 
 publishing {
-  publications {
-    maven(MavenPublication) {
-      from(components.java)
-    }
-  }
+  // The gradle-plugin plugin deploys automatically a pluginMaven publication (from the main component)
   repositories.maven {
     credentials.username mavenUser
     credentials.password mavenPassword
