@@ -293,6 +293,7 @@ public class SIUnitTypeRelations {
       SIUnitBasic unitBasic
   ) {
     List<SIUnitBasic> converted;
+    // load the conversion for exponent == 1
     if (!conversionTable.containsKey(unitBasic.getDimension())) {
       Log.error("0xFD510 tried to convert the unknown SI unit \""
           + unitBasic.getDimension()
@@ -304,6 +305,10 @@ public class SIUnitTypeRelations {
       converted = conversionTable.get(unitBasic.getDimension()).stream()
           .map(SIUnitBasic::deepClone)
           .collect(Collectors.toList());
+    }
+    // multiply the exponents
+    for (SIUnitBasic convBasic : converted) {
+      convBasic.setExponent(convBasic.getExponent() * unitBasic.getExponent());
     }
     return converted;
   }
