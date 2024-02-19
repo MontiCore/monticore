@@ -132,9 +132,10 @@ public class SIUnitTypeRelations {
         createSIBaseUnit("A", -1)
     ));
     conversionTableTmp.put("H", List.of(
+        createSIBaseUnit("m", 2),
         createSIBaseUnit("g"),
         createSIBaseUnit("s", -2),
-        createSIBaseUnit("A", -1)
+        createSIBaseUnit("A", -2)
     ));
     conversionTableTmp.put("lm", List.of(createSIBaseUnit("cd")));
     conversionTableTmp.put("lx", List.of(
@@ -148,7 +149,7 @@ public class SIUnitTypeRelations {
     ));
     conversionTableTmp.put("Sv", List.of(
         createSIBaseUnit("m", 2),
-        createSIBaseUnit("m", -2)
+        createSIBaseUnit("s", -2)
     ));
     conversionTableTmp.put("kat", List.of(
         createSIBaseUnit("s", -1),
