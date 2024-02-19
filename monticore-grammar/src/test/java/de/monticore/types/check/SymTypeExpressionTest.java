@@ -280,9 +280,9 @@ public class SymTypeExpressionTest {
     assertEquals("(double, int) -> int", teFunc2.print());
     assertEquals("((double, int) -> int) -> () -> void", teFunc3.print());
     assertEquals("(double, int...) -> void", teFunc4.print());
-    assertEquals("m/ms^2", teSIUnit1.print());
-    assertEquals("1", teSIUnit2.print());
-    assertEquals("m/ms^2<int>", teNumWithSIUnit1.print());
+    assertEquals("[m/ms^2]", teSIUnit1.print());
+    assertEquals("[1]", teSIUnit2.print());
+    assertEquals("[m/ms^2]<int>", teNumWithSIUnit1.print());
     assertEquals("double | int", teUnion1.print());
     assertEquals("double & int", teInter1.print());
     assertEquals("(int, double)", teTuple1.print());
@@ -761,25 +761,25 @@ public class SymTypeExpressionTest {
     assertEquals("mg^-2", tSIUnitBasic3.print());
 
     SymTypeOfSIUnit tSIUnit1 = createSIUnit(List.of(tSIUnitBasic1), List.of());
-    assertEquals("m", tSIUnit1.print());
+    assertEquals("[m]", tSIUnit1.print());
 
     SymTypeOfSIUnit tSIUnit2 = createSIUnit(List.of(), List.of(tSIUnitBasic2));
-    assertEquals("1/s^2", tSIUnit2.print());
+    assertEquals("[1/s^2]", tSIUnit2.print());
 
     SymTypeOfSIUnit tSIUnit3 = createSIUnit(
         List.of(tSIUnitBasic1),
         List.of(tSIUnitBasic2, tSIUnitBasic3)
     );
-    assertEquals("m/(s^2*mg^-2)", tSIUnit3.print());
+    assertEquals("[m/s^2mg^-2]", tSIUnit3.print());
 
     SymTypeOfNumericWithSIUnit tNumSIUnit1 =
         createNumericWithSIUnit(tSIUnit1, teInt);
-    assertEquals("m<int>", tNumSIUnit1.print());
+    assertEquals("[m]<int>", tNumSIUnit1.print());
 
     SymTypeOfNumericWithSIUnit tNumSIUnit2 = createNumericWithSIUnit(
         List.of(tSIUnitBasic1), List.of(tSIUnitBasic2, tSIUnitBasic3), teInt
     );
-    assertEquals("m/(s^2*mg^-2)<int>", tNumSIUnit2.print());
+    assertEquals("[m/s^2mg^-2]<int>", tNumSIUnit2.print());
 
     SymTypeOfUnion tUnion1 = createUnion(teInt, teDouble);
     assertEquals("double | int", tUnion1.print());

@@ -44,7 +44,7 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public String print() {
-    String result = "";
+    String result = "[";
     if (getNumerator().isEmpty()) {
       result += "1";
     }
@@ -59,6 +59,7 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
           .collect(Collectors.joining());
       result += "/" + denominatorStr;
     }
+    result += "]";
     return result;
   }
 
