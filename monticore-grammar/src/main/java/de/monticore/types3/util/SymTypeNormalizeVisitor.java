@@ -5,6 +5,7 @@ import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
@@ -264,6 +265,13 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       );
     }
 
+    pushTransformedSymType(normalized);
+  }
+
+  @Override
+  public void visit(SymTypeOfSIUnit siUnit) {
+    SymTypeOfSIUnit normalized =
+        SIUnitTypeRelations.internal_normalize(siUnit);
     pushTransformedSymType(normalized);
   }
 
