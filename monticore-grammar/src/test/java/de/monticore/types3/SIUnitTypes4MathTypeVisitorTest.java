@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static de.monticore.siunit.siunits._parser.SIUnitsAntlrParser.prefix;
 import static de.monticore.types3.util.SIUnitIteratorForTests.get2UnitsGroup;
 import static de.monticore.types3.util.SIUnitIteratorForTests.getPrefixedUnits;
 import static de.monticore.types3.util.SIUnitIteratorForTests.getUnits;
@@ -47,16 +48,15 @@ public class SIUnitTypes4MathTypeVisitorTest
 
   @Test
   public void synTFromSIUnitTypes4MathSimpleAll() throws IOException {
-    // "^1" as parser workaround
+    // converting units to SI
     for (String siUnit : (Iterable<String>) getUnits()::iterator) {
-      checkType(siUnit + "^1", siUnit);
+      checkTypeRoundTrip("[" + siUnit + "]");
     }
     for (String siUnit : (Iterable<String>) getPrefixedUnits()::iterator) {
-      checkType(siUnit + "^1", siUnit);
+      checkTypeRoundTrip("[" + siUnit + "]");
     }
     for (String siUnit : (Iterable<String>) get2UnitsGroup()::iterator) {
-      //System.out.println(siUnit);
-      checkType(siUnit + "^1", siUnit);
+      checkTypeRoundTrip("[" + siUnit + "]");
     }
   }
 /*
@@ -66,7 +66,6 @@ public class SIUnitTypes4MathTypeVisitorTest
     checkSIUnit("kΩ", "kΩ", "kg*m^2/(A^2*s^3)");
     checkSIUnit("µg", "µg", "kg");
     checkSIUnit("µΩ", "µΩ", "kg*m^2/(A^2*s^3)");
-
   }
 */
 
