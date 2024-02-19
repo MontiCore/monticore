@@ -2,6 +2,92 @@
 
 # Release Notes
 
+## MontiCore 7.6.0
+released: --to be determined--
+
+### Additions
+* template replacement: addBefore & addAfter 
+* CoCo ensuring only lvalues are valid values for assignments
+* new grammars:
+  * CompSymbols for C&C symbol interfaces
+  * RegularExpressions (ported from RegEx project)
+  * RegExType (ported from RegEx project)
+  * UglyExpressions to move reflection based expressions to and 'new'
+  * OCLExpressions (ported from OCL project)
+  * OptionalOperators (ported from OCL project)
+  * SetExpressions (ported from OCL project)
+* a generated toString() method for symbols
+* grammar options ParserSuperClass and LexerSuperClass to influence ANTLR
+* CoCo to forbid non-unique production names in composed grammars (A0144)
+* new gradle plugin [docs](../../docs/Gradle.md)
+* domain-specific tagging models:
+  * new grammar Tags, to describe tags of symbols 
+  * new grammar TagSchema
+  * generate a language-specific Tagger class as an API to tags
+  * derive a language-specific TagSchema grammar, to describe the set of allowed tags for a symbol kind
+  * new TagRepository class to facilitate loading of tag models
+* Scopes:
+  * methods to check whether a scope is a sub-scope of another
+  * method to check whether a type variable is bound in a given context
+* method for shallow copying of AccessModifiers
+* added initializeString to BasicSymbolsMill
+* PrettyPrinter:
+  * OCLExpressions
+  * SetExpressions
+* TypeCheck:
+  * Added SymTypeOfRegEx
+  * Added TypeVisitor classes which calculate the type of ASTNodes
+  * Added NameExpressionTypeCalculator to calculate the type given a Name
+    * Added OONameExpressionCalculator to filter out constructors
+  * Added OOWithinTypeBasicSymbolsResolver to filter out constructors
+  * Added Type4Ast map to TypeVisitors to store type results
+  * Added MCCollectionTypeRelations to check relations on collection types
+  * Added MCCollectionSymTypeFactory convenience methods to create collections
+  * upper and lower bound for type variables
+  * Added ILValueRelations to check if an expression is a l-value
+    * Added CommonExpressionsLValueRelations as implementation
+  * Added NominalSuperTypeCalculator to calculate nominal supertypes
+    * can calculate them for object types,
+      as well as structural types and variables
+  * Added Wrapper to support the legacy interface using TypeCheck 3
+  * Added method to clone SymTypeArray with different dimension
+  * Added the possibility to use the type identifier as constructor
+  * Added methods asX for SymTypeX to avoid casting
+  * Added TypeSystem3 markdown documentation
+* Expressions:
+  * ASTRule: LambdaBodys have a return type
+
+### Changes
+* Findings of parse errors now contain additional context
+* attribute isAbstract was moved from JavaMethodSymbol to MethodSymbol
+* delete class MapUtil (replaced by Guava)
+* delete deprecated class CoreTemplates
+* report templates with qualified name
+* severely refactored fieldAccessExpression TypeCalculation
+* renamed TypeCheck 2 to 3
+* updated ecj dependency
+* removed ExtType extension points in grammars
+
+
+### Fixes
+* generated pretty printer behavior for end of lines with single line comments
+* cache misses during resolution of fully qualified named in MCPath 
+* multiple alternatives in an expression are now supported by the DSTLGen (0xA5C05)
+* improved groovy workflow script setup time
+* fix code blocks for alternatives in interfaces (ANTLR)
+* delegate accect-methods in SymbolSurrogate
+* ForConditionHasBooleanType removed incorrect casting
+* fix StreamType SymType-Library instantiation
+* corrected TypeVarSymbol deepEquals
+* replaced some error codes that were used more than once
+* asserts the existence of String symbol if required by the TypeCheck
+* subTyping of generics is now a recursive check
+* in TypeCheck 3 added workarounds for faulty symbol resolving
+* in TypeCheck 3 added workarounds for faulty TypeDispatcher
+* added null-pointer checks
+* Fix TypeVar deepclone
+* Remove CoCo that forbid token modes in component grammars
+
 ## MontiCore 7.5.0
 released: 02.05.2023
 
