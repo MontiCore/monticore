@@ -83,12 +83,7 @@ public class SIUnitIteratorForTests {
                         .filter(u -> !u.contains("Ω"))
                         .map(u -> u + pu))
             )
-        )
-        // parser ?Ym, ?Zm, ?Em seems to be bad... is regex too greedy? -> filter somehow?
-        .filter(s -> !(s.contains("Ym") || s.contains("Zm") || s.contains("Em") || s.contains("Pm")||s.contains("Gm")||s.contains("Mm")||s.contains("km")))
-        //todo fix these
-        .filter(s -> !(s.contains("lmol") || s.contains("lmin")))
-        ;
+        );
   }
 
 }
