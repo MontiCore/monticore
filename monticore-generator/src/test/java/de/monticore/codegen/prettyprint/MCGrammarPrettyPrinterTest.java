@@ -3,14 +3,12 @@
 package de.monticore.codegen.prettyprint;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -43,8 +41,7 @@ public class MCGrammarPrettyPrinterTest {
     ASTMCGrammar grammar = result.get();
     
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader (output));
@@ -69,8 +66,7 @@ public class MCGrammarPrettyPrinterTest {
     ASTMCGrammar grammar = result.get();
     
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
     
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
@@ -95,8 +91,7 @@ public class MCGrammarPrettyPrinterTest {
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
@@ -121,8 +116,7 @@ public class MCGrammarPrettyPrinterTest {
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
@@ -147,8 +141,7 @@ public class MCGrammarPrettyPrinterTest {
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));

@@ -20,14 +20,26 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.Multiplicity;
-import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._ast.ASTAlt;
+import de.monticore.grammar.grammar._ast.ASTBlock;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTConstant;
+import de.monticore.grammar.grammar._ast.ASTConstantGroup;
+import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
+import de.monticore.grammar.grammar._ast.ASTITerminal;
+import de.monticore.grammar.grammar._ast.ASTKeyTerminal;
+import de.monticore.grammar.grammar._ast.ASTLexProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTNonTerminalSeparator;
+import de.monticore.grammar.grammar._ast.ASTRuleComponent;
+import de.monticore.grammar.grammar._ast.ASTSemanticpredicateOrAction;
+import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
@@ -35,7 +47,18 @@ import de.se_rwth.commons.logging.Log;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Stack;
 
 // Note: We can't use symbol-table information for multiplicities due to GrammarTransformer#removeNonTerminalSeparators, etc
 public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
@@ -467,7 +490,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
           this.failureMessage = "Contains a list of Alts where one is not iterator ready (leading to endless while loops)!";
 
         if (blockData.getAltDataList().stream().anyMatch(a -> a.getExpressionList().isEmpty())) {
-          String pp = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter()).prettyprint(node);
+          String pp = GrammarFamilyMill.prettyPrint(node, true);
           pp = pp.replace("\"", "\\\"").replace("\n", " ");
           this.failureMessage = "Contains a block without condition which is looped: " + pp;
         }
