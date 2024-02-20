@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.tupleexpressions.types3;
 
 import de.monticore.expressions.tupleexpressions._ast.ASTTupleExpression;

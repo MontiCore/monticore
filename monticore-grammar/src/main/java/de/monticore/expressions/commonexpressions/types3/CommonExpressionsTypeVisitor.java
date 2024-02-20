@@ -391,7 +391,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       Log.error(
           "0xFDF86 trying to access expression of type "
               + toBeAccessed.printFullName()
-              + "with qualifier of type "
+              + " with qualifier of type "
               + indexType.printFullName()
               + " which is not applicable",
           expr.get_SourcePositionStart(),
