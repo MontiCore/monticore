@@ -30,4 +30,8 @@ mlc MCVarDeclarationStatements {
     include "$projectDir/src/main/java/de/monticore/grammar/grammar_withconcepts/FullSynthesizeFromMCSGT4Grammar.java";
   }
 
+  uses {
+    include "$projectDir/src/main/java/de/monticore/expressions/prettyprint/ExpressionsBasisPrettyPrinter.java";
+  }
+
 }

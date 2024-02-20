@@ -22,4 +22,8 @@ mlc MCReturnStatements {
     mlc "de.monticore.expressions.ExpressionsBasis";
   }
 
+  uses {
+    include "$projectDir/src/main/java/de/monticore/expressions/prettyprint/ExpressionsBasisPrettyPrinter.java";
+  }
+
 }

@@ -13,10 +13,6 @@ mlc Grammar {
 
     // additional, general Java source code
     include "de/monticore/grammar/*.java";
-
-    // pretty printer
-    include "de/monticore/grammar/prettyprint/GrammarPrettyPrinter.java";
-
   }
 
   // export all Java files generated from the grammar
@@ -33,7 +29,7 @@ mlc Grammar {
 
   uses {
     // needs to be included because it is needed to build the symbol table -> cf. GrammarScopesGenitor
-    include "$projectDir/src/main/java/de/monticore/grammar/prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
   }
 
 }

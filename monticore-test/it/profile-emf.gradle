@@ -2,22 +2,12 @@
 
 buildDir = file("$projectDir/target-emf")
 ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
-sourceSets.main.java.srcDirs += [ outDir ]
 
-fileTree(dir: grammarDir, include: '**/*.mc4').each {
-  def g = it
-  def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
-  taskname = taskname.substring(0, taskname.lastIndexOf(".")).replaceAll("/", '_')
-  task "generateEMF${taskname}"(type: MCTask) {
-    grammar = file g
-    outputDir = file outDir
-    handcodedPath "$projectDir/src/main/java"
-    modelPath "$projectDir/$grammarDir"
-    script = "$projectDir/it-emf.groovy"
-    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
+generateMCGrammars {
+  outputDir = file outDir
+  handcodedPath "$projectDir/src/main/java"
+  modelPath "$projectDir/$grammarDir"
+  script = "$projectDir/it-emf.groovy"
 }
 
 sourceSets.test.java.srcDirs += ["$projectDir/src/test_emf/java"]

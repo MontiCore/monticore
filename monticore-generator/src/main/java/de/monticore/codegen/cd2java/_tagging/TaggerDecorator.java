@@ -20,7 +20,6 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 import de.monticore.symboltable.IScope;
-import de.monticore.tagging.tags._ast.*;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -43,6 +42,10 @@ public class TaggerDecorator extends AbstractDecorator {
   protected final AbstractService<?> service;
   protected final VisitorService visitorService;
   protected final ASTMCGrammar originalGrammar;
+
+  protected final static String ASTTag = "de.monticore.tagging.tags._ast.ASTTag";
+  protected final static String ASTTagUnit = "de.monticore.tagging.tags._ast.ASTTagUnit";
+  protected final static String ASTModelElementIdentifier = "de.monticore.tagging.tags._ast.ASTModelElementIdentifier";
 
   public TaggerDecorator(GlobalExtensionManagement glex, AbstractService<?> service, VisitorService visitorService, ASTMCGrammar originalGrammar) {
     super(glex);
@@ -130,26 +133,26 @@ public class TaggerDecorator extends AbstractDecorator {
 
     ASTCDMethod m;
     // I${Lang}Tagger.getTags(AST${prodSymbol.name} model, Iterable<ASTTagUnit> astTagUnits)
-    methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+    methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag),
             "getTags",
             cdParameterFacade.createParameter(astFQN, "model"),
-            cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit.class.getName()), "astTagUnits"))));
+            cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit), "astTagUnits"))));
     this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.GetTags", clazzname));
     // I${Lang}Tagger.getTags(AST${prodSymbol.name} model)
-    methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+    methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag),
             "getTags",
             cdParameterFacade.createParameter(astFQN, "model"))));
     this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.GetTagsFromRepo", clazzname));
 
     if (prodSymbol.isIsSymbolDefinition()) {
       // I${Lang}Tagger.getTags({prodSymbol.name}Symbol symbol, Iterable<ASTTagUnit> astTagUnits)
-      methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+      methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag),
               "getTags",
               cdParameterFacade.createParameter(symbolFQN, "model"),
-              cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit.class.getName()), "astTagUnits"))));
+              cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit), "astTagUnits"))));
       this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.GetTags", clazzname));
       // I${Lang}Tagger.getTags({prodSymbol.name}Symbol symbol)
-      methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+      methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createListTypeOf(ASTTag),
               "getTags",
               cdParameterFacade.createParameter(symbolFQN, "model"))));
       this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.GetTagsFromRepo", clazzname));
@@ -158,8 +161,8 @@ public class TaggerDecorator extends AbstractDecorator {
     methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(), mcTypeFacade.createBooleanType(),
             "removeTag",
             cdParameterFacade.createParameter(astFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
-            cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
+            cdParameterFacade.createParameter(ASTTag, "astTag")
     )));
     this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.RemoveTag", clazzname));
 
@@ -167,8 +170,8 @@ public class TaggerDecorator extends AbstractDecorator {
     methods.add((m = cdMethodFacade.createMethod(PACKAGE_PRIVATE.build(),
             "addTag",
             cdParameterFacade.createParameter(astFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
-            cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
+            cdParameterFacade.createParameter(ASTTag, "astTag")
     )));
     this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("tagging.itagger.AddTag", clazzname));
 
@@ -184,19 +187,19 @@ public class TaggerDecorator extends AbstractDecorator {
 
     // ${Lang}Tagger.getTags(AST${prodSymbol.name} model, Iterable<ASTTagUnit> astTagUnits)
     methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
-            mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+            mcTypeFacade.createListTypeOf(ASTTag),
             "getTags",
             cdParameterFacade.createParameter(astFQN, "model"),
-            cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit.class.getName()), "astTagUnits"))));
+            cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit), "astTagUnits"))));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.GetTags", prodSymbol.getName(), isSymbolLike));
 
     if (prodSymbol.isIsSymbolDefinition()) {
       // ${Lang}Tagger.getTags(${prodSymbol.name}Symbol symbol, Iterable<ASTTagUnit> astTagUnits)
       methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
-              mcTypeFacade.createListTypeOf(ASTTag.class.getName()),
+              mcTypeFacade.createListTypeOf(ASTTag),
               "getTags",
               cdParameterFacade.createParameter(symbolFQN, "symbol"),
-              cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit.class.getName()), "astTagUnits"))));
+              cdParameterFacade.createParameter(mcTypeFacade.createBasicGenericTypeOf(Iterable.class.getName(), ASTTagUnit), "astTagUnits"))));
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.GetTagsSymbol", prodSymbol.getName()));
     }
 
@@ -204,8 +207,8 @@ public class TaggerDecorator extends AbstractDecorator {
             mcTypeFacade.createBooleanType(),
             "removeTag",
             cdParameterFacade.createParameter(astFQN, "model"),
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
-            cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
+            cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
+            cdParameterFacade.createParameter(ASTTag, "astTag")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.RemoveTag", prodSymbol.getName(), isSymbolLike));
 
@@ -213,8 +216,8 @@ public class TaggerDecorator extends AbstractDecorator {
       methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
               "addTag",
               cdParameterFacade.createParameter(astFQN, "model"),
-              cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
-              cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
+              cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
+              cdParameterFacade.createParameter(ASTTag, "astTag")
       )));
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.AddTag",
               prodSymbol.getName(), originalGrammar.getName(), getPackageName(originalGrammar.getSymbol()), prodSymbol.isIsSymbolDefinition()));
@@ -223,26 +226,26 @@ public class TaggerDecorator extends AbstractDecorator {
       methods.add((method = cdMethodFacade.createMethod(PUBLIC.build(),
               "addTag",
               cdParameterFacade.createParameter(symbolFQN, "symbol"),
-              cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "astTagUnit"),
-              cdParameterFacade.createParameter(ASTTag.class.getName(), "astTag")
+              cdParameterFacade.createParameter(ASTTagUnit, "astTagUnit"),
+              cdParameterFacade.createParameter(ASTTag, "astTag")
       )));
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.AddTagSymbol",
               prodSymbol.getName(), originalGrammar.getName(), getPackageName(originalGrammar.getSymbol())));
     }
 
     methods.add((method = cdMethodFacade.createMethod(PROTECTED.build(),
-            mcTypeFacade.createBasicGenericTypeOf(Stream.class.getName(), ASTTargetElement.class.getName()),
+            mcTypeFacade.createBasicGenericTypeOf(Stream.class.getName(), "de.monticore.tagging.tags._ast.ASTTargetElement"),
             "findTargetsBy",
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "ast"),
+            cdParameterFacade.createParameter(ASTTagUnit, "ast"),
             cdParameterFacade.createParameter(astFQN, "element")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.FindTargetsBy"));
 
     if (!isSymbolLike) {
       methods.add((method = cdMethodFacade.createMethod(PROTECTED.build(),
-              mcTypeFacade.createBasicGenericTypeOf(Stream.class.getName(), ASTTargetElement.class.getName()),
+              mcTypeFacade.createBasicGenericTypeOf(Stream.class.getName(), "de.monticore.tagging.tags._ast.ASTTargetElement"),
               "findTargetsBy",
-              cdParameterFacade.createParameter(ASTContext.class.getName(), "ast"),
+              cdParameterFacade.createParameter("de.monticore.tagging.tags._ast.ASTContext", "ast"),
               cdParameterFacade.createParameter(astFQN, "element")
       )));
       this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.FindTargetsBy"));
@@ -251,7 +254,7 @@ public class TaggerDecorator extends AbstractDecorator {
     methods.add((method = cdMethodFacade.createMethod(PROTECTED.build(),
             mcTypeFacade.createBooleanType(),
             "isIdentified",
-            cdParameterFacade.createParameter(ASTModelElementIdentifier.class.getName(), "elementIdentifier"),
+            cdParameterFacade.createParameter(ASTModelElementIdentifier, "elementIdentifier"),
             cdParameterFacade.createParameter(astFQN, "element")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.tagger.IsIdentified"));

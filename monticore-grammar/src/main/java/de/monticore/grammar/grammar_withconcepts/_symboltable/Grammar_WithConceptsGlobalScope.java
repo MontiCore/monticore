@@ -19,12 +19,18 @@ import java.util.Optional;
 
 
 public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalScopeTOP {
+  protected boolean autoLoadGrammars = true;
+
   public Grammar_WithConceptsGlobalScope(MCPath symbolPath, String modelFileExtension) {
     super(symbolPath, modelFileExtension);
   }
 
   public Grammar_WithConceptsGlobalScope() {
     super();
+  }
+
+  public void setAutoLoadGrammars(boolean autoLoadGrammars) {
+    this.autoLoadGrammars = autoLoadGrammars;
   }
 
   @Override
@@ -37,21 +43,24 @@ public class Grammar_WithConceptsGlobalScope extends Grammar_WithConceptsGlobalS
     // 1. call super implementation to start with employing the DeSer
     // super.loadFileForModelName(modelName);
 
-    String filePath = Paths
-      .get(Names.getPathFromPackage(modelName) + ".mc4").toString();
+    if(autoLoadGrammars) {
+
+      String filePath = Paths
+          .get(Names.getPathFromPackage(modelName) + ".mc4").toString();
 
 
-    if (!isFileLoaded(filePath)) {
+      if (!isFileLoaded(filePath)) {
 
-      // 2. calculate potential location of model file and try to find it in model path
-      Optional<URL> url = getSymbolPath().find(Names.getPathFromPackage(modelName)+".mc4");
+        // 2. calculate potential location of model file and try to find it in model path
+        Optional<URL> url = getSymbolPath().find(Names.getPathFromPackage(modelName) + ".mc4");
 
-      // 3. if the file was found, parse the model and create its symtab
-      if (url.isPresent()) {
-        ASTMCGrammar ast = parse(url.get());
-        IGrammar_WithConceptsArtifactScope artScope = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
-        addSubScope(artScope);
-        addLoadedFile(filePath);
+        // 3. if the file was found, parse the model and create its symtab
+        if (url.isPresent()) {
+          ASTMCGrammar ast = parse(url.get());
+          IGrammar_WithConceptsArtifactScope artScope = new Grammar_WithConceptsPhasedSTC().createFromAST(ast);
+          addSubScope(artScope);
+          addLoadedFile(filePath);
+        }
       }
     }
   }

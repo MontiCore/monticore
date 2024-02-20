@@ -1,18 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: composition'
 
-fileTree(grammarDir).matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
-    grammar = file g
-    outputDir = file outDir
-    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-}
-
-generateAutomata2.dependsOn generateInvAutomata
-generateAutomata3.dependsOn generateInvAutomata, generateExpression
-generateHierarchicalAutomata.dependsOn generateAutomata1
-generateHierInvAutomata.dependsOn generateAutomata3
+// The grammars of this subproject are built by the generateMCGrammars MCGenTask

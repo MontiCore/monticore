@@ -12,15 +12,9 @@ mlc UglyExpressions {
     include "de/monticore/expressions/uglyexpressions/**.java";
   }
 
-  // export the prettyprinter
-  export "$projectDir/src/main/java" {
-    include "de/monticore/expressions/prettyprint/UglyExpressions*.java";
-    include "de/monticore/expressions/exptojava/UglyExpressions*.java";
-    include "de/monticore/types/check/DeriveSymTypeOfUglyExpressions.java";
-  }
-
   promote {
     mlc "de.monticore.expressions.ExpressionsBasis";
     mlc "de.monticore.types.MCBasicTypes";
   }
+
 }

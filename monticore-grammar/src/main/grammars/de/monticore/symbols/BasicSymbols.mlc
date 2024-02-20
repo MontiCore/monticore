@@ -13,7 +13,7 @@ mlc BasicSymbols {
     include "de/monticore/symbols/basicsymbols/**.java";
   }
 
-  // export all handwritten TOP-mechanism extensions
+  // export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/symbols/basicsymbols/**.java";
   }
@@ -24,6 +24,8 @@ mlc BasicSymbols {
   uses {
     include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
     include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionDeSer.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionFactory.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeOfFunction.java";
   }
 
 }

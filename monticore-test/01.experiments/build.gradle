@@ -3,12 +3,12 @@ import de.monticore.MCTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
-  id "monticore" // MontiCore Plugin
+  id "de.monticore.generator" // MontiCore Plugin
   id "jacoco"
 }
 
 subprojects {
-  apply plugin: 'monticore'
+  apply plugin: 'de.monticore.generator'
   apply plugin: 'jacoco'
 
   ext.grammarDir = 'src/main/grammars'
@@ -18,14 +18,9 @@ subprojects {
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
     testImplementation group:'junit', name:'junit', version:junit_version
   }
-  
 
-  sourceSets {
-    main.java.srcDirs += [ outDir ]
-  }
-
-  compileJava {
-    dependsOn project.collect { it.tasks.withType(MCTask) }
+  generateMCGrammars {
+    // created by the de.monticore.generator plugin
   }
 
 }

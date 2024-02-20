@@ -26,4 +26,8 @@ mlc MCFullGenericTypes {
     mlc "de.monticore.types.MCSimpleGenericTypes";
   }
 
+    uses {
+      include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    }
+
 }

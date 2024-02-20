@@ -105,7 +105,7 @@ import de.monticore.grammar.grammarfamily._cocos.GrammarFamilyCoCoChecker;
 import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyArtifactScope;
 import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
-import de.monticore.io.FileReaderWriter;
+import de.monticore.io.FileReaderWriterFix;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -1379,8 +1379,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     if(Reporting.isInitialized()) {
       if(mcConfig.getConfigTemplate().isPresent()) {
-        glex.setGlobalValue(CONFIGTEMPLATE_LONG,
-                mcConfig.getConfigTemplate().get());
+        String configTemplate = mcConfig.getConfigTemplate().get();
+        if (configTemplate.endsWith(".ftl")) { // remove file ending
+          configTemplate = configTemplate.substring(0, configTemplate.length() - 4);
+        }
+        glex.setGlobalValue(CONFIGTEMPLATE_LONG, configTemplate);
       }
     } else {
       Log.debug("Reporting not initialised or disabled. " +
@@ -1432,6 +1435,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
      */
     @Override
     protected void doRun(String script, Configuration configuration) {
+      FileReaderWriterFix.init();
       GrammarFamilyMill.init();
       BasicSymbolsMill.initializePrimitives();
       GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
@@ -1495,7 +1499,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       } finally {
         // Close all file handles
         MCPath.closeAllJarFileSystems();
-        FileReaderWriter.closeOpenedJarFiles();
+        FileReaderWriterFix.closeOpenedJarFiles();
         for(MCPath mcPath: mcPaths) {
           mcPath.close();
         }
