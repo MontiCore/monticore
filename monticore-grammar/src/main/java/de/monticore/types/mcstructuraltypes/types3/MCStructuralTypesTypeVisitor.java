@@ -106,6 +106,7 @@ public class MCStructuralTypesTypeVisitor extends AbstractTypeVisitor
   protected List<ASTMCType> transformUnionTree2List(ASTMCType mcType) {
     List<ASTMCType> result = new ArrayList<>();
     // todo replace with typedispatcher as soon as the issues are fixed
+    // https://git.rwth-aachen.de/monticore/monticore/-/issues/3525
     if (mcType instanceof ASTMCUnionType) {
       result.addAll(transformUnionTree2List(((ASTMCUnionType) mcType).getLeft()));
       result.addAll(transformUnionTree2List(((ASTMCUnionType) mcType).getRight()));
@@ -126,6 +127,7 @@ public class MCStructuralTypesTypeVisitor extends AbstractTypeVisitor
   protected List<ASTMCType> transformIntersectionTree2List(ASTMCType mcType) {
     List<ASTMCType> result = new ArrayList<>();
     // todo replace with typedispatcher as soon as the issues are fixed
+    // https://git.rwth-aachen.de/monticore/monticore/-/issues/3525
     if (mcType instanceof ASTMCIntersectionType) {
       result.addAll(transformIntersectionTree2List(((ASTMCIntersectionType) mcType).getLeft()));
       result.addAll(transformIntersectionTree2List(((ASTMCIntersectionType) mcType).getRight()));
