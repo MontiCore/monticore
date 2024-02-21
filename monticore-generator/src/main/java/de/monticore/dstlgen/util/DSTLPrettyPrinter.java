@@ -4,7 +4,7 @@ package de.monticore.dstlgen.util;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTLexProd;
-import de.monticore.grammar.prettyprint.GrammarPrettyPrinter;
+import de.monticore.grammar.grammar._prettyprint.GrammarPrettyPrinter;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.Names;
@@ -18,7 +18,7 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
   IndentPrinter out;
 
   public DSTLPrettyPrinter(IndentPrinter out) {
-    super(out);
+    super(out, true);
     this.out = out;
   }
 
@@ -47,12 +47,12 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
       
       if (!a.getASTSuperClassList().isEmpty()) {
         getPrinter().print(" astextends ");
-        printMCSimpleGenericList(a.getASTSuperClassList().iterator(), "");
+        printList(a.getASTSuperClassList().iterator(), "");
       }
       
       if (!a.getASTSuperInterfaceList().isEmpty()) {
         getPrinter().print(" astimplements ");
-        printMCSimpleGenericList(a.getASTSuperInterfaceList().iterator(), ", ");
+        printList(a.getASTSuperInterfaceList().iterator(), ", ");
       }
       
       if (a.isPresentAction()) {

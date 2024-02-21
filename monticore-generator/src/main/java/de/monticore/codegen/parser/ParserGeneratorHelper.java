@@ -11,7 +11,17 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.MCGrammarInfo;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
-import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._ast.ASTAlt;
+import de.monticore.grammar.grammar._ast.ASTAntlrOption;
+import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTConstant;
+import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
+import de.monticore.grammar.grammar._ast.ASTFollowOption;
+import de.monticore.grammar.grammar._ast.ASTLexActionOrPredicate;
+import de.monticore.grammar.grammar._ast.ASTLexProd;
+import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+import de.monticore.grammar.grammar._ast.ASTNonTerminal;
+import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
@@ -19,9 +29,8 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTGrammar_WithConceptsNode;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTJavaCode;
-import de.monticore.grammar.prettyprint.Grammar_WithConceptsFullPrettyPrinter;
+import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.javalight._ast.ASTClassBodyDeclaration;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -29,8 +38,15 @@ import de.se_rwth.commons.logging.Log;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -46,8 +62,6 @@ public class ParserGeneratorHelper {
   public static final String RIGHTASSOC = "<assoc=right>";
 
   protected static final String NOKEYWORD = "nokeyword_";
-
-  protected static Grammar_WithConceptsFullPrettyPrinter prettyPrinter;
 
   protected ASTMCGrammar astGrammar;
 
@@ -277,7 +291,7 @@ public class ParserGeneratorHelper {
 
   public static String getConvertFunction(ProdSymbol symbol) {
     if (symbol.isPresentAstNode() && symbol.isIsLexerProd()) {
-      return createConvertFunction((ASTLexProd) symbol.getAstNode(), getPrettyPrinter());
+      return createConvertFunction((ASTLexProd) symbol.getAstNode());
     }
     return "";
   }
@@ -288,8 +302,7 @@ public class ParserGeneratorHelper {
    * @param a
    * @return
    */
-  public static String createConvertFunction(ASTLexProd a,
-                                             Grammar_WithConceptsFullPrettyPrinter prettyPrinter) {
+  public static String createConvertFunction(ASTLexProd a) {
     String name = a.getName();
     // simple String
     if (!a.isPresentVariable()) {
@@ -357,7 +370,7 @@ public class ParserGeneratorHelper {
     else {
       if (a.isPresentBlock()) {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(prettyPrinter.prettyprint(a.getBlock()));
+        buffer.append(GrammarFamilyMill.prettyPrint(a.getBlock(), true));
         String createConvertFunction = createConvertFunction(name,
                 "private " + Names.getQualifiedName(a.getTypeList()) + " convert" + name
                         + "(Token " + a.getVariable() + ")" + " {\n" + buffer.toString() + "}\n");
@@ -521,12 +534,6 @@ public class ParserGeneratorHelper {
     return getQualifiedName(rule);
   }
 
-  public static Grammar_WithConceptsFullPrettyPrinter getPrettyPrinter() {
-    if (prettyPrinter == null) {
-      prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    }
-    return prettyPrinter;
-  }
 
   /**
    * Neue Zwischenknoten: Action = Statements; ExpressionPredicate = Expression;
@@ -542,26 +549,25 @@ public class ParserGeneratorHelper {
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();
       for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementList()) {
-        buffer.append(getPrettyPrinter().prettyprint(action));
+        buffer.append(GrammarFamilyMill.prettyPrint(action, true));
       }
       return buffer.toString();
     }
     if (node instanceof ASTJavaCode) {
       StringBuilder buffer = new StringBuilder();
       for (ASTClassBodyDeclaration action : ((ASTJavaCode) node).getClassBodyDeclarationList()) {
-        buffer.append(getPrettyPrinter().prettyprint(action));
+        buffer.append(GrammarFamilyMill.prettyPrint(action, true));
 
       }
       return buffer.toString();
     }
     if (node instanceof ASTExpressionPredicate) {
-      String exprPredicate = getPrettyPrinter()
-              .prettyprint(((ASTExpressionPredicate) node).getExpression());
+      String exprPredicate = GrammarFamilyMill.prettyPrint((((ASTExpressionPredicate) node).getExpression()), true);
       Log.debug("ASTExpressionPredicate:\n" + exprPredicate, ParserGenerator.LOG);
       return exprPredicate;
     }
     if (node instanceof ASTGrammar_WithConceptsNode) {
-      String output = getPrettyPrinter().prettyprint((ASTGrammar_WithConceptsNode) node);
+      String output = GrammarFamilyMill.prettyPrint((ASTGrammar_WithConceptsNode) node, true);
       Log.debug("ASTGrammar_WithConceptsNode:\n" + output, ParserGenerator.LOG);
       return output;
     }
