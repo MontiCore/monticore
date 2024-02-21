@@ -37,21 +37,21 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
   public void leastUpperBound() {
     checkLub(_personSymType, "Person");
     checkLub(createUnion(_personSymType, _studentSymType), "Person");
-    checkLub(createUnion(_childSymType, _studentSymType), "(Person & Teachable)");
-    checkLub(createUnion(_childSymType, _csStudentSymType), "(Person & Teachable)");
+    checkLub(createUnion(_childSymType, _studentSymType), "Person & Teachable");
+    checkLub(createUnion(_childSymType, _csStudentSymType), "Person & Teachable");
     checkLub(createUnion(_childSymType, _carSymType), "Obscure");
     checkLub(
         createIntersection(
             _personSymType,
             createUnion(_childSymType, _studentSymType)
         ),
-        "(Person & Teachable)"
+        "Person & Teachable"
     );
     checkLub(createUnion(
             createTypeArray(_childSymType, 2),
             createTypeArray(_csStudentSymType, 2)
         ),
-        "(Person[][] & Teachable[][])"
+        "Person[][] & Teachable[][]"
     );
   }
 

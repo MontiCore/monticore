@@ -48,34 +48,6 @@ public class SymTypeOfUnion extends SymTypeExpression {
   }
 
   @Override
-  public String print() {
-    final StringBuilder r = new StringBuilder();
-    r.append("(");
-    r.append(getUnionizedTypeSet().stream()
-        .map(SymTypeExpression::print)
-        // sorted to be deterministic
-        .sorted()
-        .collect(Collectors.joining(" | "))
-    );
-    r.append(")");
-    return r.toString();
-  }
-
-  @Override
-  public String printFullName() {
-    final StringBuilder r = new StringBuilder();
-    r.append("(");
-    r.append(getUnionizedTypeSet().stream()
-        .map(SymTypeExpression::printFullName)
-        // sorted to be deterministic
-        .sorted()
-        .collect(Collectors.joining(" | "))
-    );
-    r.append(")");
-    return r.toString();
-  }
-
-  @Override
   public boolean deepEquals(SymTypeExpression sym) {
     if (!sym.isUnionType()) {
       return false;

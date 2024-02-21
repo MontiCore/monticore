@@ -38,7 +38,7 @@ public class OptionalOperatorsTypeVisitorTest extends AbstractTypeVisitorTest {
   public void deriveFromOptionalExpressionPrefixTest() throws IOException {
     checkExpr("varintOptional ?: -1", "int");
     checkExpr("varintBoxedOptional ?: -1", "int");
-    checkExpr("varintOptional ?: varString", "(String | int)");
+    checkExpr("varintOptional ?: varString", "String | int");
     checkExpr("varintOptionalOptional ?: varintOptional", "Optional<int>");
     checkExpr("(varintOptionalOptional ?: varintOptional) ?: -1", "int");
   }

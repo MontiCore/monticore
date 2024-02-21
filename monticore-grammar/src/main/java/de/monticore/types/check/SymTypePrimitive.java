@@ -54,16 +54,6 @@ public class SymTypePrimitive extends SymTypeExpression {
     typeSymbol.setName(constName);
   }
 
-  @Override
-  public String print() {
-    return getPrimitiveName();
-  }
-
-  @Override
-  public String printFullName(){
-    return print();
-  }
-
   /**
    * List of potential constants
    * (on purpose not implemented as enum)

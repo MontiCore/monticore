@@ -50,19 +50,6 @@ public class SymTypeOfObject extends SymTypeExpression {
   }
   
   /**
-   * print: Umwandlung in einen kompakten String
-   */
-  @Override
-  public String printFullName() {
-    return typeSymbol.getFullName();
-  }
-
-  @Override
-  public String print(){
-    return typeSymbol.getName();
-  }
-
-  /**
    * getBaseName: get the unqualified Name (no ., no Package)
    * @deprecated unused outside of tests, but not required for tests
    */

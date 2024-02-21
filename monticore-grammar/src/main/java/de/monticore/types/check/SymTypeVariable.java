@@ -145,10 +145,7 @@ public class SymTypeVariable extends SymTypeExpression {
     if(typeSymbol != null) {
     return typeSymbol.getName();
     }
-    if (!hasTypeVarSymbol()) {
-      return FREE_VARIABLE_NAME;
-    }
-    return getTypeVarSymbol().getName();
+    return super.print();
   }
 
   @Override
@@ -157,10 +154,7 @@ public class SymTypeVariable extends SymTypeExpression {
     if(typeSymbol != null) {
     return getVarName();
     }
-    if (!hasTypeVarSymbol()) {
-      return FREE_VARIABLE_NAME;
-    }
-    return getTypeVarSymbol().getFullName();
+    return super.printFullName();
   }
 
   public boolean isPrimitive() {

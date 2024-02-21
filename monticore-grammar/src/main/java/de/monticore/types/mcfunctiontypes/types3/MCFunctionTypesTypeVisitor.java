@@ -5,9 +5,9 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
+import de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,11 +24,6 @@ public class MCFunctionTypesTypeVisitor extends AbstractTypeVisitor
       ASTMCType par = functionType.getMCFunctionParTypes().getMCType(i);
 
       if (getType4Ast().getPartialTypeOfTypeId(par).isObscureType()) {
-        Log.error("0xE9BDC Type of argument " + i + 1
-                + " of the function type could not be synthesized.",
-            par.get_SourcePositionStart(),
-            par.get_SourcePositionEnd()
-        );
         getType4Ast().setTypeOfTypeIdentifier(functionType,
             SymTypeExpressionFactory.createObscureType());
         return;
@@ -37,11 +32,6 @@ public class MCFunctionTypesTypeVisitor extends AbstractTypeVisitor
     }
 
     if (!getType4Ast().hasTypeOfTypeIdentifier(functionType.getMCReturnType())) {
-      Log.error("0xE9BDD The return type of the function type"
-              + " could not be synthesized.",
-          functionType.getMCReturnType().get_SourcePositionStart(),
-          functionType.getMCReturnType().get_SourcePositionEnd()
-      );
       getType4Ast().setTypeOfTypeIdentifier(functionType,
           SymTypeExpressionFactory.createObscureType());
       return;
@@ -56,4 +46,32 @@ public class MCFunctionTypesTypeVisitor extends AbstractTypeVisitor
     );
     getType4Ast().setTypeOfTypeIdentifier(functionType, symType);
   }
+
+  @Override
+  public void endVisit(ASTMCUnaryFunctionType functionType) {
+    SymTypeExpression symType;
+
+    if (getType4Ast().getPartialTypeOfTypeId(functionType.getMCType())
+        .isObscureType()) {
+      getType4Ast().setTypeOfTypeIdentifier(functionType,
+          SymTypeExpressionFactory.createObscureType());
+      return;
+    }
+    SymTypeExpression parType =
+        getType4Ast().getPartialTypeOfTypeId(functionType.getMCType());
+
+    if (!getType4Ast().hasTypeOfTypeIdentifier(functionType.getMCReturnType())) {
+      getType4Ast().setTypeOfTypeIdentifier(functionType,
+          SymTypeExpressionFactory.createObscureType());
+      return;
+    }
+    SymTypeExpression returnArgument = getType4Ast()
+        .getPartialTypeOfTypeId(functionType.getMCReturnType());
+
+    symType = SymTypeExpressionFactory.createFunction(
+        returnArgument, List.of(parType), false
+    );
+    getType4Ast().setTypeOfTypeIdentifier(functionType, symType);
+  }
+
 }
