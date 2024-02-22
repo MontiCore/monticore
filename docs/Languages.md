@@ -74,9 +74,9 @@ classdiagram MyLife {
   CD4A language opens various possibilities for the development of data
   structures, database tables as well as data transport infrastructures in
   cloud and distributed systems.
-* [Main grammar `de.monticore.cd.CD4Analysis`](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Analysis.mc4)
+* [Main grammar `de.monticore.cd.CD4Analysis`](https://github.com/MontiCore/cd4analysis/tree/master/cdlang/src/main/grammars/de/monticore/CD4Analysis.mc4)
   and 
-  [*detailed description*](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/cd4analysis.md)
+  [*detailed description*](https://github.com/MontiCore/cd4analysis/tree/master/cdlang/src/main/grammars/de/monticore/cd4analysis.md)
 
 
 ### [Class Diagram for Code (CD4Code)](https://github.com/MontiCore/cd4analysis) (MontiCore stable)
@@ -104,7 +104,7 @@ classdiagram MyLife2 {
     [Java code](https://github.com/MontiCore/monticore/tree/opendev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
   * Statechart -> State pattern encoded in CD4Code 
   -> Decoration by monitoring methods -> Java code.
-* Main grammar [`de.monticore.cd.CD4Code`](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/CD4Code.mc4)
+* Main grammar [`de.monticore.cd.CD4Code`](https://github.com/MontiCore/cd4analysis/tree/master/cdlang/src/main/grammars/de/monticore/CD4Code.mc4)
   and 
   [*detailed description*](https://github.com/MontiCore/cd4analysis/tree/master/src/main/grammars/de/monticore/cd4analysis.md) 
   (see Section *CD4Code*)
