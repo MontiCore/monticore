@@ -86,6 +86,7 @@ if (("true").equals(getProperty('genTR'))) {
     grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTROutput()
             .matching {
               exclude(['**/de/monticore/tf/*', '**/de/monticore/grammar/*'])
+              exclude(['**/de/monticore/siunit/*'])
             })
     outputDir = file trafoOutDir
     genDST = true
