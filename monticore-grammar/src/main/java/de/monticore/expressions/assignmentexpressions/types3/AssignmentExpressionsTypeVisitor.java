@@ -14,11 +14,39 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.TypeVisitorLifting;
+import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Optional;
+
+import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
+
 public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     implements AssignmentExpressionsVisitor2 {
+
+  // due to legacy reasons, error codes are identical for different operators,
+  // even if they have different implementations,
+  // e.g., '+=' and '*=' support different SIUnits.
+  protected static final String ARITHMETIC_ASSIGNMENT_ERROR_CODE = "0xA0178";
+  protected static final String BIT_ASSIGNMENT_ERROR_CODE = "0xA0177";
+  protected static final String BINARY_ASSIGNMENT_ERROR_CODE = "0xA0176";
+
+  protected TypeVisitorOperatorCalculator operatorCalculator
+      = new TypeVisitorOperatorCalculator();
+
+  public void setOperatorCalculator(
+      TypeVisitorOperatorCalculator operatorCalculator) {
+    this.operatorCalculator = operatorCalculator;
+  }
+
+  protected TypeVisitorOperatorCalculator getOperatorCalculator() {
+    return operatorCalculator;
+  }
+
+  // Note: there is currently no SIUnit support for
+  // increment/decrement prefix/postfix
+  // this is deliberate, but may be added in the future if required.
 
   @Override
   public void endVisit(ASTIncSuffixExpression expr) {
@@ -81,13 +109,12 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     Preconditions.checkNotNull(expr);
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = assignment(left, right, expr.getOperator(), expr.get_SourcePositionStart());
 
-    SymTypeExpression result = TypeVisitorLifting
-        .liftDefault((leftPar, rightPar) -> derive(expr, leftPar, rightPar))
-        .apply(left, right);
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
+  @Deprecated(forRemoval = true)
   protected SymTypeExpression derive(
       ASTAssignmentExpression expr, SymTypeExpression left, SymTypeExpression right) {
     return assignment(left, right, expr.getOperator(), expr.get_SourcePositionStart());
@@ -138,135 +165,141 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
   protected SymTypeExpression addAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    // anything on the rhs be converted to a String
-    if (SymTypeRelations.isString(left)) {
-      return left;
-    }
-    else {
-      return arithmeticAssignment(left, right, "+=", pos);
-    }
+    return compoundAssignment(left, right,
+        getOperatorCalculator().plus(left, right),
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "+=", pos);
   }
 
   protected SymTypeExpression subtractAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return arithmeticAssignment(left, right, "-=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().minus(left, right),
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "-=", pos);
   }
 
   protected SymTypeExpression multiplyAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return arithmeticAssignment(left, right, "*=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().multiply(left, right),
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "*=", pos);
   }
 
   protected SymTypeExpression moduloAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return arithmeticAssignment(left, right, "%=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().modulo(left, right),
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "%=", pos);
   }
 
   protected SymTypeExpression divideAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return arithmeticAssignment(left, right, "/=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().divide(left, right),
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "/=", pos);
   }
 
   protected SymTypeExpression andAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return binaryAssignment(left, right, "&=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().binaryAnd(left, right),
+        BINARY_ASSIGNMENT_ERROR_CODE, "&=", pos);
   }
 
   protected SymTypeExpression orAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return binaryAssignment(left, right, "|=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().binaryOr(left, right),
+        BINARY_ASSIGNMENT_ERROR_CODE, "|=", pos);
   }
 
   protected SymTypeExpression xorAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return binaryAssignment(left, right, "^=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().binaryXor(left, right),
+        BINARY_ASSIGNMENT_ERROR_CODE, "^=", pos);
   }
 
   protected SymTypeExpression rightShiftAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return bitAssignment(left, right, ">>=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().signedRightShift(left, right),
+        BIT_ASSIGNMENT_ERROR_CODE, ">>=", pos);
   }
 
   protected SymTypeExpression leftShiftAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return bitAssignment(left, right, "<<=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().leftShift(left, right),
+        BIT_ASSIGNMENT_ERROR_CODE, "<<=", pos);
   }
 
   protected SymTypeExpression unsignedRightShiftAssignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition pos) {
-    return bitAssignment(left, right, ">>>=", pos);
+    return compoundAssignment(left, right,
+        getOperatorCalculator().unsignedRightShift(left, right),
+        BIT_ASSIGNMENT_ERROR_CODE, ">>>=", pos);
   }
 
-  protected SymTypeExpression binaryAssignment(SymTypeExpression left,
-      SymTypeExpression right,
-      String op, SourcePosition pos) {
-    // both must be of integral or both must be of boolean type
-    if ((SymTypeRelations.isIntegralType(left) && SymTypeRelations.isIntegralType(right))
-        || (SymTypeRelations.isBoolean(left) && SymTypeRelations.isBoolean(right))) {
-      return left;
-    }
-    else {
-      // else operator not applicable
-      Log.error("0xA0176 Operator '" + op + "' not applicable to "
-          + "'" + left.print() + "', '" + right.print() + "'", pos);
-      return SymTypeExpressionFactory.createObscureType();
-    }
-  }
-
-  protected SymTypeExpression bitAssignment(SymTypeExpression left,
-      SymTypeExpression right,
-      String op,
-      SourcePosition src) {
-    // both must be of integral type
-    if (SymTypeRelations.isIntegralType(left) && SymTypeRelations.isIntegralType(right)) {
-      return left;
-    }
-    else {
-      // else operator not applicable
-      Log.error("0xA0177 Operator '" + op + "' not applicable to "
-          + "'" + left.print() + "', '" + right.print() + "'", src);
-      return SymTypeExpressionFactory.createObscureType();
-    }
-  }
-
-  protected SymTypeExpression arithmeticAssignment(SymTypeExpression left,
-      SymTypeExpression right,
-      String op,
-      SourcePosition src) {
-    // both must be of numeric type
-    if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
-      return left;
-    }
-    else {
-      // else operator not applicable
-      Log.error("0xA0178 Operator '" + op + "' not applicable to "
-          + "'" + left.print() + "', '" + right.print() + "'", src);
-      return SymTypeExpressionFactory.createObscureType();
-    }
+  /**
+   * JLS 20, 15.26.2: A compound assignment expression of the form E1 op= E2
+   * is equivalent to E1 = (T) ((E1) op (E2)), where T is the type of E1,
+   * except that E1 is evaluated only once.
+   *
+   * @param interimResult type of ((E1) op (E2))
+   */
+  protected SymTypeExpression compoundAssignment(
+      SymTypeExpression left, SymTypeExpression right,
+      Optional<SymTypeExpression> interimResult,
+      String errorCode, String op, SourcePosition pos
+  ) {
+    Optional<SymTypeExpression> casted = interimResult
+        .flatMap(ir -> getOperatorCalculator().cast(left, ir));
+    Optional<SymTypeExpression> assigned = casted
+        .flatMap(c -> getOperatorCalculator().assignment(left, c));
+    SymTypeExpression result = getTypeForAssignmentOrLogError(
+        errorCode, op, pos, assigned, left, right);
+    return result;
   }
 
   protected SymTypeExpression assignment(SymTypeExpression left,
       SymTypeExpression right,
       SourcePosition src) {
-    // types must be compatible
-    if (SymTypeRelations.isCompatible(left, right)) {
-      return left;
+    return getTypeForAssignmentOrLogError(
+        "0xA0179", "=", src,
+        getOperatorCalculator().assignment(left, right),
+        left, right);
+  }
+
+  // Helper
+
+  protected SymTypeExpression getTypeForAssignmentOrLogError(
+      String errorCode, String op, SourcePosition pos,
+      Optional<SymTypeExpression> result,
+      SymTypeExpression left, SymTypeExpression right
+  ) {
+    if (result.isPresent()) {
+      return result.get();
     }
     else {
-      // else type mismatch
-      Log.error("0xA0179 Incompatible types, required '" + left.print()
-          + "' but provided '" + right.print() + "'", src);
-      return SymTypeExpressionFactory.createObscureType();
+      // operator not applicable
+      Log.error(errorCode
+              + " Operator '" + op + "' not applicable to " +
+              "'" + left.print() + "', '"
+              + right.print() + "'",
+          pos
+      );
+      return createObscureType();
     }
   }
+
 }

@@ -1,5 +1,6 @@
 package de.monticore.ocl.optionaloperators.types3;
 
+import de.monticore.expressions.commonexpressions._ast.ASTInfixExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalExpressionPrefix;
@@ -17,13 +18,33 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.util.TypeVisitorLifting;
+import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 
 public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
     implements OptionalOperatorsVisitor2 {
+
+  // due to legacy reasons, error codes are identical for different operators
+  protected static final String OPT_NUMERIC_COMPARISON_ERROR_CODE = "0xFD280";
+  protected static final String OPT_NUMERIC_EXPECTED_ERROR_CODE = "0xFD209";
+  protected static final String OPT_EQUALITY_ERROR_CODE = "0xFD285";
+
+  protected TypeVisitorOperatorCalculator operatorCalculator
+      = new TypeVisitorOperatorCalculator();
+
+  public void setOperatorCalculator(
+      TypeVisitorOperatorCalculator operatorCalculator) {
+    this.operatorCalculator = operatorCalculator;
+  }
+
+  protected TypeVisitorOperatorCalculator getOperatorCalculator() {
+    return operatorCalculator;
+  }
 
   @Override
   public void endVisit(ASTOptionalExpressionPrefix expr) {
@@ -63,144 +84,75 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTOptionalLessEqualExpression expr) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression leftNum = getNumericTypeOfOptionalOrLogError(expr.getLeft(), left);
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-    SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(
-                (leftPar, rightPar) ->
-                    calculateTypeCompareOptional(
-                        expr.getLeft(), expr.getRight(), leftPar, rightPar))
-            .apply(left, right);
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        OPT_NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().lessEqual(leftNum, right), leftNum, right
+    );
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTOptionalGreaterEqualExpression expr) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression leftNum = getNumericTypeOfOptionalOrLogError(expr.getLeft(), left);
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-    SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(
-                (leftPar, rightPar) ->
-                    calculateTypeCompareOptional(
-                        expr.getLeft(), expr.getRight(), leftPar, rightPar))
-            .apply(left, right);
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        OPT_NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().greaterEqual(leftNum, right), leftNum, right
+    );
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTOptionalLessThanExpression expr) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression leftNum = getNumericTypeOfOptionalOrLogError(expr.getLeft(), left);
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-    SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(
-                (leftPar, rightPar) ->
-                    calculateTypeCompareOptional(
-                        expr.getLeft(), expr.getRight(), leftPar, rightPar))
-            .apply(left, right);
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        OPT_NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().lessThan(leftNum, right), leftNum, right
+    );
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTOptionalGreaterThanExpression expr) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression leftNum = getNumericTypeOfOptionalOrLogError(expr.getLeft(), left);
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-    SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(
-                (leftPar, rightPar) ->
-                    calculateTypeCompareOptional(
-                        expr.getLeft(), expr.getRight(), leftPar, rightPar))
-            .apply(left, right);
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        OPT_NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().greaterThan(leftNum, right), leftNum, right
+    );
     getType4Ast().setTypeOfExpression(expr, result);
-  }
-
-  protected SymTypeExpression calculateTypeCompareOptional(
-      ASTExpression left,
-      ASTExpression right,
-      SymTypeExpression leftResult,
-      SymTypeExpression rightResult) {
-    if (!MCCollectionSymTypeRelations.isOptional(leftResult)
-        || !MCCollectionSymTypeRelations.isNumericType(
-        MCCollectionSymTypeRelations.getCollectionElementType(leftResult))) {
-      Log.error(
-          "0xFD209 expected Optional of a numeric type, but got "
-              + leftResult.printFullName(),
-          left.get_SourcePositionStart(),
-          left.get_SourcePositionEnd());
-      return createObscureType();
-    }
-    else if (!MCCollectionSymTypeRelations.isNumericType(rightResult)) {
-      Log.error(
-          "0xFD280 expected numeric type but got " + rightResult.printFullName(),
-          right.get_SourcePositionStart(),
-          right.get_SourcePositionEnd());
-      return createObscureType();
-    }
-    else {
-      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
-    }
   }
 
   @Override
   public void endVisit(ASTOptionalEqualsExpression expr) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression leftElem = getTypeOfOptionalOrLogError(
+        OPT_EQUALITY_ERROR_CODE, expr.getLeft(), left);
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-
-    SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(
-                (leftPar, rightPar) ->
-                    calculateTypeLogicalOptional(
-                        expr.getLeft(), expr.getRight(), leftPar, rightPar))
-            .apply(left, right);
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        OPT_EQUALITY_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().equality(leftElem, right), left, right
+    );
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTOptionalNotEqualsExpression expr) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression leftElem = getTypeOfOptionalOrLogError(
+        OPT_EQUALITY_ERROR_CODE, expr.getLeft(), left);
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-
-    SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(
-                (leftPar, rightPar) ->
-                    calculateTypeLogicalOptional(
-                        expr.getLeft(), expr.getRight(), leftPar, rightPar))
-            .apply(left, right);
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        OPT_EQUALITY_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().inequality(leftElem, right), left, right
+    );
     getType4Ast().setTypeOfExpression(expr, result);
-  }
-
-  protected SymTypeExpression calculateTypeLogicalOptional(
-      ASTExpression left,
-      ASTExpression right,
-      SymTypeExpression leftResult,
-      SymTypeExpression rightResult) {
-
-    SymTypeExpression elementType = MCCollectionSymTypeRelations.getCollectionElementType(leftResult);
-    // Option one: they are both numeric types
-    if (MCCollectionSymTypeRelations.isNumericType(elementType)
-        && MCCollectionSymTypeRelations.isNumericType(rightResult)
-        || MCCollectionSymTypeRelations.isBoolean(elementType)
-        && MCCollectionSymTypeRelations.isBoolean(rightResult)) {
-      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
-    }
-    // Option two: none of them is a primitive type, and they are either the same type or in a
-    // super/ subtype relation
-    if (!leftResult.isPrimitive()
-        && !rightResult.isPrimitive()
-        && (MCCollectionSymTypeRelations.isCompatible(elementType, rightResult)
-        || MCCollectionSymTypeRelations.isCompatible(rightResult, elementType))) {
-      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
-    }
-    else {
-      // should never happen, no valid result
-      Log.error(
-          "0xFD285 types "
-              + elementType.printFullName()
-              + " and "
-              + rightResult.printFullName()
-              + " are not comparable",
-          left.get_SourcePositionStart(),
-          right.get_SourcePositionEnd());
-      return SymTypeExpressionFactory.createObscureType();
-    }
   }
 
   @Override
@@ -245,5 +197,69 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
       result = SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
     }
     return result;
+  }
+
+  // Helper
+
+  protected SymTypeExpression getTypeOfOptionalOrLogError(
+      String errorCode, ASTExpression optNode, SymTypeExpression optType
+  ) {
+    SymTypeExpression result;
+    if (optType.isObscureType()) {
+      result = createObscureType();
+    }
+    else if (MCCollectionSymTypeRelations.isOptional(optType)) {
+      result = MCCollectionSymTypeRelations.getCollectionElementType(optType);
+    }
+    else {
+      Log.error(errorCode + " expected Optional but got "
+              + optType.printFullName(),
+          optNode.get_SourcePositionStart(),
+          optNode.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    return result;
+  }
+
+  protected SymTypeExpression getNumericTypeOfOptionalOrLogError(
+      ASTExpression optOfNumNode,
+      SymTypeExpression optOfNumType
+  ) {
+    SymTypeExpression result;
+    SymTypeExpression numType = getTypeOfOptionalOrLogError(
+        OPT_NUMERIC_EXPECTED_ERROR_CODE, optOfNumNode, optOfNumType);
+    if (optOfNumType.isObscureType()) {
+      result = createObscureType();
+    }
+    if (MCCollectionSymTypeRelations.isNumericType(numType)) {
+      return numType;
+    }
+    Log.error(
+        "0xFD209 expected Optional of a numeric type, but got "
+            + optOfNumType.printFullName(),
+        optOfNumNode.get_SourcePositionStart(),
+        optOfNumNode.get_SourcePositionEnd());
+    return createObscureType();
+  }
+
+  protected SymTypeExpression getTypeForInfixOrLogError(
+      String errorCode, ASTInfixExpression expr, String op,
+      Optional<SymTypeExpression> result,
+      SymTypeExpression left, SymTypeExpression right
+  ) {
+    if (result.isPresent()) {
+      return result.get();
+    }
+    else {
+      // operator not applicable
+      Log.error(errorCode
+              + " Operator '" + op + "' not applicable to " +
+              "'" + left.print() + "', '"
+              + right.print() + "'",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+      return createObscureType();
+    }
   }
 }
