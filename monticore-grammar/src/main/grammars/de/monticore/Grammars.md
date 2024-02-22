@@ -124,7 +124,7 @@ thus be combined with any of the above grammars.
 * The syntax is inspired by the functional programming language Haskell.
 * This grammar may be combined with any of the grammars above.
 
-### [MCSTructuralTypes.mc4](types/MCStructuralTypes.mc4) (stable)
+### [MCStructuralTypes.mc4](types/MCStructuralTypes.mc4) (stable)
 
 * The grammar introduces additional structural types
   as known partially from modern programming languages, like Kotlin.
