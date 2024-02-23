@@ -21,8 +21,8 @@ public class SIUnitLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("30 g^2", "[g^2]<int>");
     checkExpr("30 km^2", "[km^2]<int>");
     checkExpr("30.4kg^2", "[kg^2]<double>");
-    checkExpr("30.4s^3/kgm^2", "[s^3/kgm^2]<double>");
-    checkExpr("30.4 s^3/kgm^2", "[s^3/kgm^2]<double>");
+    checkExpr("30.4s^3/kgm^2", "[s^3/kg^1m^2]<double>");
+    checkExpr("30.4 s^3/kgm^2", "[s^3/kg^1m^2]<double>");
     checkExpr("30 kg/m", "[kg/m]<int>");
     checkExpr("1 h/min", "[h/min]<int>");
     checkExpr("30.4 rad", "[rad]<double>");

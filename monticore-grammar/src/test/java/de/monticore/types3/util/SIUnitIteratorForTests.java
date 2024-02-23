@@ -60,20 +60,21 @@ public class SIUnitIteratorForTests {
   /**
    * 2 units and up to one prefix
    * (> 10.000 elements, do NOT overuse this)
+   * @param delimiter placed between the (prefixed) units
    */
-  public static Stream<String> get2UnitsGroup() {
+  public static Stream<String> get2UnitsGroup(String delimiter) {
     // note that only specific combinations
     // containing "Ω", and "µ" can be parsed, so others are filtered out
     return Stream.concat(
             // no prefix
             getUnits()
                 .filter(u1 -> !u1.contains("Ω"))
-                .flatMap(u1 -> getUnits().map(u2 -> u1 + u2)),
+                .flatMap(u1 -> getUnits().map(u2 -> u1 + delimiter + u2)),
             Stream.concat(
                 // prefix in front
                 getPrefixedUnits()
                     .filter(pu -> !pu.contains("Ω"))
-                    .flatMap(pu -> getUnits().map(u -> pu + u))
+                    .flatMap(pu -> getUnits().map(u -> pu + delimiter + u))
                     .filter(puu -> !(puu.startsWith("µ") && puu.endsWith("Ω")))
                 ,
                 //prefix between units
@@ -81,7 +82,7 @@ public class SIUnitIteratorForTests {
                     .filter(pu -> !pu.contains("µ"))
                     .flatMap(pu -> getUnits()
                         .filter(u -> !u.contains("Ω"))
-                        .map(u -> u + pu))
+                        .map(u -> u + delimiter + pu))
             )
         );
   }

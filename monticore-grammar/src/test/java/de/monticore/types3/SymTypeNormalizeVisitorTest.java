@@ -192,11 +192,11 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
     check(_kg_SISymType, "[kg]");
 
     check(_Hz_SISymType, "[1/s]");
-    check(_N_SISymType, "[mkg/s^2]");
+    check(_N_SISymType, "[m^1kg/s^2]");
     check(_Pa_SISymType, "[kg/s^2m]");
     check(_J_SISymType, "[m^2kg/s^2]");
     check(_W_SISymType, "[m^2kg/s^3]");
-    check(_C_SISymType, "[sA]");
+    check(_C_SISymType, "[s^1A]");
     check(_V_SISymType, "[m^2kg/s^3A]");
     check(_F_SISymType, "[s^4A^2/m^2kg]");
     check(_Ohm_SISymType, "[m^2kg/s^3A^2]");
@@ -283,7 +283,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
             List.of(_kg_SIUnitBasic, createSIUnitBasic("s", 2)),
             List.of(_min_SIUnitBasic, _m_SIUnitBasic)
         ),
-        "[skg/m]"
+        "[s^1kg/m]"
     );
     assertNoFindings();
   }
