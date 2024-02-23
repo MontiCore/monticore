@@ -5,7 +5,6 @@ import de.monticore.types3.ISymTypeVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * SymTypeOfSIUnit stores any kind of derived SIUnit with prefixes, such as
@@ -49,15 +48,23 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
       result += "1";
     }
     else {
-      result += getNumerator().stream()
-          .map(SIUnitBasic::print)
-          .collect(Collectors.joining());
+      for (int i = 0; i < getNumerator().size(); i++) {
+        SIUnitBasic unitBasic = getNumerator().get(i);
+        result += unitBasic.print();
+        if (i < getNumerator().size() - 1 && unitBasic.getExponent() == 1) {
+          result += "^1";
+        }
+      }
     }
     if (getDenominator().size() >= 1) {
-      String denominatorStr = getDenominator().stream()
-          .map(SIUnitBasic::print)
-          .collect(Collectors.joining());
-      result += "/" + denominatorStr;
+      result += "/";
+      for (int i = 0; i < getDenominator().size(); i++) {
+        SIUnitBasic unitBasic = getDenominator().get(i);
+        result += unitBasic.print();
+        if (i < getDenominator().size() - 1 && unitBasic.getExponent() == 1) {
+          result += "^1";
+        }
+      }
     }
     result += "]";
     return result;
