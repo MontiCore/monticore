@@ -16,12 +16,12 @@ import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.check.SymTypeOfTuple;
 import de.monticore.types3.AbstractTypeVisitor;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
-import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.TypeVisitorLifting;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
@@ -377,9 +377,79 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression toBeAccessed,
       SymTypeExpression indexType) {
     SymTypeExpression result;
-    if (!toBeAccessed.isArrayType()) {
+    if (toBeAccessed.isTupleType()) {
+      result = calculateArrayAccessForTuple(
+          expr, toBeAccessed.asTupleType(), indexType
+      );
+    }
+    else if (toBeAccessed.isArrayType()) {
+      result = calculateArrayAccessForArray(
+          expr, toBeAccessed.asArrayType(), indexType
+      );
+    }
+    else {
       Log.error(
-          "0xFD3F6 trying a qualified access on "
+          "0xFDF86 trying to access expression of type "
+              + toBeAccessed.printFullName()
+              + " with qualifier of type "
+              + indexType.printFullName()
+              + " which is not applicable",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    return result;
+  }
+
+  protected SymTypeExpression calculateArrayAccessForTuple(
+      ASTArrayAccessExpression expr,
+      SymTypeOfTuple toBeAccessed,
+      SymTypeExpression indexType
+  ) {
+    SymTypeExpression result;
+    // for tuples, the type is directly dependent on the value provided;
+    // thus, only literals are supported
+    if (SymTypeRelations.isIntegralType(indexType)) {
+      // todo be replaced by the interpreter as soon as available
+      try {
+        String indexStr =
+            BasicSymbolsMill.prettyPrint(expr.getIndexExpression(), false);
+        int index = Integer.parseInt(indexStr);
+        if (index >= 0 && index < toBeAccessed.asTupleType().sizeTypes()) {
+          result = toBeAccessed.asTupleType().getType(index);
+        }
+        else {
+          Log.error("0xFD3F0 trying to use an index of value "
+                  + index + " to access a tuple of size "
+                  + toBeAccessed.asTupleType().sizeTypes()
+                  + ": " + toBeAccessed.printFullName(),
+              expr.get_SourcePositionStart(),
+              expr.get_SourcePositionEnd()
+          );
+          result = createObscureType();
+        }
+      }
+      catch (NumberFormatException e) {
+        // one COULD return the union of the types included in the tuple,
+        // but it is not quite clear,
+        // why one would iterate over a tuple in the first case,
+        // thus this case is not supported
+
+        // it additionally does not support constants defined elsewhere,
+        // e.g., myTuple[MY_ELEMENT_INDEX],
+        // this would require values in the SymTab
+        Log.error("0xFD3F1 trying to access a tuple"
+                + " without int literal, "
+                + "(currently) only integral literals are supported",
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd()
+        );
+        result = createObscureType();
+      }
+    }
+    else {
+      Log.error(
+          "0xFD3F3 trying a qualified access on tuple "
               + toBeAccessed.printFullName()
               + " which is not a type "
               + "applicable to qualified accesses",
@@ -387,17 +457,24 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
           expr.get_SourcePositionEnd());
       result = createObscureType();
     }
-    else if (SymTypeRelations.isIntegralType(indexType) &&
-        toBeAccessed.isArrayType()) {
+    return result;
+  }
+
+  protected SymTypeExpression calculateArrayAccessForArray(
+      ASTArrayAccessExpression expr,
+      SymTypeArray toBeAccessed,
+      SymTypeExpression indexType
+  ) {
+    SymTypeExpression result;
+    if (SymTypeRelations.isIntegralType(indexType)) {
       result = toBeAccessed.asArrayType().cloneWithLessDim(1);
     }
     else {
       Log.error(
-          "0xFDF86 trying to access expression of type "
+          "0xFD3F6 trying a qualified access on array "
               + toBeAccessed.printFullName()
-              + "with qualifier of type "
-              + indexType.printFullName()
-              + " which is not applicable",
+              + " which is not a type "
+              + "applicable to qualified accesses",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd());
       result = createObscureType();
@@ -522,7 +599,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     if (isSeriesOfNames(expr)) {
       if (expr.getExpression() instanceof ASTFieldAccessExpression) {
         ASTFieldAccessExpression innerFieldAccessExpr =
-            (ASTFieldAccessExpression)(expr.getExpression());
+            (ASTFieldAccessExpression) (expr.getExpression());
         fieldAccessCustomTraverse(innerFieldAccessExpr);
         // if expression or type identifier has been found,
         // continue to require further results
@@ -532,7 +609,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         calculateFieldAccess(innerFieldAccessExpr, resultsAreOptional);
       }
       else if (expr.getExpression() instanceof ASTNameExpression) {
-        ASTNameExpression nameExpr = (ASTNameExpression)(expr.getExpression());
+        ASTNameExpression nameExpr = (ASTNameExpression) (expr.getExpression());
         Optional<SymTypeExpression> nameAsExprType =
             calculateExprQName(nameExpr);
         Optional<SymTypeExpression> nameAsTypeIdType =
@@ -992,7 +1069,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
     if (expr instanceof ASTFieldAccessExpression) {
       return isSeriesOfNames(
-          ((ASTFieldAccessExpression)expr).getExpression()
+          ((ASTFieldAccessExpression) expr).getExpression()
       );
     }
     else {

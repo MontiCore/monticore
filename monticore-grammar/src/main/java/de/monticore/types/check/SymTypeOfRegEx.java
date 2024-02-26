@@ -11,16 +11,6 @@ public class SymTypeOfRegEx extends SymTypeExpression {
     this.regex = regex;
   }
 
-  @Override
-  public String printFullName() {
-    return print();
-  }
-
-  @Override
-  public String print() {
-    return "R\"" + getRegExString() + "\"";
-  }
-
   public String getRegExString() {
     return regex;
   }

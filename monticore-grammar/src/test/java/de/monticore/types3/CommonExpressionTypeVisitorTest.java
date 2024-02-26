@@ -34,6 +34,7 @@ import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
@@ -2767,6 +2768,66 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("valueOf(varFloat)", "java.lang.String");
     checkExpr("valueOf(varDouble)", "java.lang.String");
     checkExpr("valueOf(varBoolean)", "java.lang.String");
+  }
+
+  @Test
+  public void testArrayAccessExpressionArray() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    inScope(gs, variable("intArray1", createTypeArray(_intSymType, 1)));
+    inScope(gs, variable("intArray2", createTypeArray(_intSymType, 2)));
+    inScope(gs, variable("intArray3", createTypeArray(_intSymType, 3)));
+
+    checkExpr("intArray1[0]", "int");
+    checkExpr("intArray2[0]", "int[]");
+    checkExpr("intArray3[0]", "int[][]");
+    checkExpr("intArray3[0][0]", "int[]");
+  }
+
+  @Test
+  public void testArrayAccessExpressionTuple() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    inScope(gs, variable("intdoubleTuple", createTuple(_intSymType, _doubleSymType)));
+    inScope(gs, variable("tupleOfTuples", createTuple(
+            createTuple(_intSymType, _doubleSymType),
+            createTuple(_charSymType, _floatSymType)
+        )
+    ));
+
+    checkExpr("intdoubleTuple[0]", "int");
+    checkExpr("intdoubleTuple[1]", "double");
+    checkExpr("tupleOfTuples[0]", "(int, double)");
+    checkExpr("tupleOfTuples[0][0]", "int");
+  }
+
+  @Test
+  public void testArrayAccessExpressionArrayAndTuple() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    inScope(gs, variable("tupleOfArray",
+        createTuple(createTypeArray(_intSymType, 1), _intSymType)
+    ));
+    inScope(gs, variable("arrayOfTuple",
+        createTypeArray(createTuple(_intSymType, _floatSymType), 1)
+    ));
+
+    checkExpr("tupleOfArray[0][0]", "int");
+    checkExpr("arrayOfTuple[0][0]", "int");
+  }
+
+  @Test
+  public void testArrayAccessExpressionInvalid() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    inScope(gs, variable("intArray1", createTypeArray(_intSymType, 1)));
+    inScope(gs, variable("intdoubleTuple", createTuple(_intSymType, _doubleSymType)));
+
+    checkErrorExpr("varint[0]", "0xFDF86");
+    checkErrorExpr("intArray1[0][0]", "0xFDF86");
+    checkErrorExpr("intArray1[1.1]", "0xFD3F6");
+    checkErrorExpr("intdoubleTuple[1.1]", "0xFD3F3");
+
+    // for tuples, the actual value is relevant
+    checkErrorExpr("intdoubleTuple[-1]", "0xFD3F0");
+    checkErrorExpr("intdoubleTuple[2]", "0xFD3F0");
+    checkErrorExpr("intdoubleTuple[varint]", "0xFD3F1");
   }
 
 }

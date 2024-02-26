@@ -4,7 +4,12 @@ package de.monticore.dstlgen.grammartransformation;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.grammar.grammar.GrammarMill;
-import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._ast.ASTASTRule;
+import de.monticore.grammar.grammar._ast.ASTAbstractProd;
+import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
+import de.monticore.grammar.grammar._ast.ASTExternalProd;
+import de.monticore.grammar.grammar._ast.ASTGrammarMethod;
+import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
@@ -232,8 +237,7 @@ public class ASTRuleFactory {
 
   protected ASTAction buildReturnActionReturnFQNClass(String typeFQN){
     ASTClassExpression classExpression = Grammar_WithConceptsMill.classExpressionBuilder()
-        .setExtReturnType(Grammar_WithConceptsMill.extReturnTypeBuilder()
-            .setMCReturnType(buildQualifiedReturnType(typeFQN)).build())
+        .setMCReturnType(buildQualifiedReturnType(typeFQN))
         .build();
     return Grammar_WithConceptsMill.actionBuilder()
         .addMCBlockStatement(Grammar_WithConceptsMill.returnStatementBuilder()

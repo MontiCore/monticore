@@ -24,6 +24,8 @@ with bit expressions like `&` or `<<`.
 with set expressions like `{a * a | a in b, a < 10}`.
 * [LambdaExpressions](LambdaExpressions.mc4): Extends `ExpressionBasis` 
 with lambda expressions like `a -> a + 2`.
+* [TupleExpressions](TupleExpressions.mc4): Extends `ExpressionBasis`
+with tuple expressions like `(a, b)`.
 * [OCLExpressions](../ocl/OCLExpressions.mc4): Extends `ExpressionsBasis`
 with OCL expressions like `a implies b`.
 * [UglyExpressions](UglyExpressions.mc4): Extends `ExpressionBasis`
