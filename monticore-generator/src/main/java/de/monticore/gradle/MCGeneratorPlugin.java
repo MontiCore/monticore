@@ -6,11 +6,6 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.api.tasks.compile.AbstractCompile;
-import org.gradle.jvm.tasks.Jar;
-import org.gradle.language.jvm.tasks.ProcessResources;
-
-import java.nio.file.Path;
 
 /**
  * This class realizes the plugin itself.
@@ -61,10 +56,9 @@ public class MCGeneratorPlugin implements Plugin<Project> {
     return project.getTasks().register("generateMCGrammars", MCGenTask.class, mcTask -> {
       mcTask.setGroup("mc");
       // Always set output dir (Gradle creates it, if not already exists)
-      mcTask.getOutputDir().set(Path.of(
-              project.getBuildDir().getAbsolutePath(),
-              "generated-sources", "monticore",
-              "sourcecode").toFile());
+      // ensure to use a lazy-provider here
+      mcTask.getOutputDir().set(project.getLayout().getBuildDirectory()
+              .dir("generated-sources/monticore/sourcecode"));
     });
   }
 }
