@@ -67,8 +67,6 @@ dependencies {
   testImplementation "junit:junit:$junit_version"
   testImplementation 'org.mockito:mockito-core:4.5.1'
 
-  implementation "de.monticore:tagging:7.6.0-SNAPSHOT" // TODO: Remove both with next release, once the tagging grammars have been added to monticore-grammar
-  grammar "de.monticore:tagging:7.6.0-SNAPSHOT:grammars"
 }
 
 sourceSets {
@@ -173,11 +171,7 @@ gradlePlugin.plugins {
 }
 
 publishing {
-  publications {
-    maven(MavenPublication) {
-      from(components.java)
-    }
-  }
+  // The gradle-plugin plugin deploys automatically a pluginMaven publication (from the main component)
   repositories.maven {
     credentials.username mavenUser
     credentials.password mavenPassword

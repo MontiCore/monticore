@@ -15,9 +15,6 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.tagging.tags._ast.*;
-
-import de.monticore.tagging.tagschema._symboltable.TagSchemaSymbol;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.Joiners;
@@ -84,8 +81,8 @@ public class TagConformsToSchemaCoCoDecorator extends AbstractDecorator {
 
     ASTCDMethod method;
     cocoClass.addCDMember((method = cdMethodFacade.createMethod(PUBLIC.build(), "check",
-            cdParameterFacade.createParameter(ASTTagUnit.class.getName(), "tagUnit"),
-            cdParameterFacade.createParameter(TagSchemaSymbol.class.getName(), "tagSchemaSymbol")
+            cdParameterFacade.createParameter("de.monticore.tagging.tags._ast.ASTTagUnit", "tagUnit"),
+            cdParameterFacade.createParameter("de.monticore.tagging.tagschema._symboltable.TagSchemaSymbol", "tagSchemaSymbol")
     )));
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.coco.Check", originalGrammar.getName()));
 
@@ -109,7 +106,7 @@ public class TagConformsToSchemaCoCoDecorator extends AbstractDecorator {
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("tagging.coco.GetTraverser", originalGrammar.getName(), "contextWithinTravers"));
 
     tagDataVisitorClass.addCDMember((constructor = cdConstructorFacade.createConstructor(PUBLIC.build(), tagDataVisitorClass.getName(),
-            cdParameterFacade.createParameter(TagSchemaSymbol.class.getName(), "tagSchemaSymbol"),
+            cdParameterFacade.createParameter("de.monticore.tagging.tagschema._symboltable.TagSchemaSymbol", "tagSchemaSymbol"),
             cdParameterFacade.createParameter("de.monticore.tagging.conforms.TagConformanceChecker", "tagConformanceChecker"))));
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("tagging.coco.VisitorConstructor",
             originalGrammar.getName(),
@@ -122,7 +119,7 @@ public class TagConformsToSchemaCoCoDecorator extends AbstractDecorator {
     CD4C.getInstance().addImport(tagDataVisitorClass, getTagDefNames(originalGrammar.getSymbol(), "_visitor", "*"));
     CD4C.getInstance().addImport(tagDataVisitorClass, getTagDefNames(originalGrammar.getSymbol(), "_ast", "*"));
     CD4C.getInstance().addImport(tagDataVisitorClass, getTagDefNames(originalGrammar.getSymbol(), originalGrammar.getName() + TaggingConstants.TAGDEFINITION_SUFFIX + "Mill"));
-    CD4C.getInstance().addImport(tagDataVisitorClass, ASTTag.class.getName());
+    CD4C.getInstance().addImport(tagDataVisitorClass, "de.monticore.tagging.tags._ast.ASTTag");
     return elements;
   }
 

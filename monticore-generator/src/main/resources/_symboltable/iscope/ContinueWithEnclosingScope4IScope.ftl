@@ -3,4 +3,4 @@ ${tc.signature( "simpleName")}
 if (checkIfContinueWithEnclosingScope(foundSymbols) && (getEnclosingScope() != null)) {
     return getEnclosingScope().resolve${simpleName}Many(foundSymbols, name, modifier, predicate);
   }
-  return new ArrayList<>();
+  return new de.monticore.symboltable.SetAsListAdapter<>();

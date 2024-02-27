@@ -152,6 +152,7 @@ public class FileReaderWriter {
         synchronized (SharedCloseable.class) {
           // We have to ensure the JarURLConnection#getJarFile and new SharedCloseable are performed atomic.
           // Otherwise, the backing JarFile might be closed in between.
+          // Note: the JVM shares JarFiles across classloader isolations
           openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
         }
       }
@@ -259,7 +260,7 @@ public class FileReaderWriter {
         synchronized (SharedCloseable.class) {
           // We have to ensure the JarURLConnection#getJarFile and new SharedCloseable are performed atomic.
           // Otherwise, the backing JarFile might be closed in between.
-          // Note: the JVM shares JarFiles accross classloader isolations
+          // Note: the JVM shares JarFiles across classloader isolations
           openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
         }
       }

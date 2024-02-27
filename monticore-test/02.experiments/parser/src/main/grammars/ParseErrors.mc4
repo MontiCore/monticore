@@ -1,0 +1,47 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+// This grammar is used to construct various
+grammar ParseErrors extends de.monticore.MCBasics {
+
+
+  MyKeyword = "keyword"; // results in "keyword" being a keyword
+  MyNoKeyword = "notakeyword"; // Define notakeyword explicitly not as a keyword
+  nokeyword "notakeyword";
+
+  // Test against the name here
+  TestKeyword = Name "testkeyword";
+
+  // Parsing should succeed
+  TestKeywordPlus = Name&;
+
+  // Test unexpected keyword behind a reference
+  TestNP = TestKeyword;
+
+  // Two productions which expect a key (but not a keyword)
+  TestKeyConstant1 = key("keyconst1") Name;
+  TestKeyConstant2 = key("keyconst2") Name;
+
+  // key with alt
+  TestKeyConstantAlt1 = TestKeyConstant1 | TestKeyConstant2;
+  // key with direct alt
+  TestKeyConstantAlt2 = key("keyconst1") Name | key("keyconst2") Name;
+
+  // Test nokeyword
+  TestNoKeyW1 = "notakeyword" "1";
+  TestNoKeyW2 = "notakeyword" "2";
+
+  // nokeyword with indirect alts
+  TestNoKeyWAlt1 = TestNoKeyW1 | TestNoKeyW2;
+  // nokeyword with direct alts
+  TestNoKeyWAlt2 = "notakeyword" "1" | "notakeyword" "2";
+
+  // Test a comma separated list
+  TestSepList = "seplist" (Name || ",")+;
+
+  Dot = ".";
+
+  Comp = key("component") Name "{" IComp* "}" ;
+
+  IComp = "ICompKW" | key("ICompKey");
+
+}
