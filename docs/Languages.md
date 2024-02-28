@@ -106,7 +106,7 @@ classdiagram MyLife2 {
   -> Decoration by monitoring methods -> Java code.
 * Main grammar [`de.monticore.cd.CD4Code`](https://github.com/MontiCore/cd4analysis/tree/master/cdlang/src/main/grammars/de/monticore/CD4Code.mc4)
   and 
-  [*detailed description*](https://github.com/MontiCore/cd4analysis/blob/master/cdlang/src/main/grammars/de/monticore/cd4analysis.md) 
+  [*detailed description*](https://github.com/MontiCore/cd4analysis/tree/master/cdlang/src/main/grammars/de/monticore/cd4analysis.md) 
   (see Section *CD4Code*)
 
 
