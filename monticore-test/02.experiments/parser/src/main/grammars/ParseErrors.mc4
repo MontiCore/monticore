@@ -41,7 +41,13 @@ grammar ParseErrors extends de.monticore.MCBasics {
   Dot = ".";
 
   Comp = key("component") Name "{" IComp* "}" ;
+  CompPlus = key("component") Name "{" IComp+ "}" ;
 
   IComp = "ICompKW" | key("ICompKey");
+
+  // This one is tricky, because the last alternative is an alternative with a semantic predicate
+  UnknownAlts = "UnknownAltsT" | key("UnknownAltsKey") | {false}? Name ;
+
+  NoSpaceTest = {noSpace(2)}? "@" Name;
 
 }

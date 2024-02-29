@@ -8,13 +8,16 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNState;
+import org.antlr.v4.runtime.atn.Transition;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.IntervalSet;
 
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.util.stream.Collectors;
 
 public class MCErrorListener extends BaseErrorListener {
   
@@ -64,7 +67,35 @@ public class MCErrorListener extends BaseErrorListener {
                   "expecting '" + m.group(1) + "'";
         }
       } else if (e instanceof NoViableAltException) {
-        // We should improve the msg here - see #3863
+        // This case is most likely when the ATN found correct tokens (such as Name),
+        // but a predicate (such as nokeyword) prevented it
+        String expectedTokens = e.getExpectedTokens().toString(recognizer.getVocabulary());
+
+        // Check for the rules which the ATN would change into using epsilon transitions
+        Set<Map.Entry<Integer, String>> epsilonRules = getExpectedRulesWithTokens(recognizer.getATN(),
+                e.getOffendingState(), recognizer.getVocabulary(), new HashSet<>());
+
+        Pattern nokeywordPattern = Pattern.compile("nokeyword_(.*)_[0-9]*");
+        // Turn the next expected rules into a human readable format:
+        String noKeywordRules = epsilonRules.stream().map(r -> {
+          // r.key = ruleIndex, r.value=next tokens of the transition(s)
+          if (r.getValue().startsWith("'"))  // already a terminal
+            return r.getValue();
+          // Check if the rule is a noKeyword rule (added by the MC generator)
+          // the expected token (r.value) is most likely a Name (but constrained by a predicate)
+          String rulename = recognizer.getRuleNames()[r.getKey()];
+          Matcher m = nokeywordPattern.matcher(rulename);
+          if (m.matches()) // if it is a nokeyword rule, we are able to extract the no-keyword from the rule name
+            return "'" + m.group(1) + "'";
+          // Another rule would have been possible, but the predicate did not allow it
+          // We just output the expected token with a hint in that case
+          return r.getValue() + " (with additional constraints from " + rulename + ")";
+        }).collect(Collectors.joining(" or "));
+
+        if (!noKeywordRules.isEmpty()) {
+          expectedTokens = noKeywordRules;
+        }
+        msg += ", expecting " + expectedTokens;
       }
       // Determine rule stack without eof-rule
       List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
@@ -127,6 +158,33 @@ public class MCErrorListener extends BaseErrorListener {
     int lineStart = before.lastIndexOf("\n");
     int lineEnd = after.indexOf("\n");
     return entireInput.substring(lineStart + 1, lineEnd == -1 ? entireInput.length() : tokenIndex + lineEnd);
+  }
+
+
+  /**
+   * Similiar to {@link ATN#getExpectedTokens(int, RuleContext)},
+   * but we also return the rule numbers
+   * @return a set of ruleIndex -> expected token(s) entries
+   */
+  public Set<Map.Entry<Integer, String>> getExpectedRulesWithTokens(ATN atn, int stateNumber, Vocabulary vocabulary, Set<Integer> visitedStates) {
+    Set<Map.Entry<Integer, String>> expected = new HashSet<>();
+    if (stateNumber < 0 || stateNumber >= atn.states.size() || visitedStates.contains(stateNumber)) {
+      return expected;
+    }
+
+    visitedStates.add(stateNumber);
+
+    ATNState state = atn.states.get(stateNumber);
+    for (Transition t : state.getTransitions()) {
+      if (t.isEpsilon() && t.target.stateNumber != ATNState.INVALID_STATE_NUMBER) {
+        // Follow the epsilon transition
+        expected.addAll(getExpectedRulesWithTokens(atn, t.target.stateNumber, vocabulary, visitedStates));
+      } else {
+        // A non epsilon transition =>
+        expected.add(Map.entry(t.target.ruleIndex, atn.nextTokens(state).toString(vocabulary)));
+      }
+    }
+    return expected;
   }
 
 }

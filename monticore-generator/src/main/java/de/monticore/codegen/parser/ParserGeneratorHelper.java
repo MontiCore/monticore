@@ -177,7 +177,7 @@ public class ParserGeneratorHelper {
    * @return the name for a rule replacing a keyword
    */
   public String getKeyRuleName(String key) {
-    return NOKEYWORD + key + Integer.toUnsignedString(key.hashCode());
+    return NOKEYWORD + key + "_" + Integer.toUnsignedString(key.hashCode());
   }
 
   /**

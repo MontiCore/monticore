@@ -64,7 +64,7 @@ public class ParseErrorTest {
     // An incorrect name is used at a location, where we expect a key-constant (Name with semantic predicate)
     parser.parse_StringTestKeyConstant1("incorrect abc");
     Assert.assertTrue(parser.hasErrors());
-    Assert.assertEquals("mismatched input 'incorrect', expecting 'keyconst1' in rule stack: [TestKeyConstant1, Nokeyword_keyconst12760036429]\u00A0\n" +
+    Assert.assertEquals("mismatched input 'incorrect', expecting 'keyconst1' in rule stack: [TestKeyConstant1, Nokeyword_keyconst1_2760036429]\u00A0\n" +
             "incorrect abc\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
@@ -74,7 +74,7 @@ public class ParseErrorTest {
     // A keyword is used at a location, where we expect a key-constant (Name with semantic predicate)
     parser.parse_StringTestKeyConstant1("keyword abc");
     Assert.assertTrue(parser.hasErrors());
-    Assert.assertEquals("mismatched input 'keyword', expecting 'keyconst1' in rule stack: [TestKeyConstant1, Nokeyword_keyconst12760036429]\u00A0\n" +
+    Assert.assertEquals("mismatched input 'keyword', expecting 'keyconst1' in rule stack: [TestKeyConstant1, Nokeyword_keyconst1_2760036429]\u00A0\n" +
             "keyword abc\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
@@ -84,8 +84,7 @@ public class ParseErrorTest {
     // An incorrect name is used at a location, where we expect a key-constant (Name with semantic predicate) (within an alt)
     parser.parse_StringTestKeyConstantAlt1("incorrect abc");
     Assert.assertTrue(parser.hasErrors());
-    // This message should be improved (#3863) - e.g. show expected tokens (and substitute name with the keywords)
-    Assert.assertEquals("no viable alternative at input 'incorrect' in rule stack: [TestKeyConstantAlt1]\u00A0\n" +
+    Assert.assertEquals("no viable alternative at input 'incorrect', expecting 'keyconst1' or 'keyconst2' in rule stack: [TestKeyConstantAlt1]\u00A0\n" +
             "incorrect abc\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
@@ -105,8 +104,7 @@ public class ParseErrorTest {
     // An incorrect name is used at a location, where we expect a key-constant (Name with semantic predicate) (within a direct alt)
     parser.parse_StringTestKeyConstantAlt2("incorrect abc");
     Assert.assertTrue(parser.hasErrors());
-    // This message should be improved (#3863) - e.g. show expected tokens (and substitute name with the keywords)
-    Assert.assertEquals("no viable alternative at input 'incorrect' in rule stack: [TestKeyConstantAlt2]\u00A0\n" +
+    Assert.assertEquals("no viable alternative at input 'incorrect', expecting 'keyconst1' or 'keyconst2' in rule stack: [TestKeyConstantAlt2]\u00A0\n" +
             "incorrect abc\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
@@ -127,8 +125,7 @@ public class ParseErrorTest {
     // A keyword is used at a location, where we expect a key-constant (Name with semantic predicate)
     parser.parse_StringTestKeyConstantAlt1("notakeywordInvalid 1");
     Assert.assertTrue(parser.hasErrors());
-    // This message should be improved (#3863) - e.g. show expected tokens (and substitute name with the keywords)
-    Assert.assertEquals("no viable alternative at input 'notakeywordInvalid1' in rule stack: [TestKeyConstantAlt1]\u00A0\n" +
+    Assert.assertEquals("no viable alternative at input 'notakeywordInvalid1', expecting 'keyconst1' or 'keyconst2' in rule stack: [TestKeyConstantAlt1]\u00A0\n" +
             "notakeywordInvalid 1\n" +
             "                   ^", Log.getFindings().get(0).getMsg());
   }
@@ -138,8 +135,7 @@ public class ParseErrorTest {
     // A keyword is used at a location, where we expect a key-constant (Name with semantic predicate)
     parser.parse_StringTestKeyConstantAlt2("notakeywordInvalid 1");
     Assert.assertTrue(parser.hasErrors());
-    // This message should be improved (#3863) - e.g. show expected tokens (and substitute name with the keywords)
-    Assert.assertEquals("no viable alternative at input 'notakeywordInvalid1' in rule stack: [TestKeyConstantAlt2]\u00A0\n" +
+    Assert.assertEquals("no viable alternative at input 'notakeywordInvalid1', expecting 'keyconst1' or 'keyconst2' in rule stack: [TestKeyConstantAlt2]\u00A0\n" +
             "notakeywordInvalid 1\n" +
             "                   ^", Log.getFindings().get(0).getMsg());
   }
@@ -150,7 +146,7 @@ public class ParseErrorTest {
     // Wrong separator used (dot instead of comma)
     parser.parse_StringTestSepList("seplist a.b");
     Assert.assertTrue(parser.hasErrors());
-    Assert.assertEquals("Expected EOF but found token [@2,9:9='.',<8>,1:9]", Log.getFindings().get(0).getMsg());
+    Assert.assertEquals("Expected EOF but found token [@2,9:9='.',<10>,1:9]", Log.getFindings().get(0).getMsg());
   }
 
   @Test
@@ -158,7 +154,7 @@ public class ParseErrorTest {
     // No separator used
     parser.parse_StringTestSepList("seplist a b");
     Assert.assertTrue(parser.hasErrors());
-    Assert.assertEquals("Expected EOF but found token [@2,10:10='b',<14>,1:10]", Log.getFindings().get(0).getMsg());
+    Assert.assertEquals("Expected EOF but found token [@2,10:10='b',<16>,1:10]", Log.getFindings().get(0).getMsg());
   }
 
 
@@ -177,21 +173,31 @@ public class ParseErrorTest {
     // The KeyConstant does not match "component"
     parser.parse_StringComp("componentx MyName [ ]");
     Assert.assertTrue(parser.hasErrors());
-    Assert.assertEquals("mismatched input 'componentx', expecting 'component' in rule stack: [Comp, Nokeyword_component2895060221]\u00A0\n" +
+    Assert.assertEquals("mismatched input 'componentx', expecting 'component' in rule stack: [Comp, Nokeyword_component_2895060221]\u00A0\n" +
             "componentx MyName [ ]\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
 
   @Test
   public void testCompInvalidKey() throws IOException {
-    // The KeyConstant does not match ICompKeyInvalid
+    // The KeyConstant does not match ICompKeyInvalid (an empty string is also allowed)
     parser.parse_StringComp("component MyName { \n  ICompKeyInvalid \n }");
     Assert.assertTrue(parser.hasErrors());
-    // This message should be improved (#3863) - e.g. show expected tokens (and substitute name with the keywords)
-    Assert.assertEquals("no viable alternative at input 'ICompKeyInvalid' in rule stack: [Comp]\u00A0\n" +
+    Assert.assertEquals("no viable alternative at input 'ICompKeyInvalid', expecting 'ICompKW' or 'ICompKey' or '}' in rule stack: [Comp]\u00A0\n" +
             "  ICompKeyInvalid \n" +
             "  ^", Log.getFindings().get(0).getMsg());
   }
+
+  @Test
+  public void testCompInvalidKeyPlus() throws IOException {
+    // The KeyConstant does not match ICompKeyInvalid
+    parser.parse_StringCompPlus("component MyName { \n  ICompKeyInvalid \n }");
+    Assert.assertTrue(parser.hasErrors());
+    Assert.assertEquals("no viable alternative at input 'ICompKeyInvalid', expecting 'ICompKW' or 'ICompKey' in rule stack: [CompPlus, IComp]\u00A0\n" +
+            "  ICompKeyInvalid \n" +
+            "  ^", Log.getFindings().get(0).getMsg());
+  }
+
 
   @Test
   public void testComp3() throws IOException {
@@ -214,11 +220,31 @@ public class ParseErrorTest {
   }
 
   @Test
+  public void testUnknownAlts() throws IOException {
+    // An incorrect input is used in an alt-context
+    parser.parse_StringUnknownAlts("X");
+    Assert.assertTrue(parser.hasErrors());
+    Assert.assertEquals("no viable alternative at input 'X', expecting 'UnknownAltsKey' or 'UnknownAltsT' or Name (with additional constraints from unknownAlts) in rule stack: [UnknownAlts]\u00A0\n" +
+            "X\n" +
+            "^", Log.getFindings().get(0).getMsg());
+  }
+
+  @Test
+  public void testNoSpace() throws IOException {
+    // NoSpace failed
+    parser.parse_StringNoSpaceTest("@ Test");
+    Assert.assertTrue(parser.hasErrors());
+    Assert.assertEquals("rule noSpaceTest failed predicate: {noSpace(2)}? in rule stack: [NoSpaceTest]\u00A0\n" +
+            "@ Test\n" +
+            "^", Log.getFindings().get(0).getMsg());
+  }
+
+  @Test
   public void testEmptyKeyConstant() throws IOException {
     // No input was provided for a KeyConstant
     parser.parse_StringComp("");
     Assert.assertTrue(parser.hasErrors());
-    Assert.assertEquals("mismatched input '<EOF>', expecting 'component' in rule stack: [Comp, Nokeyword_component2895060221]\u00A0\n" +
+    Assert.assertEquals("mismatched input '<EOF>', expecting 'component' in rule stack: [Comp, Nokeyword_component_2895060221]\u00A0\n" +
             "\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
