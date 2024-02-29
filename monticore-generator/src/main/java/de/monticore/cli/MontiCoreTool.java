@@ -66,6 +66,14 @@ public class MontiCoreTool {
   }
 
   /**
+   * Method that can be called to load some of the required classes for the tool.
+   */
+  public static void preLoad() {
+    Grammar_WithConceptsMill.init();
+    Grammar_WithConceptsMill.traverser();
+  }
+
+  /**
    * Starts a thread to check whether a newer version of monticore
    * was released.
    */

@@ -66,6 +66,16 @@ generateMCGrammars {
   }
 }
 
+// This task can be used to run the MC generator on only a single grammar
+// Use this task to test changes to the MC generator without the need to rebuild all grammars
+// This task is NOT required in a standard project using MC
+tasks.register("generateSingleMCGrammarForDev", MCGenTask) {
+  outputDir = file grammarOutDir
+  grammar.setFrom(file "src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4")
+  debug = false
+  group = 'mc'
+}
+
 // Note: In the future we will introduce options for TR/Tag output to the tool
 import de.monticore.gradle.gen.MCGenTask;
 
