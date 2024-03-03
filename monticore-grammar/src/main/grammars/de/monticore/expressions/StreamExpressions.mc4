@@ -11,7 +11,7 @@ import de.monticore.expressions.ExpressionsBasis;
  * Broy/Stoelen in [BS01] using the syntax from 
  * Ringert/Rumpe [RR11] and 
  * Buerger, Kausch, Raco, Ringert, Rumpe, Stueber, Wiartalla [BKR+20] 
- * (see https://se-rwth.github.io/publications/)
+ * (see https://www.se-rwth.de/publications/)
  *
  * Stream expressions are partly 
  * 1) extending the Expression syntax by grammatical operations (see below),
