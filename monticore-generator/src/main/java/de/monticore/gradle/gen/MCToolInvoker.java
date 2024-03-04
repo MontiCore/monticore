@@ -7,6 +7,7 @@ import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerExce
 import de.monticore.grammar.MCGrammarSymbolTableHelperFix;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.mcbasics.MCBasicsMill;
+import de.se_rwth.commons.io.SyncDeIsolated;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
@@ -27,6 +28,14 @@ public class MCToolInvoker {
   public static void run(String[] args) {
     Log.info("Starting MontiCoreTool: " +
             "\t  java -jar MontiCoreTool.jar " + Arrays.toString(args), MCToolInvoker.class.getName());
+    SyncDeIsolated.run(() -> {
+      // The MCTool is expensive with its the class loading (time)
+      // individual class loading is blocking parallel execution at ZipFile$Source.readFullyAt,
+      // resulting in blocked mc-tool-"main" threads, inducing extra overhead somewhere in the JVM
+      // due to switching threads all trying to access the same .jar file.
+      // We thus preload some classes in a synchronized block (its monitor is being shared across isolation borders)
+      MontiCoreTool.preLoad();
+    });
     try {
       MontiCoreTool.main(args);
     }catch (final AmbiguityException | MontiCoreFreeMarkerException e) {
