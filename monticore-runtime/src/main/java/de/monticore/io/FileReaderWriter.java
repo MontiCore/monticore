@@ -6,6 +6,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import de.monticore.AmbiguityException;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.se_rwth.commons.io.SharedCloseable;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 
@@ -147,8 +148,13 @@ public class FileReaderWriter {
     try {
       Reporting.reportOpenInputFile(sourcePath.toString());
       URLConnection conn = sourcePath.openConnection();
-      if(conn instanceof JarURLConnection){
-        openedJarFiles.add(((JarURLConnection) conn).getJarFile());
+      if (conn instanceof JarURLConnection) {
+        synchronized (SharedCloseable.class) {
+          // We have to ensure the JarURLConnection#getJarFile and new SharedCloseable are performed atomic.
+          // Otherwise, the backing JarFile might be closed in between.
+          // Note: the JVM shares JarFiles across classloader isolations
+          openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
+        }
       }
       Reader reader = new InputStreamReader(conn.getInputStream(), charset.name());
       content = _readFromFile(reader);
@@ -223,7 +229,7 @@ public class FileReaderWriter {
    * Saves all {@link JarFile}s opened by {@link FileReaderWriter#getReader(URL)} if the protocol "jar:" is used.
    * These files must be closed at the end of programm via {@link FileReaderWriter#closeOpenedJarFiles()}.
    */
-  protected static Set<JarFile> openedJarFiles = new HashSet<>();
+  protected static Set<SharedCloseable<JarFile>> openedJarFiles = new HashSet<>();
 
   /**
    * Obtains the reader for a passed model coordinate. The resulting reader
@@ -251,7 +257,12 @@ public class FileReaderWriter {
       // Save opened jar files for later cleanup
       URLConnection conn = location.openConnection();
       if(conn instanceof JarURLConnection){
-        openedJarFiles.add(((JarURLConnection) conn).getJarFile());
+        synchronized (SharedCloseable.class) {
+          // We have to ensure the JarURLConnection#getJarFile and new SharedCloseable are performed atomic.
+          // Otherwise, the backing JarFile might be closed in between.
+          // Note: the JVM shares JarFiles across classloader isolations
+          openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
+        }
       }
       return new InputStreamReader(conn.getInputStream(), Charsets.UTF_8.name());
     }
@@ -266,14 +277,7 @@ public class FileReaderWriter {
    * Must be called at the end of the program to ensure all resources are freed.
    */
   public static void closeOpenedJarFiles(){
-    for (JarFile openedJarFile : openedJarFiles) {
-      try {
-        openedJarFile.close();
-      } catch (IOException e) {
-        // JarFile contains no state to check if it is already closed.
-        // Therefore, a try-catch block is needed
-      }
-    }
+    openedJarFiles.forEach(SharedCloseable::close);
     openedJarFiles.clear();
   }
 }

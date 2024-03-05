@@ -1,18 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 import de.monticore.expressions.ExpressionsBasis;
 
 /**
  * This grammar extends the available expressions with
- * special operations for Streams as initially defined by 
- * Broy/Stoelen in [BS01] using the Syntax from 
+ * special operations for streams as initially defined by 
+ * Broy/Stoelen in [BS01] using the syntax from 
  * Ringert/Rumpe [RR11] and 
- * J. Bürger, H. Kausch, D. Raco, J. Ringert, B. Rumpe, 
- * S. Stüber, M. Wiartalla [BKR+20] 
- * (see https://se-rwth.github.io/publications/)
+ * Buerger, Kausch, Raco, Ringert, Rumpe, Stueber, Wiartalla [BKR+20] 
+ * (see https://www.se-rwth.de/publications/)
  *
  * Stream expressions are partly 
  * 1) extending the Expression syntax by grammatical operations (see below),

@@ -21,4 +21,8 @@ mlc MCExceptionStatements {
     mlc "de.monticore.statements.MCCommonStatements";
   }
 
+  uses {
+    include "$projectDir/src/main/java/de/monticore/expressions/prettyprint/ExpressionsBasisPrettyPrinter.java";
+  }
+
 }

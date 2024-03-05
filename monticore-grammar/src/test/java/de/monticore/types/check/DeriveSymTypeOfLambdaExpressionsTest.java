@@ -109,11 +109,11 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
   public void deriveFromLambdaExpressionOneParameterTest() throws IOException {
     setFlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     // example with int, long
-    check("(int x) -> 5L", "(int) -> long");
+    check("(int x) -> 5L", "int -> long");
     // example with input equaling output
-    checkWithST("(int x) -> x", "(int) -> int");
+    checkWithST("(int x) -> x", "int -> int");
     // example with lambda nesting
-    checkWithST("(int x) -> (int y) -> x + y", "(int) -> (int) -> int");
+    checkWithST("(int x) -> (int y) -> x + y", "int -> int -> int");
   }
 
   @Test

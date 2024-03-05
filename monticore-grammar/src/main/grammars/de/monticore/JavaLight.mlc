@@ -16,7 +16,6 @@ mlc JavaLight {
   // export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/javalight/**.java";
-    include "de/monticore/prettyprint/JavaLight*.java";
   }
 
   promote {
@@ -25,6 +24,10 @@ mlc JavaLight {
     mlc "de.monticore.statements.MCCommonStatements";
     mlc "de.monticore.statements.MCArrayStatements";
     mlc "de.monticore.statements.MCReturnStatements";
+  }
+
+  uses {
+    mlc "de.monticore.expressions.UglyExpressions";
   }
 
 }

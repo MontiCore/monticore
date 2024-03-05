@@ -90,27 +90,6 @@ public class SymTypeArray extends SymTypeExpression {
     this.argument = argument;
   }
 
-  /**
-   * print: Umwandlung in einen kompakten String
-   */
-  @Override
-  public String print() {
-    StringBuffer r = new StringBuffer(getArgument().print());
-    for (int i = 1; i <= dim; i++) {
-      r.append("[]");
-    }
-    return r.toString();
-  }
-
-  @Override
-  public String printFullName(){
-    StringBuffer r = new StringBuffer(getArgument().printFullName());
-    for (int i = 1; i <= dim; i++) {
-      r.append("[]");
-    }
-    return r.toString();
-  }
-
   @Override
   public SymTypeArray deepClone() {
     //to support deprecated code:

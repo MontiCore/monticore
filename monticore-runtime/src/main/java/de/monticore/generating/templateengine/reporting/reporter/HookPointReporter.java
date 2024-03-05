@@ -19,23 +19,23 @@ import java.util.List;
  */
 public class HookPointReporter extends AReporter {
   
-  static final String SET_HOOK_POINT = "set";
+  public static final String SET_HOOK_POINT = "set";
 
-  static final String SET_REPLACE_TEMPLATE = "setr";
+  public static final String SET_REPLACE_TEMPLATE = "setr";
 
-  static final String SET_BEFORE_TEMPLATE = "setb";
-
-  static final String SET_AFTER_TEMPLATE = "seta";
-
-  static final String CALL_HOOK_POINT = "call";
-
-  static final String CALL_REPLACE_TEMPLATE = "callr";
-
-  static final String CALL_BEFORE_TEMPLATE = "callb";
-
-  static final String CALL_AFTER_TEMPLATE = "calla";
-
-  static final String SIMPLE_FILE_NAME = "05_HookPoint";
+  public static final String SET_BEFORE_TEMPLATE = "setb";
+  
+  public static final String SET_AFTER_TEMPLATE = "seta";
+  
+  public static final String CALL_HOOK_POINT = "call";
+  
+  public static final String CALL_REPLACE_TEMPLATE = "callr";
+  
+  public static final String CALL_BEFORE_TEMPLATE = "callb";
+  
+  public static final String CALL_AFTER_TEMPLATE = "calla";
+  
+  public static final String SIMPLE_FILE_NAME = "05_HookPoint";
   
   protected ReportingRepository repository;
   
@@ -191,7 +191,7 @@ public class HookPointReporter extends AReporter {
   }
 
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportCallHookPointEnd(java.lang.String)
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportCallHookPointEnd(java.lang.String)
    */
   @Override
   public void reportCallHookPointEnd(String hookName) {
@@ -200,7 +200,7 @@ public class HookPointReporter extends AReporter {
   }
 
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportTemplateReplacement(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportTemplateReplacement(java.lang.String,
    * java.util.List)
    */
   @Override
@@ -213,7 +213,7 @@ public class HookPointReporter extends AReporter {
   }
 
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetBeforeTemplate(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetBeforeTemplate(java.lang.String,
    * java.util.List)
    */
   @Override
@@ -226,7 +226,7 @@ public class HookPointReporter extends AReporter {
   }
 
   /**
-   * @see mc.codegen.reporting.commons.DefaultReportEventHandler#reportSetAfterTemplate(java.lang.String,
+   * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetAfterTemplate(java.lang.String,
    * java.util.List)
    */
   @Override

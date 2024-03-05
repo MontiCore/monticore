@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar SuperParser {
+  options {
+    ParserSuperClass = "superparser.ModifiedMCParserBase"
+  }
+
+  P = "..." { doCustomMethod(); };
+}

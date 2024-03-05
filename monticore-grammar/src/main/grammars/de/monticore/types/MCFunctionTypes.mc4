@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 import de.monticore.types.*;
 
@@ -9,21 +10,31 @@ import de.monticore.types.*;
  * This grammar introduces function types
  * such as int -> int, (String -> int) -> void, (boolean, int) -> int
  * 
- * This grammar is part of a hierarchy of types, namely
- * * types.MCBasicTypes.mc4       
- *   * types/MCFunctionTypes.mc4
+ * Function types are useful when functions shall be passed around 
+ * as arguments or stored in a data structure (for later use).
+ * This is typically the case in higher-order functional programming 
+ * languages, such as Haskell.
+ * The syntax here is actually inspired by Haskell.
  *
-*/
+ * The language developer may choose the subset of types
+ * of interest and combine these with the appropriate expressions
+ *
+ * This modularity of types and associated expressions greatly eases
+ * the reuse of type structures in languages similar to Java / Haskell
+ *
+ * This grammar is part of a hierarchy of types, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/types/Types.md
+ *
+ */
 
 component grammar MCFunctionTypes
           extends MCBasicTypes {
 
-
-  /*=================================================================*/
-
-  /** ASTMCFunctionTypesType represents function types.
-   * 
-   *  Any number of arguments is possible.
+  /** MCFunctionParTypes describes the parameters in brackets, i.e.
+   * (int,long), (int), etc. but also allows ellipses at the end 
+   * (int,long,Person...) 
   */
   MCFunctionParTypes =
     "(" (
@@ -32,9 +43,26 @@ component grammar MCFunctionTypes
     )? ")"
   ;
 
-  MCFunctionType implements MCType =
+  /** ASTMCFunctionTypesType represents function types.
+   *
+   *  Any number of arguments is possible. 
+   *  A -> B -> C  parses as usual as  A -> (B -> C) 
+   */
+  MCFunctionType implements MCType <80> =
     <rightassoc>
     MCFunctionParTypes "->"
+    MCReturnType
+  ;
+
+  /** ASTMCUnaryFunctionType represents function types
+   * that have exactly one parameter without any parentheses.
+   *
+   * This non-terminal is separate from MCFunctionType
+   * to avoid parsing issues due to mutual left recursion.
+   */
+  MCUnaryFunctionType implements MCType <60> =
+    <rightassoc>
+    MCType "->"
     MCReturnType
   ;
 

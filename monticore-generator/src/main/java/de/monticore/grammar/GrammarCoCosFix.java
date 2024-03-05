@@ -81,6 +81,7 @@ import de.monticore.grammar.cocos.SymbolWithManyNames;
 import de.monticore.grammar.cocos.TerminalCritical;
 import de.monticore.grammar.cocos.TokenConstantInvalid;
 import de.monticore.grammar.cocos.UniqueProdNameInGrammar;
+import de.monticore.grammar.cocos.UniqueProdNamesForCompFix;
 import de.monticore.grammar.cocos.UsedLexNTNotDefined;
 import de.monticore.grammar.cocos.UsedNTNotDefined;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
@@ -181,6 +182,7 @@ public class GrammarCoCosFix {
     checker.addCoCo(new OverridingEnumNTs());
     checker.addCoCo(new OverridingNTs());
     checker.addCoCo(new OverridingAbstractNTs());
+    checker.addCoCo(new UniqueProdNamesForCompFix()); // new in 7.6.0
     checker.addCoCo(new UsedNTNotDefined());
     checker.addCoCo(new KeywordAlternativeName());
     checker.addCoCo(new NTDefinedByAtmostOneProduction());

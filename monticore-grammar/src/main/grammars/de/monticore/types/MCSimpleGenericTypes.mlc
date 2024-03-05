@@ -26,4 +26,10 @@ mlc MCSimpleGenericTypes {
     mlc "de.monticore.types.MCCollectionTypes";
   }
 
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    include "$mp/com/google/common/base/Preconditions.class";
+    include "$mp/org/apache/commons/lang3/StringUtils.class";
+  }
+
 }

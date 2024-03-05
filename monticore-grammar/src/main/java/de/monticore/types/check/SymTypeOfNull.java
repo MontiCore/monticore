@@ -24,19 +24,6 @@ public class SymTypeOfNull extends SymTypeExpression {
     typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
   }
 
-  /**
-   * print: Umwandlung in einen kompakten String
-   */
-  @Override
-  public String print() {
-      return BasicSymbolsMill.NULL;
-  }
-
-  @Override
-  public String printFullName(){
-    return print();
-  }
-
   @Override
   public boolean isNullType() {
     return true;

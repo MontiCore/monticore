@@ -47,32 +47,6 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   }
 
   @Override
-  public String print() {
-    if (!hasBound()) {
-      return "?";
-    }
-    else if (isUpper()) {
-      return "? extends " + getBound().print();
-    }
-    else {
-      return "? super " + getBound().print();
-    }
-  }
-
-  @Override
-  public String printFullName() {
-    if (!hasBound()) {
-      return "?";
-    }
-    else if (isUpper()) {
-      return "? extends " + getBound().printFullName();
-    }
-    else {
-      return "? super " + getBound().printFullName();
-    }
-  }
-
-  @Override
   public boolean isValidType() {
     return false;
   }

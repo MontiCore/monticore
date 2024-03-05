@@ -26,4 +26,8 @@ mlc MCArrayTypes {
     mlc "de.monticore.types.MCBasicTypes";
   }
 
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+  }
+
 }

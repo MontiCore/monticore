@@ -18,7 +18,7 @@ import java.util.Map.Entry;
  */
 public class InstantiationsReporter extends AReporter {
   
-  static final String SIMPLE_FILE_NAME = "06_Instantiations";
+  public static final String SIMPLE_FILE_NAME = "06_Instantiations";
   
   protected Map<String, Integer> instantiateCount = Maps.newTreeMap();
   

@@ -19,4 +19,8 @@ mlc TFBasisExts {
     mlc "de.monticore.JavaLight";
   }
 
+  uses {
+    mlc "de.monticore.expressions.UglyExpressions";
+  }
+
 }

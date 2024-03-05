@@ -29,6 +29,9 @@ mlc ODRules {
   }
   
  uses {   // TODO check whether this should be allowed
+    mlc "de.monticore.expressions.UglyExpressions";
+    mlc "de.monticore.expressions.ExpressionsBasis";
+
     include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/MCGrammarSymbol.java";
     include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/ProdSymbol.java";
     include "$projectDir/src/main/java/de/monticore/grammar/grammar/_symboltable/RuleComponentSymbol.java";

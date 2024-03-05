@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A0144;
+
+grammar A0144d extends A0144a, A0144bb {
+  // Foo is defined in both a and b/bb
+}

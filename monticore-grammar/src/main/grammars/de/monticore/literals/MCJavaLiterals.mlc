@@ -10,7 +10,7 @@ mlc MCJavaLiterals {
     include "de/monticore/literals/mcjavaliterals/**.java";
   }
 
-  //handwritten sources
+  // handwritten sources
   export "$projectDir/src/main/java" {
     include "de/monticore/literals/mcjavaliterals/**.java";
     include "de/monticore/literals/prettyprint/MCJavaLiterals*.java";
@@ -20,4 +20,15 @@ mlc MCJavaLiterals {
   promote {
     mlc "de.monticore.literals.MCCommonLiterals";
   }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/literals/prettyprint/MCCommonLiteralsFullPrettyPrinter.java";
+    include "$projectDir/src/main/java/de/monticore/literals/prettyprint/MCCommonLiteralsPrettyPrinter.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/DeriveSymTypeOfLiterals.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/DeriveSymTypeOfMCCommonLiterals.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionFactory.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/TypeCheckResult.java";
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+  }
+
 }

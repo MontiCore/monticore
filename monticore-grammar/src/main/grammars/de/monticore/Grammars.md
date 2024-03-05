@@ -67,6 +67,9 @@ other. Some snipets for type definitions:
                       Foo<? extends .>
                       Foo<? super .>
     MCArrayTypes      Person[]  int[][]
+    MCFunctionTypes   Foo->Bar  (Foo, Bar)->Foo
+    MCStructuralTypes Foo|Bar  Foo&Bar
+                      (Foo, Bar)  (Foo)
     SI Unit types     km/h  km/h<long>
     RegExType         R"[a-z][0-9*]"
   
@@ -113,6 +116,24 @@ types, use a simpler version from above. Type checking is tricky.
 thus be combined with any of the above grammars.
 * Example type definitions: `Person[]`, `int[][]`.
 
+### [MCFunctionTypes.mc4](types/MCFunctionTypes.mc4) (stable)
+
+* This grammar introduces function types like `int -> int`.
+* They are useful when functions shall be passed around
+  as arguments or stored in a data structure (for later use).
+* The syntax is inspired by the functional programming language Haskell.
+* This grammar may be combined with any of the grammars above.
+
+### [MCStructuralTypes.mc4](types/MCStructuralTypes.mc4) (stable)
+
+* The grammar introduces additional structural types
+  as known partially from modern programming languages, like Kotlin.
+* The grammar offers three ways to combine types: union types `A|B`,
+  intersection types `A&B`, and tuple types `(A,B)`.
+* Additionally, bracket types `(A)` are semantically 
+  isomorphic to their argument (here `A`).
+  They allow to represent types not representable otherwise, e.g., `(A|B) -> C`.
+* They may be combined with any of the grammars above.
 
 ### [SIUnitTypes4Math.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
 
@@ -197,6 +218,7 @@ Some snipets for operators defined in expressions:
                    { item | specifier }
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
     LambdaExp:     i->i   (a,b)->a+b
+    TupleExp:      (.,.)  (.,.,.,.)
     SIUnits:       5km  3,2m/s  22l  2.400J  
     UglyExp:       .instanceof.  (.). new
     JavaClass:     this  .[.]  super
@@ -267,6 +289,11 @@ as they allow math oriented style of specification.
 * This is only the subset of Java's lambda expressions that allows to define 
   a functional programming style (thus preventing side effects).
 
+### [TupleExpressions.mc4](expressions/TupleExpressions.mc4) (stable)
+* This grammar defines tuple expressions like `(1, "Hello")`.
+* Tuple Expressions are tuples of expressions that can be used to, e.g.,
+  return multiple results from a function.
+* The syntax is inspired by the functional programming language Haskell.
 
 ### [SIUnits.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
 * This grammar the international system of units (SI units), based on 

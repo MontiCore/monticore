@@ -24,16 +24,10 @@ dependencies {
   implementation group:"org.eclipse.platform", name:"org.eclipse.equinox.common", version:equinox_version
 }
 
-// generate from grammars in forAst with emf groovy script
-fileTree(grammarDir).matching { include '**/*.mc4'}.each {
-  def g = it
-  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}EMF" (type: MCTask) {
-    grammar = file g
-    outputDir = file outDir
-    script = 'de/monticore/monticore_emf.groovy'
-    handcodedPath "$projectDir/../forAst/src/main/java"
-    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
+
+// generate from grammars in forAst with emf groovy script by modifying the generateMCGrammars MCGenTask
+generateMCGrammars {
+  grammar = file grammarDir
+  script = 'de/monticore/monticore_emf.groovy'
+  handcodedPath "$projectDir/../forAst/src/main/java"
 }

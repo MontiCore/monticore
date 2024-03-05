@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 import java.util.function.Function;
 
 public class IncGenGradleReporter extends IncGenReporter {
-
-  static final String SIMPLE_FILE_NAME = "IncGenGradleCheck";
+  
+  public static final String SIMPLE_FILE_NAME = "IncGenGradleCheck";
   protected final String fileExtension;
   protected Function<Path, Path> reportPathOutput;
 

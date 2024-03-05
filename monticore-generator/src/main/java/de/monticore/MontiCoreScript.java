@@ -23,7 +23,11 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
-import de.monticore.codegen.cd2java._ast.ast_class.*;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTFullDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
@@ -52,16 +56,36 @@ import de.monticore.codegen.cd2java._od.ODService;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.scope.*;
+import de.monticore.codegen.cd2java._symboltable.scope.ArtifactScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ArtifactScopeInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.ScopeInterfaceDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.*;
+import de.monticore.codegen.cd2java._symboltable.symbol.CommonSymbolInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
-import de.monticore.codegen.cd2java._tagging.*;
-import de.monticore.codegen.cd2java._visitor.*;
+import de.monticore.codegen.cd2java._tagging.CDTaggingDecorator;
+import de.monticore.codegen.cd2java._tagging.MC2CDTaggingTranslation;
+import de.monticore.codegen.cd2java._tagging.TagConformsToSchemaCoCoDecorator;
+import de.monticore.codegen.cd2java._tagging.TaggerDecorator;
+import de.monticore.codegen.cd2java._tagging.TaggingConstants;
+import de.monticore.codegen.cd2java._visitor.CDTraverserDecorator;
+import de.monticore.codegen.cd2java._visitor.HandlerDecorator;
+import de.monticore.codegen.cd2java._visitor.InheritanceHandlerDecorator;
+import de.monticore.codegen.cd2java._visitor.TraverserClassDecorator;
+import de.monticore.codegen.cd2java._visitor.TraverserInterfaceDecorator;
+import de.monticore.codegen.cd2java._visitor.Visitor2Decorator;
+import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.cli.CDCLIDecorator;
 import de.monticore.codegen.cd2java.cli.CLIDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -130,10 +154,28 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.MontiCoreConfiguration.*;
+import static de.monticore.MontiCoreConfiguration.CONFIGTEMPLATE_LONG;
+import static de.monticore.MontiCoreConfiguration.GENDST_LONG;
+import static de.monticore.MontiCoreConfiguration.GENTAG_LONG;
+import static de.monticore.MontiCoreConfiguration.GRAMMAR_LONG;
+import static de.monticore.MontiCoreConfiguration.GROOVYHOOK1;
+import static de.monticore.MontiCoreConfiguration.GROOVYHOOK2;
+import static de.monticore.MontiCoreConfiguration.HANDCODEDMODELPATH_LONG;
+import static de.monticore.MontiCoreConfiguration.HANDCODEDPATH_LONG;
+import static de.monticore.MontiCoreConfiguration.MODELPATH_LONG;
+import static de.monticore.MontiCoreConfiguration.OUT_LONG;
+import static de.monticore.MontiCoreConfiguration.REPORT_LONG;
+import static de.monticore.MontiCoreConfiguration.TEMPLATEPATH_LONG;
+import static de.monticore.MontiCoreConfiguration.TOOL_JAR_NAME_LONG;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -791,10 +833,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
 
-    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
-    InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
-    interpreterDecorator.decorate(cd, decoratedCD);
-    interpreterInterfaceDecorator.decorate(cd, decoratedCD);
     decorator.decorate(cd, decoratedCD);
   }
 
@@ -1383,10 +1421,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public GlobalExtensionManagement initGlex(MontiCoreConfiguration mcConfig) {
     // initialize glex
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    glex.addAfterTemplate("cd2java.Imports", new TemplateHookPoint("mc.Imports"));
     if(Reporting.isInitialized()) {
       if(mcConfig.getConfigTemplate().isPresent()) {
-        glex.setGlobalValue(CONFIGTEMPLATE_LONG,
-                mcConfig.getConfigTemplate().get());
+        String configTemplate = mcConfig.getConfigTemplate().get();
+        if (configTemplate.endsWith(".ftl")) { // remove file ending
+          configTemplate = configTemplate.substring(0, configTemplate.length() - 4);
+        }
+        glex.setGlobalValue(CONFIGTEMPLATE_LONG, configTemplate);
       }
     } else {
       Log.debug("Reporting not initialised or disabled. " +
@@ -1428,7 +1470,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     public static final String[] DEFAULT_STATIC_IMPORTS = {
             "de.se_rwth.commons.logging.Log",
             "de.monticore.generating.templateengine.reporting.Reporting",
-            "de.monticore.generating.templateengine.reporting.reporter.InputOutputFilesReporter",
             "de.se_rwth.commons.Names"};
 
 
@@ -1438,6 +1479,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
      */
     @Override
     protected void doRun(String script, Configuration configuration) {
+      FileReaderWriter.init();
       GrammarFamilyMill.init();
       BasicSymbolsMill.initializePrimitives();
       GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()

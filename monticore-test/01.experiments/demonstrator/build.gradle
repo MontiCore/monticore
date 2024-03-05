@@ -7,12 +7,7 @@ plugins {
 
 description = 'Experiments: automata'
 
-task generate (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/Automata.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("Automata.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
+// The grammars of this subproject are built by the generateMCGrammars MCGenTask
 
 // create an additional test set called productTest
 testSets{
