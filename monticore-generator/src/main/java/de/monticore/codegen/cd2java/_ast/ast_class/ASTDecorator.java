@@ -120,8 +120,8 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
             this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetEnclosingScope", errorCode,
                 MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
         methods.stream().filter(m -> m.getName().equals("setSpannedScope")).forEach(m ->
-            this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetSpannedScope", errorCode,
-                MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
+                this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetSpannedScope", errorCode,
+                        MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
         methodDecorator.enableTemplates();
         clazz.addAllCDMembers(methods);
       }
@@ -144,11 +144,11 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       ASTCDParameter superVisitorParameter = this.getCDParameterFacade().createParameter(superVisitorType, VISITOR_PREFIX);
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
-      String errorCode = "0x70000" + astService.getGeneratedErrorCode(astClass.getName() +
-              superVisitorType.printType());
+      String errorCode = "0x70000" + astService.getGeneratedErrorCode(astClass.getName()+
+          superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
           this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
-          MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType), "AST node"));
+              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType), "AST node"));
       result.add(superAccept);
     }
     return result;
@@ -194,7 +194,8 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED_ABSTRACT.build(), classType, ASTConstants.CONSTRUCT_METHOD);
     } else {
       constructMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), classType, ASTConstants.CONSTRUCT_METHOD);
-      new StringHookPoint("return " + astService.getMillFullName() + "."+ StringTransformations.uncapitalize(astService.removeASTPrefix(astClass.getName())) +  BUILDER_SUFFIX + "().uncheckedBuild();"));
+      this.replaceTemplate(EMPTY_BODY, constructMethod,
+          new StringHookPoint("return " + astService.getMillFullName() + "."+ StringTransformations.uncapitalize(astService.removeASTPrefix(astClass.getName())) +  BUILDER_SUFFIX + "().uncheckedBuild();"));
     }
     return constructMethod;
   }
