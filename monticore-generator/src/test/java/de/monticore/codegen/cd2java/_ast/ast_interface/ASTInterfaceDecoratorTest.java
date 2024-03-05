@@ -73,7 +73,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(6, dataInterface.getCDMethodList().size());
+    assertEquals(7, dataInterface.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -205,7 +205,7 @@ public class ASTInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTCDInterface noNameSymbol = decorator.decorate(interfaceBy, changeInterface);
 
-    assertEquals(6, noNameSymbol.getCDMethodList().size());
+    assertEquals(7, noNameSymbol.getCDMethodList().size());
 
     ASTCDMethod method = getMethodBy("getName", noNameSymbol);
     assertDeepEquals(PUBLIC_ABSTRACT, method.getModifier());

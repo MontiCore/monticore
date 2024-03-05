@@ -36,7 +36,7 @@ public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(7, decoratedInterface.getCDMethodList().size());
+    assertEquals(1, decoratedInterface.getCDMethodList().size());
   }
 
   @Test

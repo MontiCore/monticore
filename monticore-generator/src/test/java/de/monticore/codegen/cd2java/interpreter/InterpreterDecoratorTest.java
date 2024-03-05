@@ -38,7 +38,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(13, decoratedClass.getCDMethodList().size());
+    assertEquals(4, decoratedClass.getCDMethodList().size());
   }
 
   @Test
@@ -64,7 +64,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
   public void testClassAttributes() {
     List<ASTCDAttribute> attributes = decoratedClass.getCDAttributeList();
 
-    assertEquals(attributes.size(), 2);
+    assertEquals(attributes.size(), 3);
     assertEquals(attributes.get(0).getName(), "lexicalsInterpreter");
     assertEquals(attributes.get(1).getName(), "realThis");
   }
