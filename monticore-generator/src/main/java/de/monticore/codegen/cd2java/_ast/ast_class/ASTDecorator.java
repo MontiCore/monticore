@@ -134,7 +134,6 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
     return acceptMethod;
   }
-
   protected List<ASTCDMethod> createAcceptTraverserSuperMethods(ASTCDClass astClass) {
     List<ASTCDMethod> result = new ArrayList<>();
     //accept methods for super visitors
@@ -145,7 +144,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
       String errorCode = "0x70000" + astService.getGeneratedErrorCode(astClass.getName()+
-          superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+              superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
           this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
               MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType), "AST node"));
