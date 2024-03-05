@@ -10,7 +10,7 @@ buildscript {
 plugins {
   id "java-library"
   id "com.github.johnrengelman.shadow" version "7.1.2"
-  id "monticore" version "$version"
+  id "de.monticore.generator" version "$version"
   id "jacoco"
 }
 
@@ -28,7 +28,7 @@ def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
 
 
 sourceSets {
-  main.java.srcDirs += [grammarOutDir]
+  // main.java.srcDirs is already being added
   test.java.srcDirs += [testGrammarOutDir]
 
   grammars {
@@ -57,82 +57,80 @@ dependencies {
   // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
 }
 
-task generate {}
-task generateTR {}
-task generateTagDef {}
-task generateTagSchema {}
 
+generateMCGrammars {
+  outputDir = file grammarOutDir
+  debug = false
+  if (findProperty("ci") != null) {
+    script = "de/monticore/monticore_noreports.groovy"
+  }
+}
 
-// one task per file
-fileTree("src/main/grammars").matching { include '**/*.mc4' }.each {
-  def g = it
-  def taskname = "generateGrammar${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  def withDSTLGen = ("true").equals(getProperty('genTR')) && !["ODRuleGeneration", "ODRules", "TFBasisExts", "TFCommons",  // Do not generate TR grammars for TR-component grammars
-                                                               "Grammar", "Grammar_WithConcepts"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
-  def withTagGen = ("true").equals(getProperty('genTagging')) && !["TagSchema", "Tags", "Grammar", "Grammar_WithConcepts", "ODRuleGeneration", "ODRules", 
-                                                                   "TFBasisExts", "TFCommons"].contains(it.getName().substring(0, it.getName().lastIndexOf('.')))
-  task "$taskname"(type: MCTask) {
-    grammar = file g
-    outputDir = file grammarOutDir
+// This task can be used to run the MC generator on only a single grammar
+// Use this task to test changes to the MC generator without the need to rebuild all grammars
+// This task is NOT required in a standard project using MC
+tasks.register("generateSingleMCGrammarForDev", MCGenTask) {
+  outputDir = file grammarOutDir
+  grammar.setFrom(file "src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4")
+  debug = false
+  group = 'mc'
+}
+
+// Note: In the future we will introduce options for TR/Tag output to the tool
+import de.monticore.gradle.gen.MCGenTask;
+
+if (("true").equals(getProperty('genTR'))) {
+  tasks.register("generateTRGrammars", MCGenTask) {
+    // Make sure we use the output of the generate task
+    // (this ensures, that the inFputs are not evaluated too early, resulting in this task being skipped)
+    grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTROutput()
+            .matching {
+              exclude(['**/de/monticore/tf/*', '**/de/monticore/grammar/*'])
+            })
+    outputDir = file trafoOutDir
+    genDST = true
+    modelPath.from(file grammarOutDir) // requires the directory structure
     if (findProperty("ci") != null) {
       script = "de/monticore/monticore_noreports.groovy"
     }
-    def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
+    group = 'mc'
   }
-  generate.dependsOn("$taskname")
-  if (withDSTLGen) {   // run MC on the TR grammar
-    task "${taskname}TR"(type: MCTask) {
-      outputDir = file trafoOutDir // output into separate sourceset for the trafo artifact
-      grammar = getTRFile(g, file(grammarOutDir))
-      modelPath(grammarOutDir)
-      modelPath(file("src/main/grammars").toString())
-      if (findProperty("ci") != null) {
-        script = "de/monticore/monticore_noreports.groovy"
-      }
-      def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
-      def trGrammarIncludingPackage = file(grammarOutDir).toURI().relativize(file(grammar).toURI()).toString()
-      outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
-      outputs.upToDateWhen { incCheck(trGrammarIncludingPackage) }
-      isDSTL = true
-      dependsOn(generate)
+  processGrammarsResources.dependsOn(generateTRGrammars)
+  compileTrafoJava.dependsOn(generateTRGrammars)
+}
+
+if (("true").equals(getProperty('genTagging'))) {
+  tasks.register("generateTagDefGrammars", MCGenTask.class) {
+    // Make sure we use the output of the generate task
+    // (this ensures, that the inputs are not evaluated too early, resulting in this task being skipped)
+    grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTagDefOutput().matching {
+      exclude(['**/de/monticore/tagging/*', '**/Grammar_WithConcepts*'])
+    })
+    outputDir = file taggingOutDir
+    genTag = true
+    modelPath.from(file grammarOutDir)
+    dependsOn("generateMCGrammars")
+    if (findProperty("ci") != null) {
+      script = "de/monticore/monticore_noreports.groovy"
     }
-    generateTR.dependsOn("${taskname}TR")
   }
-  if (withTagGen) {   // run MC on the tag grammars
-    task "${taskname}TagDef"(type: MCTask) {
-      outputDir = file taggingOutDir
-      grammar = getTagDefinitionFile(g, file(grammarOutDir))
-      modelPath(grammarOutDir)
-      modelPath(file("src/main/grammars").toString())
-      if (findProperty("ci") != null) {
-        script = "de/monticore/monticore_noreports.groovy"
-      }
-      def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
-      def tagGrammarIncludingPackage = file(grammarOutDir).toURI().relativize(file(grammar).toURI()).toString()
-      outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
-      outputs.upToDateWhen { incCheck(tagGrammarIncludingPackage) }
-      genTag = true // Generate Tagging-Infrastructure
-      dependsOn(generate)
+  compileTaggingJava.dependsOn(generateTagDefGrammars)
+  processGrammarsResources.dependsOn(generateTagDefGrammars)
+  tasks.register("generateTagSchemaGrammars", MCGenTask.class) {
+    // Make sure we use the output of the generate task
+    // (this ensures, that the inputs are not evaluated too early, resulting in this task being skipped)
+    grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTagSchemaOutput().matching {
+      exclude(['**/de/monticore/tagging/*', '**/de/monticore/grammar/*'])
+    })
+    outputDir = file taggingOutDir
+    modelPath.from(file grammarOutDir)
+    dependsOn("generateMCGrammars")
+    if (findProperty("ci") != null) {
+      script = "de/monticore/monticore_noreports.groovy"
     }
-    generateTagDef.dependsOn("${taskname}TagDef")
-    task "${taskname}TagSchema"(type: MCTask) {
-      outputDir = file taggingOutDir
-      grammar = getTagSchemaFile(g, file(grammarOutDir))
-      modelPath(grammarOutDir)
-      modelPath(file("src/main/grammars").toString())
-      if (findProperty("ci") != null) {
-        script = "de/monticore/monticore_noreports.groovy"
-      }
-      def grammarIncludingPackage = file("src/main/grammars").toURI().relativize(g.toURI()).toString()
-      def tagGrammarIncludingPackage = file(grammarOutDir).toURI().relativize(file(grammar).toURI()).toString()
-      outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
-      outputs.upToDateWhen { incCheck(tagGrammarIncludingPackage) }
-      dependsOn(generate)
-    }
-    generateTagSchema.dependsOn("${taskname}TagSchema")
   }
+  compileTaggingJava.dependsOn(generateTagSchemaGrammars)
+  processGrammarsResources.dependsOn(generateTagSchemaGrammars)
 }
 
 // grammar dependencies without generated TR grammars
@@ -163,12 +161,14 @@ def grammarDependencies = ext {
   StreamExpressions = ["CommonExpressions"]
   MCExceptionStatements = ["MCCommonStatements"]
   MCFunctionTypes = ["MCBasicTypes"]
+  MCStructuralTypes = ["MCBasicTypes"]
   OOSymbols = ["BasicSymbols"]
   TFCommons = ["TFBasisExts"]
   MCJavaLiterals = ["MCCommonLiterals"]
   UMLStereotype = ["MCCommonLiterals"]
   MCArrayStatements = ["MCVarDeclarationStatements"]
   RegularExpressions = ["MCCommonLiterals"]
+  TupleExpressions = ["ExpressionsBasis"]
 
   // two dependencies
   Cardinality = ["MCBasics", "MCCommonLiterals"]
@@ -205,68 +205,26 @@ def grammarDependencies = ext {
   Grammar_WithConcepts = ["Grammar", "MCCommonStatements", "MCReturnStatements", "MCExceptionStatements", "JavaClassExpressions", "JavaLight", "Antlr", "CommonExpressions", "BitExpressions"]
 }
 
-compileJava {
-  tasks.findAll { task -> task.name.startsWith("generateGrammar") && !task.name.contains("TR") && !task.name.contains("TagDef") && !task.name.contains("TagSchema") }.each {
-    def grammarName = it.getName().substring('generateGrammar'.length())
-    def dependsOnGrammars = grammarDependencies[grammarName].collect { name -> tasks["generateGrammar${name}"] }
-    it.dependsOn dependsOnGrammars
-  }
-
-  dependsOn project.collect { it.tasks.findAll { task -> task.name.startsWith("generateGrammar") } }
-}
-
-compileTestJava {
-  dependsOn project.collect { it.tasks.withType(MCTask) }
-}
-
-compileJava.dependsOn generate
-compileTrafoJava.dependsOn generateTR
-compileTaggingJava.dependsOn generateTagDef
-compileTaggingJava.dependsOn generateTagSchema
-
-sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
-jar.dependsOn(sourcesJar)
-
 task generateTest {}
 
-// one task per file
-fileTree("src/test/grammars").matching { include '**/*.mc4' }.each {
-  def g = it
-  task "generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}"(type: MCTask) {
-    grammar = file g
-    outputDir = file testGrammarOutDir
-    handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
-    modelPath "$projectDir/$grammarDir", "$projectDir/src/test/grammars", "$projectDir/src/main/examples"
-    if (findProperty("ci") != null) {
-      script = "de/monticore/monticore_noreports.groovy"
-    }
-    def grammarIncludingPackage = file("src/test/grammars").toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
+tasks.register("generateTestGrammars", MCGenTask.class) {
+  grammar.setFrom(file "src/test/grammars")
+  grammar.from(file "src/main/examples")
+  outputDir = file testGrammarOutDir
+  hwcDir = file "$projectDir/src/main/java"
+  hwcDir += file "$projectDir/src/test/java"
+
+  modelPath("$projectDir/$grammarDir",
+          "$projectDir/src/test/grammars",
+          "$projectDir/src/main/examples")
+
+  if (findProperty("ci") != null) {
+    script = "de/monticore/monticore_noreports.groovy"
   }
-  generateTest.dependsOn("generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}")
 }
 
-fileTree("src/main/examples").matching { include '**/*.mc4' }.each {
-  def g = it
-  task "generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}"(type: MCTask) {
-    grammar = file g
-    outputDir = file testGrammarOutDir
-    handcodedPath "$projectDir/src/main/java", "$projectDir/src/test/java"
-    modelPath "$projectDir/$grammarDir", "$projectDir/src/main/examples", "$projectDir/src/test/java"
-    if (findProperty("ci") != null) {
-      script = "de/monticore/monticore_noreports.groovy"
-    }
-    def grammarIncludingPackage = file("src/main/examples").toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-  generateTest.dependsOn("generateTest${it.getName().substring(0, it.getName().lastIndexOf('.'))}")
-}
-
-compileTestJava.dependsOn(generateTest)
-processGrammarsResources.dependsOn(generateTR)
-processGrammarsResources.dependsOn(generate)
+compileTestJava.dependsOn(generateTestGrammars)
+processGrammarsResources.dependsOn(generateMCGrammars)
 
 
 /**
@@ -283,9 +241,10 @@ configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
 joiner.add "$projectDir/target/symbols"
 String mp = joiner.toString()
 
+///////////// MLC tasks - Start ///////////////////////
 // two tasks per MLC file
 // each task needs to depend on all internally promoted MLCs
-fileTree("src").matching { include '**/*.mlc' }.each {
+fileTree("src/main/grammars").matching { include '**/*.mlc' }.each {
   def f = it
   def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
 
@@ -294,7 +253,7 @@ fileTree("src").matching { include '**/*.mlc' }.each {
     group = 'MLC'
     mainClass = 'de.monticore.mlc.MLCTool'
     args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"
-    dependsOn("generateGrammar${mlcName}")
+    dependsOn("generateMCGrammars")
     showArtifacts.dependsOn("showArtifacts${mlcName}")
   }
 
@@ -303,7 +262,7 @@ fileTree("src").matching { include '**/*.mlc' }.each {
     group = 'MLC'
     mainClass = 'de.monticore.mlc.MLCTool'
     args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${buildDir}/reports"
-    dependsOn("generateGrammar${mlcName}")
+    dependsOn("generateMCGrammars")
     checkArtifacts.dependsOn("checkArtifacts${mlcName}")
   }
 }
@@ -311,15 +270,23 @@ fileTree("src").matching { include '**/*.mlc' }.each {
 ///////////// dependencies between check artifacts tasks ///////////////////////
 
 checkArtifactsAssignmentExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsBitExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsCommonExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCBasics)
 checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCLiteralsBasis)
+checkArtifactsExpressionsBasis.dependsOn(checkArtifactsBasicSymbols)
 
 checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsCommonExpressions)
 checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCFullGenericTypes)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsUglyExpressions)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCVarDeclarationStatements)
 
 checkArtifactsAntlr.dependsOn(checkArtifactsMCBasics)
+
 checkArtifactsGrammar.dependsOn(checkArtifactsMCCommonLiterals)
 checkArtifactsGrammar.dependsOn(checkArtifactsMCSimpleGenericTypes)
 checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsGrammar)
@@ -331,69 +298,100 @@ checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsJavaLight)
 checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsAntlr)
 checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsCommonExpressions)
 checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsBitExpressions)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsUglyExpressions)
 
 checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsMCLiteralsBasis)
+checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsMCBasics)
+checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsBasicSymbols)
+
 checkArtifactsMCLiteralsBasis.dependsOn(checkArtifactsMCBasics)
+
 checkArtifactsMCJavaLiterals.dependsOn(checkArtifactsMCCommonLiterals)
 
 checkArtifactsMCArrayStatements.dependsOn(checkArtifactsMCVarDeclarationStatements)
 checkArtifactsMCAssertStatements.dependsOn(checkArtifactsMCStatementsBasis)
 checkArtifactsMCAssertStatements.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsMCCommonStatements.dependsOn(checkArtifactsMCVarDeclarationStatements)
+
 checkArtifactsMCExceptionStatements.dependsOn(checkArtifactsMCCommonStatements)
+
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCAssertStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCExceptionStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCLowLevelStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCReturnStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCSynchronizedStatements)
 checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCArrayStatements)
+
 checkArtifactsMCLowLevelStatements.dependsOn(checkArtifactsMCStatementsBasis)
+
 checkArtifactsMCReturnStatements.dependsOn(checkArtifactsMCStatementsBasis)
 checkArtifactsMCReturnStatements.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsMCStatementsBasis.dependsOn(checkArtifactsMCBasics)
+
 checkArtifactsMCSynchronizedStatements.dependsOn(checkArtifactsMCCommonStatements)
+
 checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsMCStatementsBasis)
 checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsMCBasicTypes)
 checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsExpressionsBasis)
 checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsOOSymbols)
 
 checkArtifactsBasicSymbols.dependsOn(checkArtifactsMCBasics)
+
 checkArtifactsOOSymbols.dependsOn(checkArtifactsBasicSymbols)
 
 checkArtifactsODRuleGeneration.dependsOn(checkArtifactsMCFullGenericTypes)
+
 checkArtifactsODRules.dependsOn(checkArtifactsMCFullGenericTypes)
 checkArtifactsODRules.dependsOn(checkArtifactsTFBasisExts)
 checkArtifactsODRules.dependsOn(checkArtifactsMCJavaLiterals)
 checkArtifactsODRules.dependsOn(checkArtifactsUMLStereotype)
+checkArtifactsODRules.dependsOn(checkArtifactsUglyExpressions)
+checkArtifactsODRules.dependsOn(checkArtifactsExpressionsBasis)
+
 checkArtifactsTFBasisExts.dependsOn(checkArtifactsMCSimpleGenericTypes)
 checkArtifactsTFBasisExts.dependsOn(checkArtifactsMCCommonLiterals)
 checkArtifactsTFBasisExts.dependsOn(checkArtifactsJavaLight)
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsUglyExpressions)
+
 checkArtifactsTFCommons.dependsOn(checkArtifactsTFBasisExts)
+checkArtifactsTFCommons.dependsOn(checkArtifactsUglyExpressions)
 
 checkArtifactsMCArrayTypes.dependsOn(checkArtifactsMCBasicTypes)
+
 checkArtifactsMCBasicTypes.dependsOn(checkArtifactsMCBasics)
 checkArtifactsMCBasicTypes.dependsOn(checkArtifactsOOSymbols)
+
 checkArtifactsMCCollectionTypes.dependsOn(checkArtifactsMCBasicTypes)
+
 checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
+
 checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
 
 checkArtifactsCardinality.dependsOn(checkArtifactsMCBasics)
 checkArtifactsCardinality.dependsOn(checkArtifactsMCCommonLiterals)
+
 checkArtifactsJavaLight.dependsOn(checkArtifactsAssignmentExpressions)
 checkArtifactsJavaLight.dependsOn(checkArtifactsJavaClassExpressions)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCCommonStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCArrayStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsUglyExpressions)
+
 checkArtifactsMCCommon.dependsOn(checkArtifactsCardinality)
 checkArtifactsMCCommon.dependsOn(checkArtifactsCompleteness)
 checkArtifactsMCCommon.dependsOn(checkArtifactsUMLModifier)
 checkArtifactsMCCommon.dependsOn(checkArtifactsUMLStereotype)
+
 checkArtifactsUMLModifier.dependsOn(checkArtifactsUMLStereotype)
+
 checkArtifactsUMLStereotype.dependsOn(checkArtifactsMCCommonLiterals)
 
 checkArtifactsRegularExpressions.dependsOn(checkArtifactsMCCommonLiterals)
 
 checkArtifactsRegExType.dependsOn(checkArtifactsRegularExpressions)
+checkArtifactsRegExType.dependsOn(checkArtifactsMCBasicTypes)
 
 checkArtifactsUglyExpressions.dependsOn(checkArtifactsCommonExpressions)
 checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
@@ -401,15 +399,23 @@ checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
 ///////////// dependencies between show artifacts tasks ///////////////////////
 
 showArtifactsAssignmentExpressions.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsBitExpressions.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsCommonExpressions.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsExpressionsBasis.dependsOn(showArtifactsMCBasics)
 showArtifactsExpressionsBasis.dependsOn(showArtifactsMCLiteralsBasis)
+showArtifactsExpressionsBasis.dependsOn(showArtifactsBasicSymbols)
 
 showArtifactsJavaClassExpressions.dependsOn(showArtifactsCommonExpressions)
 showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCFullGenericTypes)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsUglyExpressions)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCStatementsBasis)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCVarDeclarationStatements)
 
 showArtifactsAntlr.dependsOn(showArtifactsMCBasics)
+
 showArtifactsGrammar.dependsOn(showArtifactsMCCommonLiterals)
 showArtifactsGrammar.dependsOn(showArtifactsMCSimpleGenericTypes)
 showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsGrammar)
@@ -421,72 +427,105 @@ showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsJavaLight)
 showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsAntlr)
 showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsCommonExpressions)
 showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsBitExpressions)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsUglyExpressions)
 
 showArtifactsMCCommonLiterals.dependsOn(showArtifactsMCLiteralsBasis)
+showArtifactsMCCommonLiterals.dependsOn(showArtifactsMCBasics)
+showArtifactsMCCommonLiterals.dependsOn(showArtifactsBasicSymbols)
+
 showArtifactsMCLiteralsBasis.dependsOn(showArtifactsMCBasics)
+
 showArtifactsMCJavaLiterals.dependsOn(showArtifactsMCCommonLiterals)
 
 showArtifactsMCArrayStatements.dependsOn(showArtifactsMCVarDeclarationStatements)
 showArtifactsMCAssertStatements.dependsOn(showArtifactsMCStatementsBasis)
 showArtifactsMCAssertStatements.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsMCCommonStatements.dependsOn(showArtifactsMCVarDeclarationStatements)
+
 showArtifactsMCExceptionStatements.dependsOn(showArtifactsMCCommonStatements)
+
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCAssertStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCExceptionStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCLowLevelStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCReturnStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCSynchronizedStatements)
 showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCArrayStatements)
+
 showArtifactsMCLowLevelStatements.dependsOn(showArtifactsMCStatementsBasis)
+
 showArtifactsMCReturnStatements.dependsOn(showArtifactsMCStatementsBasis)
 showArtifactsMCReturnStatements.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsMCStatementsBasis.dependsOn(showArtifactsMCBasics)
+
 showArtifactsMCSynchronizedStatements.dependsOn(showArtifactsMCCommonStatements)
+
 showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsMCStatementsBasis)
 showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsMCBasicTypes)
 showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsExpressionsBasis)
 showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsOOSymbols)
 
 showArtifactsBasicSymbols.dependsOn(showArtifactsMCBasics)
+
 showArtifactsOOSymbols.dependsOn(showArtifactsBasicSymbols)
 
 showArtifactsODRuleGeneration.dependsOn(showArtifactsMCFullGenericTypes)
+
 showArtifactsODRules.dependsOn(showArtifactsMCFullGenericTypes)
 showArtifactsODRules.dependsOn(showArtifactsTFBasisExts)
 showArtifactsODRules.dependsOn(showArtifactsMCJavaLiterals)
 showArtifactsODRules.dependsOn(showArtifactsUMLStereotype)
+showArtifactsODRules.dependsOn(showArtifactsUglyExpressions)
+showArtifactsODRules.dependsOn(showArtifactsExpressionsBasis)
+
 showArtifactsTFBasisExts.dependsOn(showArtifactsMCSimpleGenericTypes)
 showArtifactsTFBasisExts.dependsOn(showArtifactsMCCommonLiterals)
 showArtifactsTFBasisExts.dependsOn(showArtifactsJavaLight)
+showArtifactsTFBasisExts.dependsOn(showArtifactsUglyExpressions)
+
 showArtifactsTFCommons.dependsOn(showArtifactsTFBasisExts)
+showArtifactsTFCommons.dependsOn(showArtifactsUglyExpressions)
 
 showArtifactsMCArrayTypes.dependsOn(showArtifactsMCBasicTypes)
+
 showArtifactsMCBasicTypes.dependsOn(showArtifactsMCBasics)
 showArtifactsMCBasicTypes.dependsOn(showArtifactsOOSymbols)
+
 showArtifactsMCCollectionTypes.dependsOn(showArtifactsMCBasicTypes)
+
 showArtifactsMCFullGenericTypes.dependsOn(showArtifactsMCSimpleGenericTypes)
+
 showArtifactsMCSimpleGenericTypes.dependsOn(showArtifactsMCCollectionTypes)
 
 showArtifactsCardinality.dependsOn(showArtifactsMCBasics)
 showArtifactsCardinality.dependsOn(showArtifactsMCCommonLiterals)
+
 showArtifactsJavaLight.dependsOn(showArtifactsAssignmentExpressions)
 showArtifactsJavaLight.dependsOn(showArtifactsJavaClassExpressions)
 showArtifactsJavaLight.dependsOn(showArtifactsMCCommonStatements)
 showArtifactsJavaLight.dependsOn(showArtifactsMCArrayStatements)
 showArtifactsJavaLight.dependsOn(showArtifactsMCReturnStatements)
+showArtifactsJavaLight.dependsOn(showArtifactsUglyExpressions)
+
 showArtifactsMCCommon.dependsOn(showArtifactsCardinality)
 showArtifactsMCCommon.dependsOn(showArtifactsCompleteness)
 showArtifactsMCCommon.dependsOn(showArtifactsUMLModifier)
 showArtifactsMCCommon.dependsOn(showArtifactsUMLStereotype)
+
 showArtifactsUMLModifier.dependsOn(showArtifactsUMLStereotype)
+
 showArtifactsUMLStereotype.dependsOn(showArtifactsMCCommonLiterals)
 
 showArtifactsRegularExpressions.dependsOn(showArtifactsMCCommonLiterals)
 
 showArtifactsRegExType.dependsOn(showArtifactsRegularExpressions)
+showArtifactsRegExType.dependsOn(showArtifactsMCBasicTypes)
 
-showArtifactsUglyExpressions.dependsOn(showArtifactsExpressionsBasis)
+showArtifactsUglyExpressions.dependsOn(showArtifactsCommonExpressions)
 showArtifactsUglyExpressions.dependsOn(showArtifactsMCBasicTypes)
+
+///////////// MLC tasks - End ///////////////////////
 
 java {
   registerFeature('grammars') {
@@ -501,8 +540,8 @@ shadowJar {
   from sourceSets.grammars.resources
 }
 
-shadowJar.dependsOn(generate)
-shadowJar.dependsOn(generateTest)
+shadowJar.dependsOn(generateMCGrammars)
+shadowJar.dependsOn(generateTestGrammars)
 
 jar.dependsOn(shadowJar)
 jar.dependsOn(grammarsJar)

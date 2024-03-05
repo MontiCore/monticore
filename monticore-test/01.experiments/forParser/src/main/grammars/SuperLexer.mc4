@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar SuperLexer {
+  options {
+    LexerSuperClass = "superlexer.ModifiedMCLexerBase"
+  }
+  token A = 'a' : {lexLex();} ;
+  PA = A ";" ;
+}

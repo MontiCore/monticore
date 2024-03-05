@@ -21,6 +21,6 @@ ${tc.signature("simpleName", "symbolFullName")}
   //try to find adapted one
   filteredSymbols.addAll(resolveAdapted${simpleName}LocallyMany(foundSymbols, name, modifier, predicate));
   filteredSymbols = filterSymbolsByAccessModifier(modifier, filteredSymbols);
-  filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
+  filteredSymbols = new de.monticore.symboltable.SetAsListAdapter<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new)));
 
   return filteredSymbols;

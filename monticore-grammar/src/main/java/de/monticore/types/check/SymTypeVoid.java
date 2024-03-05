@@ -18,16 +18,6 @@ public class SymTypeVoid extends SymTypeExpression {
   }
   
   @Override
-  public String print() {
-    return BasicSymbolsMill.VOID;
-  }
-
-  @Override
-  public String printFullName() {
-    return print();
-  }
-
-  @Override
   public boolean isVoidType() {
     return true;
   }

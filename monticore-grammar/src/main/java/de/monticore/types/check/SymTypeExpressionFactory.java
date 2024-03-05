@@ -380,6 +380,14 @@ public class SymTypeExpressionFactory {
     return new SymTypeOfFunction(symbol, returnType, argumentTypes, elliptic);
   }
 
+  public static SymTypeOfTuple createTuple(List<? extends SymTypeExpression> types) {
+    return new SymTypeOfTuple(new ArrayList<>(types));
+  }
+
+  public static SymTypeOfTuple createTuple(SymTypeExpression... types) {
+    return createTuple(List.of(types));
+  }
+
   public static SymTypeOfUnion createUnion(Collection<? extends SymTypeExpression> unionizedTypes) {
     return new SymTypeOfUnion(unionizedTypes);
   }

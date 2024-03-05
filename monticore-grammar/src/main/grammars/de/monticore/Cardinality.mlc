@@ -13,13 +13,9 @@ mlc Cardinality {
     include "de/monticore/cardinality/**.java";
   }
 
-  // export the prettyprinter
-  export "$projectDir/src/main/java" {
-    include "de/monticore/prettyprint/Cardinality*.java";
-  }
-
   promote {
     mlc "de.monticore.MCBasics";
     mlc "de.monticore.literals.MCCommonLiterals";
   }
+
 }

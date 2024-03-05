@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symbolName", "simpleName")}
-  final Set<${symbolName}> result = new HashSet<>();
+  final LinkedHashSet<${symbolName}> result = new LinkedHashSet<>();
 
 if (checkIfContinueWithEnclosingScope(foundSymbols) && getEnclosingScope() != null) {
 if (!(getEnclosingScope() instanceof IGlobalScope)) {
@@ -17,4 +17,4 @@ if (!(getEnclosingScope() instanceof IGlobalScope)) {
       result.addAll(resolvedFromEnclosing);
     }
   }
-  return new ArrayList(result);
+  return new de.monticore.symboltable.SetAsListAdapter(result);

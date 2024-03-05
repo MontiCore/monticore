@@ -98,6 +98,8 @@ public class SymTypeExpressionTest {
 
   static SymTypeExpression teInter1;
 
+  static SymTypeExpression teTuple1;
+
   static SymTypeExpression teRegEx1;
 
   static SymTypeExpression teRegEx2;
@@ -183,6 +185,8 @@ public class SymTypeExpressionTest {
 
     teInter1 = createIntersection(teInt, teDouble);
 
+    teTuple1 = createTuple(teInt, teDouble);
+
     teRegEx1 = createTypeRegEx("gr(a|e)y");
 
     teObscure = createObscureType();
@@ -224,6 +228,7 @@ public class SymTypeExpressionTest {
     assertTrue(teUnion1.isValidType());
     assertTrue(teInter1.isIntersectionType());
     assertTrue(teInter1.isValidType());
+    assertTrue(teTuple1.isTupleType());
     assertTrue(teRegEx1.isRegExType());
     assertTrue(teObscure.isObscureType());
     assertFalse(teObscure.isValidType());
@@ -254,8 +259,9 @@ public class SymTypeExpressionTest {
     assertEquals("(double, int) -> int", teFunc2.print());
     assertEquals("((double, int) -> int) -> () -> void", teFunc3.print());
     assertEquals("(double, int...) -> void", teFunc4.print());
-    assertEquals("(double | int)", teUnion1.print());
-    assertEquals("(double & int)", teInter1.print());
+    assertEquals("double | int", teUnion1.print());
+    assertEquals("double & int", teInter1.print());
+    assertEquals("(int, double)", teTuple1.print());
     assertEquals("R\"gr(a|e)y\"", teRegEx1.print());
   }
 
@@ -469,6 +475,22 @@ public class SymTypeExpressionTest {
     assertEquals("int",
         intersected1Types.get(1).getAsJsonObject().getStringMember( "primitiveName"));
 
+    result = JsonParser.parse(teTuple1.printAsJson());
+    assertTrue(result.isJsonObject());
+    JsonObject teTuple1Json = result.getAsJsonObject();
+    assertEquals("de.monticore.types.check.SymTypeOfTuple",
+        teTuple1Json.getStringMember("kind"));
+    assertEquals(2, teTuple1Json.getArrayMember("listedTypes").size());
+    List<JsonElement> tuple1types = teTuple1Json.getArrayMember("listedTypes");
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
+        tuple1types.get(0).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("int",
+        tuple1types.get(0).getAsJsonObject().getStringMember( "primitiveName"));
+    assertEquals("de.monticore.types.check.SymTypePrimitive",
+        tuple1types.get(1).getAsJsonObject().getStringMember( "kind"));
+    assertEquals("double",
+        tuple1types.get(1).getAsJsonObject().getStringMember( "primitiveName"));
+
     result = JsonParser.parse(teRegEx1.printAsJson());
     assertTrue(result.isJsonObject());
     JsonObject teRegEx1Json = result.getAsJsonObject();
@@ -535,6 +557,7 @@ public class SymTypeExpressionTest {
     assertFalse(teFunc3.hasTypeInfo());
     assertFalse(teFunc4.hasTypeInfo());
     assertFalse(teUnion1.hasTypeInfo());
+    assertFalse(teTuple1.hasTypeInfo());
     assertFalse(teRegEx1.hasTypeInfo());
     assertFalse(teObscure.hasTypeInfo());
   }
@@ -608,6 +631,11 @@ public class SymTypeExpressionTest {
     assertTrue(teInter1.deepClone().isIntersectionType());
     assertEquals(teInter1.print(), teInter1.deepClone().print());
 
+    //SymTypeOfTuple
+    assertTrue(teTuple1.deepClone() instanceof SymTypeOfTuple);
+    assertTrue(teTuple1.deepClone().isTupleType());
+    assertEquals(teTuple1.print(), teTuple1.deepClone().print());
+
     assertTrue(teRegEx1.deepClone() instanceof SymTypeOfRegEx);
     assertTrue(teRegEx1.deepClone().isRegExType());
     assertEquals(teRegEx1.print(), teRegEx1.deepClone().print());
@@ -679,25 +707,31 @@ public class SymTypeExpressionTest {
     assertEquals("() -> void", tFunc1.print());
 
     SymTypeOfFunction tFunc2 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(tFunc1, tFunc1));
-    assertEquals("(() -> void, () -> void) -> void", tFunc2.print());
+    assertEquals("((() -> void), (() -> void)) -> void", tFunc2.print());
 
     SymTypeOfFunction tFunc3 = SymTypeExpressionFactory.createFunction(tVoid, tFunc1, tFunc1);
-    assertEquals("(() -> void, () -> void) -> void", tFunc3.print());
+    assertEquals("((() -> void), (() -> void)) -> void", tFunc3.print());
 
     SymTypeOfFunction tFunc4 = SymTypeExpressionFactory.createFunction(tVoid, Lists.newArrayList(teDouble, teInt), true);
     assertEquals("(double, int...) -> void", tFunc4.print());
 
     SymTypeOfUnion tUnion1 = createUnion(teInt, teDouble);
-    assertEquals("(double | int)", tUnion1.print());
+    assertEquals("double | int", tUnion1.print());
 
     SymTypeOfUnion tUnion2 = createUnion(Set.of(teInt, teDouble, teArr1));
-    assertEquals("(Human[] | double | int)", tUnion2.print());
+    assertEquals("Human[] | double | int", tUnion2.print());
 
     SymTypeOfIntersection tInter1 = createIntersection(teInt, teDouble);
-    assertEquals("(double & int)", tInter1.print());
+    assertEquals("double & int", tInter1.print());
 
     SymTypeOfIntersection tInter2 = createIntersection(Set.of(teInt, teDouble, teArr1));
-    assertEquals("(Human[] & double & int)", tInter2.print());
+    assertEquals("Human[] & double & int", tInter2.print());
+
+    SymTypeOfTuple tTuple1 = createTuple(teInt, teDouble);
+    assertEquals("(int, double)", tTuple1.print());
+
+    SymTypeOfTuple tTuple2 = createTuple(List.of(teInt, teDouble));
+    assertEquals("(int, double)", tTuple2.print());
 
     SymTypeOfRegEx tRegEx1 = createTypeRegEx("rege(x(es)?|xps?)");
     assertEquals("R\"rege(x(es)?|xps?)\"", tRegEx1.print());

@@ -1,18 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: ch17'
 
-fileTree(grammarDir).matching { include '**/*.mc4'}.each {
-  def g = it
-  def taskname = file(grammarDir).toURI().relativize(g.toURI()).toString()
-  taskname = taskname.substring(0, taskname.lastIndexOf(".")).replaceAll("/",'_')
-  task  "generate${taskname}" (type: MCTask) {
-    grammar = file g
-    outputDir = file outDir
-    def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
-    def uptoDate = incCheck(grammarIncludingPackage)
-    outputs.upToDateWhen { uptoDate }
-  }
-}
-
-generateHAutomata.dependsOn generateSAutomata
-generateIAutomata.dependsOn generateIAutomataComp
+// The grammars of this subproject are built by the generateMCGrammars MCGenTask

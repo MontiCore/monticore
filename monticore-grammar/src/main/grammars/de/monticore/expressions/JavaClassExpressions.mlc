@@ -12,15 +12,18 @@ mlc JavaClassExpressions {
     include "de/monticore/expressions/javaclassexpressions/**.java";
   }
 
-  // export the prettyprinter
-  export "$projectDir/src/main/java" {
-    include "de/monticore/expressions/prettyprint/JavaClassExpressions*.java";
-    include "de/monticore/expressions/exptojava/JavaClassExpressions*.java";
-    include "de/monticore/types/check/DeriveSymTypeOfJavaClassExpressions.java";
-  }
-
   promote {
     mlc "de.monticore.expressions.CommonExpressions";
     mlc "de.monticore.types.MCFullGenericTypes";
   }
+
+  uses {
+    mlc "de.monticore.expressions.UglyExpressions";
+    mlc "de.monticore.statements.MCStatementsBasis";
+    mlc "de.monticore.statements.MCVarDeclarationStatements";
+
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    include "$projectDir/src/main/java/de/monticore/types3/SymTypeRelations.java";
+  }
+
 }

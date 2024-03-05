@@ -16,7 +16,7 @@ import ${genHelper.getQualifiedGrammarName()?lower_case}.*;
 
 <#if genHelper.isEmbeddedJavaCode()>
 options {
-  superClass=MCParser;
+  superClass=${genHelper.getParserSuperClass()};
   tokenVocab=${ast.getName()}AntlrLexer${suffix};
 }
 </#if>

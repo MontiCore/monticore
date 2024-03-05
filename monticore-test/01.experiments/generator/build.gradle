@@ -1,9 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: generator'
 
-task generate (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/HierAutomata.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("HierAutomata.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
+// The grammars of this subproject are built by the generateMCGrammars MCGenTask

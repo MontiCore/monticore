@@ -25,11 +25,11 @@ public class LambdaExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   @Test
   public void deriveFromLambdaExpressionOneParameterTest() throws IOException {
     // example with int, long
-    checkExpr("(int x) -> 5L", "(int) -> long");
+    checkExpr("(int x) -> 5L", "int -> long");
     // example with input equaling output
-    checkExpr("(int x) -> x", "(int) -> int");
+    checkExpr("(int x) -> x", "int -> int");
     // example with lambda nesting
-    checkExpr("(int x) -> (int y) -> x + y", "(int) -> (int) -> int");
+    checkExpr("(int x) -> (int y) -> x + y", "int -> int -> int");
   }
 
   @Test

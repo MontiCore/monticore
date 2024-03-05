@@ -13,6 +13,7 @@ import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVi
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
 import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsTypeVisitor;
+import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
@@ -22,6 +23,7 @@ import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcfullgenerictypes.types3.MCFullGenericTypesTypeVisitor;
 import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
+import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 
 public class CombineExpressionsWithLiteralsTypeTraverserFactory {
@@ -69,6 +71,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derOCLExpressions.setType4Ast(type4Ast);
     visitors.derOptionalOperators.setType4Ast(type4Ast);
     visitors.derSetExpressions.setType4Ast(type4Ast);
+    visitors.derTupleExpressions.setType4Ast(type4Ast);
     visitors.derUglyExpressions.setType4Ast(type4Ast);
     visitors.derOfMCCommonLiterals.setType4Ast(type4Ast);
     // MCTypes
@@ -78,6 +81,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.synMCFullGenericTypes.setType4Ast(type4Ast);
     visitors.synMCFunctionTypes.setType4Ast(type4Ast);
     visitors.synMCSimpleGenericTypes.setType4Ast(type4Ast);
+    visitors.synMCStructuralTypes.setType4Ast(type4Ast);
     visitors.synRegExType.setType4Ast(type4Ast);
   }
 
@@ -94,6 +98,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
     visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
     visitors.derSetExpressions = new SetExpressionsTypeVisitor();
+    visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
     visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     // MCTypes
@@ -103,6 +108,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.synMCFullGenericTypes = new MCFullGenericTypesTypeVisitor();
     visitors.synMCFunctionTypes = new MCFunctionTypesTypeVisitor();
     visitors.synMCSimpleGenericTypes = new MCSimpleGenericTypesTypeVisitor();
+    visitors.synMCStructuralTypes = new MCStructuralTypesTypeVisitor();
     visitors.synRegExType = new RegExTypeTypeVisitor();
     return visitors;
   }
@@ -166,6 +172,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.add4OCLExpressions(visitors.derOCLExpressions);
     traverser.add4OptionalOperators(visitors.derOptionalOperators);
     traverser.add4SetExpressions(visitors.derSetExpressions);
+    traverser.add4TupleExpressions(visitors.derTupleExpressions);
     traverser.add4UglyExpressions(visitors.derUglyExpressions);
     traverser.add4MCCommonLiterals(visitors.derOfMCCommonLiterals);
     // MCTypes
@@ -175,6 +182,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.add4MCFullGenericTypes(visitors.synMCFullGenericTypes);
     traverser.add4MCFunctionTypes(visitors.synMCFunctionTypes);
     traverser.add4MCSimpleGenericTypes(visitors.synMCSimpleGenericTypes);
+    traverser.add4MCStructuralTypes(visitors.synMCStructuralTypes);
     traverser.add4RegExType(visitors.synRegExType);
   }
 
@@ -201,6 +209,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
     public SetExpressionsTypeVisitor derSetExpressions;
 
+    public TupleExpressionsTypeVisitor derTupleExpressions;
+
     public UglyExpressionsTypeVisitor derUglyExpressions;
 
     public MCCommonLiteralsTypeVisitor derOfMCCommonLiterals;
@@ -218,6 +228,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public MCFunctionTypesTypeVisitor synMCFunctionTypes;
 
     public MCSimpleGenericTypesTypeVisitor synMCSimpleGenericTypes;
+
+    public MCStructuralTypesTypeVisitor synMCStructuralTypes;
 
     public RegExTypeTypeVisitor synRegExType;
   }

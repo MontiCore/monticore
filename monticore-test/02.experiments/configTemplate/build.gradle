@@ -1,13 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: configTemplate'
 
-task generate (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/Automata.mc4"
-  outputDir = file outDir
-  templatePath "$projectDir/src/main/tpl"
+// Modify the generateMCGrammars MCGenTask: Set the config template
+generateMCGrammars {
   configTemplate = "ct.ftl"
-  def uptoDate = incCheck("Automata.mc4")
-  outputs.upToDateWhen { uptoDate }
+  // Note: Incremental building will not work. Any change to a file within the templatePath will require a full rebuild
+  templatePath "$projectDir/src/main/tpl"
 }
-
-

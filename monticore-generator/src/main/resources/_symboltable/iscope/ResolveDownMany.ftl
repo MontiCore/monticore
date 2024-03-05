@@ -3,7 +3,7 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
   // skip resolution of the symbol, if the symbol has already been resolved in this scope instance
   // during the current execution of the resolution algorithm
   if (is${simpleName}SymbolsAlreadyResolved()) {
-    return new ArrayList<>();
+    return new de.monticore.symboltable.SetAsListAdapter<>();
   }
 
   // (1) resolve symbol locally. During this, the 'already resolved' flag is set to true,

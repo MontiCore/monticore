@@ -23,4 +23,8 @@ mlc MCCommonStatements {
     mlc "de.monticore.statements.MCVarDeclarationStatements";
   }
 
+  uses {
+    include "$projectDir/src/main/java/de/monticore/expressions/prettyprint/ExpressionsBasisPrettyPrinter.java";
+  }
+
 }

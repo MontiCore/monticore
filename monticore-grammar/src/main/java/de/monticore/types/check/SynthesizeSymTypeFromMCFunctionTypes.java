@@ -4,6 +4,7 @@ package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
+import de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesHandler;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesVisitor2;
@@ -72,6 +73,27 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
         arguments,
         functionType.getMCFunctionParTypes().isPresentIsElliptic()
     );
+    getTypeCheckResult().setResult(symType);
+    functionType.setDefiningSymbol(symType.getTypeInfo());
+  }
+
+  public void handle(ASTMCUnaryFunctionType functionType) {
+    SymTypeExpression symType;
+
+    functionType.getMCType().accept(getTraverser());
+    SymTypeExpression parType = getTypeCheckResult().getResult();
+    functionType.getMCReturnType().accept(getTraverser());
+    SymTypeExpression retType = getTypeCheckResult().getResult();
+
+    if (parType.isObscureType() || retType.isObscureType()) {
+      symType = SymTypeExpressionFactory.createObscureType();
+    }
+    else {
+      symType = SymTypeExpressionFactory.createFunction(
+          retType, List.of(parType), false
+      );
+    }
+
     getTypeCheckResult().setResult(symType);
     functionType.setDefiningSymbol(symType.getTypeInfo());
   }

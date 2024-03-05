@@ -40,6 +40,8 @@ repositories {
 dependencies {
   implementation gradleApi()
 
+  implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
+
   implementation "de.monticore.bs:monticore-runtime:$previous_mc_version"
   implementation "de.monticore.bs:monticore-grammar:$previous_mc_version"
   grammar "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
@@ -65,8 +67,6 @@ dependencies {
   testImplementation "junit:junit:$junit_version"
   testImplementation 'org.mockito:mockito-core:4.5.1'
 
-  implementation "de.monticore:tagging:7.6.0-SNAPSHOT" // TODO: Remove both with next release, once the tagging grammars have been added to monticore-grammar
-  grammar "de.monticore:tagging:7.6.0-SNAPSHOT:grammars"
 }
 
 sourceSets {
@@ -163,14 +163,15 @@ gradlePlugin.plugins {
     id = pluginName
     implementationClass = 'de.monticore.MCPlugin'
   }
+  // New version of our plugin (supporting incremental builds)
+  monticoreGenerator {
+    id = hasProperty("bootstrap") ? "de.monticore.bs.generator" : "de.monticore.generator"
+    implementationClass = 'de.monticore.gradle.MCGeneratorPlugin'
+  }
 }
 
 publishing {
-  publications {
-    maven(MavenPublication) {
-      from(components.java)
-    }
-  }
+  // The gradle-plugin plugin deploys automatically a pluginMaven publication (from the main component)
   repositories.maven {
     credentials.username mavenUser
     credentials.password mavenPassword

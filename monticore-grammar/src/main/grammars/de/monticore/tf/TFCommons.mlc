@@ -17,4 +17,8 @@ mlc TFCommons {
     mlc "de.monticore.tf.TFBasisExts";
   }
 
+  uses {
+    mlc "de.monticore.expressions.UglyExpressions";
+  }
+
 }

@@ -3,6 +3,12 @@ ${tc.signature("antlrGenerator","suffix")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
 lexer grammar ${ast.getName()}AntlrLexer${suffix};
 
+<#if genHelper.getLexerSuperClass()??>
+options {
+  superClass = ${genHelper.getLexerSuperClass()};
+}
+</#if>
+
 @lexer::header {
 <#if genHelper.isJava()>
   package ${genHelper.getParserPackage()};

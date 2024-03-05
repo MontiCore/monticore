@@ -270,5 +270,9 @@ public class MCGrammarSymbolTableHelper {
     return Optional.empty();
   }
 
+  public static void cleanUp() {
+    superProdCache.invalidateAll();
+  }
+
 
 }
