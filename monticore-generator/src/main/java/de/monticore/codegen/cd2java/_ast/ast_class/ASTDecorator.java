@@ -134,6 +134,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
     return acceptMethod;
   }
+
   protected List<ASTCDMethod> createAcceptTraverserSuperMethods(ASTCDClass astClass) {
     List<ASTCDMethod> result = new ArrayList<>();
     //accept methods for super visitors
