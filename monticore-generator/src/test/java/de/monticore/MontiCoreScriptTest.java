@@ -477,7 +477,8 @@ public class MontiCoreScriptTest {
     assertEquals("Statechart", visitorPackageCD.getCDDefinition().getName());
     assertEquals(3, visitorPackageCD.getCDDefinition().getCDClassesList().size());
     assertEquals("StatechartTraverserImplementation", visitorPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
-    assertEquals("StatechartInheritanceHandler", visitorPackageCD.getCDDefinition().getCDClassesList().get(1).getName());
+    assertEquals("StatechartInterpreter", visitorPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
+    assertEquals("StatechartInheritanceHandler", visitorPackageCD.getCDDefinition().getCDClassesList().get(2).getName());
     assertEquals(4, visitorPackageCD.getCDDefinition().getCDInterfacesList().size());
     assertEquals("StatechartTraverser", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
     assertEquals("StatechartVisitor2", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
