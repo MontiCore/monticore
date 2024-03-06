@@ -12,6 +12,11 @@ dependencies {
   implementation project(path: ':monticore-runtime')
 }
 
-// The grammars of this subproject are built by the generateMCGrammars MCGenTask
+sourceSets {
+  main.java.srcDirs = [ "$projectDir/src/main/java" ]
+}
 
-
+/*
+ * This test project builds the grammars using the GenerateAutomataParserTest,
+ *  which requires the previous bs dependencies
+ */
