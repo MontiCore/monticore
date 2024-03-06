@@ -45,22 +45,17 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   @Override
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
-    ASTCDInterfaceUsage interfaceUsage = getSuperInterface();
     List<ASTCDAttribute> superInterpreters = getInterpreterAttributes();
-    List<ASTCDConstructor> constructors = getConstructors(superInterpreters);
-    List<ASTCDMember> realThisComponents = getRealThisComponents();
-    List<ASTCDMethod> interpretMethods = getInterpretMethods();
-    List<ASTCDMember> contextMembers = createMapMembers();
 
     return CD4CodeMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
         .setName(service.getInterpreterSimpleName())
-        .setCDInterfaceUsage(interfaceUsage)
+        .setCDInterfaceUsage(getSuperInterface())
         .addAllCDMembers(superInterpreters)
-        .addAllCDMembers(constructors)
-        .addAllCDMembers(realThisComponents)
-        .addAllCDMembers(contextMembers)
-        .addAllCDMembers(interpretMethods)
+        .addAllCDMembers(getConstructors(superInterpreters))
+        .addAllCDMembers(getRealThisComponents())
+        .addAllCDMembers(createMapMembers())
+        .addAllCDMembers(getInterpretMethods())
         .build();
   }
 
