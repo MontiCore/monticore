@@ -833,6 +833,11 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
 
+    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
+    InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
+    interpreterDecorator.decorate(cd, decoratedCD);
+    interpreterInterfaceDecorator.decorate(cd, decoratedCD);
+
     decorator.decorate(cd, decoratedCD);
   }
 
