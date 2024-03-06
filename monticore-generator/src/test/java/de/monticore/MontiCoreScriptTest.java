@@ -476,13 +476,14 @@ public class MontiCoreScriptTest {
     assertNotNull(visitorPackageCD.getCDDefinition());
     assertEquals("Statechart", visitorPackageCD.getCDDefinition().getName());
     assertEquals(3, visitorPackageCD.getCDDefinition().getCDClassesList().size());
-    assertEquals("StatechartTraverserImplementation", visitorPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
     assertEquals("StatechartInterpreter", visitorPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
+    assertEquals("StatechartTraverserImplementation", visitorPackageCD.getCDDefinition().getCDClassesList().get(1).getName());
     assertEquals("StatechartInheritanceHandler", visitorPackageCD.getCDDefinition().getCDClassesList().get(2).getName());
     assertEquals(4, visitorPackageCD.getCDDefinition().getCDInterfacesList().size());
-    assertEquals("StatechartTraverser", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
-    assertEquals("StatechartVisitor2", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
-    assertEquals("StatechartHandler", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(2).getName());
+    assertEquals("IStatechartInterpreter", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
+    assertEquals("StatechartTraverser", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
+    assertEquals("StatechartVisitor2", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(2).getName());
+    assertEquals("StatechartHandler", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(3).getName());
   
     assertTrue(Log.getFindings().isEmpty());
   }
