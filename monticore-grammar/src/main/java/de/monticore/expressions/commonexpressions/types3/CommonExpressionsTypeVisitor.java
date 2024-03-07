@@ -4,6 +4,7 @@ package de.monticore.expressions.commonexpressions.types3;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
+import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
@@ -1231,7 +1232,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
   }
 
-  protected CommonExpressionsTypeDispatcher getTypeDispatcher() {
+  protected ICommonExpressionsTypeDispatcher getTypeDispatcher() {
     return CommonExpressionsMill.typeDispatcher();
   }
 
