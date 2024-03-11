@@ -469,43 +469,19 @@ statechart Door {
 * [*Detailed description*](https://github.com/MontiCore/statecharts/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
 
 
-### SysML_2 (Alpha: Intention to become stable) - not publicly available (links are private)
-* MontiCore languages for parsing artifacts of the SysML 2 language family. 
-  Examples:
-```
-package 'Vehicles' {                      // a SysML block diagram
-  private import ScalarValues::*; 
-  block Vehicle; 
-  block Truck is Vehicle; 
-  value type Torque is ISQ::TorqueValue; 
-}
-```
-```
-package 'Coffee' {                      // a SysML activity diagram
-  activity BrewCoffee (in beans : CoffeeBeans, in, water : Water, out coffee : Coffee) { 
-    bind grind::beans = beans;
-    action grind : Grind (in beans, out powder);
-    flow grind::powder to brew::powder;
-    bind brew::water = water;
-    action brew : Brew (in powder, in water, out coffee); 
-    bind brew::coffee = coffee;
-  }
-}
-```
-* The SysML 2 grammars adhere to the general upcoming SysML 2 specification 
+### SysML v2 (Alpha: Intention to become stable) - not yet publicly available (links are private)
+* MontiCore languages for parsing artifacts of the SysML v2 language. 
+* The SysML v2 grammars adhere to the general upcoming SysML v2 specification 
   (which is still under improvement currently).
-* Actually these grammars represents a slight superset to the official SysML 2
-  standard. It is intended for parsing SysML 2-compliant models. 
+* Actually these grammars represents a slight superset to the official SysML v2
+  standard. It is intended for parsing SysML v2-compliant models. 
   Well-formedness checks are kept to a minimum, because we assume to parse
-  correctly produced SysML 2 models only.
-* MontiCore's SysML 2 is a language family that comes with a textual 
-  representation to describe SysML 2 diagrams with respect to the standard. 
-* SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
-  **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
-  **UseCaseDiagrams**, and general **SysMLBasics**
-* [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml)
+  correctly produced SysML v2 models only.
+* MontiCore's SysML v2 is a language that comes with a textual 
+  representation to describe SysML v2 diagrams with respect to the standard. 
+* [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/language/src/main/grammars/de/monticore/lang)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/src/main/grammars/de/monticore/lang/sysml/sysml2.md)
+  [*public documentation*](https://github.com/MontiCore/sysmlv2/blob/master/README.md)
 
 
 ### Tagging (Alpha: Intention to become stable) - not publicly available (links are private)
