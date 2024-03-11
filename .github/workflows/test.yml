@@ -10,6 +10,7 @@ on:
 
 env:
     GRADLE_VERSION: 7.4
+    GRADLE_OPTS: "-Pci"
 
 jobs:
 
@@ -22,7 +23,7 @@ jobs:
       uses: gradle/actions/setup-gradle@v3
       with:
        gradle-version: ${{env.GRADLE_VERSION}}
-       arguments: build -p monticore-generator -Pci --info
+       arguments: build ${{env.GRADLE_OPTS}} -p monticore-generator --info
 
   build-mc:
     runs-on: ubuntu-latest
@@ -34,7 +35,7 @@ jobs:
       uses: gradle/actions/setup-gradle@v3
       with:
        gradle-version: ${{env.GRADLE_VERSION}}
-       arguments: buildMC -Pci -PgenTR=true -PgenEMF=true -PgenTagging=true --scan
+       arguments: buildMC ${{env.GRADLE_OPTS}} -PgenTR=true -PgenEMF=true -PgenTagging=true --scan
 
   test-01-experiments:
     runs-on: ubuntu-latest
@@ -47,7 +48,7 @@ jobs:
       with:
        gradle-version:  ${{env.GRADLE_VERSION}}
        cache-read-only: true
-       arguments: build test -p monticore-test/01.experiments -PgenEMF=true -Pci --scan
+       arguments: build test ${{env.GRADLE_OPTS}} -p monticore-test/01.experiments -PgenEMF=true --scan
   test-02-experiments:
     runs-on: ubuntu-latest
     needs: build-mc
@@ -59,7 +60,7 @@ jobs:
       with:
        gradle-version: 7.4
        cache-read-only: true
-       arguments: build test -p monticore-test/02.experiments -PgenEMF=false -Pci --scan # todo reenable emf
+       arguments: build test ${{env.GRADLE_OPTS}} -p monticore-test/02.experiments -PgenEMF=false --scan # todo reenable emf
 
   test-it:
     runs-on: ubuntu-latest
@@ -72,7 +73,7 @@ jobs:
       with:
        gradle-version: 7.4
        cache-read-only: true
-       arguments: build test -p monticore-test/it -Pci --build-cache
+       arguments: build test ${{env.GRADLE_OPTS}} -p monticore-test/it --build-cache
 
   test-it-emf:
     if: false
