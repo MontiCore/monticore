@@ -1,6 +1,7 @@
 # .github/workflows/gradle_mc.yml
 name: Build & Test Gradle projects
 
+
 on:
   push:
 
@@ -29,7 +30,7 @@ jobs:
       - name: Build monticore (buildMC)
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: $GRADLE_VERSION
+          gradle-version: ${{env.GRADLE_VERSION}}
           arguments: buildMC ${{env.GRADLE_CLI_OPTS}} -PgenTR=true -PgenEMF=true -PgenTagging=true
 
   # first set of experiments from the handbook
@@ -42,8 +43,7 @@ jobs:
       - name: Test 01.experiments
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: $GRADLE_VERSION
-          cache-read-only: true
+          gradle-version: ${{env.GRADLE_VERSION}}
           arguments: build test -p monticore-test/01.experiments ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
 
   # second set of experiments from the handbook
@@ -56,8 +56,7 @@ jobs:
       - name: Test 02.experiments
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: $GRADLE_VERSION
-          cache-read-only: true
+          gradle-version: ${{env.GRADLE_VERSION}}
           arguments: build test -p monticore-test/02.experiments ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
 
   # test integration tests from the it project
@@ -70,8 +69,7 @@ jobs:
       - name: Test monticore-test/it
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: $GRADLE_VERSION
-          cache-read-only: true
+          gradle-version: ${{env.GRADLE_VERSION}}
           arguments: build test -p monticore-test/it ${{env.GRADLE_CLI_OPTS}}
       - name: Checking that all file handles in the target folder are closed
         run: if pgrep java | xargs -i ls -la /proc/{}/fd | grep "monticore-test/it/target/"; then echo "Found open file handles!"; exit 1; else echo "No open file handles."; exit 0; fi
@@ -86,8 +84,7 @@ jobs:
       - name: Test monticore-test/it with emf profile
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: $GRADLE_VERSION
-          cache-read-only: true
+          gradle-version: ${{env.GRADLE_VERSION}}
           arguments: build test -p monticore-test/it ${{env.GRADLE_CLI_OPTS}} -PbuildProfile=emf -PgenEMF=true
 
   # Grammar integration tests
@@ -100,8 +97,7 @@ jobs:
       - name: Test monticore-grammar-it
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: $GRADLE_VERSION
-          cache-read-only: true
+          gradle-version: ${{env.GRADLE_VERSION}}
           arguments: build test -p monticore-test/monticore-grammar-it ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
 
   # Transformation tests
@@ -114,8 +110,7 @@ jobs:
       - name: Test monticore-grammar-it
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: $GRADLE_VERSION
-          cache-read-only: true
+          gradle-version: ${{env.GRADLE_VERSION}}
           arguments: build test -p monticore-test/montitrans ${{env.GRADLE_CLI_OPTS}} -PgenTR=true
 
 
