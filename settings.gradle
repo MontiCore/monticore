@@ -39,10 +39,9 @@ buildCache {
   }
 }
 
-if (System.getenv("CI") != null) {
+if (hasProperty("gradleEnterprise")) {
   gradleEnterprise {
     buildScan {
-        publishAlways()
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
     }

@@ -18,7 +18,7 @@ jobs:
       uses: gradle/actions/setup-gradle@v3
       with:
        gradle-version: 7.4
-       arguments: build -p monticore-generator -Pci --info  --build-cache
+       arguments: build -p monticore-generator -Pci --info  --build-cache --scan
 
   build-mc:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
       uses: gradle/actions/setup-gradle@v3
       with:
        gradle-version: 7.4
-       arguments: buildMC -Pci -PgenTR=false -PgenEMF=false -PgenTagging=false --info --build-cache # TODO: reenable emf/tr/tagging
+       arguments: buildMC -Pci -PgenTR=false -PgenEMF=false -PgenTagging=false --info --build-cache --scan # TODO: reenable emf/tr/tagging
 
   test-01-experiments:
     runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
       with:
        gradle-version: 7.4
        cache-read-only: true
-       arguments: build test -p monticore-test/01.experiments -PgenEMF=false -Pci --info --build-cache # todo reenable emf
+       arguments: build test -p monticore-test/01.experiments -PgenEMF=false -Pci --info --build-cache --scan # todo reenable emf
  #  --build-cache
   test-02-experiments:
     runs-on: ubuntu-latest
