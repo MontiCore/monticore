@@ -92,8 +92,6 @@ subprojects {
     options.deprecation false
     options.warnings = false
     options.forkOptions.jvmArgs += ["-Xmx4G"]
-    // TODO: reevaluate with new ecj plugin
-    outputs.cacheIf {false} // ECJ has problem with caching
   }
   java {
     withSourcesJar()
