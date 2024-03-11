@@ -23,7 +23,7 @@ jobs:
       uses: gradle/actions/setup-gradle@v3
       with:
        gradle-version: ${{env.GRADLE_VERSION}}
-       arguments: build ${{env.GRADLE_OPTS}} -p monticore-generator --info
+       arguments: build -p monticore-generator ${{env.GRADLE_OPTS}} --info
 
   build-mc:
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
       with:
        gradle-version:  ${{env.GRADLE_VERSION}}
        cache-read-only: true
-       arguments: build test ${{env.GRADLE_OPTS}} -p monticore-test/01.experiments -PgenEMF=true --scan
+       arguments: build test -p monticore-test/01.experiments  ${{env.GRADLE_OPTS}}  -PgenEMF=true --scan
   test-02-experiments:
     runs-on: ubuntu-latest
     needs: build-mc
