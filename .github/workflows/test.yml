@@ -7,6 +7,10 @@ on:
 #env:
 #  GRADLE_BUILD_ACTION_CACHE_KEY_JOB: "test-cache-${{ github.head_ref }}.${{ github.sha }}"
 
+
+env:
+    GRADLE_VERSION: 7.4
+
 jobs:
 
   build-generator:
@@ -17,7 +21,7 @@ jobs:
     - name: Build the monticore-generator
       uses: gradle/actions/setup-gradle@v3
       with:
-       gradle-version: 7.4
+       gradle-version: $GRADLE_VERSION
        arguments: build -p monticore-generator -Pci --info
 
   build-mc:
@@ -29,7 +33,7 @@ jobs:
     - name: Build monticore (buildMC)
       uses: gradle/actions/setup-gradle@v3
       with:
-       gradle-version: 7.4
+       gradle-version: $GRADLE_VERSION
        arguments: buildMC -Pci -PgenTR=true -PgenEMF=true -PgenTagging=true --scan
 
   test-01-experiments:
@@ -41,7 +45,7 @@ jobs:
     - name: Test using Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
-       gradle-version: 7.4
+       gradle-version: $GRADLE_VERSION
        cache-read-only: true
        arguments: build test -p monticore-test/01.experiments -PgenEMF=true -Pci --scan
   test-02-experiments:
