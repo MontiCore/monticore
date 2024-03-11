@@ -24,9 +24,9 @@ String myGetProperty(String key){
 }
 
 buildCache {
-  //local {
-  //  enabled = !isCi // CI has no (persistent) local storage
-  //}
+  local {
+    enabled = true
+  }
   remote(HttpBuildCache) {
     enabled = myGetProperty("buildCacheURL") != null
     url = ""+myGetProperty("buildCacheURL")
