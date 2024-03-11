@@ -21,7 +21,7 @@ jobs:
     - name: Build the monticore-generator
       uses: gradle/actions/setup-gradle@v3
       with:
-       gradle-version: $GRADLE_VERSION
+       gradle-version: "$GRADLE_VERSION"
        arguments: build -p monticore-generator -Pci --info
 
   build-mc:
@@ -33,7 +33,7 @@ jobs:
     - name: Build monticore (buildMC)
       uses: gradle/actions/setup-gradle@v3
       with:
-       gradle-version: $GRADLE_VERSION
+       gradle-version: "$GRADLE_VERSION"
        arguments: buildMC -Pci -PgenTR=true -PgenEMF=true -PgenTagging=true --scan
 
   test-01-experiments:
@@ -45,7 +45,7 @@ jobs:
     - name: Test using Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
-       gradle-version: $GRADLE_VERSION
+       gradle-version: "$GRADLE_VERSION"
        cache-read-only: true
        arguments: build test -p monticore-test/01.experiments -PgenEMF=true -Pci --scan
   test-02-experiments:
