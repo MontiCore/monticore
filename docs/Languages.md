@@ -469,9 +469,9 @@ statechart Door {
 * [*Detailed description*](https://github.com/MontiCore/statecharts/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
 
 
-### SysML_2 (Alpha: Intention to become stable) - not publicly available (links are private)
-* MontiCore languages for parsing artifacts of the SysML 2 language family. 
-  Examples:
+### SysML_2 (Alpha: Intention to become stable) - public version in preparation (links are private)
+* MontiCore language components for parsing artifacts of the SysML 2 language. 
+  Example model:
 ```
 package 'Vehicles' {                      // a SysML block diagram
   private import ScalarValues::*; 
@@ -498,7 +498,7 @@ package 'Coffee' {                      // a SysML activity diagram
   standard. It is intended for parsing SysML 2-compliant models. 
   Well-formedness checks are kept to a minimum, because we assume to parse
   correctly produced SysML 2 models only.
-* MontiCore's SysML 2 is a language family that comes with a textual 
+* MontiCore's SysML 2 is a language that comes with a textual 
   representation to describe SysML 2 diagrams with respect to the standard. 
 * SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
   **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
