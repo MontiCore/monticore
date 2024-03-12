@@ -474,16 +474,16 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     // get all expressions within the set enumeration
     List<SymTypeExpression> containedExprTypes = new ArrayList<>();
     for (ASTSetCollectionItem cItem : expr.getSetCollectionItemList()) {
-      if (SetExpressionsMill.typeDispatcher().isASTSetValueItem(cItem)) {
+      if (SetExpressionsMill.typeDispatcher().isSetExpressionsASTSetValueItem(cItem)) {
         ASTSetValueItem setValueItem =
-            SetExpressionsMill.typeDispatcher().asASTSetValueItem(cItem);
+            SetExpressionsMill.typeDispatcher().asSetExpressionsASTSetValueItem(cItem);
         SymTypeExpression setValueItemType =
             getType4Ast().getPartialTypeOfExpr(setValueItem.getExpression());
         containedExprTypes.add(setValueItemType);
       }
-      else if (SetExpressionsMill.typeDispatcher().isASTSetValueRange(cItem)) {
+      else if (SetExpressionsMill.typeDispatcher().isSetExpressionsASTSetValueRange(cItem)) {
         ASTSetValueRange valueRange =
-            SetExpressionsMill.typeDispatcher().asASTSetValueRange(cItem);
+            SetExpressionsMill.typeDispatcher().asSetExpressionsASTSetValueRange(cItem);
         // each contained type has to be numeric
         SymTypeExpression lowerRangeType =
             getType4Ast().getPartialTypeOfExpr(valueRange.getLowerBound());

@@ -102,6 +102,7 @@ import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherDecorator;
+import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherInterfaceDecorator;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
@@ -887,10 +888,18 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                             ASTCDCompilationUnit decoratedCD,
                                             GlobalExtensionManagement glex) {
 
-    TypeDispatcherDecorator visitorDecorator = new TypeDispatcherDecorator(glex,
-            new VisitorService(cd),
-            new SymbolTableService(cd));
-    visitorDecorator.decorate(cd, decoratedCD);
+    TypeDispatcherDecorator dispatcherClassDecorator = new TypeDispatcherDecorator(glex,
+        new VisitorService(cd),
+        new SymbolTableService(cd));
+    dispatcherClassDecorator.decorate(cd, decoratedCD);
+
+    TypeDispatcherInterfaceDecorator dispatcherInterfaceDecorator
+        = new TypeDispatcherInterfaceDecorator(
+            glex,
+        new VisitorService(cd),
+        new SymbolTableService(cd));
+
+    dispatcherInterfaceDecorator.decorate(cd, decoratedCD);
   }
 
   public void decorateMill(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,

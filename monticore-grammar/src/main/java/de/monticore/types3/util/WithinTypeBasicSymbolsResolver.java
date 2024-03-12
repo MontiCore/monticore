@@ -8,6 +8,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
+import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -302,9 +303,9 @@ public class WithinTypeBasicSymbolsResolver {
         .collect(Collectors.toList());
     // prefer variables to concrete types in the same scope,
     // e.g., class A<B>{class B{} B b = new B();} is not valid Java
-    if (resolved.stream().anyMatch(getTypeDispatcher()::isTypeVar)) {
+    if (resolved.stream().anyMatch(getTypeDispatcher()::isBasicSymbolsTypeVar)) {
       resolved = resolved.stream()
-          .filter(Predicate.not(getTypeDispatcher()::isTypeVar))
+          .filter(Predicate.not(getTypeDispatcher()::isBasicSymbolsTypeVar))
           .collect(Collectors.toList());
     }
     if (resolved.size() > 1) {
@@ -334,7 +335,7 @@ public class WithinTypeBasicSymbolsResolver {
     };
   }
 
-  protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
+  protected IBasicSymbolsTypeDispatcher getTypeDispatcher() {
     return BasicSymbolsMill.typeDispatcher();
   }
 

@@ -42,6 +42,8 @@ import static de.monticore.codegen.cd2java._parser.ParserConstants.PARSER_SUFFIX
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.INHERITANCE_TRAVERSER;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
+import static de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherConstants.TYPE_DISPATCHER_SUFFIX;
+import static de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherConstants.UTILS_PACKAGE;
 
 public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit, Collection<ASTCDClass>> {
 
@@ -91,6 +93,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
           .addAllCDMembers(correctScopeMethods)
           .addCDMember(getSuperTraverserMethod(superSymbol))
           .addCDMember(getSuperInheritanceTraverserMethod(superSymbol))
+          .addCDMember(getSuperTypeDispatcherMethod(superSymbol))
           .addCDMember(getSuperPrettyPrintMethod(superSymbol))
           .build();
 
@@ -247,6 +250,14 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   protected ASTCDMethod getSuperInheritanceTraverserMethod(DiagramSymbol cdSymbol) {
     String traverserInterfaceType = visitorService.getTraverserInterfaceFullName(cdSymbol);
     return getProtectedForSuperMethod(INHERITANCE_TRAVERSER, traverserInterfaceType);
+  }
+
+  protected ASTCDMethod getSuperTypeDispatcherMethod(DiagramSymbol cdSymbol) {
+    String dispatcherInterfaceType = String.format("%s.I%s%s",
+        visitorService.getPackage(cdSymbol).replace("_visitor", UTILS_PACKAGE),
+        cdSymbol.getName(),
+        TYPE_DISPATCHER_SUFFIX);
+    return getProtectedForSuperMethod("typeDispatcher", dispatcherInterfaceType);
   }
 
   protected ASTCDMethod getSuperPrettyPrintMethod(DiagramSymbol cdSymbol) {
