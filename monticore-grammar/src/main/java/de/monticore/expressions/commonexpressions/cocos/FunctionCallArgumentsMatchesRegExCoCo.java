@@ -4,10 +4,10 @@ package de.monticore.expressions.commonexpressions.cocos;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsASTCallExpressionCoCo;
-import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
+import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
-import de.monticore.literals.mccommonliterals._util.MCCommonLiteralsTypeDispatcher;
+import de.monticore.literals.mccommonliterals._util.IMCCommonLiteralsTypeDispatcher;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.SymTypeExpression;
@@ -59,23 +59,23 @@ public class FunctionCallArgumentsMatchesRegExCoCo implements
           .map(f -> f.getWithFixedArity(arguments.size()))
           .forEach(f -> {
             for (int i = 0; i < arguments.size(); i++) {
-              CommonExpressionsTypeDispatcher expressionsDispatcher =
+              ICommonExpressionsTypeDispatcher expressionsDispatcher =
                   CommonExpressionsMill.typeDispatcher();
 
               ASTExpression argumentNode = node.getArguments().getExpression(i);
               SymTypeExpression parameterType = f.getArgumentType(i);
 
               if (parameterType.isRegExType() &&
-                  expressionsDispatcher.isASTLiteralExpression(argumentNode)) {
+                  expressionsDispatcher.isExpressionsBasisASTLiteralExpression(argumentNode)) {
 
                 ASTLiteral literal = expressionsDispatcher
-                        .asASTLiteralExpression(argumentNode).getLiteral();
+                        .asExpressionsBasisASTLiteralExpression(argumentNode).getLiteral();
 
-                MCCommonLiteralsTypeDispatcher literalsDispatcher =
+                IMCCommonLiteralsTypeDispatcher literalsDispatcher =
                     MCCommonLiteralsMill.typeDispatcher();
 
-                if (literalsDispatcher.isASTStringLiteral(literal)) {
-                  String s = literalsDispatcher.asASTStringLiteral(literal).getSource();
+                if (literalsDispatcher.isMCCommonLiteralsASTStringLiteral(literal)) {
+                  String s = literalsDispatcher.asMCCommonLiteralsASTStringLiteral(literal).getSource();
                   String regex = parameterType.asRegExType().getRegExString();
 
                   if (!s.matches(regex)) {

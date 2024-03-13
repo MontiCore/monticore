@@ -4,6 +4,7 @@ package de.monticore.types3.util;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
+import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -31,9 +32,9 @@ public class TypeContextCalculator {
          scope != null && enclosingType.isEmpty();
          scope = scope.getEnclosingScope()) {
       if (scope.isPresentSpanningSymbol() &&
-          getTypeDispatcher().isType(scope.getSpanningSymbol())) {
+          getTypeDispatcher().isBasicSymbolsType(scope.getSpanningSymbol())) {
         enclosingType = Optional.of(
-            getTypeDispatcher().asType(scope.getSpanningSymbol())
+            getTypeDispatcher().asBasicSymbolsType(scope.getSpanningSymbol())
         );
       }
     }
@@ -65,8 +66,8 @@ public class TypeContextCalculator {
       if (scope.isPresentSpanningSymbol()) {
         ISymbol spanningSymbol = scope.getSpanningSymbol();
         // static function?
-        if (getTypeDispatcher().isFunction(spanningSymbol) &&
-            getTypeDispatcher().asFunction(spanningSymbol)
+        if (getTypeDispatcher().isBasicSymbolsFunction(spanningSymbol) &&
+            getTypeDispatcher().asBasicSymbolsFunction(spanningSymbol)
                 .getAccessModifier().getDimensionToModifierMap()
                 .getOrDefault(StaticAccessModifier.DIMENSION, null)
                 == StaticAccessModifier.STATIC) {
@@ -114,7 +115,7 @@ public class TypeContextCalculator {
 
   // Helper
 
-  protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
+  protected IBasicSymbolsTypeDispatcher getTypeDispatcher() {
     return BasicSymbolsMill.typeDispatcher();
   }
 

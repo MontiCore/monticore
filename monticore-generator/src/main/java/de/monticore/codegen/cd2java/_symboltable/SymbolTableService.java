@@ -269,7 +269,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getCommonSymbolInterfaceFullName(DiagramSymbol cdSymbol) {
-    return getPackage(cdSymbol) + "." + getCommonSymbolInterfaceSimpleName();
+    return getPackage(cdSymbol) + "." + getCommonSymbolInterfaceSimpleName(cdSymbol);
   }
 
   public String getCommonSymbolInterfaceFullName() {
@@ -536,6 +536,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSimpleNameFromSymbolName(String referencedSymbol) {
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).lastIndexOf(SYMBOL_SUFFIX));
+  }
+
+  public Set<String> retrieveSymbolNamesFromCD() {
+    return retrieveSymbolNamesFromCD(getCDSymbol());
   }
 
   /**

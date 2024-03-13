@@ -408,11 +408,13 @@ sequencediagram AuctionTest {
 ```
 
 ### [SI Units](https://github.com/MontiCore/siunits) (MontiCore Stable)
-* The international system of units (SI units) is a physical unit system widely used in the entire world. 
+* The international system of units (SI units) is a physical unit system 
+  widely used in the entire world. 
   It is based on the basis units `s, m, kg, A, K, mol, cd`, 
   provides a variety of derived units, and can be refined using prefixes such 
   as `m`(milli), `k`(kilo), etc.
-* The SI Unit project aims to deliver SI units to MontiCore-based languages with expressions. 
+* The SI Unit project aims to deliver SI units to MontiCore-based 
+  languages with expressions. 
   It provides a grammar for all types of SI units and prefixes usable for type 
   definition.
 * Second, it provides the SI Unit literals, such as `5 km` as expression values
@@ -458,20 +460,27 @@ statechart Door {
   Locked -> Closed [isAuthorized() && doorIsLocked] unlock() /
 }
 ```
-* This example models the different states of a door: `Opened`, `Closed`, and `Locked`.
-  A transition is triggered e.g. by function/method call `close()` that changes a from a state `Opened` to state `Closed`. 
-* Transitions can have actions, such as `{ringDoorBell();}` containing in this case 
-  Java statements, or preconditions, such  as `[ ... ]` containing a Boolean expression.
-* *State invariants* and *transition preconditions* are defined using `Expressions`
+* This example models the different states of a door: `Opened`, 
+  `Closed`, and `Locked`.
+  A transition is triggered e.g. by function/method call `close()` that 
+  changes a from a state `Opened` to state `Closed`. 
+* Transitions can have actions, such as `{ringDoorBell();}` containing in 
+  this case 
+  Java statements, or preconditions, such  as `[ ... ]` containing a 
+  Boolean expression.
+* *State invariants* and *transition preconditions* are defined using 
+  `Expressions`
   and *entry/exit/transition actions* are defined using `Statements`.
-* A Statechart may also have hierarchically decomposed states and other forms of 
+* A Statechart may also have hierarchically decomposed states and 
+  other forms of 
   events (not shown here).
 * [*Detailed description*](https://github.com/MontiCore/statecharts/blob/dev/src/main/grammars/de/monticore/Statecharts.md) 
 
 
-### SysML_2 (Alpha: Intention to become stable) - not publicly available (links are private)
-* MontiCore languages for parsing artifacts of the SysML 2 language family. 
-  Examples:
+### SysML_2 (Alpha: Intention to become stable) - public version in preparation (links are private)
+* MontiCore language components for parsing artifacts of the 
+  SysML 2 language. 
+  Example model:
 ```
 package 'Vehicles' {                      // a SysML block diagram
   private import ScalarValues::*; 
@@ -492,20 +501,16 @@ package 'Coffee' {                      // a SysML activity diagram
   }
 }
 ```
-* The SysML 2 grammars adhere to the general upcoming SysML 2 specification 
-  (which is still under improvement currently).
-* Actually these grammars represents a slight superset to the official SysML 2
-  standard. It is intended for parsing SysML 2-compliant models. 
+* The SysML v2 grammars adhere to the general upcoming SysML v2 specification 
+* Actually these grammars represents a slight superset to the official SysML v2
+  standard. It is intended for parsing SysML v2-compliant models. 
   Well-formedness checks are kept to a minimum, because we assume to parse
-  correctly produced SysML 2 models only.
-* MontiCore's SysML 2 is a language family that comes with a textual 
-  representation to describe SysML 2 diagrams with respect to the standard. 
-* SysML 2 covers **ADs**, **BDDs**, **IBDs**, **PackageDiagrams**, 
-  **ParametricDiagrams**, **RequirementDiagrams**, **SDs**, **SMDs**, 
-  **UseCaseDiagrams**, and general **SysMLBasics**
-* [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/src%2Fmain%2Fgrammars%2Fde%2Fmonticore%2Flang%2Fsysml)
+  correctly produced SysML v2 models only.
+* MontiCore's SysML v2 is a language that comes with a textual 
+  representation to describe SysML v2 diagrams with respect to the standard. 
+* [Main grammars](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/tree/master/language/src/main/grammars/de/monticore/lang)
   and 
-  [*detailed description*](https://git.rwth-aachen.de/monticore/languages/sysml2/sysml2official/-/blob/master/src/main/grammars/de/monticore/lang/sysml/sysml2.md)
+  [*public documentation*](https://github.com/MontiCore/sysmlv2/blob/master/README.md)
 
 
 ### Tagging (Alpha: Intention to become stable) - not publicly available (links are private)
@@ -542,10 +547,13 @@ package 'Coffee' {                      // a SysML activity diagram
 ### [Use Case Diagrams](https://github.com/MontiCore/ucd)  (MontiCore stable) 
 * A textual use case diagram (UCD) language.
 * [Detailed description](https://github.com/MontiCore/ucd/blob/master/src/main/grammars/UCD.md)
-* The project includes a grammar, a symbol table infrastructure, and a semantic differencing operator.
+* The project includes a grammar, a symbol table infrastructure, 
+  and a semantic differencing operator.
 * The language is defined by the grammar [UCD](https://github.com/MontiCore/ucd/blob/master/src/main/grammars/UCD.mc4).
-* It supports modeling *actors*, *use cases*, *preconditions*, *associations* between actors and use cases,
-  *extend relations* between use cases with *guards*, *include relations* between use cases, and
+* It supports modeling *actors*, *use cases*, *preconditions*, 
+  *associations* between actors and use cases,
+  *extend relations* between use cases with *guards*, 
+  *include relations* between use cases, and
   *specialization relations* between actors and use cases.
 * The grammars can easily be extended.
 * The following depicts a simple UCD in its textual syntax. 
