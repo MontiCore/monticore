@@ -20,7 +20,8 @@ tags Simple for Simple {
     tag C.CA with StateTag1;
     within C {
         tag CB with StateTag2;
-        tag [CA - x > CB;] with Log="timestamp";
+//  in tagging-lite, no pattern matching is supported
+//        tag [CA - x > CB;] with Log="timestamp";
     }
 
     tag D with WildcardedTag;
