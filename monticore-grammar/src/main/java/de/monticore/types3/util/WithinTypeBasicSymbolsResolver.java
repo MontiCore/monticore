@@ -260,6 +260,9 @@ public class WithinTypeBasicSymbolsResolver {
           predicate.and(getIsLocalSymbolPredicate(scope))
       );
     } catch(ResolvedSeveralEntriesForSymbolException e) {
+      // note: Exception is not supposed to happen,
+      // thus, never rely on this(!) Error being logged (here)
+      // some error should be logged, though.
       Log.error("0xFD225 resolved " + e.getSymbols().size()
           + "occurences of variable " + name
           + ", but expected only one:" + System.lineSeparator()
