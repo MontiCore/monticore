@@ -13,6 +13,7 @@ import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
@@ -250,11 +251,25 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate) {
     // may include symbols of supertypes, thus the predicate
-    Optional<VariableSymbol> resolved = scope.resolveVariable(
-        name,
-        accessModifier,
-        predicate.and(getIsLocalSymbolPredicate(scope))
-    );
+    Optional<VariableSymbol> resolved;
+    // work around for resolver throwing RuntimeExceptions
+    try {
+      resolved = scope.resolveVariable(
+          name,
+          accessModifier,
+          predicate.and(getIsLocalSymbolPredicate(scope))
+      );
+    } catch(ResolvedSeveralEntriesForSymbolException e) {
+      Log.error("0xFD225 resolved " + e.getSymbols().size()
+          + "occurences of variable " + name
+          + ", but expected only one:" + System.lineSeparator()
+          + e.getSymbols().stream()
+              .map(ISymbol::getFullName)
+              .collect(Collectors.joining(System.lineSeparator())),
+          e
+        );
+      resolved = Optional.empty();
+    }
     // todo remove given a fixed resolver
     resolved = resolved.filter(predicate.and(getIsLocalSymbolPredicate(scope)));
     return resolved;
