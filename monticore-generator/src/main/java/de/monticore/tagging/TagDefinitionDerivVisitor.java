@@ -57,7 +57,7 @@ public class TagDefinitionDerivVisitor implements GrammarVisitor2 {
   public void visit(ASTClassProd node) {
     if (node.getSymbol().isIsDirectLeftRecursive() || node.getSymbol().isIsIndirectLeftRecursive()) {
       grammar.add_PostComment(new Comment("/* Unable to create a TagDef Identifier for left-recursive production " + node.getName() + " */"));
-      Log.warn("0xA5C12 Unable to create a TagDef Identifier for left-recursive production " + node.getName(), node.get_SourcePositionStart());
+      // Do not log a warning for this
       return;
     }
     createSpecificIdentifier(node);

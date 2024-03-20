@@ -4,6 +4,7 @@ package de.monticore.tagging;
 import de.monticore.symboltable.IScope;
 import de.monticore.tagging.tags._ast.*;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -50,4 +51,11 @@ public class AbstractTagger {
             .filter(c -> isIdentified(c.getModelElementIdentifier(), symbolName));
   }
 
+  protected de.monticore.symboltable.IScope getArtifactScope(@Nonnull de.monticore.symboltable.IScope s) {
+    while (!(s instanceof de.monticore.symboltable.IArtifactScope)) {
+      s = s.getEnclosingScope();
+    }
+    return s;
+
+  }
 }

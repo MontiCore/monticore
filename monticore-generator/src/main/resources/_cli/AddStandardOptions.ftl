@@ -33,7 +33,7 @@ options.addOption(org.apache.commons.cli.Option.builder("s")
     .longOpt("symboltable")
     .argName("file")
     .hasArg()
-    .desc("Serialized the Symbol table of the given artifact.")
+    .desc("Serializes the symbol table of the given artifact.")
     .build());
 
 //reports about the runner
