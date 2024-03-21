@@ -396,6 +396,8 @@ checkArtifactsRegExType.dependsOn(checkArtifactsMCBasicTypes)
 checkArtifactsUglyExpressions.dependsOn(checkArtifactsCommonExpressions)
 checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
 
+checkArtifactsMCStructuralTypes.dependsOn(checkArtifactsMCBasicTypes)
+
 ///////////// dependencies between show artifacts tasks ///////////////////////
 
 showArtifactsAssignmentExpressions.dependsOn(showArtifactsExpressionsBasis)
@@ -524,6 +526,8 @@ showArtifactsRegExType.dependsOn(showArtifactsMCBasicTypes)
 
 showArtifactsUglyExpressions.dependsOn(showArtifactsCommonExpressions)
 showArtifactsUglyExpressions.dependsOn(showArtifactsMCBasicTypes)
+
+showArtifactsMCStructuralTypes.dependsOn(showArtifactsMCBasicTypes)
 
 ///////////// MLC tasks - End ///////////////////////
 
