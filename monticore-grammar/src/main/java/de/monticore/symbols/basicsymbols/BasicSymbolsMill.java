@@ -42,6 +42,8 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
   public static final String STRING = "String";
 
+  public static final String OBJECT = "Object";
+
   public static void initializePrimitives(){
     if(primitiveTypesInitializer == null){
       primitiveTypesInitializer = getMill();
@@ -91,6 +93,32 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
         .setSpannedScope(scope())
         .setAccessModifier(AccessModifier.ALL_INCLUSION)
         .build()
+    );
+  }
+
+  /**
+   * This is only required if the Object Symbol is not provided otherwise,
+   * e.g., using Class2MC,
+   * It is deliberately a trivial Symbol without any fields / methods.
+   */
+  public static void initializeObject() {
+    // reusing the initializer
+    if(primitiveTypesInitializer == null){
+      primitiveTypesInitializer = getMill();
+    }
+    primitiveTypesInitializer._initializeObject();
+  }
+
+  protected void _initializeObject() {
+    IBasicSymbolsGlobalScope gs = globalScope();
+    gs.add(typeSymbolBuilder()
+      .setName(OBJECT)
+      // this is not Java's Object
+      .setFullName(OBJECT)
+      .setEnclosingScope(gs)
+      .setSpannedScope(scope())
+      .setAccessModifier(AccessModifier.ALL_INCLUSION)
+      .build()
     );
   }
 
