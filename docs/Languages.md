@@ -99,7 +99,7 @@ classdiagram MyLife2 {
   For example a transformation sequence could be: 
   * [MontiCoreCLI](https://github.com/MontiCore/monticore/blob/opendev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java): 
     Grammar -> 
-    [Grammar AST encoded in CD4Code](https://github.com/MontiCore/monticore/tree/opendev/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java#L411) ->
+    [Grammar AST encoded in CD4Code](https://github.com/MontiCore/monticore/blob/opendev/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CDTransformation.java) ->
     [Decoration for custom behavior](https://github.com/MontiCore/monticore/tree/opendev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java) -> 
     [Java code](https://github.com/MontiCore/monticore/tree/opendev/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/SymbolTableCDDecorator.java)
   * Statechart -> State pattern encoded in CD4Code 
