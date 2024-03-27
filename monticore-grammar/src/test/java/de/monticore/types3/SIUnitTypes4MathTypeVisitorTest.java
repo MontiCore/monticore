@@ -67,14 +67,5 @@ public class SIUnitTypes4MathTypeVisitorTest
     // This number should never increase, as it would indicate a new bug.
     assertEquals(609, ambiguous.size());
   }
-/*
-  @Test
-  public void symTypeFromAST_OhmAndMu() throws IOException {
-    checkTypeRoundTrip("Ω");
-    checkSIUnit("kΩ", "kΩ", "kg*m^2/(A^2*s^3)");
-    checkSIUnit("µg", "µg", "kg");
-    checkSIUnit("µΩ", "µΩ", "kg*m^2/(A^2*s^3)");
-  }
-*/
 
 }
