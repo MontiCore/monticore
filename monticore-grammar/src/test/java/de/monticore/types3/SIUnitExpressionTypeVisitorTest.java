@@ -86,7 +86,7 @@ public class SIUnitExpressionTypeVisitorTest extends AbstractTypeVisitorTest{
 
         checkErrorExpr("1s - 1", "");
         checkErrorExpr("1s^2 - 1", "");
-        checkErrorExpr("1s^33 - 1", "");
+        checkErrorExpr("1s^3 - 1", "");
 
         checkErrorExpr("1s - 1.0f", "");
         checkErrorExpr("1s^2 - 1.0f", "");
@@ -130,25 +130,35 @@ public class SIUnitExpressionTypeVisitorTest extends AbstractTypeVisitorTest{
         checkErrorExpr("1m-10s+1s", "");
         checkErrorExpr("1m-10s+1s^2", "");
         checkErrorExpr("1m-10s+1s^3", "");
+
         checkErrorExpr("2s/1m", "");
         checkErrorExpr("2s^2/1m", "");
         checkErrorExpr("2s^3/1m", "");
+
         checkErrorExpr("2s/1m^2", "");
         checkErrorExpr("2s^2/1m^2", "");
         checkErrorExpr("2s^3/1m^2", "");
+
         checkErrorExpr("2s/1m^3", "");
         checkErrorExpr("2s^2/1m^3", "");
         checkErrorExpr("2s^3/1m^3", "");
-        checkErrorExpr("1m * 1s", "");
-        checkErrorExpr("1m^2 * 1s", "");
+
+        checkErrorExpr("2s*1m", "");
+        checkErrorExpr("2s^2*1m", "");
+        checkErrorExpr("2s^3*1m", "");
+
+        checkErrorExpr("2s*1m^2", "");
+        checkErrorExpr("2s^2*1m^2", "");
+        checkErrorExpr("2s^3*1m^2", "");
+
+        checkErrorExpr("2s*1m^3", "");
+        checkErrorExpr("2s^2*1m^3", "");
+        checkErrorExpr("2s^3*1m^3", "");
+
+        checkErrorExpr("1m^3 * 1s + 1.0f", "");
+        checkErrorExpr("1m^3 * 1s - 1.0f", "");
         checkErrorExpr("1m^3 * 1s * 1.0f", "");
         checkErrorExpr("1m^3 * 1s / 1.0f", "");
-        checkErrorExpr("1m * 1s * 1", "");
-        checkErrorExpr("1m * 1s^2", "");
-        checkErrorExpr("1m^2 * 1s^2", "");
-        checkErrorExpr("1m^3 * 1s^2 * 1.0f", "");
-        checkErrorExpr("1m^3 * 1s^2 / 1.0f", "");
-
 
     }
 
