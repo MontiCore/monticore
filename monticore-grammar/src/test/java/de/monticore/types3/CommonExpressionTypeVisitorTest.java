@@ -70,6 +70,8 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("3 + \"Hallo\"", "String"); // example with String
   }
 
+
+
   @Test
   public void deriveFromPlusExpressionLifted() throws IOException {
     checkExpr("varbyte + (true ? varint : vardouble)", "double");
