@@ -17,39 +17,6 @@ import static junit.framework.TestCase.assertEquals;
 
 public class SIUnitTypes4MathTypeVisitorTest
     extends AbstractTypeVisitorTest {
-/*
-  @Test
-  public void synTFromSIUnitTypes4MathSimple() throws IOException {
-    checkSIUnit("°C", "°C", "K");
-    checkSIUnit("°F", "°F", "K");
-    checkSIUnit("kg", "kg", "kg");
-    checkSIUnit("cd", "cd", "cd");
-    checkSIUnit("m", "m", "m");
-    checkSIUnit("deg", "deg", "1");
-
-    checkSIUnit("s^2", "s^2", "s^2");
-    checkSIUnit("s^2/kg", "s^2/kg", "s^2/kg");
-    checkSIUnit("s^2/min", "s^2/min", "s");
-    checkSIUnit("kgs^2/minm", "kg*s^2/(m*min)", "kg*s/m");
-
-    checkSIUnit("s^-1", "1/s", "1/s");
-    checkSIUnit("1/s", "1/s", "1/s");
-
-
-    checkTypeRoundTrip("Ω");
-    checkSIUnit("kΩ", "kΩ", "kg*m^2/(A^2*s^3)");
-    checkSIUnit("µg", "µg", "kg");
-    checkSIUnit("µΩ", "µΩ", "kg*m^2/(A^2*s^3)");
-
-    parseSIUnit("kV^2A^3/m^2");
-    parseSIUnit("s^-1");
-    parseSIUnit("kVA");
-    parseSIUnit("kVAh");
-    parseSIUnit("kVAh/°C");
-    parseSIUnit("kV^2A^3h")
-
-  }
-*/
 
   @Test
   public void synTFromSIUnitTypes4MathSimpleAllSingleUnits() throws IOException {
