@@ -882,6 +882,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("person1 = student2", "Person"); // example with person - student
     checkExpr("person2 = csStudent1", "Person"); // example with person - firstsemesterstudent
     checkExpr("varBoolean = varboolean", "java.lang.Boolean"); // example with Boolean - boolean
+    checkExpr("varboolean = varBoolean", "boolean"); // example with boolean - Boolean
     checkExpr("varintMetre = varintMetre", "[m]<int>");
   }
 
