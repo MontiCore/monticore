@@ -325,7 +325,7 @@ public class WithinScopeBasicSymbolsResolver {
     try {
       resolved = s.get();
     } catch(ResolvedSeveralEntriesForSymbolException e) {
-      Log.error("0xFD226 resolved " + e.getSymbols().size()
+      Log.error("0xFD226 internal error: resolved " + e.getSymbols().size()
           + "occurences of Symbol"
           + ", but expected only one:" + System.lineSeparator()
           + e.getSymbols().stream()
