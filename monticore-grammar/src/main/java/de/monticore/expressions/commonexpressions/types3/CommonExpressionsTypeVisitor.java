@@ -3,7 +3,6 @@ package de.monticore.expressions.commonexpressions.types3;
 
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
-import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
 import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
@@ -11,6 +10,8 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeArray;
@@ -36,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -740,7 +742,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   protected Optional<SymTypeExpression> calculateExprFieldAccess(
       ASTFieldAccessExpression expr,
       boolean resultsAreOptional) {
-    Set<SymTypeExpression> types = new HashSet<>();
+    Optional<SymTypeExpression> type;
     final String name = expr.getName();
     if (!getType4Ast().hasTypeOfExpression(expr.getExpression())) {
       Log.error("0xFD231 internal error:"
@@ -748,6 +750,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
       );
+      type = Optional.empty();
     }
     else {
       SymTypeExpression innerAsExprType =
@@ -757,23 +760,36 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             getTypeCtxCalc().getAccessModifier(
                 innerAsExprType.getTypeInfo(), expr.getEnclosingScope()
             ) : AccessModifier.ALL_INCLUSION;
-        Optional<SymTypeExpression> variable =
-            getWithinTypeResolver().resolveVariable(innerAsExprType,
-                name,
-                modifier,
-                v -> true
+        type = resolveVariablesAndFunctionsWithinType(
+            innerAsExprType,
+            name,
+            modifier,
+            v -> true,
+            f -> true
+        );
+        // Log remark about access modifier,
+        // if access modifier is the reason it has not been resolved
+        if (type.isEmpty() && !resultsAreOptional) {
+          Optional<SymTypeExpression> potentialResult =
+              resolveVariablesAndFunctionsWithinType(
+                  innerAsExprType,
+                  name,
+                  AccessModifier.ALL_INCLUSION,
+                  v -> true,
+                  f -> true
+              );
+          if (potentialResult.isPresent()) {
+            Log.warn("tried to resolve \"" + name + "\""
+                    + " given expression of type "
+                    + innerAsExprType.printFullName()
+                    + " and symbols have been found"
+                    + ", but due to the access modifiers (e.g., public)"
+                    + ", nothing could be resolved",
+                expr.get_SourcePositionStart(),
+                expr.get_SourcePositionEnd()
             );
-        if (variable.isPresent()) {
-          types.add(variable.get());
+          }
         }
-        Collection<SymTypeOfFunction> functions =
-            getWithinTypeResolver().resolveFunctions(
-                innerAsExprType,
-                name,
-                modifier,
-                f -> true
-            );
-        types.addAll(functions);
       }
       // extension point
       else {
@@ -784,14 +800,10 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             expr.get_SourcePositionStart(),
             expr.get_SourcePositionEnd()
         );
+        type = Optional.empty();
       }
     }
-    if (types.size() <= 1) {
-      return types.stream().findAny();
-    }
-    else {
-      return Optional.of(SymTypeExpressionFactory.createIntersection(types));
-    }
+    return type;
   }
 
   /**
@@ -803,7 +815,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       ASTFieldAccessExpression expr,
       boolean resultsAreOptional
   ) {
-    Optional<SymTypeExpression> type = calculateTypeIdFieldAccess(expr);
+    Optional<SymTypeExpression> type =
+        calculateTypeIdFieldAccess(expr, resultsAreOptional);
     if (type.isEmpty() && !resultsAreOptional) {
       Log.error("0xF736F given type identifier of type "
               + getType4Ast().getPartialTypeOfTypeIdForName(expr.getExpression()).printFullName()
@@ -830,13 +843,14 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       ASTFieldAccessExpression expr,
       boolean resultsAreOptional) {
     final String name = expr.getName();
-    Set<SymTypeExpression> types = new HashSet<>();
+    Optional<SymTypeExpression> type;
     if (!getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression())) {
       Log.error("0xFD232 internal error:"
               + "unable to find type identifier for field access",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
       );
+      type = Optional.empty();
     }
     else {
       SymTypeExpression innerAsTypeIdType =
@@ -848,22 +862,37 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
                 expr.getEnclosingScope(),
                 true
             ) : StaticAccessModifier.STATIC;
-        Optional<SymTypeExpression> variable =
-            getWithinTypeResolver().resolveVariable(
-                innerAsTypeIdType,
-                name,
-                modifier,
-                v -> true
+        type = resolveVariablesAndFunctionsWithinType(
+            innerAsTypeIdType,
+            name,
+            modifier,
+            v -> true,
+            f -> true
+        );
+        // Log remark about access modifier,
+        // if access modifier is the reason it has not been resolved
+        if (type.isEmpty() && !resultsAreOptional) {
+          Optional<SymTypeExpression> potentialResult =
+              resolveVariablesAndFunctionsWithinType(
+                  innerAsTypeIdType,
+                  name,
+                  AccessModifier.ALL_INCLUSION,
+                  v -> true,
+                  f -> true
+              );
+          if (potentialResult.isPresent()) {
+            Log.warn("tried to resolve \"" + name + "\""
+                    + " given type identifier"
+                    + innerAsTypeIdType.printFullName()
+                    + " and symbols have been found"
+                    + ", but due to the access modifiers (e.g., static)"
+                    + ", nothing could be resolved.",
+                expr.get_SourcePositionStart(),
+                expr.get_SourcePositionEnd()
             );
-        variable.ifPresent(types::add);
-        Collection<SymTypeOfFunction> functions =
-            getWithinTypeResolver().resolveFunctions(
-                innerAsTypeIdType,
-                name,
-                modifier,
-                f -> true
-            );
-        types.addAll(functions);
+          }
+
+        }
       }
       // extension point
       else {
@@ -874,14 +903,10 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             expr.get_SourcePositionStart(),
             expr.get_SourcePositionEnd()
         );
+        type = Optional.empty();
       }
     }
-    if (types.size() <= 1) {
-      return types.stream().findAny();
-    }
-    else {
-      return Optional.of(SymTypeExpressionFactory.createIntersection(types));
-    }
+    return type;
   }
 
   /**
@@ -1031,6 +1056,43 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   }
 
   // Helper
+
+  /**
+   * resolver helper function that searches for functions AND variables
+   * in a type at the same time
+   */
+  protected Optional<SymTypeExpression> resolveVariablesAndFunctionsWithinType(
+      SymTypeExpression innerAsExprType,
+      String name,
+      AccessModifier modifier,
+      Predicate<VariableSymbol> varPredicate,
+      Predicate<FunctionSymbol> funcPredicate
+  ) {
+    Set<SymTypeExpression> types = new HashSet<>();
+    Optional<SymTypeExpression> variable =
+        getWithinTypeResolver().resolveVariable(innerAsExprType,
+            name,
+            modifier,
+            varPredicate
+        );
+    if (variable.isPresent()) {
+      types.add(variable.get());
+    }
+    Collection<SymTypeOfFunction> functions =
+        getWithinTypeResolver().resolveFunctions(
+            innerAsExprType,
+            name,
+            modifier,
+            funcPredicate
+        );
+    types.addAll(functions);
+    if (types.size() <= 1) {
+      return types.stream().findAny();
+    }
+    else {
+      return Optional.of(SymTypeExpressionFactory.createIntersection(types));
+    }
+  }
 
   /**
    * For FieldAccessExpression / CallExpression
