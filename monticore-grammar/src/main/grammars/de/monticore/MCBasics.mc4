@@ -1,0 +1,52 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+ * This grammar defines absolute basics, such as spaces,
+ * Java-like comments and Names.
+ * It should be useful in many languages.
+ *
+ */
+
+component grammar MCBasics {
+
+  /** Name represents an ordinary (unqualified) name.
+      This nonterminal is used as core reference mechanism e.g.
+      for symbols.
+  */
+  token Name =
+    ( 'a'..'z' | 'A'..'Z' | '_' | '$' )
+    ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
+  
+  /*=================================================================*/
+
+  fragment token NEWLINE =
+    ('\r' '\n' | '\r' | '\n' ): ;
+
+  /** White Spaces.
+      They are not added to the parsing token list, but omitted right away.
+  */
+  token WS =
+    (' ' | '\t' | '\r' | '\n' ) : ->skip;
+    
+  /*=================================================================*/
+
+  /** A single line comment in Java style: //
+      Comments are ignored by the parser.
+  */
+  token SL_COMMENT =
+    "//" (~('\n' | '\r' ))* : ->skip
+    {storeComment();};
+
+  /** A multi line comment in Java style.
+      The comments are not nested.
+      Comments are ignored by the parser.
+  */
+  token ML_COMMENT =
+    "/*" .*? "*/"  : -> skip
+    {storeComment();};
+
+}

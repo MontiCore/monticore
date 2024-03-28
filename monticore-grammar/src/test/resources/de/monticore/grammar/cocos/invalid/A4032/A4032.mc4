@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4032;
+
+grammar A4032 {
+
+ enum A = "a";
+
+ astrule A;
+
+}

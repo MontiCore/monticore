@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+mlc OOSymbols {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/symbols/OOSymbols.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/symbols/oosymbols/**.java";
+  }
+
+  // export all handwritten TOP-mechanism extensions
+  export "$projectDir/src/main/java" {
+    include "de/monticore/symbols/oosymbols/**.java";
+  }
+
+  promote mlc "de.monticore.symbols.BasicSymbols";
+
+  // locally allow using SymTypeExpressions
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionDeSer.java";
+  }
+
+}

@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4008;
+
+grammar A4008d extends de.monticore.grammar.cocos.invalid.A4008.A4008 {
+
+  external ArrayType;
+
+}

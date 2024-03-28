@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+mlc CompSymbols {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/symbols/CompSymbols.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/symbols/compsymbols/**.java";
+  }
+
+  // export all handwritten TOP-mechanism extensions
+  export "$projectDir/src/main/java" {
+    include "de/monticore/symbols/compsymbols/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.MCBasics";
+    mlc "de.monticore.symbols.BasicSymbols";
+  }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types/check/CompKindExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/FullCompKindExprDeSer.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/KindOfComponent.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionDeSer.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
+
+    include "$mp/com/google/common/base/Preconditions.class";
+    include "$mp/org/checkerframework/checker/nullness/qual/NonNull.class";
+    include "$mp/org/checkerframework/checker/nullness/qual/Nullable.class";
+  }
+
+}

@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4038;
+
+grammar A4038 {
+    symbol scope Automaton = "automaton" Name "{" (State | Transition | Tag)* "}" ;
+    State = "Foo";
+    Transition = "Baa";
+    Tag = StartTag EndTag;
+    token StartTag = "<": -> pushMode(text);
+    token EndTag (text) = ">" : -> popMode;
+}

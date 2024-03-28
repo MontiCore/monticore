@@ -1,0 +1,75 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.expressions;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.expressions.*;
+import de.monticore.types.*;
+
+/**
+ * This grammar defines expressions that are considered "ugly", e.g.,
+ * instanceof, typecasting, and new.
+ * person instanceof Student
+ * (Student)person
+ * new Person("George")
+ *
+ * Not part of this grammar are Java-like pattern, e.g.,
+ * person instanceof Student student
+ *
+ * There are also other kinds of expressions defined in the
+ * grammars mentioned below. These expression definitions can safely be
+ * composed if desired.
+ *
+ * This grammar is part of a hierarchy of expressions, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
+*/
+
+component grammar UglyExpressions
+          extends MCBasicTypes,
+                  ExpressionsBasis {
+
+  /*=================================================================*/
+
+  /**
+   * ASTTypeCastExpression casts an expression to a given type
+   *   @attribute MCType
+   *              type to cast the expression to
+   *   @attribute Expression
+   *              the expression that should be casted
+   */
+  TypeCastExpression implements Expression <200> =
+    "(" MCType ")" Expression;
+
+  /**
+   * InstanceofExpression checks if an expression has a certain type
+   *   evaluates to true if the expression has the type given by MCType
+   *   otherwise evaluates to false
+   *
+   *   @attribute Expression
+   *              expression whose type is to be checked
+   *   @attribute MCType
+   *              type against which the expression should be checked
+   */
+  InstanceofExpression implements Expression <150> =
+    Expression "instanceof" MCType;
+
+  CreatorExpression implements Expression <235> =
+    "new" Creator;
+
+  interface Creator ;
+
+  ClassCreator implements Creator
+    =   MCType Arguments;
+
+  ArrayCreator implements Creator
+    =   MCType ArrayDimensionSpecifier;
+
+  interface ArrayDimensionSpecifier ;
+
+  ArrayDimensionByExpression implements ArrayDimensionSpecifier
+    =   ("[" Expression "]")+ (dim:"[" "]")*
+    ;
+
+}

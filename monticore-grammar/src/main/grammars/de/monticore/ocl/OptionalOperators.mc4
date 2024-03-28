@@ -1,0 +1,98 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.ocl;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.expressions.*;
+
+/**
+ * This grammar defines expressions that deal with 
+ * optional values (i.e. potentially absent values).
+ * These operators are generally known as Elvis operators
+ * and include ?:, ?==, ?>=, etc.
+ *
+ * Optional expressions can savely (i.e. as conservative extension) 
+ * be composed if with other forms of expressions  
+ * given in the MontiCore core project.
+ *
+ * This grammar is part of a hierarchy of expressions, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
+ *
+*/
+
+component grammar OptionalOperators
+          extends CommonExpressions //InfixExpression
+{
+  /**
+   * `val ?: 0W`     equals to   `val.isPresent ? val.get : 0W`
+   * this operator is right associative, so that multiple optionals can be 
+   * chained:
+   * x ?: y ?: 0 is the same as x ?: (y ?: 0)
+   * and this means that if x is present it returns x.get other it tries if y is
+   * present if not it returns 0
+   *
+   * ?: has a prority between `==` and `<`
+   */
+  OptionalExpressionPrefix implements Expression <140>, InfixExpression = 
+    <rightassoc> 
+    left:Expression
+    operator:"?:"
+    right:Expression;
+
+
+  /*=================================================================*/
+
+  /*
+   * `x ?== y`   is the same as   `x.isPresent && x.get == y`
+   * this is useful for underspecification relations, if it is underspecified 
+   * (x.isAbsent) the term evaluates always to false.
+   *
+   * `x ?>= y` equals `x.isPresent && x.get >= y` 
+   * all other operators are defined systematically the same way
+   */
+
+  OptionalLessEqualExpression implements Expression <150>, InfixExpression =
+    left:Expression operator:"?<=" right:Expression;
+
+  OptionalGreaterEqualExpression implements Expression <150>, InfixExpression =
+    left:Expression operator:"?>=" right:Expression;
+
+  OptionalLessThanExpression implements Expression <150>, InfixExpression =
+    left:Expression operator:"?<" right:Expression;
+
+  OptionalGreaterThanExpression implements Expression <150>, InfixExpression =
+    left:Expression operator:"?>" right:Expression;
+
+  OptionalEqualsExpression implements Expression <130>, InfixExpression =
+    left:Expression operator:"?==" right:Expression;
+
+  OptionalNotEqualsExpression implements Expression <130>, InfixExpression =
+    left:Expression operator:"?!=" right:Expression;
+
+
+  /*=================================================================*/
+
+  /*
+   * x ?~~ y   is the same as   x ?== y, 
+   * except that the types of x and y must not (statically checkable) 
+   * be compatible. However, x ?~~ y only holds, if x and 
+   * y are of the same actual type or both absent.
+   *
+   * This allows to compare values as if in an untyped language.
+   * This should be rarely needed.
+   */
+  OptionalSimilarExpression implements Expression <130>, InfixExpression =
+    left:Expression operator:"?~~" right:Expression;
+
+  /* 
+   * x ?!~ y   is the same as   x != y, 
+   * except that the types of x and y must not 
+   * be compatible (statically checkable) 
+   */
+  OptionalNotSimilarExpression implements Expression <130>, InfixExpression =
+    left:Expression operator:"?!~" right:Expression;
+
+}

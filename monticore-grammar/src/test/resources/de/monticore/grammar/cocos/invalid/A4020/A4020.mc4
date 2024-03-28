@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4020;
+
+grammar A4020 {
+
+ A;
+
+ astrule A;
+
+ astrule A;
+
+
+}

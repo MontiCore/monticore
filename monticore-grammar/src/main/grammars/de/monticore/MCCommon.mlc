@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+mlc MCCommon {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/MCCommon.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/mccommon/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.Cardinality";
+    mlc "de.monticore.Completeness";
+    mlc "de.monticore.UMLModifier";
+    mlc "de.monticore.UMLStereotype";
+  }
+
+}
