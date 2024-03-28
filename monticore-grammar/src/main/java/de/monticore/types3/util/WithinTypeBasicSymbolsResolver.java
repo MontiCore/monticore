@@ -263,7 +263,7 @@ public class WithinTypeBasicSymbolsResolver {
       // note: Exception is not supposed to happen,
       // thus, never rely on this(!) Error being logged (here)
       // some error should be logged, though.
-      Log.error("0xFD225 resolved " + e.getSymbols().size()
+      Log.error("0xFD225 internal error: resolved " + e.getSymbols().size()
           + "occurences of variable " + name
           + ", but expected only one:" + System.lineSeparator()
           + e.getSymbols().stream()
