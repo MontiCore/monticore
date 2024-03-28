@@ -313,19 +313,17 @@ public class WithinTypeBasicSymbolsResolver {
         false,
         name,
         accessModifier,
-        predicate.and(getIsLocalSymbolPredicate(scope))
+        predicate
+            .and(getIsNotTypeVarSymbolPredicate())
+            .and(getIsLocalSymbolPredicate(scope))
     );
     // todo remove given a fixed resolver
     resolved = resolved.stream()
-        .filter(predicate.and(getIsLocalSymbolPredicate(scope)))
+        .filter(predicate
+            .and(getIsNotTypeVarSymbolPredicate())
+            .and(getIsLocalSymbolPredicate(scope))
+        )
         .collect(Collectors.toList());
-    // prefer variables to concrete types in the same scope,
-    // e.g., class A<B>{class B{} B b = new B();} is not valid Java
-    if (resolved.stream().anyMatch(getTypeDispatcher()::isBasicSymbolsTypeVar)) {
-      resolved = resolved.stream()
-          .filter(Predicate.not(getTypeDispatcher()::isBasicSymbolsTypeVar))
-          .collect(Collectors.toList());
-    }
     if (resolved.size() > 1) {
       Log.error("0xFD221 resolved multiple types \""
           + name + "\" (locally in the same scope)");
@@ -345,6 +343,21 @@ public class WithinTypeBasicSymbolsResolver {
                 + s.getFullName() + "' as it was resolved "
                 + "in a different scope, even though "
                 + "\"resolve[...]Locally[...]\" was used",
+            LOG_NAME
+        );
+        return false;
+      }
+      return true;
+    };
+  }
+
+  protected Predicate<TypeSymbol> getIsNotTypeVarSymbolPredicate() {
+    return ts -> {
+      if (BasicSymbolsMill.typeDispatcher().isBasicSymbolsTypeVar(ts)) {
+        Log.trace("filtered symbol '"
+                + ts.getFullName() + "' as it is a type variable"
+                + ", which are only resolved based on scopes" +
+                ", e.g., not TypeWithVar.typeVarName.",
             LOG_NAME
         );
         return false;

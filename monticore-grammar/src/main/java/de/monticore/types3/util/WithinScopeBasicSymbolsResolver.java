@@ -13,6 +13,7 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolExcepti
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collections;
@@ -225,10 +226,19 @@ public class WithinScopeBasicSymbolsResolver {
   ) {
     Optional<SymTypeExpression> type;
     // variable
-    Optional<TypeVarSymbol> optTypeVar = resolverHotfix(() ->
+    Optional<TypeVarSymbol> optTypeVar;
+    // Java-esque languages do not allow
+    // to resolve type variables using qualified names, e.g.,
+    // class C<T> {C.T t = null;} // invalid Java
+    if (isNameWithQualifier(name)) {
+      optTypeVar = Optional.empty();
+    }
+    else {
+      optTypeVar = resolverHotfix(() ->
         enclosingScope.resolveTypeVar(
             name, AccessModifier.ALL_INCLUSION, getTypeVarPredicate())
-    );
+      );
+    }
     // object
     Optional<TypeSymbol> optObj = resolverHotfix(() ->
         enclosingScope.resolveType(name, AccessModifier.ALL_INCLUSION,
@@ -286,6 +296,13 @@ public class WithinScopeBasicSymbolsResolver {
 
   // Helper
 
+  /**
+   * @return true for "a.b", false for "a"
+   */
+  protected boolean isNameWithQualifier(String name) {
+    return !Names.getQualifier(name).isEmpty();
+  }
+
   protected IBasicSymbolsScope getAsBasicSymbolsScope(IScope scope) {
     // is accepted only here, decided on 07.04.2020
     if (!(scope instanceof IBasicSymbolsScope)) {
@@ -304,7 +321,7 @@ public class WithinScopeBasicSymbolsResolver {
    * This methods is to be removed in the future
    */
   protected <T> Optional<T> resolverHotfix(java.util.function.Supplier<Optional<T>> s) {
-    Optional<T> resolved;  
+    Optional<T> resolved;
     try {
       resolved = s.get();
     } catch(ResolvedSeveralEntriesForSymbolException e) {
