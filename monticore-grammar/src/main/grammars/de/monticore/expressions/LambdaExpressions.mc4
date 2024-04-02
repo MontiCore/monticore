@@ -1,7 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.expressions;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 import de.monticore.expressions.*;
 import de.monticore.symbols.*;
@@ -19,8 +20,8 @@ component grammar LambdaExpressions
    * Not part of this grammar are Java-like lambdas with codeblocks, e.g.
    * (int x) -> {int y = x + 2; return y;}
    *
-   * The grammar has the extension point LambdaBody which can be used to allow different kinds of lambda bodies, e.g.
-   * codeblocks.
+   * The grammar has the extension point LambdaBody which can be used to 
+   * allow different kinds of lambda bodies, e.g. codeblocks.
    *
    * There are also other kinds of expressions defined in the
    * grammars mentioned below. These expression definitions can safely be
@@ -48,7 +49,8 @@ component grammar LambdaExpressions
   ;
 
   /**
-   * Extension point that can be used to allow different bodies for lambda statements, e.g codeblocks.
+   * Extension point that can be used to allow different bodies for 
+   * lambda statements, e.g codeblocks.
    */
   interface LambdaBody;
 
@@ -57,7 +59,8 @@ component grammar LambdaExpressions
 
   LambdaExpressionBody implements LambdaBody = Expression;
 
-  scope (shadowing non_exporting ordered) LambdaExpression implements Expression <50> =
+  scope (shadowing non_exporting ordered) LambdaExpression 
+                                    implements Expression <50> =
     <rightassoc>
     LambdaParameters "->"
     LambdaBody

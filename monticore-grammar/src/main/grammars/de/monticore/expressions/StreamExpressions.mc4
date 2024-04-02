@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 import de.monticore.expressions.ExpressionsBasis;
 
@@ -33,9 +34,7 @@ import de.monticore.expressions.ExpressionsBasis;
 
 component grammar StreamExpressions extends CommonExpressions {
 
-  /*=================================================================*/
-  
-  /* ------ Special Syntax for Functions on Untimed Streams -------- */
+  /* ------ Special Syntax for Functions on Streams ---------------- */
 
   /* 
    * Empty Stream constant 
@@ -49,14 +48,16 @@ component grammar StreamExpressions extends CommonExpressions {
    * a+b:c  is equal to  (a+b):c, and
    * a <= b:c  is equal to  a <= (b:c), hence the priority 154, 156
    */
-  AppendStreamExpression implements Expression <154>, InfixExpression = <rightassoc>
+  AppendStreamExpression implements Expression <154>, InfixExpression = 
+    <rightassoc>
     left:Expression operator:":" right:Expression;
 
   /*
    * Concatenation of streams 
    * a^^b^^c  is equal to  a^^(b^^c),  hence <rightassoc>
    */
-  ConcatStreamExpression implements Expression <156>, InfixExpression = <rightassoc>
+  ConcatStreamExpression implements Expression <156>, InfixExpression = 
+    <rightassoc>
     left:Expression operator:"^^" right:Expression;
 
   /* 

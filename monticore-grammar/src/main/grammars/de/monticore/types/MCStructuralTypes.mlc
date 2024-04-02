@@ -1,6 +1,6 @@
 package de.monticore.types;
 
-mlc MCSimpleGenericTypes {
+mlc MCStructuralTypes {
 
   //export the grammar
   export "$projectDir/src/main/grammars" {
@@ -20,6 +20,10 @@ mlc MCSimpleGenericTypes {
 
   promote {
     mlc "de.monticore.types.MCBasicTypes";
+  }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
   }
 
 }

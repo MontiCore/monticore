@@ -217,10 +217,10 @@ Some snipets for operators defined in expressions:
     SetExp:        .isin.  .in.  union  intersect  setand  setor
                    { item | specifier }
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
-    LambdaExp:     i->i   (a,b)->a+b
+    LambdaExp:     i->2*i   (a,b)->a+b
     TupleExp:      (.,.)  (.,.,.,.)
     SIUnits:       5km  3,2m/s  22l  2.400J  
-    UglyExp:       .instanceof.  (.). new
+    UglyExp:       .instanceof.  (.).  new
     JavaClass:     this  .[.]  super
 
 
@@ -280,7 +280,7 @@ as they allow math oriented style of specification.
 * This grammar resides in the [MontiCore/OCL][OCL] project.
 
 
-### [LambdaExpressions.mc4](expressions/LambdaExpressions.mc4) (beta)
+### [LambdaExpressions.mc4](expressions/LambdaExpressions.mc4) (stable)
 * This grammar defines lambda expressions.
   Lambda expression define anonymous functions that can be passed around 
   as values e.g. to higher-order functions 

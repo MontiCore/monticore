@@ -16,8 +16,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MCArrayStatementsPrettyPrinterTest {
 
@@ -37,12 +36,16 @@ public class MCArrayStatementsPrettyPrinterTest {
 
   @Test
   public void testArrayInit() throws IOException {
-    Optional<ASTArrayInit> result = parser.parse_StringArrayInit("{a, b, foo}");
+    String input = "{a, b, foo}";
+    Optional<ASTArrayInit> result = parser.parse_StringArrayInit(input);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTArrayInit ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
+    assertEquals(
+        input.replaceAll(" ",  ""),
+        output.replaceAll(" ", "").replaceAll("\n", ""));
 
     result = parser.parse_StringArrayInit(output);
     assertFalse(parser.hasErrors());
