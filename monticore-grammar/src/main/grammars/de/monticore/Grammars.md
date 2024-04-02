@@ -220,7 +220,7 @@ Some snipets for operators defined in expressions:
     LambdaExp:     i->2*i   (a,b)->a+b
     TupleExp:      (.,.)  (.,.,.,.)
     SIUnits:       5km  3,2m/s  22l  2.400J  
-    UglyExp:       .instanceof.  (.). new
+    UglyExp:       .instanceof.  (.).  new
     JavaClass:     this  .[.]  super
 
 
