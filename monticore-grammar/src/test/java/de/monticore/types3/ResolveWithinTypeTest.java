@@ -17,6 +17,10 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,6 +49,7 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
   public void before() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
   }
 
   // class t {
@@ -292,6 +297,23 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     assertSame(type.getTypeInfo(), oOType);
   }
 
+  // class t<t> {
+  //   => test type "t.t" in this scope, ought to fail
+  // }
+  // => test type "t.t" in this scope, ought to fail
+  @Test
+  public void testError1() throws IOException {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+
+    OOTypeSymbol oOType1 = oOtype("t");
+    inScope(gs, oOType1);
+
+    inScope(oOType1.getSpannedScope(), typeVariable("t"));
+
+    calculateTypeIDWithinScopeError("t.t", oOType1.getSpannedScope(), "0xFDAE3");
+    calculateTypeIDWithinScopeError("t.t", oOType1.getEnclosingScope(), "0xFDAE3");
+  }
+
   // Helper
 
   /**
@@ -332,4 +354,43 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     return scopeSetter;
   }
 
+  /**
+   * tries to calculate the type of the type identifier within the scope,
+   * but should fail and checks for the error Code.
+   * If getting the type ID does not fail,
+   * a variable / function is used to check the type, in this case,
+   * use {@link #calculateTypeWithinScope(String, IMCBasicsScope)} instead.
+   */
+  SymTypeExpression calculateTypeIDWithinScopeError(
+      String typeStr,
+      IMCBasicsScope scope,
+      String errorCode
+  ) throws IOException {
+    ASTMCType mcType = parseMCType(typeStr);
+    generateScopes(mcType);
+    mcType.accept(getMCTypeScopeSetter(scope));
+    calculateTypes(mcType);
+    SymTypeExpression type = getType4Ast().getTypeOfTypeIdentifier(mcType);
+    assertHasErrorCode(errorCode);
+    return type;
+  }
+
+  /**
+   * Sets every (sub-)MCType to the given scope.
+   * This can be used to test the MCType in specific contexts.
+   */
+  protected MCBasicTypesTraverser getMCTypeScopeSetter(
+      IMCBasicsScope scope) {
+    MCBasicTypesTraverser scopeSetter =
+        MCBasicTypesMill.inheritanceTraverser();
+    scopeSetter.add4MCBasicTypes(
+        new MCBasicTypesVisitor2() {
+          @Override
+          public void visit(ASTMCType node) {
+            node.setEnclosingScope(scope);
+          }
+        }
+    );
+    return scopeSetter;
+  }
 }
