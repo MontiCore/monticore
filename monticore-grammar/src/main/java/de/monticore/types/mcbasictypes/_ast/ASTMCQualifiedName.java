@@ -9,11 +9,11 @@ public class ASTMCQualifiedName extends ASTMCQualifiedNameTOP {
   }
 
   public Boolean isQualified() {
-    return parts.size() >=2 ;
+    return getPartsList().size() >=2 ;
   }
 
   public String getBaseName() {
-    return parts.get(parts.size()-1);
+    return getPartsList().get(getPartsList().size()-1);
   }
 
   public String getQName() {
