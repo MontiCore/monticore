@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
+import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
@@ -23,12 +24,34 @@ public interface ISymbolDeSer<S extends ISymbol, J> {
 
   /**
    * Deserialize a passed String to an instance of the type T
+   * with the specified enclosing scope
+   * @param serialized
+   * @return
+   */
+  default S deserialize (IScope enclosingScope, String serialized){
+    JsonObject symbol = JsonParser.parseJsonObject(serialized);
+    return deserialize(enclosingScope, symbol);
+  }
+
+  /**
+   * Deserialize a passed String to an instance of the type T
    * @param serialized
    * @return
    */
   default S deserialize (String serialized){
     JsonObject symbol = JsonParser.parseJsonObject(serialized);
     return deserialize(symbol);
+  }
+
+  /**
+   * Deserialize a passed Json Object to an instance of the type T
+   * with the specified enclosing scope
+   * @param serialized
+   * @param enclosingScope
+   * @return
+   */
+  default S deserialize (IScope enclosingScope, JsonObject serialized) {
+    return deserialize(serialized);
   }
 
   /**

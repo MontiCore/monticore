@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -33,10 +34,17 @@ public class SymTypeArrayDeSer {
   }
 
   public SymTypeArray deserialize(JsonObject serialized) {
+    return deserialize(serialized, null);
+  }
+
+  /**
+   * @param enclosingScope can be null
+   */
+  public SymTypeArray deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasIntegerMember(SERIALIZED_DIM) && serialized.hasMember(SERIALIZED_ARGUMENT)) {
       int dim = serialized.getIntegerMember(SERIALIZED_DIM);
       JsonElement argumentJson = serialized.getMember(SERIALIZED_ARGUMENT);
-      SymTypeExpression arg = SymTypeExpressionDeSer.getInstance().deserialize(argumentJson);
+      SymTypeExpression arg = SymTypeExpressionDeSer.getInstance().deserialize(argumentJson, enclosingScope);
       IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
       return SymTypeExpressionFactory.createTypeArray(arg.print(), gs, dim, arg);
     }

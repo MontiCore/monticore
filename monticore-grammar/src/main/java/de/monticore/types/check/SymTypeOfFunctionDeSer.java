@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -34,11 +35,18 @@ public class SymTypeOfFunctionDeSer {
   }
 
   public SymTypeOfFunction deserialize(JsonObject serialized) {
+    return deserialize(serialized, null);
+  }
+
+  /**
+   * @param enclosingScope can be null
+   */
+  public SymTypeOfFunction deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasMember(SERIALIZED_RETURNTYPE)) {
       SymTypeExpression returnType = SymTypeExpressionDeSer
-          .deserializeMember(SERIALIZED_RETURNTYPE, serialized);
+          .deserializeMember(SERIALIZED_RETURNTYPE, serialized, enclosingScope);
       List<SymTypeExpression> arguments =
-          SymTypeExpressionDeSer.deserializeListMember(SERIALIZED_ARGUMENTTYPES, serialized);
+          SymTypeExpressionDeSer.deserializeListMember(SERIALIZED_ARGUMENTTYPES, serialized, enclosingScope);
       boolean isElliptic = serialized
           .getBooleanMemberOpt(SERIALIZED_ELLIPTIC)
           .orElse(false);
