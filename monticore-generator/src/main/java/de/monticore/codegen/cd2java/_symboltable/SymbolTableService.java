@@ -538,6 +538,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return getSimpleName(referencedSymbol).substring(0, getSimpleName(referencedSymbol).lastIndexOf(SYMBOL_SUFFIX));
   }
 
+  public Set<String> retrieveSymbolNamesFromCD() {
+    return retrieveSymbolNamesFromCD(this.cdSymbol);
+  }
+
   /**
    * Computes a set of all symbol defining rules in a class diagram, stored as
    * their qualified names.

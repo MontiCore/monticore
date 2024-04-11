@@ -12,8 +12,8 @@ public class MCCommonLiteralsInterpreter extends MCCommonLiteralsInterpreterTOP 
     super();
   }
 
-  public MCCommonLiteralsInterpreter(ModelInterpreter realThis) {
-    super(realThis);
+  public MCCommonLiteralsInterpreter(IMCCommonLiteralsContext context, ModelInterpreter realThis) {
+    super(context, realThis);
   }
 
   @Override

@@ -17,8 +17,8 @@ public class ExpressionsBasisInterpreter extends ExpressionsBasisInterpreterTOP 
     super();
   }
 
-  public ExpressionsBasisInterpreter(ModelInterpreter realThis) {
-    super(realThis);
+  public ExpressionsBasisInterpreter(IExpressionsBasisContext context, ModelInterpreter realThis) {
+    super(context, realThis);
   }
 
   @Override

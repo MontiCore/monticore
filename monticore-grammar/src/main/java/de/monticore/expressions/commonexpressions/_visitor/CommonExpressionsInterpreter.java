@@ -4,6 +4,7 @@ package de.monticore.expressions.commonexpressions._visitor;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.Value;
 import de.monticore.interpreter.ValueFactory;
 import de.monticore.interpreter.values.NotAValue;
@@ -15,12 +16,12 @@ import java.util.Optional;
 
 public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTOP {
 
-  public CommonExpressionsInterpreter() {
+  public CommonExpressionsInterpreter(ICommonExpressionsContext context) {
     super();
   }
 
-  public CommonExpressionsInterpreter(de.monticore.interpreter.ModelInterpreter realThis) {
-    super(realThis);
+  public CommonExpressionsInterpreter(ICommonExpressionsContext context, ModelInterpreter realThis) {
+    super(context, realThis);
   }
 
   @Override

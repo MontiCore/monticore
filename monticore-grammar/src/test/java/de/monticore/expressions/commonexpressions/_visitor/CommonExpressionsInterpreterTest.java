@@ -1,16 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions._visitor;
 
+import de.monticore.expressions.assignmentexpressions._ast.ASTIncSuffixExpression;
+import de.monticore.expressions.assignmentexpressions._symboltable.AssignmentExpressionsScopesGenitor;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScopesGenitor;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScopesGenitorDelegator;
+import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsInterpreter;
+import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.interpreter.Value;
 import de.monticore.interpreter.ValueFactory;
+import de.monticore.interpreter.values.IntValue;
 import de.monticore.interpreter.values.NotAValue;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,6 +37,7 @@ public class CommonExpressionsInterpreterTest {
   public void before() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    BasicSymbolsMill.initializePrimitives();
     LogStub.init();
     Log.clearFindings();
     Log.enableFailQuick(false);
@@ -849,6 +862,11 @@ public class CommonExpressionsInterpreterTest {
   }
 
   @Test
+  public void testIncSuffixExpression() {
+    testValidExpression("a++", ValueFactory.createValue(2));
+  }
+
+  @Test
   public void testConditionalExpression() {
     testValidExpression("(true) ? 1 : 2", ValueFactory.createValue(1));
     testValidExpression("5 <= 10%5 || !true && true ? (3 + 2 * 2) / 14.0 : ((1 > 2L) && ('z' <= 15.243f))", ValueFactory.createValue(false));
@@ -907,9 +925,30 @@ public class CommonExpressionsInterpreterTest {
   protected Value parseExpressionAndInterpret(String expr) throws IOException {
     CombineExpressionsWithLiteralsInterpreter interpreter = new CombineExpressionsWithLiteralsInterpreter();
     CombineExpressionsWithLiteralsParser parser = CombineExpressionsWithLiteralsMill.parser();
-    final Optional<ASTExpression> optAST = parser.parse_StringExpression(expr);
+    final Optional<ASTFoo> optAST = parser.parse_StringFoo("bar " + expr);
     assertTrue(optAST.isPresent());
-    final ASTExpression ast = optAST.get();
+    final ASTFoo ast = optAST.get();
+
+    CombineExpressionsWithLiteralsScopesGenitorDelegator delegator = CombineExpressionsWithLiteralsMill.scopesGenitorDelegator();
+    delegator.createFromAST(ast);
+
+    final Optional<ASTFoo> optAssignment = parser.parse_StringFoo("bar a = 1");
+    assertTrue(optAssignment.isPresent());
+    final ASTFoo assignment = optAssignment.get();
+    delegator.createFromAST(assignment);
+
+    assignment.getEnclosingScope().getVariableSymbols().put("a",
+        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
+            .setType(SymTypeExpressionFactory.createPrimitive("int"))
+            .setName("a")
+            .setFullName("a")
+            .setPackageName("")
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setEnclosingScope(assignment.getEnclosingScope())
+            .build());
+
+    interpreter.interpret(assignment);
+
     return interpreter.interpret(ast);
   }
 }
