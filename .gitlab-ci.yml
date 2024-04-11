@@ -254,6 +254,14 @@ trigger-montifun-dev:
   only:
     - dev
 
+trigger-siunits-dev:
+  stage: trigger_languages
+  trigger:
+    project: monticore/languages/siunits
+    branch: dev
+  only:
+    - dev
+
 trigger-sc-dev:
   stage: trigger_languages
   trigger:
@@ -355,6 +363,14 @@ trigger-montifun-main:
   trigger:
     project: monticore/languages/montifun
     branch: main
+  only:
+    - master
+
+trigger-siunits-master:
+  stage: trigger_languages
+  trigger:
+    project: monticore/languages/siunits
+    branch: master
   only:
     - master
 

@@ -86,7 +86,6 @@ if (("true").equals(getProperty('genTR'))) {
     grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTROutput()
             .matching {
               exclude(['**/de/monticore/tf/*', '**/de/monticore/grammar/*'])
-              exclude(['**/de/monticore/siunit/*'])
             })
     outputDir = file trafoOutDir
     genDST = true
@@ -169,7 +168,6 @@ def grammarDependencies = ext {
   UMLStereotype = ["MCCommonLiterals"]
   MCArrayStatements = ["MCVarDeclarationStatements"]
   RegularExpressions = ["MCCommonLiterals"]
-  SIUnits = ["MCCommonLiterals"]
   TupleExpressions = ["ExpressionsBasis"]
 
   // two dependencies
@@ -182,9 +180,6 @@ def grammarDependencies = ext {
   MCAssertStatements = ["MCStatementsBasis", "ExpressionsBasis"]
   RegExType = ["RegularExpressions", "MCBasicTypes"]
   UglyExpressions = ["CommonExpressions", "MCBasicTypes"]
-  SIUnitLiterals = ["MCCommonLiterals", "SIUnits"]
-  SIUnitTypes4Math = ["MCBasicTypes", "SIUnits"]
-  SIUnitTypes4Computing = ["MCBasicTypes", "SIUnitTypes4Math"]
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]

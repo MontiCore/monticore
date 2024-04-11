@@ -35,7 +35,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
   public void testInvalidIncSuffixExpression() throws IOException {
     checkErrorExpr("varboolean++", "0xA0184"); // ++ not applicable to boolean
     checkErrorExpr("varString++", "0xA0184"); // not applicable to String
-    checkErrorExpr("varintMetre++", "0xA0184"); // debatable
   }
 
   @Test
@@ -61,7 +60,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
   public void testInvalidDecSuffixExpression() throws IOException {
     checkErrorExpr("varboolean--", "0xA0184"); // -- not applicable to boolean
     checkErrorExpr("varString--", "0xA0184"); //not applicable to Strings
-    checkErrorExpr("varintMetre--", "0xA0184"); // debatable
   }
 
   @Test
@@ -87,7 +85,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
   public void testInvalidIncPrefixExpression() throws IOException {
     checkErrorExpr("++varboolean", "0xA0184"); // ++ not applicable to boolean
     checkErrorExpr("++varString", "0xA0184"); //not applicable to Strings
-    checkErrorExpr("++varintMetre", "0xA0184"); // debatable
   }
 
   @Test
@@ -113,7 +110,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
   public void testInvalidDecPrefixExpression() throws IOException {
     checkErrorExpr("--varboolean", "0xA0184"); // -- not applicable to boolean
     checkErrorExpr("--varString", "0xA0184"); // not applicable to Strings
-    checkErrorExpr("--varintMetre", "0xA0184"); // debatable
   }
 
   @Test
@@ -123,8 +119,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
 
     //example with double
     checkExpr("-15.7", "double");
-
-    checkExpr("-1m", "[m]<int>");
   }
 
   @Test
@@ -140,8 +134,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
 
     //example with long
     checkExpr("+4L", "long");
-
-    checkExpr("+1m", "[m]<int>");
   }
 
   @Test
@@ -186,7 +178,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("vardouble += varlong", "double"); // += applicable to double, long
     checkExpr("vardouble += varfloat", "double"); // += applicable to double, float
     checkExpr("vardouble += vardouble", "double"); // += applicable to double, double
-    checkExpr("varintMetre += varintMetre", "[m]<int>");
     checkExpr("varString+=person1", "String"); // example with String - Person
   }
 
@@ -208,8 +199,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("varfloat += varboolean", "0xA0178"); // += not applicable to float, boolean
     checkErrorExpr("vardouble += varboolean", "0xA0178"); // += not applicable to double, boolean
     checkErrorExpr("varint+=\"Hello\"", "0xA0178"); // not possible because int = int + (int) String returns a casting error
-    checkErrorExpr("varintMetre += 1s", "0xA0178");
-    checkErrorExpr("varintMetre += 1", "0xA0178");
   }
 
   @Test
@@ -249,7 +238,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("vardouble -= varlong", "double"); // -= applicable to double, long
     checkExpr("vardouble -= varfloat", "double"); // -= applicable to double, float
     checkExpr("vardouble -= vardouble", "double"); // -= applicable to double, double
-    checkExpr("varintMetre -= varintMetre", "[m]<int>");
   }
 
   @Test
@@ -263,8 +251,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("varBoolean -= varfloat", "0xA0178"); // -= not applicable to boolean, float
     checkErrorExpr("varBoolean -= vardouble", "0xA0178"); // -= not applicable to boolean, double
     checkErrorExpr("varint-=\"Hello\"", "0xA0178"); //not possible because int = int - (int) String returns a casting error
-    checkErrorExpr("varintMetre -= 1s", "0xA0178");
-    checkErrorExpr("varintMetre -= 1", "0xA0178");
   }
 
   @Test
@@ -304,7 +290,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("vardouble *= varlong", "double"); // *= applicable to double, long
     checkExpr("vardouble *= varfloat", "double"); // *= applicable to double, float
     checkExpr("vardouble *= vardouble", "double"); // *= applicable to double, double
-    checkExpr("varintMetre *= varint", "[m]<int>");
   }
 
   @Test
@@ -318,7 +303,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("varboolean *= varfloat", "0xA0178"); // *= not applicable to boolean, float
     checkErrorExpr("varboolean *= vardouble", "0xA0178"); // *= not applicable to boolean, double
     checkErrorExpr("varint*=\"Hello\"", "0xA0178"); /// not possible because int = int * (int) String returns a casting error
-    checkErrorExpr("varintMetre *= varintMetre", "0xA0178");
   }
 
   @Test
@@ -358,7 +342,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("vardouble /= varlong", "double"); // /= applicable to double, long
     checkExpr("vardouble /= varfloat", "double"); // /= applicable to double, float
     checkExpr("vardouble /= vardouble", "double"); // /= applicable to double, double
-    checkExpr("varintMetre /= varint", "[m]<int>");
+
   }
 
   @Test
@@ -372,7 +356,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("varboolean /= varfloat", "0xA0178"); // /= not applicable to boolean, float
     checkErrorExpr("varboolean /= vardouble", "0xA0178"); // /= not applicable to boolean, double
     checkErrorExpr("varint/=\"Hello\"", "0xA0178"); // not possible because int = int / (int) String returns a casting error
-    checkErrorExpr("varintMetre /= varintMetre", "0xA0178");
   }
 
   @Test
@@ -412,7 +395,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("vardouble %= varlong", "double"); // %= applicable to double, long
     checkExpr("vardouble %= varfloat", "double"); // %= applicable to double, float
     checkExpr("vardouble %= vardouble", "double"); // %= applicable to double, double
-    checkExpr("varintMetre %= varintMetre", "[m]<int>");
   }
 
   @Test
@@ -426,8 +408,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("varboolean %= varfloat", "0xA0178"); // %= not applicable to boolean, float
     checkErrorExpr("varboolean %= vardouble", "0xA0178"); // %= not applicable to boolean, double
     checkErrorExpr("varint%=\"Hello\"", "0xA0178"); // not possible because int = int % (int) String returns a casting error
-    checkErrorExpr("varintMetre %= 1s", "0xA0178");
-    checkErrorExpr("varintMetre %= 1", "0xA0178");
   }
 
   @Test
@@ -501,9 +481,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("vardouble &= varfloat", "0xA0176"); // &= not applicable to double, float
     checkErrorExpr("vardouble &= vardouble", "0xA0176"); // &= not applicable double, double
     checkErrorExpr("varint&=\"Hello\"", "0xA0176"); // not possible because int = int & (int) String returns a casting error
-    checkErrorExpr("varintMetre &= varintMetre", "0xA0176");
-    checkErrorExpr("varintMetre &= varintSecond", "0xA0176");
-    checkErrorExpr("varintMetre &= varint", "0xA0176");
   }
 
   @Test
@@ -577,11 +554,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("vardouble |= varfloat", "0xA0176"); // |= not applicable to double, float
     checkErrorExpr("vardouble |= vardouble", "0xA0176"); // |= not applicable double, double
     checkErrorExpr("varint|=\"Hello\"", "0xA0176"); // not possible because int = int | (int) String returns a casting error
-    checkErrorExpr("varintMetre |= varintMetre", "0xA0176");
-    checkErrorExpr("varintMetre |= varintSecond", "0xA0176");
-    checkErrorExpr("varintMetre |= varint", "0xA0176");
   }
-
   @Test
   public void deriveFromBinaryXorAssignmentExpression() throws IOException {
     checkExpr("varboolean ^= varboolean", "boolean"); // ^= applicable to boolean, boolean
@@ -653,9 +626,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("vardouble ^= varfloat", "0xA0176"); // ^= not applicable to double, float
     checkErrorExpr("vardouble ^= vardouble", "0xA0176"); // ^= not applicable to double, double
     checkErrorExpr("varint^=\"Hello\"", "0xA0176"); // not possible because int = int ^ (int) String returns a casting error
-    checkErrorExpr("varintMetre ^= varintMetre", "0xA0176");
-    checkErrorExpr("varintMetre ^= varintSecond", "0xA0176");
-    checkErrorExpr("varintMetre ^= varint", "0xA0176");
   }
 
   @Test
@@ -688,7 +658,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
   }
 
   @Test
-  public void testInvalidDoubleLeftAssignmentExpression() throws IOException {
+  public void testInvvarlidDoubleLeftvarssignmentExpression() throws IOException {
     checkErrorExpr("varboolean <<= varboolean", "0xA0177"); // <<= not applicable to boolean, boolean
     checkErrorExpr("varboolean <<= varchar", "0xA0177"); // <<= not applicable to boolean, char
     checkErrorExpr("varboolean <<= varbyte", "0xA0177"); // <<= not applicable to boolean, byte
@@ -714,9 +684,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("vardouble <<= varfloat", "0xA0177"); // <<= not applicable to double, float
     checkErrorExpr("vardouble <<= vardouble", "0xA0177"); // <<= not applicable to double, double
     checkErrorExpr("varint<<=\"Hello\"", "0xA0177"); // not possible because int = int << (int) String returns a cvarsting error
-    checkErrorExpr("varintMetre <<= varintMetre", "0xA0177");
-    checkErrorExpr("varintMetre <<= varintSecond", "0xA0177");
-    checkErrorExpr("varintMetre <<= varint", "0xA0177");
   }
 
   @Test
@@ -775,9 +742,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("vardouble >>= varfloat", "0xA0177"); // >>= not applicable to double, float
     checkErrorExpr("vardouble >>= vardouble", "0xA0177"); // >>= not applicable to double, double
     checkErrorExpr("varint>>=\"Hello\"", "0xA0177"); // not possible because int = int >> (int) String returns a cvarsting error
-    checkErrorExpr("varintMetre >>= varintMetre", "0xA0177");
-    checkErrorExpr("varintMetre >>= varintSecond", "0xA0177");
-    checkErrorExpr("varintMetre >>= varint", "0xA0177");
   }
 
   @Test
@@ -836,9 +800,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("vardouble >>>= varfloat", "0xA0177"); // >>>= not applicable to double, float
     checkErrorExpr("vardouble >>>= vardouble", "0xA0177"); // >>>= not applicable to double, double
     checkErrorExpr("varint>>>=\"Hello\"", "0xA0177"); // not possible because int = int >>> (int) String returns a casting error
-    checkErrorExpr("varintMetre >>>= varintMetre", "0xA0177");
-    checkErrorExpr("varintMetre >>>= varintSecond", "0xA0177");
-    checkErrorExpr("varintMetre >>>= varint", "0xA0177");
   }
 
   @Test
@@ -883,7 +844,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("person2 = csStudent1", "Person"); // example with person - firstsemesterstudent
     checkExpr("varBoolean = varboolean", "java.lang.Boolean"); // example with Boolean - boolean
     checkExpr("varboolean = varBoolean", "boolean"); // example with boolean - Boolean
-    checkExpr("varintMetre = varintMetre", "[m]<int>");
   }
 
   @Test
@@ -929,9 +889,6 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkErrorExpr("vardouble = false", "0xA0179"); // expected double but provided boolean
     checkErrorExpr("vardouble = varboolean", "0xA0179"); // expected double but provided boolean
     checkErrorExpr("varint=\"Hello\"", "0xA0179"); // not possible because int = (int) String returns a cvarsting error
-    checkErrorExpr("varintMetre = varintSecond", "0xA0179");
-    checkErrorExpr("varintMetre = varint", "0xA0179");
-    checkErrorExpr("varintMetre = 1.0m", "0xA0179");
   }
 
 }

@@ -34,7 +34,6 @@ packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
 * `de.monticore.expressions`
 * `de.monticore.literals`
 * `de.monticore.regex`
-* `de.monticore.siunit`
 * `de.monticore.statements`
 * `de.monticore.symbols`
 * `de.monticore.types`
@@ -71,7 +70,7 @@ other. Some snipets for type definitions:
     MCFunctionTypes   Foo->Bar  (Foo, Bar)->Foo
     MCStructuralTypes Foo|Bar  Foo&Bar
                       (Foo, Bar)  (Foo)
-    SI Unit types     [km/h]  [km/h]<long>
+    SI Unit types     km/h  km/h<long>
     RegExType         R"[a-z][0-9*]"
   
 
@@ -136,25 +135,29 @@ thus be combined with any of the above grammars.
   They allow to represent types not representable otherwise, e.g., `(A|B) -> C`.
 * They may be combined with any of the grammars above.
 
-### [SIUnitTypes4Math.mc4](siunit/SIUnitTypes4Math.mc4) for Physical SI Units (stable)
+### [SIUnitTypes4Math.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
 
 The known units `s, m, kg, A, K, mol, cd` from the international system of 
-units (SI Units) and their combinations, such as `km/h` or `mg`, etc. can 
+units (SI Units) and  their combinations, such as `km/h` or `mg`, etc. can 
 be used as ordinary types (instead of only numbers). 
-The typecheck is extended to prevent, e.g., assignment of a weight to a length 
-variable or to add appropriate conversion, e.g., when a `km/h`-based velocity is, 
-e.g., stored in a `m/s`-based variable.
+The typecheck is extended to prevent e.g. assignment of a weight to a length 
+variable or to add appropriate conversion, e.g. when a `km/h`-based velocity is 
+e.g. stored in a `m/s`-based variable.
 
-* Example type definitions: `[km/h]`
+The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
 
-### [SIUnitTypes4Computing.mc4](siunit/SIUnitTypes4Computing.mc4) for Physical SI Units (stable)
+* Example type definitions: `km/h`
 
-Includes the types from `SIUnitTypes4Math`(see above), like `[km/h]`, but also allows to add a
-resolution, such as `[km/h]<int>`. Here SI Unit types, 
-like `[km/h]<.>`, are used as generic type constructor that may take a number type,
+### [SIUnitTypes4Computing.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
+
+Includes the types from `SIUnitTypes4Math`(see above), like `km/h`, but also allows to add a
+resolution, such as `km/h<int>`. Here SI Unit types, 
+like `km/h<.>`, are used as generic type constructor that may take a number type,
 such as `int`, `long`, `double`, `float` as argument.
 
-* Example type definitions: `[km/h]<long>`
+The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
+
+* Example type definitions: `km/h<long>`
 
 ### [RegExType.mc4](regex/RegExType.mc4) (stable)
 

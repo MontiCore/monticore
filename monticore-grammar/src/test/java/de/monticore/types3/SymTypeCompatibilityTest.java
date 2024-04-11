@@ -12,7 +12,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types.check.SymTypeVariable;
@@ -26,7 +25,6 @@ import java.util.List;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
-import static de.monticore.types.check.SymTypeExpressionFactory.createNumericWithSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeOfNull;
@@ -409,58 +407,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
   }
 
   @Test
-  public void isCompatibleNumericsAndSIUnits() {
-    assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, _s_SISymType));
-    // TBD: SIUnit of dimension one
-  }
-
-  @Test
-  public void isCompatibleNumericsAndNumericsWithSIUnits() {
-    SymTypeOfNumericWithSIUnit deg_float_SISymType =
-        createNumericWithSIUnit(_deg_SISymType, _floatSymType);
-    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, _s_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_deg_int_SISymType, _intSymType));
-    assertTrue(SymTypeRelations.isCompatible(_intSymType, _deg_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(deg_float_SISymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, deg_float_SISymType));
-  }
-
-  @Test
-  public void isCompatibleNumericWithSIUnits() {
-    SymTypeOfNumericWithSIUnit s_float_SISymType =
-        createNumericWithSIUnit(_s_SISymType, _floatSymType);
-    SymTypeOfNumericWithSIUnit deg_float_SISymType =
-        createNumericWithSIUnit(_deg_SISymType, _floatSymType);
-
-    assertTrue(SymTypeRelations.isCompatible(_s_int_SISymType, _s_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_Ohm_int_SISymType, _Ohm_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _A_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_A_int_SISymType, _s_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_deg_int_SISymType, _rad_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_rad_int_SISymType, _deg_int_SISymType));
-
-    assertTrue(SymTypeRelations.isCompatible(s_float_SISymType, _s_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, s_float_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(deg_float_SISymType, _rad_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_rad_int_SISymType, deg_float_SISymType));
-  }
-
-  @Test
-  public void isCompatibleSIUnits() {
-    assertTrue(SymTypeRelations.isCompatible(_s_SISymType, _s_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_Ohm_SISymType, _Ohm_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _A_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_A_SISymType, _s_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_deg_SISymType, _rad_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_rad_SISymType, _deg_SISymType));
-    // cannot combine SIUnits with NumericWithSIUnits
-    assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _s_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _s_SISymType));
-  }
-
-  @Test
   public void isSubTypeBottom() {
     // bottom is subType of EVERY other type
     assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _bottomType));
@@ -707,8 +653,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     assertTrue(SymTypeRelations.isCompatible(_IntegerSymType, createTypeOfNull()));
     assertFalse(SymTypeRelations.isSubTypeOf(createTypeOfNull(), _personSymType));
     assertFalse(SymTypeRelations.isSubTypeOf(_personSymType, createTypeOfNull()));
-    assertFalse(SymTypeRelations.isSubTypeOf(_s_SISymType, _nullSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_s_int_SISymType, _nullSymType));
   }
 
   /**

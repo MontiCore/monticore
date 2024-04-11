@@ -9,8 +9,6 @@ import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfRegEx;
-import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
-import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypeOfTuple;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypeOfWildcard;
@@ -52,12 +50,6 @@ public interface ISymTypeVisitor {
   }
 
   default void visit(SymTypePrimitive primitive) {
-  }
-
-  default void visit(SymTypeOfSIUnit siUnit) {
-  }
-
-  default void visit(SymTypeOfNumericWithSIUnit numericWithSIUnit) {
   }
 
   default void visit(SymTypeVariable typeVar) {

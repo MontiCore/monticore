@@ -10,16 +10,13 @@ import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeVi
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorTypeVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
-import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
-import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
 import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
+import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
+import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
-import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
-import de.monticore.siunit.siunittypes4computing.types3.SIUnitTypes4ComputingTypeVisitor;
-import de.monticore.siunit.siunittypes4math.types3.SIUnitTypes4MathTypeVisitor;
 import de.monticore.types.mcarraytypes.types3.MCArrayTypesTypeVisitor;
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
@@ -77,7 +74,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derTupleExpressions.setType4Ast(type4Ast);
     visitors.derUglyExpressions.setType4Ast(type4Ast);
     visitors.derOfMCCommonLiterals.setType4Ast(type4Ast);
-    visitors.derSIUnitLiterals.setType4Ast(type4Ast);
     // MCTypes
     visitors.synMCArrayTypes.setType4Ast(type4Ast);
     visitors.synMCBasicTypes.setType4Ast(type4Ast);
@@ -87,8 +83,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.synMCSimpleGenericTypes.setType4Ast(type4Ast);
     visitors.synMCStructuralTypes.setType4Ast(type4Ast);
     visitors.synRegExType.setType4Ast(type4Ast);
-    visitors.synSIUnitTypes4Computing.setType4Ast(type4Ast);
-    visitors.synSIUnitTypes4Math.setType4Ast(type4Ast);
   }
 
   // Expressions
@@ -107,7 +101,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
     visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
-    visitors.derSIUnitLiterals = new SIUnitLiteralsTypeVisitor();
     // MCTypes
     visitors.synMCArrayTypes = new MCArrayTypesTypeVisitor();
     visitors.synMCBasicTypes = new MCBasicTypesTypeVisitor();
@@ -117,8 +110,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.synMCSimpleGenericTypes = new MCSimpleGenericTypesTypeVisitor();
     visitors.synMCStructuralTypes = new MCStructuralTypesTypeVisitor();
     visitors.synRegExType = new RegExTypeTypeVisitor();
-    visitors.synSIUnitTypes4Computing = new SIUnitTypes4ComputingTypeVisitor();
-    visitors.synSIUnitTypes4Math = new SIUnitTypes4MathTypeVisitor();
     return visitors;
   }
 
@@ -184,7 +175,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.add4TupleExpressions(visitors.derTupleExpressions);
     traverser.add4UglyExpressions(visitors.derUglyExpressions);
     traverser.add4MCCommonLiterals(visitors.derOfMCCommonLiterals);
-    traverser.add4SIUnitLiterals(visitors.derSIUnitLiterals);
     // MCTypes
     traverser.add4MCArrayTypes(visitors.synMCArrayTypes);
     traverser.add4MCBasicTypes(visitors.synMCBasicTypes);
@@ -194,8 +184,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     traverser.add4MCSimpleGenericTypes(visitors.synMCSimpleGenericTypes);
     traverser.add4MCStructuralTypes(visitors.synMCStructuralTypes);
     traverser.add4RegExType(visitors.synRegExType);
-    traverser.add4SIUnitTypes4Computing(visitors.synSIUnitTypes4Computing);
-    traverser.add4SIUnitTypes4Math(visitors.synSIUnitTypes4Math);
   }
 
   /**
@@ -225,11 +213,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
     public UglyExpressionsTypeVisitor derUglyExpressions;
 
-    // Literals
-
     public MCCommonLiteralsTypeVisitor derOfMCCommonLiterals;
-
-    public SIUnitLiteralsTypeVisitor derSIUnitLiterals;
 
     // MCTypes
 
@@ -248,9 +232,5 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public MCStructuralTypesTypeVisitor synMCStructuralTypes;
 
     public RegExTypeTypeVisitor synRegExType;
-
-    public SIUnitTypes4ComputingTypeVisitor synSIUnitTypes4Computing;
-
-    public SIUnitTypes4MathTypeVisitor synSIUnitTypes4Math;
   }
 }

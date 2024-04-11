@@ -7,9 +7,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
-import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types.check.SymTypeVariable;
@@ -32,10 +30,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression assigner) {
     boolean result;
     // null is compatible to any non-primitive type
-    if (!assignee.isPrimitive()
-        && !assignee.isNumericWithSIUnitType()
-        && !assignee.isSIUnitType()
-        && assigner.isNullType()) {
+    if (!assignee.isPrimitive() && assigner.isNullType()) {
       result = true;
     }
     // subtypes are assignable to their supertypes
@@ -206,23 +201,6 @@ public class SymTypeCompatibilityCalculator {
           (SymTypeOfFunction) subType,
           (SymTypeOfFunction) superType,
           subTypeIsSoft
-      );
-    }
-    // numerics with SIUnit
-    else if (
-        superType.isNumericWithSIUnitType() &&
-            subType.isNumericWithSIUnitType()
-    ) {
-      result = numericWithSIUnitIsSubTypeOf(
-          subType.asNumericWithSIUnitType(),
-          superType.asNumericWithSIUnitType()
-      );
-    }
-    // siUnits
-    else if (superType.isSIUnitType() && subType.isSIUnitType()) {
-      result = siUnitIsSubTypeOf(
-          subType.asSIUnitType(),
-          superType.asSIUnitType()
       );
     }
     // regEx
@@ -532,30 +510,6 @@ public class SymTypeCompatibilityCalculator {
     else {
       result = false;
     }
-    return result;
-  }
-
-  protected boolean numericWithSIUnitIsSubTypeOf(
-      SymTypeOfNumericWithSIUnit subType,
-      SymTypeOfNumericWithSIUnit superType
-  ) {
-    // note: here, there is no dimension of one,
-    // as they get removed during normalization
-    boolean result =
-        siUnitIsSubTypeOf(subType.getSIUnitType(), superType.getSIUnitType()) &&
-            isSubTypeOf(subType.getNumericType(), superType.getNumericType());
-    return result;
-  }
-
-  protected boolean siUnitIsSubTypeOf(
-      SymTypeOfSIUnit subType,
-      SymTypeOfSIUnit superType
-  ) {
-    boolean result;
-    // order is not important; Here, the subtyping relation is symmetric
-    SymTypeOfSIUnit inverse = SIUnitTypeRelations.invert(subType);
-    SymTypeOfSIUnit divided = SIUnitTypeRelations.multiply(superType, inverse);
-    result = SIUnitTypeRelations.isOfDimensionOne(divided);
     return result;
   }
 
