@@ -89,8 +89,6 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
   public void testUnitTypes() throws IOException {
     Optional<ASTMinuteType> type = parser.parse_StringMinuteType("min");
     assertTrue(type.isPresent());
-    // pretend to use the scope genitor
-    type.get().setEnclosingScope(MyOwnLanguageMill.globalScope());
     assertEquals("min",tc.symTypeFromAST(type.get()).print());
   }
 

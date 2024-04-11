@@ -19,7 +19,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +30,6 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -56,12 +54,8 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   private static final String JSON_OBJECT = "de.monticore.symboltable.serialization.json.JsonObject";
 
-  private static final String IAUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
-
   @Before
   public void setUp() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     this.mcTypeFacade = MCTypeFacade.getInstance();
     decoratedCompilationUnit = this
         .parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
@@ -116,7 +110,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(7, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(5, symbolClassAutomaton.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -152,25 +146,15 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testDeserializeMethod() {
-    List<ASTCDMethod> methods = getMethodsBy("deserialize", symbolClassAutomaton);
-
-    ASTCDMethod method = methods.get(0);
-    assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameterList = method.getCDParameterList();
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
-
-    method = methods.get(1);
+  public void testDeserializeMethod(){
+    ASTCDMethod method = getMethodBy("deserialize", symbolClassAutomaton);
     assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
     assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
-    parameterList = method.getCDParameterList();
+    List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(AUTOMATON_SYMBOL, method.getMCReturnType().getMCType());
-
+  
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -220,7 +204,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCountFoo() {
-    assertEquals(16, symbolClassFoo.getCDMethodList().size());
+    assertEquals(11, symbolClassFoo.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -257,21 +241,11 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDeserializeMethodFoo() {
-    List<ASTCDMethod> methods = getMethodsBy("deserialize", symbolClassFoo);
-
-    ASTCDMethod method = methods.get(0);
-    assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    List<ASTCDParameter> parameterList = method.getCDParameterList();
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertDeepEquals(FOO_SYMBOL, method.getMCReturnType().getMCType());
-
-    method = methods.get(1);
+    ASTCDMethod method = getMethodBy("deserialize", symbolClassFoo);
     assertDeepEquals(CDModifier.PUBLIC.build(), method.getModifier());
     assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
-    parameterList = method.getCDParameterList();
+    List<ASTCDParameter> parameterList = method.getCDParameterList();
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertDeepEquals(FOO_SYMBOL, method.getMCReturnType().getMCType());
   
@@ -312,8 +286,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDeserializeExtraAttribute() {
-    List<ASTCDMethod> methods = getMethodsBy("deserializeExtraAttribute", symbolClassFoo);
-    ASTCDMethod method = methods.get(0);
+    ASTCDMethod method = getMethodBy("deserializeExtraAttribute", symbolClassFoo);
     assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
     assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
@@ -322,26 +295,13 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameterList.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertBoolean(method.getMCReturnType().getMCType());
-
-    method = methods.get(1);
-    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameterList = method.getCDParameterList();
-    assertEquals("scope", parameterList.get(0).getName());
-    assertDeepEquals(IAUTOMATON_SCOPE, parameterList.get(0).getMCType());
-    assertEquals("symbolJson", parameterList.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameterList.get(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertBoolean(method.getMCReturnType().getMCType());
-
+  
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDeserializeFoo() {
-    List<ASTCDMethod> methods = getMethodsBy("deserializeFoo", symbolClassFoo);
-    ASTCDMethod method = methods.get(0);
+    ASTCDMethod method = getMethodBy("deserializeFoo", symbolClassFoo);
     assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
     assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
@@ -350,25 +310,13 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameterList.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertListOf(String.class, method.getMCReturnType().getMCType());
-
-    method = methods.get(1);
-    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameterList = method.getCDParameterList();
-    assertEquals("scope", parameterList.get(0).getName());
-    assertDeepEquals(IAUTOMATON_SCOPE, parameterList.get(0).getMCType());
-    assertEquals("symbolJson", parameterList.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameterList.get(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertListOf(String.class, method.getMCReturnType().getMCType());
+  
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDeserializeBla() {
-    List<ASTCDMethod> methods = getMethodsBy("deserializeBla", symbolClassFoo);
-    ASTCDMethod method = methods.get(0);
+    ASTCDMethod method = getMethodBy("deserializeBla", symbolClassFoo);
     assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
     assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
@@ -377,19 +325,7 @@ public class SymbolDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameterList.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
-    method = methods.get(1);
-    assertDeepEquals(CDModifier.PROTECTED.build(), method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameterList = method.getCDParameterList();
-    assertEquals("scope", parameterList.get(0).getName());
-    assertDeepEquals(IAUTOMATON_SCOPE, parameterList.get(0).getMCType());
-    assertEquals("symbolJson", parameterList.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameterList.get(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
+  
     assertTrue(Log.getFindings().isEmpty());
   }
 

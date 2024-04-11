@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -38,16 +37,9 @@ public class SymTypeOfIntersectionDeSer {
   }
 
   public SymTypeOfIntersection deserialize(JsonObject serialized) {
-    return deserialize(serialized, null);
-  }
-
-  /**
-   * @param enclosingScope can be null
-   */
-  public SymTypeOfIntersection deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasMember(SERIALIZED_TYPES)) {
       List<SymTypeExpression> intersectedTypesList =
-          SymTypeExpressionDeSer.deserializeListMember(SERIALIZED_TYPES, serialized, enclosingScope);
+          SymTypeExpressionDeSer.deserializeListMember(SERIALIZED_TYPES, serialized);
       return SymTypeExpressionFactory.createIntersection(new HashSet<>(intersectedTypesList));
     }
     Log.error(

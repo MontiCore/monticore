@@ -14,13 +14,7 @@ public class MethodSymbolDeSer extends MethodSymbolDeSerTOP {
 
   @Override
   public SymTypeExpression deserializeType(JsonObject symbolJson) {
-    // support deprecated behavior
-    return deserializeType(null, symbolJson);
-  }
-
-  @Override
-  public SymTypeExpression deserializeType(IOOSymbolsScope enclosingScope, JsonObject symbolJson) {
-    return SymTypeExpressionDeSer.deserializeMember("type", symbolJson, enclosingScope);
+    return SymTypeExpressionDeSer.deserializeMember("type", symbolJson);
   }
 
 }

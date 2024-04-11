@@ -2,8 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -34,28 +33,16 @@ public class SymTypeOfGenericsDeSer {
   }
 
   public SymTypeOfGenerics deserialize(JsonObject serialized) {
-    return deserialize(serialized, null);
-  }
-
-  /**
-   * @param enclosingScope can be null
-   */
-  public SymTypeOfGenerics deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasStringMember(SERIALIZED_TYPE_CONSTRUCTOR) &&
         serialized.hasArrayMember(SERIALIZED_ARGUMENTS)) {
       String typeConstructorFullName = serialized.getStringMember(SERIALIZED_TYPE_CONSTRUCTOR);
-      if (enclosingScope == null) {
-        // support deprecated behavior
-        enclosingScope = BasicSymbolsMill.globalScope();
-      }
-      TypeSymbolSurrogate typeSym = new TypeSymbolSurrogate(typeConstructorFullName);
-      typeSym.setEnclosingScope(enclosingScope);
+      IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
 
       List<SymTypeExpression> arguments = SymTypeExpressionDeSer
-          .deserializeListMember(SERIALIZED_ARGUMENTS, serialized, enclosingScope);
+          .deserializeListMember(SERIALIZED_ARGUMENTS, serialized);
 
       return SymTypeExpressionFactory
-          .createGenerics(typeSym, arguments);
+          .createGenerics(typeConstructorFullName, gs, arguments);
     }
     Log.error(
         "0x823F6 Internal error: Loading ill-structured SymTab: missing typeConstructorFullName of SymTypeOfGenerics "

@@ -60,7 +60,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automaton._symboltable.IAutomatonScope";
 
-  public static final String I_SCOPE = "de.monticore.symboltable.IScope";
+
 
   @Before
   public void setUp() {
@@ -123,7 +123,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(21, scopeClass.getCDMethodList().size());
+    assertEquals(15, scopeClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -213,9 +213,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDeserializeExtraAttributeMethod(){
-    List<ASTCDMethod> methods = getMethodsBy("deserializeExtraAttribute", scopeClass);
-    assertEquals(3, methods.size());
-    ASTCDMethod method = methods.get(0);
+    ASTCDMethod method = getMethodBy("deserializeExtraAttribute", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
@@ -224,69 +222,19 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertBoolean(method.getMCReturnType().getMCType());
-
-    method = methods.get(1);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameters = method.getCDParameterList();
-    assertEquals("enclosingScope", parameters.get(0).getName());
-    assertDeepEquals(I_SCOPE, parameters.get(0).getMCType());
-    assertEquals("scopeJson", parameters.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertBoolean(method.getMCReturnType().getMCType());
-
-    method = methods.get(2);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameters = method.getCDParameterList();
-    assertEquals("enclosingScope", parameters.get(0).getName());
-    assertDeepEquals(I_AUTOMATON_SCOPE, parameters.get(0).getMCType());
-    assertEquals("scopeJson", parameters.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertBoolean(method.getMCReturnType().getMCType());
-
+  
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDeserializeFooMethod(){
-    List<ASTCDMethod> methods = getMethodsBy("deserializeFoo", scopeClass);
-    assertEquals(3, methods.size());
-    ASTCDMethod method = methods.get(0);
+    ASTCDMethod method = getMethodBy("deserializeFoo", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
     List<ASTCDParameter> parameters = method.getCDParameterList();
     assertEquals("scopeJson", parameters.get(0).getName());
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertListOf(String.class, method.getMCReturnType().getMCType());
-
-    method = methods.get(1);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameters = method.getCDParameterList();
-    assertEquals("enclosingScope", parameters.get(0).getName());
-    assertDeepEquals(I_SCOPE, parameters.get(0).getMCType());
-    assertEquals("scopeJson", parameters.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertListOf(String.class, method.getMCReturnType().getMCType());
-
-    method = methods.get(2);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameters = method.getCDParameterList();
-    assertEquals("enclosingScope", parameters.get(0).getName());
-    assertDeepEquals(I_AUTOMATON_SCOPE, parameters.get(0).getMCType());
-    assertEquals("scopeJson", parameters.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertListOf(String.class, method.getMCReturnType().getMCType());
   
@@ -295,9 +243,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testDeserializeBlaMethod(){
-    List<ASTCDMethod> methods = getMethodsBy("deserializeBla", scopeClass);
-    assertEquals(3, methods.size());
-    ASTCDMethod method = methods.get(0);
+    ASTCDMethod method = getMethodBy("deserializeBla", scopeClass);
     assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
     assertFalse(method.isPresentCDThrowsDeclaration());
     assertEquals(1, method.sizeCDParameters());
@@ -306,31 +252,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(JSON_OBJECT, parameters.get(0).getMCType());
     assertFalse(method.getMCReturnType().isPresentMCVoidType());
     assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
-    method = methods.get(1);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameters = method.getCDParameterList();
-    assertEquals("enclosingScope", parameters.get(0).getName());
-    assertDeepEquals(I_SCOPE, parameters.get(0).getMCType());
-    assertEquals("scopeJson", parameters.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
-    method = methods.get(2);
-    assertDeepEquals(CDModifier.PROTECTED, method.getModifier());
-    assertFalse(method.isPresentCDThrowsDeclaration());
-    assertEquals(2, method.sizeCDParameters());
-    parameters = method.getCDParameterList();
-    assertEquals("enclosingScope", parameters.get(0).getName());
-    assertDeepEquals(I_AUTOMATON_SCOPE, parameters.get(0).getMCType());
-    assertEquals("scopeJson", parameters.get(1).getName());
-    assertDeepEquals(JSON_OBJECT, parameters.get(1).getMCType());
-    assertFalse(method.getMCReturnType().isPresentMCVoidType());
-    assertOptionalOf(Integer.class, method.getMCReturnType().getMCType());
-
+  
     assertTrue(Log.getFindings().isEmpty());
   }
 

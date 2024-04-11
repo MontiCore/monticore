@@ -17,15 +17,7 @@ public class OOTypeSymbolDeSer extends OOTypeSymbolDeSerTOP {
 
   @Override
   public List<SymTypeExpression> deserializeSuperTypes(JsonObject symbolJson) {
-    // support deprecated behavior
-    return deserializeSuperTypes(null, symbolJson);
-  }
-
-  @Override
-  public List<SymTypeExpression> deserializeSuperTypes(
-      IOOSymbolsScope enclosingScope, JsonObject symbolJson) {
-    return SymTypeExpressionDeSer.deserializeListMember(
-        "superTypes", symbolJson, enclosingScope);
+    return SymTypeExpressionDeSer.deserializeListMember("superTypes", symbolJson);
   }
 
 }

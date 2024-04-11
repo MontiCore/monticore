@@ -2,8 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -30,22 +29,10 @@ public class SymTypeVariableDeSer {
   }
 
   public SymTypeVariable deserialize(JsonObject serialized) {
-    return deserialize(serialized, null);
-  }
-
-  /**
-   * @param enclosingScope can be null
-   */
-  public SymTypeVariable deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasStringMember(SERIALIZED_NAME)) {
       String varName = serialized.getStringMember(SERIALIZED_NAME);
-      if(enclosingScope == null) {
-        // support deprecated behavior:
-        enclosingScope = BasicSymbolsMill.globalScope();
-      }
-      TypeVarSymbolSurrogate typeVarSym = new TypeVarSymbolSurrogate(varName);
-      typeVarSym.setEnclosingScope(enclosingScope);
-      return SymTypeExpressionFactory.createTypeVariable(typeVarSym);
+      IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+      return SymTypeExpressionFactory.createTypeVariable(varName, gs);
     }
     Log.error("0x823F5 Internal error: Cannot load \"" + serialized + "\" as  SymTypeVariable!");
     return null;
