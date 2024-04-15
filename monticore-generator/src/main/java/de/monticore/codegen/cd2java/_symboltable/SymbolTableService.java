@@ -564,6 +564,10 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     return symbolNames;
   }
 
+  public Set<String> retrieveSymbolNamesFromCD() {
+    return retrieveSymbolNamesFromCD(getCDSymbol());
+  }
+
   /**
    * Computes the MCQualifiedType of the symbol from its corresponding CD type.
    *
