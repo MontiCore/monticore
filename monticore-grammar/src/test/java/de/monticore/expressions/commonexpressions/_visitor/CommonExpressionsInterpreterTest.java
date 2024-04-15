@@ -1,47 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions._visitor;
 
-import de.monticore.expressions.assignmentexpressions._ast.ASTIncSuffixExpression;
-import de.monticore.expressions.assignmentexpressions._symboltable.AssignmentExpressionsScopesGenitor;
-import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
-import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScopesGenitor;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScopesGenitorDelegator;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsInterpreter;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.interpreter.Value;
+import de.monticore.expressions.AbstractInterpreterTest;
 import de.monticore.interpreter.ValueFactory;
-import de.monticore.interpreter.values.IntValue;
-import de.monticore.interpreter.values.NotAValue;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import static junit.framework.TestCase.*;
-
-public class CommonExpressionsInterpreterTest {
-  protected static final double delta = 0.000001;
-
-  @Before
-  public void before() {
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
-    BasicSymbolsMill.initializePrimitives();
-    LogStub.init();
-    Log.clearFindings();
-    Log.enableFailQuick(false);
-  }
+public class CommonExpressionsInterpreterTest extends AbstractInterpreterTest {
 
   @Test
   public void testInterpretPlusExpression() {
@@ -862,11 +826,6 @@ public class CommonExpressionsInterpreterTest {
   }
 
   @Test
-  public void testIncSuffixExpression() {
-    testValidExpression("a++", ValueFactory.createValue(2));
-  }
-
-  @Test
   public void testConditionalExpression() {
     testValidExpression("(true) ? 1 : 2", ValueFactory.createValue(1));
     testValidExpression("5 <= 10%5 || !true && true ? (3 + 2 * 2) / 14.0 : ((1 > 2L) && ('z' <= 15.243f))", ValueFactory.createValue(false));
@@ -877,78 +836,5 @@ public class CommonExpressionsInterpreterTest {
     testValidExpression("((1 > 2L) && ('z' <= 15.243f)) || true", ValueFactory.createValue(true));
     testValidExpression("(3 + 2 * 2) / 14.0", ValueFactory.createValue(0.5));
     testValidExpression("true && false || !true", ValueFactory.createValue(false));
-  }
-
-  protected void testValidExpression(String expr, Value expected) {
-    Log.clearFindings();
-    Value interpretationResult = null;
-    try {
-      interpretationResult = parseExpressionAndInterpret(expr);
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-    assertNotNull(interpretationResult);
-    assertTrue(Log.getFindings().isEmpty());
-    if (interpretationResult.isBoolean()) {
-      assertEquals(interpretationResult.asBoolean(), expected.asBoolean());
-    } else if (interpretationResult.isInt()) {
-      assertEquals(interpretationResult.asInt(), expected.asInt());
-    } else if (interpretationResult.isLong()) {
-      assertEquals(interpretationResult.asLong(), expected.asLong());
-    } else if (interpretationResult.isFloat()) {
-      assertEquals(interpretationResult.asFloat(), expected.asFloat(), delta);
-    } else if (interpretationResult.isDouble()) {
-      assertEquals(interpretationResult.asDouble(), expected.asDouble(), delta);
-    } else if (interpretationResult.isChar()) {
-      assertEquals(interpretationResult.asChar(), expected.asChar());
-    } else if (interpretationResult.isString()) {
-      assertEquals(interpretationResult.asString(), expected.asString());
-    } else if (interpretationResult.isObject()) {
-      assertEquals(interpretationResult.asObject(), expected.asObject());
-    }
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  protected void testInvalidExpression(String expr) {
-    Log.clearFindings();
-    Value interpretationResult = null;
-    try {
-      interpretationResult = parseExpressionAndInterpret(expr);
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-    assertNotNull(interpretationResult);
-    assertEquals(Log.getFindings().size(), 1);
-    assertTrue(interpretationResult instanceof NotAValue);
-  }
-
-  protected Value parseExpressionAndInterpret(String expr) throws IOException {
-    CombineExpressionsWithLiteralsInterpreter interpreter = new CombineExpressionsWithLiteralsInterpreter();
-    CombineExpressionsWithLiteralsParser parser = CombineExpressionsWithLiteralsMill.parser();
-    final Optional<ASTFoo> optAST = parser.parse_StringFoo("bar " + expr);
-    assertTrue(optAST.isPresent());
-    final ASTFoo ast = optAST.get();
-
-    CombineExpressionsWithLiteralsScopesGenitorDelegator delegator = CombineExpressionsWithLiteralsMill.scopesGenitorDelegator();
-    delegator.createFromAST(ast);
-
-    final Optional<ASTFoo> optAssignment = parser.parse_StringFoo("bar a = 1");
-    assertTrue(optAssignment.isPresent());
-    final ASTFoo assignment = optAssignment.get();
-    delegator.createFromAST(assignment);
-
-    assignment.getEnclosingScope().getVariableSymbols().put("a",
-        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-            .setType(SymTypeExpressionFactory.createPrimitive("int"))
-            .setName("a")
-            .setFullName("a")
-            .setPackageName("")
-            .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setEnclosingScope(assignment.getEnclosingScope())
-            .build());
-
-    interpreter.interpret(assignment);
-
-    return interpreter.interpret(ast);
   }
 }

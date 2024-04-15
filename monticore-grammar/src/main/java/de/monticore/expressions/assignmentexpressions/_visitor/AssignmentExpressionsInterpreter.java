@@ -16,11 +16,10 @@ import java.util.Optional;
 
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.*;
 
-
 public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInterpreterTOP {
 
-  public AssignmentExpressionsInterpreter(IAssignmentExpressionsContext context, ModelInterpreter realThis) {
-    super(context, realThis);
+  public AssignmentExpressionsInterpreter(ModelInterpreter realThis) {
+    super(realThis);
   }
 
   public AssignmentExpressionsInterpreter() {
@@ -61,6 +60,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     return new NotAValue();
   }
 
+  //++i
   @Override
   public Value interpret(ASTIncPrefixExpression n) {
     String expr = AssignmentExpressionsMill.prettyPrint(n.getExpression(), false);
@@ -95,6 +95,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     return new NotAValue();
   }
 
+  //i--
   @Override
   public Value interpret(ASTDecSuffixExpression n) {
     String expr = AssignmentExpressionsMill.prettyPrint(n.getExpression(), false);
@@ -129,6 +130,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     return new NotAValue();
   }
 
+  //--i
   @Override
   public Value interpret(ASTDecPrefixExpression n) {
     String expr = AssignmentExpressionsMill.prettyPrint(n.getExpression(), false);
@@ -169,32 +171,73 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     Optional<VariableSymbol> leftSymbol = ((IBasicSymbolsScope) n.getEnclosingScope()).resolveVariable(leftExpression);
 
     if (leftSymbol.isPresent()) {
-      Value rightValue = n.getRight().evaluate(this);
+      Value rightValue = n.getRight().evaluate(getRealThis());
       int operator = n.getOperator();
 
       switch (operator) {
         case AND_EQUALS: { //bitwise and
           Value leftValue = load(leftSymbol.get());
-          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar() || leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
+          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar())) {
+            Log.error("&= operation is not suitable for these types.");
+          } else if (!(leftValue.isInt() || leftValue.isLong() || leftValue.isChar())) {
             Log.error("&= operation is not suitable for these types.");
           }
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() & rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
+
           if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() & rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() & rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() & rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() & rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+
+          if (leftValue.isLong()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() & rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() & rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() & rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() & rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() & rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() & rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() & rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }
+
         case EQUALS: {
           VariableSymbol symbol = leftSymbol.get();
 
@@ -222,164 +265,541 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
 
         case GTGTEQUALS: { //bitwise rightValue shift
           Value leftValue = load(leftSymbol.get());
-          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar() || leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
+          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar())) {
+            Log.error(">>= operation is not suitable for these types.");
+          } else if (!(leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
             Log.error(">>= operation is not suitable for these types.");
           }
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() >> rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
           if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() >> rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() >> rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() >> rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() >> rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+          if (leftValue.isLong()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() >> rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() >> rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() >> rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() >> rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() >> rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() >> rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() >> rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }
 
         case GTGTGTEQUALS: { //bitwise rightValue shift
           Value leftValue = load(leftSymbol.get());
-          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar() || leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
+          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar())) {
+            Log.error(">>>= operation is not suitable for these types.");
+          } else if (!(leftValue.isInt() || leftValue.isLong() || leftValue.isChar())) {
             Log.error(">>>= operation is not suitable for these types.");
           }
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() >>> rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
           if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() >>> rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() >>> rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() >>> rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() >>> rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+          if (leftValue.isLong()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() >>> rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() >>> rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() >>> rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() >>> rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() >>> rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() >>> rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() >>> rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }
 
         case LTLTEQUALS: {
           Value leftValue = load(leftSymbol.get());
-          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar() || leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
+          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar())) {
+            Log.error("<<= operation is not suitable for these types.");
+          } else if (!(leftValue.isInt() || leftValue.isLong() || leftValue.isChar())) {
             Log.error("<<= operation is not suitable for these types.");
           }
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() << rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
           if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() << rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() << rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() << rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() << rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+          if (leftValue.isLong()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() << rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() << rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() << rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() << rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() << rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() << rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() << rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }
 
-        case (MINUSEQUALS): {
+        case MINUSEQUALS: {
           Value leftValue = load(leftSymbol.get());
-          if (rightValue.isObject() || rightValue.isString() || rightValue.isBoolean() || leftValue.isObject() || leftValue.isString() || rightValue.isBoolean()) {
+          if (rightValue.isObject() || rightValue.isString() || rightValue.isBoolean()) {
+            Log.error("-= operation is not suitable for these types.");
+          } else if (leftValue.isObject() || leftValue.isString() || leftValue.isBoolean()) {
             Log.error("-= operation is not suitable for these types.");
           }
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() - rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
           if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() - rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() - rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() - rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() - rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() - rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() - rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+          if (leftValue.isLong()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() - rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() - rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() - rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() - rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() - rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() - rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() - rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() - rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() - rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() - rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() - rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isFloat()) {
-            Value res = ValueFactory.createValue(leftValue.asFloat() - rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() - rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() - rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() - rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() - rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() - rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isDouble()) {
-            Value res = ValueFactory.createValue(leftValue.asDouble() - rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() - rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() - rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() - rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() - rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() - rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }
 
-        case (PERCENTEQUALS): {
+        case PERCENTEQUALS: {
           Value leftValue = load(leftSymbol.get());
-          if (rightValue.isObject() || rightValue.isString() || rightValue.isBoolean() || leftValue.isObject() || leftValue.isString() || rightValue.isBoolean()) {
+          if (rightValue.isObject() || rightValue.isString() || rightValue.isBoolean()) {
+            Log.error("%= operation is not suitable for these types.");
+          } else if (leftValue.isObject() || leftValue.isString() || leftValue.isBoolean()) {
             Log.error("%= operation is not suitable for these types.");
           }
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() % rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
           if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() % rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() % rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() % rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() % rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() % rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() % rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
-          if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() % rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+          if (leftValue.isLong()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() % rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() % rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() % rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() % rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() % rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isFloat()) {
-            Value res = ValueFactory.createValue(leftValue.asFloat() % rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() % rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() % rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() % rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() % rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() % rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isDouble()) {
-            Value res = ValueFactory.createValue(leftValue.asDouble() % rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-          break;
-        }
-
-        case (PIPEEQUALS): {
-          Value leftValue = load(leftSymbol.get());
-          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar() || leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
-            Log.error("|= operation is not suitable for these types.");
-          }
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() | rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-          if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() | rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() % rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() % rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() % rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() % rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() % rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() | rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() % rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() % rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() % rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() % rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() % rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }
 
-        case (PLUSEQUALS): {
+        case PIPEEQUALS: {
           Value leftValue = load(leftSymbol.get());
+          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar())) {
+            Log.error("|= operation is not suitable for these types.");
+          } else if (!(leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
+            Log.error("|= operation is not suitable for these types.");
+          }
+          if (leftValue.isInt()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() | rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() | rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() | rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+          if (leftValue.isLong()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() | rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() | rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() | rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+          if (leftValue.isChar()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() | rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() | rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() | rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+          break;
+        }
+
+        case PLUSEQUALS: {
+          Value leftValue = load(leftSymbol.get());
+
           if (leftValue.isString()) {
             if (rightValue.isString()) {
               Value res = ValueFactory.createValue(leftValue.asString() + rightValue.asString());
@@ -410,138 +830,509 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
               store(leftSymbol.get(), res);
               return (res);
             }
-          }
-
-          if (leftValue.isBoolean() || rightValue.isBoolean() || leftValue.isObject() || rightValue.isObject()) {
+          } else if (leftValue.isBoolean() || leftValue.isObject() || rightValue.isObject()) {
             Log.error("+= operation is not suitable for these types.");
-          }
-
-          if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() + rightValue.asChar());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-
-          if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() + rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() + rightValue.asLong());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-
-          if (leftValue.isFloat()) {
-            Value res = ValueFactory.createValue(leftValue.asFloat() + rightValue.asFloat());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-
-          if (leftValue.isDouble()) {
-            Value res = ValueFactory.createValue(leftValue.asDouble() + rightValue.asDouble());
-            store(leftSymbol.get(), res);
-            return (res);
+          } else if (leftValue.isChar()) {
+            if (rightValue.isString()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() + rightValue.asString());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() + rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() + rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() + rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() + rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() + rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isBoolean()) {
+              Log.error("+= operation is not suitable for these types.");
+            }
+          } else if (leftValue.isInt()) {
+            if (rightValue.isString()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() + rightValue.asString());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() + rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() + rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() + rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() + rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() + rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isBoolean()) {
+              Log.error("+= operation is not suitable for these types.");
+            }
+          } else if (leftValue.isLong()) {
+            if (rightValue.isString()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() + rightValue.asString());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() + rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() + rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() + rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() + rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() + rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isBoolean()) {
+              Log.error("+= operation is not suitable for these types.");
+            }
+          } else if (leftValue.isFloat()) {
+            if (rightValue.isString()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() + rightValue.asString());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() + rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() + rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() + rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() + rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() + rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isBoolean()) {
+              Log.error("+= operation is not suitable for these types.");
+            }
+          } else if (leftValue.isDouble()) {
+            if (rightValue.isString()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() + rightValue.asString());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() + rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() + rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() + rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() + rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() + rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            } else if (rightValue.isBoolean()) {
+              Log.error("+= operation is not suitable for these types.");
+            }
           }
           break;
         }
 
-        case (ROOFEQUALS): { //XOR
+        case ROOFEQUALS: { //XOR
           Value leftValue = load(leftSymbol.get());
-          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar() || leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
+          if (!(rightValue.isInt() || rightValue.isLong() || rightValue.isChar())) {
+            Log.error("^= operation is not suitable for these types.");
+          } else if (!(leftValue.isChar() || leftValue.isInt() || leftValue.isLong())) {
             Log.error("^= operation is not suitable for these types.");
           }
-          if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() ^ rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
           if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() ^ rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() ^ rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() ^ rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() ^ rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          }
+          if (leftValue.isLong()) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() ^ rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() ^ rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() ^ rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() ^ rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() ^ rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() ^ rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() ^ rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }
 
-        case (SLASHEQUALS): {
+        case SLASHEQUALS: {
           Value leftValue = load(leftSymbol.get());
-          if (rightValue.isObject() || rightValue.isString() || rightValue.isBoolean() || leftValue.isObject() || leftValue.isString() || rightValue.isBoolean()) {
+          if (rightValue.isObject() || rightValue.isString() || rightValue.isBoolean()) {
             Log.error("/= operation is not suitable for these types.");
-          }
-          if (leftValue.isLong()) {
-            if (rightValue.asInt() == 0) {
+          } else if (leftValue.isObject() || leftValue.isString() || leftValue.isBoolean()) {
+            Log.error("/= operation is not suitable for these types.");
+          } else if (leftValue.isLong()) {
+            if (rightValue.asDouble() == 0) {
               Log.error("Division by 0 is not supported.");
             }
-            Value res = ValueFactory.createValue(leftValue.asLong() / rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-          if (leftValue.isInt()) {
-            if (rightValue.asInt() == 0) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() / rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() / rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() / rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() / rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() / rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          } else if (leftValue.isInt()) {
+            if (rightValue.asDouble() == 0) {
               Log.error("Division by 0 is not supported.");
             }
-            Value res = ValueFactory.createValue(leftValue.asInt() / rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-          if (leftValue.isChar()) {
-            if (rightValue.asInt() == 0) {
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() / rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() / rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() / rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() / rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() / rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          } else if (leftValue.isChar()) {
+            if (rightValue.asDouble() == 0) {
               Log.error("Division by 0 is not supported.");
             }
-            Value res = ValueFactory.createValue(leftValue.asChar() / rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-          if (leftValue.isFloat()) {
-            Value res = ValueFactory.createValue(leftValue.asFloat() / rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
-          }
-          if (leftValue.isDouble()) {
-            Value res = ValueFactory.createValue(leftValue.asDouble() / rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() / rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() / rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() / rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() / rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() / rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          } else if (leftValue.isFloat()) {
+            if (rightValue.asDouble() == 0) {
+              Log.error("Division by 0 is not supported.");
+            }
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() / rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() / rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() / rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() / rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() / rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+          } else if (leftValue.isDouble()) {
+            if (rightValue.asDouble() == 0) {
+              Log.error("Division by 0 is not supported.");
+            }
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() / rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() / rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() / rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() / rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() / rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }
 
         case (STAREQUALS): {
           Value leftValue = load(leftSymbol.get());
-          if (rightValue.isObject() || rightValue.isString() || rightValue.isBoolean() || leftValue.isObject() || leftValue.isString() || rightValue.isBoolean()) {
+          if (rightValue.isObject() || rightValue.isString() || rightValue.isBoolean()) {
+            Log.error("*= operation is not suitable for these types.");
+          } else if (leftValue.isObject() || leftValue.isString() || leftValue.isBoolean()) {
             Log.error("*= operation is not suitable for these types.");
           }
           if (leftValue.isLong()) {
-            Value res = ValueFactory.createValue(leftValue.asLong() * rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() * rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() * rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() * rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() * rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asLong() * rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isInt()) {
-            Value res = ValueFactory.createValue(leftValue.asInt() * rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() * rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() * rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() * rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() * rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asInt() * rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isChar()) {
-            Value res = ValueFactory.createValue(leftValue.asChar() * rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() * rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() * rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() * rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() * rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asChar() * rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isFloat()) {
-            Value res = ValueFactory.createValue(leftValue.asFloat() * rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() * rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() * rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() * rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() * rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asFloat() * rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           if (leftValue.isDouble()) {
-            Value res = ValueFactory.createValue(leftValue.asDouble() * rightValue.asInt());
-            store(leftSymbol.get(), res);
-            return (res);
+            if (rightValue.isInt()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() * rightValue.asInt());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isLong()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() * rightValue.asLong());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isFloat()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() * rightValue.asFloat());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isDouble()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() * rightValue.asDouble());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
+            if (rightValue.isChar()) {
+              Value res = ValueFactory.createValue(leftValue.asDouble() * rightValue.asChar());
+              store(leftSymbol.get(), res);
+              return (res);
+            }
           }
           break;
         }

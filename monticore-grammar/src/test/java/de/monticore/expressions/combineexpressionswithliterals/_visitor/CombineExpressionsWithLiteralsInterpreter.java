@@ -10,8 +10,8 @@ public class CombineExpressionsWithLiteralsInterpreter extends CombineExpression
     super();
   }
 
-  public  CombineExpressionsWithLiteralsInterpreter(ICombineExpressionsWithLiteralsContext context, ModelInterpreter realThis) {
-    super(context, realThis);
+  public  CombineExpressionsWithLiteralsInterpreter(ModelInterpreter realThis) {
+    super(realThis);
   }
 
   @Override

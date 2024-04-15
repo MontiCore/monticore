@@ -17,7 +17,4 @@ public final class InterpreterConstants {
 
   public static final String SYMBOL_FULLNAME = "de.monticore.symboltable.ISymbol";
 
-  public static final String CONTEXT_CLASS_NAME = "Context";
-
-  public static final String CONTEXT_ATTRIBUTE_NAME = "context";
 }

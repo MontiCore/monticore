@@ -5,6 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.ISymbol;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public interface ModelInterpreter {
 
@@ -14,7 +15,7 @@ public interface ModelInterpreter {
 
   ModelInterpreter getRealThis();
 
-  HashMap<ISymbol, Value> contextMap = new HashMap<>();
+  Map<ISymbol, Value> getContextMap();
 
   default Value load(ISymbol s){
     return getRealThis().load(s);

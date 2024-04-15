@@ -16,12 +16,12 @@ import java.util.Optional;
 
 public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTOP {
 
-  public CommonExpressionsInterpreter(ICommonExpressionsContext context) {
+  public CommonExpressionsInterpreter() {
     super();
   }
 
-  public CommonExpressionsInterpreter(ICommonExpressionsContext context, ModelInterpreter realThis) {
-    super(context, realThis);
+  public CommonExpressionsInterpreter(ModelInterpreter realThis) {
+    super(realThis);
   }
 
   @Override

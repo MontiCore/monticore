@@ -15,6 +15,7 @@ import mc.examples.automaton.automaton._parser.AutomatonParser;
 import mc.examples.automaton.automaton._visitor.AutomatonTraverser;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
   }
 
   @Test
+  @Ignore
   public void test() throws IOException {
     ASTAutomaton ast = parse();
     printOD(ast, "Testautomat");

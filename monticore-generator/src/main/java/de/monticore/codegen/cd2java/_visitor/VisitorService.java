@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
-import static de.monticore.codegen.cd2java.interpreter.InterpreterConstants.CONTEXT_CLASS_NAME;
 import static de.monticore.codegen.cd2java.interpreter.InterpreterConstants.INTERPRETER_NAME_SUFFIX;
 
 public class VisitorService extends AbstractService<VisitorService> {
@@ -254,54 +253,6 @@ public class VisitorService extends AbstractService<VisitorService> {
 
   public ASTMCQualifiedType getInterpreterInterfaceType(DiagramSymbol cdSymbol) {
     return getMCTypeFacade().createQualifiedType(getInterpreterInterfaceFullName(cdSymbol));
-  }
-
-  public String getContextInterfaceSimpleName() {
-    return getContextInterfaceSimpleName(getCDSymbol());
-  }
-
-  public String getContextInterfaceSimpleName(DiagramSymbol cdDefinitionSymbol) {
-    return "I" + cdDefinitionSymbol.getName() + CONTEXT_CLASS_NAME;
-  }
-
-  public String getContextInterfaceFullName() {
-    return getContextInterfaceFullName(getCDSymbol());
-  }
-
-  public String getContextInterfaceFullName(DiagramSymbol cdDefinitionSymbol) {
-    return getPackage(cdDefinitionSymbol) + "." + getContextInterfaceSimpleName(cdDefinitionSymbol);
-  }
-
-  public ASTMCQualifiedType getContextInterfaceType() {
-    return getContextInterfaceType(getCDSymbol());
-  }
-
-  public ASTMCQualifiedType getContextInterfaceType(DiagramSymbol cdSymbol) {
-    return getMCTypeFacade().createQualifiedType(getContextInterfaceFullName(cdSymbol));
-  }
-
-  public String getContextSimpleName() {
-    return getContextSimpleName(getCDSymbol());
-  }
-
-  public String getContextSimpleName(DiagramSymbol cdDefinitionSymbol) {
-    return cdDefinitionSymbol.getName() + CONTEXT_CLASS_NAME;
-  }
-
-  public String getContextFullName() {
-    return getContextFullName(getCDSymbol());
-  }
-
-  public String getContextFullName(DiagramSymbol cdDefinitionSymbol) {
-    return getPackage(cdDefinitionSymbol) + "." + getContextSimpleName(cdDefinitionSymbol);
-  }
-
-  public ASTMCQualifiedType getContextType() {
-    return getContextType(getCDSymbol());
-  }
-
-  public ASTMCQualifiedType getContextType(DiagramSymbol cdSymbol) {
-    return getMCTypeFacade().createQualifiedType(getContextFullName(cdSymbol));
   }
 
   /**
