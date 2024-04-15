@@ -24,11 +24,11 @@ stages:
   - build
   - test
   - deploy
+  - mirror  
   - trigger_languages
   - sonar
   - report
   - check
-  - mirror
 
 build:
   stage: build
