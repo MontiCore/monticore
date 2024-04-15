@@ -49,8 +49,6 @@ public class SummaryReporter extends AReporter {
   
   public static final String NUM_USED_TEMPLATES = "used standard templates";
   
-  public static final String NUM_UNUSED_TEMPLATES = "unused standard templates";
-  
   public static final String NUM_USED_HWTEMPLATES = "used handwritten templates";
   
   public static final String NUM_UNUSED_HWTEMPLATES = "unused handwritten templates";
@@ -359,8 +357,6 @@ public class SummaryReporter extends AReporter {
     int numCalledUnsetHookpoints = calledUnsetHookpoints.size();
     int numUsedTemplates = usedTemplates.size();
     int numUsedHWTemplates = usedHWTemplates.size();
-    int numUnusedTemplates = repository.getAllTemplateNames().size() -
-        numUsedTemplates;
     int numUnusedHWTemplates = repository.getAllHWTemplateNames().size() -
         numUsedHWTemplates;
     int numVariables = variableNames.size();
@@ -374,7 +370,6 @@ public class SummaryReporter extends AReporter {
     writeSummaryLine(NUM_TEMPLATE_INCLUDE, numTemplateIncludes);
     writeSummaryLine(NUM_TEMPLATE_WRITE, numTemplateWrites);
     writeSummaryLine(NUM_USED_TEMPLATES, numUsedTemplates);
-    writeSummaryLine(NUM_UNUSED_TEMPLATES, numUnusedTemplates);
     writeSummaryLine(NUM_USED_HWTEMPLATES, numUsedHWTemplates);
     writeSummaryLine(NUM_UNUSED_HWTEMPLATES, numUnusedHWTemplates);
     writeSummaryLine(MAX_TEMPLATE_DEPTH, maxTemplateDepth);
@@ -448,7 +443,6 @@ public class SummaryReporter extends AReporter {
     writeLine(" -" + NUM_TEMPLATE_INCLUDE + ": " + "Number of templates being included");
     writeLine(" -" + NUM_TEMPLATE_WRITE + ": " + "Number of templates being used");
     writeLine(" -" + NUM_USED_TEMPLATES + ": " + "Number of templates being used");
-    writeLine(" -" + NUM_UNUSED_TEMPLATES + ": " + "Number of templates being unused");
     writeLine(" -" + NUM_USED_HWTEMPLATES + ": " + "Number of handwritten templates being used");
     writeLine(" -" + NUM_UNUSED_HWTEMPLATES + ": " + "Number of handwritten templates being unused");
     writeLine(" -" + MAX_TEMPLATE_DEPTH + ": " + "Maximal depth of the template call hierarchy");

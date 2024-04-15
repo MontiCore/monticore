@@ -8,10 +8,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.SourcePosition;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
@@ -42,29 +38,12 @@ public class ReportingRepository {
   // save current maxID for aSTNode string
   protected Map<String, Integer> name2maxid = Maps.newHashMap();
   
-  protected Set<String> allTemplateNames = Sets.newLinkedHashSet();
-  
   protected Set<String> allHWJavaNames = Sets.newLinkedHashSet();
   
   protected Set<String> allHWTemplateNames = Sets.newLinkedHashSet();
   
   public ReportingRepository(IASTNodeIdentHelper astNodeIdentHelper) {
     this.astNodeIdentHelper = astNodeIdentHelper;
-  }
-  
-  /**
-   * Scans the current class path for templates and stores them in this repository.
-   */
-  public void initAllTemplates() {
-    // it's a kind of magic
-    Reflections.log = new Helper();
-    Reflections helper = new Reflections(new ConfigurationBuilder()
-            .addClassLoader(ClasspathHelper.contextClassLoader())
-            .addUrls(ClasspathHelper.forClassLoader())
-            .addUrls(ClasspathHelper.forPackage(""))
-            .setScanners(new ResourcesScanner()));
-
-    this.allTemplateNames = helper.getResources(Pattern.compile(".*\\.ftl"));
   }
   
   protected String getNameFormatted(Object obj, String out, SourcePosition sourcePos) {
@@ -158,11 +137,7 @@ public class ReportingRepository {
     String name = astNodeIdentHelper.getIdent(scope);
     return getNameFormatted(scope, name, SourcePosition.getDefaultSourcePosition());
   }
-  
-  public Set<String> getAllTemplateNames() {
-    return allTemplateNames;
-  }
-  
+
   public Set<String> getAllHWJavaNames() {
     return allHWJavaNames;
   }
