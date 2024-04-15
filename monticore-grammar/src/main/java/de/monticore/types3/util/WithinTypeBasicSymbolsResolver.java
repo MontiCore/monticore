@@ -8,10 +8,12 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
+import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
@@ -249,11 +251,28 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate) {
     // may include symbols of supertypes, thus the predicate
-    Optional<VariableSymbol> resolved = scope.resolveVariable(
-        name,
-        accessModifier,
-        predicate.and(getIsLocalSymbolPredicate(scope))
-    );
+    Optional<VariableSymbol> resolved;
+    // work around for resolver throwing RuntimeExceptions
+    try {
+      resolved = scope.resolveVariable(
+          name,
+          accessModifier,
+          predicate.and(getIsLocalSymbolPredicate(scope))
+      );
+    } catch(ResolvedSeveralEntriesForSymbolException e) {
+      // note: Exception is not supposed to happen,
+      // thus, never rely on this(!) Error being logged (here)
+      // some error should be logged, though.
+      Log.error("0xFD225 internal error: resolved " + e.getSymbols().size()
+          + "occurences of variable " + name
+          + ", but expected only one:" + System.lineSeparator()
+          + e.getSymbols().stream()
+              .map(ISymbol::getFullName)
+              .collect(Collectors.joining(System.lineSeparator())),
+          e
+        );
+      resolved = Optional.empty();
+    }
     // todo remove given a fixed resolver
     resolved = resolved.filter(predicate.and(getIsLocalSymbolPredicate(scope)));
     return resolved;
@@ -294,19 +313,17 @@ public class WithinTypeBasicSymbolsResolver {
         false,
         name,
         accessModifier,
-        predicate.and(getIsLocalSymbolPredicate(scope))
+        predicate
+            .and(getIsNotTypeVarSymbolPredicate())
+            .and(getIsLocalSymbolPredicate(scope))
     );
     // todo remove given a fixed resolver
     resolved = resolved.stream()
-        .filter(predicate.and(getIsLocalSymbolPredicate(scope)))
+        .filter(predicate
+            .and(getIsNotTypeVarSymbolPredicate())
+            .and(getIsLocalSymbolPredicate(scope))
+        )
         .collect(Collectors.toList());
-    // prefer variables to concrete types in the same scope,
-    // e.g., class A<B>{class B{} B b = new B();} is not valid Java
-    if (resolved.stream().anyMatch(getTypeDispatcher()::isTypeVar)) {
-      resolved = resolved.stream()
-          .filter(Predicate.not(getTypeDispatcher()::isTypeVar))
-          .collect(Collectors.toList());
-    }
     if (resolved.size() > 1) {
       Log.error("0xFD221 resolved multiple types \""
           + name + "\" (locally in the same scope)");
@@ -334,7 +351,22 @@ public class WithinTypeBasicSymbolsResolver {
     };
   }
 
-  protected BasicSymbolsTypeDispatcher getTypeDispatcher() {
+  protected Predicate<TypeSymbol> getIsNotTypeVarSymbolPredicate() {
+    return ts -> {
+      if (BasicSymbolsMill.typeDispatcher().isBasicSymbolsTypeVar(ts)) {
+        Log.trace("filtered symbol '"
+                + ts.getFullName() + "' as it is a type variable"
+                + ", which are only resolved based on scopes" +
+                ", e.g., not TypeWithVar.typeVarName.",
+            LOG_NAME
+        );
+        return false;
+      }
+      return true;
+    };
+  }
+
+  protected IBasicSymbolsTypeDispatcher getTypeDispatcher() {
     return BasicSymbolsMill.typeDispatcher();
   }
 

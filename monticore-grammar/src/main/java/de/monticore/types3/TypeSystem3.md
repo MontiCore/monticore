@@ -108,7 +108,7 @@ and combining their information to the SymTypeExpression currently calculated.
         * [MCSimpleGenericTypesTypeVisitor](../types/mcsimplegenerictypes/types3/MCSimpleGenericTypesTypeVisitor.java)
           (calculates the SymTypeExpressions for the type identifiers
           in the grammar MCArrayTypes)
-* [TypeCheck1 Adapters](../types/check/types3wrapper)
+* [TypeCheck1 Adapters](../types/check/types3wrapper/TypeCheck3AsTypeCalculator.java)
   (adapts the TypeSystem3 to the deprecated TypeCheck1 interface,
   offering implementations for IDerive and ISynthesize,
   s. [TypeCheck1 documentation](../types/check/TypeCheck.md))

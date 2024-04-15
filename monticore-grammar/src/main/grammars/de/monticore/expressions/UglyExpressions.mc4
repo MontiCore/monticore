@@ -1,27 +1,31 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.expressions;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 import de.monticore.expressions.*;
 import de.monticore.types.*;
 
 /**
- * This grammar defines expressions that are considered "ugly", e.g.,
- * instanceof, typecasting, and new.
- * person instanceof Student
- * (Student)person
- * new Person("George")
+ * This grammar defines expressions that are considered "ugly"
+ * in terms of use, e.g.,
+ *   instanceof, typecasting, and new Class(...)-constructors.
+ * like in 
+ *   person instanceof Student
+ *   (Student)person
+ *   new Person("George")
+ * 
+ * The reason is that each of them uses explicit types and prevents
+ *   easy adaptation and reconfiguration, e.g. for testing.
+ *   new-calls e.g. prevent to inject stubs/mocks when testing.
+ *   Better: Use the Builder or Factory pattern.
  *
- * Not part of this grammar are Java-like pattern, e.g.,
- * person instanceof Student student
+ * The grammar should be omitted e.g. in functional languages, but is
+ * present for compatibility with Java-Expressions.
  *
- * There are also other kinds of expressions defined in the
- * grammars mentioned below. These expression definitions can safely be
- * composed if desired.
- *
- * This grammar is part of a hierarchy of expressions, which can be found
- * under
+ * This grammar is part of a hierarchy of expression grammars, 
+ * which can be found under
  *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
  *                 src/main/grammars/de/monticore/expressions/Expressions.md
 */

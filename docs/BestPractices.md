@@ -21,8 +21,7 @@ of the handbook.
 
 
 * [**Designing A Language**](BestPractices-Language-Design.md)
-
-  includes: Language Design in the Large
+    includes: Language Design in the Large
 
 * [**Designing Concrete and Abstract Syntax**](BestPractices-Syntax-Design.md)
 

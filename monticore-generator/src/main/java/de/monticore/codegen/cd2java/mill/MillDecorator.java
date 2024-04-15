@@ -346,7 +346,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     String typeDispatcherName = cdClass.getName();
     String packageName = cdPackage.getName();
     String millDispatcherName = MILL_INFIX + typeDispatcherName;
-    ASTMCQualifiedType typeDispatcherType = this.getMCTypeFacade().createQualifiedType(packageName + "." + typeDispatcherName);
+    ASTMCQualifiedType typeDispatcherType = this.getMCTypeFacade().createQualifiedType(packageName + ".I" + typeDispatcherName);
 
     typeDispatcherMembers.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), typeDispatcherType, "typeDispatcher"));
 
