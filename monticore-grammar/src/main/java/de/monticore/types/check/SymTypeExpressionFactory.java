@@ -380,6 +380,44 @@ public class SymTypeExpressionFactory {
     return new SymTypeOfFunction(symbol, returnType, argumentTypes, elliptic);
   }
 
+  public static SIUnitBasic createSIUnitBasic(String dimension) {
+    return createSIUnitBasic(dimension, 1);
+  }
+
+  public static SIUnitBasic createSIUnitBasic(String dimension, int exponent) {
+    return createSIUnitBasic(dimension, "", exponent);
+  }
+
+  public static SIUnitBasic createSIUnitBasic(
+      String dimension, String prefix, int exponent) {
+    return new SIUnitBasic(dimension, prefix, exponent);
+  }
+
+  public static SymTypeOfSIUnit createSIUnit(
+      List<SIUnitBasic> numerator,
+      List<SIUnitBasic> denominator
+  ) {
+    return new SymTypeOfSIUnit(numerator, denominator);
+  }
+
+  public static SymTypeOfNumericWithSIUnit createNumericWithSIUnit(
+      List<SIUnitBasic> numerator,
+      List<SIUnitBasic> denominator,
+      SymTypeExpression numericType
+  ) {
+    return createNumericWithSIUnit(
+        createSIUnit(numerator, denominator),
+        numericType
+    );
+  }
+
+  public static SymTypeOfNumericWithSIUnit createNumericWithSIUnit(
+      SymTypeOfSIUnit siUnitType,
+      SymTypeExpression numericType
+  ) {
+    return new SymTypeOfNumericWithSIUnit(siUnitType, numericType);
+  }
+
   public static SymTypeOfTuple createTuple(List<? extends SymTypeExpression> types) {
     return new SymTypeOfTuple(new ArrayList<>(types));
   }

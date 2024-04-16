@@ -14,12 +14,15 @@ import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.check.SIUnitBasic;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeObscure;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfNull;
+import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.check.SymTypeVoid;
@@ -29,7 +32,10 @@ import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types.check.SymTypeExpressionFactory.createNumericWithSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
+import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnit;
+import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnitBasic;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
@@ -56,6 +62,9 @@ public class DefsTypesForTests {
     set_objectTypes();
     set_generics();
     set_bottomTopTypes();
+    set_siUnitBasic();
+    set_siUnitTypes();
+    set_numericWithSIUnitTypes();
   }
 
   /*********************************************************************/
@@ -754,6 +763,339 @@ public class DefsTypesForTests {
   public static void set_bottomTopTypes() {
     _bottomType = createBottomType();
     _topType = createTopType();
+  }
+
+  /*********************************************************************/
+
+  /*
+   * These are SIUnitBasics to create SymTypeOfSIUnits
+   */
+
+  // The seven base units (kg with and without prefix k)
+  public static SIUnitBasic _s_SIUnitBasic;
+  public static SIUnitBasic _m_SIUnitBasic;
+  public static SIUnitBasic _g_SIUnitBasic;
+  public static SIUnitBasic _A_SIUnitBasic;
+  public static SIUnitBasic _K_SIUnitBasic;
+  public static SIUnitBasic _mol_SIUnitBasic;
+  public static SIUnitBasic _cd_SIUnitBasic;
+  public static SIUnitBasic _kg_SIUnitBasic;
+  // Further supported SIUnitBasics
+  public static SIUnitBasic _Hz_SIUnitBasic;
+  public static SIUnitBasic _N_SIUnitBasic;
+  public static SIUnitBasic _Pa_SIUnitBasic;
+  public static SIUnitBasic _J_SIUnitBasic;
+  public static SIUnitBasic _W_SIUnitBasic;
+  public static SIUnitBasic _C_SIUnitBasic;
+  public static SIUnitBasic _V_SIUnitBasic;
+  public static SIUnitBasic _F_SIUnitBasic;
+  public static SIUnitBasic _Ohm_SIUnitBasic;
+  public static SIUnitBasic _ohm_SIUnitBasic;
+  public static SIUnitBasic _S_SIUnitBasic;
+  public static SIUnitBasic _Wb_SIUnitBasic;
+  public static SIUnitBasic _T_SIUnitBasic;
+  public static SIUnitBasic _H_SIUnitBasic;
+  public static SIUnitBasic _lm_SIUnitBasic;
+  public static SIUnitBasic _lx_SIUnitBasic;
+  public static SIUnitBasic _Bq_SIUnitBasic;
+  public static SIUnitBasic _Gy_SIUnitBasic;
+  public static SIUnitBasic _Sv_SIUnitBasic;
+  public static SIUnitBasic _kat_SIUnitBasic;
+  public static SIUnitBasic _l_SIUnitBasic;
+  public static SIUnitBasic _L_SIUnitBasic;
+  public static SIUnitBasic _min_SIUnitBasic;
+  public static SIUnitBasic _h_SIUnitBasic;
+  public static SIUnitBasic _d_SIUnitBasic;
+  public static SIUnitBasic _ha_SIUnitBasic;
+  public static SIUnitBasic _t_SIUnitBasic;
+  public static SIUnitBasic _au_SIUnitBasic;
+  public static SIUnitBasic _eV_SIUnitBasic;
+  public static SIUnitBasic _Da_SIUnitBasic;
+  public static SIUnitBasic _u_SIUnitBasic;
+  public static SIUnitBasic _celsius_SIUnitBasic;
+  public static SIUnitBasic _fahrenheit_SIUnitBasic;
+  public static SIUnitBasic _Np_SIUnitBasic;
+  public static SIUnitBasic _B_SIUnitBasic;
+  public static SIUnitBasic _dB_SIUnitBasic;
+  public static SIUnitBasic _degSym_SIUnitBasic;
+  public static SIUnitBasic _deg_SIUnitBasic;
+  public static SIUnitBasic _rad_SIUnitBasic;
+  public static SIUnitBasic _sr_SIUnitBasic;
+
+  public static void set_siUnitBasic() {
+    _s_SIUnitBasic = createSIUnitBasic("s");
+    _m_SIUnitBasic = createSIUnitBasic("m");
+    _g_SIUnitBasic = createSIUnitBasic("g");
+    _A_SIUnitBasic = createSIUnitBasic("A");
+    _K_SIUnitBasic = createSIUnitBasic("K");
+    _mol_SIUnitBasic = createSIUnitBasic("mol");
+    _cd_SIUnitBasic = createSIUnitBasic("cd");
+    _kg_SIUnitBasic = createSIUnitBasic("g", "k", 1);
+
+    _Hz_SIUnitBasic = createSIUnitBasic("Hz");
+    _N_SIUnitBasic = createSIUnitBasic("N");
+    _Pa_SIUnitBasic = createSIUnitBasic("Pa");
+    _J_SIUnitBasic = createSIUnitBasic("J");
+    _W_SIUnitBasic = createSIUnitBasic("W");
+    _C_SIUnitBasic = createSIUnitBasic("C");
+    _V_SIUnitBasic = createSIUnitBasic("V");
+    _F_SIUnitBasic = createSIUnitBasic("F");
+    _Ohm_SIUnitBasic = createSIUnitBasic("Ohm");
+    _ohm_SIUnitBasic = createSIUnitBasic("Ω");
+    _S_SIUnitBasic = createSIUnitBasic("S");
+    _Wb_SIUnitBasic = createSIUnitBasic("Wb");
+    _T_SIUnitBasic = createSIUnitBasic("T");
+    _H_SIUnitBasic = createSIUnitBasic("H");
+    _lm_SIUnitBasic = createSIUnitBasic("lm");
+    _lx_SIUnitBasic = createSIUnitBasic("lx");
+    _Bq_SIUnitBasic = createSIUnitBasic("Bq");
+    _Gy_SIUnitBasic = createSIUnitBasic("Gy");
+    _Sv_SIUnitBasic = createSIUnitBasic("Sv");
+    _kat_SIUnitBasic = createSIUnitBasic("kat");
+    _l_SIUnitBasic = createSIUnitBasic("l");
+    _L_SIUnitBasic = createSIUnitBasic("L");
+    _min_SIUnitBasic = createSIUnitBasic("min");
+    _h_SIUnitBasic = createSIUnitBasic("h");
+    _d_SIUnitBasic = createSIUnitBasic("d");
+    _ha_SIUnitBasic = createSIUnitBasic("ha");
+    _t_SIUnitBasic = createSIUnitBasic("t");
+    _au_SIUnitBasic = createSIUnitBasic("au");
+    _eV_SIUnitBasic = createSIUnitBasic("eV");
+    _Da_SIUnitBasic = createSIUnitBasic("Da");
+    _u_SIUnitBasic = createSIUnitBasic("u");
+    _celsius_SIUnitBasic = createSIUnitBasic("ºC");
+    _fahrenheit_SIUnitBasic = createSIUnitBasic("ºF");
+    _Np_SIUnitBasic = createSIUnitBasic("Np");
+    _B_SIUnitBasic = createSIUnitBasic("B");
+    _dB_SIUnitBasic = createSIUnitBasic("dB");
+    _degSym_SIUnitBasic = createSIUnitBasic("°");
+    _deg_SIUnitBasic = createSIUnitBasic("deg");
+    _rad_SIUnitBasic = createSIUnitBasic("rad");
+    _sr_SIUnitBasic = createSIUnitBasic("sr");
+  }
+
+  /*********************************************************************/
+
+  /*
+   * These are simple(!) SymTypeOfSIUnits,
+   * one for each supported SIUnitBasic
+   *
+   * Hint: you may instead want SIUnitIteratorForTests
+   */
+
+  // The seven base units (kg with and without prefix k)
+  public static SymTypeOfSIUnit _m_SISymType;
+  public static SymTypeOfSIUnit _g_SISymType;
+  public static SymTypeOfSIUnit _s_SISymType;
+  public static SymTypeOfSIUnit _A_SISymType;
+  public static SymTypeOfSIUnit _K_SISymType;
+  public static SymTypeOfSIUnit _mol_SISymType;
+  public static SymTypeOfSIUnit _cd_SISymType;
+  public static SymTypeOfSIUnit _kg_SISymType;
+  // Further supported SIUnits
+  public static SymTypeOfSIUnit _Hz_SISymType;
+  public static SymTypeOfSIUnit _N_SISymType;
+  public static SymTypeOfSIUnit _Pa_SISymType;
+  public static SymTypeOfSIUnit _J_SISymType;
+  public static SymTypeOfSIUnit _W_SISymType;
+  public static SymTypeOfSIUnit _C_SISymType;
+  public static SymTypeOfSIUnit _V_SISymType;
+  public static SymTypeOfSIUnit _F_SISymType;
+  public static SymTypeOfSIUnit _Ohm_SISymType;
+  public static SymTypeOfSIUnit _ohm_SISymType;
+  public static SymTypeOfSIUnit _S_SISymType;
+  public static SymTypeOfSIUnit _Wb_SISymType;
+  public static SymTypeOfSIUnit _T_SISymType;
+  public static SymTypeOfSIUnit _H_SISymType;
+  public static SymTypeOfSIUnit _lm_SISymType;
+  public static SymTypeOfSIUnit _lx_SISymType;
+  public static SymTypeOfSIUnit _Bq_SISymType;
+  public static SymTypeOfSIUnit _Gy_SISymType;
+  public static SymTypeOfSIUnit _Sv_SISymType;
+  public static SymTypeOfSIUnit _kat_SISymType;
+  public static SymTypeOfSIUnit _l_SISymType;
+  public static SymTypeOfSIUnit _L_SISymType;
+  public static SymTypeOfSIUnit _min_SISymType;
+  public static SymTypeOfSIUnit _h_SISymType;
+  public static SymTypeOfSIUnit _d_SISymType;
+  public static SymTypeOfSIUnit _ha_SISymType;
+  public static SymTypeOfSIUnit _t_SISymType;
+  public static SymTypeOfSIUnit _au_SISymType;
+  public static SymTypeOfSIUnit _eV_SISymType;
+  public static SymTypeOfSIUnit _Da_SISymType;
+  public static SymTypeOfSIUnit _u_SISymType;
+  public static SymTypeOfSIUnit _celsius_SISymType;
+  public static SymTypeOfSIUnit _fahrenheit_SISymType;
+  public static SymTypeOfSIUnit _Np_SISymType;
+  public static SymTypeOfSIUnit _B_SISymType;
+  public static SymTypeOfSIUnit _dB_SISymType;
+  public static SymTypeOfSIUnit _degSym_SISymType;
+  public static SymTypeOfSIUnit _deg_SISymType;
+  public static SymTypeOfSIUnit _rad_SISymType;
+  public static SymTypeOfSIUnit _sr_SISymType;
+
+  public static void set_siUnitTypes() {
+    _m_SISymType = createSIUnit(List.of(_m_SIUnitBasic), List.of());
+    _g_SISymType = createSIUnit(List.of(_g_SIUnitBasic), List.of());
+    _s_SISymType = createSIUnit(List.of(_s_SIUnitBasic), List.of());
+    _A_SISymType = createSIUnit(List.of(_A_SIUnitBasic), List.of());
+    _K_SISymType = createSIUnit(List.of(_K_SIUnitBasic), List.of());
+    _mol_SISymType = createSIUnit(List.of(_mol_SIUnitBasic), List.of());
+    _cd_SISymType = createSIUnit(List.of(_cd_SIUnitBasic), List.of());
+    _kg_SISymType = createSIUnit(List.of(_kg_SIUnitBasic), List.of());
+
+    _Hz_SISymType = createSIUnit(List.of(_Hz_SIUnitBasic), List.of());
+    _N_SISymType = createSIUnit(List.of(_N_SIUnitBasic), List.of());
+    _Pa_SISymType = createSIUnit(List.of(_Pa_SIUnitBasic), List.of());
+    _J_SISymType = createSIUnit(List.of(_J_SIUnitBasic), List.of());
+    _W_SISymType = createSIUnit(List.of(_W_SIUnitBasic), List.of());
+    _C_SISymType = createSIUnit(List.of(_C_SIUnitBasic), List.of());
+    _V_SISymType = createSIUnit(List.of(_V_SIUnitBasic), List.of());
+    _F_SISymType = createSIUnit(List.of(_F_SIUnitBasic), List.of());
+    _Ohm_SISymType = createSIUnit(List.of(_Ohm_SIUnitBasic), List.of());
+    _ohm_SISymType = createSIUnit(List.of(_ohm_SIUnitBasic), List.of());
+    _S_SISymType = createSIUnit(List.of(_S_SIUnitBasic), List.of());
+    _Wb_SISymType = createSIUnit(List.of(_Wb_SIUnitBasic), List.of());
+    _T_SISymType = createSIUnit(List.of(_T_SIUnitBasic), List.of());
+    _H_SISymType = createSIUnit(List.of(_H_SIUnitBasic), List.of());
+    _lm_SISymType = createSIUnit(List.of(_lm_SIUnitBasic), List.of());
+    _lx_SISymType = createSIUnit(List.of(_lx_SIUnitBasic), List.of());
+    _Bq_SISymType = createSIUnit(List.of(_Bq_SIUnitBasic), List.of());
+    _Gy_SISymType = createSIUnit(List.of(_Gy_SIUnitBasic), List.of());
+    _Sv_SISymType = createSIUnit(List.of(_Sv_SIUnitBasic), List.of());
+    _kat_SISymType = createSIUnit(List.of(_kat_SIUnitBasic), List.of());
+    _l_SISymType = createSIUnit(List.of(_l_SIUnitBasic), List.of());
+    _L_SISymType = createSIUnit(List.of(_L_SIUnitBasic), List.of());
+    _min_SISymType = createSIUnit(List.of(_min_SIUnitBasic), List.of());
+    _h_SISymType = createSIUnit(List.of(_h_SIUnitBasic), List.of());
+    _d_SISymType = createSIUnit(List.of(_d_SIUnitBasic), List.of());
+    _ha_SISymType = createSIUnit(List.of(_ha_SIUnitBasic), List.of());
+    _t_SISymType = createSIUnit(List.of(_t_SIUnitBasic), List.of());
+    _au_SISymType = createSIUnit(List.of(_au_SIUnitBasic), List.of());
+    _eV_SISymType = createSIUnit(List.of(_eV_SIUnitBasic), List.of());
+    _Da_SISymType = createSIUnit(List.of(_Da_SIUnitBasic), List.of());
+    _u_SISymType = createSIUnit(List.of(_u_SIUnitBasic), List.of());
+    _celsius_SISymType = createSIUnit(List.of(_celsius_SIUnitBasic), List.of());
+    _fahrenheit_SISymType = createSIUnit(List.of(_fahrenheit_SIUnitBasic), List.of());
+    _Np_SISymType = createSIUnit(List.of(_Np_SIUnitBasic), List.of());
+    _B_SISymType = createSIUnit(List.of(_B_SIUnitBasic), List.of());
+    _dB_SISymType = createSIUnit(List.of(_dB_SIUnitBasic), List.of());
+    _degSym_SISymType = createSIUnit(List.of(_degSym_SIUnitBasic), List.of());
+    _deg_SISymType = createSIUnit(List.of(_deg_SIUnitBasic), List.of());
+    _rad_SISymType = createSIUnit(List.of(_rad_SIUnitBasic), List.of());
+    _sr_SISymType = createSIUnit(List.of(_sr_SIUnitBasic), List.of());
+  }
+
+  /*********************************************************************/
+
+  /*
+   * These are simple(!) SymTypeOfNumericWithSIUnits,
+   * one for each supported SIUnitBasic with int
+   *
+   * Hint: you may instead want SIUnitIteratorForTests
+   */
+
+  // The seven base units (kg with and without prefix k)
+  public static SymTypeOfNumericWithSIUnit _m_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _g_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _s_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _A_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _K_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _mol_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _cd_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _kg_int_SISymType;
+  // Further supported SIUnits
+  public static SymTypeOfNumericWithSIUnit _Hz_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _N_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _Pa_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _J_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _W_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _C_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _V_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _F_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _Ohm_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _ohm_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _S_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _Wb_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _T_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _H_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _lm_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _lx_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _Bq_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _Gy_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _Sv_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _kat_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _l_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _L_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _min_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _h_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _d_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _ha_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _t_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _au_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _eV_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _Da_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _u_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _celsius_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _fahrenheit_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _Np_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _B_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _dB_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _degSym_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _deg_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _rad_int_SISymType;
+  public static SymTypeOfNumericWithSIUnit _sr_int_SISymType;
+
+  public static void set_numericWithSIUnitTypes() {
+    _m_int_SISymType = createNumericWithSIUnit(_m_SISymType, _intSymType);
+    _g_int_SISymType = createNumericWithSIUnit(_g_SISymType, _intSymType);
+    _s_int_SISymType = createNumericWithSIUnit(_s_SISymType, _intSymType);
+    _A_int_SISymType = createNumericWithSIUnit(_A_SISymType, _intSymType);
+    _K_int_SISymType = createNumericWithSIUnit(_K_SISymType, _intSymType);
+    _mol_int_SISymType = createNumericWithSIUnit(_mol_SISymType, _intSymType);
+    _cd_int_SISymType = createNumericWithSIUnit(_cd_SISymType, _intSymType);
+    _kg_int_SISymType = createNumericWithSIUnit(_kg_SISymType, _intSymType);
+
+    _Hz_int_SISymType = createNumericWithSIUnit(_Hz_SISymType, _intSymType);
+    _N_int_SISymType = createNumericWithSIUnit(_N_SISymType, _intSymType);
+    _Pa_int_SISymType = createNumericWithSIUnit(_Pa_SISymType, _intSymType);
+    _J_int_SISymType = createNumericWithSIUnit(_J_SISymType, _intSymType);
+    _W_int_SISymType = createNumericWithSIUnit(_W_SISymType, _intSymType);
+    _C_int_SISymType = createNumericWithSIUnit(_C_SISymType, _intSymType);
+    _V_int_SISymType = createNumericWithSIUnit(_V_SISymType, _intSymType);
+    _F_int_SISymType = createNumericWithSIUnit(_F_SISymType, _intSymType);
+    _Ohm_int_SISymType = createNumericWithSIUnit(_Ohm_SISymType, _intSymType);
+    _ohm_int_SISymType = createNumericWithSIUnit(_ohm_SISymType, _intSymType);
+    _S_int_SISymType = createNumericWithSIUnit(_S_SISymType, _intSymType);
+    _Wb_int_SISymType = createNumericWithSIUnit(_Wb_SISymType, _intSymType);
+    _T_int_SISymType = createNumericWithSIUnit(_T_SISymType, _intSymType);
+    _H_int_SISymType = createNumericWithSIUnit(_H_SISymType, _intSymType);
+    _lm_int_SISymType = createNumericWithSIUnit(_lm_SISymType, _intSymType);
+    _lx_int_SISymType = createNumericWithSIUnit(_lx_SISymType, _intSymType);
+    _Bq_int_SISymType = createNumericWithSIUnit(_Bq_SISymType, _intSymType);
+    _Gy_int_SISymType = createNumericWithSIUnit(_Gy_SISymType, _intSymType);
+    _Sv_int_SISymType = createNumericWithSIUnit(_Sv_SISymType, _intSymType);
+    _kat_int_SISymType = createNumericWithSIUnit(_kat_SISymType, _intSymType);
+    _l_int_SISymType = createNumericWithSIUnit(_l_SISymType, _intSymType);
+    _L_int_SISymType = createNumericWithSIUnit(_L_SISymType, _intSymType);
+    _min_int_SISymType = createNumericWithSIUnit(_min_SISymType, _intSymType);
+    _h_int_SISymType = createNumericWithSIUnit(_h_SISymType, _intSymType);
+    _d_int_SISymType = createNumericWithSIUnit(_d_SISymType, _intSymType);
+    _ha_int_SISymType = createNumericWithSIUnit(_ha_SISymType, _intSymType);
+    _t_int_SISymType = createNumericWithSIUnit(_t_SISymType, _intSymType);
+    _au_int_SISymType = createNumericWithSIUnit(_au_SISymType, _intSymType);
+    _eV_int_SISymType = createNumericWithSIUnit(_eV_SISymType, _intSymType);
+    _Da_int_SISymType = createNumericWithSIUnit(_Da_SISymType, _intSymType);
+    _u_int_SISymType = createNumericWithSIUnit(_u_SISymType, _intSymType);
+    _celsius_int_SISymType = createNumericWithSIUnit(_celsius_SISymType, _intSymType);
+    _fahrenheit_int_SISymType = createNumericWithSIUnit(_fahrenheit_SISymType, _intSymType);
+    _Np_int_SISymType = createNumericWithSIUnit(_Np_SISymType, _intSymType);
+    _B_int_SISymType = createNumericWithSIUnit(_B_SISymType, _intSymType);
+    _dB_int_SISymType = createNumericWithSIUnit(_dB_SISymType, _intSymType);
+    _degSym_int_SISymType = createNumericWithSIUnit(_degSym_SISymType, _intSymType);
+    _deg_int_SISymType = createNumericWithSIUnit(_deg_SISymType, _intSymType);
+    _rad_int_SISymType = createNumericWithSIUnit(_rad_SISymType, _intSymType);
+    _sr_int_SISymType = createNumericWithSIUnit(_sr_SISymType, _intSymType);
   }
 
 }

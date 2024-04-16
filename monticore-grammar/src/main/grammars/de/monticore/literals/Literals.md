@@ -7,8 +7,10 @@
 Literals are the basis to parse numbers, strings and other atomic language
 elements. The language module `MCLiteralBasis` defines the root nonterminal
 `Literal` but no other terminals representing literal terms.
-[MCCommonLiterals](MCCommonLiterals.mc4) and 
-[MCJavaLiterals](MCJavaLiterals.mc4) define concrete literal terms that can 
+[MCCommonLiterals](MCCommonLiterals.mc4),
+[MCJavaLiterals](MCJavaLiterals.mc4), and
+[SIUnitLiterals](../siunit/SIUnitLiterals.mc4)
+define concrete literal terms that can 
 be included in a MontiCore-based language as desired.
 
 ## Grammar [`MCCommonLiterals.mc4`](MCCommonLiterals.mc4)
@@ -38,6 +40,11 @@ rules:
 `0x1al`.
 * `FloatLiteral`: Recognizes literals like `1.23F` and `1.23E4f`.
 * `DoubleLiteral`: Recognizes literals like `1.23`, `1.23d`, `1.23E4D`.
+
+## Grammar [`SIUnitLiterals.mc4`](../siunit/SIUnitLiterals.mc4)
+
+This grammar allows recognition of SI unit literals like `1km/h`.
+This is documented in [`SIUnits`](../siunit/SIUnits.md).
 
 ## Further Information
 

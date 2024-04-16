@@ -26,6 +26,7 @@ import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.TypeVisitorLifting;
+import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.Names;
@@ -42,8 +43,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 
 /**
@@ -54,7 +53,18 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
+  // due to legacy reasons, error codes are identical for different operators,
+  // even if they use different implementations now,
+  // e.g., adding SIUnits required different implementations for '*' and '/'.
+  protected static final String ARITHMETIC_OPERATOR_ERROR_CODE = "0xB0163";
+  protected static final String NUMERIC_PREFIX_ERROR_CODE = "0xA017D";
+  protected static final String EQUALITY_OPERATOR_ERROR_CODE = "0xB0166";
+  protected static final String NUMERIC_COMPARISON_ERROR_CODE = "0xB0167";
+  protected static final String BOOLEAN_CONDITIONAL_ERROR_CODE = "0xB0113";
+
   protected CommonExpressionsTraverser traverser;
+
+  protected TypeVisitorOperatorCalculator operatorCalculator;
 
   protected WithinTypeBasicSymbolsResolver withinTypeResolver;
 
@@ -64,9 +74,11 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   protected WithinScopeBasicSymbolsResolver withinScopeResolver;
 
   protected CommonExpressionsTypeVisitor(
+      TypeVisitorOperatorCalculator operatorCalculator,
       WithinTypeBasicSymbolsResolver withinTypeResolver,
       TypeContextCalculator typeCtxCalc,
       WithinScopeBasicSymbolsResolver withinScopeResolver) {
+    this.operatorCalculator = operatorCalculator;
     this.withinTypeResolver = withinTypeResolver;
     this.typeCtxCalc = typeCtxCalc;
     this.withinScopeResolver = withinScopeResolver;
@@ -75,6 +87,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   public CommonExpressionsTypeVisitor() {
     // default values
     this(
+        new TypeVisitorOperatorCalculator(),
         new WithinTypeBasicSymbolsResolver(),
         new TypeContextCalculator(),
         new WithinScopeBasicSymbolsResolver()
@@ -89,6 +102,11 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void setTraverser(CommonExpressionsTraverser traverser) {
     this.traverser = traverser;
+  }
+
+  public void setOperatorCalculator(
+      TypeVisitorOperatorCalculator operatorCalculator) {
+    this.operatorCalculator = operatorCalculator;
   }
 
   public void setWithinTypeBasicSymbolsResolver(
@@ -114,6 +132,10 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     setWithinScopeResolver(resolver);
   }
 
+  protected TypeVisitorOperatorCalculator getOperatorCalculator() {
+    return operatorCalculator;
+  }
+
   protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
     return withinTypeResolver;
   }
@@ -131,18 +153,20 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTPlusPrefixExpression expr) {
     SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
-    SymTypeExpression result = TypeVisitorLifting.liftDefault(
-        (innerType) -> calculateNumericPrefix(expr.getExpression(), "+", innerType)
-    ).apply(inner);
+    SymTypeExpression result = getTypeForPrefixOrLogError(
+        NUMERIC_PREFIX_ERROR_CODE, expr, "+",
+        getOperatorCalculator().plusPrefix(inner), inner
+    );
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTMinusPrefixExpression expr) {
     SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
-    SymTypeExpression result = TypeVisitorLifting.liftDefault(
-        (innerType) -> calculateNumericPrefix(expr.getExpression(), "-", innerType)
-    ).apply(inner);
+    SymTypeExpression result = getTypeForPrefixOrLogError(
+        NUMERIC_PREFIX_ERROR_CODE, expr, "-",
+        getOperatorCalculator().minusPrefix(inner), inner
+    );
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
@@ -152,147 +176,160 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   public void endVisit(ASTPlusExpression expr) {
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-
-    SymTypeExpression result = TypeVisitorLifting
-        .liftDefault((leftPar, rightPar) -> calculatePlusExpression(expr, leftPar, rightPar))
-        .apply(left, right);
-
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().plus(left, right), left, right
+    );
     getType4Ast().setTypeOfExpression(expr, result);
-  }
-
-  protected SymTypeExpression calculatePlusExpression(ASTPlusExpression expr, SymTypeExpression left, SymTypeExpression right) {
-    SymTypeExpression result;
-    // if one part of the expression is a String
-    // then the whole expression is a String
-    if (SymTypeRelations.isString(left)) {
-      result = createTypeObject(left.getTypeInfo());
-    }
-    else if (SymTypeRelations.isString(right)) {
-      result = createTypeObject(right.getTypeInfo());
-    }
-    // no String in the expression
-    // -> use the normal calculation for the basic arithmetic operators
-    else {
-      result = calculateArithmeticExpression(expr, expr.getOperator());
-    }
-    return result;
   }
 
   @Override
   public void endVisit(ASTMultExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateArithmeticExpression(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().multiply(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTDivideExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateArithmeticExpression(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().divide(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTMinusExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateArithmeticExpression(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().minus(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTModuloExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateArithmeticExpression(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().modulo(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   // Numeric Comparison
 
   @Override
   public void endVisit(ASTLessEqualExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateNumericComparison(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().lessEqual(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTGreaterEqualExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateNumericComparison(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().greaterEqual(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTLessThanExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateNumericComparison(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().lessThan(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTGreaterThanExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateNumericComparison(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().greaterThan(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   // Equality
 
   @Override
   public void endVisit(ASTEqualsExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateEquality(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        EQUALITY_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().equality(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTNotEqualsExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateEquality(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        EQUALITY_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().inequality(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   // Conditional
 
   @Override
   public void endVisit(ASTBooleanAndOpExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateConditionalBooleanOp(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        BOOLEAN_CONDITIONAL_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().booleanAnd(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTBooleanOrOpExpression expr) {
-    getType4Ast().setTypeOfExpression(expr,
-        calculateConditionalBooleanOp(expr, expr.getOperator())
+    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
+    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
+    SymTypeExpression result = getTypeForInfixOrLogError(
+        BOOLEAN_CONDITIONAL_ERROR_CODE, expr, expr.getOperator(),
+        getOperatorCalculator().booleanOr(left, right), left, right
     );
+    getType4Ast().setTypeOfExpression(expr, result);
   }
 
   @Override
   public void endVisit(ASTLogicalNotExpression expr) {
     SymTypeExpression inner =
         getType4Ast().getPartialTypeOfExpr(expr.getExpression());
-    SymTypeExpression result = TypeVisitorLifting
-        .liftDefault((symType) -> calculateLogicalNotExpression(expr, symType))
-        .apply(inner);
+    SymTypeExpression result = getTypeForPrefixOrLogError(
+        "0xB0164", expr, "!",
+        getOperatorCalculator().logicalNot(inner), inner
+    );
     getType4Ast().setTypeOfExpression(expr, result);
-  }
-
-  protected SymTypeExpression calculateLogicalNotExpression(
-      ASTLogicalNotExpression expr,
-      SymTypeExpression inner) {
-    if (SymTypeRelations.isBoolean(inner)) {
-      return createPrimitive(BasicSymbolsMill.BOOLEAN);
-    }
-    else {
-      // operator not applicable
-      Log.error("0xB0164 Operator '!' not applicable to "
-              + "'" + inner.print() + "'",
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd()
-      );
-      return createObscureType();
-    }
   }
 
   @Override
@@ -333,27 +370,11 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   public void endVisit(ASTBooleanNotExpression expr) {
     SymTypeExpression inner =
         getType4Ast().getPartialTypeOfExpr(expr.getExpression());
-    SymTypeExpression result = TypeVisitorLifting.liftDefault(
-        (symType) -> calculateBooleanNotExpression(expr, symType)
-    ).apply(inner);
+    SymTypeExpression result = getTypeForPrefixOrLogError(
+        "0xB0175", expr, "~",
+        getOperatorCalculator().bitwiseComplement(inner), inner
+    );
     getType4Ast().setTypeOfExpression(expr, result);
-  }
-
-  protected SymTypeExpression calculateBooleanNotExpression(
-      ASTBooleanNotExpression expr,
-      SymTypeExpression inner) {
-    if (SymTypeRelations.isIntegralType(inner)) {
-      return SymTypeRelations.numericPromotion(inner);
-    }
-    else {
-      // operator not applicable
-      Log.error("0xB0175 Operator '~' not applicable to "
-              + "'" + inner.print() + "'",
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd()
-      );
-      return createObscureType();
-    }
   }
 
   @Override
@@ -1140,76 +1161,18 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
   }
 
-  protected SymTypeExpression calculateNumericPrefix(
-      ASTExpression innerExpr, String op, SymTypeExpression innerType) {
-    if (!SymTypeRelations.isNumericType(innerType)) {
-      Log.error("0xA017D Prefix Operator '" + op
-              + "' not applicable to " + "'" + innerType.print() + "'",
-          innerExpr.get_SourcePositionStart(),
-          innerExpr.get_SourcePositionEnd()
-      );
-      return createObscureType();
-    }
-    // in Java, an evaluation of the actual value
-    // would take place (if possible)
-    return SymTypeRelations.numericPromotion(innerType);
-  }
-
-  /**
-   * for <=, >=, <, >
-   * calculates the resulting type
-   */
-  protected SymTypeExpression calculateNumericComparison(
-      ASTInfixExpression expr, String op) {
-    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
-    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-    return TypeVisitorLifting.liftDefault((leftPar, rightPar) ->
-        calculateNumericComparison(expr, op, leftPar, rightPar)
-    ).apply(left, right);
-  }
-
-  protected SymTypeExpression calculateNumericComparison(
-      ASTInfixExpression expr, String op,
-      SymTypeExpression left, SymTypeExpression right) {
-    // if the left and the right part of the expression are numerics,
-    // then the whole expression is a boolean
-    if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
-      return createPrimitive(BasicSymbolsMill.BOOLEAN);
+  protected SymTypeExpression getTypeForInfixOrLogError(
+      String errorCode, ASTInfixExpression expr, String op,
+      Optional<SymTypeExpression> result,
+      SymTypeExpression left, SymTypeExpression right
+  ) {
+    if (result.isPresent()) {
+      return result.get();
     }
     else {
       // operator not applicable
-      Log.error("0xB0167 Operator '" + op + "' not applicable to "
-              + "'" + left.print() + "', '"
-              + right.print() + "'",
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd()
-      );
-      return createObscureType();
-    }
-  }
-
-  /**
-   * for +, -, *, /, %
-   * + -> String not supported
-   * calculates the resulting type
-   */
-  protected SymTypeExpression calculateArithmeticExpression(
-      ASTInfixExpression expr, String op) {
-    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
-    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-
-    return TypeVisitorLifting.liftDefault((SymTypeExpression leftPar, SymTypeExpression rightPar) ->
-        calculateArithmeticExpression(expr, op, leftPar, rightPar)
-    ).apply(left, right);
-  }
-
-  protected SymTypeExpression calculateArithmeticExpression(ASTInfixExpression expr, String op, SymTypeExpression left, SymTypeExpression right) {
-    if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
-      return SymTypeRelations.numericPromotion(left, right);
-    }
-    else {
-      // operator not applicable
-      Log.error("0xB0163 Operator '" + op + "' not applicable to " +
+      Log.error(errorCode
+              + " Operator '" + op + "' not applicable to " +
               "'" + left.print() + "', '"
               + right.print() + "'",
           expr.get_SourcePositionStart(),
@@ -1219,43 +1182,17 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
   }
 
-  /**
-   * for ==, !=
-   * calculates the resulting type
-   */
-  protected SymTypeExpression calculateEquality(
-      ASTInfixExpression expr, String op) {
-    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
-    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-    return TypeVisitorLifting.liftDefault((leftPar, rightPar) ->
-        calculateEquality(expr, op, leftPar, rightPar)
-    ).apply(left, right);
-  }
-
-  /**
-   * for ==, !=
-   * calculates the resulting type
-   */
-  protected SymTypeExpression calculateEquality(
-      ASTInfixExpression expr, String op,
-      SymTypeExpression left, SymTypeExpression right) {
-
-    if (left.isPrimitive() || right.isPrimitive()) {
-      // skip unboxing + numeric promotion if applicable
-      if (SymTypeRelations.isNumericType(left) && SymTypeRelations.isNumericType(right)) {
-        return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
-      }
-      left = SymTypeRelations.unbox(left);
-      right = SymTypeRelations.unbox(right);
-    }
-    if (SymTypeRelations.isCompatible(left, right)
-        || SymTypeRelations.isCompatible(right, left)) {
-      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
+  protected SymTypeExpression getTypeForPrefixOrLogError(
+      String errorCode, ASTExpression expr, String prefix,
+      Optional<SymTypeExpression> result, SymTypeExpression inner
+  ) {
+    if (result.isPresent()) {
+      return result.get();
     }
     else {
-      Log.error("0xB0166 Operator '" + op + "' not applicable to " +
-              "'" + left.print() + "', '"
-              + right.print() + "'",
+      Log.error(errorCode
+              + " Prefix Operator '" + prefix
+              + "' not applicable to " + "'" + inner.print() + "'",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
       );
@@ -1263,30 +1200,17 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
   }
 
-  /**
-   * for &&, ||
-   * calculates the resulting type
-   */
-  protected SymTypeExpression calculateConditionalBooleanOp(
-      ASTInfixExpression expr, String op) {
-    SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
-    SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-    return TypeVisitorLifting.liftDefault((leftPar, rightPar) ->
-        calculateConditionalBooleanOp(expr, op, leftPar, rightPar)
-    ).apply(left, right);
-  }
-
-  protected SymTypeExpression calculateConditionalBooleanOp(
-      ASTInfixExpression expr, String op,
-      SymTypeExpression left, SymTypeExpression right) {
-    if (SymTypeRelations.isBoolean(left) && SymTypeRelations.isBoolean(right)) {
-      return createPrimitive(BasicSymbolsMill.BOOLEAN);
+  protected SymTypeExpression getTypeForPostfixOrLogError(
+      String errorCode, ASTExpression expr, String postfix,
+      Optional<SymTypeExpression> result, SymTypeExpression inner
+  ) {
+    if (result.isPresent()) {
+      return result.get();
     }
     else {
-      // operator not applicable
-      Log.error("0xB0113 Operator '" + op + "' not applicable to " +
-              "'" + left.print() + "', '"
-              + right.print() + "'",
+      Log.error(errorCode
+              + " Postfix Operator '" + postfix
+              + "' not applicable to " + "'" + inner.print() + "'",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
       );

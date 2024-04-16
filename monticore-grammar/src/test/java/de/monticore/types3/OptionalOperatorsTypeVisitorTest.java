@@ -74,9 +74,9 @@ public class OptionalOperatorsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkErrorExpr("varintOptional ?< varPerson", "0xFD280");
     checkErrorExpr("1 ?> 1", "0xFD209");
     checkErrorExpr("varintOptional ?> varPerson", "0xFD280");
-    checkErrorExpr("1 ?== 1", "0xFD1C7");
+    checkErrorExpr("1 ?== 1", "0xFD285");
     checkErrorExpr("varintOptional ?== varPerson", "0xFD285");
-    checkErrorExpr("1 ?!= 1", "0xFD1C7");
+    checkErrorExpr("1 ?!= 1", "0xFD285");
     checkErrorExpr("varintOptional ?!= varPerson", "0xFD285");
   }
 
