@@ -45,11 +45,11 @@ Presenters are encouraged to accompany their presentations with a **demo** or **
 
 ### Organization & Program Committee
 
-Organizers:
+Organizers:  
 * Andreas Wortman, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart
 * Jerôme Pfeiffer, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart
 
-Program Committee:
+Program Committee:  
 * Andreas Wortman, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart
 * Jerôme Pfeiffer, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart
 * Vincent Bertram, Software Engineering - RWTH Aachen  
