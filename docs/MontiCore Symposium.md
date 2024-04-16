@@ -10,7 +10,7 @@ tbd
 
 ### Registration
 
-Tickets are free but require registration via the following **[this link](ToDo)**.
+Tickets are free but require registration via **[this link](ToDo)**.
 Registration is possible until **13th of September**.
 
 ### Important Dates (deadlines extended)
