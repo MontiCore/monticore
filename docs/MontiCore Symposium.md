@@ -41,7 +41,7 @@ We solicit talk proposals concerning the application, development, and innovatio
 
 Presenters are encouraged to accompany their presentations with a **demo** or **reproduction package** that helps the participants to (easily) run and comprehend the presented tools, experiment with them, or tweak benchmark experiments. This helps to create a lasting contribution. 
 
-**Talk proposals should be submitted by August 30 via [easychair](ToDo).** A proposal includes a title and a short (maximum 200 words) abstract.  In case the talk is accompanied by a demo, we encourage presenters to also provide a brief demo outline as part of the proposal. Presenters will be granted a flexible schedule for their presentations from 15 to 60 minutes. Please include the intended presentation time within your abstract. Presenters may choose to follow a traditional presentation style where the Q&A is at the end of the talk, or they may follow a chess timer-based style. Notifications about acceptance will be sent out by September 036. 
+**Talk proposals should be submitted by August 30 via [easychair](ToDo).** A proposal includes a title and a short (maximum 200 words) abstract.  In case the talk is accompanied by a demo, we encourage presenters to also provide a brief demo outline as part of the proposal. Presenters will be granted a flexible schedule for their presentations from 15 to 60 minutes. Please include the intended presentation time within your abstract. Presenters may choose to follow a traditional presentation style where the Q&A is at the end of the talk, or they may follow a chess timer-based style. Notifications about acceptance will be sent out by September 06. 
 
 ### Organization & Program Committee
 
