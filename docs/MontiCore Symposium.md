@@ -28,6 +28,7 @@ tbd
 ### Call for Presentations
 
 We solicit talk proposals concerning the application, development, and innovation of language engineering or model-driven development around the language workbench MontiCore. Topics of interest include, but are not limited to:  
+  
 * Novel meta-languages for language construction and composition  
 * Holistic approaches to language engineering in MontiCore that cross-cut multiple language aspects (e.g., abstract and concrete syntax, semantics, transformations) and/or integrate with program analysis, validation, testing, or other advanced techniques.  
 * Industrial case studies: experience reports, large-scale evaluations, best practices, and human factors to adoption.   
