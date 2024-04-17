@@ -91,19 +91,19 @@ language components.
 
 ## [`SIUnitTypes4Math`](../siunit/SIUnitTypes4Math.mc4)
 
-Then using this language component,
+When using this language component,
 SI unit types like `[km/h]` become expressible.
 The documentation can be found in [`SIUnits`](../siunit/SIUnits.md).
 
 ## [`SIUnitTypes4Computing`](../siunit/SIUnitTypes4Computing.mc4)
 
-Then using this language component,
+When using this language component,
 SI unit types like `[km/h]<int>` become expressible.
 The documentation can be found in [`SIUnits`](../siunit/SIUnits.md).
 
 ## [`RegExType`](../regex/RegExType.mc4) 
 
-Then using this language component,
+When using this language component,
 RegEx types like `R"H(a|e)llo"` become expressible.
 This is documented in [`RegEx`](../regex/RegEx.md).
 
