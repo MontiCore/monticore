@@ -164,7 +164,6 @@ checkMLCs:
     paths:
       - "**/target/reports/"
     expire_in: 1 week
-  allow_failure: true
   except:
     - master
 

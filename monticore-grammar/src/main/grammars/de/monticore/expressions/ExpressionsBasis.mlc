@@ -25,15 +25,9 @@ mlc ExpressionsBasis {
   uses {
     mlc "de.monticore.symbols.BasicSymbols";
 
-    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
-    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionFactory.java";
-    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeOfFunction.java";
-    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
-    include "$projectDir/src/main/java/de/monticore/types3/util/NameExpressionTypeCalculator.java";
-    include "$projectDir/src/main/java/de/monticore/types3/util/OOWithinScopeBasicSymbolsResolver.java";
-    include "$projectDir/src/main/java/de/monticore/types3/util/OOWithinTypeBasicSymbolsResolver.java";
-    include "$projectDir/src/main/java/de/monticore/types3/util/TypeContextCalculator.java";
-    include "$projectDir/src/main/java/de/monticore/types3/util/WithinScopeBasicSymbolsResolver.java";
+    // implements a type check visitor
+    include "$projectDir/src/main/java/de/monticore/types/check/**.java";
+    include "$projectDir/src/main/java/de/monticore/types3/**.java";
   }
 
 }

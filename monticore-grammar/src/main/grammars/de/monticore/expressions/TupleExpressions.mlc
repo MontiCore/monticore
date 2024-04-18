@@ -12,11 +12,6 @@ mlc TupleExpressions {
     include "de/monticore/expressions/tupleexpressions/**.java";
   }
 
-  // export the handwritten code
-  export "$projectDir/src/main/java" {
-    include "de/monticore/expressions/tupleexpressions/**.java";
-  }
-
   promote {
     mlc "de.monticore.expressions.ExpressionsBasis";
   }
