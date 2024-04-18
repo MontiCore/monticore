@@ -20,8 +20,6 @@ mlc ExpressionsBasis {
   promote {
     mlc "de.monticore.MCBasics";
     mlc "de.monticore.literals.MCLiteralsBasis";
-
-    // every grammar using
   }
 
   uses {
