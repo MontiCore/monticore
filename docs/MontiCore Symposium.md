@@ -1,48 +1,106 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-## MontiCore Symposium 29. September - 02. October 2024
 
-The first MontiCore Symposium is a meetup where language engineering and modeling enthusiasts can come together to discuss state-of-the-art software language engineering and model-driven techniques based on or associated with the technology of the MontiCore language workbench.
+## Third MontiCore Symposium 29. September - 02. October 2024
+
+MontiCore is a language workbench designed for the efficient 
+development of domain-specific languages (DSLs) along with their 
+corresponding tooling. It provides a robust infrastructure to define, 
+manipulate, and process languages, supporting features such as 
+model-to-model transformations and code generation, enhancing 
+productivity in software development projects.
+
+The goals of the MontiCore symposium are primarily to bring together 
+researchers, developers, and users of the MontiCore language workbench 
+to discuss advancements, share experiences, and explore new ideas in 
+the domain of domain-specific languages (DSLs). 
+
+It aims to foster collaboration and exchange on topics such as language 
+design, model-driven software development, tool integration, and 
+practical applications of MontiCore in various fields, including SysML 
+v2 and UML. This symposium provides a platform for presenting 
+innovative research, networking, and discussing challenges and 
+solutions in the context of DSLs and model-based development. 
+
 
 
 ### Location
 
-tbd
+tbd XXX (details follow via email).
 
-### Registration
+### Participation
 
-Tickets are free but require registration via **[this link](ToDo)**.
-Registration is possible until **13th of September**.
+Participation is based on acceptance of an abstract or a full paper and 
+requires registration until **13th of September**. 
 
-### Important Dates (deadlines extended)
-* **22.04.2024**: Call for Presentations 
-* **30.08.2024**: Submission Deadline
-* **06.09.2024**: Acceptance Notification
-* **13.09.2024**: Registration Deadline
-* **29.09.2024-02.10.2024**: MontiCore Symposium
+Registration costs will be XXX Euros and includes accomodation, 
+conference fees and meals during the symposium as well as coordinated a 
+bus transfer from Dusseldorf airport or Aachen and the venue.  
 
-### Preliminary Schedule
+### Submission
 
-tbd
+Submissions must adhere to the ACM formatting instructions, which can 
+be found here. We ask for two types of contributions: 
+
+ [1] Research papers: 8 pages,
+ [2] Vision abstracts: 1 page.
+ 
+Submissions must be uploaded through EasyChair in the following link 
+XXX https://easychair.org/conferences/?conf=monticore2024. 
+
+It is planned to produce post-proceedings with extended and improved 
+versions of the papers as result of the symposium. 
+
+### Important Dates (deadlines extended) 
+ * **30.07.2024**: Paper Submission Deadline 
+ * **06.09.2024**: Acceptance Notification 
+ * **13.09.2024**: Registration Deadline 
+ * **29.09.2024-02.10.2024**: MontiCore Symposium 
 
 
-### Call for Presentations
+### Call for Papers
 
-We solicit talk proposals concerning the application, development, and innovation of language engineering or model-driven development around the language workbench MontiCore. Topics of interest include, but are not limited to:  
+We solicit talk proposals concerning the application, development, and 
+innovation of language engineering or model-driven development around 
+the language workbench MontiCore. Topics of interest include, but are 
+not limited to:  
   
 * Novel meta-languages for language construction and composition  
-* Holistic approaches to language engineering in MontiCore that cross-cut multiple language aspects (e.g., abstract and concrete syntax, semantics, transformations) and/or integrate with program analysis, validation, testing, or other advanced techniques.  
-* Industrial case studies: experience reports, large-scale evaluations, best practices, and human factors to adoption.   
+
+* Holistic approaches to language engineering in MontiCore that 
+cross-cut multiple language aspects (e.g., abstract and concrete 
+syntax, semantics, transformations) and/or integrate with program 
+analysis, validation, testing, or other advanced techniques.  
+
+* Industrial case studies: experience reports, large-scale evaluations, 
+best practices, and human factors to adoption.   
+  * Model-Based DevOps
+  * Domain-specific solutions in application domains, such as 
+    Automotive, CPS, IOT, Production, Quantum Computing, Avionics,
+    HealthCare, Energy, Robotics. 
+
+* MontiCore for Research Software Engineering
+
 * Low-Code / No-Code approaches based on MontiCore  
   * Languages for describing and deriving digital twins  
-  * Languages for non-engineering issues, such as science, legal, social, or environmental sustainability issues  
-  * DSLs engineered on the basis of GPLs and GPMLs (general-purpose languages)  
-* Model-based and model-driven techniques for AI  
-* AI-based methods for language engineering and modeling within the MontiCore ecosystem  
-* MontiCore languages in action: Academic and industrial application of MontiCore and its languages  
+  * Languages for non-engineering issues, such as science, legal, 
+    social, or environmental sustainability issues  
+  * DSLs engineered on the basis of GPMLs, like SysML and UML
 
-Presenters are encouraged to accompany their presentations with a **demo** or **reproduction package** that helps the participants to (easily) run and comprehend the presented tools, experiment with them, or tweak benchmark experiments. This helps to create a lasting contribution.  
+* AI-based methods for language engineering and modeling within the 
+MontiCore ecosystem  
 
-**Talk proposals should be submitted by August 30 via [easychair](ToDo).** A proposal includes a title and a short (maximum 200 words) abstract.  In case the talk is accompanied by a demo, we encourage presenters to also provide a brief demo outline as part of the proposal. Presenters will be granted a flexible schedule for their presentations from 15 to 60 minutes. Please include the intended presentation time within your abstract. Presenters may choose to follow a traditional presentation style where the Q&A is at the end of the talk, or they may follow a chess timer-based style. Notifications about acceptance will be sent out by September 06. 
+* MontiCore languages in action: Academic and industrial application of 
+MontiCore and its languages  
+  * SysML v2 parser advancements
+  * UMLP tooling
+  * MontiArc architecture tools
+  * MontiGem webapp development 
+
+Presenters are encouraged to accompany their presentations with a 
+**demo** or **reproduction package** that helps the participants to 
+(easily) run and comprehend the presented tools, experiment with them, 
+or tweak benchmark experiments. This helps to create a lasting 
+contribution.  
 
 ### Organization & Program Committee
 
@@ -51,17 +109,18 @@ Organizers:
 - Jérôme Pfeiffer, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart  
 
 Program Committee:  
-- Andreas Wortman, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart  
-- Jérôme Pfeiffer, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart  
 - Vincent Bertram, Software Engineering - RWTH Aachen  
 - Nico Jansen, Software Engineering - RWTH Aachen  
-
+- Jérôme Pfeiffer, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart  
+- Andreas Wortman, Institut für Steuerungstechnik der Werkzeugmaschinen und Fertigungseinrichtungen - Universität Stuttgart  
 
 All proposals will undergo light reviewing by the program committee.  
 
-In case you have any further questions, please contact: bertram@se-rwth.de 
+In case you have any further questions, please contact: 
+XXX symposium@monticore.de oder eine Funktionsadresse in Stuttgart (die an Sie weiterleitet?)?
+
 
 ---
 
-MontiCore Symposium is organized by [ISW Stuttgart](https://www.isw.uni-stuttgart.de/)
+This instance the MontiCore Symposium is organized by [ISW Stuttgart](https://www.isw.uni-stuttgart.de/)
 
