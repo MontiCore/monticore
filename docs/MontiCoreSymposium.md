@@ -32,8 +32,8 @@ tbd XXX (details follow via email).
 Participation is based on acceptance of an abstract or a full paper and 
 requires registration until **13th of September**. 
 
-Registration costs will be XXX Euros and includes accomodation, 
-conference fees and meals during the symposium as well as coordinated a 
+Registration costs will be XXX Euros and include accommodation, 
+conference fees, and meals during the symposium as well as coordinated a 
 bus transfer from Dusseldorf airport or Aachen and the venue.  
 
 ### Submission
