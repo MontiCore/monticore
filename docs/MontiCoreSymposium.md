@@ -122,5 +122,5 @@ XXX symposium@monticore.de oder eine Funktionsadresse in Stuttgart (die an Sie w
 
 ---
 
-This instance the MontiCore Symposium is organized by [ISW Stuttgart](https://www.isw.uni-stuttgart.de/)
+This instance of the MontiCore Symposium is organized by [ISW Stuttgart](https://www.isw.uni-stuttgart.de/)
 
