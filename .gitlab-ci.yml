@@ -157,7 +157,7 @@ checkMLCs:
   dependencies:
     - build
   script:
-    - "gradle checkArtifacts"
+    - "gradle checkArtifacts --max-workers=4"
   artifacts:
     name: mlcreports
     when: always
