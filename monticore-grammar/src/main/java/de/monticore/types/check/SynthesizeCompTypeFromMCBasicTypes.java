@@ -17,16 +17,16 @@ import java.util.List;
  * {@link ASTMCQualifiedType}, given that there is matching, resolvable
  * component symbol.
  */
-public class SynthComp4MCBasicTypes implements MCBasicTypesHandler {
+public class SynthesizeCompTypeFromMCBasicTypes implements MCBasicTypesHandler {
 
   protected MCBasicTypesTraverser traverser;
 
   /**
    * Common state with other visitors, if this visitor is part of a visitor composition.
    */
-  protected SynthCompResult resultWrapper;
+  protected CompTypeCheckResult resultWrapper;
 
-  public SynthComp4MCBasicTypes(@NonNull SynthCompResult resultWrapper) {
+  public SynthesizeCompTypeFromMCBasicTypes(@NonNull CompTypeCheckResult resultWrapper) {
     this.resultWrapper = Preconditions.checkNotNull(resultWrapper);
   }
 

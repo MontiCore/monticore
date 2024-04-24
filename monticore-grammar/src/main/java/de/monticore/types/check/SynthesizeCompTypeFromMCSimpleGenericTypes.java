@@ -24,22 +24,22 @@ import java.util.stream.Collectors;
  * {@link ASTMCBasicGenericType}, given that there is a matching resolvable
  * component symbol.
  */
-public class SynthComp4MCSimpleGenericTypes implements MCSimpleGenericTypesHandler {
+public class SynthesizeCompTypeFromMCSimpleGenericTypes implements MCSimpleGenericTypesHandler {
 
   protected MCSimpleGenericTypesTraverser traverser;
 
   /**
    * Common state with other visitors, if this visitor is part of a visitor composition.
    */
-  protected SynthCompResult resultWrapper;
+  protected CompTypeCheckResult resultWrapper;
 
   /**
    * Used to create {@link SymTypeExpression}s for the ast-representation of the generic component type's type.
    */
   protected ISynthesize typeSynth;
 
-  public SynthComp4MCSimpleGenericTypes(@NonNull SynthCompResult result,
-                                        @NonNull ISynthesize typeSynth) {
+  public SynthesizeCompTypeFromMCSimpleGenericTypes(@NonNull CompTypeCheckResult result,
+                                                    @NonNull ISynthesize typeSynth) {
     this.resultWrapper = result;
     this.typeSynth = typeSynth;
   }
