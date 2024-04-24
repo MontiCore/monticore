@@ -24,11 +24,11 @@ stages:
   - build
   - test
   - deploy
+  - mirror  
   - trigger_languages
   - sonar
   - report
   - check
-  - mirror
 
 build:
   stage: build
@@ -157,14 +157,13 @@ checkMLCs:
   dependencies:
     - build
   script:
-    - "gradle checkArtifacts"
+    - "gradle checkArtifacts --max-workers=4"
   artifacts:
     name: mlcreports
     when: always
     paths:
       - "**/target/reports/"
     expire_in: 1 week
-  allow_failure: true
   except:
     - master
 
@@ -250,14 +249,6 @@ trigger-montifun-dev:
   stage: trigger_languages
   trigger:
     project: monticore/languages/montifun
-    branch: dev
-  only:
-    - dev
-
-trigger-siunits-dev:
-  stage: trigger_languages
-  trigger:
-    project: monticore/languages/siunits
     branch: dev
   only:
     - dev
@@ -363,14 +354,6 @@ trigger-montifun-main:
   trigger:
     project: monticore/languages/montifun
     branch: main
-  only:
-    - master
-
-trigger-siunits-master:
-  stage: trigger_languages
-  trigger:
-    project: monticore/languages/siunits
-    branch: master
   only:
     - master
 

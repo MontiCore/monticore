@@ -80,5 +80,5 @@ public class AutomataToolTest {
     AutomataTool.main(new String[] {"-v"});
     assertTrue(Log.getFindings().isEmpty());
   }
-  
+
 }

@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.siunit;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+ * This grammar declares SI unit also as types 
+ * based on all the available SI unit definitions
+ *
+ * The definitions are fully compliant to the definitions given in
+ *   International Bureau of Weights and Measures (20 May 2019),
+ *   SI Brochure: The International System of Units (SI)
+ *   (9th ed.)
+ *
+ * With this definition an SI Unit such as "kg/m" 
+ * can also be used as type definition.
+ * Note that this form does not preclude a numeric type, such as "int" 
+ * or "float". Instead it assumes an (idealistic) mathematical 
+ * form of type definition for math. variables.
+ *
+ * An extension of the typecheck algorithms is available.
+ * The typecheck ensures correct typing of mathematical expressions. 
+ * 
+ */
+
+component grammar SIUnitTypes4Math extends
+        de.monticore.siunit.SIUnits,
+        de.monticore.types.MCBasicTypes  {
+
+  SIUnitType implements MCType =
+    "[" SIUnit "]";
+}

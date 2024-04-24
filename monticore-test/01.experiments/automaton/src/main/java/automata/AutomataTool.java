@@ -89,7 +89,7 @@ public class AutomataTool extends AutomataToolTOP {
         AutomataMill.globalScope().setFileExt("aut");
         IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
         // can be used for resolving things in the model
-        Optional<StateSymbol> aSymbol = modelTopScope.resolveState("Ping");
+        Optional<StateSymbol> aSymbol = modelTopScope.resolveState(ast.getName() + ".Ping");
         if (aSymbol.isPresent()) {
           Log.info("Resolved state symbol \"Ping\"; FQN = "
               + aSymbol.get().toString(),
@@ -130,7 +130,7 @@ public class AutomataTool extends AutomataToolTOP {
   @Override
   public ASTAutomaton parse(String model) {
     try {
-      AutomataParser parser = new AutomataParser() ;
+      AutomataParser parser = AutomataMill.parser() ;
       Optional<ASTAutomaton> optAutomaton = parser.parse(model);
 
       if (!parser.hasErrors() && optAutomaton.isPresent()) {

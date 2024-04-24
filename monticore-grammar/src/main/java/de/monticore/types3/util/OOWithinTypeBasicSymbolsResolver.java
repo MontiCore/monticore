@@ -53,7 +53,8 @@ public class OOWithinTypeBasicSymbolsResolver
       // checking for broken symbol table
       if (resolvedTypesUnmodified.stream().anyMatch(f ->
           !f.getType().hasTypeInfo() ||
-              f.getType().getTypeInfo() != thisType.getTypeInfo()
+              !f.getType().getTypeInfo().getFullName()
+                  .equals(thisType.getTypeInfo().getFullName())
       )) {
         Log.error("0xFDCC2 unexpected constructor return type(s) of type "
             + thisType.printFullName()

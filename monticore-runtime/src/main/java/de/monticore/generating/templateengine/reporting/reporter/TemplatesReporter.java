@@ -41,7 +41,6 @@ public class TemplatesReporter extends AReporter {
   
   protected void writeContent() {
     writeUsedTemplates();
-    writeUnusedTemplates();
     writeUsedUSTemplates();
     writeUnusedUSTemplates();
   }
@@ -52,15 +51,6 @@ public class TemplatesReporter extends AReporter {
     for (Entry<String, Integer> entry : templateCount.entrySet()) {
       String countString = entry.getValue() + "x";
       writeLine(countString + getIndentAfterCount(countString) + entry.getKey());
-    }
-  }
-  
-  protected void writeUnusedTemplates() {
-    writeLine("========================================================== Unused Templates");
-    SortedSet<String> unusedTemplateNames = new TreeSet<String>(repository.getAllTemplateNames());
-    unusedTemplateNames.removeAll(realTemplateNames);
-    for (String t : unusedTemplateNames) {
-      writeLine(t);
     }
   }
   
