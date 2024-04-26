@@ -4,7 +4,7 @@ package de.monticore.gradle.gen;
 import de.monticore.AmbiguityException;
 import de.monticore.cli.MontiCoreTool;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
-import de.monticore.grammar.MCGrammarSymbolTableHelperFix;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.mcbasics.MCBasicsMill;
 import de.se_rwth.commons.io.SyncDeIsolated;
@@ -46,7 +46,7 @@ public class MCToolInvoker {
       }
       throw newThrow;
     } finally {
-      MCGrammarSymbolTableHelperFix.cleanUp();
+      MCGrammarSymbolTableHelper.cleanUp();
       MCBasicsMill.globalScope().clear();
       MCBasicsMill.globalScope().clearLoadedFiles();
       MCBasicsMill.globalScope().getSymbolPath().close();
