@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("scopeName")}
-  if(delegate.isPresent()){
-    return lazyLoadDelegate().getEnclosingScope();
+  if (!checkLazyLoadDelegate()) {
+    return (${scopeName}) enclosingScope;
   }
-  return (${scopeName}) enclosingScope;
+  return lazyLoadDelegate().getEnclosingScope();

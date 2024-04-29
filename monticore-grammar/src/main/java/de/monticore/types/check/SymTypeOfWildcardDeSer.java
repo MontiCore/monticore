@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -30,11 +31,18 @@ public class SymTypeOfWildcardDeSer {
   }
 
   public SymTypeOfWildcard deserialize(JsonObject serialized) {
+    return deserialize(serialized, null);
+  }
+
+  /**
+   * @param enclosingScope can be null
+   */
+  public SymTypeOfWildcard deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasMember(SERIALIZED_BOUND)) {
       // isUpper == false iff. value is not serialized
       boolean isUpper = serialized.hasBooleanMember(SERIALIZED_ISUPPER);
       SymTypeExpression bound = SymTypeExpressionDeSer
-          .deserializeMember(SERIALIZED_BOUND, serialized);
+          .deserializeMember(SERIALIZED_BOUND, serialized, enclosingScope);
       return SymTypeExpressionFactory.createWildcard(isUpper, bound);
     }
     return SymTypeExpressionFactory.createWildcard();

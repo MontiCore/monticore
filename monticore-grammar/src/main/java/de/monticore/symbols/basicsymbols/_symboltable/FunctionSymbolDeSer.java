@@ -14,7 +14,14 @@ public class FunctionSymbolDeSer extends FunctionSymbolDeSerTOP {
 
   @Override
   public SymTypeExpression deserializeType(JsonObject symbolJson) {
-    return SymTypeExpressionDeSer.deserializeMember("type", symbolJson);
+    // support deprecated behavior
+    return deserializeType(null, symbolJson);
+  }
+
+  @Override
+  public SymTypeExpression deserializeType(
+      IBasicSymbolsScope scope, JsonObject symbolJson) {
+    return SymTypeExpressionDeSer.deserializeMember("type", symbolJson, scope);
   }
 
 }

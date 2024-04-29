@@ -71,6 +71,15 @@ public class BasicSymbolsSymbols2JsonTest {
 
     typeSpannedScope.add(variable);
 
+    //put second variable into spanned scope of type, using the typevar
+    VariableSymbol variable2 = BasicSymbolsMill.variableSymbolBuilder()
+        .setName("variable2")
+        .setEnclosingScope(type.getSpannedScope())
+        .setType(SymTypeExpressionFactory.createTypeVariable(t))
+        .build();
+
+    typeSpannedScope.add(variable2);
+
     //put Function function into spanned scope of type
     FunctionSymbol function = BasicSymbolsMill.functionSymbolBuilder()
         .setName("function")
@@ -133,6 +142,24 @@ public class BasicSymbolsSymbols2JsonTest {
     assertTrue(deserializedVariable.isPresent());
     assertEquals("double", variable.get().getType().print());
     assertEquals("double", deserializedVariable.get().getType().print());
+
+    //check for Variable variable2 in Type
+    Optional<VariableSymbol> variable2 = typeSpanned.resolveVariable("variable2");
+    Optional<VariableSymbol> deserializedVariable2 = deserTypeSpanned.resolveVariable("variable2");
+    assertTrue(variable2.isPresent());
+    assertTrue(deserializedVariable2.isPresent());
+    assertEquals("T", variable2.get().getType().print());
+    assertEquals("T", deserializedVariable2.get().getType().print());
+    assertEquals("Type.T", variable2.get().getType().printFullName());
+    assertEquals("Type.T", deserializedVariable2.get().getType().printFullName());
+    assertSame(
+        type.get().getSpannedScope(),
+        variable2.get().getType().getTypeInfo().getEnclosingScope()
+    );
+    assertSame(
+        deserializedType.get().getSpannedScope(),
+        deserializedVariable2.get().getType().getTypeInfo().getEnclosingScope()
+    );
 
     //check for Function function in Type
     Optional<FunctionSymbol> function = typeSpanned.resolveFunction("function");

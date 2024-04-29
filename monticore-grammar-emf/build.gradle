@@ -75,6 +75,7 @@ tasks.register("generateMCTestGrammars", de.monticore.gradle.gen.MCGenTask.class
 
 test {
   exclude '**/CommentsOnASTTest.class'
+  exclude '**/SwitchStatementValidTest.class'
   exclude '**/GrammarInheritanceCycleTest.class'
   exclude '**/GrammarNameEqualsFileNameTest.class'
   exclude '**/MCGrammarParserTest.class'

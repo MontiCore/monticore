@@ -20,6 +20,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -99,7 +100,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     ASTCDAttribute delegateAttribute = createDelegateAttribute(symbolFullName);
     
     ASTCDAttribute nameAttribute = createNameAttribute();
-    List<ASTCDMethod> nameMethods = methodDecorator.getAccessorDecorator().decorate(nameAttribute);
+    List<ASTCDMethod> nameMethods = Lists.newArrayList(createGetNameMethod());
     nameMethods.addAll(symbolSurrogateMethodDecorator.decorate(nameAttribute));
     
     ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(scopeInterfaceType);
@@ -147,7 +148,17 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeType) {
     return getCDAttributeFacade().createAttribute(PROTECTED.build(), scopeType, "enclosingScope");
   }
-  
+
+  protected ASTCDMethod createGetNameMethod() {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "String", "getName");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
+        "  if (!checkLazyLoadDelegate()) {\n" +
+            "    return name;\n" +
+            "  }\n" +
+            "  return lazyLoadDelegate().getName();"));
+    return method;
+  }
+
   protected ASTCDMethod createGetEnclosingScopeMethod(ASTCDAttribute enclosingScopeAttribute) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), enclosingScopeAttribute.getMCType(), "getEnclosingScope");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetEnclosingScopeSymbolSurrogate", symbolTableService.getScopeInterfaceSimpleName()));

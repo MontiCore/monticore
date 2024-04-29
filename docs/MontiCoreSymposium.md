@@ -25,7 +25,7 @@ solutions in the context of DSLs and model-based development.
 
 ### Location
 
-tbd XXX (details follow via email).
+The MontiCore symposium will be located in Germany. Exact location tbd.
 
 ### Participation
 
@@ -44,8 +44,7 @@ be found here. We ask for two types of contributions:
  [1] Research papers: 8 pages,
  [2] Vision abstracts: 1 page.
  
-Submissions must be uploaded through EasyChair in the following link 
-XXX https://easychair.org/conferences/?conf=monticore2024. 
+Submissions must be uploaded through [EasyChair via this link](https://easychair.org/conferences/?conf=mcles24). 
 
 It is planned to produce post-proceedings with extended and improved 
 versions of the papers as result of the symposium. 
@@ -117,7 +116,7 @@ Program Committee:
 All proposals will undergo light reviewing by the program committee.  
 
 In case you have any further questions, please contact: 
-XXX symposium@monticore.de oder eine Funktionsadresse in Stuttgart (die an Sie weiterleitet?)?
+monticoresymposium2024@listserv.uni-stuttgart.de 
 
 
 ---
