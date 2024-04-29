@@ -13,16 +13,11 @@ import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.ext.beans.BeansWrapper;
-import freemarker.template.SimpleHash;
-import freemarker.template.Template;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -502,14 +497,14 @@ public class TemplateController {
       config.addAlias(new Include2Alias());
       config.addAlias(new IncludeArgsAlias());
       config.addAlias(new SignatureAlias());
-      
+
       // Logging
       config.addAlias(new TraceAlias());
       config.addAlias(new DebugAlias());
       config.addAlias(new InfoAlias());
       config.addAlias(new WarnAlias());
       config.addAlias(new ErrorAlias());
-      
+
       // Global vars
       config.addAlias(new DefineGlobalVarAlias());
       config.addAlias(new ChangeGlobalVarAlias());
@@ -517,7 +512,7 @@ public class TemplateController {
       config.addAlias(new GetGlobalVarAlias());
       config.addAlias(new RequiredGlobalVarAlias());
       config.addAlias(new RequiredGlobalVarsAlias());
-      
+
       // Hookpoints
       config.addAlias(new BindHookPointAlias());
       config.addAlias(new DefineHookPointAlias());
@@ -542,29 +537,39 @@ public class TemplateController {
 
       SimpleHash d = config.getGlex().getGlobalData();
       Optional<TemplateModel> oldAst = Optional.empty();
-      if (d.containsKey(AST)) {
-        try {
+
+      try {
+        if (d.containsKey(AST)) {
           oldAst = Optional.ofNullable(d.get(AST));
-        } catch (TemplateModelException e) {
-
-          String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
-          Log.error("0xA0128 Globally defined data could not be passed to the called template "
-              + usage + ". ## This is an internal"
-              + "error that should not happen. Try to remove all global data. ##");
         }
-      }
-      d.put(AST, ast);
-      d.put(TC, tc);
-      d.put(GLEX, config.getGlex());
+        for (var key : d.toMap().keySet()) {
+          if (key instanceof String) {
+            tc.data.put((String) key, d.get((String) key));
+          }
+        }
+      } catch (TemplateModelException e) {
 
-      tc.data = d;
+        String usage = this.templatename != null ? " (" + this.templatename + ")" : "";
+        Log.error("0xA0128 Globally defined data could not be passed to the called template "
+            + usage + ". ## This is an internal"
+            + "error that should not happen. Try to remove all global data. ##");
+      }
+
+      d.put(TC, tc);
+      d.put(AST, ast);
+
+      tc.data.put(AST, ast);
+      tc.data.put(TC, tc);
+      tc.data.put(GLEX, config.getGlex());
       tc.arguments = newArrayList(passedArguments);
 
       // Run template with data to create output
-      config.getFreeMarkerTemplateEngine().run(ret, d, template);
+      config.getFreeMarkerTemplateEngine().run(ret, tc.data, template);
+
       if (oldAst.isPresent()) {
         d.put(AST, oldAst.get());
       }
+
     } else {
       // no template
       String usage = this.templatename != null ? " (used in " + this.templatename + ")" : "";
