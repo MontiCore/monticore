@@ -3,29 +3,20 @@ package de.monticore.codegen.mc2cd.transl;
 
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class ComponetTranslationTest {
+public class ComponetTranslationTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit componentCD;
 
   private ASTCDCompilationUnit nonComponentCD;
-
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @Before
   public void setUp() {

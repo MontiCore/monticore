@@ -7,12 +7,10 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -20,14 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * tests astextends and astimplements functionality at astrules
  */
-public class AstRuleInheritanceTest {
+public class AstRuleInheritanceTest extends TranslationTestCase {
 
   private ASTCDClass astA;
 
@@ -42,16 +38,7 @@ public class AstRuleInheritanceTest {
   private ASTCDClass astF;
 
   @Before
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @Before
   public void setUp() {
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
-
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRuleInheritance.mc4")).get();
 

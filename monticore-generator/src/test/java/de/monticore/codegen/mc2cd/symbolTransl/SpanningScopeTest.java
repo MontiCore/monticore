@@ -4,7 +4,8 @@ package de.monticore.codegen.mc2cd.symbolTransl;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 
 import de.se_rwth.commons.logging.Log;
@@ -18,21 +19,13 @@ import java.nio.file.Paths;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.*;
 
-public class SpanningScopeTest {
+public class SpanningScopeTest extends TranslationTestCase {
 
   /***
    * tests if in symbol cd the scope spanning symbols have the stereotype scope
    */
 
   private ASTCDCompilationUnit compilationUnit;
-
-  @Before
-  public void setup(){
-    LogStub.init();
-    Log.enableFailQuick(false);
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
-  }
 
   @Before
   public void setUp() {

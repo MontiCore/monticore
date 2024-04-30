@@ -4,11 +4,9 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -16,19 +14,12 @@ import java.nio.file.Paths;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.*;
 
-public class LeftRecursiveTranslationTest {
+public class LeftRecursiveTranslationTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit leftRecursive;
 
   @Before
-  public void setup(){
-    Log.init();
-    Log.enableFailQuick(false);
-    GrammarFamilyMill.init();
-  }
-
-  @Before
-  public void setUp() {
+  public void setUpLeftRecursiveTranslationTest() {
     leftRecursive = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/LeftRecursiveProd.mc4")).get();
   }

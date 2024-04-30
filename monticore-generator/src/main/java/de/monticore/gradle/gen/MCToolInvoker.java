@@ -5,7 +5,7 @@ import de.monticore.AmbiguityException;
 import de.monticore.cli.MontiCoreTool;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.mcbasics.MCBasicsMill;
 import de.se_rwth.commons.io.SyncDeIsolated;
 import de.se_rwth.commons.logging.Log;
@@ -50,7 +50,7 @@ public class MCToolInvoker {
       MCBasicsMill.globalScope().clear();
       MCBasicsMill.globalScope().clearLoadedFiles();
       MCBasicsMill.globalScope().getSymbolPath().close();
-      GrammarFamilyMill.reset();
+      Grammar_WithConceptsMill.reset();
     }
   }
 }

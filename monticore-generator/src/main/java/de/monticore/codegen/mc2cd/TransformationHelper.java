@@ -23,15 +23,12 @@ import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
-import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.JavaNamesHelper;
@@ -77,7 +74,7 @@ public final class TransformationHelper {
     } else if (type instanceof ASTMCArrayType) {
       return ((ASTMCArrayType) type).printTypeWithoutBrackets();
     }
-    return type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+    return Grammar_WithConceptsMill.prettyPrint(type, false);
   }
 
   public static String simpleName(ASTMCType type) {
@@ -87,7 +84,7 @@ public final class TransformationHelper {
     } else if (type instanceof ASTMCArrayType) {
       name = ((ASTMCArrayType) type).printTypeWithoutBrackets();
     } else {
-      name = type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+      name = Grammar_WithConceptsMill.prettyPrint(type, false);
     }
     return Names.getSimpleName(name);
   }
@@ -339,7 +336,7 @@ public final class TransformationHelper {
     if (typeSymbol.isPresent()) {
       return Names.getQualifier(typeSymbol.get().getFullName()) + "." + AST_PREFIX + typeSymbol.get().getName();
     } else {
-      return type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+      return Grammar_WithConceptsMill.prettyPrint(type, false);
     }
   }
 
@@ -514,7 +511,7 @@ public final class TransformationHelper {
 
   public static List<ASTRuleComponent> getAllComponents(ASTGrammarNode node) {
     CollectRuleComponents cv = new CollectRuleComponents();
-    GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
     traverser.add4Grammar(cv);
     node.accept(traverser);
     return cv.getRuleComponents();

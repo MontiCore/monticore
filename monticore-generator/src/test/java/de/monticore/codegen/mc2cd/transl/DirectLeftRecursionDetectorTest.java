@@ -2,18 +2,17 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import parser.MCGrammarParser;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -25,23 +24,16 @@ import static org.junit.Assert.assertTrue;
  * Tests the helper class on a concrete grammar containing left recursive and normal rules.
  *
  */
-public class DirectLeftRecursionDetectorTest {
+public class DirectLeftRecursionDetectorTest extends TranslationTestCase {
 
   private Optional<ASTMCGrammar> astMCGrammarOptional;
   
   private DirectLeftRecursionDetector directLeftRecursionDetector = new DirectLeftRecursionDetector();
 
   @Before
-  public void setUp(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setup() {
+  public void setup() throws IOException {
     final Path modelPath = Paths.get("src/test/resources/mc2cdtransformation/DirectLeftRecursionDetector.mc4");
-    astMCGrammarOptional = MCGrammarParser.parse(modelPath);;
+    astMCGrammarOptional =Grammar_WithConceptsMill.parser().parse(modelPath.toString());;
     assertTrue(astMCGrammarOptional.isPresent());
   }
 

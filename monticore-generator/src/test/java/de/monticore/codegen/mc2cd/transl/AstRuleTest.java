@@ -6,11 +6,9 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -24,20 +22,14 @@ import static org.junit.Assert.assertTrue;
 /**
  * this test checks the addition of attributes with astrules
  */
-public final class AstRuleTest {
+public final class AstRuleTest extends TranslationTestCase {
 
-  private final ASTCDClass astC;
+  private ASTCDClass astC;
 
-  private final ASTCDClass impl;
+  private ASTCDClass impl;
 
   @Before
-  public void setup() {
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  public AstRuleTest() {
+  public void setUpASTRuleTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRule.mc4")).get();
     astC = TestHelper.getCDClass(cdCompilationUnit, "ASTC").get();

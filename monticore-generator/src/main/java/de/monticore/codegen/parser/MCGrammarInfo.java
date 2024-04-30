@@ -1,11 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.grammar;
+package de.monticore.codegen.parser;
 
 import com.google.common.collect.*;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.codegen.parser.ParserGeneratorHelper;
+import de.monticore.grammar.DirectLeftRecursionDetector;
+import de.monticore.grammar.LexNamer;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
+import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTConceptAntlr;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.*;
