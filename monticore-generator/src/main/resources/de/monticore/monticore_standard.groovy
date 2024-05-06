@@ -19,13 +19,13 @@ package de.monticore
 // ############################################################
 // M1: Basic setup and initialization
 // M1.1: Logging
-Log.info("--------------------------------", LOG_ID)
-Log.info("MontiCore", LOG_ID)
-Log.info(" - eating your models since 2005", LOG_ID)
-Log.info("--------------------------------", LOG_ID)
+Log.debug("--------------------------------", LOG_ID)
+Log.debug("MontiCore", LOG_ID)
+Log.debug(" - eating your models since 2005", LOG_ID)
+Log.debug("--------------------------------", LOG_ID)
 Log.debug("Grammar argument    : "
         + _configuration.getGrammarsAsStrings(), LOG_ID)
-Log.debug("Grammar files       : " + grammars, LOG_ID)
+Log.info("Grammar files       : " + grammars, LOG_ID)
 Log.debug("Modelpath           : " + modelPath, LOG_ID)
 Log.debug("handcoded modelpath : " + modelPathHC, LOG_ID)
 Log.debug("Output dir          : " + out, LOG_ID)
