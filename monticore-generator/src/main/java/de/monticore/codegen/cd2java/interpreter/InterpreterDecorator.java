@@ -143,7 +143,7 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
     ASTCDMethod getter = cdMethodFacade.createMethod(
         PUBLIC.build(),
-        String.format("Map<%s, %s>", SYMBOL_FULLNAME, VALUE_FULLNAME),
+        mcTypeFacade.createMapTypeOf(SYMBOL_FULLNAME, VALUE_FULLNAME),
         "getContextMap");
     this.replaceTemplate(EMPTY_BODY, getter, new StringHookPoint("return this.contextMap;"));
     members.add(getter);

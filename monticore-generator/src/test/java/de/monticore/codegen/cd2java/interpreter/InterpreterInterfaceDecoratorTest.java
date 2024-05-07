@@ -6,6 +6,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -41,10 +43,13 @@ public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testSuperInterfaces() {
-    String interfaces = decoratedInterface.printInterfaces();
-    String[] i = interfaces.split(" ");
-    assertEquals(i[0], InterpreterConstants.MODELINTERPRETER_FULLNAME);
-    assertEquals(i[1], "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter");
+    List<ASTMCObjectType> interfaces = decoratedInterface.getInterfaceList();
+    assertEquals(
+        ((ASTMCQualifiedType) interfaces.get(0)).getMCQualifiedName().getQName(),
+        InterpreterConstants.MODELINTERPRETER_FULLNAME);
+    assertEquals(
+        ((ASTMCQualifiedType) interfaces.get(1)).getMCQualifiedName().getQName(),
+        "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter");
   }
 
   @Test
@@ -54,11 +59,14 @@ public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
         .filter(m -> m.getName().equals("interpret"))
         .collect(Collectors.toList());
 
-    interpretMethods.forEach(m -> {
-      assertEquals(1, m.getCDParameterList().size());
-      assertEquals("node", m.getCDParameter(0).getName());
-      assertEquals(InterpreterConstants.VALUE_FULLNAME, m.getMCReturnType().printType());
-    });
+    assertEquals(1, interpretMethods.size());
+    ASTCDMethod method = interpretMethods.get(0);
+
+    assertEquals(1, method.getCDParameterList().size());
+    assertEquals("node", method.getCDParameter(0).getName());
+    assertEquals(InterpreterConstants.VALUE_FULLNAME, method.getMCReturnType().printType());
+
+    assertTrue(method.getModifier().isAbstract());
   }
 
   @After
