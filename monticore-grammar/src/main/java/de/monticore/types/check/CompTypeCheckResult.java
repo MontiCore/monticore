@@ -10,7 +10,7 @@ import java.util.Optional;
  * Wraps a {@link CompKindExpression} (if present). This class is used as a common state for composed visitors that
  * implement {@link ISynthesizeComponent}.
  */
-public class SynthCompResult {
+public class CompTypeCheckResult {
 
   protected CompKindExpression result = null;
 

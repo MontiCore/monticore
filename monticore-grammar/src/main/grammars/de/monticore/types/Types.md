@@ -17,6 +17,9 @@ the following language components:
 * [`MCArrayTypes`](MCArrayTypes.mc4)
 * [`MCFunctionTypes`](MCFunctionTypes.mc4)
 * [`MCStructuralTypes`](MCStructuralTypes.mc4)
+* [`SIUnitTypes4Math`](../siunit/SIUnitTypes4Math.mc4)
+* [`SIUnitTypes4Computing`](../siunit/SIUnitTypes4Computing.mc4)
+* [`RegExType`](../regex/RegExType.mc4)
  
 ## [`MCBasicTypes`](MCBasicTypes.mc4)
 
@@ -85,6 +88,24 @@ like the union type `Foo | Bar` which is the type that is "`Foo` or `Bar`".
 As structural types are orthogonal to other kinds of types,
 `MCStructuralTypes` can be combined with any of the above
 language components.
+
+## [`SIUnitTypes4Math`](../siunit/SIUnitTypes4Math.mc4)
+
+When using this language component,
+SI unit types like `[km/h]` become expressible.
+The documentation can be found in [`SIUnits`](../siunit/SIUnits.md).
+
+## [`SIUnitTypes4Computing`](../siunit/SIUnitTypes4Computing.mc4)
+
+When using this language component,
+SI unit types like `[km/h]<int>` become expressible.
+The documentation can be found in [`SIUnits`](../siunit/SIUnits.md).
+
+## [`RegExType`](../regex/RegExType.mc4) 
+
+When using this language component,
+RegEx types like `R"H(a|e)llo"` become expressible.
+This is documented in [`RegEx`](../regex/RegEx.md).
 
 ## Further Information
 

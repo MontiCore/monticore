@@ -54,14 +54,14 @@ public class SymTypeRelations {
   }
 
   /**
-   * whether the assignee can be assigned to by the assigner,
+   * whether the target can be assigned to by the source,
    * e.g., assignment operator: x = 2,
    * -> type of x and type of 2 need to be compatible,
    * e.g., functions call: (float -> void)(2),
    * -> float and type of 2 need to be compatible
    */
-  public static boolean isCompatible(SymTypeExpression assignee, SymTypeExpression assigner) {
-    return compatibilityDelegate.isCompatible(assignee, assigner);
+  public static boolean isCompatible(SymTypeExpression target, SymTypeExpression source) {
+    return compatibilityDelegate.isCompatible(target, source);
   }
 
   /**

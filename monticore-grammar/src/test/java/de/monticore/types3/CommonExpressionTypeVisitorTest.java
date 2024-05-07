@@ -68,6 +68,10 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("2147483647 + 0", "int"); // expected int and provided int
     checkExpr("varchar + varchar", "int"); // + applicable to char, char, result is int
     checkExpr("3 + \"Hallo\"", "String"); // example with String
+    checkExpr("1m + 1m", "[m]<int>");
+    checkExpr("1m + 1.0m", "[m]<double>");
+    checkExpr("1m^2 + 1m^2", "[m^2]<int>");
+    checkExpr("1m + 1km", "[m]<int>");
   }
 
   @Test
@@ -133,6 +137,9 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = 0.1 + 1l", "0xA0179"); // expected long but provided double
     checkErrorExpr("varfloat = 0.1f + 0.1", "0xA0179"); // expected float but provided double
     checkErrorExpr("varfloat = 0.1 + 0.1f", "0xA0179"); // expected float but provided double
+    checkErrorExpr("1m + 1", "0xB0163");
+    checkErrorExpr("1 + 1m", "0xB0163");
+    checkErrorExpr("1m + 1s", "0xB0163");
   }
 
   @Test
@@ -148,6 +155,10 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong - varlong", "long"); // - applicable to long, long, result is long
     checkExpr("varfloat - varfloat", "float"); // - applicable to float, float, result is float
     checkExpr("vardouble - vardouble", "double"); // - applicable to double, double, result is double
+    checkExpr("1m - 1m", "[m]<int>");
+    checkExpr("1m - 1.0m", "[m]<double>");
+    checkExpr("1m^2 - 1m^2", "[m^2]<int>");
+    checkExpr("1m - 1km", "[m]<int>");
   }
 
   @Test
@@ -206,6 +217,9 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = 0.1 - 1l", "0xA0179"); // expected long but provided double
     checkErrorExpr("varfloat = 0.1f - 0.1", "0xA0179"); // expected float but provided double
     checkErrorExpr("varfloat = 0.1 - 0.1f", "0xA0179"); // expected float but provided double
+    checkErrorExpr("1m - 1", "0xB0163");
+    checkErrorExpr("1 - 1m", "0xB0163");
+    checkErrorExpr("1m - 1s", "0xB0163");
   }
 
   @Test
@@ -220,6 +234,13 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong * varlong", "long"); // * applicable to long, long, result is long
     checkExpr("varfloat * varfloat", "float"); // * applicable to float, float, result is float
     checkExpr("vardouble * vardouble", "double"); // * applicable to double, double, result is double
+    checkExpr("1m * 1m", "[m^2]<int>");
+    checkExpr("1m * 1.0m", "[m^2]<double>");
+    checkExpr("1m^2 * 1m", "[m^3]<int>");
+    checkExpr("1m * 1km", "[m^2]<int>");
+    checkExpr("1m * 1", "[m]<int>");
+    checkExpr("1 * 1m", "[m]<int>");
+    checkExpr("1m * 1s", "[m^1s]<int>");
   }
 
   @Test
@@ -275,6 +296,13 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varchar = 0.1f * 1", "0xA0179"); // expected char but provided float
     checkErrorExpr("varchar = 1 * 0.1", "0xA0179"); // expected char but provided double
     checkErrorExpr("varchar = 0.1 * 1", "0xA0179"); // expected char but provided double
+    checkExpr("1m * 1m", "[m^2]<int>");
+    checkExpr("1m * 1.0m", "[m^2]<double>");
+    checkExpr("1m^2 * 1m", "[m^3]<int>");
+    checkExpr("1m * 1km", "[m^2]<int>");
+    checkExpr("1m * 1", "[m]<int>");
+    checkExpr("1 * 1m", "[m]<int>");
+    checkExpr("1m * 1s", "[m^1s]<int>");
   }
 
   @Test
@@ -288,6 +316,14 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong / varlong", "long"); // / applicable to long, long, result is long
     checkExpr("varfloat / varfloat", "float"); // / applicable to float, float, result is float
     checkExpr("vardouble / vardouble", "double"); // / applicable to double, double, result is double
+    checkExpr("1m / 1m", "int");
+    checkExpr("1m / 1.0m", "double");
+    checkExpr("1m^2 / 1m", "[m]<int>");
+    checkExpr("1m / 1km", "int");
+    checkExpr("1m / 1", "[m]<int>");
+    checkExpr("1 / 1m", "[1/m]<int>");
+    checkExpr("1m / 1s", "[m/s]<int>");
+    checkExpr("1m^1s / 1s", "[m]<int>");
   }
 
   @Test
@@ -356,6 +392,10 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong % varlong", "long"); // % applicable to long, long, result is long
     checkExpr("varfloat % varfloat", "float"); // % applicable to float, float, result is float
     checkExpr("vardouble % vardouble", "double"); // % applicable to double, double, result is double
+    checkExpr("1m % 1m", "[m]<int>");
+    checkExpr("1m % 1.0m", "[m]<double>");
+    checkExpr("1m^2 % 1m^2", "[m^2]<int>");
+    checkExpr("1m % 1km", "[m]<int>");
   }
 
   @Test
@@ -408,6 +448,9 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = 0.1 % 1l", "0xA0179"); // expected long but provided double
     checkErrorExpr("varfloat = 0.1f % 0.1", "0xA0179"); // expected float but provided double
     checkErrorExpr("varfloat = 0.1 % 0.1f", "0xA0179"); // expected float but provided double
+    checkErrorExpr("1m % 1", "0xB0163");
+    checkErrorExpr("1 % 1m", "0xB0163");
+    checkErrorExpr("1m % 1s", "0xB0163");
   }
 
   @Test
@@ -461,6 +504,8 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("vardouble <= varlong", "boolean"); // <= applicable to double, long, result is boolean
     checkExpr("vardouble <= varfloat", "boolean"); // <= applicable to double, float, result is boolean
     checkExpr("vardouble <= vardouble", "boolean"); // <= applicable to double, double, result is boolean
+    checkExpr("1m <= 1m", "boolean");
+    checkExpr("1m <= 1km", "boolean");
   }
 
   @Test
@@ -486,6 +531,8 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = varlong <= varlong", "0xA0179"); // expected long but provided boolean
     checkErrorExpr("varfloat = varfloat <= varfloat", "0xA0179"); // expected float but provided boolean
     checkErrorExpr("vardouble = vardouble <= vardouble", "0xA0179"); // expected double but provided boolean
+    checkErrorExpr("1m <= 1s", "0xB0167");
+    checkErrorExpr("1m <= 1", "0xB0167");
   }
 
   @Test
@@ -539,6 +586,8 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("vardouble >= varlong", "boolean"); // >= applicable to double, long, result is boolean
     checkExpr("vardouble >= varfloat", "boolean"); // >= applicable to double, float, result is boolean
     checkExpr("vardouble >= vardouble", "boolean"); // >= applicable to double, double, result is boolean
+    checkExpr("1m >= 1m", "boolean");
+    checkExpr("1m >= 1km", "boolean");
   }
 
   @Test
@@ -564,6 +613,8 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = varlong >= varlong", "0xA0179"); // expected long but provided boolean
     checkErrorExpr("varfloat = varfloat >= varfloat", "0xA0179"); // expected float but provided boolean
     checkErrorExpr("vardouble = vardouble >= vardouble", "0xA0179"); // expected double but provided boolean
+    checkErrorExpr("1m >= 1s", "0xB0167");
+    checkErrorExpr("1m >= 1", "0xB0167");
   }
 
   @Test
@@ -617,6 +668,8 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("vardouble < varlong", "boolean"); // < applicable to double, long, result is boolean
     checkExpr("vardouble < varfloat", "boolean"); // < applicable to double, float, result is boolean
     checkExpr("vardouble < vardouble", "boolean"); // < applicable to double, double, result is boolean
+    checkExpr("1m < 1m", "boolean");
+    checkExpr("1m < 1km", "boolean");
   }
 
   @Test
@@ -642,6 +695,8 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = varlong < varlong", "0xA0179"); // expected long but provided boolean
     checkErrorExpr("varfloat = varfloat < varfloat", "0xA0179"); // expected float but provided boolean
     checkErrorExpr("vardouble = vardouble < vardouble", "0xA0179"); // expected double but provided boolean
+    checkErrorExpr("1m < 1s", "0xB0167");
+    checkErrorExpr("1m < 1", "0xB0167");
   }
 
   @Test
@@ -695,6 +750,8 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("vardouble > varlong", "boolean"); // > applicable to double, long, result is boolean
     checkExpr("vardouble > varfloat", "boolean"); // > applicable to double, float, result is boolean
     checkExpr("vardouble > vardouble", "boolean"); // > applicable to double, double, result is boolean
+    checkExpr("1m > 1m", "boolean");
+    checkExpr("1m > 1km", "boolean");
   }
 
   @Test
@@ -720,6 +777,8 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = varlong > varlong", "0xA0179"); // expected long but provided boolean
     checkErrorExpr("varfloat = varfloat > varfloat", "0xA0179"); // expected float but provided boolean
     checkErrorExpr("vardouble = vardouble > vardouble", "0xA0179"); // expected double but provided boolean
+    checkErrorExpr("1m > 1s", "0xB0167");
+    checkErrorExpr("1m > 1", "0xB0167");
   }
 
   @Test
@@ -775,6 +834,8 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("vardouble == vardouble", "boolean"); // == applicable to double, double, result is boolean
     checkExpr("student1 == student2", "boolean"); // example with two objects of the same class
     checkExpr("person1 == student1", "boolean"); // example with two objects in sub-supertype relation
+    checkExpr("1m == 1m", "boolean");
+    checkExpr("1m == 1km", "boolean");
   }
 
   @Test
@@ -801,6 +862,8 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varfloat = varfloat == varfloat", "0xA0179"); // expected float but provided boolean
     checkErrorExpr("vardouble = vardouble == vardouble", "0xA0179"); // expected double but provided boolean
     checkErrorExpr("person1==varboolean", "0xB0166");
+    checkErrorExpr("1m == 1s", "0xB0166");
+    checkErrorExpr("1m == 1", "0xB0166");
   }
 
   @Test
@@ -856,6 +919,8 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("vardouble != vardouble", "boolean"); // != applicable to double, double, result is boolean
     checkExpr("person1!=person2", "boolean"); // example with two objects of the same class
     checkExpr("student2!=person2", "boolean"); //example with two objects in sub-supertype relation
+    checkExpr("1m != 1m", "boolean");
+    checkExpr("1m != 1km", "boolean");
   }
 
   @Test
@@ -882,6 +947,8 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("aFloat = aFloat != aFloat", "0xFD118"); // expected float but provided boolean
     checkErrorExpr("aDouble = aDouble != aDouble", "0xFD118"); // expected double but provided boolean
     checkErrorExpr("person1!=varboolean", "0xB0166"); // person1 is a Person, foo is a boolean
+    checkErrorExpr("1m != 1s", "0xB0166");
+    checkErrorExpr("1m != 1", "0xB0166");
   }
 
   @Test
@@ -963,6 +1030,7 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = varboolean && varboolean", "0xA0179"); // expected long but provided boolean
     checkErrorExpr("varfloat = varboolean && varboolean", "0xA0179"); // expected float but provided boolean
     checkErrorExpr("vardouble = varboolean && varboolean", "0xA0179"); // expected double but provided boolean
+    checkErrorExpr("1m && 1m", "0xB0113");
   }
 
   @Test
@@ -1044,6 +1112,7 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varlong = varboolean || varboolean", "0xA0179"); // expected long but provided boolean
     checkErrorExpr("varfloat = varboolean || varboolean", "0xA0179"); // expected float but provided boolean
     checkErrorExpr("vardouble = varboolean || varboolean", "0xA0179"); // expected double but provided boolean
+    checkErrorExpr("1m || 1m", "0xB0113");
   }
 
   @Test
@@ -1070,6 +1139,7 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("!varlong", "0xB0164"); // ! not applicable to long
     checkErrorExpr("!varfloat", "0xB0164"); // ! not applicable to float
     checkErrorExpr("!vardouble", "0xB0164"); // ! not applicable to double
+    checkErrorExpr("!1m", "0xB0164");
   }
 
   @Test

@@ -297,8 +297,9 @@ includes:
     possibility to configure the mills is crucial for reusing the
     functionality implemented for a sublanguage (cf. Section 5.9, 
     Section 5.10.2, and Section 11.5 for details).</li>
-<li> a <em>code generating framework</em> that extends the FreeMarker template
-    engine <a href="#Fre21">[Fre21]</a> by various modularity enhancing features.</li>
+<li> a <em>code generating framework</em> that extends the 
+    <a href="https://freemarker.apache.org/">FreeMarker</a> template
+    engine by various modularity enhancing features.</li>
 </ul>
 
 </div>
@@ -356,10 +357,12 @@ executing of the following steps:
         based on ANTLR (cf. [Chapter 6 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out/automata/_symboltable` containing the infrastructure for the symbol
         table (cf. [Chapter 6 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
+    -   `out/automata/_utils` containing infrastructure for typecasting and 
+    identifying subtypes of ast nodes, symbols, and scopes.
     -   `out/automata/_visitor` containing the infrastructure for visitors
-        (cf. [Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
+      (cf. [Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook.pdf)).
     -   `out/reports/automata` containing reports created during the
-        processing of the grammar.
+      processing of the grammar.
 3.  The output directory also contains a log file of the executed
     generation process with the generation time in its name.
 
@@ -1310,13 +1313,6 @@ MontiCore in IntelliJ IDEA, your workspace should look similar to Figure 2.28.
 ![](https://github.com/MontiCore/monticore/raw/opendev/docs/docs/IntelliJ-IDEA.png)
 <figcaption>Figure 2.28: IntelliJ IDEA after importing
 the example project and executing MontiCore</figcaption>
-
-<table>
-  <tr id="Fre21">
-    <td>Fre21</td>
-    <td>FreeMarker website. https://freemarker.apache.org/, 2021.</td>
-  </tr>
-</table>
 
 ## Using MontiCore with GitPod
 

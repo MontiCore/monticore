@@ -34,6 +34,7 @@ packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
 * `de.monticore.expressions`
 * `de.monticore.literals`
 * `de.monticore.regex`
+* `de.monticore.siunit`
 * `de.monticore.statements`
 * `de.monticore.symbols`
 * `de.monticore.types`
@@ -70,7 +71,7 @@ other. Some snipets for type definitions:
     MCFunctionTypes   Foo->Bar  (Foo, Bar)->Foo
     MCStructuralTypes Foo|Bar  Foo&Bar
                       (Foo, Bar)  (Foo)
-    SI Unit types     km/h  km/h<long>
+    SI Unit types     [km/h]  [km/h]<long>
     RegExType         R"[a-z][0-9*]"
   
 
@@ -135,29 +136,25 @@ thus be combined with any of the above grammars.
   They allow to represent types not representable otherwise, e.g., `(A|B) -> C`.
 * They may be combined with any of the grammars above.
 
-### [SIUnitTypes4Math.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
+### [SIUnitTypes4Math.mc4](siunit/SIUnitTypes4Math.mc4) for Physical SI Units (stable)
 
 The known units `s, m, kg, A, K, mol, cd` from the international system of 
-units (SI Units) and  their combinations, such as `km/h` or `mg`, etc. can 
+units (SI Units) and their combinations, such as `km/h` or `mg`, etc. can 
 be used as ordinary types (instead of only numbers). 
-The typecheck is extended to prevent e.g. assignment of a weight to a length 
-variable or to add appropriate conversion, e.g. when a `km/h`-based velocity is 
-e.g. stored in a `m/s`-based variable.
+The typecheck is extended to prevent, e.g., assignment of a weight to a length 
+variable or to add appropriate conversion, e.g., when a `km/h`-based velocity is, 
+e.g., stored in a `m/s`-based variable.
 
-The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
+* Example type definitions: `[km/h]`
 
-* Example type definitions: `km/h`
+### [SIUnitTypes4Computing.mc4](siunit/SIUnitTypes4Computing.mc4) for Physical SI Units (stable)
 
-### [SIUnitTypes4Computing.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
-
-Includes the types from `SIUnitTypes4Math`(see above), like `km/h`, but also allows to add a
-resolution, such as `km/h<int>`. Here SI Unit types, 
-like `km/h<.>`, are used as generic type constructor that may take a number type,
+Includes the types from `SIUnitTypes4Math`(see above), like `[km/h]`, but also allows to add a
+resolution, such as `[km/h]<int>`. Here SI Unit types, 
+like `[km/h]<.>`, are used as generic type constructor that may take a number type,
 such as `int`, `long`, `double`, `float` as argument.
 
-The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
-
-* Example type definitions: `km/h<long>`
+* Example type definitions: `[km/h]<long>`
 
 ### [RegExType.mc4](regex/RegExType.mc4) (stable)
 
@@ -254,30 +251,27 @@ expressions.
 like <<, >>, >>>, &, ^ and |
 
 
-### [OCLExpressions.mc4][OCL-OCLExpressions] (stable)
+### [OCLExpressions.mc4](ocl/OCLExpressions.mc4) (stable)
 * This grammar defines expressions typical to UMLs OCL .
   OCL expressions can savely be composed if with other forms of expressions  
   given in the MontiCore core project (i.e. as conservative extension).
 * It contains various logical operations, such as quantifiers, 
   the `let` and the `@pre` construct, and a transitive closure for 
   associations, as discussed in [Rum17,Rum17].
-* This grammar resides in the [MontiCore/OCL][OCL] project.
 
-### [SetExpressions.mc4][OCL-SetExpressions] (stable)
+### [SetExpressions.mc4](ocl/SetExpressions.mc4) (stable)
 * This grammar defines set expressions like set union, intersection etc.
 these operations are typical for a logic with set operations, like 
 UML's OCL. These operators are usually infix and are thus more intuitive
 as they allow math oriented style of specification.
 * Most of these operators are in principle executable, so it might be interesting to include them in a high level programming language (see e.g. Haskell)
-* This grammar resides in the [MontiCore/OCL][OCL] project.
 
 
-### [OptionalOperators.mc4][OCL-OptionalOperators] (stable)
+### [OptionalOperators.mc4](ocl/OptionalOperators.mc4) (stable)
 * This grammar defines nine operators dealing with optional values, e.g. defined by 
   `java.lang.Optional`. The operators are also called *Elvis operators*.
 * E.g.: `val ?: 42`     equals to   `val.isPresent() ? val.get() : 42`
 * `x ?>= y` equals `x.isPresent() ? x.get() >= y : false` 
-* This grammar resides in the [MontiCore/OCL][OCL] project.
 
 
 ### [LambdaExpressions.mc4](expressions/LambdaExpressions.mc4) (stable)
@@ -303,7 +297,6 @@ as they allow math oriented style of specification.
 * The SI Unit grammar provides an extension to expressions, but also to the 
   typing system, e.g. types such as `km/h` or `km/h<long>`,
   and literals, such as e.g. `5.3 km/h`.
-* The grammars reside in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project
 
 
 ### [JavaClassExpressions.mc4](expressions/JavaClassExpressions.mc4) (stable)
@@ -359,11 +352,10 @@ various forms of literals.
 * Like above `getValue()` and `getSource()` allow to retrive the content
   as value resp. as text string.
 
-### [SIUnitLiterals.mc4](https://git.rwth-aachen.de/monticore/languages/siunits) for Physical SI Units (stable)
+### [SIUnitLiterals.mc4](siunit/SIUnitLiterals.mc4) for Physical SI Units (stable)
 
 Provides concrete values, such as `5.3 km/h`or `7 mg` for the international system of 
 units (SI Units). 
-The grammar resides in the [MontiCore/SIunits](https://github.com/MontiCore/siunits/blob/master/src/main/grammars/de/monticore/SIUnits.md) project.
 
 
 ## Statements: List of Grammars in package `de.monticore.statements`
@@ -423,7 +415,7 @@ is inspired by Java (actually subset of Java). Some example statements:
 
 several other grammars are also available:
 
-### [RegularExpressions.mc4](https://git.rwth-aachen.de/monticore/languages/regex) (stable)
+### [RegularExpressions.mc4](regex/RegularExpressions.mc4) (stable)
 * This grammar defines regular expressions (RegEx) as used in Java (see e.g. `java.util.regex.Pattern`).
 * It provides common regex tokens such as 
   * character classes, e.g., lowercase letters (`[a-z]`), the letters a, b, 
@@ -439,7 +431,6 @@ several other grammars are also available:
   the nonterminal `RegularExpression` is can be used in aother places of a language
   e.g. we do that as additional 
   restriction for String values in input/output channels in architectural langages.
-* This grammar resides in the [MontiCore/RegEx][RegEx] project
 
 ### [Cardinality.mc4](Cardinality.mc4) (stable)
 * This grammar defines UML Cardinalities of forms ``*``, ``[n..m]`` or ``[n..*]``.
@@ -524,10 +515,3 @@ grammars:
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-
-<!-- Links to other sites-->
-[RegEx]: https://git.rwth-aachen.de/monticore/languages/regex
-[OCL]: https://git.rwth-aachen.de/monticore/languages/OCL
-[OCL-OCLExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OCLExpressions.mc4
-[OCL-OptionalOperators]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/OptionalOperators.mc4
-[OCL-SetExpressions]: https://git.rwth-aachen.de/monticore/languages/OCL/-/blob/develop/src/main/grammars/de/monticore/ocl/SetExpressions.mc4

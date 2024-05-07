@@ -5,12 +5,15 @@ package de.monticore.generating.templateengine;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNodeMock;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.FileReaderWriterMock;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import freemarker.core._TemplateModelException;
 import freemarker.template.Template;
+import freemarker.template.TemplateModelException;
 import org.junit.*;
 
 import java.io.File;
@@ -37,7 +40,7 @@ public class TemplateControllerTest {
   private FreeMarkerTemplateEngineMock freeMarkerTemplateEngine;
 
   private FileReaderWriterMock fileHandler;
-  
+
   @Before
   public void before() {
     LogStub.init();
@@ -105,7 +108,6 @@ public class TemplateControllerTest {
   }
 
 
-
   @Test
   public void testDefaultMethods() {
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
@@ -128,7 +130,6 @@ public class TemplateControllerTest {
   }
 
   /**
-   *
    * tests if comments are being generated for the Blacklisted Templates using the normal
    * Template Constructor
    */
@@ -136,7 +137,7 @@ public class TemplateControllerTest {
   public void testBlacklisteTemplatesI() throws IOException {
     // init Template Controller under test
     GeneratorSetup setup = new GeneratorSetup();
-    TemplateController tc  = new TemplateController(setup, "");
+    TemplateController tc = new TemplateController(setup, "");
 
     // init test data
     String templateNameI = "foo";
@@ -152,11 +153,11 @@ public class TemplateControllerTest {
     assertEquals(1, tc.getTemplateBlackList().size());
     assertFalse(tc.isTemplateNoteGenerated(templateI));
     assertTrue(tc.isTemplateNoteGenerated(templateII));
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
+
   /**
-   *
    * tests if comments are being generated for the Blacklisted Templates using the second Template
    * Constructor
    */
@@ -165,7 +166,7 @@ public class TemplateControllerTest {
     // init Template Controller with black-list under test
     List<String> blackList = new ArrayList<>();
     GeneratorSetup setup = new GeneratorSetup();
-    TemplateController tc  = new TemplateController(setup, "",blackList);
+    TemplateController tc = new TemplateController(setup, "", blackList);
 
     // init test data
     String templateNameI = "foo";
@@ -179,6 +180,60 @@ public class TemplateControllerTest {
     assertFalse(tc.isTemplateNoteGenerated(templateI));
     assertTrue(tc.isTemplateNoteGenerated(templateII));
     assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testIncludeArgsDoesNotOverrideParameters() {
+    TemplateController controller = new TemplateController(new GeneratorSetup(), "de.monticore.geneing.templateengine.IncludeArgsDoesntOverride1");
+    controller.config.getGlex().setGlobalValue("Global", "lolol");
+    String result = controller.includeArgs("de.monticore.generating.templateengine.IncludeArgsDoesntOverride1",
+        "a", "b").toString();
+
+    assertEquals(
+        "aba",
+        result.strip()
+            .replaceAll("\n", "")
+            .replaceAll(" ", "")
+            .replaceAll("/\\*(.)*?\\*/", ""));
+  }
+
+  @Test
+  public void testParametersOfOuterTemplateNotVisible() {
+    TemplateController controller = new TemplateController(
+        new GeneratorSetup(),
+        "de.monticore.generating.templateengine." +
+            "OuterParametersNotVisible1");
+    try {
+      controller.includeArgs(
+          "de.monticore.generating.templateengine." +
+              "OuterParametersNotVisible1",
+          "A");
+    } catch (MontiCoreFreeMarkerException e) {
+      assertTrue(e.getMessage().contains(
+          "The following has evaluated to null or missing:\n==> A  [in " +
+              "template \"de.monticore.generating.templateengine." +
+              "OuterParametersNotVisible2\" at line 2, column 3]"));
+    }
+  }
+
+  @Test
+  public void testInnerParametersNotVisible() {
+    TemplateController controller = new TemplateController(
+        new GeneratorSetup(),
+        "de.monticore.generating.templateengine." +
+            "InnerParametersNotVisible1");
+
+    try {
+      controller.includeArgs(
+          "de.monticore.generating.templateengine." +
+              "InnerParametersNotVisible1",
+          "A");
+
+    } catch (MontiCoreFreeMarkerException e) {
+      assertTrue(e.getMessage().contains("The following has evaluated to " +
+          "null or missing:\n==> B  [in template \"de.monticore.generating." +
+          "templateengine.InnerParametersNotVisible1\" at line 4, column 3]"));
+    }
   }
 
 }

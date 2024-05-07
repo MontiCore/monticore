@@ -28,7 +28,7 @@ ${tc.signature("symbolMap", "mill", "errorCode", "scopeDeserName", "scopeInterfa
 <#list symbolMap?keys as kind>
   else if ("${kind}".equals(kind)
         || "${kind}".equals(deSer.getSerializedKind())) {
-      ${kind} s${count} = (${kind}) deSer.deserialize(symbol);
+      ${kind} s${count} = (${kind}) deSer.deserialize(scope, symbol);
       scope.add(s${count});
 <#if symbolMap[kind]>
       scope.addSubScope(s${count}.getSpannedScope());

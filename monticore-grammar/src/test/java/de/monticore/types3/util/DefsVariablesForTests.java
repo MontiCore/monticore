@@ -47,6 +47,7 @@ public class DefsVariablesForTests {
     set_boxedCollections(scope);
     set_objectTypes(scope);
     set_generics(scope);
+    set_siUnitsWithNumerics(scope);
   }
 
   public static VariableSymbol _booleanVarSym;
@@ -218,5 +219,30 @@ public class DefsVariablesForTests {
         createGenerics(_linkedListSymType.getTypeInfo(), _intSymType)));
     _intHashMapVarSym = inScope(scope, variable("varintHashMap",
         createGenerics(_hashMapSymType.getTypeInfo(), _intSymType, _intSymType)));
+  }
+
+  /*
+   * These are some predefined Symbols for SI units with numerics
+   */
+
+  // The seven base units (kg with and without prefix k)
+  public static VariableSymbol _s_int_SIVarSym;
+  public static VariableSymbol _m_int_SIVarSym;
+  public static VariableSymbol _g_int_SIVarSym;
+  public static VariableSymbol _A_int_SIVarSym;
+  public static VariableSymbol _K_int_SIVarSym;
+  public static VariableSymbol _mol_int_SIVarSym;
+  public static VariableSymbol _cd_int_SIVarSym;
+  public static VariableSymbol _kg_int_SIVarSym;
+
+  public static void set_siUnitsWithNumerics(IBasicSymbolsScope scope) {
+    _s_int_SIVarSym = inScope(scope, variable("varintSecond", _s_int_SISymType));
+    _m_int_SIVarSym = inScope(scope, variable("varintMetre", _m_int_SISymType));
+    _g_int_SIVarSym = inScope(scope, variable("varintGram", _g_int_SISymType));
+    _A_int_SIVarSym = inScope(scope, variable("varintAmpere", _A_int_SISymType));
+    _K_int_SIVarSym = inScope(scope, variable("varintKelvin", _K_int_SISymType));
+    _mol_int_SIVarSym = inScope(scope, variable("varintMole", _mol_int_SISymType));
+    _cd_int_SIVarSym = inScope(scope, variable("varintCandela", _cd_int_SISymType));
+    _kg_int_SIVarSym = inScope(scope, variable("varintKiloGram", _kg_int_SISymType));
   }
 }
