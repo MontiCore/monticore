@@ -32,7 +32,7 @@ The MontiCore symposium will be located in Germany. Exact location tbd.
 Participation is based on acceptance of an abstract or a full paper and 
 requires registration until **13th of September**. 
 
-Registration costs will be XXX Euros and include accommodation, 
+Registration costs tba and include accommodation, 
 conference fees, and meals during the symposium as well as coordinated a 
 bus transfer from Dusseldorf airport or Aachen and the venue.  
 
