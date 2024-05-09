@@ -1,4 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
 <center>
   <div style="text-align:center" ><img src="mc-logo.png" /></div>
 </center>
