@@ -3,7 +3,7 @@
 
 # MontiCore Languages of Level II - an Overview
 
-[[_TOC_]]
+
 
 [MontiCore](https://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
