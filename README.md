@@ -18,7 +18,7 @@ components, conservative extension and composition mechanisms, and an
 optimal integration of handwritten code into the generated tools. Its 
 grammar languages are comfortable to use. 
 
-[**Start here for developing with MontiCore.**](docs/GettingStarted.md)
+[**You may start here for developing with MontiCore.**](docs/GettingStarted.md)
 
 <div align="center">
   <a href="https://monticore.de/handbook.pdf" target="_blank">
