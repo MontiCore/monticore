@@ -287,6 +287,9 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       Optional<SymTypeExpression> result,
       SymTypeExpression left, SymTypeExpression right
   ) {
+    if (left.isObscureType() || right.isObscureType()) {
+      return createObscureType();
+    }
     if (result.isPresent()) {
       return result.get();
     }
