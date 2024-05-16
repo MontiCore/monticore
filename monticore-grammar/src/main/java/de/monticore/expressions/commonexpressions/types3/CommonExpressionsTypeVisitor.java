@@ -1166,7 +1166,10 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       Optional<SymTypeExpression> result,
       SymTypeExpression left, SymTypeExpression right
   ) {
-    if (result.isPresent()) {
+    if (left.isObscureType() || right.isObscureType()) {
+      return createObscureType();
+    }
+    else if (result.isPresent()) {
       return result.get();
     }
     else {
@@ -1186,30 +1189,15 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       String errorCode, ASTExpression expr, String prefix,
       Optional<SymTypeExpression> result, SymTypeExpression inner
   ) {
-    if (result.isPresent()) {
+    if (inner.isObscureType()) {
+      return createObscureType();
+    }
+    else if (result.isPresent()) {
       return result.get();
     }
     else {
       Log.error(errorCode
               + " Prefix Operator '" + prefix
-              + "' not applicable to " + "'" + inner.print() + "'",
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd()
-      );
-      return createObscureType();
-    }
-  }
-
-  protected SymTypeExpression getTypeForPostfixOrLogError(
-      String errorCode, ASTExpression expr, String postfix,
-      Optional<SymTypeExpression> result, SymTypeExpression inner
-  ) {
-    if (result.isPresent()) {
-      return result.get();
-    }
-    else {
-      Log.error(errorCode
-              + " Postfix Operator '" + postfix
               + "' not applicable to " + "'" + inner.print() + "'",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
