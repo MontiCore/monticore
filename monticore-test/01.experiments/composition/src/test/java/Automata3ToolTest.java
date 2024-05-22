@@ -20,10 +20,6 @@ public class Automata3ToolTest {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
   }

@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,6 +19,8 @@ import de.monticore.generating.templateengine.reporting.commons.ReportManager.Re
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.ConsoleLogHook;
+import de.se_rwth.commons.logging.DefaultErrorHook;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -216,6 +219,9 @@ public class Reporting extends Log {
       Log.error("0xA4051 Report manager factory must not be null.");
     }
     singleton = new Reporting(outputDirectory, reportDirectory, factory);
+    singleton.logHooks = new ArrayList<>();
+    singleton.logHooks.add(new ConsoleLogHook());
+    singleton.errorHook = new DefaultErrorHook();
     Log.setLog(singleton);
   }
 

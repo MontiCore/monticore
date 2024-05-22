@@ -20,15 +20,11 @@ public class SM2ToolTest {
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
     SM2Mill.globalScope().clear();
   }
-  
+
   @Test
   public void test() {
     String[] args = {"-i", "src/test/resources/example/PingPong.aut"};

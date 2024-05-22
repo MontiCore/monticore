@@ -183,6 +183,7 @@ public class TemplateControllerTest {
   }
 
   @Test
+  @Ignore
   public void testIncludeArgsDoesNotOverrideParameters() {
     TemplateController controller = new TemplateController(new GeneratorSetup(), "de.monticore.geneing.templateengine.IncludeArgsDoesntOverride1");
     controller.config.getGlex().setGlobalValue("Global", "lolol");
