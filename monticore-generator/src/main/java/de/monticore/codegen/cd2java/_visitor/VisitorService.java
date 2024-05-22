@@ -266,6 +266,12 @@ public class VisitorService extends AbstractService<VisitorService> {
         .collect(Collectors.toList());
   }
 
+  public List<ASTMCQualifiedType> getAllInterpreterInterfacesTypesInHierarchy() {
+    return getServicesOfSuperCDs().stream()
+        .map(VisitorService::getInterpreterInterfaceType)
+        .collect(Collectors.toList());
+  }
+
   public ASTCDMethod getVisitorMethod(String methodName, ASTMCType nodeType) {
     ASTCDParameter visitorParameter = CDParameterFacade.getInstance().createParameter(nodeType, "node");
     return CDMethodFacade.getInstance().createMethod(PUBLIC.build(), methodName, visitorParameter);

@@ -72,9 +72,6 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
     List<ASTCDAttribute> scopeAttributes = scopeDecorator.decorate(originalInput);
     changedInput.addAllCDMembers(addScopeMethods(scopeAttributes));
 
-    changedInput.addCDMember(createEvaluateInterpreterMethod(changedInput));
-    changedInput.addCDMember(createEvaluateInterpreterSuperMethod(changedInput));
-
     // if a ast has a symbol definition without a name, the getName has to be implemented manually
     // add getName method that is abstract
     if (astService.isSymbolWithoutName(originalInput)) {
@@ -108,39 +105,6 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
       scopeMethods.addAll(methods);
     }
     return scopeMethods;
-  }
-
-  protected ASTCDMethod createEvaluateInterpreterMethod(ASTCDInterface astClass) {
-    String interpreterType = visitorService.getInterpreterInterfaceFullName();
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(
-        interpreterType,
-        "interpreter");
-    ASTCDMethod method = getCDMethodFacade().createMethod(
-        PUBLIC.build(),
-        InterpreterConstants.VALUE_FULLNAME,
-        "evaluate", parameter);
-    String astName = astClass.getName().substring(0, astClass.getName().contains("TOP")
-        ? astClass.getName().lastIndexOf("TOP")
-        : astClass.getName().length());
-    replaceTemplate(EMPTY_BODY, method,
-        new StringHookPoint(String.format("return interpreter.interpret((%s)this);", astName)));
-    return method;
-  }
-
-  protected ASTCDMethod createEvaluateInterpreterSuperMethod(ASTCDInterface astClass) {
-    ASTCDParameter parameter = getCDParameterFacade().createParameter(
-        InterpreterConstants.MODELINTERPRETER_FULLNAME,
-        "interpreter");
-    ASTCDMethod method = getCDMethodFacade().createMethod(
-        PUBLIC.build(),
-        InterpreterConstants.VALUE_FULLNAME,
-        "evaluate",
-        parameter);
-    replaceTemplate(EMPTY_BODY, method,
-        new TemplateHookPoint(
-            "_ast.ast_class.Evaluate",
-            astClass, visitorService.getInterpreterInterfaceFullName()));
-    return method;
   }
 
 }

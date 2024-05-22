@@ -92,6 +92,7 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
+import de.monticore.codegen.cd2java.interpreter.ASTEvaluateDecorator;
 import de.monticore.codegen.cd2java.interpreter.InterpreterDecorator;
 import de.monticore.codegen.cd2java.interpreter.InterpreterInterfaceDecorator;
 import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherDecorator;
@@ -834,13 +835,16 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
 
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
+    decorator.decorate(cd, decoratedCD);
 
     InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
     InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
     interpreterDecorator.decorate(cd, decoratedCD);
     interpreterInterfaceDecorator.decorate(cd, decoratedCD);
 
-    decorator.decorate(cd, decoratedCD);
+    ASTEvaluateDecorator evaluateDecorator = new ASTEvaluateDecorator(glex, visitorService);
+    evaluateDecorator.decorate(cd, decoratedCD);
+
   }
 
   public void decorateForCoCoPackage(GlobalExtensionManagement glex,

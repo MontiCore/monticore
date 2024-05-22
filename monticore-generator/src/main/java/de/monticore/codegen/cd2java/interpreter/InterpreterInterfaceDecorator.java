@@ -76,7 +76,7 @@ public class InterpreterInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
   public ASTCDExtendUsage getExtendUsage() {
     ASTCDExtendUsage extendUsage = CDExtendUsageFacade.getInstance().createCDExtendUsage(MODELINTERPRETER_FULLNAME);
-    for (DiagramSymbol symbol : service.getSuperCDsTransitive()) {
+    for (DiagramSymbol symbol : service.getSuperCDsDirect()) {
       extendUsage.addSuperclass(service.getInterpreterInterfaceType(symbol));
     }
     return extendUsage;

@@ -93,6 +93,9 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     }
 
     for (DiagramSymbol diagramSymbol : service.getSuperCDsTransitive()) {
+      if (diagramSymbol == service.getCDSymbol()) {
+        continue;
+      }
       String interpreterName = uncapFirst(service.getInterpreterSimpleName(diagramSymbol));
       for (CDTypeSymbol typeSymbol : service.getAllCDTypes(diagramSymbol)) {
         if (typeSymbol.isIsClass() || typeSymbol.isIsInterface()) {

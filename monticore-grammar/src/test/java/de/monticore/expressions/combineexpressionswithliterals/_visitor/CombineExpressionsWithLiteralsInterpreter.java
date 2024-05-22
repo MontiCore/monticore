@@ -16,7 +16,7 @@ public class CombineExpressionsWithLiteralsInterpreter extends CombineExpression
 
   @Override
   public Value interpret(ASTFoo node) {
-    return  node.getExpression().evaluate(getRealThis());
+    return node.getExpression().evaluate(getRealThis());
   }
 
 }
