@@ -25,10 +25,6 @@ public class AutomataParseTest {
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
   }

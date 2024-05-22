@@ -17,14 +17,10 @@ public class AutomataToolTest {
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
   }
-  
+
   @Test
   public void executePingPong() {
     AutomataTool.main(new String[] { "-i", "src/test/resources/example/PingPong.aut", "-s", "target/PingPong.autsym" });
