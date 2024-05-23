@@ -62,7 +62,6 @@ public class TemplateAliasingTest {
   }
 
   @Test
-  @Ignore
   public void testIncludeDispatching(){
     StringBuilder templateOutput =
         tc.include(ALIASES_PACKAGE + "IncludeDispatching");
@@ -106,7 +105,6 @@ public class TemplateAliasingTest {
   }
 
   @Test
-  @Ignore
   public void testSimpleDefineHookPoint() throws IOException {
     tc.getGeneratorSetup().setTracing(true);
     AliasTestASTNodeMock ast = new AliasTestASTNodeMock("c1");
@@ -191,7 +189,6 @@ public class TemplateAliasingTest {
   }
 
   @Test
-  @Ignore
   public void testBindHookPointAlias(){
     tc.getGeneratorSetup().setTracing(true);
     AliasTestASTNodeMock ast = new AliasTestASTNodeMock("c1");
@@ -277,7 +274,6 @@ public class TemplateAliasingTest {
 
 
   @Test
-  @Ignore
   public void testExistsHookPoint(){
     StringBuilder templateOut =
         tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");
