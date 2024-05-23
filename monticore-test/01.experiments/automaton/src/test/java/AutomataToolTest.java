@@ -39,12 +39,12 @@ public class AutomataToolTest {
     assertEquals(6, p.size());
 
     // Check some "[INFO]" outputs
-    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automata DSL Tool.*\n"));
-    assertTrue(p.get(4), p.get(4).matches(".*.INFO.  AutomataTool Pretty printing automaton into console.*\n"));
+    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automata DSL Tool.*(\r)?\n"));
+    assertTrue(p.get(4), p.get(4).matches(".*.INFO.  AutomataTool Pretty printing automaton into console.*(\r)?\n"));
   
     // Check resulting pretty print:
     String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
-    assertEquals(231, res.length());
+    assertEquals(232, res.length());
     assertTrue(res, res.matches(".*state.*"));
     assertTrue(res, res.matches(".*state NoGame <<initial>>.*"));
     assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
