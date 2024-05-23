@@ -25,7 +25,7 @@ public class ReportingRepository {
   protected Map<Object, Integer> node2Ident = Maps.newHashMap();
 
   protected Map<Object, String> node2Name = Maps.newHashMap();
-  
+
   // save nodes that have a position
   protected Map<String, Integer> name2maxidSourcePos = Maps.newHashMap();
 
@@ -262,11 +262,11 @@ public class ReportingRepository {
     }
 
     public void doError(String format, Object arg) {
-      error(String.format(format, new Object[] { arg }));
+      error(String.format(format, arg));
     }
 
     public void doError(String format, Object arg1, Object arg2) {
-      error(String.format(format, new Object[] { arg1, arg2 }));
+      error(String.format(format, arg1, arg2));
     }
 
     public void doError(String format, Object... arguments) {
