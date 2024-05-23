@@ -8,7 +8,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Slf4jLog;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Map;
 import java.util.Set;
@@ -145,7 +145,7 @@ public class ReportingRepository {
   }
 
   /* This is the magic. Don't touch it ;-) */
-  protected class Helper extends Slf4jLog {
+  protected class Helper extends Log {
 
     @Override
     public boolean doIsTraceEnabled(String logName) {
