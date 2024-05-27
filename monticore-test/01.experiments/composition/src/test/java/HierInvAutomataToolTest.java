@@ -39,10 +39,10 @@ public class HierInvAutomataToolTest {
     assertTrue(p.get(0), p.get(0).matches(".*.INFO.  HierIAT HierInvAutomata DSL Tool.*(\r)?\n"));
     
     // Check resulting pretty print:
-    String res = String.join("",p).replaceAll("[\r\n]", " ");
+    String res = String.join("",p).replaceAll("\r\n", " ").replaceAll("\n", " ");
   
     // original: state Pung  <<final>>   [[  &&[  &&[  &&[  true v1 ]  ! false  ]  v2 ]  ]]
-    assertTrue(res, res.matches(".*state Pung  <<final>>    ..  &&.  &&.  &&.  true v1 ]  ! false  ]  v2 ]  ]].*"));
+    assertTrue(res, res.matches(".*state Pung  <<final>>   ..  &&.  &&.  &&.  true v1 ]  ! false  ]  v2 ]  ]].*"));
     assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
     
   }

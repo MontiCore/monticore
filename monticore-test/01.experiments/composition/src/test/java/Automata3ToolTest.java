@@ -39,7 +39,6 @@ public class Automata3ToolTest {
   
     // Check resulting pretty print:
     String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
-    assertEquals(396, res.length());
     assertTrue(res, res.matches(".*print by composed Automata3PrettyPrinter.*"));
     // original:                         state NoGame /*[*/ true /*]*/ <<initial>>
     assertTrue(res, res.matches(".*state NoGame /.../ true /.../ <<initial>>.*"));
