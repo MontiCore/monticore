@@ -17,14 +17,10 @@ public class AutomataToolTest {
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
   }
-  
+
   @Test
   public void executePingPong() {
     AutomataTool.main(new String[] { "-i", "src/test/resources/example/PingPong.aut", "-s", "target/PingPong.autsym" });
@@ -36,11 +32,11 @@ public class AutomataToolTest {
     assertEquals(7, p.size());
 
     // Check some "[INFO]" outputs
-    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automata DSL Tool.*\n"));
-    assertTrue(p.get(5), p.get(5).matches(".*.INFO.  AutomataTool Pretty printing automaton into console.*\n"));
+    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automata DSL Tool.*(\r)?\n"));
+    assertTrue(p.get(5), p.get(5).matches(".*.INFO.  AutomataTool Pretty printing automaton into console.*(\r)?\n"));
   
     // Check resulting pretty print:
-    String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
+    String res = p.get(p.size()-1).replaceAll("\r\n", " ").replaceAll("\n", " ");
     assertEquals(231, res.length());
     assertTrue(res, res.matches(".*state.*"));
     assertTrue(res, res.matches(".*state NoGame <<initial>>.*"));

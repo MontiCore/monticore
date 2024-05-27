@@ -12,10 +12,7 @@ import de.monticore.io.FileReaderWriterMock;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,15 +31,11 @@ public class TemplateAliasingTest {
   
   private GeneratorSetup config;
 
-
-  @Before
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
   @Before
   public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+
     FileReaderWriterMock fileHandler = new FileReaderWriterMock();
     FileReaderWriter.init(fileHandler);
 

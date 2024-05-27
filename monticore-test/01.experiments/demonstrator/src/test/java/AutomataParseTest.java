@@ -21,13 +21,9 @@ public class AutomataParseTest {
   
   @Before
   public void init() {
-    Log.init();         // replace log by a sideffect free variant
+    LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
   }
