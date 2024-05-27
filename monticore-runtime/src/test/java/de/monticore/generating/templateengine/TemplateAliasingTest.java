@@ -31,15 +31,11 @@ public class TemplateAliasingTest {
   
   private GeneratorSetup config;
 
-
-  @Before
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
   @Before
   public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+
     FileReaderWriterMock fileHandler = new FileReaderWriterMock();
     FileReaderWriter.init(fileHandler);
 

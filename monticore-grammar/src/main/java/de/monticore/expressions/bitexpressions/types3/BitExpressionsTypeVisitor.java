@@ -116,7 +116,10 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
       Optional<SymTypeExpression> result,
       SymTypeExpression left, SymTypeExpression right
   ) {
-    if (result.isPresent()) {
+    if (left.isObscureType() && right.isObscureType()) {
+      return createObscureType();
+    }
+    else if (result.isPresent()) {
       return result.get();
     }
     else {

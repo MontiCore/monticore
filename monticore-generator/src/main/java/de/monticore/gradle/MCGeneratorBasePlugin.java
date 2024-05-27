@@ -3,11 +3,14 @@ package de.monticore.gradle;
 
 import de.monticore.MCMillBuildService;
 import de.monticore.MCPlugin;
+import de.monticore.gradle.common.MCBuildInfoTask;
 import de.monticore.gradle.gen.MCGenTask;
 import de.monticore.gradle.internal.ProgressLoggerService;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.TaskProvider;
+import org.gradle.language.jvm.tasks.ProcessResources;
 
 /**
  * Provide a "MCGenTask" task.
@@ -23,8 +26,17 @@ public class MCGeneratorBasePlugin implements Plugin<Project> {
     // Provide the MCGenTask easily
     project.getExtensions().getExtraProperties().set("MCGenTask", MCGenTask.class);
 
+    // Add a task which writes the buildInfo.properties file
+    TaskProvider<?> writeMCBuildInfo = project.getTasks().register("writeMCBuildInfo", MCBuildInfoTask.class);
+
+    // writeMCBuildInfo should always be performed before processing resources
+    project.getTasks().withType(ProcessResources.class).configureEach(t -> {
+      t.dependsOn(writeMCBuildInfo);
+    });
+
     // pass the ProgressLogger ServiceProvider to the task
     project.getTasks().withType(MCGenTask.class).configureEach(t -> {
+      t.dependsOn(writeMCBuildInfo);
       try {
         t.getProgressLoggerService().set(serviceProvider);
       }catch (IllegalArgumentException ignored){

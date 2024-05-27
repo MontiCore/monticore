@@ -20,10 +20,6 @@ public class HierInvAutomataToolTest {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
   }
@@ -40,10 +36,10 @@ public class HierInvAutomataToolTest {
     assertEquals(59, p.size());   // many small prints ...
   
     // Check some "[INFO]" outputs
-    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  HierIAT HierInvAutomata DSL Tool.*\n"));
+    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  HierIAT HierInvAutomata DSL Tool.*(\r)?\n"));
     
     // Check resulting pretty print:
-    String res = String.join("",p).replaceAll("[\r\n]", " ");
+    String res = String.join("",p).replaceAll("\r\n", " ").replaceAll("\n", " ");
   
     // original: state Pung  <<final>>   [[  &&[  &&[  &&[  true v1 ]  ! false  ]  v2 ]  ]]
     assertTrue(res, res.matches(".*state Pung  <<final>>   ..  &&.  &&.  &&.  true v1 ]  ! false  ]  v2 ]  ]].*"));

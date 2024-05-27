@@ -13,7 +13,6 @@ import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.CompKindExpression;
 import de.monticore.types.check.FullCompKindExprDeSer;
-import de.monticore.types.check.KindOfComponent;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -132,13 +131,12 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
 
     for (JsonElement param : params) {
       String paramJsonKind = JsonDeSers.getKind(param.getAsJsonObject());
-      if (paramJsonKind.equals(varSerializeKind)) {
-        ISymbolDeSer deSer = CompSymbolsMill.globalScope().getSymbolDeSer(varSerializeKind);
+      ISymbolDeSer<?, ?> deSer = CompSymbolsMill.globalScope().getSymbolDeSer(paramJsonKind);
+      if (deSer != null && deSer.getSerializedKind().equals(varSerializeKind)) {
         VariableSymbol paramSym = (VariableSymbol) deSer.deserialize(param.getAsJsonObject());
 
         paramOwner.getSpannedScope().add(paramSym);
         paramOwner.addParameter(paramSym);
-
       } else {
         Log.error(String.format(
             "0xD0101 Malformed json, parameter '%s' of unsupported kind '%s'",
@@ -158,17 +156,16 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
     List<JsonElement> ports = paramOwnerJson.getArrayMemberOpt(PORTS).orElseGet(Collections::emptyList);
 
     for (JsonElement port : ports) {
-      String portJasonKind = JsonDeSers.getKind(port.getAsJsonObject());
-      if (portJasonKind.equals(portSerializeKind)) {
-        ISymbolDeSer deSer = CompSymbolsMill.globalScope().getSymbolDeSer(portSerializeKind);
+      String portJsonKind = JsonDeSers.getKind(port.getAsJsonObject());
+      ISymbolDeSer<?, ?> deSer = CompSymbolsMill.globalScope().getSymbolDeSer(portJsonKind);
+      if (deSer != null && deSer.getSerializedKind().equals(portSerializeKind)) {
         PortSymbol portSym = (PortSymbol) deSer.deserialize(port.getAsJsonObject());
 
         portOwner.getSpannedScope().add(portSym);
-
       } else {
         Log.error(String.format(
             "0xD0102 Malformed json, port '%s' of unsupported kind '%s'",
-            port.getAsJsonObject().getStringMember(JsonDeSers.NAME), portJasonKind
+            port.getAsJsonObject().getStringMember(JsonDeSers.NAME), portJsonKind
         ));
       }
     }
@@ -197,8 +194,8 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
 
     for (JsonElement typeParam : typeParams) {
       String typeParamJsonKind = JsonDeSers.getKind(typeParam.getAsJsonObject());
-      if (typeParamJsonKind.equals(typeVarSerializedKind)) {
-        ISymbolDeSer deSer = CompSymbolsMill.globalScope().getSymbolDeSer(typeVarSerializedKind);
+      ISymbolDeSer<?, ?> deSer = CompSymbolsMill.globalScope().getSymbolDeSer(typeParamJsonKind);
+      if (deSer != null && deSer.getSerializedKind().equals(typeVarSerializedKind)) {
         TypeVarSymbol typeParamSym = (TypeVarSymbol) deSer.deserialize(typeParam.getAsJsonObject());
 
         typeParamOwner.getSpannedScope().add(typeParamSym);

@@ -23,14 +23,10 @@ import java.util.Optional;
 public class ExpressionDSLTRParseTest {
   @Before
   public void beforeEach() {
-    Log.clearFindings();
-  }
-
-  @BeforeClass
-  public static void beforeClass() {
     Log.init();
     Log.enableFailQuick(false);
     ExpressionDSLTRMill.init();
+    Log.clearFindings();
   }
 
   @Test

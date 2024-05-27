@@ -20,14 +20,10 @@ public class AutomataToolTest {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
   }
-  
+
   @Test
   public void executePingPong() {
     AutomataTool.main(new String[]{"-i", "src/test/resources/example/PingPong.aut"});
@@ -38,11 +34,11 @@ public class AutomataToolTest {
     assertEquals(5, p.size());
   
     // Check some "[INFO]" outputs
-    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automata DSL Tool.*\n"));
-    assertTrue(p.get(3), p.get(3).matches(".*.INFO.  AutomataTool Printing the parsed automaton into textual form:.*\n"));
+    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  AutomataTool Automata DSL Tool.*(\r)?\n"));
+    assertTrue(p.get(3), p.get(3).matches(".*.INFO.  AutomataTool Printing the parsed automaton into textual form:.*(\r)?\n"));
   
     // Check resulting pretty print:
-    String res = p.get(p.size() - 1).replaceAll("[\r\n]", " ");
+    String res = p.get(p.size() - 1).replaceAll("\r\n", " ").replaceAll("\n", " ");
     // Please note: the resulting string is NONDETERMINISTIC, i.e. the text output is chosen among
     // three alternatives
     assertTrue(res.length() > 500);

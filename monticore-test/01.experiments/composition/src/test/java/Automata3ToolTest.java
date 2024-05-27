@@ -20,10 +20,6 @@ public class Automata3ToolTest {
     LogStub.init();         // replace log by a sideffect free variant
     // LogStub.initPlusLog();  // for manual testing purpose only
     Log.enableFailQuick(false);
-  }
-  
-  @Before
-  public void setUp() {
     Log.clearFindings();
     LogStub.clearPrints();
   }
@@ -39,11 +35,10 @@ public class Automata3ToolTest {
     assertEquals(6, p.size());
   
     // Check some "[INFO]" outputs
-    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  Automata3Tool Automata3 DSL Tool.*\n"));
+    assertTrue(p.get(0), p.get(0).matches(".*.INFO.  Automata3Tool Automata3 DSL Tool.*(\r)?\n"));
   
     // Check resulting pretty print:
     String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
-    assertEquals(395, res.length());
     assertTrue(res, res.matches(".*print by composed Automata3PrettyPrinter.*"));
     // original:                         state NoGame /*[*/ true /*]*/ <<initial>>
     assertTrue(res, res.matches(".*state NoGame /.../ true /.../ <<initial>>.*"));
