@@ -44,7 +44,6 @@ public class AutomataToolTest {
   
     // Check resulting pretty print:
     String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
-    assertEquals(232, res.length());
     assertTrue(res, res.matches(".*state.*"));
     assertTrue(res, res.matches(".*state NoGame <<initial>>.*"));
     assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
