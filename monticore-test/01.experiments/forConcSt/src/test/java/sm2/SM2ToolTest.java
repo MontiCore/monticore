@@ -41,8 +41,8 @@ public class SM2ToolTest {
     Assert.assertTrue(p.get(6), p.get(6).matches(".*.INFO. .* The model contains 3 states.*(\r)?\n"));
   
     // Check resulting pretty print:
-    String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
-    assertEquals(232, res.length());
+    String res = p.get(p.size()-1).replaceAll("\r\n", " ").replaceAll("\n", " ");
+    assertEquals(231, res.length());
     Assert.assertTrue(res, res.matches(".*state NoGame <<initial>>.*"));
     Assert.assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));
     Assert.assertTrue(Log.getFindings().isEmpty());

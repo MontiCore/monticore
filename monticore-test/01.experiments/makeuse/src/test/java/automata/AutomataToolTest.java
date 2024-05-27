@@ -36,8 +36,8 @@ public class AutomataToolTest {
     assertTrue(p.get(5), p.get(5).matches(".*.INFO.  AutomataTool Pretty printing automaton into console.*(\r)?\n"));
   
     // Check resulting pretty print:
-    String res = p.get(p.size()-1).replaceAll("[\r\n]", " ");
-    assertEquals(232, res.length());
+    String res = p.get(p.size()-1).replaceAll("\r\n", " ").replaceAll("\n", " ");
+    assertEquals(231, res.length());
     assertTrue(res, res.matches(".*state.*"));
     assertTrue(res, res.matches(".*state NoGame <<initial>>.*"));
     assertTrue(res, res.matches(".*Pong - returnBall > Ping;.*"));

@@ -38,7 +38,7 @@ public class AutomataToolTest {
     assertTrue(p.get(3), p.get(3).matches(".*.INFO.  AutomataTool Printing the parsed automaton into textual form:.*(\r)?\n"));
   
     // Check resulting pretty print:
-    String res = p.get(p.size() - 1).replaceAll("[\r\n]", " ");
+    String res = p.get(p.size() - 1).replaceAll("\r\n", " ").replaceAll("\n", " ");
     // Please note: the resulting string is NONDETERMINISTIC, i.e. the text output is chosen among
     // three alternatives
     assertTrue(res.length() > 500);
