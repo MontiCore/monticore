@@ -23,6 +23,10 @@ public class JsonDeSers {
 
   public static final String KIND = "kind";
 
+  public static final String FULL_NAME = "fullName";
+
+  public static final String PACKAGE_NAME = "packageName";
+
   public static final String SYMBOLS = "symbols";
 
   public static final String SPANNED_SCOPE = "spannedScope";
