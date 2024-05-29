@@ -213,7 +213,16 @@ public final class MCPath {
         .collect(Collectors.toList());
 
     if (1 == resolvedURLs.size()) {
-      return Optional.of(resolvedURLs.get(0));
+      File resolvedFile = new File(resolvedURLs.get(0).getFile());
+      File parentFile = new File(resolvedFile.getParent());
+      if (parentFile.isDirectory()) {
+        String simpleName = new File(resolvedURLs.get(0).getFile()).getName();
+        if (Arrays.stream(parentFile.listFiles()).anyMatch(f -> simpleName.equals(f.getName()))) {
+          return Optional.of(resolvedURLs.get(0));
+        }
+      } else {
+        return Optional.of(resolvedURLs.get(0));
+      }
     }
     else if (1 < resolvedURLs.size()) {
       reportAmbiguity(resolvedURLs, fixedPath);
