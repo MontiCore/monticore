@@ -14,6 +14,7 @@ import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDMember;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -36,6 +37,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.cd.codegen.TopDecorator.TOP_SUFFIX;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
@@ -276,6 +278,9 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
   protected ASTCDMethod addInitMethod(ASTMCType millType, List<DiagramSymbol> superSymbolList, String fullDefinitionName) {
     ASTCDMethod initMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), INIT);
     this.replaceTemplate(EMPTY_BODY, initMethod, new TemplateHookPoint("mill.InitMethod", millType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), superSymbolList, fullDefinitionName + "." + AUXILIARY_PACKAGE));
+    this.replaceTemplate(JAVADOC, initMethod, JavaDoc.of("Initializes a languages Mill.",
+            "This will also initialize the Mills of all languages it depends on.",
+            "This ensures that all objects of this mill, such as builders, traversers, scopes, ..., deliver the element of the correct language.").asHP());
     return initMethod;
   }
 
@@ -328,6 +333,11 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), getMCTypeFacade().createStringType(), "prettyPrint", node, printComments);
     prettyPrintMembersList.add(builderMethod);
     this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.PrettyPrintBuilderMethod", astName));
+    this.replaceTemplate(JAVADOC, builderMethod, JavaDoc.of("Uses the composed pretty printer to print an ASTNode of this language")
+            .param("node", "The ASTNode to be printed")
+            .param("printComments", "Whether comments should be printed")
+            .block("return", "The pretty printer output")
+            .asHP());
 
     // add protected Method for pretty printing
     ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(PROTECTED.build(), getMCTypeFacade().createStringType(), "_prettyPrint", node, printComments);
@@ -394,13 +404,24 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
   protected List<ASTCDMethod> getScopesGenitorDelegatorMethods() {
     String scopesGenitorSimpleName = symbolTableService.getScopesGenitorDelegatorSimpleName();
     String scopesGenitorFullName = symbolTableService.getScopesGenitorDelegatorFullName();
-    return getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
+    List<ASTCDMethod> ret = getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
+    this.replaceTemplate(JAVADOC, ret.get(0), JavaDoc.of("Returns a new ScopeGenitorDelegator.",
+                    "Delegates to the ScopeGenitors of composed languages, used for instantiating symbol tables in the context of language composition",
+                    "See the delegators #createFromAST method.")
+            .asHP());
+    return ret;
   }
 
   protected List<ASTCDMethod> getScopesGenitorMethods() {
     String scopesGenitorSimpleName = symbolTableService.getScopesGenitorSimpleName();
     String scopesGenitorFullName = symbolTableService.getScopesGenitorFullName();
-    return getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
+    List<ASTCDMethod> ret = getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
+    this.replaceTemplate(JAVADOC, ret.get(0), JavaDoc.of("Returns a new ScopeGenitor.",
+                    "ScopeGenitors are responsible for creating the scope structure of artifacts and linking it with the AST nodes.",
+                    "Note: ScopeGenitors do NOT delegate to elements of composed languages",
+                    "which is why you are most likely looking for {@link #scopesGenitorDelegator()}.")
+            .asHP());
+    return ret;
   }
 
   protected List<ASTCDMethod> getStaticAndProtectedMethods(String methodName, String name, String fullName) {
@@ -429,6 +450,9 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), parserType, staticMethodName);
     this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", parserName, staticMethodName));
+    this.replaceTemplate(JAVADOC, staticMethod, JavaDoc.of("Returns a new instance of this languages parser.",
+                    "Respects grammar composition by means of the Mill pattern.")
+            .asHP());
     parserMethods.add(staticMethod);
 
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), parserType, protectedMethodName);

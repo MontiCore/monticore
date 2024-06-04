@@ -43,7 +43,7 @@ public class ASTLanguageInterfaceDecoratorTest extends DecoratorTestCase {
 
     ASTService astService = new ASTService(originalCompilationUnit);
     VisitorService visitorService = new VisitorService(originalCompilationUnit);
-    ASTLanguageInterfaceDecorator decorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
+    ASTLanguageInterfaceDecorator decorator = new ASTLanguageInterfaceDecorator(this.glex, astService, visitorService);
     decoratedCompilationUnit = originalCompilationUnit.deepClone();
     this.languageInterface = decorator.decorate(decoratedCompilationUnit);
   }

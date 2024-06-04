@@ -9,6 +9,7 @@ import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.codegen.cd2java.AbstractTransformer;
+import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
@@ -128,6 +130,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(this.visitorService.getTraverserInterfaceType(), VISITOR_PREFIX);
     ASTCDMethod acceptMethod = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
+    this.replaceTemplate(JAVADOC, acceptMethod,
+            JavaDoc.of("Entry point for the Visitor pattern.",
+                    "Cf. MontiCore handbook chapter 8.").asHP());
     return acceptMethod;
   }
   
@@ -145,6 +150,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
           this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
               MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType), "AST node"));
+      this.replaceTemplate(JAVADOC, superAccept,
+              JavaDoc.of("Entry point for the Visitor pattern.",
+                      "Cf. MontiCore handbook chapter 8.").asHP());
       result.add(superAccept);
     }
     return result;
