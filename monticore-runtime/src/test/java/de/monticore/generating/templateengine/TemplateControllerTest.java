@@ -193,6 +193,7 @@ public class TemplateControllerTest {
         "aba",
         result.strip()
             .replaceAll("\n", "")
+            .replaceAll("\r", "")
             .replaceAll(" ", "")
             .replaceAll("/\\*(.)*?\\*/", ""));
   }

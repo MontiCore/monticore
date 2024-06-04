@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.interpreter;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.builder.BuilderConstants;
@@ -32,7 +33,7 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDM
   public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astPackage = getPackage(input, decoratedCD, ASTConstants.AST_PACKAGE);
     astPackage.streamCDElements()
-        .filter(e -> e instanceof ASTCDType)
+        .filter(e -> e instanceof ASTCDClass || e instanceof ASTCDInterface)
         .map(e -> (ASTCDType) e)
         .forEach(t -> t.addAllCDMembers(decorate(t)));
   }
@@ -71,7 +72,9 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDM
     List<ASTCDMethod> methods = new ArrayList<>();
     List<ASTMCQualifiedType> types = visitorService.getAllInterpreterInterfacesTypesInHierarchy();
 
-    types.remove(types.size() - 1);
+    if (!types.isEmpty()) {
+      types.remove(types.size() - 1);
+    }
 
     types.add(mcTypeFacade.createQualifiedType(InterpreterConstants.MODELINTERPRETER_FULLNAME));
 

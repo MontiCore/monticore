@@ -179,6 +179,7 @@ import static de.monticore.MontiCoreConfiguration.OUT_LONG;
 import static de.monticore.MontiCoreConfiguration.REPORT_LONG;
 import static de.monticore.MontiCoreConfiguration.TEMPLATEPATH_LONG;
 import static de.monticore.MontiCoreConfiguration.TOOL_JAR_NAME_LONG;
+import static de.monticore.gradle.AMontiCoreConfiguration.GENINTERPRET_LONG;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -837,14 +838,21 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
     decorator.decorate(cd, decoratedCD);
 
-    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
+  }
+
+  public void decorateWithInterpreter(List<ASTCDCompilationUnit> cds,
+                                      ASTCDCompilationUnit decoratedCD,
+                                      GlobalExtensionManagement glex) {
+    VisitorService visitorService = new VisitorService(cds.get(0));
+
     InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
-    interpreterDecorator.decorate(cd, decoratedCD);
-    interpreterInterfaceDecorator.decorate(cd, decoratedCD);
+    interpreterInterfaceDecorator.decorate(cds.get(0), decoratedCD);
+
+    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
+    interpreterDecorator.decorate(cds.get(0), decoratedCD);
 
     ASTEvaluateDecorator evaluateDecorator = new ASTEvaluateDecorator(glex, visitorService);
-    evaluateDecorator.decorate(cd, decoratedCD);
-
+    evaluateDecorator.decorate(cds.get(0), decoratedCD);
   }
 
   public void decorateForCoCoPackage(GlobalExtensionManagement glex,
@@ -1537,6 +1545,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(HANDCODEDMODELPATH_LONG, handcodedModelPath);
           builder.addVariable(GENDST_LONG, mcConfig.getGenDST().orElse(false)); // no transformation infrastructure generation by default
           builder.addVariable(GENTAG_LONG, mcConfig.getGenTag().orElse(false)); // no tagging generation by default
+          builder.addVariable(GENINTERPRET_LONG, mcConfig.getGenInterpret().orElse(false)); // no interpreter generation by default
           builder.addVariable(OUT_LONG, mcConfig.getOut());
           builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
           builder.addVariable(REPORT_LONG, mcConfig.getReport());

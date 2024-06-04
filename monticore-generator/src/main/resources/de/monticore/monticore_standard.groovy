@@ -84,6 +84,12 @@ while (grammarIterator.hasNext()) {
 
     // M7: Decorate class diagrams and report it
     decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
+
+    if (genInterpret) {
+      // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
+      decorateWithInterpreter(cd, decoratedCD, glex)
+    }
+
     if (genTag) {
       // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
       decoratedCD = decorateTagCD(glex, mcScope, cd, handcodedPath, decoratedCD, astGrammar)

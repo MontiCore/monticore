@@ -134,6 +134,18 @@ if (("true").equals(getProperty('genTagging'))) {
   processGrammarsResources.dependsOn(generateTagSchemaGrammars)
 }
 
+if (("true").equals(getProperty('genInterpreting'))) {
+  tasks.register("generateInterpreters", MCGenTask.class) {
+    genInterpret = true
+    dependsOn("generateMCGrammars")
+    outputDir = file grammarOutDir
+    if (findProperty("ci") != null) {
+      script = "de/monticore/monticore_standard.groovy"
+    }
+  }
+  compileJava.dependsOn(generateInterpreters)
+}
+
 // grammar dependencies without generated TR grammars
 def grammarDependencies = ext {
   // no dependencies
