@@ -10,6 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -27,6 +28,7 @@ import java.util.*;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -99,6 +101,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
   protected ASTCDMethod addHandleMethod(ASTMCType astType, boolean traverse) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE, astType);
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLER_HANDLE_TEMPLATE, traverse));
+    this.replaceTemplate(JAVADOC, handleMethod,
+            JavaDoc.of("NOTE: You are most likely looking for " +
+                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!").asHP());
     return handleMethod;
   }
 
