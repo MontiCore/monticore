@@ -85,8 +85,6 @@ while (grammarIterator.hasNext()) {
     // M7: Decorate class diagrams
     decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
 
-    new File(genInterpret.toString() + ".txt").createNewFile()
-
     if (genInterpret) {
       // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
       decorateWithInterpreter(cd, decoratedCD, glex)

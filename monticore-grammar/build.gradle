@@ -225,6 +225,7 @@ def grammarDependencies = ext {
 task generateTest {}
 
 tasks.register("generateTestGrammars", MCGenTask.class) {
+  genInterpret = true
   grammar.setFrom(file "src/test/grammars")
   grammar.from(file "src/main/examples")
   outputDir = file testGrammarOutDir
