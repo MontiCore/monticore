@@ -46,6 +46,7 @@ hook(gh1, glex, grammars)
 
 // M1.4: Build Global Scope
 mcScope = createMCGlobalScope(modelPath)
+cdScope = createCD4AGlobalScope(modelPath)
 
 // ############################################################
 // Loop over the list of grammars provided as arguments (these grammars are
@@ -74,17 +75,17 @@ while (grammarIterator.hasNext()) {
     runGrammarCoCos(astGrammar, mcScope)
 
     // M5: Transform grammar AST into a class diagram and report it
-    cd = deriveCD(astGrammar, glex, mcScope)
+    cd = deriveCD(astGrammar, glex, cdScope)
     reportCD(cd, report)
 
     // M6: Generate parser and wrapper
     generateParser(glex, cd, astGrammar, mcScope, handcodedPath, templatePath, out)
 
     // M7: Decorate class diagrams
-    decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
+    decoratedCD = decorateCD(glex, cdScope, cd, handcodedPath)
     if (genTag) {
       // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
-      decoratedCD = decorateTagCD(glex, mcScope, cd, handcodedPath, decoratedCD, astGrammar)
+      decoratedCD = decorateTagCD(glex, cdScope, cd, handcodedPath, decoratedCD, astGrammar)
     }
 
     // groovy script hook point

@@ -3,9 +3,9 @@
 package de.monticore.codegen.parser;
 
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.GrammarTransformer;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
-import de.monticore.grammar.grammarfamily._parser.GrammarFamilyParser;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
@@ -23,15 +23,15 @@ public class MCGrammarParserTest {
   public void setup(){
     LogStub.init();
     Log.enableFailQuick(false);
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
+    Grammar_WithConceptsMill.reset();
+    Grammar_WithConceptsMill.init();
   }
 
   @Test
   public void testParse() throws IOException {
     String model = "src/test/resources/de/monticore/statechart/Statechart.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -50,7 +50,7 @@ public class MCGrammarParserTest {
     String str;
 
     str = "astrule MCGrammar = GrammarOption max=1 ;";
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTASTRule> result = parser.parseASTRule(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -68,7 +68,7 @@ public class MCGrammarParserTest {
   public void testSematicPred() throws IOException {
     String str = "{(0 != cmpCounter)}?";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTSemanticpredicateOrAction> result = parser.parseSemanticpredicateOrAction(new StringReader(str));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -80,7 +80,7 @@ public class MCGrammarParserTest {
   public void testScript() throws IOException {
     String model = "src/test/resources/de/monticore/script/ScriptExample.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -92,7 +92,7 @@ public class MCGrammarParserTest {
   public void testAutomatonV1() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV1.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -104,7 +104,7 @@ public class MCGrammarParserTest {
   public void testAutomatonV2() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV2.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -116,7 +116,7 @@ public class MCGrammarParserTest {
   public void testAutomatonV3() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonV3.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -126,7 +126,7 @@ public class MCGrammarParserTest {
   public void testHierarchicalAutomaton() throws IOException {
     String model = "src/test/resources/de/monticore/script/HierarchicalAutomaton.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -138,13 +138,13 @@ public class MCGrammarParserTest {
   public void testAutomatonWithInvsComp() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonWithInvsComp.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertEquals(1, Log.getFindings().size());
-    assertEquals("0xA4061 The grammar name InvAutomaton must be identical to the file name" +
+    assertEquals("0xA4003 The grammar name InvAutomaton must be identical to the file name" +
         " AutomatonWithInvsComp of the grammar (without its file extension).", Log.getFindings().get(0).getMsg());
 
     Log.getFindings().clear();
@@ -154,7 +154,7 @@ public class MCGrammarParserTest {
   public void testAutomatonWithInvs() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonWithInvs.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -164,7 +164,7 @@ public class MCGrammarParserTest {
   public void testAutomatonWithInvsAndStartRule() throws IOException {
     String model = "src/test/resources/de/monticore/script/AutomatonWithInvsAndStartRule.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -174,7 +174,7 @@ public class MCGrammarParserTest {
   public void testGrammarSymbolTableInfo() throws IOException {
     String model = "src/test/resources/de/monticore/AutomatonST.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -198,10 +198,10 @@ public class MCGrammarParserTest {
   public void testPackageNameWithPointsDefined() throws IOException {
     String model = "src/test/resources/de/monticore/point.in.packagename/PackagePathTest.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     parser.parse(model);
     assertEquals(1, Log.getFindings().size());
-    assertEquals("0xA4062 The package declaration point.in.packagename of the grammar must not differ from " +
+    assertEquals("0xA4004 The package declaration point.in.packagename of the grammar must not differ from " +
         "the package of the grammar file.", Log.getFindings().get(0).getMsg());
 
     Log.getFindings().clear();
@@ -211,10 +211,10 @@ public class MCGrammarParserTest {
   public void testPackageWrongPackageDefined() throws IOException {
     String model = "src/test/resources/de/monticore/WrongPackage.mc4";
 
-    GrammarFamilyParser parser = GrammarFamilyMill.parser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     parser.parse(model);
     assertEquals(1, Log.getFindings().size());
-    assertEquals("0xA4062 The package declaration de.ronticore of the grammar " +
+    assertEquals("0xA4004 The package declaration de.ronticore of the grammar " +
         "must not differ from the package of the grammar file.", Log.getFindings().get(0).getMsg());
 
     Log.getFindings().clear();

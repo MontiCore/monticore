@@ -9,7 +9,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
-import de.monticore.grammar.MCGrammarInfo;
+import de.monticore.codegen.parser.MCGrammarInfo;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;

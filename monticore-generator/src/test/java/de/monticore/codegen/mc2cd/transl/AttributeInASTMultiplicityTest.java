@@ -6,11 +6,9 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -25,7 +23,7 @@ import static org.junit.Assert.assertTrue;
  * CDAttributes
  *
  */
-public class AttributeInASTMultiplicityTest {
+public class AttributeInASTMultiplicityTest extends TranslationTestCase {
   
   private ASTCDClass astA;
   
@@ -34,13 +32,7 @@ public class AttributeInASTMultiplicityTest {
   private ASTCDClass astC;
 
   @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  public AttributeInASTMultiplicityTest() {
+  public void setupAttributeInASTMultiplicityTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AttributeInASTMultiplicityGrammar.mc4")).get();
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
@@ -57,16 +49,6 @@ public class AttributeInASTMultiplicityTest {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
     assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX"));
-    /*
-    String name = typeToString(attributes.get(0).getMCType());
-    assertEquals("java.util.List", name);
-    assertTrue(attributes.get(0).getMCType() instanceof ASTSimpleReferenceType);
-    ASTSimpleReferenceType type = (ASTSimpleReferenceType) attributes.get(0).getMCType();
-    assertTrue(type.getTypeArguments().isPresent());
-    assertEquals(1, type.getTypeArguments().get().getTypeArguments().size());
-    assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX",
-        ((ASTSimpleReferenceType) type.getTypeArguments().get().getTypeArguments().get(0))
-            .getNames().get(0));*/
   
     assertTrue(Log.getFindings().isEmpty());
   }

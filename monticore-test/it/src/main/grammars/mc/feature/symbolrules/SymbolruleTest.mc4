@@ -21,7 +21,7 @@ grammar SymbolruleTest extends de.monticore.MCBasics, de.monticore.symbols.Basic
 
   symbolrule ITest = superTypes:de.monticore.types.check.SymTypeExpression*
     method public de.monticore.types.check.SymTypeExpression getByName(String name){
-      Optional<de.monticore.types.check.SymTypeExpression> expr = Optional.empty();
+      java.util.Optional<de.monticore.types.check.SymTypeExpression> expr = Optional.empty();
       for(de.monticore.types.check.SymTypeExpression symType:superTypes){
         if(symType.print().equals(name)){
           expr = Optional.of(symType);

@@ -5,7 +5,7 @@ import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammarfamily._prettyprint.GrammarFamilyFullPrettyPrinter;
+import de.monticore.grammar.grammar_withconcepts._prettyprint.Grammar_WithConceptsFullPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -20,7 +20,7 @@ public class PrettyPrinterGenerator {
   ) {
 
     glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    glex.setGlobalValue("grammarPrinter", new GrammarFamilyFullPrettyPrinter(new IndentPrinter()));
+    glex.setGlobalValue("grammarPrinter", new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter(), false));
 
 
     Log.debug("Start PrettyPrinter generation for the grammar " + astGrammar.getName(), LOG);

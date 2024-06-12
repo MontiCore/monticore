@@ -4,11 +4,9 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -16,16 +14,9 @@ import java.nio.file.Paths;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
 import static org.junit.Assert.*;
 
-public class ExternalInterfaceTranslationTest {
+public class ExternalInterfaceTranslationTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit externalInterface;
-
-  @Before
-  public  void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @Before
   public void setUp() {
