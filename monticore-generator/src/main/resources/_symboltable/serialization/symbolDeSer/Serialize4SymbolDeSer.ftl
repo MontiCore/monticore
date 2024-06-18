@@ -5,6 +5,8 @@ ${tc.signature("hasSpannedScope", "symbolRuleAttributes")}
   p.beginObject();
   p.member(de.monticore.symboltable.serialization.JsonDeSers.KIND, getSerializedKind());
   p.member(de.monticore.symboltable.serialization.JsonDeSers.NAME, toSerialize.getName());
+  p.member(de.monticore.symboltable.serialization.JsonDeSers.FULL_NAME, toSerialize.getFullName());
+  p.member(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE_NAME, toSerialize.getPackageName());
 
   // serialize symbolrule attributes
 <#list symbolRuleAttributes as attr>

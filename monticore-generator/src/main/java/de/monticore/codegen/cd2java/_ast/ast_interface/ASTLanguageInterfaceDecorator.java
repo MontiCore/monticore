@@ -9,12 +9,15 @@ import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 
 /**
@@ -26,7 +29,8 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
 
   protected final VisitorService visitorService;
 
-  public ASTLanguageInterfaceDecorator(ASTService astService, VisitorService visitorService) {
+  public ASTLanguageInterfaceDecorator(GlobalExtensionManagement glex, ASTService astService, VisitorService visitorService) {
+    super(glex);
     this.astService = astService;
     this.visitorService = visitorService;
   }
@@ -48,6 +52,10 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
   protected ASTCDMethod getAcceptTraverserMethod() {
     ASTMCType visitorType = visitorService.getTraverserInterfaceType();
     ASTCDParameter visitorParameter = this.getCDParameterFacade().createParameter(visitorType, "visitor");
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, visitorParameter);
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, visitorParameter);
+    this.replaceTemplate(JAVADOC, method,
+            JavaDoc.of("Entry point for the Visitor pattern.",
+                    "Cf. MontiCore handbook chapter 8.").asHP());
+    return method;
   }
 }

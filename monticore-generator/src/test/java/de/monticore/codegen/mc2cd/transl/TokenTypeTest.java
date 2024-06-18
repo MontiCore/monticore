@@ -6,12 +6,10 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -20,18 +18,12 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TokenTypeTest {
+public class TokenTypeTest extends TranslationTestCase {
 
-  private final ASTCDClass astTest;
+  private ASTCDClass astTest;
 
   @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  public TokenTypeTest() {
+  public void setupTokenTypeTest() {
     Optional<ASTCDCompilationUnit> cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/LexerFormat.mc4"));
     astTest = TestHelper.getCDClass(cdCompilationUnit.get(), "ASTTest").get();

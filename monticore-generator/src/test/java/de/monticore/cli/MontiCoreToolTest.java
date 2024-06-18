@@ -2,18 +2,25 @@
 
 package de.monticore.cli;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.FileUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static de.monticore.MontiCoreConfiguration.*;
 import static org.junit.Assert.assertTrue;
@@ -104,8 +111,10 @@ public class MontiCoreToolTest {
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
+    Grammar_WithConceptsMill.reset();
+    CD4CodeMill.reset();
+    Grammar_WithConceptsMill.init();
+    CD4CodeMill.init();
   }
   
   @Test
@@ -208,6 +217,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(reproducableArgs1);
     FileUtils.deleteDirectory(reproOutDir2);
     FileUtils.moveDirectory(reproOutDir1, reproOutDir2);
+    Grammar_WithConceptsMill.reset();
+    CD4CodeMill.reset();
 
     new MontiCoreTool().run(reproducableArgs1);
 

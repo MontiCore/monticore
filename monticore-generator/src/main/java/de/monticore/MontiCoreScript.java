@@ -13,6 +13,10 @@ import de.monticore.cd.codegen.TopDecorator;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._symboltable.CD4CodeScopesGenitorDelegator;
+import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
+import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -23,11 +27,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._ast.ASTCDDecorator;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTDecorator;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTFullDecorator;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
-import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
+import de.monticore.codegen.cd2java._ast.ast_class.*;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTInterfaceDecorator;
 import de.monticore.codegen.cd2java._ast.ast_interface.ASTLanguageInterfaceDecorator;
@@ -56,36 +56,16 @@ import de.monticore.codegen.cd2java._od.ODService;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableCDDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
-import de.monticore.codegen.cd2java._symboltable.scope.ArtifactScopeClassDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.ArtifactScopeInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeClassDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.GlobalScopeInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.ScopeClassDecorator;
-import de.monticore.codegen.cd2java._symboltable.scope.ScopeInterfaceDecorator;
+import de.monticore.codegen.cd2java._symboltable.scope.*;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDecorator;
 import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDelegatorDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.CommonSymbolInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
-import de.monticore.codegen.cd2java._tagging.CDTaggingDecorator;
-import de.monticore.codegen.cd2java._tagging.MC2CDTaggingTranslation;
-import de.monticore.codegen.cd2java._tagging.TagConformsToSchemaCoCoDecorator;
-import de.monticore.codegen.cd2java._tagging.TaggerDecorator;
-import de.monticore.codegen.cd2java._tagging.TaggingConstants;
-import de.monticore.codegen.cd2java._visitor.CDTraverserDecorator;
-import de.monticore.codegen.cd2java._visitor.HandlerDecorator;
-import de.monticore.codegen.cd2java._visitor.InheritanceHandlerDecorator;
-import de.monticore.codegen.cd2java._visitor.TraverserClassDecorator;
-import de.monticore.codegen.cd2java._visitor.TraverserInterfaceDecorator;
-import de.monticore.codegen.cd2java._visitor.Visitor2Decorator;
-import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java._tagging.*;
+import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.cli.CDCLIDecorator;
 import de.monticore.codegen.cd2java.cli.CLIDecorator;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -107,6 +87,7 @@ import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
 import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherDecorator;
 import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherInterfaceDecorator;
+import de.monticore.codegen.mc2cd.MC2CD4CodeSymbolTableCompleter;
 import de.monticore.codegen.mc2cd.MC2CDTransformation;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.scopeTransl.MC2CDScopeTranslation;
@@ -128,12 +109,10 @@ import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTC;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
-import de.monticore.grammar.grammarfamily._cocos.GrammarFamilyCoCoChecker;
-import de.monticore.grammar.grammarfamily._symboltable.GrammarFamilyPhasedSTC;
-import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyArtifactScope;
-import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -149,7 +128,6 @@ import de.se_rwth.commons.logging.Log;
 import groovy.lang.Script;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import parser.MCGrammarParser;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -157,29 +135,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.MontiCoreConfiguration.CONFIGTEMPLATE_LONG;
-import static de.monticore.MontiCoreConfiguration.GENDST_LONG;
-import static de.monticore.MontiCoreConfiguration.GENTAG_LONG;
-import static de.monticore.MontiCoreConfiguration.GRAMMAR_LONG;
-import static de.monticore.MontiCoreConfiguration.GROOVYHOOK1;
-import static de.monticore.MontiCoreConfiguration.GROOVYHOOK2;
-import static de.monticore.MontiCoreConfiguration.HANDCODEDMODELPATH_LONG;
-import static de.monticore.MontiCoreConfiguration.HANDCODEDPATH_LONG;
-import static de.monticore.MontiCoreConfiguration.MODELPATH_LONG;
-import static de.monticore.MontiCoreConfiguration.OUT_LONG;
-import static de.monticore.MontiCoreConfiguration.REPORT_LONG;
-import static de.monticore.MontiCoreConfiguration.TEMPLATEPATH_LONG;
-import static de.monticore.MontiCoreConfiguration.TOOL_JAR_NAME_LONG;
-import static de.monticore.gradle.AMontiCoreConfiguration.GENINTERPRET_LONG;
+import static de.monticore.MontiCoreConfiguration.*;
 
 /**
  * The actual top level functional implementation of MontiCore. This is the
@@ -268,7 +227,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if(!grammar.toFile().isFile()) {
       Log.error("0xA1016 Cannot read " + grammar.toString() + " as it is not a file.");
     }
-    return MCGrammarParser.parse(grammar);
+    try {
+      return Grammar_WithConceptsMill.parser().parse(grammar.toString());
+    } catch (IOException e) {
+      Log.error("0XA0115 IOException during parsing of " + grammar.toString());
+    }
+    return Optional.empty();
   }
 
   /**
@@ -340,7 +304,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory The output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, List<ASTCDCompilationUnit> cds, ASTMCGrammar grammar,
-                             IGrammarFamilyGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
+                             IGrammar_WithConceptsGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
                              File outputDirectory) {
     // first cd (representing AST package) is relevant
     // -> will be only one cd in the future
@@ -355,7 +319,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param outputDirectory output directory for generated Java code
    */
   public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
-                             IGrammarFamilyGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
+                             IGrammar_WithConceptsGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
                              File outputDirectory) {
     Log.errorIfNull(
             grammar,
@@ -370,7 +334,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param symbolTable
    * @param outputDirectory output directory for generated Java code
    */
-  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, IGrammarFamilyGlobalScope symbolTable,
+  public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, IGrammar_WithConceptsGlobalScope symbolTable,
                              MCPath handcodedPath, MCPath templatePath, File outputDirectory,
                              boolean embeddedJavaCode, Languages lang) {
     Log.errorIfNull(
@@ -400,29 +364,28 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @param ast
    * @return
    */
-  public ASTMCGrammar createSymbolsFromAST(IGrammarFamilyGlobalScope globalScope, ASTMCGrammar ast) {
+  public ASTMCGrammar createSymbolsFromAST(IGrammar_WithConceptsGlobalScope globalScope, ASTMCGrammar ast) {
     // Build grammar symbol table (if not already built)
     String qualifiedGrammarName = Names.getQualifiedName(ast.getPackageList(), ast.getName());
     Optional<MCGrammarSymbol> grammarSymbol = globalScope
-            .resolveMCGrammarDown(qualifiedGrammarName);
+        .resolveMCGrammarDown(qualifiedGrammarName);
 
     ASTMCGrammar result = ast;
 
     if(grammarSymbol.isPresent()) {
       result = grammarSymbol.get().getAstNode();
     } else {
-      GrammarFamilyPhasedSTC stCreator = new GrammarFamilyPhasedSTC(globalScope);
+      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
       stCreator.createFromAST(result);
-      globalScope.addLoadedFile(qualifiedGrammarName);
     }
 
     MCGrammarSymbol symbol = result.getSymbol();
     for(MCGrammarSymbol it: MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if(!it.getFullName().equals(symbol.getFullName())) {
         Reporting.reportOpenInputFile(Optional.empty(),
-                Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
+            Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
         Reporting.reportOpenInputFile(Optional.empty(),
-                Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
+            Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
 
       }
     }
@@ -439,9 +402,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // Build grammar symbol table (if not already built)
 
     final String qualifiedCDName = Names.getQualifiedName(ast.getMCPackageDeclaration().getMCQualifiedName().getPartsList(),
-            ast.getCDDefinition().getName());
+        ast.getCDDefinition().getName());
     Optional<DiagramSymbol> cdSymbol = globalScope.resolveDiagramDown(
-            qualifiedCDName);
+        qualifiedCDName);
 
     ASTCDCompilationUnit result = ast;
 
@@ -449,10 +412,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       result = (ASTCDCompilationUnit) cdSymbol.get().getEnclosingScope().getAstNode();
       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
     } else {
-      GrammarFamilyPhasedSTC stCreator = new GrammarFamilyPhasedSTC();
-      IGrammarFamilyArtifactScope artScope = stCreator.createFromAST(result);
-      globalScope.addSubScope(artScope);
-      globalScope.addLoadedFile(qualifiedCDName);
+      ICD4CodeArtifactScope artScope = CD4CodeMill.scopesGenitorDelegator().createFromAST(result);
+      MC2CD4CodeSymbolTableCompleter completer = new MC2CD4CodeSymbolTableCompleter();
+      result.accept(completer.getTraverser());
     }
 
     return result;
@@ -464,7 +426,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    */
   public void runGrammarCoCos(ASTMCGrammar ast, IGrammar_WithConceptsGlobalScope scope) {
     // Run context conditions
-    GrammarFamilyCoCoChecker checker = new GrammarFamilyCoCoChecker();
+    Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
     checker.addChecker((new GrammarCoCos()).getCoCoChecker());
     checker.checkAll(ast);
     return;
@@ -1011,7 +973,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       Log.error("0xA1018 Unable to generate Tagging infrastructure on non TagSchema/TagDef Grammar:" + astTagGrammar.getSymbol().getFullName());
       return Optional.empty();
     }
-    Optional<MCGrammarSymbol> originalGrammarOpt = GrammarFamilyMill.globalScope().resolveMCGrammar(originalGrammarName);
+    Optional<MCGrammarSymbol> originalGrammarOpt = Grammar_WithConceptsMill.globalScope().resolveMCGrammar(originalGrammarName);
     if (originalGrammarOpt.isEmpty()){
       Log.error("0xA1026 Failed to resolve original grammar " + originalGrammarName + " of tag grammar " + astTagGrammar.getSymbol().getFullName());
       return Optional.empty();
@@ -1093,7 +1055,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ASTReferenceDecorator<ASTCDInterface> astInterfaceReferencedSymbolDecorator = new ASTReferenceDecorator<ASTCDInterface>(glex, symbolTableService);
     ASTFullDecorator fullDecorator = new ASTFullDecorator(dataDecorator, astDecorator, astClassReferencedSymbolDecorator);
 
-    ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
+    ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(glex, astService, visitorService);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, astService), astService);
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
@@ -1164,7 +1126,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     ASTFullEmfDecorator fullEmfDecorator = new ASTFullEmfDecorator(dataEmfDecorator, astEmfDecorator, astClassReferencedSymbolDecorator);
 
-    ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(astService, visitorService);
+    ASTLanguageInterfaceDecorator astLanguageInterfaceDecorator = new ASTLanguageInterfaceDecorator(glex, astService, visitorService);
 
     BuilderDecorator builderDecorator = new BuilderDecorator(glex, new AccessorDecorator(glex, emfService), astService);
     ASTBuilderDecorator astBuilderDecorator = new ASTBuilderDecorator(glex, builderDecorator, astService);
@@ -1374,14 +1336,22 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   public ICD4AnalysisGlobalScope createCD4AGlobalScope(MCPath modelPath) {
-    return createMCGlobalScope(modelPath);
-  }
-
-  public IGrammarFamilyGlobalScope createMCGlobalScope(MCPath modelPath) {
-    IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
+    CD4CodeMill.init();
+    ICD4CodeGlobalScope scope = CD4CodeMill.globalScope();
     // reset global scope
     scope.clear();
     BuiltInTypes.addBuiltInTypes(scope);
+
+    // Set ModelPath
+    scope.setSymbolPath(modelPath);
+    return scope;  }
+
+  public IGrammar_WithConceptsGlobalScope createMCGlobalScope(MCPath modelPath) {
+    Grammar_WithConceptsMill.init();
+    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.globalScope();
+    // reset global scope
+    scope.clear();
+    BasicSymbolsMill.initializePrimitives();
 
     // Set ModelPath
     scope.setSymbolPath(modelPath);
@@ -1407,7 +1377,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     }
     // a TR grammar has the fqn format: package.tr.NameTR, which we reverse here to result in package.Name
     String originalGrammarName = astTRGrammar.getSymbol().getFullName().substring(0, astTRGrammar.getSymbol().getFullName().length() - 2).replace("tr.", "");
-    Optional<MCGrammarSymbol> originalGrammarOpt = GrammarFamilyMill.globalScope().resolveMCGrammar(originalGrammarName);
+    Optional<MCGrammarSymbol> originalGrammarOpt = Grammar_WithConceptsMill.globalScope().resolveMCGrammar(originalGrammarName);
     if(originalGrammarOpt.isEmpty()) {
       Log.error("0xA1026 Failed to resolve original grammar " + originalGrammarName + " of TRGrammar " + astTRGrammar.getSymbol().getFullName());
       return;
@@ -1507,8 +1477,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     @Override
     protected void doRun(String script, Configuration configuration) {
       FileReaderWriter.init();
-      GrammarFamilyMill.init();
-      BasicSymbolsMill.initializePrimitives();
+
       GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
               .withScriptBaseClass(MontiCoreScript.class)
               .withImportCustomizer(new ImportCustomizer().addStarImports(DEFAULT_IMPORTS)
@@ -1545,7 +1514,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(HANDCODEDMODELPATH_LONG, handcodedModelPath);
           builder.addVariable(GENDST_LONG, mcConfig.getGenDST().orElse(false)); // no transformation infrastructure generation by default
           builder.addVariable(GENTAG_LONG, mcConfig.getGenTag().orElse(false)); // no tagging generation by default
-          builder.addVariable(GENINTERPRET_LONG, mcConfig.getGenInterpret().orElse(false)); // no interpreter generation by default
           builder.addVariable(OUT_LONG, mcConfig.getOut());
           builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
           builder.addVariable(REPORT_LONG, mcConfig.getReport());

@@ -21,17 +21,8 @@ sonarqube {
   }
 }
 
-if(!hasProperty('bootstrap')){
-  allprojects {
-    group = "de.monticore"
-  }
-} else {
-  allprojects {
-    group = "de.monticore.bs"
-  }
-}
-
 allprojects {
+  group = "de.monticore"
 
   ext.grammarDir = 'src/main/grammars'
   buildDir = file("$projectDir/target")
@@ -122,9 +113,7 @@ task buildMC {
   }
 }
 
-if(!hasProperty('bootstrap')) {
-  buildMC.dependsOn(gradle.includedBuilds*.task(':build'))
-}
+buildMC.dependsOn(gradle.includedBuilds*.task(':build'))
 
 /**
  *  Assembles the core projects, i.e. the generator, runtime and grammar library.
@@ -140,9 +129,9 @@ task assembleMC {
     dependsOn ":monticore-grammar-emf:assemble"
   }
 }
-if(!hasProperty('bootstrap')) {
-  assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
-}
+
+assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
+
 
 /**
  *  Executes JUnit tests of the core projects, i.e. the generator, runtime and grammar library.
@@ -159,9 +148,7 @@ task testMC {
   }
 }
 
-if(!hasProperty('bootstrap')) {
-  testMC.dependsOn(gradle.includedBuilds*.task(':test'))
-}
+testMC.dependsOn(gradle.includedBuilds*.task(':test'))
 
 /**
  *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
@@ -181,9 +168,7 @@ task deployMC {
 
 }
 
-if(!hasProperty('bootstrap')) {
-  deployMC.dependsOn(gradle.includedBuilds*.task(':publish'))
-}
+deployMC.dependsOn(gradle.includedBuilds*.task(':publish'))
 
 /**
  *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
@@ -202,26 +187,23 @@ task publishMCToMavenLocal {
   }
 }
 
-if(!hasProperty('bootstrap')) {
-  publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocal'))
-}
+publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocal'))
 
 /**
  *  Build the test projects, i.e. integration tests and experiments.
  *  This includes code generation for these projects and JUnit tests.
  */
-if(!hasProperty('bootstrap')) {
-  task testIT {
-    group("build")
-    description('Build the test projects, i.e. integration tests and experiments.')
-    
-    dependsOn(
-            project(":monticore-test").subprojects.collect {
-              it.tasks.getByName "test"
-            }
-    )
-  }
+task testIT {
+  group("build")
+  description('Build the test projects, i.e. integration tests and experiments.')
+
+  dependsOn(
+          project(":monticore-test").subprojects.collect {
+            it.tasks.getByName "test"
+          }
+  )
 }
+
   
   
 task buildAll(type: GradleBuild) {
@@ -237,13 +219,12 @@ task cleanMC {
   }
 }
 
-if (!hasProperty('bootstrap')) {
-  cleanMC.dependsOn(
-          project(":monticore-test").subprojects.collect {
-            it.tasks.getByName "clean"
-          }
-  )
-}
+cleanMC.dependsOn(
+        project(":monticore-test").subprojects.collect {
+          it.tasks.getByName "clean"
+        }
+)
+
 
 task sonarMC (type: GradleBuild) {
   description('Generates code coverage')

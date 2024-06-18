@@ -6,11 +6,9 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -24,7 +22,7 @@ import static org.junit.Assert.assertTrue;
  * Test for the proper transformation of NonTerminals to corresponding ASTCDAttributes
  * 
  */
-public class NonTerminalMultiplicityTest {
+public class NonTerminalMultiplicityTest extends TranslationTestCase {
 
   private ASTCDClass astA;
 
@@ -45,15 +43,7 @@ public class NonTerminalMultiplicityTest {
   private ASTCDClass astJ;
 
   @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  public NonTerminalMultiplicityTest() {
-    LogStub.init();
-    Log.enableFailQuick(false);
+  public void setupNonTerminalMultiplicityTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/NonTerminalMultiplicityGrammar.mc4")).get();
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();

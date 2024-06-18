@@ -6,11 +6,7 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis.CDBasisMill;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnitBuilder;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -20,18 +16,14 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier.UMLModifierMill;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.StringTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -83,7 +75,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
 
     List<MCGrammarSymbol> superGrammars = grammar.getSymbol().getAllSuperGrammars();
 
-    GrammarTraverser traverser = GrammarFamilyMill.traverser();
+    GrammarTraverser traverser = Grammar_WithConceptsMill.traverser();
 
     // Collect information about the NonTerminals first
     NonTermAccessorVisitor nonTermAccessorVisitor = new NonTermAccessorVisitor();
@@ -96,7 +88,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     PrettyPrinterGenerationVisitor transformer = new PrettyPrinterGenerationVisitor(glex,
             prettyPrinterCDClass,
             nonTermAccessorVisitor.getClassProds());
-    traverser = GrammarFamilyMill.traverser();
+    traverser = Grammar_WithConceptsMill.traverser();
     traverser.setGrammarHandler(new PrettyPrinterReducedTraverseHandler());
     traverser.add4Grammar(transformer);
 

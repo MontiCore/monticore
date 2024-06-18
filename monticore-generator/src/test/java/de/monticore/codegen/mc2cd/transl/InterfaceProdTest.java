@@ -5,12 +5,10 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -24,7 +22,7 @@ import static org.junit.Assert.assertTrue;
  * Test for the proper transformation of ASTInterfaceProds to corresponding ASTCDInterfaces
  * 
  */
-public class InterfaceProdTest {
+public class InterfaceProdTest extends TranslationTestCase {
   
   private ASTCDInterface astA;
   
@@ -33,13 +31,7 @@ public class InterfaceProdTest {
   private ASTCDInterface astC;
 
   @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  public InterfaceProdTest() {
+  public void setupInterfaceProdTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/InterfaceProd.mc4")).get();
     astA = TestHelper.getCDInterface(cdCompilationUnit, "ASTA").get();

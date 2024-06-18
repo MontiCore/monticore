@@ -7,7 +7,8 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -22,17 +23,9 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class CDScopeTranslationTest {
+public class CDScopeTranslationTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit compilationUnit;
-
-  @Before
-  public void setup(){
-    LogStub.init();
-    Log.enableFailQuick(false);
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
-  }
 
   @Before
   public void setUp() {

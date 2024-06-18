@@ -6,27 +6,19 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class RemoveRedundantReferencesManipulationTest {
+public class RemoveRedundantReferencesManipulationTest extends TranslationTestCase {
 
-  @Before
-  public void setup(){
-    LogStub.init();
-    Log.enableFailQuick(false);
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
-  }
-  
   @Test
   public void testGenericList() {
     ASTCDClass cdClass = setupCDClass("name",

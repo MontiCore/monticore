@@ -7,16 +7,13 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.spi.LocaleServiceProvider;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,20 +22,14 @@ import static org.junit.Assert.assertTrue;
  * Tests that attributes that are redefined in ASTRules correctly override their counterparts in the
  * corresponding ClassProds.
  */
-public class AttributeInASTOverridingTest {
+public class AttributeInASTOverridingTest extends TranslationTestCase {
   
   private ASTCDClass astA;
   
   private ASTCDClass astB;
 
   @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  public AttributeInASTOverridingTest() {
+  public void setupAttributeInASTOverridingTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AttributeInASTOverridingGrammar.mc4")).get();
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();

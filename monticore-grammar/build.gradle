@@ -1,10 +1,8 @@
 ///* (c) https://github.com/MontiCore/monticore */
 
 buildscript {
-  if (findProperty('bootstrap')) {
     // fake a different group for Gradle to prevent it from including the build in it self
     group = "de.mc"
-  }
 }
 
 plugins {
@@ -15,11 +13,7 @@ plugins {
 }
 
 description = 'MontiCore: Grammar'
-if (!hasProperty('bootstrap')) {
-  group = "de.monticore"
-} else {
-  group = "de.monticore.bs"
-}
+group = "de.monticore"
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"

@@ -5,12 +5,10 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -25,7 +23,7 @@ import static org.junit.Assert.assertTrue;
  * ASTCDClasses
  * 
  */
-public class InheritanceTest {
+public class InheritanceTest extends TranslationTestCase {
   
   private ASTCDClass astA;
   
@@ -40,13 +38,7 @@ public class InheritanceTest {
   private ASTCDClass astF;
 
   @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  public InheritanceTest() {
+  public void setupInheritanceTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/InheritanceGrammar.mc4")).get();
 

@@ -6,11 +6,9 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -18,16 +16,9 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class DerivedAttributeNameTest {
+public class DerivedAttributeNameTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit compilationUnit;
-
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @Before
   public void setUp() {
