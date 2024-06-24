@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.ast.ASTNodeMock;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -205,6 +207,29 @@ public class TemplateControllerHookPointsTest {
   }
 
   @Test
+  public void testSpecificBeforeTemplates() {
+    ASTNode ast1 = new ASTNodeMock();
+    ASTNode ast2 = new ASTNodeMock();
+
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+
+    glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
+    assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
+
+    // previously set template is overwritten
+    glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
+    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
+
+    // add a new template
+    glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
+    assertEquals("CBA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
+
+  }
+
+  @Test
   public void testAfterTemplates() {
     assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
@@ -298,6 +323,23 @@ public class TemplateControllerHookPointsTest {
     
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testSpecificBeforeReplaceAfterInSubtemplates() {
+    ASTNode ast1 = new ASTNodeMock();
+
+    assertEquals("TopA A", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
+
+    glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
+    assertEquals("TopA BA", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
+
+    glex.replaceTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
+    assertEquals("TopA BC", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
+
+    glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
+    assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
     assertTrue(Log.getFindings().isEmpty());
   }
   

@@ -105,28 +105,35 @@ public interface IReportEventHandler {
       ASTNode node, HookPoint newHp);
 
   /**
-   * @param hp
+   * @param oldTemplate
+   * @param hps
    * @param ast
    */
+
   public void reportCallSpecificReplacementHookPoint(String oldTemplate,
       List<HookPoint> hps, ASTNode ast);
 
   /**
-   * @param hp
+   * @param oldTemplate
+   * @param hps
    * @param ast
    */
+
   public void reportCallReplacementHookPoint(String oldTemplate,
       List<HookPoint> hps, ASTNode ast);
 
   /**
-   * @param hp
+   * @param oldTemplate
+   * @param beforeHPs
    * @param ast
    */
+
   public void reportCallBeforeHookPoint(String oldTemplate,
       Collection<HookPoint> beforeHPs, ASTNode ast);
 
   /**
-   * @param hp
+   * @param oldTemplate
+   * @param afterHPs
    * @param ast
    */
   public void reportCallAfterHookPoint(String oldTemplate,
@@ -144,6 +151,7 @@ public interface IReportEventHandler {
    * @param beforeHps
    */
   public void reportSetBeforeTemplate(String template,
+      Optional<ASTNode> ast,
       List<? extends HookPoint> beforeHps);
 
   /**
@@ -151,14 +159,27 @@ public interface IReportEventHandler {
    * @param afterHps
    */
   public void reportSetAfterTemplate(String template,
+      Optional<ASTNode> ast,
       List<? extends HookPoint> afterHps);
 
   /**
    * @param template
+   * @param ast
    * @param afterHps
    */
   public void reportAddAfterTemplate(String template,
+                                     Optional<ASTNode> ast,
                                      List<? extends HookPoint> afterHps);
+
+  /**
+   * @param template
+   * @param ast
+   * @param afterHps
+   */
+  public void reportAddBeforeTemplate(String template,
+                                     Optional<ASTNode> ast,
+                                     List<? extends HookPoint> beforeHps);
+
   /**
    * @param transformationName
    */
