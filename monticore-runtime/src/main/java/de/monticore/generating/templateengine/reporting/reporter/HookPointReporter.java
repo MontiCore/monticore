@@ -14,6 +14,7 @@ import de.se_rwth.commons.Names;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  */
@@ -208,33 +209,35 @@ public class HookPointReporter extends AReporter {
       List<? extends HookPoint> newHps) {
     String simpleTemplate = ReportingHelper.getTemplateName(oldTemplate);
     for (HookPoint hp : newHps) {
-      reportSetTemplateHookpoint(simpleTemplate, hp, SET_REPLACE_TEMPLATE);
+      reportSetTemplateHookpoint(simpleTemplate, Optional.empty(), hp, SET_REPLACE_TEMPLATE);
     }
   }
 
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetBeforeTemplate(java.lang.String,
-   * java.util.List)
+   * Optional, java.util.List)
    */
   @Override
   public void reportSetBeforeTemplate(String template,
-      List<? extends HookPoint> beforeHps) {
+                                      Optional<ASTNode> ast,
+                                      List<? extends HookPoint> beforeHps) {
     String simpleTemplate = ReportingHelper.getTemplateName(template);
     for (HookPoint hp : beforeHps) {
-      reportSetTemplateHookpoint(simpleTemplate, hp, SET_BEFORE_TEMPLATE);
+      reportSetTemplateHookpoint(simpleTemplate, ast, hp, SET_BEFORE_TEMPLATE);
     }
   }
 
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetAfterTemplate(java.lang.String,
-   * java.util.List)
+   * Optional, java.util.List)
    */
   @Override
   public void reportSetAfterTemplate(String template,
-      List<? extends HookPoint> afterHps) {
+                                     Optional<ASTNode> ast,
+                                     List<? extends HookPoint> afterHps) {
     String simpleTemplate = ReportingHelper.getTemplateName(template);
     for (HookPoint hp : afterHps) {
-      reportSetTemplateHookpoint(simpleTemplate, hp, SET_AFTER_TEMPLATE);
+      reportSetTemplateHookpoint(simpleTemplate, ast, hp, SET_AFTER_TEMPLATE);
     }
   }
   
@@ -272,7 +275,7 @@ public class HookPointReporter extends AReporter {
     }
   }
   
-  protected void reportSetTemplateHookpoint(String simpleTemplate, HookPoint hp, String shortcut) {
+  protected void reportSetTemplateHookpoint(String simpleTemplate, Optional<ASTNode> ast, HookPoint hp, String shortcut) {
     // calculate first line
     String firstline = shortcut
         + Layouter.getSpaceString(ReportingConstants.FORMAT_LENGTH_1 - shortcut.length());
@@ -289,6 +292,9 @@ public class HookPointReporter extends AReporter {
       shp = true;
     }
     firstline += simpleTemplate + Layouter.getSpaceString(ReportingConstants.COLUMN - simpleTemplate.length());
+    if (ast.isPresent()) {
+      firstline += repository.getASTNodeNameFormatted(ast.get());
+    }
     String hpValue = getHookPointValue(hp);
     if (!shp) {
       firstline += hpValue;
