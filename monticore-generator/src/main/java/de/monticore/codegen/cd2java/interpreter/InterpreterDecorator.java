@@ -20,22 +20,27 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.interpreter.InterpreterConstants.*;
 
-public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+public class InterpreterDecorator
+    extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
   protected final VisitorService service;
 
-  public InterpreterDecorator(GlobalExtensionManagement glex, VisitorService service) {
+  public InterpreterDecorator(GlobalExtensionManagement glex,
+                              VisitorService service) {
     super(glex);
     this.service = service;
   }
 
-  public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD) {
-    ASTCDPackage visitorPackage = getPackage(input, decoratedCD, VisitorConstants.VISITOR_PACKAGE);
+  public void decorate(ASTCDCompilationUnit input,
+                       ASTCDCompilationUnit decoratedCD) {
+    ASTCDPackage visitorPackage = getPackage(
+        input, decoratedCD, VisitorConstants.VISITOR_PACKAGE);
     visitorPackage.addCDElement(decorate(input));
   }
 
@@ -55,11 +60,13 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   public List<ASTCDConstructor> getConstructors() {
     ASTCDParameter parameter = cdParameterFacade.createParameter(
-        mcTypeFacade.createQualifiedType(MODELINTERPRETER_FULLNAME), "realThis");
+        MODELINTERPRETER_FULLNAME, "realThis");
 
     String interpreterName = service.getInterpreterSimpleName();
-    ASTCDConstructor constructorNoParams = cdConstructorFacade.createConstructor(PUBLIC.build(), interpreterName);
-    ASTCDConstructor constructorRealThis = cdConstructorFacade.createConstructor(PUBLIC.build(), interpreterName, parameter);
+    ASTCDConstructor constructorNoParams = cdConstructorFacade
+        .createConstructor(PUBLIC.build(), interpreterName);
+    ASTCDConstructor constructorRealThis = cdConstructorFacade
+        .createConstructor(PUBLIC.build(), interpreterName, parameter);
 
     List<String> names = new ArrayList<>();
     List<String> types = new ArrayList<>();
@@ -69,8 +76,11 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
       types.add(service.getInterpreterFullName(symbol));
     }
 
-    replaceTemplate(EMPTY_BODY, constructorRealThis, new StringHookPoint("this.setRealThis(realThis);"));
-    replaceTemplate(EMPTY_BODY, constructorNoParams, new TemplateHookPoint("interpreter.ConstructorNoParams", names, types));
+    replaceTemplate(EMPTY_BODY, constructorRealThis,
+        new StringHookPoint("this.setRealThis(realThis);"));
+    replaceTemplate(EMPTY_BODY, constructorNoParams,
+        new TemplateHookPoint("interpreter.ConstructorNoParams",
+            names, types));
 
     return List.of(constructorNoParams, constructorRealThis);
   }
@@ -171,21 +181,17 @@ public class InterpreterDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   public List<ASTCDAttribute> getInterpreterAttributes() {
-    List<ASTCDAttribute> interpreters = new ArrayList<>();
-    for (DiagramSymbol symbol : service.getSuperCDsTransitive()) {
-      interpreters.add(cdAttributeFacade.createAttribute(
-          PROTECTED.build(),
-          service.getInterpreterType(symbol),
-          uncapFirst(service.getInterpreterSimpleName(symbol))));
-    }
-    return interpreters;
+    return service.getSuperCDsTransitive()
+        .stream()
+        .map(s -> cdAttributeFacade.createAttribute(
+            PROTECTED.build(), service.getInterpreterType(s),
+            uncapFirst(service.getInterpreterSimpleName(s))))
+        .collect(Collectors.toList());
   }
 
   public ASTCDInterfaceUsage getSuperInterface() {
     return CDInterfaceUsageFacade.getInstance()
-        .createCDInterfaceUsage(
-            MODELINTERPRETER_FULLNAME,
-            service.getInterpreterInterfaceFullName());
+        .createCDInterfaceUsage(service.getInterpreterInterfaceSimpleName());
   }
 
   protected String uncapFirst(String s) {

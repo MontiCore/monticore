@@ -127,7 +127,7 @@ public abstract class MCTask extends DefaultTask {
   public boolean genTag = false;
 
   // Whether interpreter related artifacts should be generated
-  public boolean genInterpret = false;
+  public boolean genInterpret = true;
 
   @OutputDirectory
   public DirectoryProperty getOutputDir() {

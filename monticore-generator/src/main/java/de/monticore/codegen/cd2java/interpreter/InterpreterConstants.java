@@ -5,6 +5,8 @@ public final class InterpreterConstants {
 
   public static final String INTERPRETER_NAME_SUFFIX = "Interpreter";
 
+  public static final String INTERPRET_METHOD_NAME = "interpret";
+
   public static final String MODELINTERPRETER_FULLNAME = "de.monticore.interpreter.ModelInterpreter";
 
   public static final String VALUE_FULLNAME = "de.monticore.interpreter.Value";

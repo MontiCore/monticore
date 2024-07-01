@@ -105,7 +105,7 @@ public abstract class MCGenTask extends MCSingleFileTask {
 
     // genInterpret
     args.add("-" + MontiCoreConfiguration.GENINTERPRET_LONG);
-    args.add(Boolean.toString(getGenInterpret().getOrElse(false)));
+    args.add(Boolean.toString(getGenInterpret().getOrElse(true)));
 
     if (getCustomLog().isPresent()) {
       args.add("-" + MontiCoreConfiguration.CUSTOMLOG);

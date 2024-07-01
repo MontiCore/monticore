@@ -1514,6 +1514,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(HANDCODEDMODELPATH_LONG, handcodedModelPath);
           builder.addVariable(GENDST_LONG, mcConfig.getGenDST().orElse(false)); // no transformation infrastructure generation by default
           builder.addVariable(GENTAG_LONG, mcConfig.getGenTag().orElse(false)); // no tagging generation by default
+          builder.addVariable(GENINTERPRET_LONG, mcConfig.getGenInterpret().orElse(true)); // no interpreter generation by default
           builder.addVariable(OUT_LONG, mcConfig.getOut());
           builder.addVariable(TOOL_JAR_NAME_LONG, mcConfig.getToolName());
           builder.addVariable(REPORT_LONG, mcConfig.getReport());

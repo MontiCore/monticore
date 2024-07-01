@@ -12,7 +12,6 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDM
 
     List<ASTCDMethod> result = new ArrayList<>();
     result.add(createEvaluateInterpreterMethod(input));
-    result.addAll(createEvaluateInterpreterSuperMethod(input));
+    result.add(createEvaluateInterpreterSuperMethod(input));
     return result;
   }
 
@@ -68,26 +67,17 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDM
   }
 
 
-  protected List<ASTCDMethod> createEvaluateInterpreterSuperMethod(ASTCDType cdType) {
-    List<ASTCDMethod> methods = new ArrayList<>();
-    List<ASTMCQualifiedType> types = visitorService.getAllInterpreterInterfacesTypesInHierarchy();
+  protected ASTCDMethod createEvaluateInterpreterSuperMethod(ASTCDType cdType) {
+    ASTCDParameter parameter = cdParameterFacade.createParameter(
+        mcTypeFacade.createQualifiedType(InterpreterConstants.MODELINTERPRETER_FULLNAME),
+        "interpreter");
+    ASTCDMethod method = cdMethodFacade.createMethod(
+        PUBLIC.build(), InterpreterConstants.VALUE_FULLNAME, "evaluate", parameter);
+    replaceTemplate(EMPTY_BODY, method,
+        new TemplateHookPoint("_ast.ast_class.Evaluate",
+            cdType, visitorService.getInterpreterInterfaceFullName()));
 
-    if (!types.isEmpty()) {
-      types.remove(types.size() - 1);
-    }
-
-    types.add(mcTypeFacade.createQualifiedType(InterpreterConstants.MODELINTERPRETER_FULLNAME));
-
-    for (ASTMCQualifiedType type : types) {
-      ASTCDParameter parameter = cdParameterFacade.createParameter(type, "interpreter");
-      ASTCDMethod method = cdMethodFacade.createMethod(
-          PUBLIC.build(), InterpreterConstants.VALUE_FULLNAME, "evaluate", parameter);
-      replaceTemplate(EMPTY_BODY, method,
-          new TemplateHookPoint("_ast.ast_class.Evaluate",
-              cdType, visitorService.getInterpreterInterfaceFullName()));
-      methods.add(method);
-    }
-    return methods;
+    return method;
   }
 
 }

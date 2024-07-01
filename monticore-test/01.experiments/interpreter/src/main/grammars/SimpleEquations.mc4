@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar SimpleEquations extends Numerals {
+
+  interface Expression;
+
+  PlusEquation implements Expression = left:Expression "+" right:Expression;
+
+  MinusEquation implements Expression = left:Expression "-" right:Expression;
+
+  MultiplyEquation implements Expression = left:Expression "*" right:Expression;
+
+  DivideEquation implements Expression = left:Expression "/" right:Expression;
+
+  symbol Variable implements Expression = Name "=" value:Expression;
+
+  NameExpression implements Expression = Name;
+
+  NumberExpression implements Expression = Number;
+
+}
