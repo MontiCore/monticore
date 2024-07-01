@@ -3,10 +3,7 @@
 package de.monticore.generating.templateengine;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -16,11 +13,7 @@ import freemarker.template.SimpleHash;
 import freemarker.template.TemplateModelException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class for managing hook points, features and (global) variables in templates.
@@ -48,6 +41,8 @@ public class GlobalExtensionManagement {
   // specificReplacement is only applied when template name and ASTnode fit
   // (thus the replacement is individual for each ASTnode)
   protected final Map<String, Map<ASTNode, HookPoint>> specificReplacement = Maps.newHashMap();
+  protected final Table<String, ASTNode, List<HookPoint>> specificBefore = HashBasedTable.create();
+  protected final Table<String, ASTNode, List<HookPoint>> specificAfter = HashBasedTable.create();
 
   /**
    * Map of all hook points
@@ -225,9 +220,9 @@ public class GlobalExtensionManagement {
       try {
         return BeansWrapper.getDefaultInstance().unwrap(globalData.get(name));
       }
-        catch (TemplateModelException e) {
-          Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
-        }
+      catch (TemplateModelException e) {
+        Log.error("0xA0123 Internal Error on global value for \"" + name + "\"");
+      }
     }
     return defaultObject;
   }
@@ -257,7 +252,7 @@ public class GlobalExtensionManagement {
     }
   }
 
-  
+
   // ----------------------------------------------------------------------
   // Section on Hook Points
   // ----------------------------------------------------------------------
@@ -361,7 +356,7 @@ public class GlobalExtensionManagement {
     }
     return defStr;
   }
-  
+
   /**
    * @param hookName name of the hook point
    * @return the (processed) value of the hook point
@@ -410,7 +405,7 @@ public class GlobalExtensionManagement {
     }
     return defStr;
   }
-  
+
   /**
    * @param hookName name of the hook point
    * @return the (processed) value of the hook point
@@ -430,32 +425,47 @@ public class GlobalExtensionManagement {
    */
   protected List<HookPoint> getTemplateForwardings(String templateName, ASTNode ast) {
     List<HookPoint> replacements = Lists.newArrayList();
-    Collection<HookPoint> beforeHooks = this.before.get(templateName);
-    Collection<HookPoint> afterHooks = this.after.get(templateName);
 
-    if (beforeHooks != null) {
-      replacements.addAll(beforeHooks);
-      Reporting.reportCallBeforeHookPoint(templateName, beforeHooks, ast);
+    // Before replacement
+    List<HookPoint> beforeHooks;
+    if (this.specificBefore.contains(templateName, ast)) {
+      beforeHooks = this.specificBefore.get(templateName, ast);
+      Reporting.reportAddBeforeTemplate(templateName, Optional.of(ast), beforeHooks);
+    } else {
+      beforeHooks = Lists.newArrayList(this.before.get(templateName));
+      if (!beforeHooks.isEmpty()) {
+        Reporting.reportCallBeforeHookPoint(templateName, beforeHooks, ast);
+      }
     }
+    replacements.addAll(beforeHooks);
 
-    List<HookPoint> hps = getSpecificReplacement(templateName, ast);
-    if(!hps.isEmpty()){
+    // "normal" replacement
+    List<HookPoint> hps = getSpecificReplacement(templateName, ast, this.specificReplacement);
+    if (!hps.isEmpty()) {
       Reporting.reportCallSpecificReplacementHookPoint(templateName, hps, ast);
-    }
-    else {
+    } else {
       hps = getTemplateForwardingsX(templateName, ast);
     }
     replacements.addAll(hps);
 
-    if (afterHooks != null) {
-      replacements.addAll(afterHooks);
-      Reporting.reportCallAfterHookPoint(templateName, afterHooks, ast);
+    // After replacement
+    List<HookPoint> afterHooks;
+    if (this.specificAfter.contains(templateName, ast)) {
+      afterHooks = this.specificAfter.get(templateName, ast);
+      Reporting.reportAddAfterTemplate(templateName, Optional.of(ast), afterHooks);
+    } else {
+      afterHooks = Lists.newArrayList(this.after.get(templateName));
+      if (!afterHooks.isEmpty()) {
+        Reporting.reportCallAfterHookPoint(templateName, afterHooks, ast);
+      }
     }
+    replacements.addAll(afterHooks);
+
     return replacements;
   }
 
-  protected List<HookPoint> getSpecificReplacement(String templateName, ASTNode ast) {
-    Map<ASTNode, HookPoint> replacedTemplates = this.specificReplacement.get(templateName);
+  protected List<HookPoint> getSpecificReplacement(String templateName, ASTNode ast,  Map<String, Map<ASTNode, HookPoint>> specific) {
+    Map<ASTNode, HookPoint> replacedTemplates = specific.get(templateName);
     if (replacedTemplates != null && replacedTemplates.containsKey(ast)) {
       return Lists.newArrayList(replacedTemplates.get(ast));
     }
@@ -500,6 +510,7 @@ public class GlobalExtensionManagement {
    * This replacement has only an effect if 'oldTemplate' is included directly.
    *
    * @param oldTemplate qualified name of template to be replaced
+   * @param hp the new hookpoint
    */
   public void replaceTemplate(String oldTemplate, HookPoint hp) {
     replaceTemplate(oldTemplate, Lists.newArrayList(hp));
@@ -511,6 +522,7 @@ public class GlobalExtensionManagement {
    * is included directly.
    *
    * @param oldTemplate qualified name of template to be replaced
+   * @param newHps List of new hookpoints
    */
   public void replaceTemplate(String oldTemplate, List<? extends HookPoint> newHps) {
     Reporting.reportTemplateReplacement(oldTemplate, newHps);
@@ -545,9 +557,25 @@ public class GlobalExtensionManagement {
    * be included before it.
    *
    * @param template qualified name of the template
+   * @param beforeHp hookpoint to be included before
    */
   public void setBeforeTemplate(String template, HookPoint beforeHp) {
     setBeforeTemplate(template, Lists.newArrayList(beforeHp));
+  }
+
+  /**
+   * Everytime 'template' is included directly for node 'ast' (e.g. by
+   * {@link TemplateController#include(String, ASTNode)}), 'beforeTemplate' will
+   * be included before it.
+   *
+   * @param template qualified name of the template
+   * @param ast
+   * @param beforeHp hookpoint to be included before
+   */
+  public void setBeforeTemplate(String template, ASTNode ast, HookPoint beforeHp) {
+    Reporting.reportSetBeforeTemplate(template, Optional.of(ast), Lists.newArrayList(beforeHp));
+
+    setBeforeTemplate(template, ast, Lists.newArrayList(beforeHp));
   }
 
   /**
@@ -556,15 +584,31 @@ public class GlobalExtensionManagement {
    * 'beforeTemplate' will be included before it.
    *
    * @param template qualified name of the template
+   * @param beforeHps List of hookpoints to be included before
    */
   public void setBeforeTemplate(String template, List<? extends HookPoint> beforeHps) {
-    Reporting.reportSetBeforeTemplate(template, beforeHps);
+    Reporting.reportSetBeforeTemplate(template, Optional.empty(), beforeHps);
 
     // remove all previous replacements
     this.before.removeAll(template);
     if (!beforeHps.isEmpty()) {
       this.before.putAll(template, beforeHps);
     }
+  }
+
+  /**
+   * Everytime 'template' is included directly for node 'ast' (e.g. by
+   * {@link TemplateController#include(String, ASTNode)}), 'beforeTemplate' will
+   * be included before it.
+   *
+   * @param template qualified name of the template
+   * @param ast
+   * @param beforeHps list of hookpoints to be included before
+   */
+  public void setBeforeTemplate(String template, ASTNode ast, List<HookPoint> beforeHps) {
+    Reporting.reportSetBeforeTemplate(template, Optional.of(ast), beforeHps);
+
+    this.specificBefore.put(template, ast, beforeHps);
   }
 
   /**
@@ -577,6 +621,7 @@ public class GlobalExtensionManagement {
    * and 'setAfterTemplate' on the same template have.
    *
    * @param template qualified name of the template
+   * @param afterHp hookpoint to be included after
    */
   public void setAfterTemplate(String template, HookPoint afterHp) {
     setAfterTemplate(template, Lists.newArrayList(afterHp));
@@ -591,15 +636,54 @@ public class GlobalExtensionManagement {
    * and 'setAfterTemplate' on the same template have.
    *
    * @param template qualified name of the template
+   * @param afterHps list of hookpoints to be included after
    */
   public void setAfterTemplate(String template, List<? extends HookPoint> afterHps) {
-    Reporting.reportSetAfterTemplate(template, afterHps);
+    Reporting.reportSetAfterTemplate(template, Optional.empty(), afterHps);
 
     // remove all previous replacements
     this.after.removeAll(template);
     if (!afterHps.isEmpty()) {
       this.after.putAll(template, afterHps);
     }
+  }
+
+  /**
+   * Everytime 'template' is included directly for node 'ast' (e.g. by
+   * {@link TemplateController#include(String, ASTNode)}),
+   * the 'HookPoint' 'afterHp' will
+   * be included after it.
+   *
+   * Care: This overrides any effect that previous calls of 'addAfterTemplate'
+   * and 'setAfterTemplate' on the same template have.
+   *
+   * @param template qualified name of the template
+   * @param ast
+   * @param afterHp hookpoint to be included after
+   */
+  public void setAfterTemplate(String template, ASTNode ast, HookPoint afterHp) {
+    Reporting.reportSetAfterTemplate(template, Optional.of(ast), Lists.newArrayList(afterHp));
+
+    setAfterTemplate(template, ast, Lists.newArrayList(afterHp));
+  }
+
+  /**
+   * Everytime 'template' is included directly for node 'ast' (e.g. by
+   * {@link TemplateController#include(String, ASTNode)}),
+   * the 'HookPoint' 'afterHp' will
+   * be included after it.
+   *
+   * Care: This overrides any effect that previous calls of 'addAfterTemplate'
+   * and 'setAfterTemplate' on the same template have.
+   *
+   * @param template qualified name of the template
+   * @param ast
+   * @param afterHps list of hookpoints to be included after
+   */
+  public void setAfterTemplate(String template, ASTNode ast, List<HookPoint> afterHps) {
+    Reporting.reportSetAfterTemplate(template, Optional.of(ast), afterHps);
+
+    this.specificAfter.put(template, ast, afterHps);
   }
 
   /**
@@ -610,12 +694,78 @@ public class GlobalExtensionManagement {
    * Multiple additions are possible. 'setAfterTemplate' overrides all additions.
    *
    * @param template qualified name of the template
+   * @param afterHp hookpoint to be included after
    */
   public void addAfterTemplate(String template, HookPoint afterHp) {
-    Reporting.reportAddAfterTemplate(template, Lists.newArrayList(afterHp));
+    Reporting.reportAddAfterTemplate(template, Optional.empty(), Lists.newArrayList(afterHp));
 
     this.after.put(template, afterHp);
   }
+
+  /**
+   * Everytime 'template' is included directly for node 'ast' (e.g. by
+   * {@link TemplateController#include(String, ASTNode)}), the template in
+   * 'afterHp' will be included after it.
+   *
+   * Multiple additions are possible. 'setAfterTemplate' overrides all additions.
+   *
+   * @param template qualified name of the template
+   * @param ast
+   * @param afterHp hookpoint to be included after
+   */
+  public void addAfterTemplate(String template, ASTNode ast, HookPoint afterHp) {
+    Reporting.reportAddAfterTemplate(template, Optional.of(ast), Lists.newArrayList(afterHp));
+
+    if (this.specificAfter.contains(template, ast)) {
+      List<HookPoint> afterHps = this.specificAfter.get(template, ast);
+      afterHps.add(afterHp);
+    } else {
+      this.specificAfter.put(template, ast, Lists.newArrayList(afterHp));
+    }
+  }
+
+  /**
+   * Everytime 'template' is included directly (e.g. by
+   * {@link TemplateController#include(String, ASTNode)}), the template in
+   * 'beforHp' will be included before it.
+   * The points are added in the order in which they are called up, i.e.
+   * hookpoint 1 comes first, then hookpoint 2 and so on.
+   *
+   * Multiple additions are possible. 'setBeforeTemplate' overrides all additions.
+   *
+   * @param template qualified name of the template
+   * @param beforeHp hookpoint to be included before
+   */
+  public void addBeforeTemplate(String template, HookPoint beforeHp) {
+    Reporting.reportAddBeforeTemplate(template, Optional.empty(), Lists.newArrayList(beforeHp));
+
+    this.after.put(template, beforeHp);
+  }
+
+  /**
+   * Everytime 'template' is included directly for node 'ast' (e.g. by
+   * {@link TemplateController#include(String, ASTNode)}), the template in
+   * 'beforeHp' will be included before it.
+   * The points are added in the order in which they are called up, i.e.
+   * hookpoint 1 comes first, then hookpoint 2 and so on.
+   *
+   * Multiple additions are possible. 'setBeforeTemplate' overrides all additions.
+   *
+   * @param template qualified name of the template
+   * @param ast
+   * @param beforeHp hookpoint to be included before
+   */
+  public void addBeforeTemplate(String template, ASTNode ast, HookPoint beforeHp) {
+    Reporting.reportAddBeforeTemplate(template, Optional.of(ast), Lists.newArrayList(beforeHp));
+
+    if (this.specificBefore.contains(template, ast)) {
+      List<HookPoint> afterHps = this.specificBefore.get(template, ast);
+      afterHps.add(beforeHp);
+    } else {
+      this.specificBefore.put(template, ast, Lists.newArrayList(beforeHp));
+    }
+  }
+
 
   protected void warnIfHookPointExists(String hookName) {
     if (hookPoints.containsKey(hookName)) {

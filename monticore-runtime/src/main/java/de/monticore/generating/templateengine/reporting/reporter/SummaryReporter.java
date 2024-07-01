@@ -12,10 +12,7 @@ import de.monticore.generating.templateengine.reporting.commons.*;
 import de.monticore.visitor.ITraverser;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  */
@@ -519,10 +516,10 @@ public class SummaryReporter extends AReporter {
   
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetBeforeTemplate(java.lang.String,
-   * java.util.List)
+   * Optional, java.util.List)
    */
   @Override
-  public void reportSetBeforeTemplate(String template, List<? extends HookPoint> beforeHps) {
+  public void reportSetBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> beforeHps) {
     for (HookPoint hp : beforeHps) {
       if (hp != null && hp instanceof CodeHookPoint) {
         numSetCodeHookpoints++;
@@ -538,10 +535,10 @@ public class SummaryReporter extends AReporter {
   
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler#reportSetAfterTemplate(java.lang.String,
-   * java.util.List)
+   * Optional, java.util.List)
    */
   @Override
-  public void reportSetAfterTemplate(String template, List<? extends HookPoint> afterHps) {
+  public void reportSetAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     for (HookPoint hp : afterHps) {
       if (hp != null && hp instanceof CodeHookPoint) {
         numSetCodeHookpoints++;

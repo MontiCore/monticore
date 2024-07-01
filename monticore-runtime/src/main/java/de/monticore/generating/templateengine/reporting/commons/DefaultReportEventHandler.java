@@ -145,18 +145,28 @@ public class DefaultReportEventHandler implements IReportEventHandler {
 
   @Override
   public void reportSetBeforeTemplate(String template,
-      List<? extends HookPoint> beforeHps) {
+                                      Optional<ASTNode> ast,
+                                      List<? extends HookPoint> beforeHps) {
     // default
   }
 
   @Override
   public void reportSetAfterTemplate(String template,
-      List<? extends HookPoint> afterHps) {
+                                     Optional<ASTNode> ast,
+                                     List<? extends HookPoint> afterHps) {
+    // default
+  }
+
+  @Override
+  public void reportAddBeforeTemplate(String template,
+                                     Optional<ASTNode> ast,
+                                     List<? extends HookPoint> beforeHps) {
     // default
   }
 
   @Override
   public void reportAddAfterTemplate(String template,
+                                     Optional<ASTNode> ast,
                                      List<? extends HookPoint> afterHps) {
     // default
   }

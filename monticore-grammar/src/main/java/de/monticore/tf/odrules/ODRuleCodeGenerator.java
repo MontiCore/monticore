@@ -36,18 +36,16 @@ import java.util.stream.Collectors;
 
 public class ODRuleCodeGenerator {
   // contains all the data for the code generator
-  private ASTTransformationStructure root;
-  private String filename;
-  private ASTODDefinition lhs;
-  private ASTODDefinition rhs;
-  private Variable2AttributeMap var2attr = new Variable2AttributeMap();
-  private HierarchyHelper hierarchyHelper;
-  private List<ASTMatchingObject> lhsObjects;
+  protected ASTTransformationStructure root;
+  protected String filename;
+  protected ASTODDefinition lhs;
+  protected ASTODDefinition rhs;
+  protected Variable2AttributeMap var2attr = new Variable2AttributeMap();
+  protected HierarchyHelper hierarchyHelper;
+  protected List<ASTMatchingObject> lhsObjects;
   //Same assignments as in the parsedModel, but without "m." prefixes
-  private List<ASTAssignment> modifiedAssignments;
+  protected List<ASTAssignment> modifiedAssignments;
 
-  protected ODRuleCodeGenerator() {
-  }
 
   public static void generate(ASTODRule parsedModel, File targetDir) {
     String packageName = "de.monticore.tf";
@@ -104,7 +102,7 @@ public class ODRuleCodeGenerator {
     generator.generate("de.monticore.tf.odrules.TransformationUnit", filePath, tfStructure);
   }
 
-  private static ODRuleCodeGenerator initOdRuleCodeGenerator(ASTODRule parsedModel, String filename) {
+  protected static ODRuleCodeGenerator initOdRuleCodeGenerator(ASTODRule parsedModel, String filename) {
     final ODRuleCodeGenerator odRuleCodeGenerator = new ODRuleCodeGenerator();
 
     odRuleCodeGenerator.filename = filename;
@@ -242,7 +240,7 @@ public class ODRuleCodeGenerator {
    *
    * @return the set of all ODSubConstraints calculated in this process..
    */
-  private List<ODSubConstraint> findSubConstraints(ASTExpression constrExpr) {
+  protected List<ODSubConstraint> findSubConstraints(ASTExpression constrExpr) {
     List<ODSubConstraint> subConstraints = new ArrayList<>();
 
     if (constrExpr instanceof ASTBooleanAndOpExpression) {
@@ -264,7 +262,7 @@ public class ODRuleCodeGenerator {
    *
    * @return the resulting ODSubConstraint
    */
-  private ODSubConstraint calculateSubConstraint(ASTExpression constrExpr) {
+  protected ODSubConstraint calculateSubConstraint(ASTExpression constrExpr) {
     ODRulesTraverser traverser = ODRulesMill
             .inheritanceTraverser();
 
@@ -313,7 +311,7 @@ public class ODRuleCodeGenerator {
   /**
    * Deletes "m." prefix from assignments if present.
    */
-  private List<ASTAssignment> fixAssignments(ASTODRule parsedModel) {
+  protected List<ASTAssignment> fixAssignments(ASTODRule parsedModel) {
     List<ASTAssignment> modifiedAssignments = new ArrayList<>();
     for (ASTAssignment assignment : parsedModel.getAssignmentList()) {
       ASTAssignment clone = assignment.deepClone();
@@ -329,7 +327,7 @@ public class ODRuleCodeGenerator {
     return modifiedAssignments;
   }
 
-  private boolean isObjectVariable(String var) {
+  protected boolean isObjectVariable(String var) {
     for (ASTODObject o : rhs.getODObjectList()) {
       if (o.getName().equals(var)) {
         return true;
@@ -346,7 +344,7 @@ public class ODRuleCodeGenerator {
   /**
    * Calculates a set of all variables that are used inside of constraints
    */
-  private static Map<String, Integer> getAllDependVars(List<ODSubConstraint> subConstraints) {
+  protected static Map<String, Integer> getAllDependVars(List<ODSubConstraint> subConstraints) {
 
     Map<String, Integer> allDependVars = new HashMap<>();
     for (ODSubConstraint subConstraint : subConstraints) {
@@ -533,7 +531,7 @@ public class ODRuleCodeGenerator {
     return variables;
   }
 
-  private List<ASTVariable> calculateVariablesFor(Variable2AttributeMap var2attr,
+  protected List<ASTVariable> calculateVariablesFor(Variable2AttributeMap var2attr,
                                                   Collection<String> collectedNames) {
     List<ASTVariable> variables = new ArrayList<>();
     for (String key : var2attr.getV2a().keySet()) {
@@ -548,7 +546,7 @@ public class ODRuleCodeGenerator {
     return variables;
   }
 
-  private List<ASTVariable> calculateVariablesFor(List<ASTODObject> ast,
+  protected List<ASTVariable> calculateVariablesFor(List<ASTODObject> ast,
                                                   Collection<String> collectedNames) {
     List<ASTVariable> variables = new ArrayList<>();
     for (ASTODObject obj : ast) {
@@ -573,7 +571,7 @@ public class ODRuleCodeGenerator {
     return variables;
   }
 
-  private Collection<ASTVariable> generateVariables(
+  protected Collection<ASTVariable> generateVariables(
           ASTArrayInit list,
           Collection<String> collectedNames) {
     Collection result = new ArrayList<>();
@@ -593,7 +591,7 @@ public class ODRuleCodeGenerator {
     return result;
   }
 
-  private ASTVariable generateVariable(ASTODObject obj, ASTODAttribute attr) {
+  protected ASTVariable generateVariable(ASTODObject obj, ASTODAttribute attr) {
 
     // The value is a literal
     if (attr.isPresentSingleValue() && attr.getSingleValue() instanceof ASTLiteral) {
@@ -752,7 +750,7 @@ public class ODRuleCodeGenerator {
     return deleteSequence;
   }
 
-  private List<String> generateTypesList(ASTODRule ast) {
+  protected List<String> generateTypesList(ASTODRule ast) {
     Set<String> types = new LinkedHashSet<String>();
 
     List<ASTODObject> astObjects = Util.getAllODObjects(ast.getLhs());

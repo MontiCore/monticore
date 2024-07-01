@@ -51,6 +51,11 @@ component grammar ODRuleGeneration extends de.monticore.types.MCFullGenericTypes
    objectName:Name
    conditionString:Name
    Dependency?;
+ astrule Condition =
+   targetOptional: boolean
+   attribute: de.monticore.tf.odrules._ast.ASTODAttribute
+   link: de.monticore.tf.odrules._ast.ASTODLink
+   target: de.monticore.tf.odrules._ast.ASTODObject?;
 
  ObjectCondition extends Condition;
 
