@@ -19,12 +19,19 @@ def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
 def trafoOutDir = "$buildDir/generated-sources/monticore/trafo"
 def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
+def symbolsDir = 'src/main/resources'
 
 
 sourceSets {
   // main.java.srcDirs is already being added
   test.java.srcDirs += [testGrammarOutDir]
 
+  symbols {
+    resources {
+      srcDirs(symbolsDir)
+      include "**/*.sym"
+    }
+  }
   grammars {
     java.srcDirs = []
     resources {
