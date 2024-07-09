@@ -1,0 +1,908 @@
+{
+  "generated-using": "www.MontiCore.de technology",
+  "name": "ToptStream",
+  "symbols": [
+    {
+      "kind": "de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol",
+      "name": "ToptStream",
+      "fullName": "ToptStream",
+      "spannedScope": {
+        "symbols": [
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "emptyStream",
+            "fullName": "ToptStream.emptyStream",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "ToptStream.emptyStream.S"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "appendFirst",
+            "fullName": "ToptStream.appendFirst",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "ToptStream.appendFirst.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "first",
+                  "fullName": "ToptStream.appendFirst.first",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "ToptStream.appendFirst.S"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "tail",
+                  "fullName": "ToptStream.appendFirst.tail",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "ToptStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.appendFirst.S"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "conc",
+            "fullName": "ToptStream.conc",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "ToptStream.conc.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "head",
+                  "fullName": "ToptStream.conc.head",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "ToptStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.conc.S"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "tail",
+                  "fullName": "ToptStream.conc.tail",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "ToptStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.conc.S"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "len",
+            "fullName": "ToptStream.len",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypePrimitive",
+              "primitiveName": "long"
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "dropFirst",
+            "fullName": "ToptStream.dropFirst",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "take",
+            "fullName": "ToptStream.take",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "ToptStream.take.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "drop",
+            "fullName": "ToptStream.drop",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "ToptStream.drop.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "repeat",
+            "fullName": "ToptStream.repeat",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "ToptStream.repeat.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "elem",
+                  "fullName": "ToptStream.repeat.elem",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "ToptStream.repeat.S"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "ToptStream.repeat.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "times",
+            "fullName": "ToptStream.times",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "ToptStream.times.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "map",
+            "fullName": "ToptStream.map",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.U"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "ToptStream.map.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "function",
+                  "fullName": "ToptStream.map.function",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "ToptStream.map.U"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.map.T"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "iterate",
+            "fullName": "ToptStream.iterate",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "ToptStream.iterate.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "function",
+                  "fullName": "ToptStream.iterate.function",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "ToptStream.iterate.S"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.iterate.S"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "elem",
+                  "fullName": "ToptStream.iterate.elem",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "ToptStream.iterate.S"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "filter",
+            "fullName": "ToptStream.filter",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "predicate",
+                  "fullName": "ToptStream.filter.predicate",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "ToptStream.filter.T"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.filter.Bool"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "takeWhile",
+            "fullName": "ToptStream.takeWhile",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "predicate",
+                  "fullName": "ToptStream.takeWhile.predicate",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "ToptStream.takeWhile.T"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.takeWhile.Bool"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "dropWhile",
+            "fullName": "ToptStream.dropWhile",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "predicate",
+                  "fullName": "ToptStream.dropWhile.predicate",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "ToptStream.dropWhile.T"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.dropWhile.Bool"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "rcDups",
+            "fullName": "ToptStream.rcDups",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "zip",
+            "fullName": "ToptStream.zip",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeOfTuple",
+                  "listedTypes": [
+                    {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "T"
+                    },
+                    {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "U"
+                    }
+                  ]
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "ToptStream.zip.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "second",
+                  "fullName": "ToptStream.zip.second",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "ToptStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.zip.U"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "projFst",
+            "fullName": "ToptStream.projFst",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "ToptStream.projFst.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "ToptStream.projFst.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "list",
+                  "fullName": "ToptStream.projFst.list",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "ToptStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeOfTuple",
+                        "listedTypes": [
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "S"
+                          },
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "U"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "projSnd",
+            "fullName": "ToptStream.projSnd",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.U"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "ToptStream.projSnd.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "ToptStream.projSnd.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "list",
+                  "fullName": "ToptStream.projSnd.list",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "ToptStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeOfTuple",
+                        "listedTypes": [
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "S"
+                          },
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "U"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "values",
+            "fullName": "ToptStream.values",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Set",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "infTimes",
+            "fullName": "ToptStream.infTimes",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "scanl",
+            "fullName": "ToptStream.scanl",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.U"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "ToptStream.scanl.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "predicate",
+                  "fullName": "ToptStream.scanl.predicate",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "ToptStream.scanl.U"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.scanl.U"
+                      },
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "ToptStream.scanl.T"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "acc",
+                  "fullName": "ToptStream.scanl.acc",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "ToptStream.scanl.U"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "first",
+            "fullName": "ToptStream.first",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeVariable",
+              "varName": "ToptStream.T"
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "nth",
+            "fullName": "ToptStream.nth",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "ToptStream.nth.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "delay",
+            "fullName": "ToptStream.delay",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "timeslices",
+                  "fullName": "ToptStream.delay.timeslices",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "int"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "sizeEps",
+            "fullName": "ToptStream.sizeEps",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypePrimitive",
+              "primitiveName": "long"
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "untimed",
+            "fullName": "ToptStream.untimed",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "sync",
+            "fullName": "ToptStream.sync",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "SyncStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "event",
+            "fullName": "ToptStream.event",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "ToptStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+            "name": "T",
+            "fullName": "ToptStream.T"
+          }
+        ]
+      }
+    }
+  ]
+}
