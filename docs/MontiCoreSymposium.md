@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-## Third MontiCore Symposium 29. September - 02. October 2024
+## Third MontiCore Symposium 23. March - 26. March 2025
 
 MontiCore is a language workbench designed for the efficient 
 development of domain-specific languages (DSLs) along with their 
@@ -50,10 +50,10 @@ It is planned to produce post-proceedings with extended and improved
 versions of the papers as result of the symposium. 
 
 ### Important Dates (deadlines extended) 
- * **30.07.2024**: Paper Submission Deadline 
- * **06.09.2024**: Acceptance Notification 
- * **13.09.2024**: Registration Deadline 
- * **29.09.2024-02.10.2024**: MontiCore Symposium 
+ * **10.01.2025**: Paper Submission Deadline 
+ * **28.02.2025**: Acceptance Notification 
+ * **07.03.2025**: Registration Deadline 
+ * **23.03.2025-26.03.2025**: MontiCore Symposium 
 
 
 ### Call for Papers
