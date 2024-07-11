@@ -41,15 +41,15 @@ public class TypeCalculator3 implements ITypeCalculator {
     this.ctx4Ast = Log.errorIfNull(ctx4Ast);
   }
 
-  protected ITraverser getTypeTraverser() {
+  public ITraverser getTypeTraverser() {
     return typeTraverser;
   }
 
-  protected Type4Ast getType4Ast() {
+  public Type4Ast getType4Ast() {
     return type4Ast;
   }
 
-  protected InferenceContext4Ast getCtx4Ast() {
+  public InferenceContext4Ast getCtx4Ast() {
     return ctx4Ast;
   }
 
