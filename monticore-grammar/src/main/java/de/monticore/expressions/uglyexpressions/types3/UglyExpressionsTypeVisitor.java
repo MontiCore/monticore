@@ -161,6 +161,12 @@ public class UglyExpressionsTypeVisitor
       creatorType = getArrayCreatorType((ASTArrayCreator) creator);
     }
     else {
+      // hint: if the other ASTCreators have been added in another class,
+      // it becomes necessary to pass informations to and from them in the AST,
+      // e.g., by adding them to Type4AST, etc.
+      // However, this would make Type4AST be reliant on UglyExpressions
+      // -> in this case, use a simple ASTNode interface,
+      // which, however, provides less type safety.
       Log.error("0xFD550 internal error:"
               + "new Creators have to be added to the type check",
           creator.get_SourcePositionStart(),
@@ -196,7 +202,7 @@ public class UglyExpressionsTypeVisitor
             .filter(c -> FunctionRelations.canBeCalledWith(c, argumentTypes))
             .collect(Collectors.toList());
         Optional<SymTypeOfFunction> mostSpecificConstructor =
-            FunctionRelations.getMostSpecificFunction(applicableConstructors);
+            FunctionRelations.getMostSpecificFunctionOrLogError(applicableConstructors);
         if (mostSpecificConstructor.isPresent()) {
           result = mostSpecificConstructor.get().getType();
         }

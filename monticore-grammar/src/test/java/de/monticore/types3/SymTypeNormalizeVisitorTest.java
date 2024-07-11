@@ -12,12 +12,14 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createNumericWithSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnitBasic;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
@@ -97,44 +99,54 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
   }
 
   @Test
-  public void moveArraysBelowSetOperations() {
+  public void moveTuplesBelowSetOperations() {
     check(
-        createTypeArray(
+        createTuple(
             createUnion(
-                createTypeArray(_personSymType, 1),
-                createTypeArray(_carSymType, 1)
+                createTuple(_personSymType, _intSymType),
+                createTuple(_carSymType, _intSymType)
             ),
-            1
+            _intSymType
         ),
-        "Car[][] | Person[][]"
+        "((Car, int), int) | ((Person, int), int)"
     );
     check(
-        createTypeArray(
+        createTuple(
             createIntersection(
-                createTypeArray(_personSymType, 1),
-                createTypeArray(_carSymType, 1)
+                createTuple(_personSymType, _intSymType),
+                createTuple(_carSymType, _intSymType)
             ),
-            1
+            _intSymType
         ),
-        "Car[][] & Person[][]"
+        createTuple(createBottomType(), _intSymType)
     );
     check(
-        createTypeArray(
+        createTuple(
             createIntersection(
-                createTypeArray(
+                createTuple(
                     createUnion(
-                        createTypeArray(_personSymType, 1),
-                        _personSymType
+                        createTuple(_personSymType, _carSymType),
+                        createTuple(_carSymType, _carSymType)
                     ),
-                    1
+                    _intSymType
                 ),
-                createTypeArray(_personSymType, 1)
+                createTuple(
+                    createTuple(_personSymType, _carSymType),
+                    _intSymType
+                )
             ),
-            1
+            _intSymType
         ),
-        "Person[][]"
+        "(((Person, Car), int), int)"
     );
     assertNoFindings();
+  }
+
+  @Test
+  public void normalizeFunctionsWithIntersectionsAndUnions() {
+    SymTypeOfUnion cup = createUnion(_carSymType, _personSymType);
+    SymTypeOfIntersection cip = createIntersection(_carSymType, _personSymType);
+
   }
 
   @Test
@@ -151,20 +163,23 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
 
     // intersections
     check(createIntersection(inter1, _personSymType), "Car & Person");
-    check(createIntersection(inter1, inter2), "Car & Person & int");
+    // "Car & Person & int"
+    check(createIntersection(inter1, inter2), createBottomType());
 
     // combine unions and intersections
     check(createUnion(inter1, _personSymType), "Person");
     check(createUnion(inter1, _intSymType), "(Car & Person) | int");
     check(createUnion(inter1, union2), "Person | int");
     check(createUnion(inter1, union1), "Car | Person");
-    check(createUnion(inter1, inter2), "(Car & Person) | (Person & int)");
+    // "(Car & Person) | (Person & int)"
+    check(createUnion(inter1, inter2), "Car & Person");
 
     check(createIntersection(union1, _personSymType), "Person");
-    check(createIntersection(union1, _intSymType), "(Car & int) | (Person & int)");
-    check(createIntersection(union1, union2), "(Car & int) | Person");
+    // "(Car & int) | (Person & int)"
+    check(createIntersection(union1, _intSymType), createBottomType());
+    check(createIntersection(union1, union2), "Person");
     check(createIntersection(union1, inter1), "Car & Person");
-    check(createIntersection(union1, inter2), "Person & int");
+    check(createIntersection(union1, inter2), createBottomType());
 
     // normalize within arrays
     check(
@@ -324,6 +339,10 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
     SymTypeExpression normalized = visitor.calculate(type);
     assertNoFindings();
     assertEquals(expectedPrint, normalized.printFullName());
+  }
+
+  public void check(SymTypeExpression type, SymTypeExpression expectedType) {
+    check(type, expectedType.printFullName());
   }
 
 }

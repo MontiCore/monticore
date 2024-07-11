@@ -23,6 +23,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsISynthesize;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types3.util.DefsVariablesForTests;
@@ -36,9 +37,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.monticore.types3.util.DefsTypesForTests.*;
+import static de.monticore.types3.util.DefsTypesForTests._booleanSymType;
+import static de.monticore.types3.util.DefsTypesForTests._boxedListSymType;
+import static de.monticore.types3.util.DefsTypesForTests._csStudentSymType;
+import static de.monticore.types3.util.DefsTypesForTests._intSymType;
+import static de.monticore.types3.util.DefsTypesForTests._linkedListSymType;
+import static de.monticore.types3.util.DefsTypesForTests._personSymType;
+import static de.monticore.types3.util.DefsTypesForTests._studentSymType;
+import static de.monticore.types3.util.DefsTypesForTests._voidSymType;
+import static de.monticore.types3.util.DefsTypesForTests.function;
+import static de.monticore.types3.util.DefsTypesForTests.inScope;
+import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
+import static de.monticore.types3.util.DefsTypesForTests.variable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * used to provide facilities to test type derivers.
@@ -54,6 +67,8 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
   // we can use our own type4Ast instance to try to find occurrences of
   // Type Visitors using the map from the mill instead of the provided one
   protected Type4Ast type4Ast;
+
+  protected InferenceContext4Ast ctx4Ast;
 
   protected ITraverser typeMapTraverser;
 
@@ -86,8 +101,9 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     DefsTypesForTests.setup();
     parser = CombineExpressionsWithLiteralsMill.parser();
     type4Ast = new Type4Ast();
+    ctx4Ast = new InferenceContext4Ast();
     typeMapTraverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
-        .createTraverser(type4Ast);
+        .createTraverser(type4Ast, ctx4Ast);
     setupSymbolTableCompleter(typeMapTraverser, type4Ast);
   }
 
@@ -251,6 +267,14 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     return mcType.get();
   }
 
+  protected void checkExpr(
+      String exprStr,
+      String targetTypeStr,
+      String expectedType
+  ) throws IOException {
+    checkExpr(exprStr, targetTypeStr, expectedType, true);
+  }
+
   protected void checkExpr(String exprStr, String expectedType)
       throws IOException {
     checkExpr(exprStr, expectedType, true);
@@ -259,13 +283,38 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
   protected void checkExpr(
       String exprStr, String expectedType, boolean allowNormalization
   ) throws IOException {
-    ASTExpression astexpr = parseExpr(exprStr);
-    generateScopes(astexpr);
-    calculateTypes(astexpr);
+    checkExpr(exprStr, "", expectedType, allowNormalization);
+  }
+
+  // targetType is allowed to be empty
+  protected void checkExpr(
+      String exprStr,
+      String targetTypeStr,
+      String expectedType,
+      boolean allowNormalization
+  ) throws IOException {
+    ASTExpression astExpr = parseExpr(exprStr);
+    // add target type
+    if (!targetTypeStr.isEmpty()) {
+      ASTMCType astTargetType = parseMCType(targetTypeStr);
+      generateScopes(astTargetType);
+      calculateTypes(astTargetType);
+      assertNoFindings();
+      assertTrue("No type calculated for target type "
+              + targetTypeStr + " used for expression " + exprStr,
+          getType4Ast().hasTypeOfTypeIdentifier(astTargetType)
+      );
+      SymTypeExpression targetType =
+          getType4Ast().getTypeOfTypeIdentifier(astTargetType);
+      getCtx4Ast().setTargetTypeOfExpression(astExpr, targetType);
+    }
+    // calculate expression
+    generateScopes(astExpr);
+    calculateTypes(astExpr);
     assertNoFindings();
     assertTrue("No type calculated for expression " + exprStr,
-        getType4Ast().hasTypeOfExpression(astexpr));
-    SymTypeExpression type = getType4Ast().getTypeOfExpression(astexpr);
+        getType4Ast().hasTypeOfExpression(astExpr));
+    SymTypeExpression type = getType4Ast().getTypeOfExpression(astExpr);
     assertNoFindings();
     // usually, type normalization is expected and (basically) always allowed
     // for specific tests, however, it may be required to disable this
@@ -301,10 +350,38 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
 
   protected void checkErrorExpr(String exprStr, String expectedError)
       throws IOException {
+    checkErrorExpr(exprStr, "", expectedError);
+  }
+
+  protected void checkErrorExpr(
+      String exprStr,
+      String targetTypeStr,
+      String expectedError
+  ) throws IOException {
     ASTExpression astExpr = parseExpr(exprStr);
+    // add target type
+    if (!targetTypeStr.isEmpty()) {
+      ASTMCType astTargetType = parseMCType(targetTypeStr);
+      generateScopes(astTargetType);
+      calculateTypes(astTargetType);
+      assertNoFindings();
+      assertTrue("No type calculated for target type "
+              + targetTypeStr + " used for expression " + exprStr,
+          getType4Ast().hasTypeOfTypeIdentifier(astTargetType)
+      );
+      SymTypeExpression targetType =
+          getType4Ast().getTypeOfTypeIdentifier(astTargetType);
+      getCtx4Ast().setTargetTypeOfExpression(astExpr, targetType);
+    }
     generateScopes(astExpr);
     assertNoFindings();
     calculateTypes(astExpr);
+    boolean hasResult = getType4Ast().hasTypeOfExpression(astExpr);
+    if (hasResult) {
+      fail("did not expect a stored type (except Obscure), but got "
+          + getType4Ast().getTypeOfExpression(astExpr).printFullName());
+    }
+    assertTrue(getType4Ast().hasPartialTypeOfExpression(astExpr));
     SymTypeExpression type = getType4Ast().getTypeOfExpression(astExpr);
     assertTrue("expected Obscure for expression \"" + exprStr +
         "\" but got " + type.printFullName(), type.isObscureType());
@@ -368,5 +445,9 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
 
   protected Type4Ast getType4Ast() {
     return type4Ast;
+  }
+
+  protected InferenceContext4Ast getCtx4Ast() {
+    return ctx4Ast;
   }
 }

@@ -166,4 +166,18 @@ public class BuiltInTypeRelations {
     }
   }
 
+  public boolean isTop(SymTypeExpression type) {
+    return SymTypeRelations.isSubTypeOf(
+        SymTypeExpressionFactory.createTopType(),
+        type
+    );
+  }
+
+  public boolean isBottom(SymTypeExpression type) {
+    return SymTypeRelations.isSubTypeOf(
+        type,
+        SymTypeExpressionFactory.createBottomType()
+    );
+  }
+
 }

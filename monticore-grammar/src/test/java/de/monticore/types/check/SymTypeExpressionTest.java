@@ -136,9 +136,9 @@ public class SymTypeExpressionTest {
 
     teVarB = createTypeVariable("B", scope);
 
-    teVarUpper = createTypeVariable(null, teIntA, createBottomType());
+    teVarUpper = createTypeVariable(teIntA, createBottomType());
 
-    teVarLower = createTypeVariable(null, createTopType(), teIntA);
+    teVarLower = createTypeVariable(createTopType(), teIntA);
 
     teP = createTypeObject("de.x.Person", scope);
 
@@ -260,7 +260,6 @@ public class SymTypeExpressionTest {
     assertEquals("double", teDouble.print());
     assertEquals("int", teInt.print());
     assertEquals("A", teVarA.print());
-    assertEquals("__INTERNAL_TYPEVARIABLE", teVarUpper.print());
     assertEquals("de.x.Person", teP.print());
     assertEquals("void", teVoid.print());
     assertEquals("null", teNull.print());

@@ -17,6 +17,14 @@ public class SymTypeVariableDeSer {
   protected static final String SERIALIZED_NAME = "varName";
 
   public String serialize(SymTypeVariable toSerialize) {
+    if (toSerialize.isInferenceVariable()) {
+      Log.error("0xFD234 internal error: "
+          + "trying to serialize a free type variable"
+          + ", only variables with symbols may be serialized: "
+          + toSerialize.printFullName()
+      );
+      return "";
+    }
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     jp.member(JsonDeSers.KIND, SERIALIZED_KIND);

@@ -41,7 +41,8 @@ public class FunctionSymbol extends FunctionSymbolTOP {
   }
 
   public List<TypeVarSymbol> getAllAccessibleTypeVariables(){
-    List<TypeVarSymbol> typeVarSymbolList = getTypeVariableList();
+    List<TypeVarSymbol> typeVarSymbolList =
+        new ArrayList(getTypeVariableList());
     typeVarSymbolList.addAll(getTypeVariablesOfEnclosingType());
     return typeVarSymbolList;
   }
@@ -86,7 +87,7 @@ public class FunctionSymbol extends FunctionSymbolTOP {
   }
 
   /*
-   * Returns the type of the function.
+   * Returns the declared(!) type of the function.
    * Note that {@link getType()} only provides the return type of the function
    */
   public SymTypeOfFunction getFunctionType() {

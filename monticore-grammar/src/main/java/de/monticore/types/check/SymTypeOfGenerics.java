@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -162,7 +163,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public String printTypeWithoutTypeArgument(){
     return this.getFullName();
   }
-  
+
   /**
    * @deprecated same as the the other 2 methods even in spec?
    */
@@ -170,7 +171,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public String getFullName() {
     return getTypeConstructorFullName();
   }
-  
+
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    * @deprecated unused outside of tests, but not required for tests
@@ -190,9 +191,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public SymTypeOfGenerics asGenericType() {
     return this;
   }
-  
-  @Override
-  public boolean deepEquals(SymTypeExpression sym){
+
+  public boolean deepEqualsWithoutArguments(SymTypeExpression sym) {
     if(!sym.isGenericType()){
       return false;
     }
@@ -201,6 +201,18 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       return false;
     }
     if(!this.typeSymbol.getName().equals(symGen.typeSymbol.getName())){
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public boolean deepEquals(SymTypeExpression sym){
+    if(!sym.isGenericType()){
+      return false;
+    }
+    SymTypeOfGenerics symGen = (SymTypeOfGenerics) sym;
+    if (!deepEqualsWithoutArguments(symGen)) {
       return false;
     }
     if(this.sizeArguments()!=symGen.sizeArguments()){
@@ -214,10 +226,21 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return true;
   }
 
-  public Map<TypeVarSymbol, SymTypeExpression> getTypeVariableReplaceMap() {
+  /**
+   * returns the declared type,
+   * e.g., for List<int>, this will return List<T> where T is a type variable.
+   */
+  public SymTypeOfGenerics getDeclaredType() {
+    List<SymTypeExpression> typeParams = getTypeInfo().getTypeParameterList()
+        .stream().map(SymTypeExpressionFactory::createTypeVariable)
+        .collect(Collectors.toList());
+    return SymTypeExpressionFactory.createGenerics(getTypeInfo(), typeParams);
+  }
+
+  public Map<SymTypeVariable, SymTypeExpression> getTypeVariableReplaceMap() {
     List<TypeVarSymbol> typeVars = getTypeInfo().getTypeParameterList();
     List<SymTypeExpression> arguments = getArgumentList();
-    Map<TypeVarSymbol, SymTypeExpression> replaceMap = new HashMap<>();
+    Map<SymTypeVariable, SymTypeExpression> replaceMap = new HashMap<>();
     // empty List, e.g. new HashMap<>();
     if (arguments.size() == 0) {
       // no-op
@@ -226,13 +249,19 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     // Java (and we) currently (Java Spec 20) do not support varargs type variables
     else if (arguments.size() != typeVars.size()) {
       Log.error("0xFD672 expected " + typeVars.size() + " parameters "
-          + "for " + getTypeInfo().getFullName()
-          + ", but got " + arguments.size()
+          + "for " + getTypeInfo().getFullName() + "<" + typeVars.stream()
+          .map(TypeSymbol::getFullName)
+          .collect(Collectors.joining(", "))
+          + ">, but got " + arguments.size()
           + ": " + printFullName()
       );
-    }else {
-      for(int i = 0; i < typeVars.size(); i++) {
-        replaceMap.put(typeVars.get(i), arguments.get(i));
+    }
+    else {
+      for (int i = 0; i < typeVars.size(); i++) {
+        replaceMap.put(
+            SymTypeExpressionFactory.createTypeVariable(typeVars.get(i)),
+            arguments.get(i)
+        );
       }
     }
     return replaceMap;

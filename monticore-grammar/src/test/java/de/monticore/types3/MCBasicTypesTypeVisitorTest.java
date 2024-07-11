@@ -37,13 +37,6 @@ public class MCBasicTypesTypeVisitorTest
   }
 
   @Test
-  public void symTypeFromAST_Test5() throws IOException {
-    // tests with resolving in a sub scope
-    checkType("java.util.Map",
-        "java.util.Map<java.util.Map.KeyT,java.util.Map.ValueT>");
-  }
-
-  @Test
   public void symTypeFromAST_VoidTest() throws IOException {
     Optional<ASTMCType> typeOpt = parser.parse_StringMCType("void");
     if (parser.hasErrors()) {

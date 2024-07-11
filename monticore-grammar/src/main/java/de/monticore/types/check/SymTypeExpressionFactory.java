@@ -57,7 +57,25 @@ public class SymTypeExpressionFactory {
    */
   public static SymTypeVariable createTypeVariable(
       SymTypeExpression lowerBound, SymTypeExpression upperBound) {
-    return createTypeVariable(null, lowerBound, upperBound);
+    // free type variables need an identifier
+    return createTypeVariable(
+        getUniqueFreeTypeVarName(),
+        lowerBound, upperBound
+    );
+  }
+
+  /**
+   * Creates FREE type variable, BUT:
+   * You most likely do not want this method,
+   * this is (nearly) only used for deepCloning.
+   * Use {@link #createTypeVariable(SymTypeExpression, SymTypeExpression)}.
+   */
+  public static SymTypeVariable createTypeVariable(
+      String name,
+      SymTypeExpression lowerBound,
+      SymTypeExpression upperBound
+  ) {
+    return new SymTypeVariable(name, lowerBound, upperBound);
   }
 
   public static SymTypeVariable createTypeVariable(TypeVarSymbol typeVarSymbol) {
@@ -358,7 +376,7 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
-      List<SymTypeExpression> argumentTypes) {
+      List<? extends SymTypeExpression> argumentTypes) {
     return createFunction(returnType, argumentTypes, false);
   }
 
@@ -368,14 +386,14 @@ public class SymTypeExpressionFactory {
   }
 
   public static SymTypeOfFunction createFunction(SymTypeExpression returnType,
-      List<SymTypeExpression> argumentTypes, boolean elliptic) {
+      List<? extends SymTypeExpression> argumentTypes, boolean elliptic) {
     return createFunction(null, returnType, argumentTypes, elliptic);
   }
 
   public static SymTypeOfFunction createFunction(
       FunctionSymbol symbol,
       SymTypeExpression returnType,
-      List<SymTypeExpression> argumentTypes,
+      List<? extends SymTypeExpression> argumentTypes,
       boolean elliptic) {
     return new SymTypeOfFunction(symbol, returnType, argumentTypes, elliptic);
   }
@@ -434,12 +452,58 @@ public class SymTypeExpressionFactory {
     return createUnion(Arrays.stream(unionizedTypes).collect(Collectors.toSet()));
   }
 
+  /**
+   * a slightly normalizing {@link #createUnion(Collection)}
+   */
+  public static SymTypeExpression createUnionOrDefault(
+      SymTypeExpression defaultType,
+      Collection<? extends SymTypeExpression> unionizedTypes
+  ) {
+    // an empty union is usually the bottom type,
+    // but there are exceptions
+    if (unionizedTypes.isEmpty()) {
+      return defaultType;
+    }
+    // union of one "is not" a union
+    // (A) = A
+    else if (unionizedTypes.size() == 1) {
+      return unionizedTypes.stream().findAny().get();
+    }
+    // still a union
+    else {
+      return createUnion(unionizedTypes);
+    }
+  }
+
   public static SymTypeOfIntersection createIntersection(Collection<? extends SymTypeExpression> intersectedTypes) {
     return new SymTypeOfIntersection(intersectedTypes);
   }
 
   public static SymTypeOfIntersection createIntersection(SymTypeExpression... intersectedTypes) {
     return createIntersection(Set.of(intersectedTypes));
+  }
+
+  /**
+   * a slightly normalizing {@link #createIntersection(Collection)}
+   */
+  public static SymTypeExpression createIntersectionOrDefault(
+      SymTypeExpression defaultType,
+      Collection<? extends SymTypeExpression> intersectedTypes
+  ) {
+    // an empty intersection is usually the top type,
+    // but there are exceptions
+    if (intersectedTypes.isEmpty()) {
+      return defaultType;
+    }
+    // intersection of one "is not" an intersection
+    // (A) = A
+    else if (intersectedTypes.size() == 1) {
+      return intersectedTypes.stream().findAny().get();
+    }
+    // still an intersection
+    else {
+      return createIntersection(intersectedTypes);
+    }
   }
 
   /**
@@ -469,4 +533,17 @@ public class SymTypeExpressionFactory {
     // union types in our implementations
     return createUnion();
   }
+
+  // Helper
+
+  /**
+   * The Only guarantee is that the names are unique.
+   * Never test against them.
+   */
+  protected static String getUniqueFreeTypeVarName() {
+    // naming inspired by JDK
+    return "FV#" + typeVarIDCounter++;
+  }
+  protected static int typeVarIDCounter = 0;
+
 }

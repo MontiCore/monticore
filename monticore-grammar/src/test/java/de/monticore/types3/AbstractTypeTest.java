@@ -19,7 +19,10 @@ public class AbstractTypeTest {
   }
 
   protected static void assertNoFindings() {
-    assertTrue(getAllFindingsAsString(), Log.getFindings().isEmpty());
+    assertTrue("Expected no Log findings, but got:"
+            + System.lineSeparator() + getAllFindingsAsString(),
+        Log.getFindings().isEmpty()
+    );
   }
 
   /**

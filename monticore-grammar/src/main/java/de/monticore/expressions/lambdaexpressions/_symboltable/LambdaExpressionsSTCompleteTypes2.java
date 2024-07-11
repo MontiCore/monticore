@@ -42,6 +42,11 @@ public class LambdaExpressionsSTCompleteTypes2 implements LambdaExpressionsVisit
     if (ast.isPresentMCType()) {
       ast.getSymbol().setType(calculateType(ast.getMCType()));
     }
+    // else: currently, the typecheck will set the type later.
+    // Example:
+    // int->int f = x->(y->y+2)(x);
+    // Here, x and y have type int, however, this requires the calculations
+    // found in the typecheck (especially for the Symbol y)
   }
 
   // Helper

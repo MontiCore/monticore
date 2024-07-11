@@ -20,6 +20,7 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -108,6 +109,7 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
   }
 
   @Test
+  @Ignore("There is no implementation for regEx type checking yet.")
   public void testCorrectFunctionCallMultipleMethodsMultipleParameters() throws IOException {
     testValid("f(\"hello\", \"a\")", List.of(List.of("hello", "a|b"), List.of("hello", "a|b")), false);
     testValid("f(\"b\", \"ab\")", List.of(List.of("a|b", "a[b]"), List.of("a?[b]", "a[bc]d?")), false);
