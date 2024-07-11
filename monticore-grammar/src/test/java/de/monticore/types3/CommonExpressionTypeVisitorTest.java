@@ -6,8 +6,10 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -1739,6 +1741,7 @@ public class CommonExpressionTypeVisitorTest
     testVariable.setIsStatic(true);
     OOTypeSymbol testInnerType = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("TestInnerType")
+        .setIsPublic(true)
         .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setEnclosingScope(testScope)
         .build();
@@ -1788,6 +1791,66 @@ public class CommonExpressionTypeVisitorTest
 
     // test for nested field access ("firstLayer" is a static member, "onlyMember" is an instance member)
     checkExpr("types.DeepNesting.firstLayer.onlyMember", "int");
+  }
+
+  /**
+   * tests whether inner results are all present
+   */
+  @Test
+  public void deriveFromFieldAccessExpressionInnerResults() throws IOException {
+    //initialize symbol table
+    init_advanced();
+    ASTFieldAccessExpression astTestVariable = (ASTFieldAccessExpression)
+        parseExpr("types3.types2.Test.TestInnerType.testVariable");
+    ASTFieldAccessExpression astTestInnerType = (ASTFieldAccessExpression)
+        astTestVariable.getExpression();
+    ASTFieldAccessExpression astTest = (ASTFieldAccessExpression)
+        astTestInnerType.getExpression();
+    ASTFieldAccessExpression astTypes2 = (ASTFieldAccessExpression)
+        astTest.getExpression();
+    ASTNameExpression astTypes3 = (ASTNameExpression)
+        astTypes2.getExpression();
+    generateScopes(astTestVariable);
+    calculateTypes(astTestVariable);
+    assertNoFindings();
+    assertTrue(getType4Ast().hasTypeOfExpression(astTestVariable));
+    assertFalse(getType4Ast().hasTypeOfTypeIdentifierForName(astTestVariable));
+    assertEquals(
+        "short",
+        getType4Ast().getTypeOfExpression(astTestVariable).printFullName()
+    );
+    assertFalse(getType4Ast().hasTypeOfExpression(astTestInnerType));
+    assertTrue(getType4Ast().hasTypeOfTypeIdentifierForName(astTestInnerType));
+    assertEquals(
+        "types3.types2.Test.TestInnerType",
+        getType4Ast().getPartialTypeOfTypeIdForName(astTestInnerType).printFullName()
+    );
+    assertFalse(getType4Ast().hasTypeOfExpression(astTest));
+    assertTrue(getType4Ast().hasTypeOfTypeIdentifierForName(astTest));
+    assertEquals(
+        "types3.types2.Test",
+        getType4Ast().getPartialTypeOfTypeIdForName(astTest).printFullName()
+    );
+    assertFalse(getType4Ast().hasTypeOfExpression(astTypes2));
+    assertFalse(getType4Ast().hasTypeOfTypeIdentifierForName(astTypes2));
+    assertFalse(getType4Ast().hasTypeOfExpression(astTypes3));
+    assertFalse(getType4Ast().hasTypeOfTypeIdentifierForName(astTypes3));
+    assertNoFindings();
+  }
+
+  /**
+   * tests whether inner results are all present
+   */
+  @Test
+  public void deriveFromInvalidFieldAccessExpressionInnerProtectedClassResults() throws IOException {
+    //initialize symbol table
+    init_advanced();
+    // set the inner Class to protected, we only have public access.
+    OOTypeSymbol testInnerTypeSym = OOSymbolsMill.globalScope()
+        .resolveOOType("types3.types2.Test.TestInnerType")
+        .get();
+    testInnerTypeSym.setIsProtected(true);
+    checkErrorExpr("types3.types2.Test.TestInnerType.testVariable", "0xF736E");
   }
 
   @Test
@@ -2737,12 +2800,12 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("foo(c, b)", "B");
     checkExpr("foo(c, c)", "C");
 
-    checkErrorExpr("foo2(c, c, c)", "0xFDCBA");
+    checkErrorExpr("foo2(c, c, c)", "0xFD446");
 
-    checkErrorExpr("foo2(a, a)", "0xFDABE");
-    checkErrorExpr("foo2(b, a)", "0xFDABE");
-    checkErrorExpr("foo2(c, b)", "0xFDCBA");
-    checkErrorExpr("foo2(c, c)", "0xFDCBA");
+    checkErrorExpr("foo2(a, a)", "0xFD444");
+    checkErrorExpr("foo2(b, a)", "0xFD444");
+    checkErrorExpr("foo2(c, b)", "0xFD446");
+    checkErrorExpr("foo2(c, c)", "0xFD446");
 
     checkExpr("foo2(a, b)", "B");
     checkExpr("foo2(a, c)", "B");

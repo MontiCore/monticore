@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.util.Optional;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
@@ -51,7 +52,7 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
             createTypeArray(_childSymType, 2),
             createTypeArray(_csStudentSymType, 2)
         ),
-        "Person[][] & Teachable[][]"
+        createBottomType().printFullName()
     );
   }
 

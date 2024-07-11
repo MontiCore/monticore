@@ -6,13 +6,13 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -175,12 +175,20 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Optional<SymTypeExpression> optVar = resolverHotfix(() ->
-        enclosingScope.resolveVariable(
-          name,AccessModifier.ALL_INCLUSION, getVariablePredicate())
-        .map(v -> v.getType())
-    );
-    return optVar;
+    Optional<VariableSymbol> optVarSym = resolverHotfix(
+        () -> enclosingScope.resolveVariable(
+            name, AccessModifier.ALL_INCLUSION, getVariablePredicate()
+        ));
+    if (optVarSym.isPresent() && optVarSym.get().getType() == null) {
+      Log.error("0xFD489 internal error: incorrect symbol table, "
+          + "variable symbol " + optVarSym.get().getFullName()
+          + " has no type set.");
+      return Optional.empty();
+    }
+    Optional<SymTypeExpression> optVar = optVarSym.map(vs -> vs.getType());
+    Optional<SymTypeExpression> optVarReplacedVariables = optVar
+        .map(t -> TypeParameterRelations.replaceFreeTypeVariables(t, enclosingScope));
+    return optVarReplacedVariables;
   }
 
   /**
@@ -200,7 +208,11 @@ public class WithinScopeBasicSymbolsResolver {
         .stream()
         .map(FunctionSymbol::getFunctionType)
         .collect(Collectors.toList());
-    return funcs;
+    // replace free type variables
+    List<SymTypeOfFunction> funcsReplacedVars = funcs.stream()
+        .map(f -> TypeParameterRelations.replaceFreeTypeVariables(f, enclosingScope).asFunctionType())
+        .collect(Collectors.toList());
+    return funcsReplacedVars;
   }
 
   /**
@@ -264,7 +276,10 @@ public class WithinScopeBasicSymbolsResolver {
     else {
       type = Optional.empty();
     }
-    return type;
+    // replace free type variables
+    Optional<SymTypeExpression> typeReplacedVars = type
+        .map(t -> TypeParameterRelations.replaceFreeTypeVariables(t, enclosingScope));
+    return typeReplacedVars;
   }
 
   /**
@@ -301,16 +316,6 @@ public class WithinScopeBasicSymbolsResolver {
    */
   protected boolean isNameWithQualifier(String name) {
     return !Names.getQualifier(name).isEmpty();
-  }
-
-  protected IBasicSymbolsScope getAsBasicSymbolsScope(IScope scope) {
-    // is accepted only here, decided on 07.04.2020
-    if (!(scope instanceof IBasicSymbolsScope)) {
-      Log.error("0xA2307 the enclosing scope of the expression"
-          + "does not implement the interface IBasicSymbolsScope");
-    }
-    // is accepted only here, decided on 07.04.2020
-    return (IBasicSymbolsScope) scope;
   }
 
   /**

@@ -6,20 +6,28 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
+import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.generics.TypeParameterRelations;
+import de.monticore.types3.generics.bounds.Bound;
+import de.monticore.types3.generics.util.BoundResolution;
+import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Spliterator;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -66,14 +74,14 @@ public class SymTypeOfFunction extends SymTypeExpression {
   public SymTypeOfFunction(
       FunctionSymbol functionSymbol,
       SymTypeExpression returnType,
-      List<SymTypeExpression> argumentTypes,
+      List<? extends SymTypeExpression> argumentTypes,
       boolean elliptic) {
     super.typeSymbol = new TypeSymbol(TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
     this.functionSymbol = Optional.ofNullable(functionSymbol);
     this.returnType = returnType;
-    this.argumentTypes = argumentTypes;
+    this.argumentTypes = new ArrayList<>(argumentTypes);
     this.elliptic = elliptic;
   }
 
@@ -94,6 +102,11 @@ public class SymTypeOfFunction extends SymTypeExpression {
   @Override
   public SymTypeOfFunction asFunctionType() {
     return this;
+  }
+
+  @Override
+  public SymTypeOfFunction deepClone() {
+    return (SymTypeOfFunction) super.deepClone();
   }
 
   @Override
@@ -167,7 +180,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
    * returns whether the specified amount of arguments can be accepted
    * E.g., (P, int...) -> int can accept 1,2,3,... arguments, but not 0
    */
-  protected boolean canHaveArity(int arity) {
+  public boolean canHaveArity(int arity) {
     return ((isElliptic() && sizeArgumentTypes() - 1 <= arity)
         || sizeArgumentTypes() == arity);
   }
@@ -179,12 +192,14 @@ public class SymTypeOfFunction extends SymTypeExpression {
   public SymTypeOfFunction getWithFixedArity(int arity) {
     SymTypeOfFunction clone = (SymTypeOfFunction) deepClone();
     if (canHaveArity(arity)) {
-      for (int i = sizeArgumentTypes(); i < arity; i++) {
-        clone.addArgumentType(
-            getArgumentType(sizeArgumentTypes() - 1).deepClone()
-        );
+      if (isElliptic()) {
+        SymTypeExpression ellipticArgument = getArgumentType(sizeArgumentTypes() - 1);
+        clone.removeArgumentType(sizeArgumentTypes() - 1);
+        for (int i = sizeArgumentTypes() - 1; i < arity; i++) {
+          clone.addArgumentType(ellipticArgument.deepClone());
+        }
+        clone.setElliptic(false);
       }
-      clone.setElliptic(false);
     }
     else {
       Log.error("0xFD2A1 internal error: "
@@ -196,31 +211,114 @@ public class SymTypeOfFunction extends SymTypeExpression {
     return clone;
   }
 
-  public Map<TypeVarSymbol, SymTypeExpression> getTypeVariableReplaceMap() {
-    Map<TypeVarSymbol, SymTypeExpression> replaceMap = new HashMap<>();
+  /**
+   * returns the declared type
+   */
+  public SymTypeOfFunction getDeclaredType() {
+    return getSymbol().getFunctionType();
+  }
+
+  protected Map<SymTypeVariable, SymTypeExpression> getTypeVariableReplaceMap() {
+
+    Map<SymTypeVariable, SymTypeExpression> replaceMap =
+        new TreeMap<>(new SymTypeExpressionComparator());
     if (hasSymbol()) {
-      Map<SymTypeExpression, SymTypeExpression> symbol2instance
-          = new HashMap<>();
-      symbol2instance.put(getSymbol().getType(), getType());
-      for (int i = 0; i < getSymbol().getFunctionType().sizeArgumentTypes()
-          && i < sizeArgumentTypes(); i++) {
-        symbol2instance.put(
-            getSymbol().getFunctionType().getArgumentType(i),
-            getArgumentType(i)
+      // skolem variables:
+      List<SymTypeVariable> infVars = TypeParameterRelations.getIncludedInferenceVariables(this);
+      Map<SymTypeVariable, SymTypeExpression> infVar2Skolem =
+          new TreeMap<>(new SymTypeExpressionComparator());
+      for (SymTypeVariable infVar : infVars) {
+        infVar2Skolem.put(infVar,
+            SymTypeExpressionFactory.createTypeObject(
+                "Skolem#" + infVar.getFreeVarIdentifier(),
+                BasicSymbolsMill.scope()
+            )
         );
       }
-      for (SymTypeExpression symbolExpr : symbol2instance.keySet()) {
-        if (symbolExpr.isTypeVariable()
-            && !symbolExpr.deepEquals(symbol2instance.get(symbolExpr))
-        ) {
-          replaceMap.put(
-              ((SymTypeVariable) symbolExpr).getTypeVarSymbol(),
-              symbol2instance.get(symbolExpr)
-          );
+      Map<SymTypeExpression, SymTypeVariable> skolem2infVar =
+          new TreeMap<>(new SymTypeExpressionComparator());
+      infVar2Skolem.forEach((k, v) -> skolem2infVar.put(v, k));
+      SymTypeOfFunction thisWithSkolems = TypeParameterRelations.replaceTypeVariables(this, infVar2Skolem).asFunctionType();
+
+      SymTypeOfFunction declType = isElliptic() ?
+          getDeclaredType() :
+          getDeclaredType().getWithFixedArity(sizeArgumentTypes());
+      Map<SymTypeVariable, SymTypeVariable> typePar2FreeVar
+          = TypeParameterRelations.getFreeVariableReplaceMap(
+          declType, BasicSymbolsMill.scope()
+      );
+      Map<SymTypeVariable, SymTypeVariable> freeVar2TypePar =
+          new TreeMap<>(new SymTypeExpressionComparator());
+      typePar2FreeVar.forEach((k, v) -> freeVar2TypePar.put(v, k));
+      SymTypeOfFunction declTypeWithFreeVars = TypeParameterRelations
+          .replaceTypeVariables(declType, typePar2FreeVar)
+          .asFunctionType();
+      List<Bound> boundsOnDeclType = SymTypeRelations.constrainSameType(
+          declTypeWithFreeVars, thisWithSkolems
+      );
+      Optional<Map<SymTypeVariable, SymTypeExpression>> freeVar2InstTypeOpt =
+          BoundResolution.resolve(boundsOnDeclType);
+      if (freeVar2InstTypeOpt.isPresent()) {
+        Map<SymTypeVariable, SymTypeExpression> freeVar2InstType =
+            freeVar2InstTypeOpt.get();
+        for (SymTypeVariable freeVar : typePar2FreeVar.values()) {
+          SymTypeExpression calculatedReplacement = freeVar2InstType.get(freeVar);
+          SymTypeExpression replacement =
+              skolem2infVar.containsKey(calculatedReplacement) ?
+                  skolem2infVar.get(calculatedReplacement) :
+                  calculatedReplacement;
+          replaceMap.put(freeVar2TypePar.get(freeVar), replacement);
         }
+        for (TypeVarSymbol varSym : getSymbol().getTypeVariableList()) {
+          SymTypeVariable var = SymTypeExpressionFactory
+              .createTypeVariable(varSym);
+          if (!replaceMap.containsKey(var)) {
+            replaceMap.put(var, var);
+          }
+        }
+      }
+      else {
+        Log.error("0xFD235 internal error: could not get type arguments"
+            + " of function with type " + this.printFullName()
+            + " with declared type " + declType.printFullName()
+        );
       }
     }
     return replaceMap;
+  }
+
+  /**
+   * returns the type arguments for a generic function.
+   * E.g., given asList, which has the declared Type <T> (T...) -> List<T>
+   * and this is the instantiation (int, int) -> List<int>,
+   * This will return the argument list [int].
+   * <p>
+   * Warning: if the instantiation is, e.g., (Person, Car) -> List<int>,
+   * no correct list of arguments can be calculated.
+   * <p>
+   * Not to be confused with getArgumentTypes,
+   * which in turn returns the parameter types
+   * (a.k.a. the types the arguments need to be compatible to).
+   * Naming is confusing due to legacy reasons.
+   */
+  public List<SymTypeExpression> getTypeArguments() {
+    if (!hasSymbol()) {
+      return Collections.emptyList();
+    }
+    // Heuristic: If a method is generic,
+    // its type parameters can be found in its signature.
+    // This cannot find cases like (<T> () -> String),
+    // there the parameter is used solely inside the implementation.
+    // It is debatable, how useful that parameter even is...
+    // Another assumption: The type variables have no name.
+    Map<SymTypeVariable, SymTypeExpression> paramReplaceMap =
+        getTypeVariableReplaceMap();
+    List<SymTypeExpression> typeArguments = getSymbol().getTypeVariableList()
+        .stream()
+        .map(SymTypeExpressionFactory::createTypeVariable)
+        .map(paramReplaceMap::get)
+        .collect(Collectors.toList());
+    return typeArguments;
   }
 
   @Override

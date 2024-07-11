@@ -1,13 +1,13 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -20,15 +20,6 @@ import java.util.Optional;
 public class NominalSuperTypeCalculator {
 
   protected final static String LOG_NAME = "NominalSuperTypes";
-
-  protected SymTypeVariableReplaceVisitor replaceVisitor;
-
-  public NominalSuperTypeCalculator() {
-    // default values
-    // SymTypeRelations has no default,
-    // as this tends to be part of SymTypeRelations
-    this.replaceVisitor = new SymTypeVariableReplaceVisitor();
-  }
 
   /**
    * supertypes, but modified according to type parameters.
@@ -52,11 +43,11 @@ public class NominalSuperTypeCalculator {
     List<SymTypeExpression> unmodifiedSuperTypes =
         getUnmodifiedSuperTypesList(thisType);
     if (thisType.isGenericType()) {
-      Map<TypeVarSymbol, SymTypeExpression> replaceMap =
+      Map<SymTypeVariable, SymTypeExpression> replaceMap =
           ((SymTypeOfGenerics) thisType).getTypeVariableReplaceMap();
       superTypes = new ArrayList<>();
       for (SymTypeExpression superType : unmodifiedSuperTypes) {
-        superTypes.add(replaceVariables(superType, replaceMap));
+        superTypes.add(TypeParameterRelations.replaceTypeVariables(superType, replaceMap));
       }
     }
     else {
@@ -125,12 +116,6 @@ public class NominalSuperTypeCalculator {
         type.isTypeVariable() ||
         type.isIntersectionType() ||
         type.isUnionType();
-  }
-
-  protected SymTypeExpression replaceVariables(
-      SymTypeExpression type,
-      Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
-    return replaceVisitor.calculate(type, replaceMap);
   }
 
 }

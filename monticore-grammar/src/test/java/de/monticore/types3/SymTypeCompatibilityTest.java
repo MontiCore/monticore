@@ -27,12 +27,14 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createNumericWithSIUnit;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeOfNull;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
+import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -357,6 +359,35 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
   }
 
   @Test
+  public void isCompatibleTuples() {
+    assertTrue(SymTypeRelations.isCompatible(
+        createTuple(_personSymType, _intSymType),
+        createTuple(_personSymType, _intSymType)
+    ));
+    assertTrue(SymTypeRelations.isCompatible(
+        createTuple(_personSymType, _intSymType),
+        createTuple(_studentSymType, _intSymType)
+    ));
+    assertFalse(SymTypeRelations.isCompatible(
+        createTuple(_studentSymType, _intSymType),
+        createTuple(_personSymType, _intSymType)
+    ));
+    assertFalse(SymTypeRelations.isCompatible(
+        createTuple(_carSymType, _intSymType),
+        createTuple(_personSymType, _intSymType)
+    ));
+
+    assertFalse(SymTypeRelations.isCompatible(
+        createTuple(_personSymType, _intSymType),
+        createTuple(_personSymType, _intSymType, _intSymType)
+    ));
+    assertFalse(SymTypeRelations.isCompatible(
+        createTuple(_personSymType, _intSymType, _intSymType),
+        createTuple(_personSymType, _intSymType)
+    ));
+  }
+
+  @Test
   public void isCompatibleFunctions() {
     assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType), createFunction(_personSymType)
@@ -608,22 +639,22 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     // List<? extends Student>
     SymTypeOfGenerics sSubList = createGenerics(
         _boxedListSymType.getTypeInfo(),
-        createTypeVariable(_bottomType, _studentSymType)
+        createWildcard(true, _studentSymType)
     );
     // List<? extends Person>
     SymTypeOfGenerics pSubList = createGenerics(
         _boxedListSymType.getTypeInfo(),
-        createTypeVariable(_bottomType, _personSymType)
+        createWildcard(true, _personSymType)
     );
     // LinkedList<? extends Student>
     SymTypeOfGenerics sSubLinkedList = createGenerics(
         _linkedListSymType.getTypeInfo(),
-        createTypeVariable(_bottomType, _studentSymType)
+        createWildcard(true, _studentSymType)
     );
     // LinkedList<? extends Person>
     SymTypeOfGenerics pSubLinkedList = createGenerics(
         _linkedListSymType.getTypeInfo(),
-        createTypeVariable(_bottomType, _personSymType)
+        createWildcard(true, _personSymType)
     );
 
     assertFalse(SymTypeRelations.isCompatible(pList, sList));
@@ -661,22 +692,22 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     // List<? super Student>
     SymTypeOfGenerics sSuperList = createGenerics(
         _boxedListSymType.getTypeInfo(),
-        createTypeVariable(_studentSymType, _topType)
+        createWildcard(false, _studentSymType)
     );
     // List<? super Person>
     SymTypeOfGenerics pSuperList = createGenerics(
         _boxedListSymType.getTypeInfo(),
-        createTypeVariable(_personSymType, _topType)
+        createWildcard(false, _personSymType)
     );
     // LinkedList<? super Student>
     SymTypeOfGenerics sSuperLinkedList = createGenerics(
         _linkedListSymType.getTypeInfo(),
-        createTypeVariable(_studentSymType, _topType)
+        createWildcard(false, _studentSymType)
     );
     // LinkedList<? super Person>
     SymTypeOfGenerics pSuperLinkedList = createGenerics(
         _linkedListSymType.getTypeInfo(),
-        createTypeVariable(_personSymType, _topType)
+        createWildcard(false, _personSymType)
     );
 
     assertFalse(SymTypeRelations.isCompatible(pList, sList));

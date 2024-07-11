@@ -4,10 +4,11 @@ package de.monticore.types3;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
-import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
 import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
+import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -15,6 +16,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types3.generics.TypeParameterRelations;
+import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
@@ -31,6 +34,7 @@ import java.util.Map;
  * {@link Type4Ast#getTypeOfTypeIdentifier}.
  * The getters marked with "Partial" and the setters
  * are used by the type traverser filling the map.
+ * Setting a null value will remove the entry.
  */
 public class Type4Ast {
 
@@ -72,6 +76,26 @@ public class Type4Ast {
   }
 
   /**
+   * This removes the stored values of
+   * every node below and including the provided root.
+   * This can be required to,
+   * e.g., rerun the type checker multiple times during type inference.
+   */
+  public void reset(ASTNode rootNode) {
+    IVisitor mapReseter = new IVisitor() {
+      @Override
+      public void visit(ASTNode node) {
+        getExpression2Type().remove(node);
+        getTypeIdentifier2Type().remove(node);
+      }
+    };
+    ExpressionsBasisTraverser traverser =
+        ExpressionsBasisMill.inheritanceTraverser();
+    traverser.add4IVisitor(mapReseter);
+    rootNode.accept(traverser);
+  }
+
+  /**
    * whether a type has been calculated for the expression
    */
   public boolean hasTypeOfExpression(ASTExpression astExpr) {
@@ -90,6 +114,18 @@ public class Type4Ast {
       return false;
     }
     return !getExpression2Type().get(node).isObscureType();
+  }
+
+  public boolean hasPartialTypeOfExpression(ASTExpression astExpr) {
+    return internal_hasPartialTypeOfExpression((ASTNode) astExpr);
+  }
+
+  public boolean hasPartialTypeOfExpression(ASTLiteral astLit) {
+    return internal_hasPartialTypeOfExpression((ASTNode) astLit);
+  }
+
+  protected boolean internal_hasPartialTypeOfExpression(ASTNode node) {
+    return getExpression2Type().containsKey(node);
   }
 
   public boolean hasTypeOfTypeIdentifier(ASTMCType mcType) {
@@ -129,6 +165,42 @@ public class Type4Ast {
       return false;
     }
     return !getTypeIdentifier2Type().get(node).isObscureType();
+  }
+
+  public boolean hasPartialTypeOfTypeIdentifier(ASTMCType mcType) {
+    return internal_hasPartialTypeOfTypeIdentifier((ASTNode) mcType);
+  }
+
+  public boolean hasPartialTypeOfTypeIdentifier(ASTMCReturnType mcReturnType) {
+    return internal_hasPartialTypeOfTypeIdentifier((ASTNode) mcReturnType);
+  }
+
+  public boolean hasPartialTypeOfTypeIdentifier(ASTMCQualifiedName mcQName) {
+    return internal_hasPartialTypeOfTypeIdentifier((ASTNode) mcQName);
+  }
+
+  public boolean hasPartialTypeOfTypeIdentifier(ASTMCTypeArgument mcTypeArg) {
+    return internal_hasPartialTypeOfTypeIdentifier((ASTNode) mcTypeArg);
+  }
+
+  public boolean hasPartialTypeOfTypeIdentifierForName(ASTExpression nameExpr) {
+    if (!isQNameExpr(nameExpr)) {
+      Log.error("0xFD4B6 internal error: "
+              + "expected a qualified name, "
+              + "this is not an issue with the model, "
+              + "the wrong internal method was called.",
+          nameExpr.get_SourcePositionStart(),
+          nameExpr.get_SourcePositionEnd()
+      );
+    }
+    return internal_hasPartialTypeOfTypeIdentifier((ASTNode) nameExpr);
+  }
+
+  /**
+   * whether a type has been calculated for the type identifier
+   */
+  protected boolean internal_hasPartialTypeOfTypeIdentifier(ASTNode node) {
+    return getTypeIdentifier2Type().containsKey(node);
   }
 
   /**
@@ -171,7 +243,7 @@ public class Type4Ast {
   protected SymTypeExpression internal_getPartialTypeOfExpr(ASTNode node) {
     if (!getExpression2Type().containsKey(node)) {
       Log.error("0x7C001 internal error: type information expected"
-              + " but not present.",
+              + " but not present. TypeCheck misconfigured?",
           node.get_SourcePositionStart(),
           node.get_SourcePositionEnd()
       );
@@ -203,7 +275,8 @@ public class Type4Ast {
     if (internal_hasTypeOfTypeIdentifier(node)) {
       return getTypeIdentifier2Type().get(node);
     }
-    Log.error("0xFD792 type of type identifier unknown but requested",
+    Log.error("0xFD792 type of type identifier unknown but requested."
+            + " Typecheck misconfigured?",
         node.get_SourcePositionStart(),
         node.get_SourcePositionEnd()
     );
@@ -294,6 +367,7 @@ public class Type4Ast {
       ASTNode node,
       SymTypeExpression typeExpr
   ) {
+    assertNoInferenceVars(node, typeExpr);
     if (internal_hasTypeOfExpression(node)) {
       Log.trace(node2InfoString(node)
               + ": had the expression type "
@@ -301,12 +375,23 @@ public class Type4Ast {
           LOG_NAME
       );
     }
-    Log.trace(node2InfoString(node)
-            + ": expression type is "
-            + typeExpr.printFullName(),
-        LOG_NAME
-    );
-    getExpression2Type().put(node, typeExpr);
+    if (typeExpr != null) {
+      Log.trace(node2InfoString(node)
+              + ": expression type is "
+              + typeExpr.printFullName(),
+          LOG_NAME
+      );
+      getExpression2Type().put(node, typeExpr);
+    }
+    else {
+      if (internal_hasTypeOfExpression(node)) {
+        Log.trace(node2InfoString(node)
+                + ": type info now removed.",
+            LOG_NAME
+        );
+      }
+      getExpression2Type().remove(node);
+    }
   }
 
   public void setTypeOfTypeIdentifier(
@@ -389,6 +474,7 @@ public class Type4Ast {
   protected void internal_setTypeOfTypeIdentifier(
       ASTNode node,
       SymTypeExpression typeExpr) {
+    assertNoInferenceVars(node, typeExpr);
     if (internal_hasTypeOfTypeIdentifier(node)) {
       Log.trace(node2InfoString(node)
               + ": had the type id "
@@ -396,15 +482,50 @@ public class Type4Ast {
           LOG_NAME
       );
     }
-    Log.trace(node2InfoString(node)
-            + ": type id is "
-            + typeExpr.printFullName(),
-        LOG_NAME
-    );
-    getTypeIdentifier2Type().put(node, typeExpr);
+    if (typeExpr != null) {
+      Log.trace(node2InfoString(node)
+              + ": type id is "
+              + typeExpr.printFullName(),
+          LOG_NAME
+      );
+      getTypeIdentifier2Type().put(node, typeExpr);
+    }
+    else {
+      if (internal_hasTypeOfTypeIdentifier(node)) {
+        Log.trace(node2InfoString(node)
+                + ": type info now removed.",
+            LOG_NAME
+        );
+      }
+      getTypeIdentifier2Type().remove(node);
+    }
   }
 
   // Helper
+
+  /**
+   * If there are any inference variables
+   * to be (indirectly) stored in Type4Ast,
+   * either an internal programming error occurred,
+   * or no Type inference traverser has run
+   * and replaced it with an instantiation.
+   */
+  protected void assertNoInferenceVars(ASTNode node, SymTypeExpression type) {
+    if (TypeParameterRelations.hasInferenceVariables(type)) {
+      Log.info("0xFD777 internal error: "
+              + "(this is going to be considered an error, currently(!) "
+              + "only ignored for legacy reasons) " + System.lineSeparator()
+              + "tried storing a type with inference variables ("
+              + type.printFullName() + ") in Type4Ast."
+              + " This can occur due to: " + System.lineSeparator()
+              + "1. The TypeCheck of this language does not support"
+              + " type inference and a symbol has been used which requires "
+              + "type inference (in this context)." + System.lineSeparator()
+              + "2. Or, a programming error.",
+          LOG_NAME
+      );
+    }
+  }
 
   /**
    * whether the expression represents a qualified name
