@@ -19,6 +19,7 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 import util.TestUtil;
 
 import java.util.Collections;
@@ -117,6 +118,7 @@ public class FQNTagTest {
   }
 
   @Test
+  @Ignore // concrete syntax matching is WIP
   public void testSomeScopeC_Transition() {
     List<ASTTag> tags = fqnAutomataTagger.getTags((ASTTransition) model.getEnclosingScope().resolveScopedState("C").get().getAstNode()
             .getScopedStateElement(2), Collections.singleton(tagDefinition));

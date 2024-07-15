@@ -69,7 +69,7 @@ test_01experiments:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -PgenEMF=true -Pci --max-workers=4 --stacktrace"
+    - "gradle -p monticore-test/01.experiments build $GRADLE_OPTS -PgenEMF=true -PgenTagging=true -Pci --max-workers=4 --stacktrace"
   only:
     - merge_requests
     - branches
