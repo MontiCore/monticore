@@ -25,12 +25,12 @@ solutions in the context of DSLs and model-based development.
 
 ### Location
 
-The MontiCore symposium will be located in Germany. Exact location tbd.
+The MontiCore symposium will be located in Gemünd, Germany. 
 
 ### Participation
 
 Participation is based on acceptance of an abstract or a full paper and 
-requires registration until **13th of September**. 
+requires registration until **07th of March**. 
 
 Registration costs tba and include accommodation, 
 conference fees, and meals during the symposium as well as coordinated a 
@@ -44,7 +44,7 @@ be found here. We ask for two types of contributions:
  [1] Research papers: 8 pages,
  [2] Vision abstracts: 1 page.
  
-Submissions must be uploaded through [EasyChair via this link](https://easychair.org/conferences/?conf=mcles24). 
+Submissions must be uploaded through [EasyChair via this link](https://easychair.org/conferences/?conf=mcs25). 
 
 It is planned to produce post-proceedings with extended and improved 
 versions of the papers as result of the symposium. 
@@ -116,7 +116,7 @@ Program Committee:
 All proposals will undergo light reviewing by the program committee.  
 
 In case you have any further questions, please contact: 
-monticoresymposium2024@listserv.uni-stuttgart.de 
+monticoresymposium@listserv.uni-stuttgart.de
 
 
 ---
