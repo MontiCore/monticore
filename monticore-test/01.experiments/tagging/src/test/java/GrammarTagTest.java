@@ -1,38 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import automata.AutomataMill;
-import automata._ast.ASTAutomaton;
-import automata._ast.ASTState;
-import automata._ast.ASTTransition;
-import automata._symboltable.ScopedStateSymbol;
-import automata._symboltable.StateSymbol;
-import automata._tagging.AutomataTagger;
-import automata._tagging.IAutomataTagger;
-import automata._visitor.AutomataTraverser;
-import automata._visitor.AutomataVisitor2;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.literals.mccommonliteralstagschema._cocos.MCCommonLiteralsTagSchemaASTNullLiteralSchemaIdentifierCoCo;
 import de.monticore.tagging.ISymbolTagger;
 import de.monticore.tagging.SimpleSymbolTagger;
 import de.monticore.tagging.TagRepository;
 import de.monticore.tagging.tags.TagsMill;
 import de.monticore.tagging.tags._ast.ASTSimpleTag;
 import de.monticore.tagging.tags._ast.ASTTag;
-import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.monticore.tagging.tags._ast.ASTValuedTag;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 // Also test the SimpleSymbolTagger on a more complex language with scopes and package names
@@ -49,7 +33,7 @@ public class GrammarTagTest {
     Log.enableFailQuick(false);
 
     // Load all relevant models
-    Optional opt = TagRepository.loadTagModel(new File("src/test/resources/models/SimpleGrammar.tags"));
+    Optional<?> opt = TagRepository.loadTagModel(new File("src/test/resources/models/SimpleGrammar.tags"));
     if (opt.isEmpty())
       Assert.fail("Failed to load Simple.tags");
 
