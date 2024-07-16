@@ -3,8 +3,8 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ReferencedNTNotDefinedTest extends CocoTest {
 
@@ -12,7 +12,7 @@ public class ReferencedNTNotDefinedTest extends CocoTest {
           "%snonterminal B because there exists no defining production for B.";
   private final String grammar = "de.monticore.grammar.cocos.invalid.A2030.A2030";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new ReferencedNTNotDefined());

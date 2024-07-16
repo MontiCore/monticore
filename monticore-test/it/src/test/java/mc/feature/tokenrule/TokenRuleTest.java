@@ -7,19 +7,18 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.tokenrule.tokenrule._ast.ASTC;
 import mc.feature.tokenrule.tokenrule._ast.ASTG;
 import mc.feature.tokenrule.tokenrule._parser.TokenRuleParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
 
 public class TokenRuleTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -29,21 +28,21 @@ public class TokenRuleTest extends GeneratorIntegrationsTest {
   public void test() throws IOException {
     TokenRuleParser parser = new TokenRuleParser();
     parser.parse_StringA(":: Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
     parser.parse_StringA(": : Foo");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
     parser.parse_StringA(": Foo");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
     parser.parse_StringB("::: Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
     Optional<ASTC> ast = parser.parse_StringC(":: Foo");
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
-    assertEquals("::", ast.get().getX());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertEquals("::", ast.get().getX());
     Optional<ASTG> astg = parser.parse_StringG("::");
-    assertFalse(parser.hasErrors());
-    assertTrue(astg.isPresent());
-    assertTrue(astg.get().isY());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astg.isPresent());
+    Assertions.assertTrue(astg.get().isY());
   }
   
 }

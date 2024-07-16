@@ -49,7 +49,9 @@ if (("true").equals(getProperty('genTagging'))) {
   }
 
   dependencies {
-    withGenImplementation group:'junit', name:'junit', version:junit_version
+    withGenImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    withGenImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     withGenImplementation project(path: ':monticore-grammar', configuration: 'tagging')
     withGenImplementation project(project.path)
   }
@@ -63,7 +65,7 @@ if (("true").equals(getProperty('genTagging'))) {
     classpath = sourceSets.withGen.runtimeClasspath
     shouldRunAfter test
 
-    useJUnit()
+    useJUnitPlatform()
 
   }
 

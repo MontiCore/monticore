@@ -8,8 +8,9 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -30,7 +31,7 @@ public class InterfaceProdTest extends TranslationTestCase {
   
   private ASTCDInterface astC;
 
-  @Before
+  @BeforeEach
   public void setupInterfaceProdTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/InterfaceProd.mc4")).get();
@@ -46,11 +47,11 @@ public class InterfaceProdTest extends TranslationTestCase {
   @Test
   public void testExtends() {
     List<ASTMCObjectType> superInterfaces = astA.getInterfaceList();
-    assertEquals(1, superInterfaces.size());
+    Assertions.assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    assertEquals("mc2cdtransformation.InterfaceProd.ASTextendedProd", name);
+    Assertions.assertEquals("mc2cdtransformation.InterfaceProd.ASTextendedProd", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -60,11 +61,11 @@ public class InterfaceProdTest extends TranslationTestCase {
   @Test
   public void testAstextends() {
     List<ASTMCObjectType> superInterfaces = astB.getInterfaceList();
-    assertEquals(1, superInterfaces.size());
+    Assertions.assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    assertEquals("AstExtendedType", name);
+    Assertions.assertEquals("AstExtendedType", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -74,11 +75,11 @@ public class InterfaceProdTest extends TranslationTestCase {
   @Test
   public void testAstimplementsQualified() {
     List<ASTMCObjectType> superInterfaces = astC.getInterfaceList();
-    assertEquals(1, superInterfaces.size());
+    Assertions.assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    assertEquals("java.io.Serializable", name);
+    Assertions.assertEquals("java.io.Serializable", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

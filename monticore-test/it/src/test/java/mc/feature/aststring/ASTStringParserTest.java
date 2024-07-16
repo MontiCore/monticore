@@ -9,17 +9,17 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.aststring.aststring._ast.ASTStart;
 import mc.feature.aststring.aststring._parser.AststringParser;
+import org.junit.jupiter.api.Test;
 
 public class ASTStringParserTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -33,28 +33,28 @@ public class ASTStringParserTest extends GeneratorIntegrationsTest {
     
     AststringParser p = new AststringParser();
     java.util.Optional<ASTStart> opt = p.parseStart(s);
-    assertTrue(opt.isPresent());
+    Assertions.assertTrue(opt.isPresent());
     ASTStart ast = opt.get();
     
-    assertEquals(false, p.hasErrors());
+    Assertions.assertEquals(false, p.hasErrors());
     
     // Test parsing
-    assertEquals("ah", ast.getAList().get(0));
-    assertEquals("be", ast.getAList().get(1));
-    assertEquals("ce", ast.getAList().get(2));
-    assertEquals("oh", ast.getBList().get(0));
-    assertEquals("pe", ast.getBList().get(1));
-    assertEquals("qu", ast.getBList().get(2));
-    assertEquals("x", ast.getCList().get(0));
-    assertEquals("y", ast.getCList().get(1));
-    assertEquals("z", ast.getCList().get(2));
-    assertEquals("de", ast.getDList().get(0));
-    assertEquals("eh", ast.getDList().get(1));
+    Assertions.assertEquals("ah", ast.getAList().get(0));
+    Assertions.assertEquals("be", ast.getAList().get(1));
+    Assertions.assertEquals("ce", ast.getAList().get(2));
+    Assertions.assertEquals("oh", ast.getBList().get(0));
+    Assertions.assertEquals("pe", ast.getBList().get(1));
+    Assertions.assertEquals("qu", ast.getBList().get(2));
+    Assertions.assertEquals("x", ast.getCList().get(0));
+    Assertions.assertEquals("y", ast.getCList().get(1));
+    Assertions.assertEquals("z", ast.getCList().get(2));
+    Assertions.assertEquals("de", ast.getDList().get(0));
+    Assertions.assertEquals("eh", ast.getDList().get(1));
     
     // Test toString method
-    assertEquals("ef", ast.getDList().get(2).toString());
+    Assertions.assertEquals("ef", ast.getDList().get(2).toString());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

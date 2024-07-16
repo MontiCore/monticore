@@ -15,8 +15,9 @@ import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
   protected TestMCVarDeclarationStatementsCoCoChecker checker;
   protected TestMCVarDeclarationStatementsParser parser;
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -82,7 +83,7 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
       .filter(Finding::isError)
       .map(err -> err.getMsg().split(" ")[0])
       .collect(Collectors.toList());
-    assertEquals(expectedErrorCodes, actualErrors);
+    Assertions.assertEquals(expectedErrorCodes, actualErrors);
   }
 
   @Test

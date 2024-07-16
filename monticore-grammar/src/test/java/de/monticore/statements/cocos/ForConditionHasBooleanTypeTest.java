@@ -11,9 +11,9 @@ import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,7 +25,7 @@ public class ForConditionHasBooleanTypeTest {
   
   protected TestMCCommonStatementsCoCoChecker checker;
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -40,10 +40,10 @@ public class ForConditionHasBooleanTypeTest {
     
     TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
     Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
     
   }
   
@@ -51,10 +51,10 @@ public class ForConditionHasBooleanTypeTest {
     
     TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
     Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertFalse(Log.getFindings().isEmpty());
     
   }
   

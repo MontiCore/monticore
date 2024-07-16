@@ -30,7 +30,8 @@ import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.util.List;
@@ -93,7 +94,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     return typeMapTraverser;
   }
 
-  @Before
+  @BeforeEach
   public void setupDefaultMill() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -257,13 +258,13 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
 
   protected ASTExpression parseExpr(String exprStr) throws IOException {
     Optional<ASTExpression> astExpression = parseStringExpr(exprStr);
-    assertTrue(getAllFindingsAsString(), astExpression.isPresent());
+    Assertions.assertTrue(astExpression.isPresent(), getAllFindingsAsString());
     return astExpression.get();
   }
 
   protected ASTMCType parseMCType(String typeStr) throws IOException {
     Optional<ASTMCType> mcType = parseStringMCType(typeStr);
-    assertTrue(getAllFindingsAsString(), mcType.isPresent());
+    Assertions.assertTrue(mcType.isPresent(), getAllFindingsAsString());
     return mcType.get();
   }
 
@@ -300,10 +301,8 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
       generateScopes(astTargetType);
       calculateTypes(astTargetType);
       assertNoFindings();
-      assertTrue("No type calculated for target type "
-              + targetTypeStr + " used for expression " + exprStr,
-          getType4Ast().hasTypeOfTypeIdentifier(astTargetType)
-      );
+      Assertions.assertTrue(getType4Ast().hasTypeOfTypeIdentifier(astTargetType), "No type calculated for target type "
+              + targetTypeStr + " used for expression " + exprStr);
       SymTypeExpression targetType =
           getType4Ast().getTypeOfTypeIdentifier(astTargetType);
       getCtx4Ast().setTargetTypeOfExpression(astExpr, targetType);
@@ -312,8 +311,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     generateScopes(astExpr);
     calculateTypes(astExpr);
     assertNoFindings();
-    assertTrue("No type calculated for expression " + exprStr,
-        getType4Ast().hasTypeOfExpression(astExpr));
+    Assertions.assertTrue(getType4Ast().hasTypeOfExpression(astExpr), "No type calculated for expression " + exprStr);
     SymTypeExpression type = getType4Ast().getTypeOfExpression(astExpr);
     assertNoFindings();
     // usually, type normalization is expected and (basically) always allowed
@@ -321,10 +319,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     boolean equalsNormalized =
         expectedType.equals(SymTypeRelations.normalize(type).printFullName());
     if (!allowNormalization || !equalsNormalized) {
-      assertEquals("Wrong type for expression " + exprStr,
-          expectedType,
-          type.printFullName()
-      );
+      Assertions.assertEquals(expectedType, type.printFullName(), "Wrong type for expression " + exprStr);
     }
   }
 
@@ -335,10 +330,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     calculateTypes(astType);
     SymTypeExpression type = getType4Ast().getTypeOfTypeIdentifier(astType);
     assertNoFindings();
-    assertEquals("Wrong type for type identifier " + typeStr,
-        expectedType,
-        type.printFullName()
-    );
+    Assertions.assertEquals(expectedType, type.printFullName(), "Wrong type for type identifier " + typeStr);
   }
 
   /**
@@ -365,10 +357,8 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
       generateScopes(astTargetType);
       calculateTypes(astTargetType);
       assertNoFindings();
-      assertTrue("No type calculated for target type "
-              + targetTypeStr + " used for expression " + exprStr,
-          getType4Ast().hasTypeOfTypeIdentifier(astTargetType)
-      );
+      Assertions.assertTrue(getType4Ast().hasTypeOfTypeIdentifier(astTargetType), "No type calculated for target type "
+              + targetTypeStr + " used for expression " + exprStr);
       SymTypeExpression targetType =
           getType4Ast().getTypeOfTypeIdentifier(astTargetType);
       getCtx4Ast().setTargetTypeOfExpression(astExpr, targetType);
@@ -378,13 +368,13 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     calculateTypes(astExpr);
     boolean hasResult = getType4Ast().hasTypeOfExpression(astExpr);
     if (hasResult) {
-      fail("did not expect a stored type (except Obscure), but got "
+      Assertions.fail("did not expect a stored type (except Obscure), but got "
           + getType4Ast().getTypeOfExpression(astExpr).printFullName());
     }
-    assertTrue(getType4Ast().hasPartialTypeOfExpression(astExpr));
+    Assertions.assertTrue(getType4Ast().hasPartialTypeOfExpression(astExpr));
     SymTypeExpression type = getType4Ast().getTypeOfExpression(astExpr);
-    assertTrue("expected Obscure for expression \"" + exprStr +
-        "\" but got " + type.printFullName(), type.isObscureType());
+    Assertions.assertTrue(type.isObscureType(), "expected Obscure for expression \"" + exprStr +
+        "\" but got " + type.printFullName());
     assertHasErrorCode(expectedError);
     Log.getFindings().clear();
   }
@@ -397,8 +387,8 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     Log.getFindings().clear();
     calculateTypes(astType);
     SymTypeExpression type = getType4Ast().getPartialTypeOfTypeId(astType);
-    assertTrue("expected Obscure for expression \"" + typeStr +
-        "\" but got " + type.printFullName(), type.isObscureType());
+    Assertions.assertTrue(type.isObscureType(), "expected Obscure for expression \"" + typeStr +
+        "\" but got " + type.printFullName());
     assertHasErrorCode(expectedError);
   }
 
@@ -431,16 +421,13 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
   }
 
   protected void assertHasErrorCode(String code) {
-    assertTrue(
-        "Error \"" + code + "\" expected, "
-            + "but instead the errors are:"
-            + System.lineSeparator()
-            + Log.getFindings().stream()
-            .map(Finding::buildMsg)
-            .collect(Collectors.joining(System.lineSeparator()))
-            + System.lineSeparator(),
-        hasErrorCode(code)
-    );
+    Assertions.assertTrue(hasErrorCode(code), "Error \"" + code + "\" expected, "
+        + "but instead the errors are:"
+        + System.lineSeparator()
+        + Log.getFindings().stream()
+        .map(Finding::buildMsg)
+        .collect(Collectors.joining(System.lineSeparator()))
+        + System.lineSeparator());
   }
 
   protected Type4Ast getType4Ast() {

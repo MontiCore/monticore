@@ -8,18 +8,16 @@ import mc.GeneratorIntegrationsTest;
 import mc.embedding.external.embedded.EmbeddedMill;
 import mc.embedding.external.embedded._symboltable.IEmbeddedGlobalScope;
 import mc.embedding.external.embedded._symboltable.TextSymbol;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.*;
-
 public class EmbeddedTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     EmbeddedMill.reset();
     EmbeddedMill.init();
@@ -34,9 +32,9 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
     scope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
 
     final TextSymbol textSymbol = scope.resolveText("E").orElse(null);
-    assertNotNull(textSymbol);
-    assertEquals("E", textSymbol.getName());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertNotNull(textSymbol);
+    Assertions.assertEquals("E", textSymbol.getName());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

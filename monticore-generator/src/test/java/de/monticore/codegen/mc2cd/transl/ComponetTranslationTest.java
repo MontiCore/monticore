@@ -5,12 +5,11 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
-
-import static org.junit.Assert.*;
 
 public class ComponetTranslationTest extends TranslationTestCase {
 
@@ -18,7 +17,7 @@ public class ComponetTranslationTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit nonComponentCD;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     componentCD = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AbstractProd.mc4")).get();
@@ -28,19 +27,19 @@ public class ComponetTranslationTest extends TranslationTestCase {
 
   @Test
   public void testIsComponent() {
-    assertTrue(componentCD.getCDDefinition().getModifier().isPresentStereotype());
-    assertEquals(1, componentCD.getCDDefinition().getModifier().getStereotype().sizeValues());
-    assertEquals("component",componentCD.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
-    assertFalse(componentCD.getCDDefinition().getModifier().getStereotype().getValues(0).isPresentText());
+    Assertions.assertTrue(componentCD.getCDDefinition().getModifier().isPresentStereotype());
+    Assertions.assertEquals(1, componentCD.getCDDefinition().getModifier().getStereotype().sizeValues());
+    Assertions.assertEquals("component", componentCD.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
+    Assertions.assertFalse(componentCD.getCDDefinition().getModifier().getStereotype().getValues(0).isPresentText());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testIsNotComponent() {
-    assertFalse(nonComponentCD.getCDDefinition().getModifier().isPresentStereotype());
+    Assertions.assertFalse(nonComponentCD.getCDDefinition().getModifier().isPresentStereotype());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

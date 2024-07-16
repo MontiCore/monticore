@@ -10,16 +10,16 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.followoption.followoption._parser.FollowOptionParser;
+import org.junit.jupiter.api.Test;
 
 public class FollowOptionTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -31,9 +31,9 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
     //-- extractfile gen/FollowOptionTest.x
     FollowOptionParser simpleAParser = new FollowOptionParser();
     simpleAParser.parseA(new StringReader("test ,"));
-    assertEquals(false, simpleAParser.hasErrors());
+    Assertions.assertEquals(false, simpleAParser.hasErrors());
     //-- endfile gen/FollowOptionTest.x
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
     
   @Test
@@ -42,7 +42,7 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
 
     FollowOptionParser simpleBParser = new FollowOptionParser();
     simpleBParser.parseB(new StringReader("test ,"));
-    assertEquals(true, simpleBParser.hasErrors());
+    Assertions.assertEquals(true, simpleBParser.hasErrors());
     //-- endfile gen/FollowOptionTest.x
   }
   
@@ -57,7 +57,7 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
     FollowOptionParser simpleParser = new FollowOptionParser();
     simpleParser.parseB(new StringReader(","));
     
-    assertEquals(true, simpleParser.hasErrors());
+    Assertions.assertEquals(true, simpleParser.hasErrors());
   }
 
   @Test
@@ -66,6 +66,6 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
     FollowOptionParser simpleAParser = new FollowOptionParser();
     simpleAParser.parseA(new StringReader("test ."));
 
-    assertEquals(true, simpleAParser.hasErrors());
+    Assertions.assertEquals(true, simpleAParser.hasErrors());
   }
 }

@@ -7,16 +7,15 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-
 public class FloatJavaLiteralsTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -26,11 +25,11 @@ public class FloatJavaLiteralsTest {
 
   private void checkFloatLiteral(float f, String s) throws IOException {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
-    assertTrue(lit instanceof ASTFloatLiteral);
-    assertEquals(f, ((ASTFloatLiteral) lit).getValue(), 0);
-    assertTrue(true);
+    Assertions.assertTrue(lit instanceof ASTFloatLiteral);
+    Assertions.assertEquals(f, ((ASTFloatLiteral) lit).getValue(), 0);
+    Assertions.assertTrue(true);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -84,7 +83,7 @@ public class FloatJavaLiteralsTest {
     }
     catch (IOException e)
     {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
 }

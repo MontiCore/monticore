@@ -6,20 +6,20 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
 
 public class BuiltInJavaTypesTest {
 
   private static IOOSymbolsGlobalScope gs;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup(){
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
@@ -28,7 +28,7 @@ public class BuiltInJavaTypesTest {
     gs = OOSymbolsMill.globalScope();
   }
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -46,55 +46,55 @@ public class BuiltInJavaTypesTest {
     Optional<TypeSymbol> bytesymtype = gs.resolveType("byte");
     Optional<TypeSymbol> booleansymtype = gs.resolveType("boolean");
 
-    assertTrue(intsymtype.isPresent());
-    assertTrue(doublesymtype.isPresent());
-    assertTrue(floatsymtype.isPresent());
-    assertTrue(longsymtype.isPresent());
-    assertTrue(charsymtype.isPresent());
-    assertTrue(shortsymtype.isPresent());
-    assertTrue(bytesymtype.isPresent());
-    assertTrue(booleansymtype.isPresent());
+    Assertions.assertTrue(intsymtype.isPresent());
+    Assertions.assertTrue(doublesymtype.isPresent());
+    Assertions.assertTrue(floatsymtype.isPresent());
+    Assertions.assertTrue(longsymtype.isPresent());
+    Assertions.assertTrue(charsymtype.isPresent());
+    Assertions.assertTrue(shortsymtype.isPresent());
+    Assertions.assertTrue(bytesymtype.isPresent());
+    Assertions.assertTrue(booleansymtype.isPresent());
 
     //assert that the primitives have no fields, methods, type variables and super types
-    assertTrue(intsymtype.get().getFunctionList().isEmpty());
-    assertTrue(intsymtype.get().getVariableList().isEmpty());
-    assertTrue(intsymtype.get().getSuperTypesList().isEmpty());
-    assertTrue(intsymtype.get().getTypeParameterList().isEmpty());
+    Assertions.assertTrue(intsymtype.get().getFunctionList().isEmpty());
+    Assertions.assertTrue(intsymtype.get().getVariableList().isEmpty());
+    Assertions.assertTrue(intsymtype.get().getSuperTypesList().isEmpty());
+    Assertions.assertTrue(intsymtype.get().getTypeParameterList().isEmpty());
 
-    assertTrue(doublesymtype.get().getFunctionList().isEmpty());
-    assertTrue(doublesymtype.get().getVariableList().isEmpty());
-    assertTrue(doublesymtype.get().getSuperTypesList().isEmpty());
-    assertTrue(doublesymtype.get().getTypeParameterList().isEmpty());
+    Assertions.assertTrue(doublesymtype.get().getFunctionList().isEmpty());
+    Assertions.assertTrue(doublesymtype.get().getVariableList().isEmpty());
+    Assertions.assertTrue(doublesymtype.get().getSuperTypesList().isEmpty());
+    Assertions.assertTrue(doublesymtype.get().getTypeParameterList().isEmpty());
 
-    assertTrue(floatsymtype.get().getFunctionList().isEmpty());
-    assertTrue(floatsymtype.get().getVariableList().isEmpty());
-    assertTrue(floatsymtype.get().getSuperTypesList().isEmpty());
-    assertTrue(floatsymtype.get().getTypeParameterList().isEmpty());
+    Assertions.assertTrue(floatsymtype.get().getFunctionList().isEmpty());
+    Assertions.assertTrue(floatsymtype.get().getVariableList().isEmpty());
+    Assertions.assertTrue(floatsymtype.get().getSuperTypesList().isEmpty());
+    Assertions.assertTrue(floatsymtype.get().getTypeParameterList().isEmpty());
 
-    assertTrue(longsymtype.get().getFunctionList().isEmpty());
-    assertTrue(longsymtype.get().getVariableList().isEmpty());
-    assertTrue(longsymtype.get().getSuperTypesList().isEmpty());
-    assertTrue(longsymtype.get().getTypeParameterList().isEmpty());
+    Assertions.assertTrue(longsymtype.get().getFunctionList().isEmpty());
+    Assertions.assertTrue(longsymtype.get().getVariableList().isEmpty());
+    Assertions.assertTrue(longsymtype.get().getSuperTypesList().isEmpty());
+    Assertions.assertTrue(longsymtype.get().getTypeParameterList().isEmpty());
 
-    assertTrue(charsymtype.get().getFunctionList().isEmpty());
-    assertTrue(charsymtype.get().getVariableList().isEmpty());
-    assertTrue(charsymtype.get().getSuperTypesList().isEmpty());
-    assertTrue(charsymtype.get().getTypeParameterList().isEmpty());
+    Assertions.assertTrue(charsymtype.get().getFunctionList().isEmpty());
+    Assertions.assertTrue(charsymtype.get().getVariableList().isEmpty());
+    Assertions.assertTrue(charsymtype.get().getSuperTypesList().isEmpty());
+    Assertions.assertTrue(charsymtype.get().getTypeParameterList().isEmpty());
 
-    assertTrue(shortsymtype.get().getFunctionList().isEmpty());
-    assertTrue(shortsymtype.get().getVariableList().isEmpty());
-    assertTrue(shortsymtype.get().getSuperTypesList().isEmpty());
-    assertTrue(shortsymtype.get().getTypeParameterList().isEmpty());
+    Assertions.assertTrue(shortsymtype.get().getFunctionList().isEmpty());
+    Assertions.assertTrue(shortsymtype.get().getVariableList().isEmpty());
+    Assertions.assertTrue(shortsymtype.get().getSuperTypesList().isEmpty());
+    Assertions.assertTrue(shortsymtype.get().getTypeParameterList().isEmpty());
 
-    assertTrue(bytesymtype.get().getFunctionList().isEmpty());
-    assertTrue(bytesymtype.get().getVariableList().isEmpty());
-    assertTrue(bytesymtype.get().getSuperTypesList().isEmpty());
-    assertTrue(bytesymtype.get().getTypeParameterList().isEmpty());
+    Assertions.assertTrue(bytesymtype.get().getFunctionList().isEmpty());
+    Assertions.assertTrue(bytesymtype.get().getVariableList().isEmpty());
+    Assertions.assertTrue(bytesymtype.get().getSuperTypesList().isEmpty());
+    Assertions.assertTrue(bytesymtype.get().getTypeParameterList().isEmpty());
 
-    assertTrue(booleansymtype.get().getFunctionList().isEmpty());
-    assertTrue(booleansymtype.get().getVariableList().isEmpty());
-    assertTrue(booleansymtype.get().getSuperTypesList().isEmpty());
-    assertTrue(booleansymtype.get().getTypeParameterList().isEmpty());
+    Assertions.assertTrue(booleansymtype.get().getFunctionList().isEmpty());
+    Assertions.assertTrue(booleansymtype.get().getVariableList().isEmpty());
+    Assertions.assertTrue(booleansymtype.get().getSuperTypesList().isEmpty());
+    Assertions.assertTrue(booleansymtype.get().getTypeParameterList().isEmpty());
   }
 
 

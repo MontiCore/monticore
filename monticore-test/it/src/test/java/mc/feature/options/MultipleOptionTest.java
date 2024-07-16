@@ -10,9 +10,9 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._ast.ASTTestOptions;
@@ -21,7 +21,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class MultipleOptionTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,10 +36,10 @@ public class MultipleOptionTest extends GeneratorIntegrationsTest {
     
     Optional<ASTTestOptions> ast = p.parseTestOptions(r);
     
-    assertEquals(false, p.hasErrors());
-    assertTrue(ast.isPresent());
-    assertEquals(false, ast.get().isA());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertEquals(false, ast.get().isA());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

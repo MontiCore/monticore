@@ -8,19 +8,17 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 public class OOSymbolsSymbols2JsonTest {
 
   private IOOSymbolsArtifactScope scope;
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -86,7 +84,7 @@ public class OOSymbolsSymbols2JsonTest {
   public void testDeSer(){
     performRoundTripSerialization(scope);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -97,23 +95,23 @@ public class OOSymbolsSymbols2JsonTest {
     // then deserialize it
     OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
     IOOSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before
 
     Optional<OOTypeSymbol> type = scope.resolveOOType("Type");
     Optional<OOTypeSymbol> deserializedType = deserialized.resolveOOType("Type");
-    assertTrue(type.isPresent());
-    assertTrue(deserializedType.isPresent());
+    Assertions.assertTrue(type.isPresent());
+    Assertions.assertTrue(deserializedType.isPresent());
 
     //check that both can resolve the type "SubType" with the supertype "Type"
     Optional<OOTypeSymbol> subtype = scope.resolveOOType("SubType");
     Optional<OOTypeSymbol> deserializedSubType = deserialized.resolveOOType("SubType");
-    assertTrue(subtype.isPresent());
-    assertTrue(deserializedSubType.isPresent());
-    assertEquals(1, subtype.get().getSuperTypesList().size());
-    assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
-    assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
-    assertEquals("Type", deserializedSubType.get().getSuperTypesList().get(0).print());
+    Assertions.assertTrue(subtype.isPresent());
+    Assertions.assertTrue(deserializedSubType.isPresent());
+    Assertions.assertEquals(1, subtype.get().getSuperTypesList().size());
+    Assertions.assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
+    Assertions.assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
+    Assertions.assertEquals("Type", deserializedSubType.get().getSuperTypesList().get(0).print());
 
     IOOSymbolsScope typeSpanned = type.get().getSpannedScope();
     IOOSymbolsScope deserializedTypeSpanned = deserializedType.get().getSpannedScope();
@@ -121,27 +119,27 @@ public class OOSymbolsSymbols2JsonTest {
     //check for Variable variable in Type
     Optional<FieldSymbol> variable = typeSpanned.resolveField("variable");
     Optional<FieldSymbol> deserializedVariable = deserializedTypeSpanned.resolveField("variable");
-    assertTrue(variable.isPresent());
-    assertTrue(deserializedVariable.isPresent());
-    assertEquals("double", variable.get().getType().print());
-    assertEquals("double", deserializedVariable.get().getType().print());
+    Assertions.assertTrue(variable.isPresent());
+    Assertions.assertTrue(deserializedVariable.isPresent());
+    Assertions.assertEquals("double", variable.get().getType().print());
+    Assertions.assertEquals("double", deserializedVariable.get().getType().print());
 
     //check for Function function in Type
     Optional<MethodSymbol> function = typeSpanned.resolveMethod("function");
     Optional<MethodSymbol> deserializedFunction = deserializedTypeSpanned.resolveMethod("function");
-    assertTrue(function.isPresent());
-    assertTrue(deserializedFunction.isPresent());
-    assertEquals("int", function.get().getType().print());
-    assertEquals("int", deserializedFunction.get().getType().print());
+    Assertions.assertTrue(function.isPresent());
+    Assertions.assertTrue(deserializedFunction.isPresent());
+    Assertions.assertEquals("int", function.get().getType().print());
+    Assertions.assertEquals("int", deserializedFunction.get().getType().print());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSerializedUnknownKind() {
     OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
     symbols2Json.deserialize("{\"symbols\": [{\"kind\":\"unknown\", \"name\":\"test\"}]}");
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -152,13 +150,13 @@ public class OOSymbolsSymbols2JsonTest {
 
     OOSymbolsSymbols2Json symbols2Json = new OOSymbolsSymbols2Json();
     symbols2Json.deserialize(invalidJsonForSerializing);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1238"));
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1238"));
 
     symbols2Json.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1233"));
+    Assertions.assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1233"));
 
     symbols2Json.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA0572"));
+    Assertions.assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA0572"));
   }
 
 }

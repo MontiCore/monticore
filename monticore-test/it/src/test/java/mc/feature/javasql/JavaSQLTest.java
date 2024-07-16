@@ -10,16 +10,16 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.javasql.javasql.javasql._parser.JavaSQLParser;
+import org.junit.jupiter.api.Test;
 
 public class JavaSQLTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -31,8 +31,8 @@ public class JavaSQLTest extends GeneratorIntegrationsTest {
     JavaSQLParser p = new JavaSQLParser();
     p.parseStart(new StringReader("a++,a=SELECT a FROM x ,i++"));
     
-    assertEquals(false, p.hasErrors());
+    Assertions.assertEquals(false, p.hasErrors());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

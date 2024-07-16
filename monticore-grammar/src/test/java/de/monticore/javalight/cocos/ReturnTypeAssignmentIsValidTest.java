@@ -13,8 +13,9 @@ import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.FullSynthesizeFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -24,9 +25,8 @@ import static org.junit.Assert.assertTrue;
 
 public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
   
-  @Before
+  @BeforeEach
   public void initCoco(){
-    BasicSymbolsMill.initializePrimitives();
     checker = new JavaLightCoCoChecker();
     checker.addCoCo(new ReturnTypeAssignmentIsValid(new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals())));
   }
@@ -35,12 +35,12 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
   
     TestJavaLightParser parser = new TestJavaLightParser();
     Optional<ASTMethod> optAST = parser.parse_StringMethod(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     TestJavaLightTraverser traverser = getFlatExpressionScopeSetter();
     optAST.get().accept(traverser);
     checker.checkAll((ASTBasicSymbolsNode) optAST.get());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
     
   }
 
@@ -48,12 +48,12 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
 
     TestJavaLightParser parser = new TestJavaLightParser();
     Optional<ASTMethod> optAST = parser.parse_StringMethod(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     TestJavaLightTraverser traverser = getFlatExpressionScopeSetter();
     optAST.get().accept(traverser);
     checker.checkAll((ASTBasicSymbolsNode) optAST.get());
-    assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertFalse(Log.getFindings().isEmpty());
 
   }
 

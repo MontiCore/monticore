@@ -8,18 +8,17 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class FloatCommonLiteralsTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -30,18 +29,18 @@ public class FloatCommonLiteralsTest {
   private void checkFloatLiteral(float f, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
-    assertTrue(lit.isPresent());
-    assertTrue(lit.get() instanceof ASTBasicFloatLiteral);
-    assertEquals(f, ((ASTBasicFloatLiteral) lit.get()).getValue(), 0);
-    assertTrue(true);
+    Assertions.assertTrue(lit.isPresent());
+    Assertions.assertTrue(lit.get() instanceof ASTBasicFloatLiteral);
+    Assertions.assertEquals(f, ((ASTBasicFloatLiteral) lit.get()).getValue(), 0);
+    Assertions.assertTrue(true);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTBasicFloatLiteral> lit = parser.parseBasicFloatLiteral(new StringReader(s));
-    assertTrue(!lit.isPresent());
+    Assertions.assertTrue(!lit.isPresent());
    }
 
   @Test
@@ -52,7 +51,7 @@ public class FloatCommonLiteralsTest {
     }
     catch (IOException e)
     {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
 
@@ -104,7 +103,7 @@ public class FloatCommonLiteralsTest {
     }
     catch (IOException e)
     {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
 }

@@ -7,8 +7,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
@@ -20,7 +21,7 @@ public class OverridingClassProdTest extends TranslationTestCase {
   
   private ASTCDClass astX;
 
-  @Before
+  @BeforeEach
   public void setupOverridingClassProdTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/OverridingClassProdGrammar.mc4")).get();
@@ -33,10 +34,10 @@ public class OverridingClassProdTest extends TranslationTestCase {
    */
   @Test
   public void testOverride() {
-    assertTrue(astX.isPresentCDExtendUsage());
+    Assertions.assertTrue(astX.isPresentCDExtendUsage());
     String name = typeToString(astX.getCDExtendUsage().getSuperclass(0));
-    assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
+    Assertions.assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

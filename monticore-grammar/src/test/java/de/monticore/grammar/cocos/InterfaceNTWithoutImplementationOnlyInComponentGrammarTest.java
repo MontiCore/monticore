@@ -3,11 +3,9 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import de.se_rwth.commons.logging.LogStub;
-import org.checkerframework.checker.units.qual.A;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.grammar.cocos.InterfaceNTWithoutImplementationOnlyInComponentGrammar.ERROR_CODE;
 
@@ -40,7 +38,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends 
 
   private final String grammar8 = "de.monticore.grammar.cocos.invalid.A0278.A0278e";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new InterfaceNTWithoutImplementationOnlyInComponentGrammar());
@@ -99,7 +97,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends 
     testValidGrammar(grammar7, checker);
   }
 
-  @After
+  @AfterEach
   public void after() {
     Log.getFindings().clear();
   }

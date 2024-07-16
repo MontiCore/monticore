@@ -16,7 +16,9 @@ dependencies {
   implementation project(':monticore-runtime')
   implementation project(':monticore-grammar')
   implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
-  testImplementation group:'junit', name:'junit', version: junit_version
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
   grammar (project(path: ':monticore-grammar')){
     capabilities {
       requireCapability("de.monticore:monticore-grammar-grammars")

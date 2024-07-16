@@ -4,11 +4,11 @@ package mc;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class GeneratorIntegrationsTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);

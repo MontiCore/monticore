@@ -6,8 +6,9 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.util.DefsTypesForTests;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
 
   protected ICombineExpressionsWithLiteralsScope scope;
 
-  @Before
+  @BeforeEach
   public void setup() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -60,6 +61,6 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
     Optional<SymTypeExpression> lubOpt = SymTypeRelations.leastUpperBound(type);
     String printed = lubOpt.map(SymTypeExpression::printFullName).orElse("");
     assertNoFindings();
-    assertEquals(expectedPrint, printed);
+    Assertions.assertEquals(expectedPrint, printed);
   }
 }

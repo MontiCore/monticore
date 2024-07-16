@@ -12,9 +12,9 @@ import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.cocochecker.a._ast.ASTANode;
@@ -45,7 +45,7 @@ import mc.feature.cocochecker.c._cocos.CCoCoChecker;
 public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   final StringBuilder checked = new StringBuilder();
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -89,7 +89,7 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   // the ast used for testing.
   private ASTANode ast;
   
-  @Before
+  @BeforeEach
   public void setUp() {
     Optional<ASTX> astOpt = Optional.empty();
     try {
@@ -97,9 +97,9 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     }
     catch (IOException e) {
       e.printStackTrace();
-      fail("Parser Error.");
+      Assertions.fail("Parser Error.");
     }
-    assertTrue(astOpt.isPresent());
+    Assertions.assertTrue(astOpt.isPresent());
     ast = astOpt.get();
     checked.setLength(0);
   }
@@ -114,8 +114,8 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     checker.addCoCo(cocoZ);
     
     checker.checkAll(ast);
-    assertEquals("BAYZ", checked.toString());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals("BAYZ", checked.toString());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -137,8 +137,8 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     checkerA.addChecker(checkerC);
     
     checkerA.checkAll(ast);
-    assertEquals("BAYZ", checked.toString());
+    Assertions.assertEquals("BAYZ", checked.toString());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -10,8 +10,9 @@ import de.monticore.typepersistence.variable._symboltable.IVariableScope;
 import de.monticore.typepersistence.variable._symboltable.VariableScopesGenitorDelegator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TypePersistenceTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -51,8 +52,8 @@ public class TypePersistenceTest {
     Optional<ASTVar> varModel = blahParser.parse_String("var String a");
     VariableScopesGenitorDelegator varSymbolTableCreator = VariableMill.scopesGenitorDelegator();
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
-    assertTrue(varModel.isPresent());
+    Assertions.assertTrue(varModel.isPresent());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

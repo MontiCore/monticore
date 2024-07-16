@@ -5,18 +5,14 @@ package mc.feature.keyrule;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
-import mc.feature.aststring.aststring._ast.ASTStart;
-import mc.feature.aststring.aststring._parser.AststringParser;
-import mc.feature.keyrule.keyrule._ast.ASTA;
 import mc.feature.keyrule.keyrule._ast.ASTB;
 import mc.feature.keyrule.keyrule._ast.ASTJ;
 import mc.feature.keyrule.keyrule._parser.KeyRuleParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 public class KeyRuleTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -35,24 +31,24 @@ public class KeyRuleTest extends GeneratorIntegrationsTest {
   public void test() throws IOException {
     KeyRuleParser parser = new KeyRuleParser();
     parser.parse_StringA("bla1 Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
     parser.parse_StringA("bla2 Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
     parser.parse_StringA("bla3 Foo");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
     Optional<ASTB> ast = parser.parse_StringB("bla1 Foo");
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
-    assertEquals("bla1", ast.get().getBla());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertEquals("bla1", ast.get().getBla());
     ast = parser.parse_StringB("bla2 Foo");
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
-    assertEquals("bla2", ast.get().getBla());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertEquals("bla2", ast.get().getBla());
     Optional<ASTJ> astj = parser.parse_StringJ("blaj");
-    assertFalse(parser.hasErrors());
-    assertTrue(astj.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astj.isPresent());
     astj = parser.parse_StringJ("blax");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
   }
   
 }

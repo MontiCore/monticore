@@ -7,9 +7,8 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +35,7 @@ import static de.monticore.types3.util.DefsVariablesForTests._personVarSym;
 public class CallGenericFunctionsTest
     extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     setupValues();
     setupGenericFunctions();

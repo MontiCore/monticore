@@ -5,15 +5,15 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.feature.inheritedbuilder.buildertest.BuilderTestMill;
 import mc.feature.inheritedbuilder.buildertest._ast.ASTSubBuilder;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
 public class TestInheritedBuilder {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -22,8 +22,8 @@ public class TestInheritedBuilder {
   @Test
   public void test(){
     //test if the return type of the builder for the inherited attribute name of Sub is correct
-    assertTrue(BuilderTestMill.subBuilder().setName("Foo") instanceof ASTSubBuilder);
+    Assertions.assertTrue(BuilderTestMill.subBuilder().setName("Foo") instanceof ASTSubBuilder);
     
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

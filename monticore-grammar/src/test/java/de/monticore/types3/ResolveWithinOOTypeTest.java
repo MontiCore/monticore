@@ -21,8 +21,9 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +43,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -80,15 +81,15 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType.getSpannedScope());
-    assertEquals("() -> int", type.printFullName());
-    assertSame(method, ((SymTypeOfFunction) type).getSymbol());
+    Assertions.assertEquals("() -> int", type.printFullName());
+    Assertions.assertSame(method, ((SymTypeOfFunction) type).getSymbol());
 
     List<MethodSymbol> constructors = calculateConstructorWithinScope(
         oOType.getSpannedScope(), "t", BasicAccessModifier.PRIVATE
     );
-    assertEquals(2, constructors.size());
-    assertTrue(constructors.contains(constructor));
-    assertTrue(constructors.contains(constructor2));
+    Assertions.assertEquals(2, constructors.size());
+    Assertions.assertTrue(constructors.contains(constructor));
+    Assertions.assertTrue(constructors.contains(constructor2));
   }
 
   // class t {
@@ -124,15 +125,15 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
     List<MethodSymbol> constructors = calculateConstructorWithinScope(
         oOType.getSpannedScope(), "t", BasicAccessModifier.PRIVATE
     );
-    assertEquals(2, constructors.size());
-    assertTrue(constructors.contains(constructor));
-    assertTrue(constructors.contains(constructor2));
+    Assertions.assertEquals(2, constructors.size());
+    Assertions.assertTrue(constructors.contains(constructor));
+    Assertions.assertTrue(constructors.contains(constructor2));
 
     constructors = calculateConstructorWithinScope(
         oOType.getSpannedScope(), "t", BasicAccessModifier.PUBLIC
     );
-    assertEquals(1, constructors.size());
-    assertTrue(constructors.contains(constructor2));
+    Assertions.assertEquals(1, constructors.size());
+    Assertions.assertTrue(constructors.contains(constructor2));
   }
 
   // Helper
@@ -167,11 +168,11 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
             scope, name, accessModifier, c -> true
         );
     assertNoFindings();
-    assertTrue(functions.stream().allMatch(f -> f instanceof MethodSymbol));
+    Assertions.assertTrue(functions.stream().allMatch(f -> f instanceof MethodSymbol));
     List<MethodSymbol> constructors = functions.stream()
         .map(f -> (MethodSymbol) f)
         .collect(Collectors.toList());
-    assertTrue(constructors.stream().allMatch(MethodSymbolTOP::isIsConstructor));
+    Assertions.assertTrue(constructors.stream().allMatch(MethodSymbolTOP::isIsConstructor));
     return constructors;
   }
 

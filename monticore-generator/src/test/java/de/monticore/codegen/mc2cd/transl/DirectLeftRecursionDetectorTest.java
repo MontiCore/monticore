@@ -8,9 +8,9 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -30,11 +30,11 @@ public class DirectLeftRecursionDetectorTest extends TranslationTestCase {
   
   private DirectLeftRecursionDetector directLeftRecursionDetector = new DirectLeftRecursionDetector();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     final Path modelPath = Paths.get("src/test/resources/mc2cdtransformation/DirectLeftRecursionDetector.mc4");
     astMCGrammarOptional =Grammar_WithConceptsMill.parser().parse(modelPath.toString());;
-    assertTrue(astMCGrammarOptional.isPresent());
+    Assertions.assertTrue(astMCGrammarOptional.isPresent());
   }
 
   @Test
@@ -44,17 +44,17 @@ public class DirectLeftRecursionDetectorTest extends TranslationTestCase {
     final ASTClassProd exprProduction = productions.get(0);
 
     boolean isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(exprProduction.getAlt(0), exprProduction.getName());
-    Assert.assertTrue(isLeftRecursive);
+    Assertions.assertTrue(isLeftRecursive);
 
     final ASTClassProd nonRecursiveProudction1 = productions.get(1);
     isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction1.getAlt(0), nonRecursiveProudction1.getName());
-    Assert.assertFalse(isLeftRecursive);
+    Assertions.assertFalse(isLeftRecursive);
 
     final ASTClassProd nonRecursiveProudction2 = productions.get(2);
     isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction2.getAlt(0), nonRecursiveProudction2.getName());
-    Assert.assertFalse(isLeftRecursive);
+    Assertions.assertFalse(isLeftRecursive);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

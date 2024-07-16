@@ -3,22 +3,20 @@
 package de.monticore.generating.templateengine;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileReader;
 
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.io.FileReaderWriterMock;
+import org.junit.jupiter.api.Test;
 
 /**
  * A simple unit test invoking a template which uses the new template logger.
@@ -34,7 +32,7 @@ public class TemplateLoggerTest {
     
   private FileReaderWriterMock fileHandler;
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -46,7 +44,7 @@ public class TemplateLoggerTest {
    * {@link FreeMarkerTemplateEngine} instead of the mock in order to have the
    * template actually executed. Otherwise the log statements would do nothing.
    */
-  @Before
+  @BeforeEach
   public void setup() {
     glex = new GlobalExtensionManagement();
  
@@ -61,7 +59,7 @@ public class TemplateLoggerTest {
     tc = new TemplateControllerMock(config, "");
   }
 
-  @AfterClass
+  @AfterAll
   public static void resetFileReaderWriter() {
     FileReaderWriter.init();
   }
@@ -72,8 +70,8 @@ public class TemplateLoggerTest {
   @Test
   public void demonstrateTemplateLogging() {
     StringBuilder result = tc.include(TEMPLATE_PACKAGE + "Log");
-    assertNotNull(result);
-    assertEquals("A", result.toString().trim());
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals("A", result.toString().trim());
   }
 
 }

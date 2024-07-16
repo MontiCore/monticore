@@ -17,8 +17,9 @@ import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.util.DefsTypesForTests;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,7 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
   protected ICombineExpressionsWithLiteralsScope scope;
 
-  @Before
+  @BeforeEach
   public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -53,202 +54,200 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
   @Test
   public void isCompatiblePrimitives() {
-    assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _doubleSymType));
-    assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _floatSymType));
-    assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _longSymType));
-    assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _charSymType));
-    assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _byteSymType));
-    assertTrue(SymTypeRelations.isCompatible(_booleanSymType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _doubleSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _floatSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _longSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _byteSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_booleanSymType, _booleanSymType));
 
-    assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _doubleSymType));
-    assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _floatSymType));
-    assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _longSymType));
-    assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _intSymType));
-    assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _charSymType));
-    assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _shortSymType));
-    assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isCompatible(_doubleSymType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _doubleSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _floatSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _longSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _intSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _charSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _shortSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_doubleSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_doubleSymType, _booleanSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_floatSymType, _doubleSymType));
-    assertTrue(SymTypeRelations.isCompatible(_floatSymType, _floatSymType));
-    assertTrue(SymTypeRelations.isCompatible(_floatSymType, _longSymType));
-    assertTrue(SymTypeRelations.isCompatible(_floatSymType, _intSymType));
-    assertTrue(SymTypeRelations.isCompatible(_floatSymType, _charSymType));
-    assertTrue(SymTypeRelations.isCompatible(_floatSymType, _shortSymType));
-    assertTrue(SymTypeRelations.isCompatible(_floatSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isCompatible(_floatSymType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_floatSymType, _doubleSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_floatSymType, _floatSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_floatSymType, _longSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_floatSymType, _intSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_floatSymType, _charSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_floatSymType, _shortSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_floatSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_floatSymType, _booleanSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_longSymType, _doubleSymType));
-    assertFalse(SymTypeRelations.isCompatible(_longSymType, _floatSymType));
-    assertTrue(SymTypeRelations.isCompatible(_longSymType, _longSymType));
-    assertTrue(SymTypeRelations.isCompatible(_longSymType, _intSymType));
-    assertTrue(SymTypeRelations.isCompatible(_longSymType, _charSymType));
-    assertTrue(SymTypeRelations.isCompatible(_longSymType, _shortSymType));
-    assertTrue(SymTypeRelations.isCompatible(_longSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isCompatible(_longSymType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_longSymType, _doubleSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_longSymType, _floatSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_longSymType, _longSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_longSymType, _intSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_longSymType, _charSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_longSymType, _shortSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_longSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_longSymType, _booleanSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, _doubleSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, _floatSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, _longSymType));
-    assertTrue(SymTypeRelations.isCompatible(_intSymType, _intSymType));
-    assertTrue(SymTypeRelations.isCompatible(_intSymType, _charSymType));
-    assertTrue(SymTypeRelations.isCompatible(_intSymType, _shortSymType));
-    assertTrue(SymTypeRelations.isCompatible(_intSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_intSymType, _doubleSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_intSymType, _floatSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_intSymType, _longSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_intSymType, _intSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_intSymType, _charSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_intSymType, _shortSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_intSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_intSymType, _booleanSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_charSymType, _doubleSymType));
-    assertFalse(SymTypeRelations.isCompatible(_charSymType, _floatSymType));
-    assertFalse(SymTypeRelations.isCompatible(_charSymType, _longSymType));
-    assertFalse(SymTypeRelations.isCompatible(_charSymType, _intSymType));
-    assertTrue(SymTypeRelations.isCompatible(_charSymType, _charSymType));
-    assertFalse(SymTypeRelations.isCompatible(_charSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isCompatible(_charSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isCompatible(_charSymType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_charSymType, _doubleSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_charSymType, _floatSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_charSymType, _longSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_charSymType, _intSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_charSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_charSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_charSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_charSymType, _booleanSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_shortSymType, _doubleSymType));
-    assertFalse(SymTypeRelations.isCompatible(_shortSymType, _floatSymType));
-    assertFalse(SymTypeRelations.isCompatible(_shortSymType, _longSymType));
-    assertFalse(SymTypeRelations.isCompatible(_shortSymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_shortSymType, _charSymType));
-    assertTrue(SymTypeRelations.isCompatible(_shortSymType, _shortSymType));
-    assertTrue(SymTypeRelations.isCompatible(_shortSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isCompatible(_shortSymType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_shortSymType, _doubleSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_shortSymType, _floatSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_shortSymType, _longSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_shortSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_shortSymType, _charSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_shortSymType, _shortSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_shortSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_shortSymType, _booleanSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_byteSymType, _doubleSymType));
-    assertFalse(SymTypeRelations.isCompatible(_byteSymType, _floatSymType));
-    assertFalse(SymTypeRelations.isCompatible(_byteSymType, _longSymType));
-    assertFalse(SymTypeRelations.isCompatible(_byteSymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_byteSymType, _charSymType));
-    assertFalse(SymTypeRelations.isCompatible(_byteSymType, _shortSymType));
-    assertTrue(SymTypeRelations.isCompatible(_byteSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isCompatible(_byteSymType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_byteSymType, _doubleSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_byteSymType, _floatSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_byteSymType, _longSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_byteSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_byteSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_byteSymType, _shortSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_byteSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_byteSymType, _booleanSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _personSymType));
-    assertTrue(SymTypeRelations.isCompatible(_booleanSymType, _BooleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _personSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_booleanSymType, _BooleanSymType));
     assertNoFindings();
   }
 
   @Test
   public void isSubTypePrimitives() {
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _doubleSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _floatSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _longSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _intSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _charSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _byteSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_booleanSymType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _doubleSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _floatSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _longSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _byteSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_booleanSymType, _booleanSymType));
 
-    assertTrue(SymTypeRelations.isSubTypeOf(_doubleSymType, _doubleSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _floatSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _longSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _intSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _charSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_doubleSymType, _doubleSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _floatSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _longSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_doubleSymType, _booleanSymType));
 
-    assertTrue(SymTypeRelations.isSubTypeOf(_floatSymType, _doubleSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_floatSymType, _floatSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _longSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _intSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _charSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_floatSymType, _doubleSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_floatSymType, _floatSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _longSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_floatSymType, _booleanSymType));
 
-    assertTrue(SymTypeRelations.isSubTypeOf(_longSymType, _doubleSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_longSymType, _floatSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_longSymType, _longSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _intSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _charSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_longSymType, _doubleSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_longSymType, _floatSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_longSymType, _longSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_longSymType, _booleanSymType));
 
-    assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _doubleSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _floatSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _longSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _intSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _charSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _doubleSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _floatSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _longSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _booleanSymType));
 
-    assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _doubleSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _floatSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _longSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _intSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _charSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_charSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_charSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_charSymType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _doubleSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _floatSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _longSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _intSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_charSymType, _charSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_charSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_charSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_charSymType, _booleanSymType));
 
-    assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _doubleSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _floatSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _longSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _intSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_shortSymType, _charSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _shortSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_shortSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_shortSymType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _doubleSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _floatSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _longSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_shortSymType, _charSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_shortSymType, _shortSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_shortSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_shortSymType, _booleanSymType));
 
-    assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _doubleSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _floatSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _longSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _intSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_byteSymType, _charSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _shortSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _byteSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_byteSymType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _doubleSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _floatSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _longSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_byteSymType, _charSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _shortSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_byteSymType, _byteSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_byteSymType, _booleanSymType));
 
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _personSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _BooleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _personSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _BooleanSymType));
     assertNoFindings();
   }
 
   @Test
   public void isCompatibleObjects() {
-    assertTrue(SymTypeRelations.isCompatible(_personSymType, _personSymType));
-    assertTrue(SymTypeRelations.isCompatible(_personSymType, _studentSymType));
-    assertTrue(SymTypeRelations.isCompatible(_personSymType, _csStudentSymType));
-    assertTrue(SymTypeRelations.isCompatible(_personSymType, _teacherSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, _personSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, _studentSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, _csStudentSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, _teacherSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_studentSymType, _personSymType));
-    assertTrue(SymTypeRelations.isCompatible(_studentSymType, _studentSymType));
-    assertTrue(SymTypeRelations.isCompatible(_studentSymType, _csStudentSymType));
-    assertFalse(SymTypeRelations.isCompatible(_studentSymType, _teacherSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_studentSymType, _personSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_studentSymType, _studentSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_studentSymType, _csStudentSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_studentSymType, _teacherSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, _personSymType));
-    assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, _studentSymType));
-    assertTrue(SymTypeRelations.isCompatible(_csStudentSymType, _csStudentSymType));
-    assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, _teacherSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, _personSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, _studentSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_csStudentSymType, _csStudentSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, _teacherSymType));
 
-    assertFalse(SymTypeRelations.isCompatible(_teacherSymType, _personSymType));
-    assertFalse(SymTypeRelations.isCompatible(_teacherSymType, _studentSymType));
-    assertFalse(SymTypeRelations.isCompatible(_teacherSymType, _csStudentSymType));
-    assertTrue(SymTypeRelations.isCompatible(_teacherSymType, _teacherSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_teacherSymType, _personSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_teacherSymType, _studentSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_teacherSymType, _csStudentSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_teacherSymType, _teacherSymType));
 
     // String
-    assertTrue(SymTypeRelations.isCompatible(_boxedString, _boxedString));
-    assertTrue(SymTypeRelations.isCompatible(_boxedString, _unboxedString));
-    assertTrue(SymTypeRelations.isCompatible(_unboxedString, _boxedString));
-    assertTrue(SymTypeRelations.isCompatible(_unboxedString, _unboxedString));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_boxedString, _boxedString));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_boxedString, _unboxedString));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_unboxedString, _boxedString));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_unboxedString, _unboxedString));
 
     // diverse types
-    assertFalse(SymTypeRelations.isCompatible(_personSymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         _personSymType,
-        createTypeArray(_personSymType, 1))
-    );
-    assertTrue(SymTypeRelations.isCompatible(
+        createTypeArray(_personSymType, 1)));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         _personSymType,
-        createTypeArray(_personSymType, 0))
-    );
-    assertFalse(SymTypeRelations.isCompatible(_personSymType, _unboxedMapSymType));
-    assertFalse(SymTypeRelations.isCompatible(_personSymType, _BooleanSymType));
+        createTypeArray(_personSymType, 0)));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, _unboxedMapSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, _BooleanSymType));
     assertNoFindings();
   }
 
@@ -256,12 +255,12 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
   public void isCompatibleRegEx() {
     SymTypeOfRegEx regEx1 = createTypeRegEx("gr(a|e)y");
     SymTypeOfRegEx regEx2 = createTypeRegEx("gr(e|a)y");
-    assertTrue(SymTypeRelations.isCompatible(regEx1, regEx1));
-    assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
-    assertTrue(SymTypeRelations.isCompatible(_unboxedString, regEx1));
-    assertTrue(SymTypeRelations.isCompatible(regEx1, _unboxedString));
-    assertTrue(SymTypeRelations.isCompatible(_boxedString, regEx1));
-    assertTrue(SymTypeRelations.isCompatible(regEx1, _boxedString));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, regEx1));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_unboxedString, regEx1));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, _unboxedString));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_boxedString, regEx1));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, _boxedString));
   }
 
   @Test
@@ -282,17 +281,17 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     SymTypeOfGenerics linkedListOfPerson =
         createGenerics(_linkedListSymType.getTypeInfo(), _personSymType);
 
-    assertTrue(SymTypeRelations.isCompatible(listOfPerson, listOfPerson));
-    assertTrue(SymTypeRelations.isCompatible(listOfPerson, subPersonList));
-    assertTrue(SymTypeRelations.isCompatible(listOfPerson, linkedListOfPerson));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(listOfPerson, listOfPerson));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(listOfPerson, subPersonList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(listOfPerson, linkedListOfPerson));
 
-    assertFalse(SymTypeRelations.isCompatible(listOfInt, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(listOfInt, listOfBoolean));
-    assertFalse(SymTypeRelations.isCompatible(listOfBoolean, listOfInt));
-    assertFalse(SymTypeRelations.isCompatible(listOfBoolean, listOfPerson));
-    assertFalse(SymTypeRelations.isCompatible(listOfPerson, listOfBoolean));
-    assertFalse(SymTypeRelations.isCompatible(listOfBoolean, subPersonList));
-    assertFalse(SymTypeRelations.isCompatible(subPersonList, listOfPerson));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(listOfInt, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(listOfInt, listOfBoolean));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(listOfBoolean, listOfInt));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(listOfBoolean, listOfPerson));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(listOfPerson, listOfBoolean));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(listOfBoolean, subPersonList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(subPersonList, listOfPerson));
     assertNoFindings();
   }
 
@@ -310,27 +309,27 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     SymTypeOfGenerics sIHashMap = createGenerics(
         _hashMapSymType.getTypeInfo(), _boxedString, _IntegerSymType);
 
-    assertTrue(SymTypeRelations.isCompatible(iSMap, iSHashMap));
-    assertFalse(SymTypeRelations.isCompatible(iSMap, sIHashMap));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(iSMap, iSHashMap));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(iSMap, sIHashMap));
     assertNoFindings();
   }
 
   @Test
   public void isCompatibleUnions() {
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createUnion(_personSymType, _carSymType), _personSymType
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createUnion(_personSymType, _carSymType),
         createUnion(_personSymType, _carSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         _personSymType, createUnion(_studentSymType, _teacherSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         _personSymType, createUnion(_studentSymType, _carSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createUnion(_studentSymType, _teacherSymType), _personSymType
     ));
     assertNoFindings();
@@ -338,21 +337,21 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
   @Test
   public void IsCompatibleIntersections() {
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createIntersection(_personSymType, _carSymType),
         createIntersection(_personSymType, _carSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         _personSymType, createIntersection(_studentSymType, _teacherSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         _personSymType, createIntersection(_personSymType, _carSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createIntersection(_teachableSymType, _personSymType),
         createUnion(_childSymType, _studentSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createIntersection(_personSymType, _carSymType), _personSymType
     ));
     assertNoFindings();
@@ -360,28 +359,28 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
   @Test
   public void isCompatibleTuples() {
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createTuple(_personSymType, _intSymType),
         createTuple(_personSymType, _intSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createTuple(_personSymType, _intSymType),
         createTuple(_studentSymType, _intSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createTuple(_studentSymType, _intSymType),
         createTuple(_personSymType, _intSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createTuple(_carSymType, _intSymType),
         createTuple(_personSymType, _intSymType)
     ));
 
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createTuple(_personSymType, _intSymType),
         createTuple(_personSymType, _intSymType, _intSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createTuple(_personSymType, _intSymType, _intSymType),
         createTuple(_personSymType, _intSymType)
     ));
@@ -389,49 +388,49 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
   @Test
   public void isCompatibleFunctions() {
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType), createFunction(_personSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType, _intSymType),
         createFunction(_personSymType, _intSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType, List.of(_intSymType), true),
         createFunction(_personSymType, List.of(_intSymType), true)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_studentSymType, _intSymType),
         createFunction(_personSymType, _intSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType, _longSymType),
         createFunction(_personSymType, _intSymType)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType, _longSymType),
         createFunction(_personSymType, List.of(_intSymType), true)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType, _intSymType, _intSymType),
         createFunction(_personSymType, List.of(_intSymType), true)
     ));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType),
         createFunction(_personSymType, List.of(_intSymType), true)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createFunction(_personSymType), createFunction(_carSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createFunction(_personSymType, _intSymType),
         createFunction(_studentSymType, _intSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createFunction(_personSymType, _intSymType),
         createFunction(_personSymType, _longSymType)
     ));
-    assertFalse(SymTypeRelations.isCompatible(
+    Assertions.assertFalse(SymTypeRelations.isCompatible(
         createFunction(_personSymType, List.of(_intSymType), true),
         createFunction(_personSymType, _intSymType)
     ));
@@ -441,8 +440,8 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
   @Test
   public void isCompatibleNumericsAndSIUnits() {
-    assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, _s_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_intSymType, _s_SISymType));
     // TBD: SIUnit of dimension one
   }
 
@@ -450,12 +449,12 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
   public void isCompatibleNumericsAndNumericsWithSIUnits() {
     SymTypeOfNumericWithSIUnit deg_float_SISymType =
         createNumericWithSIUnit(_deg_SISymType, _floatSymType);
-    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, _s_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_deg_int_SISymType, _intSymType));
-    assertTrue(SymTypeRelations.isCompatible(_intSymType, _deg_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(deg_float_SISymType, _intSymType));
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, deg_float_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_intSymType, _s_int_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_deg_int_SISymType, _intSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_intSymType, _deg_int_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(deg_float_SISymType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_intSymType, deg_float_SISymType));
   }
 
   @Test
@@ -465,80 +464,80 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     SymTypeOfNumericWithSIUnit deg_float_SISymType =
         createNumericWithSIUnit(_deg_SISymType, _floatSymType);
 
-    assertTrue(SymTypeRelations.isCompatible(_s_int_SISymType, _s_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_Ohm_int_SISymType, _Ohm_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _A_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_A_int_SISymType, _s_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_deg_int_SISymType, _rad_int_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_rad_int_SISymType, _deg_int_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_s_int_SISymType, _s_int_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_Ohm_int_SISymType, _Ohm_int_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _A_int_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_A_int_SISymType, _s_int_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_deg_int_SISymType, _rad_int_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_rad_int_SISymType, _deg_int_SISymType));
 
-    assertTrue(SymTypeRelations.isCompatible(s_float_SISymType, _s_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, s_float_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(deg_float_SISymType, _rad_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_rad_int_SISymType, deg_float_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(s_float_SISymType, _s_int_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, s_float_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(deg_float_SISymType, _rad_int_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_rad_int_SISymType, deg_float_SISymType));
   }
 
   @Test
   public void isCompatibleSIUnits() {
-    assertTrue(SymTypeRelations.isCompatible(_s_SISymType, _s_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_Ohm_SISymType, _Ohm_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _A_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_A_SISymType, _s_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_deg_SISymType, _rad_SISymType));
-    assertTrue(SymTypeRelations.isCompatible(_rad_SISymType, _deg_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_s_SISymType, _s_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_Ohm_SISymType, _Ohm_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _A_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_A_SISymType, _s_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_deg_SISymType, _rad_SISymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_rad_SISymType, _deg_SISymType));
     // cannot combine SIUnits with NumericWithSIUnits
-    assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _s_int_SISymType));
-    assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _s_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _s_int_SISymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _s_SISymType));
   }
 
   @Test
   public void isSubTypeBottom() {
     // bottom is subType of EVERY other type
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _bottomType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _intSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _booleanSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _IntegerSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _personSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _nullSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _unboxedListSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _unboxedListSymType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _linkedListSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _bottomType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _intSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _booleanSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _IntegerSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _personSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _nullSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _unboxedListSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _unboxedListSymType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _linkedListSymType));
     // bottom is never the superType except for bottom itself
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_IntegerSymType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_personSymType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_nullSymType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_unboxedListSymType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_unboxedListSymType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_linkedListSymType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_IntegerSymType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_personSymType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_nullSymType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_unboxedListSymType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_unboxedListSymType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_linkedListSymType, _bottomType));
   }
 
   @Test
   public void isSubTypeTop() {
     // top is superType of EVERY other type
-    assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_topType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_booleanSymType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_IntegerSymType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_personSymType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_nullSymType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_unboxedListSymType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_unboxedListSymType, _topType));
-    assertTrue(SymTypeRelations.isSubTypeOf(_linkedListSymType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_bottomType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_topType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_intSymType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_booleanSymType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_IntegerSymType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_personSymType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_nullSymType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_unboxedListSymType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_unboxedListSymType, _topType));
+    Assertions.assertTrue(SymTypeRelations.isSubTypeOf(_linkedListSymType, _topType));
     // top is never the subType except for top itself
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _bottomType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _intSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _booleanSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _IntegerSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _personSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _nullSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _unboxedListSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _unboxedListSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_topType, _linkedListSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _bottomType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _intSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _booleanSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _IntegerSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _personSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _nullSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _unboxedListSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _unboxedListSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_topType, _linkedListSymType));
   }
 
   @Test
@@ -570,48 +569,48 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
     // unbounded type variable are like existential types:
     // we don't know enough to do pretty much anything with it
-    assertTrue(SymTypeRelations.isCompatible(unboundedTVar, unboundedTVar));
-    assertFalse(SymTypeRelations.isCompatible(unboundedTVar, unbounded2TVar));
-    assertFalse(SymTypeRelations.isCompatible(unboundedTVar, _personSymType));
-    assertFalse(SymTypeRelations.isCompatible(_personSymType, unboundedTVar));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(unboundedTVar, unboundedTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(unboundedTVar, unbounded2TVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(unboundedTVar, _personSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, unboundedTVar));
 
     // we can assign variables if we know their upper bound
-    assertTrue(SymTypeRelations.isCompatible(_personSymType, subStudentTVar));
-    assertTrue(SymTypeRelations.isCompatible(_studentSymType, subStudentTVar));
-    assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, subStudentTVar));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, subStudentTVar));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_studentSymType, subStudentTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, subStudentTVar));
     // we cannot really assign to variable if we only know their upper bounds
-    assertFalse(SymTypeRelations.isCompatible(subStudentTVar, _personSymType));
-    assertFalse(SymTypeRelations.isCompatible(subStudentTVar, _studentSymType));
-    assertFalse(SymTypeRelations.isCompatible(subStudentTVar, _csStudentSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(subStudentTVar, _personSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(subStudentTVar, _studentSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(subStudentTVar, _csStudentSymType));
 
     // we can assign to variables if we know their lower bound
-    assertFalse(SymTypeRelations.isCompatible(superStudentTVar, _personSymType));
-    assertTrue(SymTypeRelations.isCompatible(superStudentTVar, _studentSymType));
-    assertTrue(SymTypeRelations.isCompatible(superStudentTVar, _csStudentSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(superStudentTVar, _personSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(superStudentTVar, _studentSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(superStudentTVar, _csStudentSymType));
     // we cannot really assign variables if we only know their lower bounds
-    assertFalse(SymTypeRelations.isCompatible(_personSymType, superStudentTVar));
-    assertFalse(SymTypeRelations.isCompatible(_studentSymType, superStudentTVar));
-    assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, superStudentTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, superStudentTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_studentSymType, superStudentTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, superStudentTVar));
 
     // two single bounded variables
-    assertTrue(SymTypeRelations.isCompatible(superStudentTVar, subStudentTVar));
-    assertTrue(SymTypeRelations.isCompatible(superPersonTVar, subStudentTVar));
-    assertFalse(SymTypeRelations.isCompatible(superStudentTVar, subPersonTVar));
-    assertFalse(SymTypeRelations.isCompatible(subPersonTVar, subStudentTVar));
-    assertFalse(SymTypeRelations.isCompatible(subStudentTVar, subPersonTVar));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(superStudentTVar, subStudentTVar));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(superPersonTVar, subStudentTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(superStudentTVar, subPersonTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(subPersonTVar, subStudentTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(subStudentTVar, subPersonTVar));
 
     // in case of upper AND lower bound set,
     // we can assign and assign to the type variable
     // assign to:
-    assertFalse(SymTypeRelations.isCompatible(superSSubCsSTVar, _personSymType));
-    assertFalse(SymTypeRelations.isCompatible(superSSubCsSTVar, _studentSymType));
-    assertTrue(SymTypeRelations.isCompatible(superSSubCsSTVar, _csStudentSymType));
-    assertTrue(SymTypeRelations.isCompatible(superSSubCsSTVar, _firstSemesterCsStudentSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(superSSubCsSTVar, _personSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(superSSubCsSTVar, _studentSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(superSSubCsSTVar, _csStudentSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(superSSubCsSTVar, _firstSemesterCsStudentSymType));
     // assign:
-    assertTrue(SymTypeRelations.isCompatible(_personSymType, superSSubCsSTVar));
-    assertTrue(SymTypeRelations.isCompatible(_studentSymType, superSSubCsSTVar));
-    assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, superSSubCsSTVar));
-    assertFalse(SymTypeRelations.isCompatible(_firstSemesterCsStudentSymType, superSSubCsSTVar));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, superSSubCsSTVar));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_studentSymType, superSSubCsSTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, superSSubCsSTVar));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_firstSemesterCsStudentSymType, superSSubCsSTVar));
 
     assertNoFindings();
   }
@@ -620,10 +619,10 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
   public void isCompatibleTypeVariableRecursive() {
     // check that we can handle recursively defined generics,
     // e.g., A<T extends A<T>>
-    assertTrue(SymTypeRelations.isCompatible(_simpleCrtSymType, _simpleCrtSymType));
-    assertTrue(SymTypeRelations.isCompatible(_graphSymType, _graphSymType));
-    assertTrue(SymTypeRelations.isCompatible(_graphNodeSymType, _graphNodeSymType));
-    assertTrue(SymTypeRelations.isCompatible(_graphEdgeSymType, _graphEdgeSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_simpleCrtSymType, _simpleCrtSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_graphSymType, _graphSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_graphNodeSymType, _graphNodeSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_graphEdgeSymType, _graphEdgeSymType));
   }
 
   @Test
@@ -657,24 +656,24 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createWildcard(true, _personSymType)
     );
 
-    assertFalse(SymTypeRelations.isCompatible(pList, sList));
-    assertFalse(SymTypeRelations.isCompatible(sList, pList));
-    assertFalse(SymTypeRelations.isCompatible(pList, sSubList));
-    assertFalse(SymTypeRelations.isCompatible(sList, sSubList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(pList, sList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(sList, pList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(pList, sSubList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(sList, sSubList));
 
-    assertTrue(SymTypeRelations.isCompatible(pSubList, pList));
-    assertTrue(SymTypeRelations.isCompatible(pSubList, sList));
-    assertTrue(SymTypeRelations.isCompatible(pSubList, pSubList));
-    assertTrue(SymTypeRelations.isCompatible(pSubList, sSubList));
-    assertFalse(SymTypeRelations.isCompatible(sSubList, pList));
-    assertTrue(SymTypeRelations.isCompatible(sSubList, sList));
-    assertFalse(SymTypeRelations.isCompatible(sSubList, pSubList));
-    assertTrue(SymTypeRelations.isCompatible(sSubList, sSubList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSubList, pList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSubList, sList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSubList, pSubList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSubList, sSubList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(sSubList, pList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSubList, sList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(sSubList, pSubList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSubList, sSubList));
 
-    assertTrue(SymTypeRelations.isCompatible(pSubList, pSubLinkedList));
-    assertTrue(SymTypeRelations.isCompatible(pSubList, sSubLinkedList));
-    assertFalse(SymTypeRelations.isCompatible(sSubList, pSubLinkedList));
-    assertTrue(SymTypeRelations.isCompatible(sSubList, sSubLinkedList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSubList, pSubLinkedList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSubList, sSubLinkedList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(sSubList, pSubLinkedList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSubList, sSubLinkedList));
 
     assertNoFindings();
   }
@@ -710,36 +709,36 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createWildcard(false, _personSymType)
     );
 
-    assertFalse(SymTypeRelations.isCompatible(pList, sList));
-    assertFalse(SymTypeRelations.isCompatible(sList, pList));
-    assertFalse(SymTypeRelations.isCompatible(pList, sSuperList));
-    assertFalse(SymTypeRelations.isCompatible(sList, sSuperList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(pList, sList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(sList, pList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(pList, sSuperList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(sList, sSuperList));
 
-    assertTrue(SymTypeRelations.isCompatible(pSuperList, pList));
-    assertFalse(SymTypeRelations.isCompatible(pSuperList, sList));
-    assertTrue(SymTypeRelations.isCompatible(pSuperList, pSuperList));
-    assertFalse(SymTypeRelations.isCompatible(pSuperList, sSuperList));
-    assertTrue(SymTypeRelations.isCompatible(sSuperList, pList));
-    assertTrue(SymTypeRelations.isCompatible(sSuperList, sList));
-    assertTrue(SymTypeRelations.isCompatible(sSuperList, pSuperList));
-    assertTrue(SymTypeRelations.isCompatible(sSuperList, sSuperList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSuperList, pList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(pSuperList, sList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSuperList, pSuperList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(pSuperList, sSuperList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, pList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, sList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, pSuperList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, sSuperList));
 
-    assertTrue(SymTypeRelations.isCompatible(pSuperList, pSuperLinkedList));
-    assertFalse(SymTypeRelations.isCompatible(pSuperList, sSuperLinkedList));
-    assertTrue(SymTypeRelations.isCompatible(sSuperList, pSuperLinkedList));
-    assertTrue(SymTypeRelations.isCompatible(sSuperList, sSuperLinkedList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(pSuperList, pSuperLinkedList));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(pSuperList, sSuperLinkedList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, pSuperLinkedList));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, sSuperLinkedList));
 
     assertNoFindings();
   }
 
   @Test
   public void nullCompatibilityAndSubTyping() {
-    assertFalse(SymTypeRelations.isCompatible(_intSymType, createTypeOfNull()));
-    assertTrue(SymTypeRelations.isCompatible(_IntegerSymType, createTypeOfNull()));
-    assertFalse(SymTypeRelations.isSubTypeOf(createTypeOfNull(), _personSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_personSymType, createTypeOfNull()));
-    assertFalse(SymTypeRelations.isSubTypeOf(_s_SISymType, _nullSymType));
-    assertFalse(SymTypeRelations.isSubTypeOf(_s_int_SISymType, _nullSymType));
+    Assertions.assertFalse(SymTypeRelations.isCompatible(_intSymType, createTypeOfNull()));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_IntegerSymType, createTypeOfNull()));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(createTypeOfNull(), _personSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_personSymType, createTypeOfNull()));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_s_SISymType, _nullSymType));
+    Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_s_int_SISymType, _nullSymType));
   }
 
   /**
@@ -767,8 +766,8 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createGenerics(iterableSym, _boxedListSymType.getArgument(0))
     ));
 
-    assertTrue(SymTypeRelations.isCompatible(comparableInteger, _IntegerSymType));
-    assertTrue(SymTypeRelations.isCompatible(
+    Assertions.assertTrue(SymTypeRelations.isCompatible(comparableInteger, _IntegerSymType));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(
         createGenerics(iterableSym, _IntegerSymType),
         createGenerics(_unboxedListSymType.getTypeInfo(), _intSymType)
     ));

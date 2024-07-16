@@ -5,13 +5,9 @@ import de.monticore.cli.updateChecker.HttpGetter;
 import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.util.Properties;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -31,13 +27,13 @@ public class UpdateCheckerRunnableTest {
   private static final String NEW_VERSION_LOG_MESSAGE =
       "[INFO]   There is a newer Version 100000.0.0 of this tool available at monticore.de/download";
   
-  @Before
+  @BeforeEach
   public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void init() {
     updateCheckerRunnable = new UpdateCheckerRunnable();
     httpGetter = mock(HttpGetter.class);
@@ -47,9 +43,9 @@ public class UpdateCheckerRunnableTest {
 
   @Test
   public void testFindLocalPropertiesFile() {
-    Assert.assertNotNull(updateCheckerRunnable.getLocalVersion());
+    Assertions.assertNotNull(updateCheckerRunnable.getLocalVersion());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -57,28 +53,28 @@ public class UpdateCheckerRunnableTest {
   public void testNewVersionAvailable() {
     when(httpGetter.getResponse()).thenReturn(NEW_VERSION_AVAILABLE);
 
-    Assert.assertTrue(updateCheckerRunnable.newVersionAvailable());
-    Assert.assertEquals(NEW_VERSION, updateCheckerRunnable.getNewVersion());
+    Assertions.assertTrue(updateCheckerRunnable.newVersionAvailable());
+    Assertions.assertEquals(NEW_VERSION, updateCheckerRunnable.getNewVersion());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoNewVersionAvailable() {
     when(httpGetter.getResponse()).thenReturn(NO_NEW_VERSION_AVAILABLE);
 
-    Assert.assertFalse(updateCheckerRunnable.newVersionAvailable());
+    Assertions.assertFalse(updateCheckerRunnable.newVersionAvailable());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoResponse() {
     when(httpGetter.getResponse()).thenReturn(NO_RESPONSE);
 
-    Assert.assertFalse(updateCheckerRunnable.newVersionAvailable());
+    Assertions.assertFalse(updateCheckerRunnable.newVersionAvailable());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,8 +83,8 @@ public class UpdateCheckerRunnableTest {
 
     updateCheckerRunnable.run();
 
-    Assert.assertEquals(NEW_VERSION, updateCheckerRunnable.getNewVersion());
+    Assertions.assertEquals(NEW_VERSION, updateCheckerRunnable.getNewVersion());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

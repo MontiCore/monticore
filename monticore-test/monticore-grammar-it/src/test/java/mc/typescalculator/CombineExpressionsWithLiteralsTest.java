@@ -21,9 +21,9 @@ import mc.typescalculator.combineexpressionswithliterals._parser.CombineExpressi
 import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScopesGenitorDelegator;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -37,13 +37,13 @@ public class CombineExpressionsWithLiteralsTest {
 
   private static final String SYMBOL_PATH = "src/test/resources";
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setup() {
     TestCD4AnalysisMill.reset();
     CombineExpressionsWithLiteralsMill.reset();
@@ -70,10 +70,10 @@ public class CombineExpressionsWithLiteralsTest {
     globalScope1.addAdaptedTypeSymbolResolver(adapter);
 
     Optional<OOTypeSymbol> classD = globalScope1.resolveOOType("mc.typescalculator.TestCD.D");
-    assertTrue(classD.isPresent());
+    Assertions.assertTrue(classD.isPresent());
 
     Optional<OOTypeSymbol> classB = globalScope1.resolveOOType("mc.typescalculator.TestCD.B");
-    assertTrue(classB.isPresent());
+    Assertions.assertTrue(classB.isPresent());
 
     OOTypeSymbol dSurrogate = new OOTypeSymbolSurrogate("D");
     dSurrogate.setEnclosingScope(classD.get().getEnclosingScope());
@@ -101,46 +101,46 @@ public class CombineExpressionsWithLiteralsTest {
     Optional<ASTExpression> expr = p.parse_StringExpression("d.s+=d.s");
     CombineExpressionsWithLiteralsScopesGenitorDelegator del = new CombineExpressionsWithLiteralsScopesGenitorDelegator();
 
-    assertTrue(expr.isPresent());
+    Assertions.assertTrue(expr.isPresent());
     ICombineExpressionsWithLiteralsArtifactScope art = del.createFromAST(expr.get());
     art.setName("");
     art.setImportsList(Lists.newArrayList(new ImportStatement("mc.typescalculator.TestCD.D", true)));
     TypeCheckResult j = calc.deriveType(expr.get());
-    assertTrue(j.isPresentResult());
-    assertEquals("int", unbox(j.getResult().print()));
+    Assertions.assertTrue(j.isPresentResult());
+    Assertions.assertEquals("int", unbox(j.getResult().print()));
 
     Optional<ASTExpression> exprC = p.parse_StringExpression("d.f = mc.typescalculator.TestCD.C.f");
-    assertTrue(exprC.isPresent());
+    Assertions.assertTrue(exprC.isPresent());
     ICombineExpressionsWithLiteralsArtifactScope artifactScope = del.createFromAST(exprC.get());
     artifactScope.setName("");
     j = calc.deriveType(exprC.get());
-    assertTrue(j.isPresentResult());
-    assertEquals("G",j.getResult().print());
+    Assertions.assertTrue(j.isPresentResult());
+    Assertions.assertEquals("G", j.getResult().print());
 
     Optional<ASTExpression> exprD = p.parse_StringExpression("(b.a)++");
-    assertTrue(exprD.isPresent());
+    Assertions.assertTrue(exprD.isPresent());
     artifactScope = del.createFromAST(exprD.get());
     artifactScope.setName("");
     TypeCheckResult j3 = calc.deriveType(exprD.get());
-    assertTrue(j3.isPresentResult());
-    assertEquals("double",j3.getResult().print());
+    Assertions.assertTrue(j3.isPresentResult());
+    Assertions.assertEquals("double", j3.getResult().print());
 
     Optional<ASTExpression> exprB = p.parse_StringExpression("b.x = mc.typescalculator.TestCD.B.z");
-    assertTrue(exprB.isPresent());
+    Assertions.assertTrue(exprB.isPresent());
     artifactScope = del.createFromAST(exprB.get());
     artifactScope.setName("");
     ASTExpression eb = exprB.get();
 
     TypeCheckResult k = calc.deriveType(eb);
-    assertTrue(k.isPresentResult());
-    assertEquals("C",k.getResult().print());
+    Assertions.assertTrue(k.isPresentResult());
+    Assertions.assertEquals("C", k.getResult().print());
 
     Optional<ASTExpression> complicated = p.parse_StringExpression("b.z.f.toString()");
-    assertTrue(complicated.isPresent());
+    Assertions.assertTrue(complicated.isPresent());
     artifactScope = del.createFromAST(complicated.get());
     artifactScope.setName("");
     TypeCheckResult sym = calc.deriveType(complicated.get());
-    assertTrue(sym.isPresentResult());
-    assertEquals("String", sym.getResult().print());
+    Assertions.assertTrue(sym.isPresentResult());
+    Assertions.assertEquals("String", sym.getResult().print());
   }
 }

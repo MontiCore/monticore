@@ -9,9 +9,9 @@ import de.se_rwth.commons.logging.LogStub;
 import mchexnumbers._ast.ASTHexInteger;
 import mchexnumbers._ast.ASTHexadecimal;
 import mchexnumbers._prettyprint.MCHexNumbersFullPrettyPrinter;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MCHexNumbersPrettyPrinterTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -34,60 +34,60 @@ public class MCHexNumbersPrettyPrinterTest {
   public void testHexadecimal() throws IOException {
     TestMCHexNumbersParser parser = new TestMCHexNumbersParser();
     Optional<ASTHexadecimal> result = parser.parseHexadecimal(new StringReader("0X6b90A"));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTHexadecimal hexadecimal = result.get();
     
     MCHexNumbersFullPrettyPrinter prettyPrinter = new MCHexNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(hexadecimal);
     
     result = parser.parseHexadecimal(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     
-    assertTrue(hexadecimal.deepEquals(result.get()));
+    Assertions.assertTrue(hexadecimal.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testHexIntegerPositiv() throws IOException {
     TestMCHexNumbersParser parser = new TestMCHexNumbersParser();
     Optional<ASTHexInteger> result = parser.parseHexInteger(new StringReader("0X6b90A"));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTHexInteger hexinteger = result.get();
     
     MCHexNumbersFullPrettyPrinter prettyPrinter = new MCHexNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(hexinteger);
     
     result = parser.parseHexInteger(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     
-    assertTrue(hexinteger.deepEquals(result.get()));
+    Assertions.assertTrue(hexinteger.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testHexIntegerNegative() throws IOException {
     TestMCHexNumbersParser parser = new TestMCHexNumbersParser();
     Optional<ASTHexInteger> result = parser.parseHexInteger(new StringReader("-0xaf67"));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTHexInteger hexinteger = result.get();
     
     MCHexNumbersFullPrettyPrinter prettyPrinter = new MCHexNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(hexinteger);
     
     result = parser.parseHexInteger(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     
-    assertTrue(hexinteger.deepEquals(result.get()));
+    Assertions.assertTrue(hexinteger.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -10,9 +10,10 @@ import mc.feature.delete.deletetest._ast.ASTChild;
 import mc.feature.delete.deletetest._ast.ASTParent;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTA;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,12 @@ import static org.junit.Assert.assertTrue;
 
 public class ASTTest {
   
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     Slf4jLog.init();
   }
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -37,10 +38,10 @@ public class ASTTest {
   public void testGet_ChildNodes1() {
     List<ASTA> aList = new ArrayList<>();
     ASTA a = FeatureDSLMill.aBuilder().build();
-    assertEquals(0, aList.size());
+    Assertions.assertEquals(0, aList.size());
     aList.add(a);
-    assertEquals(1, aList.size());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(1, aList.size());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -49,9 +50,9 @@ public class ASTTest {
     ASTChild s = DeleteTestMill.childBuilder().build();
     p.addChild(s);
     p.setSon(s);
-    assertEquals(1, p.getChildList().size());
-    assertTrue(p.containsChild(s));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(1, p.getChildList().size());
+    Assertions.assertTrue(p.containsChild(s));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

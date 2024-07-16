@@ -11,18 +11,18 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.semanticpredicate.sempredwithinterface._ast.ASTISequence;
 import mc.feature.semanticpredicate.sempredwithinterface._parser.SemPredWithInterfaceParser;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.Test;
 
 public class SemPredWithInterfaceParserTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,15 +36,15 @@ public class SemPredWithInterfaceParserTest extends GeneratorIntegrationsTest {
     try {
        ast = p.parseISequence(new StringReader(input));
     } catch (IOException e) {
-      fail();
+      Assertions.fail();
     }
-    assertTrue(ast.isPresent());
+    Assertions.assertTrue(ast.isPresent());
     ASTISequence seq = ast.get();
-    assertEquals(2, seq.getIList().size());
+    Assertions.assertEquals(2, seq.getIList().size());
     
-    assertTrue(seq.getIList().get(0).isFirst());
-    assertFalse(seq.getIList().get(1).isFirst());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(seq.getIList().get(0).isFirst());
+    Assertions.assertFalse(seq.getIList().get(1).isFirst());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

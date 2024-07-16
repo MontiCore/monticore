@@ -7,19 +7,16 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.feature.symbols2json.sub.SubMill;
 import mc.feature.symbols2json.sub._symboltable.ISubScope;
-import mc.feature.symbols2json.sub._symboltable.SubDeSer;
 import mc.feature.symbols2json.sub._symboltable.SubSymbols2Json;
 import mc.feature.symbols2json.sup1.Sup1Mill;
 import mc.feature.symbols2json.sup2.Sup2Mill;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class STPForLanguageCompositionTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -29,10 +26,10 @@ public class STPForLanguageCompositionTest {
   public void testGetAndSetJsonPrinter(){
     SubSymbols2Json symTabPrinter = new SubSymbols2Json();
     JsonPrinter printer = symTabPrinter.getJsonPrinter();
-    assertNotNull(printer);
+    Assertions.assertNotNull(printer);
     symTabPrinter.setJsonPrinter(new JsonPrinter());
-    assertNotEquals(printer, symTabPrinter.getJsonPrinter());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertNotEquals(printer, symTabPrinter.getJsonPrinter());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -53,22 +50,22 @@ public class STPForLanguageCompositionTest {
     scope.accept(symbols2JSon.getTraverser());
     String serialized = symbols2JSon.getSerializedString();
 
-    assertTrue(serialized.contains("symbols"));
-    assertTrue(serialized.contains("\"name\":\"a\""));
-    assertTrue(serialized.contains("\"name\":\"b\""));
-    assertTrue(serialized.contains("\"name\":\"b2\""));
-    assertTrue(serialized.contains("\"name\":\"c\""));
-    assertTrue(serialized.contains("\"name\":\"c2\""));
-    assertTrue(serialized.contains("\"name\":\"c3\""));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(serialized.contains("symbols"));
+    Assertions.assertTrue(serialized.contains("\"name\":\"a\""));
+    Assertions.assertTrue(serialized.contains("\"name\":\"b\""));
+    Assertions.assertTrue(serialized.contains("\"name\":\"b2\""));
+    Assertions.assertTrue(serialized.contains("\"name\":\"c\""));
+    Assertions.assertTrue(serialized.contains("\"name\":\"c2\""));
+    Assertions.assertTrue(serialized.contains("\"name\":\"c3\""));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSecondConstructor(){
     JsonPrinter printer = new JsonPrinter();
     SubSymbols2Json symTabPrinter = new SubSymbols2Json(SubMill.traverser(), printer);
-    assertEquals(printer,symTabPrinter.getJsonPrinter());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(printer, symTabPrinter.getJsonPrinter());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 

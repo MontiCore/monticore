@@ -11,12 +11,12 @@ import mc.feature.multipletopsymbols.statechart._symboltable.IStatechartArtifact
 import mc.feature.multipletopsymbols.statechart._symboltable.IStatechartGlobalScope;
 import mc.feature.multipletopsymbols.statechart._symboltable.StateSymbol;
 import mc.feature.multipletopsymbols.statechart._symboltable.StatechartSymbol;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
@@ -27,14 +27,14 @@ public class StatechartResolvingTest {
   
   protected static IStatechartGlobalScope gs;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     gs = StatechartMill.globalScope();
     gs.setSymbolPath(new MCPath(Paths.get("src/test/resources")));
     gs.setFileExt("sc");
   }
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -44,8 +44,8 @@ public class StatechartResolvingTest {
   public void testResolving() throws IOException {
     StatechartParser parser = StatechartMill.parser();
     Optional<ASTSCArtifact> artifact = parser.parse("src/test/resources/mc/feature/multipletopsymbols/MyStatechart.sc");
-    assertTrue(artifact.isPresent());
-    assertFalse(parser.hasErrors());
+    Assertions.assertTrue(artifact.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
 
     IStatechartArtifactScope as = StatechartMill.scopesGenitorDelegator().createFromAST(artifact.get());
     String packageName = String.join(".", artifact.get().getPackageDeclaration().getQualifiedName().getPartList());
@@ -60,14 +60,14 @@ public class StatechartResolvingTest {
     Optional<StateSymbol> t = gs.resolveState("mc.feature.multipletopsymbols.MyStatechart.s.t");
     Optional<StateSymbol> s2 = gs.resolveState("mc.feature.multipletopsymbols.MyStatechart.MySC.s");
     Optional<StateSymbol> u = gs.resolveState("mc.feature.multipletopsymbols.MyStatechart.MySC.u");
-    assertTrue(myStatechart.isPresent());
-    assertTrue(mySC.isPresent());
-    assertTrue(s.isPresent());
-    assertTrue(t.isPresent());
-    assertTrue(s2.isPresent());
-    assertTrue(u.isPresent());
+    Assertions.assertTrue(myStatechart.isPresent());
+    Assertions.assertTrue(mySC.isPresent());
+    Assertions.assertTrue(s.isPresent());
+    Assertions.assertTrue(t.isPresent());
+    Assertions.assertTrue(s2.isPresent());
+    Assertions.assertTrue(u.isPresent());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 

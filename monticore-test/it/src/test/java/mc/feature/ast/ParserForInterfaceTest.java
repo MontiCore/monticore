@@ -10,16 +10,16 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._parser.FeatureDSLParser;
+import org.junit.jupiter.api.Test;
 
 public class ParserForInterfaceTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -32,9 +32,9 @@ public class ParserForInterfaceTest extends GeneratorIntegrationsTest {
     FeatureDSLParser p = new FeatureDSLParser();
     p.parseExtraComponent(s);
     
-    assertEquals(false, p.hasErrors());
+    Assertions.assertEquals(false, p.hasErrors());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

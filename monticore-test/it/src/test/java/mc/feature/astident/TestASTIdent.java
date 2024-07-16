@@ -10,17 +10,17 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.astident.astident._ast.ASTA;
 import mc.feature.astident.astident._parser.AstIdentParser;
+import org.junit.jupiter.api.Test;
 
 public class TestASTIdent extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -34,13 +34,13 @@ public class TestASTIdent extends GeneratorIntegrationsTest {
     
     AstIdentParser p = new AstIdentParser();
     java.util.Optional<ASTA> ast = p.parseA(s);
-    assertTrue(ast.isPresent());
-    assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertEquals(false, p.hasErrors());
     
     // Test parsing
-    assertEquals("Otto", ast.get().getName());
+    Assertions.assertEquals("Otto", ast.get().getName());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

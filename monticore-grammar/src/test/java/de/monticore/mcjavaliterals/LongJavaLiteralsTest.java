@@ -7,17 +7,16 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class LongJavaLiteralsTest {
 
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -27,10 +26,10 @@ public class LongJavaLiteralsTest {
 
   private void checkLongLiteral(long l, String s) throws IOException {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
-    assertTrue(lit instanceof ASTLongLiteral);
-    assertEquals(l, ((ASTLongLiteral) lit).getValue());
+    Assertions.assertTrue(lit instanceof ASTLongLiteral);
+    Assertions.assertEquals(l, ((ASTLongLiteral) lit).getValue());
     
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -60,7 +59,7 @@ public class LongJavaLiteralsTest {
       checkLongLiteral(00017L, "00017L");
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
 }

@@ -13,9 +13,9 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class ThrowIsValidTest {
 
   protected TestMCExceptionStatementsCoCoChecker checker;
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -92,13 +92,13 @@ public class ThrowIsValidTest {
 
     TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
     Optional<ASTThrowStatement> optAST = parser.parse_StringThrowStatement(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     ASTThrowStatement ast = optAST.get();
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
     ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
     Log.getFindings().clear();
     checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
 
   }
 
@@ -106,13 +106,13 @@ public class ThrowIsValidTest {
 
     TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
     Optional<ASTThrowStatement> optAST = parser.parse_StringThrowStatement(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     ASTThrowStatement ast = optAST.get();
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
     ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
     Log.getFindings().clear();
     checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
-    assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertFalse(Log.getFindings().isEmpty());
 
   }
 

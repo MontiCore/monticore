@@ -6,8 +6,9 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types3.util.DefsVariablesForTests;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -19,7 +20,7 @@ import static org.junit.Assume.assumeFalse;
 
 public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void setup() {
     MCCollectionSymTypeRelations.init();
     setupValues();
@@ -153,7 +154,7 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     person.addFunctionSymbol(function("getAge", _intSymType));
     person.addVariableSymbol(variable("age", _intSymType));
     // todo enable test after type dispatcher fix
-    assumeFalse(true);
+    Assumptions.assumeFalse(true);
     checkExpr("varPerson@pre.getAge()", "int");
     checkExpr("(varPerson@pre).getAge()", "int");
     checkExpr("varPerson@pre.age", "int");
