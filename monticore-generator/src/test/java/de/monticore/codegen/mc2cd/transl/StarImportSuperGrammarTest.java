@@ -7,8 +7,9 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
@@ -19,7 +20,7 @@ public class StarImportSuperGrammarTest extends TranslationTestCase {
   
   private ASTCDCompilationUnit cdCompilationUnit;
 
-  @Before
+  @BeforeEach
   public void setupStarImportSuperGrammarTest() {
     cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/OverridingClassProdGrammar.mc4")).get();
@@ -28,9 +29,9 @@ public class StarImportSuperGrammarTest extends TranslationTestCase {
   @Test
   public void testStarImport() {
     ASTMCImportStatement importStatement = cdCompilationUnit.getMCImportStatementList().get(0);
-    assertTrue(importStatement.isStar());
-    assertEquals("mc2cdtransformation.Supergrammar", importStatement.getQName());
+    Assertions.assertTrue(importStatement.isStar());
+    Assertions.assertEquals("mc2cdtransformation.Supergrammar", importStatement.getQName());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

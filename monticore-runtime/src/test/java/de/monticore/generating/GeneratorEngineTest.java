@@ -11,16 +11,15 @@ import de.monticore.io.FileReaderWriterMock;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
 
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
-import static org.junit.Assert.*;
 
 /**
  * Tests for {@link de.monticore.generating.GeneratorEngine}.
@@ -28,7 +27,7 @@ import static org.junit.Assert.*;
  */
 public class GeneratorEngineTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -49,18 +48,18 @@ public class GeneratorEngineTest {
 
     generatorEngine.generate("the.Template", Paths.get("a/GenerateInFile.test"), node);
 
-    assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
+    Assertions.assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
     FreeMarkerTemplateMock template = freeMarkerTemplateEngine.getProcessedTemplates().iterator().next();
-    assertTrue(template.isProcessed());
-    assertEquals("the.Template", template.getName());
+    Assertions.assertTrue(template.isProcessed());
+    Assertions.assertEquals("the.Template", template.getName());
 
-    assertEquals(1, fileHandler.getStoredFilesAndContents().size());
-    assertTrue(fileHandler.getStoredFilesAndContents().containsKey(Paths.get
+    Assertions.assertEquals(1, fileHandler.getStoredFilesAndContents().size());
+    Assertions.assertTrue(fileHandler.getStoredFilesAndContents().containsKey(Paths.get
         (new File("target1/a/GenerateInFile.test").getAbsolutePath())));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
-  @AfterClass
+  @AfterAll
   public static void resetFileReaderWriter() {
     FileReaderWriter.init();
   }
@@ -76,15 +75,15 @@ public class GeneratorEngineTest {
     GeneratorEngineMock generatorEngine = new GeneratorEngineMock(setup);
 
     StringBuilder sb = generatorEngine.generateNoA("the.Template");
-    assertTrue(sb.length()>0);
+    Assertions.assertTrue(sb.length()>0);
 
-    assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
+    Assertions.assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
     FreeMarkerTemplateMock template = freeMarkerTemplateEngine.getProcessedTemplates().iterator().next();
-    assertTrue(template.isProcessed());
-    assertEquals("the.Template", template.getName());
+    Assertions.assertTrue(template.isProcessed());
+    Assertions.assertEquals("the.Template", template.getName());
 
-    assertEquals(0, fileHandler.getStoredFilesAndContents().size());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(0, fileHandler.getStoredFilesAndContents().size());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -95,8 +94,8 @@ public class GeneratorEngineTest {
     setup.setAdditionalTemplatePaths(Lists.newArrayList(file));
     setup.setFileHandler(fileHandler);
     FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock(setup.getConfig());
-    assertEquals(1, Log.getFindingsCount());
-    assertEquals("0xA1020 Unable to load templates from non-existent path doesnotexist", Log.getFindings().get(0).getMsg());
+    Assertions.assertEquals(1, Log.getFindingsCount());
+    Assertions.assertEquals("0xA1020 Unable to load templates from non-existent path doesnotexist", Log.getFindings().get(0).getMsg());
   }
 
   @Test
@@ -104,8 +103,8 @@ public class GeneratorEngineTest {
     String classname = "test.A";
     String notExistName = "test.B";
 
-    assertTrue(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), classname));
-    assertFalse(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), notExistName));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), classname));
+    Assertions.assertFalse(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), notExistName));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

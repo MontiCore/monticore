@@ -6,9 +6,9 @@ import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -16,7 +16,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -29,14 +29,14 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
   @Test
   public void test() {
     AutomatonElementSymbol automatonElementSymbol = new AutomatonElementSymbol("A");
-    assertFalse(automatonElementSymbol instanceof IScopeSpanningSymbol);
+    Assertions.assertFalse(automatonElementSymbol instanceof IScopeSpanningSymbol);
     AutomatonWithSTInfo2Scope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
-    assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
+    Assertions.assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
 //    Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo2ScopesGenitorDelegator automatonWithSTInfo2SymbolTableCreator;
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

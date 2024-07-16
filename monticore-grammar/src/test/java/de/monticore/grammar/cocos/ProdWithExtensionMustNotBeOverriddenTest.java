@@ -3,8 +3,8 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProdWithExtensionMustNotBeOverriddenTest extends CocoTest{
 
@@ -12,7 +12,7 @@ public class ProdWithExtensionMustNotBeOverriddenTest extends CocoTest{
       + " already exist productions extending it.";
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4010.A4010";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new ProdWithExtensionMustNotBeOverridden());

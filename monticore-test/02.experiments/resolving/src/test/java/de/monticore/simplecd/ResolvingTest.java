@@ -12,8 +12,9 @@ import de.monticore.simplecd._visitor.SimpleCDTraverser;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ResolvingTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -58,38 +59,38 @@ public class ResolvingTest {
     Optional<ASTCDCompilationUnit> a = parseAndTransform("src/test/resources/de/monticore/simplecd/valid/A.cd");
     Optional<ASTCDCompilationUnit> b = parseAndTransform("src/test/resources/de/monticore/simplecd/valid/B.cd");
 
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
+    Assertions.assertTrue(a.isPresent());
+    Assertions.assertTrue(b.isPresent());
 
     ISimpleCDArtifactScope asB = buildSymbolTable(b.get());
     ISimpleCDArtifactScope asA = buildSymbolTable(a.get());
 
     Optional<CDClassSymbol> fooSymbol = asA.resolveCDClass("Foo");
-    assertTrue(fooSymbol.isPresent());
+    Assertions.assertTrue(fooSymbol.isPresent());
 
     ISimpleCDScope fooScope = fooSymbol.get().getSpannedScope();
     Optional<CDClassSymbol> type = fooScope.resolveCDClass("B.Bar");
-    assertTrue(type.isPresent());
+    Assertions.assertTrue(type.isPresent());
   }
 
   @Test
   public void testSimpleInvalid(){
     Optional<ASTCDCompilationUnit> c = parseAndTransform("src/test/resources/de/monticore/simplecd/invalid/C.cd");
 
-    assertTrue(c.isPresent());
+    Assertions.assertTrue(c.isPresent());
 
     ISimpleCDArtifactScope asC = buildSymbolTable(c.get());
 
     Optional<CDClassSymbol> fooSymbol = asC.resolveCDClass("Foo");
-    assertTrue(fooSymbol.isPresent());
+    Assertions.assertTrue(fooSymbol.isPresent());
 
     ISimpleCDScope fooScope = fooSymbol.get().getSpannedScope();
     try {
       Optional<CDClassSymbol> type = fooScope.resolveCDClass("Bar");
       //if a type could be resolved: Test fails because Bar should be ambiguous
-      assertFalse(type.isPresent());
+      Assertions.assertFalse(type.isPresent());
     } catch(ResolvedSeveralEntriesForSymbolException e) {
-      assertTrue(e.getMessage().startsWith("0xA4095"));
+      Assertions.assertTrue(e.getMessage().startsWith("0xA4095"));
     }
   }
 
@@ -98,22 +99,22 @@ public class ResolvingTest {
     Optional<ASTCDCompilationUnit> a = parseAndTransform("src/test/resources/de/monticore/simplecd/invalid/A.cd");
     Optional<ASTCDCompilationUnit> b = parseAndTransform("src/test/resources/de/monticore/simplecd/invalid/B.cd");
 
-    assertTrue(a.isPresent());
-    assertTrue(b.isPresent());
+    Assertions.assertTrue(a.isPresent());
+    Assertions.assertTrue(b.isPresent());
 
     ISimpleCDArtifactScope asB = buildSymbolTable(b.get());
     ISimpleCDArtifactScope asA = buildSymbolTable(a.get());
 
     Optional<CDClassSymbol> fooSymbol = asA.resolveCDClass("Foo");
-    assertTrue(fooSymbol.isPresent());
+    Assertions.assertTrue(fooSymbol.isPresent());
 
     ISimpleCDScope fooScope = fooSymbol.get().getSpannedScope();
     try {
       Optional<CDClassSymbol> type = fooScope.resolveCDClass("B.Bar");
       //if a type could be resolved: Test fails because B.Bar should be ambiguous
-      assertFalse(type.isPresent());
+      Assertions.assertFalse(type.isPresent());
     } catch(ResolvedSeveralEntriesForSymbolException e) {
-      assertTrue(e.getMessage().startsWith("0xA4095"));
+      Assertions.assertTrue(e.getMessage().startsWith("0xA4095"));
     }
   }
 

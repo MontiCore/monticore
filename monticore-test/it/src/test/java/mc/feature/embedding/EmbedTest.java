@@ -10,16 +10,16 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.embedding.outer.embedded._parser.EmbeddedParser;
 
 public class EmbedTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -32,8 +32,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     EmbeddedParser parser = new EmbeddedParser();
     parser.parseStart(new StringReader("a a a"));
     
-    assertEquals(false, parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, parser.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -42,8 +42,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     EmbeddedParser parser = new EmbeddedParser();
     parser.parseStart(new StringReader("a x a"));
     
-    assertEquals(false, parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, parser.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -52,8 +52,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     EmbeddedParser parser = new EmbeddedParser();
     parser.parseStart2(new StringReader("a x a"));
     
-    assertEquals(false, parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, parser.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -62,7 +62,7 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     EmbeddedParser parser = new EmbeddedParser();
     parser.parseStart2(new StringReader("a a x a a"));
     
-    assertEquals(true, parser.hasErrors());
+    Assertions.assertEquals(true, parser.hasErrors());
   }
   
   @Test
@@ -71,8 +71,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     EmbeddedParser parser = new EmbeddedParser();
     parser.parseStart3(new StringReader("b x"));
     
-    assertEquals(false, parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, parser.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -13,9 +13,10 @@ import mc.typechecktest._cocos.VariableAssignmentCorrectType;
 import mc.typechecktest._cocos.VariableDeclarationIsCorrect;
 import mc.typechecktest._parser.TypeCheckTestParser;
 import mc.typechecktest._symboltable.TypeCheckTestPhasedSTC;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -36,12 +37,12 @@ public class CoCoTests {
   private ASTTCCompilationUnit complicatedCorrectAssignment;
   private ASTTCCompilationUnit inheritedCannotUseStaticFromSuper;
 
-  @BeforeClass
+  @BeforeAll
   public static void init(){
     TypeCheckTestMill.init();
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -60,28 +61,28 @@ public class CoCoTests {
     TypeCheckTestParser parser = TypeCheckTestMill.parser();
     Optional<ASTTCCompilationUnit> bar = parser
         .parse("src/test/resources/mc/typescalculator/valid/Bar.tc");
-    assertTrue(bar.isPresent());
+    Assertions.assertTrue(bar.isPresent());
     TypeCheckTestPhasedSTC stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(bar.get());
     this.bar = bar.get();
 
     Optional<ASTTCCompilationUnit> inheritanceBar = parser
         .parse("src/test/resources/mc/typescalculator/valid/InheritanceBar.tc");
-    assertTrue(inheritanceBar.isPresent());
+    Assertions.assertTrue(inheritanceBar.isPresent());
     stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(inheritanceBar.get());
     this.inheritanceBar = inheritanceBar.get();
 
     Optional<ASTTCCompilationUnit> staticAbstractOOMethods = parser
         .parse("src/test/resources/mc/typescalculator/inbetween/StaticAbstractOOMethods.tc");
-    assertTrue(staticAbstractOOMethods.isPresent());
+    Assertions.assertTrue(staticAbstractOOMethods.isPresent());
     stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(staticAbstractOOMethods.get());
     this.staticAbstractOOMethods = staticAbstractOOMethods.get();
 
     Optional<ASTTCCompilationUnit> staticAbstractOOFields = parser
         .parse("src/test/resources/mc/typescalculator/inbetween/StaticAbstractOOFields.tc");
-    assertTrue(staticAbstractOOFields.isPresent());
+    Assertions.assertTrue(staticAbstractOOFields.isPresent());
     stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(staticAbstractOOFields.get());
     this.staticAbstractOOFields = staticAbstractOOFields.get();
@@ -89,35 +90,35 @@ public class CoCoTests {
 
     Optional<ASTTCCompilationUnit> check = parser
         .parse("src/test/resources/mc/typescalculator/valid/Check.tc");
-    assertTrue(check.isPresent());
+    Assertions.assertTrue(check.isPresent());
     this.check = check.get();
     stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(check.get());
 
     Optional<ASTTCCompilationUnit> wrongAssignment = parser
         .parse("src/test/resources/mc/typescalculator/invalid/WrongAssignment.tc");
-    assertTrue(wrongAssignment.isPresent());
+    Assertions.assertTrue(wrongAssignment.isPresent());
     this.wrongAssignment = wrongAssignment.get();
     stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(wrongAssignment.get());
 
     Optional<ASTTCCompilationUnit> complicatedWrongAssignment = parser
         .parse("src/test/resources/mc/typescalculator/invalid/ComplicatedWrongAssignment.tc");
-    assertTrue(complicatedWrongAssignment.isPresent());
+    Assertions.assertTrue(complicatedWrongAssignment.isPresent());
     this.complicatedWrongAssignment = complicatedWrongAssignment.get();
     stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(complicatedWrongAssignment.get());
 
     Optional<ASTTCCompilationUnit> complicatedCorrectAssignment = parser
         .parse("src/test/resources/mc/typescalculator/valid/ComplicatedCorrectAssignment.tc");
-    assertTrue(complicatedCorrectAssignment.isPresent());
+    Assertions.assertTrue(complicatedCorrectAssignment.isPresent());
     this.complicatedCorrectAssignment = complicatedCorrectAssignment.get();
     stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(complicatedCorrectAssignment.get());
 
     Optional<ASTTCCompilationUnit> inheritedCannotUseStaticFromSuper = parser
         .parse("src/test/resources/mc/typescalculator/inbetween/InheritedCannotUseStaticFromSuper.tc");
-    assertTrue(inheritedCannotUseStaticFromSuper.isPresent());
+    Assertions.assertTrue(inheritedCannotUseStaticFromSuper.isPresent());
     this.inheritedCannotUseStaticFromSuper = inheritedCannotUseStaticFromSuper.get();
     stc = new TypeCheckTestPhasedSTC();
     stc.createFromAST(inheritedCannotUseStaticFromSuper.get());
@@ -185,8 +186,8 @@ public class CoCoTests {
     }catch(Exception e){
       //do nothing here, just catch the exception for further testing
     }
-    assertTrue(Log.getFindingsCount()>=1);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(errorCode));
+    Assertions.assertTrue(Log.getFindingsCount()>=1);
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(errorCode));
   }
 
   protected void testInvalidOO(String errorCode, ASTTCCompilationUnit comp){
@@ -197,22 +198,22 @@ public class CoCoTests {
     }catch(Exception e){
       //do nothing here, just catch the exception for further testing
     }
-    assertTrue(Log.getFindingsCount()>=1);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(errorCode));
+    Assertions.assertTrue(Log.getFindingsCount()>=1);
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(errorCode));
   }
 
   protected void testValidAbstract(ASTTCCompilationUnit comp){
     Log.clearFindings();
     TypeCheckTestCoCoChecker checker = getAbstractChecker();
     checker.checkAll(comp);
-    assertEquals(0, Log.getFindingsCount());
+    Assertions.assertEquals(0, Log.getFindingsCount());
   }
 
   protected void testValidOO(ASTTCCompilationUnit comp){
     Log.clearFindings();
     TypeCheckTestCoCoChecker checker = getOOChecker();
     checker.checkAll(comp);
-    assertEquals(0, Log.getFindingsCount());
+    Assertions.assertEquals(0, Log.getFindingsCount());
   }
 
   protected TypeCheckTestCoCoChecker getOOChecker(){

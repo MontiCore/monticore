@@ -8,19 +8,18 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class SubExprNameExtractor4CommonExpressionsTest {
 
   private CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -42,12 +41,12 @@ public class SubExprNameExtractor4CommonExpressionsTest {
     SubExprNameExtractionResult result = nameCalculator.calculateNameParts(methodNameExpr);
 
     // Then
-    assertTrue(result.resultIsValidName());
-    assertEquals(1, result.getNamePartsRaw().size());
-    assertEquals("test", result.getLastName().get());
-    assertEquals(methodNameExpr, result.getNamePartsIfValid().get().get(0).getExpression());
+    Assertions.assertTrue(result.resultIsValidName());
+    Assertions.assertEquals(1, result.getNamePartsRaw().size());
+    Assertions.assertEquals("test", result.getLastName().get());
+    Assertions.assertEquals(methodNameExpr, result.getNamePartsIfValid().get().get(0).getExpression());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -64,18 +63,15 @@ public class SubExprNameExtractor4CommonExpressionsTest {
     SubExprNameExtractionResult result = nameCalculator.calculateNameParts(methodNameExpr);
 
     // Then
-    assertTrue(result.resultIsValidName());
+    Assertions.assertTrue(result.resultIsValidName());
     List<ExprToNamePair> nameParts = result.getNamePartsIfValid().get();
 
-    assertEquals(3, result.getNamePartsRaw().size());
-    assertEquals("test", result.getLastName().get());
-    assertEquals(methodNameExpr, nameParts.get(nameParts.size() - 1).getExpression());
-    assertEquals(
-      ((ASTFieldAccessExpression) methodNameExpr).getExpression(),
-      nameParts.get(nameParts.size() - 2).getExpression()
-    );
+    Assertions.assertEquals(3, result.getNamePartsRaw().size());
+    Assertions.assertEquals("test", result.getLastName().get());
+    Assertions.assertEquals(methodNameExpr, nameParts.get(nameParts.size() - 1).getExpression());
+    Assertions.assertEquals(((ASTFieldAccessExpression) methodNameExpr).getExpression(), nameParts.get(nameParts.size() - 2).getExpression());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -89,20 +85,17 @@ public class SubExprNameExtractor4CommonExpressionsTest {
     SubExprNameExtractionResult result = nameCalculator.calculateNameParts(methodNameExpr);
 
     // Then
-    assertFalse(result.resultIsValidName());
-    assertTrue(result.getLastName().isPresent());
+    Assertions.assertFalse(result.resultIsValidName());
+    Assertions.assertTrue(result.getLastName().isPresent());
 
     List<ExprToOptNamePair> subExprs = result.getNamePartsRaw();
 
-    assertEquals(3, result.getNamePartsRaw().size());  // tezt NameExpr, tezt() CallExpr, tezt().test fAccExpr
-    assertEquals("test", result.getLastName().get());
-    assertEquals(methodNameExpr, subExprs.get(subExprs.size() - 1).getExpression());
-    assertEquals(
-      ((ASTFieldAccessExpression) methodNameExpr).getExpression(),
-      subExprs.get(subExprs.size() - 2).getExpression()
-    );
+    Assertions.assertEquals(3, result.getNamePartsRaw().size());  // tezt NameExpr, tezt() CallExpr, tezt().test fAccExpr
+    Assertions.assertEquals("test", result.getLastName().get());
+    Assertions.assertEquals(methodNameExpr, subExprs.get(subExprs.size() - 1).getExpression());
+    Assertions.assertEquals(((ASTFieldAccessExpression) methodNameExpr).getExpression(), subExprs.get(subExprs.size() - 2).getExpression());
 
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

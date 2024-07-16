@@ -12,9 +12,9 @@ import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.addkeywords.addkeywords._ast.ASTD;
@@ -23,7 +23,7 @@ import mc.feature.addkeywords.addkeywords._parser.AddKeywordsParser;
 
 public class AddKeywordsTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,15 +36,15 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     helperb("keyword");
     helperb("key2");
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   private void helperb(String in) throws IOException {
     AddKeywordsParser b = new AddKeywordsParser();
     b.parseB(new StringReader(in));
         
-    assertFalse(b.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertFalse(b.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -54,13 +54,13 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     helperc("keyword");
     helperc("key2");
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   private void helperc(String in) throws IOException {
     AddKeywordsParser b = new AddKeywordsParser();
     b.parseC(new StringReader(in));
-    assertFalse(b.hasErrors());
+    Assertions.assertFalse(b.hasErrors());
   }
   
   @Test
@@ -70,18 +70,18 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     helperd("keyword");
     helperd("key2");
     
-    assertEquals(3, helperd("10 keyword 2").getNameList().size());
-    assertEquals(3, helperd("2 2 3").getNameList().size());
-    assertEquals(3, helperd("48 keyword key2").getNameList().size());
+    Assertions.assertEquals(3, helperd("10 keyword 2").getNameList().size());
+    Assertions.assertEquals(3, helperd("2 2 3").getNameList().size());
+    Assertions.assertEquals(3, helperd("48 keyword key2").getNameList().size());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTD helperd(String in) throws IOException {
     AddKeywordsParser createSimpleParser = new AddKeywordsParser();
     Optional<ASTD> parse = createSimpleParser.parseD(new StringReader(in));
-    assertTrue(parse.isPresent());
-    assertFalse(createSimpleParser.hasErrors());
+    Assertions.assertTrue(parse.isPresent());
+    Assertions.assertFalse(createSimpleParser.hasErrors());
     
     return parse.get();
   }
@@ -93,18 +93,18 @@ public class AddKeywordsTest extends GeneratorIntegrationsTest {
     helpere("keyword");
     helpere("key2");
     
-    assertEquals(3, helpere("10 keyword 2").getINTList().size());
-    assertEquals(3, helpere("2 2 3").getINTList().size());
-    assertEquals(3, helpere("48 keyword key2").getINTList().size());
+    Assertions.assertEquals(3, helpere("10 keyword 2").getINTList().size());
+    Assertions.assertEquals(3, helpere("2 2 3").getINTList().size());
+    Assertions.assertEquals(3, helpere("48 keyword key2").getINTList().size());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTE helpere(String in) throws IOException {
     AddKeywordsParser createSimpleParser = new AddKeywordsParser();
     Optional<ASTE> parse = createSimpleParser.parseE(new StringReader(in));
-    assertTrue(parse.isPresent());
-    assertFalse(createSimpleParser.hasErrors());
+    Assertions.assertTrue(parse.isPresent());
+    Assertions.assertFalse(createSimpleParser.hasErrors());
     
     return parse.get();
   }

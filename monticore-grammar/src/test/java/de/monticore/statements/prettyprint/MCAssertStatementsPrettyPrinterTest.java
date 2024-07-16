@@ -8,9 +8,9 @@ import de.monticore.statements.testmcassertstatements.TestMCAssertStatementsMill
 import de.monticore.statements.testmcassertstatements._parser.TestMCAssertStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class MCAssertStatementsPrettyPrinterTest {
 
   private MCAssertStatementsFullPrettyPrinter prettyPrinter= new MCAssertStatementsFullPrettyPrinter(new IndentPrinter());
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,18 +36,18 @@ public class MCAssertStatementsPrettyPrinterTest {
   @Test
   public void testAssertStatement() throws IOException {
     Optional<ASTAssertStatement> result = parser.parse_StringAssertStatement("assert a : b;");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTAssertStatement ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringAssertStatement(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

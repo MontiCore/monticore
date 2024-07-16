@@ -12,21 +12,19 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class StreamTypeTest {
 
-  @Before
+  @BeforeEach
   public void init() throws URISyntaxException {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -43,30 +41,30 @@ public class StreamTypeTest {
   public void resolveStreamType() {
     Optional<TypeSymbol> streamOpt = OOSymbolsMill.globalScope()
         .resolveType("Stream");
-    assertTrue(streamOpt.isPresent());
+    Assertions.assertTrue(streamOpt.isPresent());
     TypeSymbol stream = streamOpt.get();
-    assertNotNull(stream.getSpannedScope());
-    assertEquals(1, stream.getSpannedScope().getTypeVarSymbols().size());
-    assertEquals(0, Log.getErrorCount());
+    Assertions.assertNotNull(stream.getSpannedScope());
+    Assertions.assertEquals(1, stream.getSpannedScope().getTypeVarSymbols().size());
+    Assertions.assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void resolveStaticEmpty() {
     MethodSymbol method = resolveMethod("Stream.emptyStream");
-    assertTrue(method.getParameterList().isEmpty());
+    Assertions.assertTrue(method.getParameterList().isEmpty());
     assertIsStreamWithTypeVar(method.getType());
-    assertTrue(method.isIsStatic());
+    Assertions.assertTrue(method.isIsStatic());
     List<TypeVarSymbol> typeVars = method.getSpannedScope().getLocalTypeVarSymbols();
-    assertEquals(1, typeVars.size());
-    assertNotEquals(typeVars.get(0).getName(), "T");
+    Assertions.assertEquals(1, typeVars.size());
+    Assertions.assertNotEquals(typeVars.get(0).getName(), "T");
   }
 
   @Test
   public void resolveStreamMethodAppendFirst() {
     MethodSymbol method = resolveMethod("Stream.appendFirst");
-    assertTrue(method.isIsStatic());
-    assertEquals(2, method.getParameterList().size());
-    assertTrue(method.getParameterList().get(0).getType().isTypeVariable());
+    Assertions.assertTrue(method.isIsStatic());
+    Assertions.assertEquals(2, method.getParameterList().size());
+    Assertions.assertTrue(method.getParameterList().get(0).getType().isTypeVariable());
     assertIsStreamWithTypeVar(method.getParameterList().get(1).getType());
     assertIsStreamWithTypeVar(method.getType());
   }
@@ -74,10 +72,10 @@ public class StreamTypeTest {
   @Test
   public void resolveStreamMethodLen() {
     MethodSymbol method = resolveMethod("Stream.len");
-    assertEquals(0, method.getParameterList().size());
-    assertTrue(method.getEnclosingScope().getSpanningSymbol() instanceof TypeSymbol);
-    assertEquals("Stream", method.getEnclosingScope().getSpanningSymbol().getName());
-    assertEquals(BasicSymbolsMill.LONG, method.getType().getTypeInfo().getName());
+    Assertions.assertEquals(0, method.getParameterList().size());
+    Assertions.assertTrue(method.getEnclosingScope().getSpanningSymbol() instanceof TypeSymbol);
+    Assertions.assertEquals("Stream", method.getEnclosingScope().getSpanningSymbol().getName());
+    Assertions.assertEquals(BasicSymbolsMill.LONG, method.getType().getTypeInfo().getName());
   }
 
   @Test
@@ -130,17 +128,17 @@ public class StreamTypeTest {
   }
 
   protected void assertIsStreamWithTypeVar(SymTypeExpression type) {
-    assertNotNull(type);
-    assertTrue(type.isGenericType());
-    assertEquals("Stream", type.getTypeInfo().getName());
-    assertEquals(1, ((SymTypeOfGenerics) type).getArgumentList().size());
-    assertTrue(((SymTypeOfGenerics) type).getArgument(0).isTypeVariable());
+    Assertions.assertNotNull(type);
+    Assertions.assertTrue(type.isGenericType());
+    Assertions.assertEquals("Stream", type.getTypeInfo().getName());
+    Assertions.assertEquals(1, ((SymTypeOfGenerics) type).getArgumentList().size());
+    Assertions.assertTrue(((SymTypeOfGenerics) type).getArgument(0).isTypeVariable());
   }
 
   protected MethodSymbol resolveMethod(String name) {
     Optional<MethodSymbol> emptyOpt = OOSymbolsMill.globalScope().resolveMethod(name);
-    assertTrue(emptyOpt.isPresent());
-    assertTrue(emptyOpt.get().isIsMethod());
+    Assertions.assertTrue(emptyOpt.isPresent());
+    Assertions.assertTrue(emptyOpt.get().isIsMethod());
     return emptyOpt.get();
   }
 }

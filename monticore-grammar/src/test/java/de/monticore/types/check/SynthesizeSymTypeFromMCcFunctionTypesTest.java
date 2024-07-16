@@ -9,8 +9,9 @@ import de.monticore.types.mcfunctiontypestest._parser.MCFunctionTypesTestParser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 public class SynthesizeSymTypeFromMCcFunctionTypesTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -73,13 +74,11 @@ public class SynthesizeSymTypeFromMCcFunctionTypesTest {
   protected ASTMCFunctionType parse(String mcTypeStr) throws IOException {
     MCFunctionTypesTestParser parser = new MCFunctionTypesTestParser();
     Optional<ASTMCFunctionType> typeOpt = parser.parse_StringMCFunctionType(mcTypeStr);
-    assertNotNull(typeOpt);
-    assertTrue(Log.getFindings().stream()
+    Assertions.assertNotNull(typeOpt);
+    Assertions.assertTrue(typeOpt.isPresent(), Log.getFindings().stream()
             .map(Finding::toString)
-            .collect(Collectors.joining("\n")),
-        typeOpt.isPresent()
-    );
-    assertEquals(0, Log.getFindingsCount());
+            .collect(Collectors.joining("\n")));
+    Assertions.assertEquals(0, Log.getFindingsCount());
     return typeOpt.get();
   }
 
@@ -95,19 +94,19 @@ public class SynthesizeSymTypeFromMCcFunctionTypesTest {
     mcType.accept(traverser);
 
     SymTypeExpression symType = tc.symTypeFromAST(mcType);
-    assertTrue(symType.isFunctionType());
+    Assertions.assertTrue(symType.isFunctionType());
     SymTypeOfFunction funcType = (SymTypeOfFunction) symType;
-    assertNotNull(funcType.getTypeInfo());
-    assertEquals(SymTypeOfFunction.TYPESYMBOL_NAME, funcType.getTypeInfo().getName());
-    assertNotNull(funcType.getType());
-    assertFalse(funcType.getType().isObscureType());
-    assertNotNull(funcType.getArgumentTypeList());
+    Assertions.assertNotNull(funcType.getTypeInfo());
+    Assertions.assertEquals(SymTypeOfFunction.TYPESYMBOL_NAME, funcType.getTypeInfo().getName());
+    Assertions.assertNotNull(funcType.getType());
+    Assertions.assertFalse(funcType.getType().isObscureType());
+    Assertions.assertNotNull(funcType.getArgumentTypeList());
     for (SymTypeExpression argType : funcType.getArgumentTypeList()) {
-      assertNotNull(argType);
-      assertFalse(argType.isObscureType());
+      Assertions.assertNotNull(argType);
+      Assertions.assertFalse(argType.isObscureType());
     }
-    assertTrue(mcType.getDefiningSymbol().isPresent());
-    assertEquals(SymTypeOfFunction.TYPESYMBOL_NAME, mcType.getDefiningSymbol().get().getName());
+    Assertions.assertTrue(mcType.getDefiningSymbol().isPresent());
+    Assertions.assertEquals(SymTypeOfFunction.TYPESYMBOL_NAME, mcType.getDefiningSymbol().get().getName());
 
     return funcType;
   }
@@ -121,7 +120,7 @@ public class SynthesizeSymTypeFromMCcFunctionTypesTest {
       throws IOException {
     ASTMCFunctionType mcType = parse(mcTypeStr);
     SymTypeOfFunction symType = synthesizeType(mcType);
-    assertEquals(expected, symType.printFullName());
+    Assertions.assertEquals(expected, symType.printFullName());
   }
 
 }

@@ -8,8 +8,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -42,7 +43,7 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
 
   private ASTCDClass astJ;
 
-  @Before
+  @BeforeEach
   public void setupNonTerminalMultiplicityTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/NonTerminalMultiplicityGrammar.mc4")).get();
@@ -64,9 +65,9 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   @Test
   public void testNonTerminalName() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
-    assertEquals("x", attributes.get(0).getName());
+    Assertions.assertEquals("x", attributes.get(0).getName());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -76,10 +77,10 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   @Test
   public void testStarMultiplicity() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
+    Assertions.assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -89,10 +90,10 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   @Test
   public void testParenthesizedStarMultiplicity() {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
+    Assertions.assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -102,10 +103,10 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   @Test
   public void testPlusMultiplicity() {
     List<ASTCDAttribute> attributes = astC.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
+    Assertions.assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -115,10 +116,10 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   @Test
   public void testParenthesizedPlusMultiplicity() {
     List<ASTCDAttribute> attributes = astD.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
+    Assertions.assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -129,9 +130,9 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   public void testOptionalMultiplicity() {
     List<ASTCDAttribute> attributes = astE.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
-    assertEquals("Optional", name);
+    Assertions.assertEquals("Optional", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -142,9 +143,9 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   public void testParenthesizedOptionalMultiplicity() {
     List<ASTCDAttribute> attributes = astF.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
-    assertEquals("Optional", name);
+    Assertions.assertEquals("Optional", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -154,10 +155,10 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   @Test
   public void testDuplicateMultiplicity() {
     List<ASTCDAttribute> attributes = astG.getCDAttributeList();
-    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
+    Assertions.assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.NonTerminalMultiplicityGrammar.ASTX"));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -169,12 +170,12 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
     List<ASTCDAttribute> attributes = astH.getCDAttributeList();
     
     String xTypeName = typeToString(attributes.get(0).getMCType());
-    assertEquals("Optional", xTypeName);
+    Assertions.assertEquals("Optional", xTypeName);
     
     String yTypeName = typeToString(attributes.get(1).getMCType());
-    assertEquals("Optional", yTypeName);
+    Assertions.assertEquals("Optional", yTypeName);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -184,10 +185,10 @@ public class NonTerminalMultiplicityTest extends TranslationTestCase {
   @Test
   public void testTwinAlternative() {
     List<ASTCDAttribute> attributes = astJ.getCDAttributeList();
-    assertEquals(1, attributes.size());
+    Assertions.assertEquals(1, attributes.size());
     String xTypeName = typeToString(attributes.get(0).getMCType());
-    assertEquals("Optional", xTypeName);
+    Assertions.assertEquals("Optional", xTypeName);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

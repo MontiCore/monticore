@@ -8,8 +8,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
@@ -28,7 +29,7 @@ public final class AstRuleTest extends TranslationTestCase {
 
   private ASTCDClass impl;
 
-  @Before
+  @BeforeEach
   public void setUpASTRuleTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRule.mc4")).get();
@@ -38,17 +39,17 @@ public final class AstRuleTest extends TranslationTestCase {
 
   @Test
   public void testAstRuleAddedAttribute() {
-    assertEquals(1, astC.getCDAttributeList().size());
-    assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
+    Assertions.assertEquals(1, astC.getCDAttributeList().size());
+    Assertions.assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
     assertInt(astC.getCDAttributeList().get(0).getMCType());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAstRuleDoubleInheritance() {
     // attributes from super interfaces are inherited
-    assertEquals(2, impl.getCDAttributeList().size());
+    Assertions.assertEquals(2, impl.getCDAttributeList().size());
 
     ASTCDAttribute varName = getAttributeBy("varName", impl);
     assertDeepEquals("varType", varName.getMCType());
@@ -56,7 +57,7 @@ public final class AstRuleTest extends TranslationTestCase {
     ASTCDAttribute varName2 = getAttributeBy("varName2", impl);
     assertDeepEquals("varType2", varName2.getMCType());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

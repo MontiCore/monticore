@@ -8,24 +8,22 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class PlusExpressionReturnsIntTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setup(){
     MyOwnLanguageMill.reset();
     MyOwnLanguageMill.init();
@@ -37,20 +35,20 @@ public class PlusExpressionReturnsIntTest {
   @Test
   public void testPlusExpressionValid() throws IOException {
     Optional<ASTExpression> p1 = parser.parse_StringExpression("3+4");
-    assertTrue(p1.isPresent());
+    Assertions.assertTrue(p1.isPresent());
     MyOwnLanguageCoCoChecker coCoChecker = new MyOwnLanguageCoCoChecker().getMyOwnLanguageCoCoChecker();
     coCoChecker.checkAll(((ASTCommonExpressionsNode) p1.get()));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testPlusExpressionInvalid() throws IOException{
     Optional<ASTExpression> p1 = parser.parse_StringExpression("3+4.5");
-    assertTrue(p1.isPresent());
+    Assertions.assertTrue(p1.isPresent());
     MyOwnLanguageCoCoChecker coCoChecker = new MyOwnLanguageCoCoChecker().getMyOwnLanguageCoCoChecker();
     coCoChecker.checkAll((ASTCommonExpressionsNode) p1.get());
-    assertFalse(Log.getFindings().isEmpty());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(PlusExpressionReturnsInt.ERROR_CODE));
+    Assertions.assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(PlusExpressionReturnsInt.ERROR_CODE));
   }
 
 }

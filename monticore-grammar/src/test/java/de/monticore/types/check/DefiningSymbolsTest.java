@@ -21,8 +21,9 @@ import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class DefiningSymbolsTest {
   protected MethodSymbol add;
   protected TypeSymbol listOfInt;
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -72,99 +73,99 @@ public class DefiningSymbolsTest {
   @Test
   public void testQualified() throws IOException {
     Optional<ASTExpression> expr = p.parse_StringExpression("ListOfInt.e");
-    assertTrue(expr.isPresent());
-    assertTrue(expr.get() instanceof ASTFieldAccessExpression);
+    Assertions.assertTrue(expr.isPresent());
+    Assertions.assertTrue(expr.get() instanceof ASTFieldAccessExpression);
     ASTFieldAccessExpression e = (ASTFieldAccessExpression) expr.get();
     e.accept(getFlatExpressionScopeSetter(as));
     TypeCalculator tc = new TypeCalculator(null, deriver);
     tc.typeOf(e);
-    assertTrue(e.getDefiningSymbol().isPresent());
+    Assertions.assertTrue(e.getDefiningSymbol().isPresent());
     ISymbol definingSymbol = e.getDefiningSymbol().get();
-    assertTrue(definingSymbol instanceof FieldSymbol);
-    assertEquals("e", definingSymbol.getName());
+    Assertions.assertTrue(definingSymbol instanceof FieldSymbol);
+    Assertions.assertEquals("e", definingSymbol.getName());
 
-    assertTrue(e.getExpression() instanceof ASTNameExpression);
+    Assertions.assertTrue(e.getExpression() instanceof ASTNameExpression);
     ASTNameExpression listOfInt = (ASTNameExpression) e.getExpression();
-    assertTrue(listOfInt.getDefiningSymbol().isPresent());
-    assertEquals(listOfInt.getDefiningSymbol().get(), this.listOfInt);
+    Assertions.assertTrue(listOfInt.getDefiningSymbol().isPresent());
+    Assertions.assertEquals(listOfInt.getDefiningSymbol().get(), this.listOfInt);
 
     expr = p.parse_StringExpression("ListOfInt.add(3)");
-    assertTrue(expr.isPresent());
-    assertTrue(expr.get() instanceof ASTCallExpression);
+    Assertions.assertTrue(expr.isPresent());
+    Assertions.assertTrue(expr.get() instanceof ASTCallExpression);
     ASTCallExpression add = (ASTCallExpression) expr.get();
     add.accept(getFlatExpressionScopeSetter(as));
     tc.typeOf(add);
-    assertTrue(add.getDefiningSymbol().isPresent());
+    Assertions.assertTrue(add.getDefiningSymbol().isPresent());
     definingSymbol = add.getDefiningSymbol().get();
-    assertTrue(definingSymbol instanceof MethodSymbol);
-    assertEquals("add", definingSymbol.getName());
+    Assertions.assertTrue(definingSymbol instanceof MethodSymbol);
+    Assertions.assertEquals("add", definingSymbol.getName());
 
-    assertTrue(add.getExpression() instanceof ASTFieldAccessExpression);
-    assertTrue(((ASTFieldAccessExpression) add.getExpression()).getExpression() instanceof ASTNameExpression);
+    Assertions.assertTrue(add.getExpression() instanceof ASTFieldAccessExpression);
+    Assertions.assertTrue(((ASTFieldAccessExpression) add.getExpression()).getExpression() instanceof ASTNameExpression);
     listOfInt = (ASTNameExpression) ((ASTFieldAccessExpression) add.getExpression()).getExpression();
-    assertTrue(listOfInt.getDefiningSymbol().isPresent());
-    assertEquals(listOfInt.getDefiningSymbol().get(), this.listOfInt);
+    Assertions.assertTrue(listOfInt.getDefiningSymbol().isPresent());
+    Assertions.assertEquals(listOfInt.getDefiningSymbol().get(), this.listOfInt);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testUnqualified() throws IOException {
     Optional<ASTExpression> expr = p.parse_StringExpression("e");
-    assertTrue(expr.isPresent());
-    assertTrue(expr.get() instanceof ASTNameExpression);
+    Assertions.assertTrue(expr.isPresent());
+    Assertions.assertTrue(expr.get() instanceof ASTNameExpression);
     ASTNameExpression e = (ASTNameExpression) expr.get();
     e.accept(getFlatExpressionScopeSetter(typeScope));
     TypeCalculator tc = new TypeCalculator(null, deriver);
     tc.typeOf(e);
-    assertTrue(e.getDefiningSymbol().isPresent());
+    Assertions.assertTrue(e.getDefiningSymbol().isPresent());
     ISymbol definingSymbol = e.getDefiningSymbol().get();
-    assertTrue(definingSymbol instanceof FieldSymbol);
-    assertEquals("e", definingSymbol.getName());
+    Assertions.assertTrue(definingSymbol instanceof FieldSymbol);
+    Assertions.assertEquals("e", definingSymbol.getName());
 
     expr = p.parse_StringExpression("add(3)");
-    assertTrue(expr.isPresent());
-    assertTrue(expr.get() instanceof ASTCallExpression);
+    Assertions.assertTrue(expr.isPresent());
+    Assertions.assertTrue(expr.get() instanceof ASTCallExpression);
     ASTCallExpression add = (ASTCallExpression) expr.get();
     add.accept(getFlatExpressionScopeSetter(typeScope));
     tc.typeOf(add);
-    assertTrue(add.getDefiningSymbol().isPresent());
+    Assertions.assertTrue(add.getDefiningSymbol().isPresent());
     definingSymbol = add.getDefiningSymbol().get();
-    assertTrue(definingSymbol instanceof MethodSymbol);
-    assertEquals("add", definingSymbol.getName());
+    Assertions.assertTrue(definingSymbol instanceof MethodSymbol);
+    Assertions.assertEquals("add", definingSymbol.getName());
 
     expr = p.parse_StringExpression("ListOfInt");
-    assertTrue(expr.isPresent());
-    assertTrue(expr.get() instanceof ASTNameExpression);
+    Assertions.assertTrue(expr.isPresent());
+    Assertions.assertTrue(expr.get() instanceof ASTNameExpression);
     ASTNameExpression listOfInt = (ASTNameExpression) expr.get();
     listOfInt.accept(getFlatExpressionScopeSetter(as));
     tc.typeOf(listOfInt);
-    assertTrue(listOfInt.getDefiningSymbol().isPresent());
-    assertEquals(listOfInt.getDefiningSymbol().get(), this.listOfInt);
+    Assertions.assertTrue(listOfInt.getDefiningSymbol().isPresent());
+    Assertions.assertEquals(listOfInt.getDefiningSymbol().get(), this.listOfInt);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testTypes() throws IOException {
     Optional<TypeSymbol> type = as.resolveType("int");
-    assertTrue(type.isPresent());
+    Assertions.assertTrue(type.isPresent());
     Optional<ASTMCType> intType = p.parse_StringMCType("int");
-    assertTrue(intType.isPresent());
+    Assertions.assertTrue(intType.isPresent());
     intType.get().accept(getFlatExpressionScopeSetter(as));
     TypeCalculator tc = new TypeCalculator(synthesizer, null);
     tc.symTypeFromAST(intType.get());
-    assertTrue(intType.get().getDefiningSymbol().isPresent());
-    assertEquals(intType.get().getDefiningSymbol().get(), type.get());
+    Assertions.assertTrue(intType.get().getDefiningSymbol().isPresent());
+    Assertions.assertEquals(intType.get().getDefiningSymbol().get(), type.get());
 
     Optional<ASTMCType> listOfIntType = p.parse_StringMCType("ListOfInt");
-    assertTrue(listOfIntType.isPresent());
+    Assertions.assertTrue(listOfIntType.isPresent());
     listOfIntType.get().accept(getFlatExpressionScopeSetter(as));
     tc.symTypeFromAST(listOfIntType.get());
-    assertTrue(listOfIntType.get().getDefiningSymbol().isPresent());
-    assertEquals(listOfIntType.get().getDefiningSymbol().get(), this.listOfInt);
+    Assertions.assertTrue(listOfIntType.get().getDefiningSymbol().isPresent());
+    Assertions.assertEquals(listOfIntType.get().getDefiningSymbol().get(), this.listOfInt);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   protected CombineExpressionsWithLiteralsTraverser getFlatExpressionScopeSetter(IExpressionsBasisScope scope){

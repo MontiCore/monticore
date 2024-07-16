@@ -8,18 +8,16 @@ import de.monticore.types.mcfullgenerictypestest.MCFullGenericTypesTestMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class FullGenericTypesPrinterTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -37,21 +35,21 @@ public class FullGenericTypesPrinterTest {
 //    Optional<ASTMCTypeVariableDeclaration> astmcTypeVariableDeclaration = parser.parse_StringMCTypeVariableDeclaration("a extends b&c&d");
 //    Optional<ASTMCTypeParameters> astmcTypeParameters = parser.parse_StringMCTypeParameters("<a extends b&c&d, e extends f&g>");
 
-    assertFalse(parser.hasErrors());
-    assertTrue(astmcWildcardTypeArgument.isPresent());
-    assertTrue(astmcWildcardTypeArgument1.isPresent());
-    assertTrue(astmcWildcardTypeArgument2.isPresent());
-    assertTrue(astmcMultipleGenericType.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astmcWildcardTypeArgument.isPresent());
+    Assertions.assertTrue(astmcWildcardTypeArgument1.isPresent());
+    Assertions.assertTrue(astmcWildcardTypeArgument2.isPresent());
+    Assertions.assertTrue(astmcMultipleGenericType.isPresent());
 //    assertTrue(astmcTypeVariableDeclaration.isPresent());
 //    assertTrue(astmcTypeParameters.isPresent());
 
-    assertEquals("?", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument.get(), true));
-    assertEquals("? extends List", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument1.get(), true));
-    assertEquals("? super Stream", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument2.get(), true));
-    assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", MCFullGenericTypesMill.prettyPrint(astmcMultipleGenericType.get(), true));
+    Assertions.assertEquals("?", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument.get(), true));
+    Assertions.assertEquals("? extends List", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument1.get(), true));
+    Assertions.assertEquals("? super Stream", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument2.get(), true));
+    Assertions.assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", MCFullGenericTypesMill.prettyPrint(astmcMultipleGenericType.get(), true));
 //    assertEquals("<a extends b &c &d, e extends f &g>", FullGenericTypesPrinter.printType(astmcTypeParameters.get()));
 //    assertEquals("a extends b &c &d", FullGenericTypesPrinter.printType(astmcTypeVariableDeclaration.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

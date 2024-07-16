@@ -7,8 +7,9 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -19,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MCGrammarPrettyPrinterTest {
 
-  @Before
+  @BeforeEach
   public void setup(){
     LogStub.init();
     Log.enableFailQuick(false);
@@ -35,8 +36,8 @@ public class MCGrammarPrettyPrinterTest {
     // Parsing input
     Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
     
     // Prettyprinting input
@@ -44,12 +45,12 @@ public class MCGrammarPrettyPrinterTest {
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader (output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    Assertions.assertTrue(grammar.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -60,8 +61,8 @@ public class MCGrammarPrettyPrinterTest {
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
     
     // Prettyprinting input
@@ -69,12 +70,12 @@ public class MCGrammarPrettyPrinterTest {
     
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    Assertions.assertTrue(grammar.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -85,8 +86,8 @@ public class MCGrammarPrettyPrinterTest {
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
@@ -94,12 +95,12 @@ public class MCGrammarPrettyPrinterTest {
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    Assertions.assertTrue(grammar.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -110,8 +111,8 @@ public class MCGrammarPrettyPrinterTest {
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
@@ -119,12 +120,12 @@ public class MCGrammarPrettyPrinterTest {
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    Assertions.assertTrue(grammar.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -135,8 +136,8 @@ public class MCGrammarPrettyPrinterTest {
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
@@ -144,12 +145,12 @@ public class MCGrammarPrettyPrinterTest {
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(grammar.deepEquals(result.get()));
+    Assertions.assertTrue(grammar.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -7,8 +7,9 @@ import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types3.util.SymTypeNormalizeVisitor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
 
   SymTypeNormalizeVisitor visitor;
 
-  @Before
+  @BeforeEach
   public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -338,7 +339,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
   public void check(SymTypeExpression type, String expectedPrint) {
     SymTypeExpression normalized = visitor.calculate(type);
     assertNoFindings();
-    assertEquals(expectedPrint, normalized.printFullName());
+    Assertions.assertEquals(expectedPrint, normalized.printFullName());
   }
 
   public void check(SymTypeExpression type, SymTypeExpression expectedType) {

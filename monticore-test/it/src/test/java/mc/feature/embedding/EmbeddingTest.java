@@ -12,9 +12,9 @@ import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.embedding.outer.featureembedded._ast.ASTExt;
@@ -24,7 +24,7 @@ import mc.feature.embedding.outer.featureouterdsl._ast.ASTOuter3;
 
 public class EmbeddingTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -59,9 +59,9 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
     
     ASTOuter ast = createAST("hihi", s);
     
-    assertEquals("test", ((ASTExt) ast.getInner()).getInner().getName());
+    Assertions.assertEquals("test", ((ASTExt) ast.getInner()).getInner().getName());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -71,7 +71,7 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
     
     createAST3("Embedded - optional taken", s);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -81,7 +81,7 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
     
     createAST3("Embedded - optional not taken", s);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

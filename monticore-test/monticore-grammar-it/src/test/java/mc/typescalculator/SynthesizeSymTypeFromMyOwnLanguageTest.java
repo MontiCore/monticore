@@ -14,9 +14,9 @@ import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
 import mc.typescalculator.myownlanguage._symboltable.IMyOwnLanguageGlobalScope;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -30,13 +30,13 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
   protected MyOwnLanguageParser parser = new MyOwnLanguageParser();
   protected TypeCalculator tc = new TypeCalculator(new FullSynthesizeFromMyOwnLanguage(),null);
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setup() {
     MyOwnLanguageMill.reset();
     MyOwnLanguageMill.init();
@@ -79,19 +79,19 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
   @Test
   public void testMCCollectionTypes() throws IOException {
     Optional<ASTMCType> type = parser.parse_StringMCType("List<int>");
-    assertTrue(type.isPresent());
+    Assertions.assertTrue(type.isPresent());
     type.get().setEnclosingScope(MyOwnLanguageMill.globalScope());
     ((ASTMCListType)(type.get())).getMCTypeArgument().getMCTypeOpt().get().setEnclosingScope(MyOwnLanguageMill.globalScope());
-    assertEquals("List<int>",tc.symTypeFromAST(type.get()).printFullName());
+    Assertions.assertEquals("List<int>", tc.symTypeFromAST(type.get()).printFullName());
   }
 
   @Test
   public void testUnitTypes() throws IOException {
     Optional<ASTMinuteType> type = parser.parse_StringMinuteType("min");
-    assertTrue(type.isPresent());
+    Assertions.assertTrue(type.isPresent());
     // pretend to use the scope genitor
     type.get().setEnclosingScope(MyOwnLanguageMill.globalScope());
-    assertEquals("min",tc.symTypeFromAST(type.get()).print());
+    Assertions.assertEquals("min", tc.symTypeFromAST(type.get()).print());
   }
 
 

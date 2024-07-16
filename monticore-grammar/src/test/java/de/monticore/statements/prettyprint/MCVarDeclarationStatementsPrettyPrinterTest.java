@@ -8,9 +8,9 @@ import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarati
 import de.monticore.statements.testmcvardeclarationstatements._parser.TestMCVarDeclarationStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class MCVarDeclarationStatementsPrettyPrinterTest {
 
   private MCVarDeclarationStatementsFullPrettyPrinter prettyPrinter = new MCVarDeclarationStatementsFullPrettyPrinter(new IndentPrinter());
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,20 +36,20 @@ public class MCVarDeclarationStatementsPrettyPrinterTest {
   @Test
   public void testLocalVariableDeclaration() throws IOException {
     Optional<ASTLocalVariableDeclaration> result = parser.parse_StringLocalVariableDeclaration("List a = b, c = d");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTLocalVariableDeclaration ast = result.get();
 
     ast.accept(prettyPrinter.getTraverser());
     String output = prettyPrinter.getPrinter().getContent();
 
     result = parser.parse_StringLocalVariableDeclaration(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

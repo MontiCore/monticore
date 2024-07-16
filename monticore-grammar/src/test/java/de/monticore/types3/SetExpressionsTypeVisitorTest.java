@@ -7,8 +7,8 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
 import de.monticore.types3.util.DefsVariablesForTests;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ import static de.monticore.types3.util.DefsVariablesForTests._intUnboxedSetVarSy
 
 public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void setup() {
     MCCollectionSymTypeRelations.init();
     DefsVariablesForTests.setup();

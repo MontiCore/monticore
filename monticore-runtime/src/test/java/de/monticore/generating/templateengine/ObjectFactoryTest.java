@@ -7,17 +7,13 @@ import java.util.List;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.monticore.generating.templateengine.ObjectFactory;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ObjectFactoryTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -26,9 +22,9 @@ public class ObjectFactoryTest {
   @Test
   public void testInstanciationWithDefaultConstructor() {
     Object obj = ObjectFactory.createObject("java.lang.String");
-    assertNotNull(obj);
-    assertEquals(String.class, obj.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertNotNull(obj);
+    Assertions.assertEquals(String.class, obj.getClass());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -36,10 +32,10 @@ public class ObjectFactoryTest {
     List<Object> params = new ArrayList<Object>();
     params.add("myContent");
     Object obj = ObjectFactory.createObject("java.lang.String", params);
-    assertNotNull(obj);
-    assertEquals(String.class, obj.getClass());
-    assertEquals(obj, "myContent");
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertNotNull(obj);
+    Assertions.assertEquals(String.class, obj.getClass());
+    Assertions.assertEquals(obj, "myContent");
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -55,10 +51,10 @@ public class ObjectFactoryTest {
     params.add(3);
     
     Object obj = ObjectFactory.createObject("java.lang.String", paramTypes, params);
-    assertNotNull(obj);
-    assertEquals(obj.getClass(), (new String()).getClass());
-    assertEquals(obj, "yes");
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertNotNull(obj);
+    Assertions.assertEquals(obj.getClass(), (new String()).getClass());
+    Assertions.assertEquals(obj, "yes");
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -10,22 +10,22 @@ import automata._symboltable.StateSymbol;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
 
 public class ResolveDeepTest {
 
   protected static AutomataParser parser = new AutomataParser();
 
-  @Before
+  @BeforeEach
   public void storeSymbols() throws IOException {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -50,8 +50,8 @@ public class ResolveDeepTest {
 
     // parse model
     Optional<ASTAutomaton> ast = parser.parse(model.toString());
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
 
     // build symbol table
     IAutomataArtifactScope scope = AutomataMill.scopesGenitorDelegator().createFromAST(ast.get());
@@ -61,14 +61,14 @@ public class ResolveDeepTest {
     // modified (i.e., resolve and resolve locally methods are not affected)
 
     // test if default qualified resolveDown behavior is preserved
-    assertTrue(scope.resolveStateDown("PingPong.InGame.Ping").isPresent());
-    assertTrue(scope.resolveStateDown("PingPong.very.deep.substate").isPresent());
+    Assertions.assertTrue(scope.resolveStateDown("PingPong.InGame.Ping").isPresent());
+    Assertions.assertTrue(scope.resolveStateDown("PingPong.very.deep.substate").isPresent());
 
     // test deep resolving with unqualified symbol name
-    assertTrue(scope.resolveStateDown("PingPong.substate").isPresent());
+    Assertions.assertTrue(scope.resolveStateDown("PingPong.substate").isPresent());
 
     // test unqualified resolving with multiple occurrences: 2 Ping symbols
-    assertEquals(scope.resolveStateDownMany("PingPong.Ping").size(), 2, 0);
+    Assertions.assertEquals(scope.resolveStateDownMany("PingPong.Ping").size(), 2, 0);
 
     // test negative case, where we try to resolve one Ping state
     boolean success = true;
@@ -78,7 +78,7 @@ public class ResolveDeepTest {
     catch (ResolvedSeveralEntriesForSymbolException e) {
       success = false;
     }
-    assertFalse(success);
+    Assertions.assertFalse(success);
 
     // test "half"-qualified down resolving. We pass an incomplete qualification
     // for symbol Ping. Expected behavior: we handle the name as fully qualified
@@ -87,13 +87,13 @@ public class ResolveDeepTest {
     // "very". From here, the symbol Ping lies several scopes beneath. However,
     // since Ping is uniquely accessible from this point, no error occurs and we
     // find exactly one symbol.
-    assertTrue(scope.resolveStateDown("PingPong.very.Ping").isPresent());
+    Assertions.assertTrue(scope.resolveStateDown("PingPong.very.Ping").isPresent());
 
     // test down resolving with in-between steps
     Optional<StateSymbol> deep_sym = scope.resolveState("PingPong.deep");
     IAutomataScope deep_scope = deep_sym.get().getSpannedScope();
-    assertTrue(deep_scope.resolveStateDown("substate").isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(deep_scope.resolveStateDown("substate").isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   private void reInitGlobalScopes(MCPath mp1, MCPath mp2) {
@@ -112,23 +112,23 @@ public class ResolveDeepTest {
     reInitGlobalScopes(mp1, mp2);
 
     // resolve for automaton symbol
-    assertTrue(AutomataMill.globalScope().resolveAutomaton("PingPong").isPresent());
+    Assertions.assertTrue(AutomataMill.globalScope().resolveAutomaton("PingPong").isPresent());
 
     reInitGlobalScopes(mp1, mp2);
 
     // resolve for top level state symbol
-    assertTrue(AutomataMill.globalScope().resolveState("PingPong.very").isPresent());
+    Assertions.assertTrue(AutomataMill.globalScope().resolveState("PingPong.very").isPresent());
 
     reInitGlobalScopes(mp1, mp2);
 
     // resolve for nested state symbol
-    assertTrue(AutomataMill.globalScope().resolveState("PingPong.very.deep").isPresent());
+    Assertions.assertTrue(AutomataMill.globalScope().resolveState("PingPong.very.deep").isPresent());
 
     reInitGlobalScopes(mp1, mp2);
 
     // resolve for deeply nested state symbol
-    assertTrue(AutomataMill.globalScope().resolveState("PingPong.very.deep.substate").isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(AutomataMill.globalScope().resolveState("PingPong.very.deep.substate").isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

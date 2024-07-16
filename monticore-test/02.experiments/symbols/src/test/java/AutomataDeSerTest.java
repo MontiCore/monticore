@@ -3,19 +3,16 @@
 import automata.AutomataMill;
 import automata._ast.ASTAutomaton;
 import automata._parser.AutomataParser;
-import automata._symboltable.AutomataDeSer;
 import automata._symboltable.AutomataSymbols2Json;
 import automata._symboltable.IAutomataArtifactScope;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class AutomataDeSerTest {
 
@@ -23,13 +20,13 @@ public class AutomataDeSerTest {
   AutomataParser parser = new AutomataParser() ;
   AutomataSymbols2Json s2j = new AutomataSymbols2Json() ;
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
-  @Before
+  @BeforeEach
   public void init(){
     AutomataMill.init();
 //    LogStub.init();
@@ -47,8 +44,8 @@ public class AutomataDeSerTest {
     //store symtab and load it again
     s2j.store(as, "target/PingPong.autsym");
     IAutomataArtifactScope loaded = s2j.load("target/PingPong.autsym");
-    assertEquals(0, Log.getErrorCount());
-    assertNotNull(loaded);
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(0, Log.getErrorCount());
+    Assertions.assertNotNull(loaded);
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

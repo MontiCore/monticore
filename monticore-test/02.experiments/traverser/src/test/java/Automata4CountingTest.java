@@ -6,17 +6,16 @@ import automata4counting._ast.ASTAutomaton;
 import automata4counting._parser.Automata4CountingParser;
 import automata4counting._symboltable.IAutomata4CountingArtifactScope;
 import automata4counting._visitor.Automata4CountingTraverser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class Automata4CountingTest {
 
-  @Before
+  @BeforeEach
   public void setup() {
     Automata4CountingMill.init();
     Automata4CountingMill.globalScope().clear();
@@ -29,8 +28,8 @@ public class Automata4CountingTest {
 
     // parse model
     Optional<ASTAutomaton> aut = parser.parse(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(aut.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(aut.isPresent());
 
     // count visited elements
     Automata4CountingTraverser traverser = Automata4CountingMill.inheritanceTraverser();
@@ -38,7 +37,7 @@ public class Automata4CountingTest {
     traverser.add4IVisitor(counter);
 
     aut.get().accept(traverser);
-    assertEquals(5, counter.getCount());
+    Assertions.assertEquals(5, counter.getCount());
   }
 
   @Test
@@ -48,8 +47,8 @@ public class Automata4CountingTest {
 
     // parse model
     Optional<ASTAutomaton> aut = parser.parse(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(aut.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(aut.isPresent());
 
     // build symbol table
     Automata4CountingMill.scopesGenitorDelegator().createFromAST(aut.get());
@@ -60,7 +59,7 @@ public class Automata4CountingTest {
     traverser.add4IVisitor(counter);
 
     aut.get().accept(traverser);
-    assertEquals(12, counter.getCount());
+    Assertions.assertEquals(12, counter.getCount());
   }
 
   @Test
@@ -70,8 +69,8 @@ public class Automata4CountingTest {
 
     // parse model
     Optional<ASTAutomaton> aut = parser.parse(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(aut.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(aut.isPresent());
 
     // build symbol table
     IAutomata4CountingArtifactScope as = Automata4CountingMill.scopesGenitorDelegator().createFromAST(aut.get());
@@ -82,7 +81,7 @@ public class Automata4CountingTest {
     traverser.add4IVisitor(counter);
 
     as.accept(traverser);
-    assertEquals(9, counter.getCount());
+    Assertions.assertEquals(9, counter.getCount());
   }
   
 

@@ -9,8 +9,8 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -57,7 +57,7 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
    * literals/MCLiteralsBasis.mc4
    */
 
-  @Before
+  @BeforeEach
   public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();

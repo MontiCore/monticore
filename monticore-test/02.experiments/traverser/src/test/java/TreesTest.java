@@ -9,10 +9,10 @@ import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
+import org.junit.jupiter.api.Test;
 import subtrees.SubTreesMill;
 import subtrees._parser.SubTreesParser;
 import tree.visitor.LeafCounter;
@@ -23,7 +23,7 @@ import trees._visitor.TreesTraverser;
 
 public class TreesTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,12 +36,12 @@ public class TreesTest {
     TreesParser parser = new TreesParser();
     
     Optional<ASTRoot> tree = parser.parse(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(tree.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(tree.isPresent());
     
     // compute and check result
-    assertEquals(3, leafCount(tree.get()));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(3, leafCount(tree.get()));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -51,12 +51,12 @@ public class TreesTest {
     SubTreesParser parser = new SubTreesParser();
     
     Optional<ASTRoot> tree = parser.parse(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(tree.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(tree.isPresent());
     
     // compute and check result
-    assertEquals(6, leafCount(tree.get()));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(6, leafCount(tree.get()));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**

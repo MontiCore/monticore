@@ -7,16 +7,15 @@ import de.monticore.literals.mccommonliterals._ast.ASTCharLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-
 public class CharLiteralsTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -26,10 +25,10 @@ public class CharLiteralsTest {
   
   private void checkCharLiteral(char c, String s) throws IOException {
       ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
-      assertTrue(lit instanceof ASTCharLiteral);
-      assertEquals(c, ((ASTCharLiteral) lit).getValue());
+      Assertions.assertTrue(lit instanceof ASTCharLiteral);
+      Assertions.assertEquals(c, ((ASTCharLiteral) lit).getValue());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -56,7 +55,7 @@ public class CharLiteralsTest {
       checkCharLiteral('\uffff', "'\\uffff'");
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
     
   }

@@ -5,9 +5,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.testcommonexpressions.TestCommonExpressionsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class SubExprNameExtractionResultTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -41,8 +41,8 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprListAfter = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(1, subExprListAfter.size());
-    Assert.assertNotEquals(subExprListBefore, subExprListAfter);
+    Assertions.assertEquals(1, subExprListAfter.size());
+    Assertions.assertNotEquals(subExprListBefore, subExprListAfter);
   }
 
   @Test
@@ -58,10 +58,10 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> returnedSubExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(1, returnedSubExprList.size());
-    Assert.assertEquals(nameToInsert, returnedSubExprList.get(0).getExpression());
-    Assert.assertEquals("a", returnedSubExprList.get(0).getName().orElse("no name inserted"));
-    Assert.assertEquals(subExprList, returnedSubExprList);
+    Assertions.assertEquals(1, returnedSubExprList.size());
+    Assertions.assertEquals(nameToInsert, returnedSubExprList.get(0).getExpression());
+    Assertions.assertEquals("a", returnedSubExprList.get(0).getName().orElse("no name inserted"));
+    Assertions.assertEquals(subExprList, returnedSubExprList);
   }
 
   @Test
@@ -75,9 +75,9 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(1, subExprList.size());
-    Assert.assertEquals(expr, subExprList.get(0).getExpression());
-    Assert.assertFalse(subExprList.get(0).getName().isPresent());
+    Assertions.assertEquals(1, subExprList.size());
+    Assertions.assertEquals(expr, subExprList.get(0).getExpression());
+    Assertions.assertFalse(subExprList.get(0).getName().isPresent());
   }
 
   @Test
@@ -92,13 +92,13 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(2, subExprList.size());
+    Assertions.assertEquals(2, subExprList.size());
 
-    Assert.assertEquals(newExpr, subExprList.get(0).getExpression());
-    Assert.assertFalse(subExprList.get(0).getName().isPresent());
+    Assertions.assertEquals(newExpr, subExprList.get(0).getExpression());
+    Assertions.assertFalse(subExprList.get(0).getName().isPresent());
 
-    Assert.assertEquals(oldExpr, subExprList.get(1).getExpression());
-    Assert.assertEquals("a", subExprList.get(1).getName().orElse("no name inserted"));
+    Assertions.assertEquals(oldExpr, subExprList.get(1).getExpression());
+    Assertions.assertEquals("a", subExprList.get(1).getName().orElse("no name inserted"));
   }
 
   @Test
@@ -113,13 +113,13 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(2, subExprList.size());
+    Assertions.assertEquals(2, subExprList.size());
 
-    Assert.assertEquals(newExpr, subExprList.get(0).getExpression());
-    Assert.assertFalse(subExprList.get(0).getName().isPresent());
+    Assertions.assertEquals(newExpr, subExprList.get(0).getExpression());
+    Assertions.assertFalse(subExprList.get(0).getName().isPresent());
 
-    Assert.assertEquals(oldExpr, subExprList.get(1).getExpression());
-    Assert.assertFalse(subExprList.get(1).getName().isPresent());
+    Assertions.assertEquals(oldExpr, subExprList.get(1).getExpression());
+    Assertions.assertFalse(subExprList.get(1).getName().isPresent());
   }
 
   @Test
@@ -134,9 +134,9 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(1, subExprList.size());
-    Assert.assertEquals(expr, subExprList.get(0).getExpression());
-    Assert.assertEquals("a", subExprList.get(0).getName().orElse("no name inserted"));
+    Assertions.assertEquals(1, subExprList.size());
+    Assertions.assertEquals(expr, subExprList.get(0).getExpression());
+    Assertions.assertEquals("a", subExprList.get(0).getName().orElse("no name inserted"));
   }
 
   @Test
@@ -150,9 +150,9 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(1, subExprList.size());
-    Assert.assertEquals(expr, subExprList.get(0).getExpression());
-    Assert.assertEquals("a", subExprList.get(0).getName().orElse("no name inserted"));
+    Assertions.assertEquals(1, subExprList.size());
+    Assertions.assertEquals(expr, subExprList.get(0).getExpression());
+    Assertions.assertEquals("a", subExprList.get(0).getName().orElse("no name inserted"));
   }
 
   @Test
@@ -169,13 +169,13 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(2, subExprList.size());
+    Assertions.assertEquals(2, subExprList.size());
 
-    Assert.assertEquals(newExpr, subExprList.get(0).getExpression());
-    Assert.assertEquals("b", subExprList.get(0).getName().orElse("no name inserted"));
+    Assertions.assertEquals(newExpr, subExprList.get(0).getExpression());
+    Assertions.assertEquals("b", subExprList.get(0).getName().orElse("no name inserted"));
 
-    Assert.assertEquals(oldExpr, subExprList.get(1).getExpression());
-    Assert.assertEquals("a", subExprList.get(1).getName().orElse("no name inserted"));
+    Assertions.assertEquals(oldExpr, subExprList.get(1).getExpression());
+    Assertions.assertEquals("a", subExprList.get(1).getName().orElse("no name inserted"));
   }
 
   @Test
@@ -192,13 +192,13 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(2, subExprList.size());
+    Assertions.assertEquals(2, subExprList.size());
 
-    Assert.assertEquals(expr, subExprList.get(0).getExpression());
-    Assert.assertEquals("b", subExprList.get(0).getName().orElse("no name inserted"));
+    Assertions.assertEquals(expr, subExprList.get(0).getExpression());
+    Assertions.assertEquals("b", subExprList.get(0).getName().orElse("no name inserted"));
 
-    Assert.assertEquals(dummyExprNotToAlter, subExprList.get(1).getExpression());
-    Assert.assertFalse(subExprList.get(1).getName().isPresent());
+    Assertions.assertEquals(dummyExprNotToAlter, subExprList.get(1).getExpression());
+    Assertions.assertFalse(subExprList.get(1).getName().isPresent());
   }
 
   @Test
@@ -215,13 +215,13 @@ public class SubExprNameExtractionResultTest {
 
     // Then
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
-    Assert.assertEquals(2, subExprList.size());
+    Assertions.assertEquals(2, subExprList.size());
 
-    Assert.assertEquals(expr, subExprList.get(0).getExpression());
-    Assert.assertEquals("b", subExprList.get(0).getName().orElse("no name inserted"));
+    Assertions.assertEquals(expr, subExprList.get(0).getExpression());
+    Assertions.assertEquals("b", subExprList.get(0).getName().orElse("no name inserted"));
 
-    Assert.assertEquals(dummyExprNotToAlter, subExprList.get(1).getExpression());
-    Assert.assertFalse(subExprList.get(1).getName().isPresent());
+    Assertions.assertEquals(dummyExprNotToAlter, subExprList.get(1).getExpression());
+    Assertions.assertFalse(subExprList.get(1).getName().isPresent());
   }
 
   @Test
@@ -233,7 +233,7 @@ public class SubExprNameExtractionResultTest {
     Optional<List<ExprToNamePair>> subExprList = extractionResult.getNamePartsIfValid();
 
     // Then
-    Assert.assertFalse(subExprList.isPresent());
+    Assertions.assertFalse(subExprList.isPresent());
   }
 
   @Test
@@ -253,7 +253,7 @@ public class SubExprNameExtractionResultTest {
     Optional<List<ExprToNamePair>> subExprList = extractionResult.getNamePartsIfValid();
 
     // Then
-    Assert.assertFalse(subExprList.isPresent());
+    Assertions.assertFalse(subExprList.isPresent());
   }
 
   @Test
@@ -271,14 +271,14 @@ public class SubExprNameExtractionResultTest {
     Optional<List<ExprToNamePair>> subExprList = extractionResult.getNamePartsIfValid();
 
     // Then
-    Assert.assertTrue(subExprList.isPresent());
-    Assert.assertEquals(2, subExprList.get().size());
+    Assertions.assertTrue(subExprList.isPresent());
+    Assertions.assertEquals(2, subExprList.get().size());
 
-    Assert.assertEquals(bExpr, subExprList.get().get(0).getExpression());
-    Assert.assertEquals("b", subExprList.get().get(0).getName());
+    Assertions.assertEquals(bExpr, subExprList.get().get(0).getExpression());
+    Assertions.assertEquals("b", subExprList.get().get(0).getName());
 
-    Assert.assertEquals(aExpr, subExprList.get().get(1).getExpression());
-    Assert.assertEquals("a", subExprList.get().get(1).getName());
+    Assertions.assertEquals(aExpr, subExprList.get().get(1).getExpression());
+    Assertions.assertEquals("a", subExprList.get().get(1).getName());
   }
 
   @Test
@@ -290,7 +290,7 @@ public class SubExprNameExtractionResultTest {
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
 
     // Then
-    Assert.assertTrue(subExprList.isEmpty());
+    Assertions.assertTrue(subExprList.isEmpty());
   }
 
   @Test
@@ -309,15 +309,15 @@ public class SubExprNameExtractionResultTest {
     List<ExprToOptNamePair> subExprList = extractionResult.getNamePartsRaw();
 
     // Then
-    Assert.assertEquals(3, subExprList.size());
+    Assertions.assertEquals(3, subExprList.size());
 
-    Assert.assertEquals(cExpr, subExprList.get(0).getExpression());
-    Assert.assertEquals(bExpr, subExprList.get(1).getExpression());
-    Assert.assertEquals(aExpr, subExprList.get(2).getExpression());
+    Assertions.assertEquals(cExpr, subExprList.get(0).getExpression());
+    Assertions.assertEquals(bExpr, subExprList.get(1).getExpression());
+    Assertions.assertEquals(aExpr, subExprList.get(2).getExpression());
 
-    Assert.assertEquals("c", subExprList.get(0).getName().orElse("no name was inserted"));
-    Assert.assertFalse(subExprList.get(1).getName().isPresent());
-    Assert.assertEquals("a", subExprList.get(2).getName().orElse("no name was inserted"));
+    Assertions.assertEquals("c", subExprList.get(0).getName().orElse("no name was inserted"));
+    Assertions.assertFalse(subExprList.get(1).getName().isPresent());
+    Assertions.assertEquals("a", subExprList.get(2).getName().orElse("no name was inserted"));
   }
 
   @Test
@@ -329,7 +329,7 @@ public class SubExprNameExtractionResultTest {
     Optional<String> lastName = extractionResult.getLastName();
 
     // Then
-    Assert.assertFalse(lastName.isPresent());
+    Assertions.assertFalse(lastName.isPresent());
   }
 
   @Test
@@ -346,7 +346,7 @@ public class SubExprNameExtractionResultTest {
     Optional<String> lastName = extractionResult.getLastName();
 
     // Then
-    Assert.assertFalse(lastName.isPresent());
+    Assertions.assertFalse(lastName.isPresent());
   }
 
   @Test
@@ -363,8 +363,8 @@ public class SubExprNameExtractionResultTest {
     Optional<String> lastName = extractionResult.getLastName();
 
     // Then
-    Assert.assertTrue(lastName.isPresent());
-    Assert.assertEquals("a", lastName.get());
+    Assertions.assertTrue(lastName.isPresent());
+    Assertions.assertEquals("a", lastName.get());
   }
 
   @Test
@@ -376,7 +376,7 @@ public class SubExprNameExtractionResultTest {
     boolean resultIsValidName = extractionResult.resultIsValidName();
 
     // Then
-    Assert.assertFalse(resultIsValidName);
+    Assertions.assertFalse(resultIsValidName);
   }
 
   @Test
@@ -395,7 +395,7 @@ public class SubExprNameExtractionResultTest {
     boolean resultIsValidName = extractionResult.resultIsValidName();
 
     // Then
-    Assert.assertFalse(resultIsValidName);
+    Assertions.assertFalse(resultIsValidName);
   }
 
   @Test
@@ -413,7 +413,7 @@ public class SubExprNameExtractionResultTest {
     boolean resultIsValidName = extractionResult.resultIsValidName();
 
     // Then
-    Assert.assertTrue(resultIsValidName);
+    Assertions.assertTrue(resultIsValidName);
   }
 
   @Test
@@ -437,14 +437,14 @@ public class SubExprNameExtractionResultTest {
     // Then
     List<ExprToOptNamePair> originalExpressions = originalResult.getNamePartsRaw();
     List<ExprToOptNamePair> copiedSubExpressions = copiedResult.getNamePartsRaw();
-    Assert.assertNotEquals(originalExpressions, copiedSubExpressions);
+    Assertions.assertNotEquals(originalExpressions, copiedSubExpressions);
 
-    Assert.assertEquals(3, copiedSubExpressions.size());
-    Assert.assertEquals(cExpr, copiedSubExpressions.get(0).getExpression());
-    Assert.assertEquals(bExpr, copiedSubExpressions.get(1).getExpression());
-    Assert.assertEquals(aExpr, copiedSubExpressions.get(2).getExpression());
+    Assertions.assertEquals(3, copiedSubExpressions.size());
+    Assertions.assertEquals(cExpr, copiedSubExpressions.get(0).getExpression());
+    Assertions.assertEquals(bExpr, copiedSubExpressions.get(1).getExpression());
+    Assertions.assertEquals(aExpr, copiedSubExpressions.get(2).getExpression());
 
-    Assert.assertEquals(1, originalExpressions.size());
-    Assert.assertEquals(dExpr, originalExpressions.get(0).getExpression());
+    Assertions.assertEquals(1, originalExpressions.size());
+    Assertions.assertEquals(dExpr, originalExpressions.get(0).getExpression());
   }
 }

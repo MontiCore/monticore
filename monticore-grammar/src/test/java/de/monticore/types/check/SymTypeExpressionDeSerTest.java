@@ -13,16 +13,15 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
-import static org.junit.Assert.*;
 
 public class SymTypeExpressionDeSerTest {
   // setup of objects (unchanged during tests)
@@ -79,7 +78,7 @@ public class SymTypeExpressionDeSerTest {
 
   SymTypeOfRegEx teRegEx1;
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -223,15 +222,15 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
     // then deserialize it
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
     // and assert that the serialized and deserialized symtype expression equals the one before
-    assertEquals(expr.print(), deserialized.print());
-    assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
     if (!(deserialized instanceof SymTypeOfWildcard)
         && !(deserialized instanceof SymTypeOfRegEx)) {
       TypeSymbol expectedTS = deserialized.getTypeInfo();
       TypeSymbol actualTS = expr.getTypeInfo();
-      assertEquals(expectedTS.getName(), actualTS.getName());
+      Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
     }
   }
 
@@ -241,13 +240,13 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
 
-    assertEquals(expr.print(), deserialized.print());
-    assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
   protected void performRoundTripSerializationSymTypeOfFunction(SymTypeOfFunction expr) {
@@ -256,13 +255,13 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
 
-    assertEquals(expr.print(), deserialized.print());
-    assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
   protected void performRoundTripSerializationSymTypeOfObject(SymTypeOfObject expr) {
@@ -271,13 +270,13 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
 
-    assertEquals(expr.print(), deserialized.print());
-    assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
   protected void performRoundTripSerializationSymTypeVariable(SymTypeVariable expr) {
@@ -286,13 +285,13 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
 
-    assertEquals(expr.print(), deserialized.print());
-    assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
   protected void performRoundTripSerializationSymTypeArray(SymTypeArray expr) {
@@ -301,13 +300,13 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
 
-    assertEquals(expr.print(), deserialized.print());
-    assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
 
     //assertTrue(Log.getFindings().isEmpty());
   }
@@ -318,13 +317,13 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
 
-    assertEquals(expr.print(), deserialized.print());
-    assertEquals(expr.printAsJson(), deserialized.printAsJson());
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
   protected void performRoundTripSerializationSymTypeOfUnion(SymTypeOfUnion expr) {
@@ -333,13 +332,13 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
 
-    assertTrue(expr.deepEquals(deserialized));
-    assertEquals(deser.serialize(expr), deser.serialize((SymTypeOfUnion) deserialized));
+    Assertions.assertTrue(expr.deepEquals(deserialized));
+    Assertions.assertEquals(deser.serialize(expr), deser.serialize((SymTypeOfUnion) deserialized));
     TypeSymbol expectedTS = deserialized.getTypeInfo();
     TypeSymbol actualTS = deserialized.getTypeInfo();
-    assertEquals(expectedTS.getName(), actualTS.getName());
+    Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
   protected void performRoundTripSerializationSymTypeOfRegEx(SymTypeOfRegEx expr) {
@@ -348,10 +347,10 @@ public class SymTypeExpressionDeSerTest {
     String serialized = deser.serialize(expr);
 
     SymTypeExpression deserialized = deser.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
 
-    assertTrue(expr.deepEquals(deserialized));
-    assertEquals(deser.serialize(expr), deser.serialize((SymTypeOfRegEx) deserialized));
+    Assertions.assertTrue(expr.deepEquals(deserialized));
+    Assertions.assertEquals(deser.serialize(expr), deser.serialize((SymTypeOfRegEx) deserialized));
   }
 
   @Test
@@ -391,15 +390,15 @@ public class SymTypeExpressionDeSerTest {
 
     // then deserialize it
     SymTypeExpression loaded = deser.deserialize(serialized);
-    assertNotNull(loaded);
+    Assertions.assertNotNull(loaded);
     // and assert that the serialized and deserialized symtype expression equals the one before
-    assertEquals(expr.print(), loaded.print());
-    assertEquals(expr.printAsJson(), loaded.printAsJson());
+    Assertions.assertEquals(expr.print(), loaded.print());
+    Assertions.assertEquals(expr.printAsJson(), loaded.printAsJson());
     if (!(loaded instanceof SymTypeOfWildcard)
         && !(loaded instanceof SymTypeOfRegEx)) {
       TypeSymbol expectedTS = loaded.getTypeInfo();
       TypeSymbol actualTS = expr.getTypeInfo();
-      assertEquals(expectedTS.getName(), actualTS.getName());
+      Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
     }
 
     // usual member
@@ -410,7 +409,7 @@ public class SymTypeExpressionDeSerTest {
     //produce a fake JSON object from the serialized member and parse this
     JsonObject json = JsonParser.parseJsonObject(printer.getContent());
     SymTypeExpression deserialized = SymTypeExpressionDeSer.deserializeMember("foo", json);
-    assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.print(), deserialized.print());
 
     // optional member that is present
     printer = new JsonPrinter();
@@ -420,8 +419,8 @@ public class SymTypeExpressionDeSerTest {
     json = JsonParser.parseJsonObject(printer.getContent());
     Optional<SymTypeExpression> deserializedOpt = SymTypeExpressionDeSer
         .deserializeOptionalMember("foo", json);
-    assertTrue(deserializedOpt.isPresent());
-    assertEquals(expr.print(), deserializedOpt.get().print());
+    Assertions.assertTrue(deserializedOpt.isPresent());
+    Assertions.assertEquals(expr.print(), deserializedOpt.get().print());
 
     // optional member that is empty
     printer = new JsonPrinter(true);
@@ -430,7 +429,7 @@ public class SymTypeExpressionDeSerTest {
     printer.endObject();
     json = JsonParser.parseJsonObject(printer.getContent());
     deserializedOpt = SymTypeExpressionDeSer.deserializeOptionalMember("foo", json);
-    assertTrue(!deserializedOpt.isPresent());
+    Assertions.assertTrue(!deserializedOpt.isPresent());
 
     // list member that is empty
     printer = new JsonPrinter(true);
@@ -440,7 +439,7 @@ public class SymTypeExpressionDeSerTest {
     json = JsonParser.parseJsonObject(printer.getContent());
     List<SymTypeExpression> deserializedList = SymTypeExpressionDeSer
         .deserializeListMember("foo", json);
-    assertEquals(0, deserializedList.size());
+    Assertions.assertEquals(0, deserializedList.size());
 
     // list member with single element
     printer = new JsonPrinter();
@@ -449,8 +448,8 @@ public class SymTypeExpressionDeSerTest {
     printer.endObject();
     json = JsonParser.parseJsonObject(printer.getContent());
     deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json);
-    assertEquals(1, deserializedList.size());
-    assertEquals(expr.print(), deserializedList.get(0).print());
+    Assertions.assertEquals(1, deserializedList.size());
+    Assertions.assertEquals(expr.print(), deserializedList.get(0).print());
 
     // list member with two elements
     printer = new JsonPrinter();
@@ -459,9 +458,9 @@ public class SymTypeExpressionDeSerTest {
     printer.endObject();
     json = JsonParser.parseJsonObject(printer.getContent());
     deserializedList = SymTypeExpressionDeSer.deserializeListMember("foo", json);
-    assertEquals(2, deserializedList.size());
-    assertEquals(expr.print(), deserializedList.get(0).print());
-    assertEquals(expr.print(), deserializedList.get(1).print());
+    Assertions.assertEquals(2, deserializedList.size());
+    Assertions.assertEquals(expr.print(), deserializedList.get(0).print());
+    Assertions.assertEquals(expr.print(), deserializedList.get(1).print());
   }
 
   @Test
@@ -470,38 +469,38 @@ public class SymTypeExpressionDeSerTest {
     String invalidJsonForSerializing2 = "{\n\t\"symTypeExpression\": {\n\t\t\"foo\":\"bar\", \n\t\t\"foo2\":\"bar2\"\n\t}\n}";
 
     SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823FE"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823FE"));
 
     SymTypeExpressionDeSer.getInstance().deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823FE"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823FE"));
 
     SymTypeOfGenericsDeSer symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
     symTypeOfGenericsDeSer.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F6"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F6"));
 
     SymTypeArrayDeSer symTypeArrayDeSer = new SymTypeArrayDeSer();
     symTypeArrayDeSer.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F2"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F2"));
 
     SymTypeOfObjectDeSer symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
     symTypeOfObjectDeSer.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F4"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F4"));
 
     SymTypeVariableDeSer symTypeVariableDeSer = new SymTypeVariableDeSer();
     symTypeVariableDeSer.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F5"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F5"));
 
     SymTypePrimitiveDeSer symTypePrimitiveDeser = new SymTypePrimitiveDeSer();
     symTypePrimitiveDeser.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F1"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x823F1"));
 
     SymTypeOfUnionDeSer symTypeOfUnionDeser = new SymTypeOfUnionDeSer();
     symTypeOfUnionDeser.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x9E2F7"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x9E2F7"));
 
     SymTypeOfRegExDeSer symTypeOfRegExDeSer = new SymTypeOfRegExDeSer();
     symTypeOfRegExDeSer.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x9E2F9"));
+    Assertions.assertTrue(Log.getFindings().get(Log.getFindings().size() - 1).getMsg().startsWith("0x9E2F9"));
   }
 
 }

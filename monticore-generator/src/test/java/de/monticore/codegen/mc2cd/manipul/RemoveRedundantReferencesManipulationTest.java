@@ -7,12 +7,10 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,14 +23,14 @@ public class RemoveRedundantReferencesManipulationTest extends TranslationTestCa
         TransformationHelper.createType("ASTReference"), "name",
         TransformationHelper.createType("java.util.List", "ASTReference"));
     
-    assertEquals(2, cdClass.getCDAttributeList().size());
+    Assertions.assertEquals(2, cdClass.getCDAttributeList().size());
     
     cdClass.setCDAttributeList(new RemoveRedundantAttributesManipulation()
         .removeRedundantAttributes(cdClass.getCDAttributeList()));
     
-    assertEquals(1, cdClass.getCDAttributeList().size());
+    Assertions.assertEquals(1, cdClass.getCDAttributeList().size());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTCDClass setupCDClass(String firstReferenceName, ASTMCType firstReferenceType,

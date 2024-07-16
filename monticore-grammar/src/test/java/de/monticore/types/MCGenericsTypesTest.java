@@ -13,19 +13,17 @@ import de.monticore.types.mcfullgenerictypestest.MCFullGenericTypesTestMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class MCGenericsTypesTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -47,14 +45,14 @@ public class MCGenericsTypesTest {
       // .parseType(primitive);
 
       Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
-      assertNotNull(type);
-      assertTrue(type.isPresent());
-      assertTrue(type.get() instanceof ASTMCObjectType);
+      Assertions.assertNotNull(type);
+      Assertions.assertTrue(type.isPresent());
+      Assertions.assertTrue(type.get() instanceof ASTMCObjectType);
       System.out.println(type.get().getClass());
       ASTMCObjectType t = (ASTMCObjectType) type.get();
     }
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -72,14 +70,14 @@ public class MCGenericsTypesTest {
 
       Optional<ASTMCType> type = genericTypesTestParser.parse_StringMCType(testType);
 
-      assertNotNull(type);
-      assertTrue(type.isPresent());
-      assertTrue(type.get() instanceof ASTMCArrayType);
+      Assertions.assertNotNull(type);
+      Assertions.assertTrue(type.isPresent());
+      Assertions.assertTrue(type.get() instanceof ASTMCArrayType);
       ASTMCArrayType t = (ASTMCArrayType) type.get();
-      assertEquals(2,t.getDimensions());
+      Assertions.assertEquals(2, t.getDimensions());
     }
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -88,12 +86,12 @@ public class MCGenericsTypesTest {
     MCFullGenericTypesTestMill.init();
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     Optional<ASTMCType> type = parser.parse_StringMCType("java.util.List<A>.Set<C>.some.Collection<B>");
-    assertFalse(parser.hasErrors());
-    assertNotNull(type);
-    assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCMultipleGenericType);
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertNotNull(type);
+    Assertions.assertTrue(type.isPresent());
+    Assertions.assertTrue(type.get() instanceof ASTMCMultipleGenericType);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -102,12 +100,12 @@ public class MCGenericsTypesTest {
     MCFullGenericTypesTestMill.init();
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("? extends java.util.Set<Foo>");
-    assertFalse(parser.hasErrors());
-    assertNotNull(type);
-    assertTrue(type.isPresent());
-    assertTrue(type.get() instanceof ASTMCWildcardTypeArgument);
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertNotNull(type);
+    Assertions.assertTrue(type.isPresent());
+    Assertions.assertTrue(type.get() instanceof ASTMCWildcardTypeArgument);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -128,19 +126,19 @@ public class MCGenericsTypesTest {
       // checks
       for (String teststring : testdata.keySet()) {
         Optional<ASTMCType> type = parser.parse_StringMCType(teststring);
-        assertTrue(type.isPresent());
+        Assertions.assertTrue(type.isPresent());
         // check typing and dimension:
-        assertTrue(type.get() instanceof ASTMCArrayType);
+        Assertions.assertTrue(type.get() instanceof ASTMCArrayType);
         ASTMCArrayType arrayType = (ASTMCArrayType) type.get();
-        assertEquals(testdata.get(teststring).intValue(), arrayType.getDimensions());
-        assertTrue(arrayType.getMCType() instanceof ASTMCObjectType);
+        Assertions.assertEquals(testdata.get(teststring).intValue(), arrayType.getDimensions());
+        Assertions.assertTrue(arrayType.getMCType() instanceof ASTMCObjectType);
       }
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   
@@ -186,13 +184,13 @@ public class MCGenericsTypesTest {
 
       Optional<ASTMCType> type = genericTypesTestParser.parse_StringMCType(testType);
 
-      assertNotNull(type);
-      assertTrue(type.isPresent());
+      Assertions.assertNotNull(type);
+      Assertions.assertTrue(type.isPresent());
       //assertTrue(type.get() instanceof ASTMCMultipleGenericType);
 
     }
     
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

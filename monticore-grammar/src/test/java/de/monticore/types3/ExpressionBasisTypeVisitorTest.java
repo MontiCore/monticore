@@ -3,8 +3,8 @@ package de.monticore.types3;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ import static de.monticore.types3.util.DefsTypesForTests.variable;
 
 public class ExpressionBasisTypeVisitorTest extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void setupForEach() {
     setupValues();
     setupOverloadedFuncs();

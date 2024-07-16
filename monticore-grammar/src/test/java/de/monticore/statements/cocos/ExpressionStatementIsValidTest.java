@@ -18,9 +18,9 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class ExpressionStatementIsValidTest {
 
   protected TestMCCommonStatementsCoCoChecker checker;
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -69,7 +69,7 @@ public class ExpressionStatementIsValidTest {
     ast.orElseThrow().accept(traverser);
 
     checker.checkAll(ast.orElseThrow());
-    assertTrue(Log.getFindings().toString(), Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().toString());
   }
 
   public void checkInvalid(String expressionString) throws IOException {
@@ -82,7 +82,7 @@ public class ExpressionStatementIsValidTest {
     ast.orElseThrow().accept(traverser);
 
     checker.checkAll(ast.orElseThrow());
-    assertFalse(Log.getFindings().toString(), Log.getFindings().isEmpty());
+    Assertions.assertFalse(Log.getFindings().isEmpty(), Log.getFindings().toString());
   }
 
   @Test

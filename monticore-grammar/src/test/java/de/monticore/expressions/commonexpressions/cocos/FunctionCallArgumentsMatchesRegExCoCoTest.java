@@ -19,9 +19,10 @@ import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +33,7 @@ import static junit.framework.TestCase.assertTrue;
 
 public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -109,7 +110,7 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
   }
 
   @Test
-  @Ignore("There is no implementation for regEx type checking yet.")
+  @Disabled("There is no implementation for regEx type checking yet.")
   public void testCorrectFunctionCallMultipleMethodsMultipleParameters() throws IOException {
     testValid("f(\"hello\", \"a\")", List.of(List.of("hello", "a|b"), List.of("hello", "a|b")), false);
     testValid("f(\"b\", \"ab\")", List.of(List.of("a|b", "a[b]"), List.of("a?[b]", "a[bc]d?")), false);
@@ -141,17 +142,15 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
   protected void testValid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
-    assertTrue(Log.getFindings().stream()
+    Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
             .map(Finding::buildMsg)
-            .collect(Collectors.joining(System.lineSeparator())),
-        Log.getFindings().isEmpty()
-    );
+            .collect(Collectors.joining(System.lineSeparator())));
     Log.clearFindings();
   }
 
   protected void testInvalid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
-    assertTrue(Log.getFindings().stream().anyMatch(
+    Assertions.assertTrue(Log.getFindings().stream().anyMatch(
         f -> f.getMsg().startsWith("0xFD725")
     ));
     Log.clearFindings();
@@ -181,11 +180,11 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
     Optional<ASTExpression> optExpr = CombineExpressionsWithLiteralsMill
         .parser().parse_StringExpression(expression);
-    assertTrue(optExpr.isPresent());
+    Assertions.assertTrue(optExpr.isPresent());
 
     ASTExpression expr = optExpr.get();
     generateScopes(expr);
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
     getChecker(derive).checkAll(expr);
   }
 

@@ -12,10 +12,9 @@ import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressions
 import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCSGT4Grammar;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
    * literals/MCLiteralsBasis.mc4
    */
 
-  @Before
+  @BeforeEach
   public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -89,9 +88,9 @@ public class DeriveSymTypeOfLambdaExpressionsTest extends DeriveSymTypeAbstractT
     setupTypeCheck();
     ASTExpression astex = parseAndGenerateSymbolTable(expression);
 
-    assertEquals(expectedType, getTypeCalculator().typeOf(astex).print());
+    Assertions.assertEquals(expectedType, getTypeCalculator().typeOf(astex).print());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   /*--------------------------------------------------- TESTS ---------------------------------------------------------*/

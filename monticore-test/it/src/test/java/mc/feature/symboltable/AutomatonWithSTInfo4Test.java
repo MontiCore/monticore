@@ -8,9 +8,9 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo4.AutomatonWithSTInfo4Mill;
 import mc.feature.symboltable.automatonwithstinfo4._ast.ASTState;
 import mc.feature.symboltable.automatonwithstinfo4._symboltable.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,7 +18,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -31,11 +31,11 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
   @Test
   public void test() {
     AutomatonElementSymbol automatonElementSymbol = new AutomatonElementSymbol("A");
-    assertFalse(automatonElementSymbol instanceof IScopeSpanningSymbol);
+    Assertions.assertFalse(automatonElementSymbol instanceof IScopeSpanningSymbol);
     AutomatonElementSymbolSurrogate automatonElementSymbolSurrogate;
     AutomatonWithSTInfo4Scope automatonScope;
     AutomatonSymbol automatonSymbol= new AutomatonSymbol("A");
-    assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
+    Assertions.assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo4ScopesGenitor automatonWithSTInfo4SymbolTableCreator;
     ASTState s = AutomatonWithSTInfo4Mill.stateBuilder().setName("S").build();
@@ -43,7 +43,7 @@ public class AutomatonWithSTInfo4Test extends GeneratorIntegrationsTest {
     AutomatonElementSymbol aESymbol = s.getSymbol();
   
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

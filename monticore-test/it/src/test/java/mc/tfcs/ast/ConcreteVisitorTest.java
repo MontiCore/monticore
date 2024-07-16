@@ -8,16 +8,16 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTAutomaton;
 import mc.feature.featuredsl._visitor.FeatureDSLTraverser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.Assert.assertTrue;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.Test;
 
 public class ConcreteVisitorTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -38,6 +38,6 @@ public class ConcreteVisitorTest extends GeneratorIntegrationsTest {
     traverser.setFeatureDSLHandler(h);
     
     a.accept(traverser);
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

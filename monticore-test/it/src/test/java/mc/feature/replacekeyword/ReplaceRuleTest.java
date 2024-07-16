@@ -7,8 +7,9 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.replacerule.replacerule2.ReplaceRule2Mill;
 import mc.feature.replacerule.replacerule2._parser.ReplaceRule2Parser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ReplaceRuleTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -29,38 +30,38 @@ public class ReplaceRuleTest extends GeneratorIntegrationsTest {
 
     // Replace keyword
     parser.parse_StringA("a1 Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
 
     parser.parse_StringA("A Foo");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
 
     // Add keyword in combination with nokeyword
     parser.parse_StringB("BLA Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
 
     parser.parse_StringB("bla Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
 
     // Replace keyword in combination with key
     parser.parse_StringC("bla_c Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
 
     parser.parse_StringC("BLA_C Foo");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
 
     // Replace keyword in combination with splittoken
     parser.parse_StringD("}} Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
 
     parser.parse_StringD(">> Foo");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
 
     // Add keyword in combination with token
     parser.parse_StringE("{{ Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
 
     parser.parse_StringE("<< Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
 
 
   }

@@ -2,15 +2,15 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class NoNestedGenericsInAdditionalAttributesTest extends CocoTest {
 
   public final String MESSAGE = " %srule does not allow the definition of nested generics. " +
       "Problem in grammar '%s', rule for '%s', with additional attribute: '%s'.";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new NoNestedGenericsInAdditionalAttributes());

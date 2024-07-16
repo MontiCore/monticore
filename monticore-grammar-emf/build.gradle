@@ -19,7 +19,9 @@ dependencies {
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.common:2.15.0'
-    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     testImplementation 'org.apache.groovy:groovy:4.0.2'
 }
 

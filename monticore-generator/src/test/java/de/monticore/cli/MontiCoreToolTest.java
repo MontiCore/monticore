@@ -8,10 +8,11 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -107,7 +108,7 @@ public class MontiCoreToolTest {
   public MontiCoreToolTest() throws IOException {
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -121,63 +122,63 @@ public class MontiCoreToolTest {
   public void testMontiCoreCLI() {
     new MontiCoreTool().run(simpleArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testMontiCoreDevLogCLI() {
     new MontiCoreTool().run(devLogArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testMontiCoreCustomLogCLI() {
     new MontiCoreTool().run(customLogArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMontiCoreCustomScriptCLI() {
     new MontiCoreTool().run(customScriptArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
     new MontiCoreTool().run(customEmfScriptArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testHelp() {
     new MontiCoreTool().run(help);
 
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
 }
-  @Ignore // It's not possible to switch off fail quick (Logger in CLI)
+  @Disabled // It's not possible to switch off fail quick (Logger in CLI)
   @Test
   public void testArgsWithNoGrammars() {
     new MontiCoreTool().run(argsWithNoGrammars);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -233,7 +234,7 @@ public class MontiCoreToolTest {
           diff.add(relPath1.toString());
         }
 
-        assertTrue("File does not exist \n\t" + f2.getAbsolutePath(), f2.isFile());
+        Assertions.assertTrue(f2.isFile(), "File does not exist \n\t" + f2.getAbsolutePath());
         /*assertTrue("Different output generating twice! \n" +
               "\t" + f1.getAbsolutePath() + "\n" +
               "\t" + f2.getAbsolutePath() + "\n",
@@ -242,12 +243,12 @@ public class MontiCoreToolTest {
       }
     }
     diff.forEach(s -> System.err.println("\t " + s));
-    assertTrue(diff.isEmpty());
+    Assertions.assertTrue(diff.isEmpty());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     Reporting.off();
   }

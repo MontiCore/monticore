@@ -10,21 +10,18 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 public class ExpressionValidTest extends CocoTest {
 
   protected ExpressionsBasisCoCoChecker checker;
 
-  @Before
+  @BeforeEach
   public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -38,19 +35,19 @@ public class ExpressionValidTest extends CocoTest {
   public void checkValid(String expressionString) throws IOException {
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> optAST = parser.parse_StringExpression(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertTrue(Log.getFindings().toString(), Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().toString());
   }
 
   public void checkInvalid(String expressionString) throws IOException {
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
     Optional<ASTExpression> optAST = parser.parse_StringExpression(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertFalse(Log.getFindings().isEmpty());
   }
 
   @Test

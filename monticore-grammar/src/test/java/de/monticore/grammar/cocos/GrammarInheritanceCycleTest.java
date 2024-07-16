@@ -6,8 +6,9 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.se_rwth.commons.logging.Finding;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertFalse;
 public class GrammarInheritanceCycleTest extends CocoTest {
 
   private final String MESSAGE = " The grammar A4023%s introduces an inheritance cycle.";
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new GrammarInheritanceCycle());
@@ -35,10 +36,10 @@ public class GrammarInheritanceCycleTest extends CocoTest {
     getFindings().clear();
     checker.checkAll(grammar.get());
 
-    assertFalse(getFindings().isEmpty());
-    assertEquals(1, getFindings().size());
+    Assertions.assertFalse(getFindings().isEmpty());
+    Assertions.assertEquals(1, getFindings().size());
     for (Finding f : getFindings()) {
-      assertEquals(format(ERROR_CODE + MESSAGE, ""), f.getMsg());
+      Assertions.assertEquals(format(ERROR_CODE + MESSAGE, ""), f.getMsg());
     }
   }
 
