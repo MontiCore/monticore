@@ -20,9 +20,10 @@ subprojects {
   apply plugin: 'jacoco'
 
   dependencies {
+    // Note: the dependencies are required, because this test does not yet use the transitive grammar dependencies
     implementation project(':monticore-runtime')
     implementation project(':monticore-grammar')
-    implementation project(path: ':monticore-grammar', configuration: 'trafo')
+    implementation project(path: ':monticore-grammar', configuration: 'trafoCompileClasspathForLegacyCompat')
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
@@ -31,6 +32,11 @@ subprojects {
       capabilities {
         requireCapability("de.monticore:monticore-grammar-grammars")
       }
+    }
+    grammar (project(path: ':monticore-grammar', configuration: 'trafoGrammarSymbolOutElements')) {
+      // Due to using the old MCGradle plugin here, no attributes filter the trafo artifacts
+      // and gradle is unsure whether to select runtimeElements or grammarSymbolOutElements
+      transitive(false)
     }
   }
 

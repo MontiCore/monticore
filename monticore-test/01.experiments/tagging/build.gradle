@@ -23,6 +23,8 @@ if (("true").equals(getProperty('genTagging'))) {
       script = "de/monticore/monticore_noreports.groovy" // noreports workflow script
     }
     genTag = true
+    dependsOn("generateMCGrammars")
+    symbolPathConfiguration.from(configurations.named("withGenGrammarSymbolDependencies"))
   }
   tasks.register("generateTagSchemaGrammars", MCGenTask) {
     var generateMCGrammars = tasks.named("generateMCGrammars", MCGenTask).get()
@@ -30,14 +32,16 @@ if (("true").equals(getProperty('genTagging'))) {
     outputDir = tagSchemaOutput
     modelPath.from(generateMCGrammars.getOutputDir()) // the directory hierarchy is required here
     if (findProperty("ci") != null) {
-      script = "de/monticore/monticore_noreports.groovy"
+      script = "de/monticore/monticore_noreports.groovy" // noreports workflow script
     }
+    dependsOn("generateMCGrammars")
+    symbolPathConfiguration.from(configurations.named("withGenGrammarSymbolDependencies"))
   }
   // define the withGen sourceSet
   sourceSets {
     withGen {
-      java.srcDirs += tagDefOutput
-      java.srcDirs += tagSchemaOutput
+      java.srcDirs += tasks.generateTagDefGrammars.getOutputDir()
+      java.srcDirs += tasks.generateTagSchemaGrammars.getOutputDir()
       compileClasspath += sourceSets.main.output
       runtimeClasspath += sourceSets.main.output
     }
@@ -51,9 +55,12 @@ if (("true").equals(getProperty('genTagging'))) {
   dependencies {
     withGenImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     withGenImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-    withGenImplementation project(path: ':monticore-grammar', configuration: 'tagging')
+    withGenRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    // monticore-grammar-tagging
+    withGenImplementation files(project(":monticore-grammar").sourceSets.tagging.output.classesDirs)
     withGenImplementation project(project.path)
+    withGenGrammarSymbolDependencies files(project(":monticore-grammar").layout.buildDirectory.dir("generated-sources/monticore/sourcecode"))
+    withGenGrammarSymbolDependencies files(project(":monticore-grammar").sourceSets.main.grammars.getSourceDirectories())
   }
 
   // Register a jUnit platform
