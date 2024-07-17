@@ -247,6 +247,6 @@ public class JsonLexer {
 
   protected static final String WHITESPACE_CHARACTERS = " \t\n\f\r";
 
-  protected static final String HEX_DIGITS = "0123456789abdefABCDEF";
+  protected static final String HEX_DIGITS = "0123456789abcdefABCDEF";
 
 }
