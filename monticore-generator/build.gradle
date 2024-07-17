@@ -64,6 +64,7 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     testImplementation 'org.mockito:mockito-core:4.5.1'
 
+  testImplementation gradleTestKit()
 }
 
 tasks.withType(JavaCompile) {
@@ -137,6 +138,10 @@ gradlePlugin.plugins {
     monticoreGenerator {
         id = "de.monticore.generator"
         implementationClass = 'de.monticore.gradle.MCGeneratorPlugin'
+    }
+    monticoreGeneratorWithTR {
+        id = "de.monticore.generator-withtr"
+        implementationClass = 'de.monticore.gradle.MCGeneratorWithTRPlugin'
     }
 }
 
