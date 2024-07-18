@@ -40,8 +40,7 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDM
   @Override
   public List<ASTCDMethod> decorate(ASTCDType input) {
     if (input.getName().endsWith(BuilderConstants.BUILDER_SUFFIX) ||
-        input.getName().startsWith("ASTConstants") ||
-        input.getName().endsWith("Literals")) {
+        input.getName().startsWith("ASTConstants")) {
       return new ArrayList<>();
     }
 
