@@ -19,7 +19,7 @@ import java.util.List;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
-public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDMethod>> {
+public class ASTEvaluateDecorator extends AbstractCreator<ASTCDClass, List<ASTCDMethod>> {
 
   protected final VisitorService visitorService;
 
@@ -32,13 +32,13 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDM
   public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astPackage = getPackage(input, decoratedCD, ASTConstants.AST_PACKAGE);
     astPackage.streamCDElements()
-        .filter(e -> e instanceof ASTCDClass || e instanceof ASTCDInterface)
-        .map(e -> (ASTCDType) e)
+        .filter(e -> e instanceof ASTCDClass)
+        .map(e -> (ASTCDClass) e)
         .forEach(t -> t.addAllCDMembers(decorate(t)));
   }
 
   @Override
-  public List<ASTCDMethod> decorate(ASTCDType input) {
+  public List<ASTCDMethod> decorate(ASTCDClass input) {
     if (input.getName().endsWith(BuilderConstants.BUILDER_SUFFIX) ||
         input.getName().startsWith("ASTConstants")) {
       return new ArrayList<>();
