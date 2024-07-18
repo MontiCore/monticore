@@ -12,8 +12,9 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class SynchronizedArgIsReftypeTest {
 
   protected TestMCSynchronizedStatementsCoCoChecker checker;
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -44,12 +45,12 @@ public class SynchronizedArgIsReftypeTest {
 
     TestMCSynchronizedStatementsParser parser = new TestMCSynchronizedStatementsParser();
     Optional<ASTSynchronizedStatement> optAST = parser.parse_StringSynchronizedStatement(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     ASTSynchronizedStatement ast = optAST.get();
     ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
     Log.getFindings().clear();
     checker.checkAll((ASTMCSynchronizedStatementsNode) optAST.get());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
 
   }
 
@@ -57,12 +58,12 @@ public class SynchronizedArgIsReftypeTest {
 
     TestMCSynchronizedStatementsParser parser = new TestMCSynchronizedStatementsParser();
     Optional<ASTSynchronizedStatement> optAST = parser.parse_StringSynchronizedStatement(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     ASTSynchronizedStatement ast = optAST.get();
     ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
     Log.getFindings().clear();
     checker.checkAll((ASTMCSynchronizedStatementsNode) optAST.get());
-    assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertFalse(Log.getFindings().isEmpty());
 
   }
 

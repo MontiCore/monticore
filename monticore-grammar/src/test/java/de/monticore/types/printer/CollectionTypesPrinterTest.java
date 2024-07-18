@@ -3,22 +3,20 @@ package de.monticore.types.printer;
 
 import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._ast.*;
-import de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesFullPrettyPrinter;
 import de.monticore.types.mccollectiontypestest.MCCollectionTypesTestMill;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class CollectionTypesPrinterTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,21 +34,21 @@ public class CollectionTypesPrinterTest {
     Optional<ASTMCOptionalType> astmcOptionalType = parser.parse_StringMCOptionalType("Optional<Character>");
     Optional<ASTMCMapType> astmcMapType = parser.parse_StringMCMapType("Map<String,String>");
 
-    assertFalse(parser.hasErrors());
-    assertTrue(astmcBasicTypeArgument.isPresent());
-    assertTrue(astmcPrimitiveTypeArgument.isPresent());
-    assertTrue(astmcListType.isPresent());
-    assertTrue(astmcSetType.isPresent());
-    assertTrue(astmcOptionalType.isPresent());
-    assertTrue(astmcMapType.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astmcBasicTypeArgument.isPresent());
+    Assertions.assertTrue(astmcPrimitiveTypeArgument.isPresent());
+    Assertions.assertTrue(astmcListType.isPresent());
+    Assertions.assertTrue(astmcSetType.isPresent());
+    Assertions.assertTrue(astmcOptionalType.isPresent());
+    Assertions.assertTrue(astmcMapType.isPresent());
 
-    assertEquals("java.util.List", MCCollectionTypesMill.prettyPrint(astmcBasicTypeArgument.get(), true));
-    assertEquals("int", MCCollectionTypesMill.prettyPrint(astmcPrimitiveTypeArgument.get(), true));
-    assertEquals("List<java.lang.String>", MCCollectionTypesMill.prettyPrint(astmcListType.get(), true));
-    assertEquals("Set<int>", MCCollectionTypesMill.prettyPrint(astmcSetType.get(), true));
-    assertEquals("Optional<Character>", MCCollectionTypesMill.prettyPrint(astmcOptionalType.get(), true));
-    assertEquals("Map<String,String>", MCCollectionTypesMill.prettyPrint(astmcMapType.get(), true));
+    Assertions.assertEquals("java.util.List", MCCollectionTypesMill.prettyPrint(astmcBasicTypeArgument.get(), true));
+    Assertions.assertEquals("int", MCCollectionTypesMill.prettyPrint(astmcPrimitiveTypeArgument.get(), true));
+    Assertions.assertEquals("List<java.lang.String>", MCCollectionTypesMill.prettyPrint(astmcListType.get(), true));
+    Assertions.assertEquals("Set<int>", MCCollectionTypesMill.prettyPrint(astmcSetType.get(), true));
+    Assertions.assertEquals("Optional<Character>", MCCollectionTypesMill.prettyPrint(astmcOptionalType.get(), true));
+    Assertions.assertEquals("Map<String,String>", MCCollectionTypesMill.prettyPrint(astmcMapType.get(), true));
 
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -8,17 +8,15 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-
 public class NullAndBooleanLiteralsTest {
   
-  @Before
+  @BeforeEach
   public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -30,13 +28,13 @@ public class NullAndBooleanLiteralsTest {
   public void testNullLiteral() {
     try {
       ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral("null");
-      assertTrue(lit instanceof ASTNullLiteral);
+      Assertions.assertTrue(lit instanceof ASTNullLiteral);
     }
     catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -44,18 +42,18 @@ public class NullAndBooleanLiteralsTest {
     try {
       // literal "true":
       ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral("true");
-      assertTrue(lit instanceof ASTBooleanLiteral);
-      assertTrue(((ASTBooleanLiteral) lit).getValue());
+      Assertions.assertTrue(lit instanceof ASTBooleanLiteral);
+      Assertions.assertTrue(((ASTBooleanLiteral) lit).getValue());
       
       // literal "false":
       lit = MCLiteralsTestHelper.getInstance().parseLiteral("false");
-      assertTrue(lit instanceof ASTBooleanLiteral);
-      assertFalse(((ASTBooleanLiteral) lit).getValue());
+      Assertions.assertTrue(lit instanceof ASTBooleanLiteral);
+      Assertions.assertFalse(((ASTBooleanLiteral) lit).getValue());
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

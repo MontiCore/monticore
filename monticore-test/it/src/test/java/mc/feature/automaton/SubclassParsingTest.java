@@ -10,18 +10,18 @@ import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.automaton.automaton._parser.AutomatonParser;
 import mc.feature.automaton.automaton._ast.ASTSubTransition;
 import mc.feature.automaton.automaton._ast.ASTTransition;
+import org.junit.jupiter.api.Test;
 
 public class SubclassParsingTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -33,9 +33,9 @@ public class SubclassParsingTest extends GeneratorIntegrationsTest {
     AutomatonParser parser = new AutomatonParser();
     
     Optional<ASTTransition> ast = parser.parseTransition(new StringReader("sub a -x> b;"));
-    assertTrue(ast.isPresent());
-    assertTrue(ast.get() instanceof ASTSubTransition);
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertTrue(ast.get() instanceof ASTSubTransition);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

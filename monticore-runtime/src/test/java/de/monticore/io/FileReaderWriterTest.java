@@ -12,10 +12,10 @@ import java.nio.file.Paths;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FileReaderWriterTest {
   
@@ -23,13 +23,13 @@ public class FileReaderWriterTest {
   
   String testContent = "Hello World";
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @After
+  @AfterEach
   public void tearDown() {
     try {
       Files.deleteIfExists(testPath);
@@ -46,8 +46,8 @@ public class FileReaderWriterTest {
   public void testFileHandler() {
     FileReaderWriter.init();
     FileReaderWriter.storeInFile(testPath, testContent);
-    assertEquals(testContent, FileReaderWriter.readFromFile(testPath));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(testContent, FileReaderWriter.readFromFile(testPath));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -11,17 +11,17 @@ import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.interfaces.sub._ast.ASTA;
 import mc.feature.interfaces.sub._parser.SubParser;
+import org.junit.jupiter.api.Test;
 
 public class InterfacesTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -33,10 +33,10 @@ public class InterfacesTest extends GeneratorIntegrationsTest {
     SubParser parser = new SubParser();    
     Optional<mc.feature.interfaces.sub._ast.ASTA> ast = parser.parseA(new StringReader("Hello Otto Mustermann"));
     
-    assertTrue(ast.get() instanceof ASTA);
+    Assertions.assertTrue(ast.get() instanceof ASTA);
     ASTA astA = ast.get();
-    assertNotNull(astA.getB());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertNotNull(astA.getB());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

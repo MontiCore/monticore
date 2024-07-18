@@ -5,11 +5,10 @@ package de.monticore.io;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -27,13 +26,13 @@ import static org.junit.Assert.assertTrue;
 
 public class FileFinderTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     Log.init();
     Log.enableFailQuick(false);
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     Log.clearFindings();
   }
@@ -48,9 +47,9 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     List<URL> files = find(mp, qualifiedModelName, fileExt);
-    assertEquals(4, files.size());
+    Assertions.assertEquals(4, files.size());
     List<String> absolutePath = files.stream().map(f ->f.toString()).collect(Collectors.toList());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -63,9 +62,9 @@ public class FileFinderTest {
     entries.add(Paths.get("src", "test", "resources"));
     MCPath mp = new MCPath(entries);
     Optional<URL> file = mp.find(qualifiedModelName, fileExt);
-    assertTrue(file.isPresent());
-    assertTrue(file.get().toString().endsWith("de/monticore/io/Model2.mc4"));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(file.isPresent());
+    Assertions.assertTrue(file.get().toString().endsWith("de/monticore/io/Model2.mc4"));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -79,7 +78,7 @@ public class FileFinderTest {
     MCPath mp = new MCPath(entries);
     Optional<URL> url = mp.find(qualifiedModelName, fileExt);
     assertFalse(url.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   private void assertFalse(boolean present) {
@@ -95,11 +94,11 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     List<URL> files = find(mp, qualifiedModelName, fileExt);
-    assertEquals(2, files.size());
+    Assertions.assertEquals(2, files.size());
     List<String> absolutePath = files.stream().map(f ->f.toString()).collect(Collectors.toList());
-    assertTrue(absolutePath.get(0).endsWith("de/monticore/io/Model1.cdsym"));
-    assertTrue(absolutePath.get(1).endsWith("de/monticore/io/Model1.cdsym"));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(absolutePath.get(0).endsWith("de/monticore/io/Model1.cdsym"));
+    Assertions.assertTrue(absolutePath.get(1).endsWith("de/monticore/io/Model1.cdsym"));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -113,7 +112,7 @@ public class FileFinderTest {
     MCPath mp = new MCPath(entries);
     Optional<URL> url = mp.find(qualifiedModelName, fileExt);
     assertFalse(url.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -126,9 +125,9 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     List<URL> files = find(mp, qualifiedModelName, fileExt);
-    assertEquals(4, files.size());
+    Assertions.assertEquals(4, files.size());
     List<String> absolutePath = files.stream().map(f ->f.toString()).collect(Collectors.toList());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
    }
 
   @Test
@@ -142,7 +141,7 @@ public class FileFinderTest {
     MCPath mp = new MCPath(entries);
     Optional<URL> url = mp.find(qualifiedModelName, fileExt);
     assertFalse(url.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -155,8 +154,8 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     List<URL> files = find(mp, qualifiedModelName, fileExt);
-    assertEquals(0, files.size());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(0, files.size());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -170,7 +169,7 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     Optional<URL> files = mp.find(qualifiedModelName, fileExt);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1294"));
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1294"));
 
   }
 
@@ -184,8 +183,8 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     Optional<URL> files = mp.find(qualifiedModelName, fileExt);
-    assertTrue(files.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(files.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -199,7 +198,7 @@ public class FileFinderTest {
     MCPath mp = new MCPath(entries);
     Optional<URL> files = mp.find(qualifiedModelName, fileExt);
     assertFalse(files.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -213,7 +212,7 @@ public class FileFinderTest {
     MCPath mp = new MCPath(entries);
     Optional<URL> files = mp.find(qualifiedModelName, fileExt);
     assertFalse(files.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -227,8 +226,8 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     List<URL> files = find(mp, qualifiedModelName, fileExt);
-    assertEquals(2, files.size());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(2, files.size());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -241,7 +240,7 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     Optional<URL> files = mp.find(qualifiedModelName, fileExt);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1294"));
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1294"));
   }
 
   @Test
@@ -254,8 +253,8 @@ public class FileFinderTest {
     entries.add(Paths.get("src","test","resources"));
     MCPath mp = new MCPath(entries);
     Optional<URL> files = mp.find(qualifiedModelName, fileExt);
-    assertTrue(files.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(files.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -269,7 +268,7 @@ public class FileFinderTest {
     MCPath mp = new MCPath(entries);
     Optional<URL> files = mp.find(qualifiedModelName, fileExt);
     assertFalse(files.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -283,7 +282,7 @@ public class FileFinderTest {
     MCPath mp = new MCPath(entries);
     Optional<URL> files = mp.find(qualifiedModelName, fileExt);
     assertFalse(files.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   public List<URL> find(MCPath mp, String qualifiedName, String fileExtRegEx) {

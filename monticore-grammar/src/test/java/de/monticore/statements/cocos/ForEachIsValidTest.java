@@ -12,8 +12,9 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class ForEachIsValidTest {
 
   protected TestMCCommonStatementsCoCoChecker checker;
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -101,7 +102,7 @@ public class ForEachIsValidTest {
   public void checkValid(String expressionString) throws IOException {
     TestMCCommonStatementsParser parser = TestMCCommonStatementsMill.parser();
     Optional<ASTEnhancedForControl> optAST = parser.parse_StringEnhancedForControl(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     ASTEnhancedForControl ast = optAST.get();
 
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
@@ -111,13 +112,13 @@ public class ForEachIsValidTest {
 
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   public void checkInvalid(String expressionString) throws IOException {
     TestMCCommonStatementsParser parser = TestMCCommonStatementsMill.parser();
     Optional<ASTEnhancedForControl> optAST = parser.parse_StringEnhancedForControl(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     ASTEnhancedForControl ast = optAST.get();
 
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
@@ -127,7 +128,7 @@ public class ForEachIsValidTest {
     ast.setEnclosingScope(TestMCCommonStatementsMill.globalScope());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertFalse(Log.getFindings().isEmpty());
   }
 
   @Test

@@ -15,18 +15,18 @@ import foo._ast.ASTFooArtifact;
 import foo._parser.FooParser;
 import foo._symboltable.FooSymbols2Json;
 import foo._symboltable.IFooArtifactScope;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.Test;
 
 public class UnknownScopeDeSerTests {
 
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -42,7 +42,7 @@ public class UnknownScopeDeSerTests {
         "}\n"
     );
 
-    assertTrue(parsedFooArtifact.isPresent());
+    Assertions.assertTrue(parsedFooArtifact.isPresent());
 
     ASTFooArtifact fooArtifact = parsedFooArtifact.get();
 
@@ -55,14 +55,14 @@ public class UnknownScopeDeSerTests {
     IBarGlobalScope barGlobalScope = BarMill.globalScope();
     BarArtifactScope scope = (BarArtifactScope) barGlobalScope.getDeSer().deserializeArtifactScope(jsonFoo);
 
-    assertTrue(scope.getUnknownSymbols().containsKey("TestNest"));
-    assertEquals(1, scope.getUnknownSymbols().get("TestNest").size());
+    Assertions.assertTrue(scope.getUnknownSymbols().containsKey("TestNest"));
+    Assertions.assertEquals(1, scope.getUnknownSymbols().get("TestNest").size());
 
     IBarScope unknownNestScope = (IBarScope) scope.getUnknownSymbols().get("TestNest").get(0).getSpannedScope();
-    assertEquals(2, unknownNestScope.getSubScopes().size());
+    Assertions.assertEquals(2, unknownNestScope.getSubScopes().size());
 
-    assertTrue(unknownNestScope.getSubScopes().stream().anyMatch(it -> Objects.equals(it.getName(), "testFunction")));
-    assertTrue(unknownNestScope.getSubScopes().stream().anyMatch(it -> Objects.equals(it.getName(), "testFunction2")));
+    Assertions.assertTrue(unknownNestScope.getSubScopes().stream().anyMatch(it -> Objects.equals(it.getName(), "testFunction")));
+    Assertions.assertTrue(unknownNestScope.getSubScopes().stream().anyMatch(it -> Objects.equals(it.getName(), "testFunction2")));
   }
 
 }

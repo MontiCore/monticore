@@ -7,19 +7,18 @@ import de.monticore.literals.mccommonliterals.cocos.*;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class RangeCoCosTest {
 
-  @Before
+  @BeforeEach
   public void setup(){
     Log.init();
     Log.enableFailQuick(false);
@@ -30,7 +29,7 @@ public class RangeCoCosTest {
   protected final void checkLiteral(String expression, BigInteger min, BigInteger max) throws IOException {
     Log.clearFindings();
     Optional<ASTLiteral> astex = TestMCCommonLiteralsMill.parser().parse_StringLiteral(expression);
-    assertTrue(astex.isPresent());
+    Assertions.assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
     checker.addCoCo(new BasicFloatLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
@@ -40,13 +39,13 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    assertFalse(Log.getErrorCount() > 0);
+    Assertions.assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkLiteral(String expression) throws IOException {
     Log.clearFindings();
     Optional<ASTLiteral> astex = TestMCCommonLiteralsMill.parser().parse_StringLiteral(expression);
-    assertTrue(astex.isPresent());
+    Assertions.assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
     checker.addCoCo(new BasicFloatLiteralRangeCoCo());
@@ -56,13 +55,13 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    assertFalse(Log.getErrorCount() > 0);
+    Assertions.assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkSignedLiteral(String expression) throws IOException {
     Log.clearFindings();
     Optional<ASTSignedLiteral> astex = TestMCCommonLiteralsMill.parser().parse_StringSignedLiteral(expression);
-    assertTrue(astex.isPresent());
+    Assertions.assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
     checker.addCoCo(new SignedBasicFloatLiteralRangeCoCo());
@@ -72,13 +71,13 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    assertFalse(Log.getErrorCount() > 0);
+    Assertions.assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkErrorLiteral(String expression, BigInteger min, BigInteger max, String expectedError) throws IOException {
     Log.clearFindings();
     Optional<ASTLiteral> astex = TestMCCommonLiteralsMill.parser().parse_StringLiteral(expression);
-    assertTrue(astex.isPresent());
+    Assertions.assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
     checker.addCoCo(new BasicFloatLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
@@ -88,14 +87,14 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    Assertions.assertEquals(1, Log.getErrorCount());
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
   }
 
   protected final void checkErrorLiteral(String expression, String expectedError) throws IOException {
     Log.clearFindings();
     Optional<ASTLiteral> astex = TestMCCommonLiteralsMill.parser().parse_StringLiteral(expression);
-    assertTrue(astex.isPresent());
+    Assertions.assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
     checker.addCoCo(new BasicFloatLiteralRangeCoCo());
@@ -105,14 +104,14 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    Assertions.assertEquals(1, Log.getErrorCount());
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
   }
 
   protected final void checkErrorSignedLiteral(String expression, BigInteger min, BigInteger max, String expectedError) throws IOException {
     Log.clearFindings();
     Optional<ASTSignedLiteral> astex = TestMCCommonLiteralsMill.parser().parse_StringSignedLiteral(expression);
-    assertTrue(astex.isPresent());
+    Assertions.assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
     checker.addCoCo(new SignedBasicFloatLiteralRangeCoCo(new BigDecimal(min), new BigDecimal(max)));
@@ -122,14 +121,14 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    Assertions.assertEquals(1, Log.getErrorCount());
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
   }
 
   protected final void checkErrorSignedLiteral(String expression, String expectedError) throws IOException {
     Log.clearFindings();
     Optional<ASTSignedLiteral> astex = TestMCCommonLiteralsMill.parser().parse_StringSignedLiteral(expression);
-    assertTrue(astex.isPresent());
+    Assertions.assertTrue(astex.isPresent());
 
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
     checker.addCoCo(new SignedBasicFloatLiteralRangeCoCo());
@@ -139,8 +138,8 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    Assertions.assertEquals(1, Log.getErrorCount());
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
   }
 
 

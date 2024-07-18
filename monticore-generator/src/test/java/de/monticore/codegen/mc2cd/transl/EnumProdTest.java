@@ -6,8 +6,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -19,7 +20,7 @@ public class EnumProdTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit cdCompilationUnit;
 
-  @Before
+  @BeforeEach
   public void setupEnumProdTest() {
     Optional<ASTCDCompilationUnit> cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/EnumsGrammar.mc4"));
@@ -28,8 +29,8 @@ public class EnumProdTest extends TranslationTestCase {
 
   @Test
   public void testExist() {
-    assertEquals(4, cdCompilationUnit.getCDDefinition().getCDEnumsList().size());
+    Assertions.assertEquals(4, cdCompilationUnit.getCDDefinition().getCDEnumsList().size());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

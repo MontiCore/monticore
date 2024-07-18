@@ -5,28 +5,25 @@ package mc.embedding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
-import mc.embedding.external.embedded.EmbeddedMill;
 import mc.embedding.host.HostMill;
 import mc.embedding.host._symboltable.HostSymbol;
 import mc.embedding.host._symboltable.IHostGlobalScope;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.*;
-
 public class HostTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     HostMill.reset();
     HostMill.init();
@@ -37,9 +34,9 @@ public class HostTest extends GeneratorIntegrationsTest {
     final IHostGlobalScope scope = HostMill.globalScope();
     scope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
     HostSymbol hostSymbol = scope.resolveHost("H").orElse(null);
-    assertNotNull(hostSymbol);
-    assertEquals("H", hostSymbol.getName());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertNotNull(hostSymbol);
+    Assertions.assertEquals("H", hostSymbol.getName());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

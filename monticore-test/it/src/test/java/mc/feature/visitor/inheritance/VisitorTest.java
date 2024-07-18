@@ -9,17 +9,13 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.feature.visitor.inheritance.a.AMill;
 import mc.feature.visitor.inheritance.b.BMill;
 import mc.feature.visitor.inheritance.c.CMill;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
-import de.monticore.ast.ASTNode;
 import mc.GeneratorIntegrationsTest;
-import mc.feature.visitor.inheritance.a._ast.ASTXA;
-import mc.feature.visitor.inheritance.b._ast.ASTXB;
-import mc.feature.visitor.inheritance.c._ast.ASTXC;
 import mc.feature.visitor.inheritance.c._visitor.CTraverser;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that for grammar C extends B extends A the CVisitor also visits rules
@@ -29,7 +25,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class VisitorTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -44,14 +40,14 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     traverser.add4C(v);
     
     traverser.handle(AMill.xABuilder().build());
-    assertEquals("A", v.getRun());
+    Assertions.assertEquals("A", v.getRun());
     v.clear();
     traverser.handle(BMill.xBBuilder().build());
-    assertEquals("B", v.getRun());
+    Assertions.assertEquals("B", v.getRun());
     v.clear();
     traverser.handle(CMill.xCBuilder().build());
-    assertEquals("C", v.getRun());
+    Assertions.assertEquals("C", v.getRun());
     v.clear();
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

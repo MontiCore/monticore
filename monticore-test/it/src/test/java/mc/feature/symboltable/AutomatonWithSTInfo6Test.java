@@ -5,21 +5,18 @@ package mc.feature.symboltable;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
-import mc.feature.symboltable.automatonwithstinfo6._ast.ASTBlock;
 import mc.feature.symboltable.automatonwithstinfo6._symboltable.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.util.Deque;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.Test;
 
 public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -33,16 +30,16 @@ public class AutomatonWithSTInfo6Test extends GeneratorIntegrationsTest {
   public void test() {
     AutomatonWithSTInfo6Scope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
-    assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
+    Assertions.assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo6ScopesGenitor automatonwithstinfo6SymbolTableCreator;
     StateSymbol stateSymbol = new StateSymbol("A");
-    assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
+    Assertions.assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
     StateSymbolSurrogate stateSymbolSurrogate;
     TransitionSymbol transitionSymbol = new TransitionSymbol("T");
-    assertFalse(transitionSymbol instanceof IScopeSpanningSymbol);
+    Assertions.assertFalse(transitionSymbol instanceof IScopeSpanningSymbol);
     TransitionSymbolSurrogate transitionSymbolSurrogate;
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

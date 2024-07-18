@@ -6,23 +6,20 @@ import blueb._ast.ASTRedPlace;
 import bluec.BlueCMill;
 import bluec._ast.ASTLightBluePlace;
 import bluec._parser.BlueCParser;
-import bluec._util.BlueCTypeDispatcher;
 import bluec._util.IBlueCTypeDispatcher;
-import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class MultipleLanguagesDispatcherTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     BlueCMill.init();
     LogStub.init();
@@ -33,64 +30,64 @@ public class MultipleLanguagesDispatcherTest {
   public void testIsMethods() throws IOException {
     BlueCParser parser = BlueCMill.parser();
     final Optional<ASTPlace> optAST = parser.parse_StringPlace("place p1{bluePlace p2{lightBluePlace p3{place p4{}}}redPlace p5{}}");
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     final ASTPlace ast = optAST.get();
 
     IBlueCTypeDispatcher dispatcher = BlueCMill.typeDispatcher();
 
-    assertFalse(dispatcher.isBlueCASTLightBluePlace(ast));
-    assertFalse(dispatcher.isBlueBASTBluePlace(ast));
-    assertFalse(dispatcher.isBlueBASTRedPlace(ast));
-    assertTrue(dispatcher.isBlueAASTPlace(ast));
+    Assertions.assertFalse(dispatcher.isBlueCASTLightBluePlace(ast));
+    Assertions.assertFalse(dispatcher.isBlueBASTBluePlace(ast));
+    Assertions.assertFalse(dispatcher.isBlueBASTRedPlace(ast));
+    Assertions.assertTrue(dispatcher.isBlueAASTPlace(ast));
 
-    assertFalse(dispatcher.isBlueCASTLightBluePlace(ast.getPlace(0)));
-    assertTrue(dispatcher.isBlueBASTBluePlace(ast.getPlace(0)));
-    assertFalse(dispatcher.isBlueBASTRedPlace(ast.getPlace(0)));
-    assertTrue(dispatcher.isBlueAASTPlace(ast.getPlace(0)));
+    Assertions.assertFalse(dispatcher.isBlueCASTLightBluePlace(ast.getPlace(0)));
+    Assertions.assertTrue(dispatcher.isBlueBASTBluePlace(ast.getPlace(0)));
+    Assertions.assertFalse(dispatcher.isBlueBASTRedPlace(ast.getPlace(0)));
+    Assertions.assertTrue(dispatcher.isBlueAASTPlace(ast.getPlace(0)));
 
-    assertFalse(dispatcher.isBlueCASTLightBluePlace(ast.getPlace(1)));
-    assertFalse(dispatcher.isBlueBASTBluePlace(ast.getPlace(1)));
-    assertTrue(dispatcher.isBlueBASTRedPlace(ast.getPlace(1)));
-    assertTrue(dispatcher.isBlueAASTPlace(ast.getPlace(1)));
+    Assertions.assertFalse(dispatcher.isBlueCASTLightBluePlace(ast.getPlace(1)));
+    Assertions.assertFalse(dispatcher.isBlueBASTBluePlace(ast.getPlace(1)));
+    Assertions.assertTrue(dispatcher.isBlueBASTRedPlace(ast.getPlace(1)));
+    Assertions.assertTrue(dispatcher.isBlueAASTPlace(ast.getPlace(1)));
 
-    assertTrue(dispatcher.isBlueCASTLightBluePlace(ast.getPlace(0).getPlace(0)));
-    assertTrue(dispatcher.isBlueBASTBluePlace(ast.getPlace(0).getPlace(0)));
-    assertFalse(dispatcher.isBlueBASTRedPlace(ast.getPlace(0).getPlace(0)));
-    assertTrue(dispatcher.isBlueAASTPlace(ast.getPlace(0).getPlace(0)));
+    Assertions.assertTrue(dispatcher.isBlueCASTLightBluePlace(ast.getPlace(0).getPlace(0)));
+    Assertions.assertTrue(dispatcher.isBlueBASTBluePlace(ast.getPlace(0).getPlace(0)));
+    Assertions.assertFalse(dispatcher.isBlueBASTRedPlace(ast.getPlace(0).getPlace(0)));
+    Assertions.assertTrue(dispatcher.isBlueAASTPlace(ast.getPlace(0).getPlace(0)));
 
-    assertFalse(dispatcher.isBlueCASTLightBluePlace(ast.getPlace(0).getPlace(0).getPlace(0)));
-    assertFalse(dispatcher.isBlueBASTBluePlace(ast.getPlace(0).getPlace(0).getPlace(0)));
-    assertFalse(dispatcher.isBlueBASTRedPlace(ast.getPlace(0).getPlace(0).getPlace(0)));
-    assertTrue(dispatcher.isBlueAASTPlace(ast.getPlace(0).getPlace(0).getPlace(0)));
+    Assertions.assertFalse(dispatcher.isBlueCASTLightBluePlace(ast.getPlace(0).getPlace(0).getPlace(0)));
+    Assertions.assertFalse(dispatcher.isBlueBASTBluePlace(ast.getPlace(0).getPlace(0).getPlace(0)));
+    Assertions.assertFalse(dispatcher.isBlueBASTRedPlace(ast.getPlace(0).getPlace(0).getPlace(0)));
+    Assertions.assertTrue(dispatcher.isBlueAASTPlace(ast.getPlace(0).getPlace(0).getPlace(0)));
   }
 
   @Test
   public void testAsMethods() throws IOException {
     BlueCParser parser = BlueCMill.parser();
     final Optional<ASTPlace> optAST = parser.parse_StringPlace("place p1{bluePlace p2{lightBluePlace p3{place p4{}}}redPlace p5{}}");
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     final ASTPlace ast = optAST.get();
 
     IBlueCTypeDispatcher dispatcher = BlueCMill.typeDispatcher();
 
-    assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast)));
+    Assertions.assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast)));
 
-    assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast.getPlace(0))));
-    assertEquals("bluePlace", printType(dispatcher.asBlueBASTBluePlace(ast.getPlace(0))));
+    Assertions.assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast.getPlace(0))));
+    Assertions.assertEquals("bluePlace", printType(dispatcher.asBlueBASTBluePlace(ast.getPlace(0))));
 
-    assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast.getPlace(1))));
-    assertEquals("redPlace", printType(dispatcher.asBlueBASTRedPlace(ast.getPlace(1))));
+    Assertions.assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast.getPlace(1))));
+    Assertions.assertEquals("redPlace", printType(dispatcher.asBlueBASTRedPlace(ast.getPlace(1))));
 
-    assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast.getPlace(0).getPlace(0))));
-    assertEquals("bluePlace", printType(dispatcher.asBlueBASTBluePlace(ast.getPlace(0).getPlace(0))));
-    assertEquals("lightBluePlace", printType(dispatcher.asBlueCASTLightBluePlace(ast.getPlace(0).getPlace(0))));
+    Assertions.assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast.getPlace(0).getPlace(0))));
+    Assertions.assertEquals("bluePlace", printType(dispatcher.asBlueBASTBluePlace(ast.getPlace(0).getPlace(0))));
+    Assertions.assertEquals("lightBluePlace", printType(dispatcher.asBlueCASTLightBluePlace(ast.getPlace(0).getPlace(0))));
 
-    assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast.getPlace(0).getPlace(0).getPlace(0))));
+    Assertions.assertEquals("place", printType(dispatcher.asBlueAASTPlace(ast.getPlace(0).getPlace(0).getPlace(0))));
   }
 
-  @After
+  @AfterEach
   public void after() {
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
     Log.getFindings().clear();
   }
 

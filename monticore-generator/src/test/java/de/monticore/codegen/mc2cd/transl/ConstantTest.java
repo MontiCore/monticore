@@ -6,7 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -17,7 +17,7 @@ public class ConstantTest extends TranslationTestCase {
   
   private ASTCDClass astB;
 
-  @Before
+  @BeforeEach
   public void setupConstantTest() throws IOException {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/ConstantsGrammar.mc4")).get();

@@ -6,27 +6,25 @@ import automata._symboltable.StateSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class AutomataSymbolsTest {
   
   // setup the language infrastructure
   AutomataParser parser = new AutomataParser() ;
 
-  @Before
+  @BeforeEach
   public void init() {
     // replace log by a sideffect free variant
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setUp() throws RecognitionException, IOException {
     Log.getFindings().clear();
   }
@@ -38,29 +36,29 @@ public class AutomataSymbolsTest {
   @Test
   public void testSymbol1() throws IOException {
     ASTAutomaton ast = parser.parse( "src/test/resources/example/HierarchyPingPong.aut" ).get();
-    assertEquals("PingPong", ast.getName());
-    assertEquals(2, ast.getTransitionList().size());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals("PingPong", ast.getName());
+    Assertions.assertEquals(2, ast.getTransitionList().size());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testStateSymbol1() throws IOException {
     StateSymbol s1 = new StateSymbol("ping");
     StateSymbol s2 = new StateSymbol("pong");
-    assertFalse(s1.isPresentAstNode());
-    assertEquals("ping",s1.getName());
-    assertEquals("",s1.getPackageName());
-    assertEquals("ping",s1.getFullName());
+    Assertions.assertFalse(s1.isPresentAstNode());
+    Assertions.assertEquals("ping", s1.getName());
+    Assertions.assertEquals("", s1.getPackageName());
+    Assertions.assertEquals("ping", s1.getFullName());
     // Test the generated toString method()
-    assertEquals("StateSymbol{fullName='ping', sourcePosition=<0,0>}",s1.toString());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals("StateSymbol{fullName='ping', sourcePosition=<0,0>}", s1.toString());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 
   @Test
   public void testCount1() throws IOException {
     ASTAutomaton ast = parser.parse( "src/test/resources/example/CountPingPong.aut" ).get();
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 

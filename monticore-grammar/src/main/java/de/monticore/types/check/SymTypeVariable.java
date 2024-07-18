@@ -7,17 +7,23 @@ import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class SymTypeVariable extends SymTypeExpression {
 
-  protected static final String FREE_VARIABLE_NAME = "__INTERNAL_TYPEVARIABLE";
-
   /**
-   * may be null, as some type variables are created
+   * may be empty, as some type variables are created
    * DURING the type checking process and thus have no symbols
    */
-  protected TypeVarSymbol typeVarSymbol;
+  protected Optional<TypeVarSymbol> typeVarSymbol;
+
+  /**
+   * is empty iff typeVarSymbol is not null.
+   * This holds the name of the free type variable,
+   * which acts as an identifier.
+   */
+  protected Optional<String> name;
 
   protected SymTypeExpression lowerBound;
 
@@ -28,38 +34,53 @@ public class SymTypeVariable extends SymTypeExpression {
   protected SymTypeExpression upperBound;
 
   /**
-   * @param typeVarSymbol is allowed to be null
+   * creates a bound type variable
    */
   public SymTypeVariable(
       TypeVarSymbol typeVarSymbol,
       SymTypeExpression lowerBound,
       SymTypeExpression upperBound
   ) {
-    this.typeVarSymbol = typeVarSymbol;
-    this.lowerBound = lowerBound;
-    this.upperBound = upperBound;
+    this.typeVarSymbol = Optional.of(Log.errorIfNull(typeVarSymbol));
+    this.name = Optional.of("INTERNAL ERROR: NOT A FREE TYPE VARIABLE");
+    this.lowerBound = Log.errorIfNull(lowerBound);
+    this.upperBound = Log.errorIfNull(upperBound);
+  }
+
+  /**
+   * creates a free type variable
+   */
+  public SymTypeVariable(
+      String name,
+      SymTypeExpression lowerBound,
+      SymTypeExpression upperBound
+  ) {
+    this.typeVarSymbol = Optional.empty();
+    this.name = Optional.of(Log.errorIfNull(name));
+    this.lowerBound = Log.errorIfNull(lowerBound);
+    this.upperBound = Log.errorIfNull(upperBound);
   }
 
   @Deprecated
   public SymTypeVariable(TypeVarSymbol typeSymbol) {
-    this.typeVarSymbol = typeSymbol;
+    this.typeVarSymbol = Optional.of(typeSymbol);
   }
 
   @Deprecated
   public SymTypeVariable(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
-    if(typeSymbol instanceof TypeVarSymbol) {
-      this.typeVarSymbol = (TypeVarSymbol) typeSymbol;
+    if (typeSymbol instanceof TypeVarSymbol) {
+      this.typeVarSymbol = Optional.of((TypeVarSymbol) typeSymbol);
     }
   }
 
   public boolean hasTypeVarSymbol() {
-    return typeVarSymbol != null;
+    return typeVarSymbol.isPresent();
   }
 
   public TypeVarSymbol getTypeVarSymbol() {
     if (hasTypeVarSymbol()) {
-      return typeVarSymbol;
+      return typeVarSymbol.get();
     }
     Log.error("0xFDFDD internal error: getTypeVarSymbol called, "
         + "but no TypeVarSymbol available");
@@ -69,14 +90,14 @@ public class SymTypeVariable extends SymTypeExpression {
   @Override
   public boolean hasTypeInfo() {
     // support deprecated behavior
-    return typeVarSymbol != null || typeSymbol != null;
+    return hasTypeVarSymbol() || typeSymbol != null;
   }
 
   @Override
   @Deprecated
   public TypeSymbol getTypeInfo() {
     //support deprecated behavior
-    if(typeSymbol != null) {
+    if (typeSymbol != null) {
       return typeSymbol;
     }
     return getTypeVarSymbol();
@@ -123,8 +144,41 @@ public class SymTypeVariable extends SymTypeExpression {
   }
 
   /**
+   * Wether this is an inference variable.
+   */
+  public boolean isInferenceVariable() {
+    return !hasTypeVarSymbol();
+  }
+
+  /**
+   * returns the id.
+   * only to be called if it is a free type variable.
+   */
+  public String getFreeVarIdentifier() {
+    if (!isInferenceVariable()) {
+      Log.error("0xFD223 internal error: "
+          + "tried to get() the id of a non-free type variable."
+      );
+    }
+    return name.get();
+  }
+
+  /**
+   * sets a new id.
+   * only to be called if it is a free type variable.
+   */
+  public void setFreeVarIdentifier(String newName) {
+    if (!isInferenceVariable()) {
+      Log.error("0xFD227 internal error: "
+          + "tried to set() the id of a non-free type variable."
+      );
+    }
+    name = Optional.of(newName);
+  }
+
+  /**
    * @deprecated unused in main projects
-   * also: getter and setter do something different, questionable
+   *     also: getter and setter do something different, questionable
    */
   @Deprecated
   public String getVarName() {
@@ -142,8 +196,8 @@ public class SymTypeVariable extends SymTypeExpression {
   @Override
   public String print() {
     //support deprecated code:
-    if(typeSymbol != null) {
-    return typeSymbol.getName();
+    if (typeSymbol != null) {
+      return typeSymbol.getName();
     }
     return super.print();
   }
@@ -151,8 +205,8 @@ public class SymTypeVariable extends SymTypeExpression {
   @Override
   public String printFullName() {
     //support deprecated code:
-    if(typeSymbol != null) {
-    return getVarName();
+    if (typeSymbol != null) {
+      return getVarName();
     }
     return super.printFullName();
   }
@@ -190,8 +244,8 @@ public class SymTypeVariable extends SymTypeExpression {
   @Override
   public SymTypeVariable deepClone() {
     //support deprecated code:
-    if(typeSymbol != null) {
-    return new SymTypeVariable(this.typeSymbol);
+    if (typeSymbol != null) {
+      return new SymTypeVariable(this.typeSymbol);
     }
     if (hasTypeVarSymbol()) {
       return new SymTypeVariable(
@@ -201,33 +255,68 @@ public class SymTypeVariable extends SymTypeExpression {
       );
     }
     else {
-      return new SymTypeVariable(null, getStoredLowerBound(), getStoredUpperBound());
+      return new SymTypeVariable(
+          getFreeVarIdentifier(),
+          getStoredLowerBound(),
+          getStoredUpperBound()
+      );
+    }
+  }
+
+  /**
+   * Similar to deepEquals, but only checks
+   * whether the variables are supposed to be the same variable.
+   * E.g., bounds are ignored
+   */
+  public boolean denotesSameVar(SymTypeExpression other) {
+    if (!other.isTypeVariable()) {
+      return false;
+    }
+    SymTypeVariable otherVar = other.asTypeVariable();
+    if (hasTypeVarSymbol() && otherVar.hasTypeVarSymbol()) {
+      if (!getTypeVarSymbol().getEnclosingScope()
+          .equals(otherVar.getTypeVarSymbol().getEnclosingScope())
+      ) {
+        return false;
+      }
+      if (!getTypeVarSymbol().getName().equals(
+          otherVar.getTypeVarSymbol().getName())
+      ) {
+        return false;
+      }
+      return true;
+    }
+    else if (!hasTypeVarSymbol() && !otherVar.hasTypeVarSymbol()) {
+      return getFreeVarIdentifier().equals(otherVar.getFreeVarIdentifier());
+    }
+    else {
+      return false;
     }
   }
 
   @Override
-  public boolean deepEquals(SymTypeExpression sym){
+  public boolean deepEquals(SymTypeExpression sym) {
     //support deprecated code:
-    if(typeSymbol != null) {
-    if(!(sym instanceof SymTypeVariable)){
-      return false;
-    }
-    SymTypeVariable symVar = (SymTypeVariable) sym;
-    if(this.typeSymbol == null ||symVar.typeSymbol ==null){
-      return false;
-    }
-    if(!this.typeSymbol.getEnclosingScope().equals(symVar.typeSymbol.getEnclosingScope())){
-      return false;
-    }
-    if(!this.typeSymbol.getName().equals(symVar.typeSymbol.getName())){
-      return false;
-    }
-    return this.print().equals(symVar.print());
+    if (typeSymbol != null) {
+      if (!(sym instanceof SymTypeVariable)) {
+        return false;
+      }
+      SymTypeVariable symVar = (SymTypeVariable) sym;
+      if (this.typeSymbol == null || symVar.typeSymbol == null) {
+        return false;
+      }
+      if (!this.typeSymbol.getEnclosingScope().equals(symVar.typeSymbol.getEnclosingScope())) {
+        return false;
+      }
+      if (!this.typeSymbol.getName().equals(symVar.typeSymbol.getName())) {
+        return false;
+      }
+      return this.print().equals(symVar.print());
     }
     if (!sym.isTypeVariable()) {
       return false;
     }
-    if(sym == this) {
+    if (sym == this) {
       return true;
     }
     SymTypeVariable symVar = (SymTypeVariable) sym;
@@ -238,13 +327,7 @@ public class SymTypeVariable extends SymTypeExpression {
       return false;
     }
     // cannot identify without a name at this point
-    else if (!hasTypeVarSymbol() || !symVar.hasTypeVarSymbol()) {
-      return false;
-    }
-    else if (!getTypeVarSymbol().deepEquals(symVar.getTypeVarSymbol())) {
-      return false;
-    }
-    return true;
+    return denotesSameVar(symVar);
   }
 
   @Override

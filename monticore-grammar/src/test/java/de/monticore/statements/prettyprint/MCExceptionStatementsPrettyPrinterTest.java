@@ -8,9 +8,9 @@ import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatemen
 import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
 
   private MCExceptionStatementsFullPrettyPrinter prettyPrinter = new MCExceptionStatementsFullPrettyPrinter(new IndentPrinter());
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,37 +36,37 @@ public class MCExceptionStatementsPrettyPrinterTest {
   @Test
   public void testTryStatement2() throws IOException {
     Optional<ASTTryStatement2> result = parser.parse_StringTryStatement2(" try { Integer foo = a;} finally { Integer foo = a; }");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTTryStatement2 ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringTryStatement2(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testTryStatement1() throws IOException {
     Optional<ASTTryStatement1> result = parser.parse_StringTryStatement1(" try { Integer foo = a; } catch (private static a.b.c | d.e.G foo) {Integer foo = a; }");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTTryStatement1 ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringTryStatement1(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -75,94 +75,94 @@ public class MCExceptionStatementsPrettyPrinterTest {
     Optional<ASTTryStatement3> result = parser.parse_StringTryStatement3("try ( public Integer a = foo; ) " +
         "{ public String foo = a ;} " +
         "catch (private static a.b.c | d.e.G foo) { public String foo = a ;}");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTTryStatement3 ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringTryStatement3(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testTryvariableDeclaration() throws IOException {
     Optional<ASTTryLocalVariableDeclaration> result = parser.parse_StringTryLocalVariableDeclaration("public Integer a = foo");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTTryLocalVariableDeclaration ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringTryLocalVariableDeclaration(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testCatchClause() throws IOException {
     Optional<ASTCatchClause> result = parser.parse_StringCatchClause("catch (private static a.b.c | d.e.G foo) { public String foo = a; }");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTCatchClause ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringCatchClause(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testCatchType() throws IOException {
     Optional<ASTCatchTypeList> result = parser.parse_StringCatchTypeList(" a.b.c | d.e.G ");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTCatchTypeList ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringCatchTypeList(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testThrowStatement() throws IOException {
     Optional<ASTThrowStatement> result = parser.parse_StringThrowStatement("throw Exception;");
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTThrowStatement ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringThrowStatement(output);
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
 
-    assertTrue(ast.deepEquals(result.get()));
+    Assertions.assertTrue(ast.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -7,8 +7,9 @@ import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._symboltable.ITestJavaLightScope;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 import de.se_rwth.commons.logging.Log;
@@ -16,7 +17,7 @@ import de.se_rwth.commons.logging.Log;
 public class MethodExceptionThrowsTest extends JavaLightCocoTest {
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0811.A0811";
 
-  @Before
+  @BeforeEach
   public void initCoco() {
     checker = new JavaLightCoCoChecker();
     checker.addCoCo(new MethodExceptionThrows());
@@ -59,7 +60,7 @@ public class MethodExceptionThrowsTest extends JavaLightCocoTest {
 
     testValid("de.monticore.javalight.cocos.valid.MethodDecl", "meth1", checker);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

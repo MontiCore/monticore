@@ -52,6 +52,10 @@ public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
    */
   @Override
   public void endVisit(ASTNameExpression expr) {
+    // check if inference already calculated something
+    if (getType4Ast().hasPartialTypeOfExpression(expr)) {
+      return;
+    }
     Optional<SymTypeExpression> wholeResult =
         calculateNameExpressionOrLogError(expr);
     if (wholeResult.isPresent()) {

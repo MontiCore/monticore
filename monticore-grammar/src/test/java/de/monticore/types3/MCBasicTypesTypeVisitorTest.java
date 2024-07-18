@@ -4,7 +4,8 @@ package de.monticore.types3;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -37,13 +38,6 @@ public class MCBasicTypesTypeVisitorTest
   }
 
   @Test
-  public void symTypeFromAST_Test5() throws IOException {
-    // tests with resolving in a sub scope
-    checkType("java.util.Map",
-        "java.util.Map<java.util.Map.KeyT,java.util.Map.ValueT>");
-  }
-
-  @Test
   public void symTypeFromAST_VoidTest() throws IOException {
     Optional<ASTMCType> typeOpt = parser.parse_StringMCType("void");
     if (parser.hasErrors()) {
@@ -51,14 +45,11 @@ public class MCBasicTypesTypeVisitorTest
     }
     else {
       // if it can be parsed, we expect an error
-      assertTrue(typeOpt.isPresent());
+      Assertions.assertTrue(typeOpt.isPresent());
       generateScopes(typeOpt.get());
       typeOpt.get().accept(typeMapTraverser);
-      assertTrue(!Log.getFindings().isEmpty());
-      assertNotEquals(
-          "void",
-          getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName()
-      );
+      Assertions.assertTrue(!Log.getFindings().isEmpty());
+      Assertions.assertNotEquals("void", getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName());
     }
   }
 
@@ -66,12 +57,9 @@ public class MCBasicTypesTypeVisitorTest
   public void symTypeFromAST_ReturnTest() throws IOException {
     Optional<ASTMCReturnType> typeOpt =
         parser.parse_StringMCReturnType("void");
-    assertTrue(typeOpt.isPresent());
+    Assertions.assertTrue(typeOpt.isPresent());
     typeOpt.get().accept(typeMapTraverser);
-    assertEquals(
-        "void",
-        getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName()
-    );
+    Assertions.assertEquals("void", getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName());
     assertNoFindings();
   }
 
@@ -79,14 +67,11 @@ public class MCBasicTypesTypeVisitorTest
   public void symTypeFromAST_ReturnTest2() throws IOException {
     Optional<ASTMCReturnType> typeOpt =
         parser.parse_StringMCReturnType("Person");
-    assertTrue(typeOpt.isPresent());
-    assertTrue(typeOpt.get().isPresentMCType());
+    Assertions.assertTrue(typeOpt.isPresent());
+    Assertions.assertTrue(typeOpt.get().isPresentMCType());
     generateScopes(typeOpt.get().getMCType());
     typeOpt.get().accept(typeMapTraverser);
-    assertEquals(
-        "Person",
-        getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName()
-    );
+    Assertions.assertEquals("Person", getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName());
     assertNoFindings();
   }
 

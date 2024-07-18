@@ -8,9 +8,9 @@ import java.io.IOException;
 
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.se_rwth.commons.logging.Log;
 import mc.feature.hwc.statechartdsl._ast.ASTState;
@@ -20,13 +20,13 @@ import mc.feature.hwc.statechartdsl.StatechartDSLMill;
 
 public class BuildersTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setUp() throws RecognitionException, IOException {
     Log.getFindings().clear();
   }
@@ -34,22 +34,22 @@ public class BuildersTest {
   @Test
   public void testMyTransitionBuilder() throws IOException {
     ASTTransition transition = StatechartDSLMill.transitionBuilder().setFrom("setByGenBuilder").setFrom("xxxx").setTo("setByGenBuilder").build();
-    assertEquals("xxxxSuf2", transition.getFrom());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals("xxxxSuf2", transition.getFrom());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testHWCClassGeneratedBuilder() throws IOException {
     ASTStatechart aut = StatechartDSLMill.statechartBuilder().setName("setByGeneratedBuilder").build();
-    assertEquals("setByGeneratedBuilder", aut.getName());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals("setByGeneratedBuilder", aut.getName());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testHWCClassHWCBuilder() throws IOException {
     ASTState state = StatechartDSLMill.stateBuilder().setName("x2").setFinal(true).setName("state1").build();
-    assertEquals(state.getName(), "state1Suf1");
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(state.getName(), "state1Suf1");
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

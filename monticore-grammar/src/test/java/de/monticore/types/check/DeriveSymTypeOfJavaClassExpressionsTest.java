@@ -13,17 +13,14 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
-import de.se_rwth.commons.logging.*;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static org.junit.Assert.*;
 
 public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstractTest {
 
@@ -33,7 +30,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
    * literals/MCLiteralsBasis.mc4
    */
 
-  @Before
+  @BeforeEach
   public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -365,10 +362,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     //test that types must have a name
     Optional<ASTExpression> class1 = p.parse_StringExpression("3.class");
 
-    assertFalse(class1.isPresent());
+    Assertions.assertFalse(class1.isPresent());
 
     Optional<ASTExpression> class2 = p.parse_StringExpression("\"Hallo\".class");
-    assertFalse(class2.isPresent());
+    Assertions.assertFalse(class2.isPresent());
   }
 
   @Test

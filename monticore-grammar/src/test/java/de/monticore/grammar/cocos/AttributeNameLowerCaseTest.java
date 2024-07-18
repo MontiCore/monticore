@@ -3,8 +3,8 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeNameLowerCaseTest extends CocoTest{
 
@@ -12,7 +12,7 @@ public class AttributeNameLowerCaseTest extends CocoTest{
           "should start with a lower-case letter.";
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4005.A4005";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new AttributeNameLowerCase());

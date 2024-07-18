@@ -2,6 +2,7 @@
 package de.monticore.types3;
 
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.util.BuiltInTypeRelations;
 import de.monticore.types3.util.NominalSuperTypeCalculator;
 import de.monticore.types3.util.SymTypeBoxingVisitor;
@@ -92,12 +93,19 @@ public class SymTypeRelations {
 
   /**
    * least upper bound for a set of types
-   * for e.g. union types
+   * DISREGARDING the union of the types;
+   * The least upper bound for a set of types is always the union of the same,
+   * this will create the least upper bound that is not the union.
+   * <p>
+   * For, e.g., union types
    * unlike the Java counterpart,
    * we specify it for non-reference types as well,
    * making it more akin to Java conditional expressions,
    * where "a?b:c" has type leastUpperBound(b,c)
    * <p>
+   * todo should just return top?
+   * todo need to rename to e.g. simplifiedLeastUpperBound
+   * https://git.rwth-aachen.de/monticore/monticore/-/issues/4187
    * empty represents the universal type (aka the lack of a bound)
    * Obscure is returned, if no lub could be calculated, e.g. lub(int, Person)
    */
@@ -209,8 +217,72 @@ public class SymTypeRelations {
     return builtInRelationsDelegate.isString(type);
   }
 
+  // Top, Bottom
+
+  public static boolean isTop(SymTypeExpression type) {
+    return builtInRelationsDelegate.isTop(type);
+  }
+
+  public static boolean isBottom(SymTypeExpression type) {
+    return builtInRelationsDelegate.isBottom(type);
+  }
+
   // Helper, internals
 
+  /**
+   * Same as {@link #isCompatible(SymTypeExpression, SymTypeExpression)},
+   * but returns the bounds on inference variables.
+   */
+  public static List<Bound> constrainCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    return compatibilityDelegate.constrainCompatible(target, source);
+  }
+
+  /**
+   * Same as {@link #isSubTypeOf(SymTypeExpression, SymTypeExpression)},
+   * but returns the bounds on inference variables.
+   */
+  public static List<Bound> constrainSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  ) {
+    return compatibilityDelegate.constrainSubTypeOf(subType, superType);
+  }
+
+  /**
+   * same as {@link #constrainSubTypeOf(SymTypeExpression, SymTypeExpression)},
+   * but the arguments are expected to have been normalized
+   * (s. {@link #normalize(SymTypeExpression)}).
+   * This is required to not create infinite loops during normalization.
+   */
+  public static List<Bound> internal_constrainSubTypeOfPreNormalized(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  ) {
+    return compatibilityDelegate.internal_constrainSubTypeOfPreNormalized(
+        subType, superType
+    );
+  }
+
+  /**
+   * returns the list of Bounds on the free type variables,
+   * if the inputs are to be the same type.
+   * Due to union/intersection types,
+   * this cannot (trivially/at all?) be replaced with constraining
+   * the subtyping relationship in both directions and collection the bounds.
+   */
+  public static List<Bound> constrainSameType(
+      SymTypeExpression typeA,
+      SymTypeExpression typeB) {
+    return compatibilityDelegate.constrainSameType(typeA, typeB);
+  }
+
+  /**
+   * @deprecated use constrain* methods above
+   */
+  @Deprecated
   public static boolean internal_isSubTypeOf(
       SymTypeExpression subType,
       SymTypeExpression superType,
@@ -220,6 +292,10 @@ public class SymTypeRelations {
         .internal_isSubTypeOf(subType, superType, subTypeIsSoft);
   }
 
+  /**
+   * @deprecated use constrain* methods above
+   */
+  @Deprecated
   public static boolean internal_isSubTypeOfPreNormalized(
       SymTypeExpression subType,
       SymTypeExpression superType,

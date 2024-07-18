@@ -3,8 +3,8 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.se_rwth.commons.logging.Log.getFindings;
 
@@ -13,7 +13,7 @@ public class GrammarExtensionOnceTest extends CocoTest {
   private final String MESSAGE = GrammarExtensionOnce.ERROR_MSG_FORMAT;
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4150.A4150";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new GrammarExtensionOnce());

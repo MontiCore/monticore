@@ -9,9 +9,9 @@ import mc.feature.filefindertest.filefindertest.FileFinderTestMill;
 import mc.feature.filefindertest.filefindertest._ast.ASTSCArtifact;
 import mc.feature.filefindertest.filefindertest._parser.FileFinderTestParser;
 import mc.feature.filefindertest.filefindertest._symboltable.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -24,21 +24,21 @@ public class FileFinderTest {
   
   protected static final String SYMBOL_PATH = "target/test/resources";
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     FileFinderTestParser parser = FileFinderTestMill.parser();
     Optional<ASTSCArtifact> artifact = parser.parse("src/test/resources/mc/feature/filefindertest/Model1.sc");
     Optional<ASTSCArtifact> artifactII = parser.parse("src/test/resources/mc/feature/filefindertest/Model2.sc");
     FileFinderTestScopesGenitorDelegator delegator = FileFinderTestMill.scopesGenitorDelegator();
     FileFinderTestScopesGenitorDelegator delegatorII = FileFinderTestMill.scopesGenitorDelegator();
-    assertTrue(artifact.isPresent());
-    assertTrue(artifactII.isPresent());
+    Assertions.assertTrue(artifact.isPresent());
+    Assertions.assertTrue(artifactII.isPresent());
     IFileFinderTestArtifactScope scope = delegator.createFromAST(artifact.get());
     scope.setPackageName("mc.feature.filefindertest");
     IFileFinderTestArtifactScope scopeII = delegatorII.createFromAST(artifactII.get());
@@ -58,8 +58,8 @@ public class FileFinderTest {
     gs.clear();
     gs.setSymbolPath(new MCPath(Paths.get(SYMBOL_PATH)));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
-    assertTrue(statechartSymbol.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(statechartSymbol.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -70,8 +70,8 @@ public class FileFinderTest {
     gs.setFileExt("scsym");
     gs.setSymbolPath(new MCPath(Paths.get(SYMBOL_PATH)));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
-    assertTrue(statechartSymbol.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(statechartSymbol.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -82,8 +82,8 @@ public class FileFinderTest {
     gs.setFileExt("ym");
     gs.setSymbolPath(new MCPath(Paths.get(SYMBOL_PATH)));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
-    assertFalse(statechartSymbol.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertFalse(statechartSymbol.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -93,8 +93,8 @@ public class FileFinderTest {
     gs.clear();
     gs.setSymbolPath(new MCPath(Paths.get("src/test")));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
-    assertFalse(statechartSymbol.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertFalse(statechartSymbol.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -104,8 +104,8 @@ public class FileFinderTest {
     gs.clear();
     gs.setSymbolPath(new MCPath());
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
-    assertFalse(statechartSymbol.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertFalse(statechartSymbol.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -116,7 +116,7 @@ public class FileFinderTest {
     gs.setFileExt("json");
     gs.setSymbolPath(new MCPath(Paths.get(SYMBOL_PATH)));
     Optional<StatechartSymbol> statechartSymbol = gs.resolveStatechart("mc.feature.filefindertest.Model1");
-    assertTrue(statechartSymbol.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(statechartSymbol.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

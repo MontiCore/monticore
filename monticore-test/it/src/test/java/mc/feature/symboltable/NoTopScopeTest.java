@@ -13,20 +13,19 @@ import mc.feature.symboltable.subnotopscope.SubNoTopScopeMill;
 import mc.feature.symboltable.subnotopscope._ast.ASTSubFoo;
 import mc.feature.symboltable.subnotopscope._parser.SubNoTopScopeParser;
 import mc.feature.symboltable.subnotopscope._symboltable.ISubNoTopScopeGlobalScope;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
 
 public class NoTopScopeTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -44,8 +43,8 @@ public class NoTopScopeTest {
     // parse model
     NoTopScopeParser scopeAttributesParser = new NoTopScopeParser();
     Optional<ASTFoo> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/symboltable/NoTopScope.st");
-    assertFalse(scopeAttributesParser.hasErrors());
-    assertTrue(astSup.isPresent());
+    Assertions.assertFalse(scopeAttributesParser.hasErrors());
+    Assertions.assertTrue(astSup.isPresent());
 
     // create symboltable
     INoTopScopeGlobalScope globalScope = NoTopScopeMill.globalScope();
@@ -57,15 +56,15 @@ public class NoTopScopeTest {
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();
-    assertTrue(topLevelSymbol.isPresent());
-    assertEquals("A", topLevelSymbol.get().getName());
+    Assertions.assertTrue(topLevelSymbol.isPresent());
+    Assertions.assertEquals("A", topLevelSymbol.get().getName());
 
     // two symbols
     FooSymbol eSymbol = new FooSymbol("E");
     scope.add(eSymbol);
     topLevelSymbol = scope.getTopLevelSymbol();
-    assertFalse(topLevelSymbol.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertFalse(topLevelSymbol.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -73,8 +72,8 @@ public class NoTopScopeTest {
     // parse model
     SubNoTopScopeParser scopeAttributesParser = new SubNoTopScopeParser();
     Optional<ASTSubFoo> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/symboltable/SubNoTopScope.st");
-    assertFalse(scopeAttributesParser.hasErrors());
-    assertTrue(astSup.isPresent());
+    Assertions.assertFalse(scopeAttributesParser.hasErrors());
+    Assertions.assertTrue(astSup.isPresent());
 
     // create symboltable
     ISubNoTopScopeGlobalScope globalScope = SubNoTopScopeMill.globalScope();
@@ -86,14 +85,14 @@ public class NoTopScopeTest {
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();
-    assertTrue(topLevelSymbol.isPresent());
-    assertEquals("A", topLevelSymbol.get().getName());
+    Assertions.assertTrue(topLevelSymbol.isPresent());
+    Assertions.assertEquals("A", topLevelSymbol.get().getName());
 
     // two symbols (add symbol from super grammar)
     FooSymbol eSymbol = NoTopScopeMill.fooSymbolBuilder().setName("E").build();
     scope.add(eSymbol);
     topLevelSymbol = scope.getTopLevelSymbol();
-    assertFalse(topLevelSymbol.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertFalse(topLevelSymbol.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

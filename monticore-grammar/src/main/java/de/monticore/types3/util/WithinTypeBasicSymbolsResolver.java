@@ -7,7 +7,6 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
 import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
@@ -19,11 +18,14 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfUnion;
+import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
 
 /**
  * resolves within a type,
- * but in a more type correct way then our resolve algorithm,
+ * but in a more type correct way than our resolve algorithm,
  * as some additions cannot be (simply) added to it.
  * E.g., given generics, the correct type parameters will be set.
  * The results will be in form of SymTypeExpressions.
@@ -41,13 +43,6 @@ import java.util.stream.Collectors;
 public class WithinTypeBasicSymbolsResolver {
 
   protected static final String LOG_NAME = "WithinTypeResolving";
-
-  protected SymTypeVariableReplaceVisitor replaceVisitor;
-
-  public WithinTypeBasicSymbolsResolver() {
-    // default values
-    replaceVisitor = new SymTypeVariableReplaceVisitor();
-  }
 
   /**
    * resolves within a type including supertypes
@@ -94,6 +89,19 @@ public class WithinTypeBasicSymbolsResolver {
         //filter based on local variables
       }
     }
+
+    // not expecting free type variables for fields,
+    // e.g., class C { <T> T tVar; }
+    if (resolvedSymType.isPresent()) {
+      SymTypeExpression type = resolvedSymType.get();
+      if (!replaceFreeTypeVariables(thisType, type).deepEquals(type)) {
+        Log.error("0xFD228 unexpected free type variable in variable "
+            + name + " resolved in " + thisType.printFullName() + ": "
+            + type.printFullName()
+        );
+      }
+    }
+
     return resolvedSymType;
   }
 
@@ -167,7 +175,13 @@ public class WithinTypeBasicSymbolsResolver {
     }
     resolvedSymTypes.addAll(filteredSuperFuncs);
 
-    return resolvedSymTypes;
+    // replace type variables
+    List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
+        .map(t -> replaceFreeTypeVariables(thisType, t))
+        .map(SymTypeExpression::asFunctionType)
+        .collect(Collectors.toList());
+
+    return symTypesFreeVarsReplaced;
   }
 
   /**
@@ -220,7 +234,10 @@ public class WithinTypeBasicSymbolsResolver {
       }
     }
 
-    return resolvedSymType;
+    Optional<SymTypeExpression> symTypeFreeVarsReplaced =
+        resolvedSymType.map(t -> replaceFreeTypeVariables(thisType, t));
+
+    return symTypeFreeVarsReplaced;
   }
 
   /**
@@ -259,18 +276,19 @@ public class WithinTypeBasicSymbolsResolver {
           accessModifier,
           predicate.and(getIsLocalSymbolPredicate(scope))
       );
-    } catch(ResolvedSeveralEntriesForSymbolException e) {
+    }
+    catch (ResolvedSeveralEntriesForSymbolException e) {
       // note: Exception is not supposed to happen,
       // thus, never rely on this(!) Error being logged (here)
       // some error should be logged, though.
       Log.error("0xFD225 internal error: resolved " + e.getSymbols().size()
-          + "occurences of variable " + name
-          + ", but expected only one:" + System.lineSeparator()
-          + e.getSymbols().stream()
+              + "occurences of variable " + name
+              + ", but expected only one:" + System.lineSeparator()
+              + e.getSymbols().stream()
               .map(ISymbol::getFullName)
               .collect(Collectors.joining(System.lineSeparator())),
           e
-        );
+      );
       resolved = Optional.empty();
     }
     // todo remove given a fixed resolver
@@ -374,19 +392,13 @@ public class WithinTypeBasicSymbolsResolver {
       SymTypeExpression dependencyType,
       SymTypeExpression dependentType) {
     if (dependencyType.isGenericType()) {
-      Map<TypeVarSymbol, SymTypeExpression> replaceMap =
+      Map<SymTypeVariable, SymTypeExpression> replaceMap =
           ((SymTypeOfGenerics) dependencyType).getTypeVariableReplaceMap();
-      return replaceVariables(dependentType, replaceMap);
+      return TypeParameterRelations.replaceTypeVariables(dependentType, replaceMap);
     }
     else {
       return dependentType;
     }
-  }
-
-  protected SymTypeExpression replaceVariables(
-      SymTypeExpression type,
-      Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
-    return replaceVisitor.calculate(type, replaceMap);
   }
 
   protected Optional<IBasicSymbolsScope> getSpannedScope(SymTypeExpression type) {
@@ -448,5 +460,73 @@ public class WithinTypeBasicSymbolsResolver {
       map.put(BasicAccessModifier.DIMENSION, BasicAccessModifier.PROTECTED);
     }
     return newModifier;
+  }
+
+  protected SymTypeExpression replaceFreeTypeVariables(
+      SymTypeExpression thisType,
+      SymTypeExpression type
+  ) {
+    // E.g.:
+    // class B<V,X> {
+    //   <S> C<S,V,X> f();
+    // }
+    // class A<T> {
+    //   void <R> g() {new B<T,R>().f();}
+    // }
+    // In the example above, resolving f in B<T,R> will result in
+    // () -> C<#FV,T,R> where #FV is a free type variable
+
+    // 1. find all variables
+    Map<SymTypeVariable, SymTypeVariable> allVarMap = TypeParameterRelations
+        .getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
+    // 2. find all type variables already bound by the type resolved in
+    List<SymTypeVariable> varsAlreadyBound = new SymTypeCollectionVisitor()
+        .calculate(thisType, SymTypeExpression::isTypeVariable).stream()
+        .map(SymTypeExpression::asTypeVariable)
+        .collect(Collectors.toList());
+    // 3. get variables that actually need to be replaced (unbound)
+    Map<SymTypeVariable, SymTypeVariable> freeVarMap = new HashMap<>();
+    for (Map.Entry<SymTypeVariable, SymTypeVariable> e : allVarMap.entrySet()) {
+      if (varsAlreadyBound.stream().noneMatch(e.getKey()::deepEquals)) {
+        freeVarMap.put(e.getKey(), e.getValue());
+      }
+    }
+    // 3.5 double check that the symTab does make any sense
+    assertTypeVarsAreIncluded(type, freeVarMap.keySet());
+    // 4. actually replace the free variables
+    SymTypeExpression typeVarsReplaced = TypeParameterRelations
+        .replaceTypeVariables(type, freeVarMap);
+
+    return typeVarsReplaced;
+  }
+
+  protected void assertTypeVarsAreIncluded(
+      SymTypeExpression type,
+      Collection<SymTypeVariable> freeTypeVars
+  ) {
+    // first and foremost, check functions
+    // could be extended if required
+    if (type.isFunctionType() && type.asFunctionType().hasSymbol()) {
+      FunctionSymbol fSym = type.asFunctionType().getSymbol();
+      List<TypeVarSymbol> includedVarSyms = fSym
+          .getSpannedScope().getLocalTypeVarSymbols();
+      List<SymTypeVariable> includedVars = includedVarSyms.stream()
+          .map(SymTypeExpressionFactory::createTypeVariable)
+          .collect(Collectors.toList());
+      if (freeTypeVars.stream().anyMatch(
+          ftv -> includedVars.stream().noneMatch(ftv::denotesSameVar))
+      ) {
+        Log.error("0xFD570 resolved " + fSym.getFullName()
+            + " with type " + type.printFullName()
+            + " with free type variables " + freeTypeVars.stream()
+            .map(SymTypeVariable::printFullName)
+            .collect(Collectors.joining(", "))
+            + ", but in the symbol there is only the type variables "
+            + includedVars.stream().map(SymTypeVariable::printFullName)
+            .collect(Collectors.joining(", "))
+            + "! Is the symbol table correct?"
+        );
+      }
+    }
   }
 }

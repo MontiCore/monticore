@@ -9,7 +9,9 @@ dependencies {
   implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:' + ecore_version
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.match:' + emf_compare_version
   implementation 'org.eclipse.emf:org.eclipse.emf.compare.diff:' + emf_compare_version
-  testImplementation "junit:junit:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
   testImplementation 'org.apache.groovy:groovy:4.0.2'
 }
 

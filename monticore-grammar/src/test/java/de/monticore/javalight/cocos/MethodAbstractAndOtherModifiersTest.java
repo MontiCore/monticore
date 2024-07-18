@@ -3,8 +3,9 @@ package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -12,7 +13,7 @@ public class MethodAbstractAndOtherModifiersTest extends JavaLightCocoTest{
 
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0802.A0802";
 
-  @Before
+  @BeforeEach
   public void initCoco() {
     checker = new JavaLightCoCoChecker();
     checker.addCoCo(new MethodAbstractAndOtherModifiers());
@@ -29,7 +30,7 @@ public class MethodAbstractAndOtherModifiersTest extends JavaLightCocoTest{
     testValid("de.monticore.javalight.cocos.valid.A0802",
         "a", checker);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 

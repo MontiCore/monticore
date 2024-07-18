@@ -6,16 +6,17 @@ import automata._symboltable.MyStateResolver;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertTrue;
 
 public class GlobalScopeTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -32,6 +33,6 @@ public class GlobalScopeTest {
     gs.putSymbolDeSer("automata._symboltable.StateSymbol", 
         new MyStateDeSer());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

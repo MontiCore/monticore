@@ -22,8 +22,9 @@ import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -46,7 +47,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     setTypeCheck(new TypeCalculator(null, derLit));
   }
 
-  @Before
+  @BeforeEach
   public void init(){
     // No enclosing Scopes: Search ending here
     CombineExpressionsWithLiteralsMill.reset();
@@ -461,7 +462,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     Log.getFindings().clear();
     getTypeCalculator().typeOf(astex);
-    assertEquals("0xA0165", getFirstErrorCode());
+    Assertions.assertEquals("0xA0165", getFirstErrorCode());
   }
 
   /**
@@ -1549,7 +1550,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     init_static_example();
 
     Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
-    assertTrue(sType.isPresent());
+    Assertions.assertTrue(sType.isPresent());
     //TODO ND: complete when inner types are added
   }
 

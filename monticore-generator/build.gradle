@@ -59,9 +59,12 @@ dependencies {
     implementation("com.google.guava:guava:$guava_version")
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.24.2'
-    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     testImplementation 'org.mockito:mockito-core:4.5.1'
 
+  testImplementation gradleTestKit()
 }
 
 tasks.withType(JavaCompile) {
@@ -80,7 +83,7 @@ java {
 
 
 tasks.withType(Test) {
-    useJUnit()
+    useJUnitPlatform()
 
     testLogging {
         // controls whether test output is shown
@@ -135,6 +138,10 @@ gradlePlugin.plugins {
     monticoreGenerator {
         id = "de.monticore.generator"
         implementationClass = 'de.monticore.gradle.MCGeneratorPlugin'
+    }
+    monticoreGeneratorWithTR {
+        id = "de.monticore.generator-withtr"
+        implementationClass = 'de.monticore.gradle.MCGeneratorWithTRPlugin'
     }
 }
 

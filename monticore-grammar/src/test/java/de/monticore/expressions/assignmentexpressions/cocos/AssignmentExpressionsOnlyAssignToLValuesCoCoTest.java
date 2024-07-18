@@ -9,8 +9,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -19,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -186,14 +187,14 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
 
   protected void testValid(String exprStr) throws IOException {
     check(exprStr);
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
     Log.clearFindings();
   }
 
   protected void testInvalid(String exprStr) throws IOException {
     check(exprStr);
-    assertTrue(!Log.getFindings().isEmpty());
-    assertTrue(Log.getFindings().stream().anyMatch(
+    Assertions.assertTrue(!Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().stream().anyMatch(
         f -> f.getMsg().contains("0xFDD47")
     ));
     Log.clearFindings();
@@ -202,8 +203,8 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
   protected void check(String exprStr) throws IOException {
     Optional<ASTExpression> exprOpt = CombineExpressionsWithLiteralsMill
         .parser().parse_StringExpression(exprStr);
-    assertTrue(exprOpt.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(exprOpt.isPresent());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
     getChecker().checkAll(exprOpt.get());
   }
 

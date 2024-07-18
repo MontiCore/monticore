@@ -7,18 +7,16 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class NatLiteralsTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -29,16 +27,16 @@ public class NatLiteralsTest {
   private void checkNatLiteral(int i, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTNatLiteral> ast = parser.parse_StringNatLiteral(s);
-    assertTrue(!parser.hasErrors());
-    assertEquals(i, ast.get().getValue());
+    Assertions.assertTrue(!parser.hasErrors());
+    Assertions.assertEquals(i, ast.get().getValue());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   private void checkFailingNatLiteral(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     parser.parse_StringNatLiteral(s);
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
   }
 
   @Test
@@ -51,7 +49,7 @@ public class NatLiteralsTest {
       checkNatLiteral(5, "5");
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
   
@@ -62,7 +60,7 @@ public class NatLiteralsTest {
       checkFailingNatLiteral("-5");
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
 }

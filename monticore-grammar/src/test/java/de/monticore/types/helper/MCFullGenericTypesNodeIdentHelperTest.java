@@ -8,9 +8,9 @@ import de.monticore.types.mcfullgenerictypestest.MCFullGenericTypesTestMill;
 import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MCFullGenericTypesNodeIdentHelperTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -34,11 +34,11 @@ public class MCFullGenericTypesNodeIdentHelperTest {
     MCFullGenericTypesNodeIdentHelper identHelper = new MCFullGenericTypesNodeIdentHelper();
     Optional<ASTMCMultipleGenericType> astmcMultipleGenericType = p.parse_StringMCMultipleGenericType("a.b.D<C>.d.E<int>");
 
-    assertTrue(astmcMultipleGenericType.isPresent());
+    Assertions.assertTrue(astmcMultipleGenericType.isPresent());
 
-    assertEquals("@a.b.D.d.E!MCMultipleGenericType", identHelper.getIdent(astmcMultipleGenericType.get()));
+    Assertions.assertEquals("@a.b.D.d.E!MCMultipleGenericType", identHelper.getIdent(astmcMultipleGenericType.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

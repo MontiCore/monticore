@@ -7,17 +7,16 @@ import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class BasicTypesPrinterTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,21 +35,21 @@ public class BasicTypesPrinterTest {
     Optional<ASTMCPrimitiveType> astmcPrimitiveType = parser.parse_StringMCPrimitiveType("int");
     Optional<ASTMCQualifiedType> astmcQualifiedType = parser.parse_StringMCQualifiedType("java.util.List");
 
-    assertFalse(parser.hasErrors());
-    assertTrue(astmcImportStatement.isPresent());
-    assertTrue(astmcImportStatement.isPresent());
-    assertTrue(astmcImportStatement1.isPresent());
-    assertTrue(astmcQualifiedName.isPresent());
-    assertTrue(astmcReturnType.isPresent());
-    assertTrue(astmcVoidType.isPresent());
-    assertTrue(astmcPrimitiveType.isPresent());
-    assertTrue(astmcQualifiedType.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astmcImportStatement.isPresent());
+    Assertions.assertTrue(astmcImportStatement.isPresent());
+    Assertions.assertTrue(astmcImportStatement1.isPresent());
+    Assertions.assertTrue(astmcQualifiedName.isPresent());
+    Assertions.assertTrue(astmcReturnType.isPresent());
+    Assertions.assertTrue(astmcVoidType.isPresent());
+    Assertions.assertTrue(astmcPrimitiveType.isPresent());
+    Assertions.assertTrue(astmcQualifiedType.isPresent());
 
-    assertEquals("String", MCBasicTypesMill.prettyPrint(astmcReturnType.get(), true));
-    assertEquals("void", MCBasicTypesMill.prettyPrint(astmcVoidType.get(), true));
-    assertEquals("int", MCBasicTypesMill.prettyPrint(astmcPrimitiveType.get(), true));
-    assertEquals("java.util.List", MCBasicTypesMill.prettyPrint(astmcQualifiedType.get(), true));
+    Assertions.assertEquals("String", MCBasicTypesMill.prettyPrint(astmcReturnType.get(), true));
+    Assertions.assertEquals("void", MCBasicTypesMill.prettyPrint(astmcVoidType.get(), true));
+    Assertions.assertEquals("int", MCBasicTypesMill.prettyPrint(astmcPrimitiveType.get(), true));
+    Assertions.assertEquals("java.util.List", MCBasicTypesMill.prettyPrint(astmcQualifiedType.get(), true));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

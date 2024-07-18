@@ -9,13 +9,13 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefiningSymbolSetter4CommonExpressionsTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -42,8 +42,8 @@ public class DefiningSymbolSetter4CommonExpressionsTest {
     definingSymbolSetter.setDefiningSymbol((ASTExpression) expr, symbol);
 
     // Then
-    Assert.assertTrue(expr.getDefiningSymbol().isPresent());
-    Assert.assertSame(symbol, expr.getDefiningSymbol().get());
+    Assertions.assertTrue(expr.getDefiningSymbol().isPresent());
+    Assertions.assertSame(symbol, expr.getDefiningSymbol().get());
 
   }
 
@@ -71,10 +71,10 @@ public class DefiningSymbolSetter4CommonExpressionsTest {
     definingSymbolSetter.setDefiningSymbol((ASTExpression) fieldAccessExpr, symbol);
 
     // Then
-    Assert.assertTrue(fieldAccessExpr.getDefiningSymbol().isPresent());
-    Assert.assertSame(symbol, fieldAccessExpr.getDefiningSymbol().get());
+    Assertions.assertTrue(fieldAccessExpr.getDefiningSymbol().isPresent());
+    Assertions.assertSame(symbol, fieldAccessExpr.getDefiningSymbol().get());
 
-    Assert.assertFalse(qualExpr.getDefiningSymbol().isPresent());
+    Assertions.assertFalse(qualExpr.getDefiningSymbol().isPresent());
   }
 
   @Test
@@ -99,10 +99,10 @@ public class DefiningSymbolSetter4CommonExpressionsTest {
     definingSymbolSetter.setDefiningSymbol((ASTExpression) callExpr, symbol);
 
     // Then
-    Assert.assertTrue(callExpr.getDefiningSymbol().isPresent());
-    Assert.assertSame(symbol, callExpr.getDefiningSymbol().get());
+    Assertions.assertTrue(callExpr.getDefiningSymbol().isPresent());
+    Assertions.assertSame(symbol, callExpr.getDefiningSymbol().get());
 
-    Assert.assertFalse(methodNameExpr.getDefiningSymbol().isPresent());
+    Assertions.assertFalse(methodNameExpr.getDefiningSymbol().isPresent());
   }
 }
 

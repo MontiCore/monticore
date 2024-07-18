@@ -8,15 +8,15 @@ import mc.feature.inheritence.inheritence.InheritenceMill;
 import mc.feature.inheritence.inheritence._ast.ASTSub;
 import mc.feature.inheritence.inheritence._ast.ASTSuper;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
 public class CloneInheritenceTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -41,7 +41,7 @@ public class CloneInheritenceTest extends GeneratorIntegrationsTest {
         .uncheckedBuild();
 
     t.deepClone();
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

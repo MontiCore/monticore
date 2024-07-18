@@ -14,9 +14,9 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -28,7 +28,7 @@ public class ResourceInTryStatementCloseableTest {
 
   protected TestMCExceptionStatementsCoCoChecker checker;
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -93,7 +93,7 @@ public class ResourceInTryStatementCloseableTest {
     TestMCExceptionStatementsParser parser = TestMCExceptionStatementsMill.parser();
 
     Optional<ASTTryStatement3> optAST = parser.parse_StringTryStatement3(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     ASTTryStatement3 ast = optAST.get();
 
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
@@ -103,7 +103,7 @@ public class ResourceInTryStatementCloseableTest {
 
       Log.getFindings().clear();
       checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
-      assertTrue(Log.getFindings().isEmpty());
+      Assertions.assertTrue(Log.getFindings().isEmpty());
     }
   }
 
@@ -111,7 +111,7 @@ public class ResourceInTryStatementCloseableTest {
     TestMCExceptionStatementsParser parser = TestMCExceptionStatementsMill.parser();
 
     Optional<ASTTryStatement3> optAST = parser.parse_StringTryStatement3(expressionString);
-    assertTrue(optAST.isPresent());
+    Assertions.assertTrue(optAST.isPresent());
     ASTTryStatement3 ast = optAST.get();
 
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
@@ -121,7 +121,7 @@ public class ResourceInTryStatementCloseableTest {
 
       Log.getFindings().clear();
       checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
-      assertFalse(Log.getFindings().isEmpty());
+      Assertions.assertFalse(Log.getFindings().isEmpty());
     }
   }
 

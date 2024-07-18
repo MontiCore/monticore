@@ -9,8 +9,9 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types3.util.SymTypeBoxingVisitor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static de.monticore.types3.util.DefsTypesForTests.*;
@@ -20,7 +21,7 @@ public class SymTypeBoxingVisitorTest extends AbstractTypeTest {
 
   SymTypeBoxingVisitor visitor = new SymTypeBoxingVisitor();
 
-  @Before
+  @BeforeEach
   public void init() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -105,7 +106,7 @@ public class SymTypeBoxingVisitorTest extends AbstractTypeTest {
   public void check(SymTypeExpression unboxed, String expectedBoxedName) {
     SymTypeExpression boxed = visitor.calculate(unboxed);
     assertNoFindings();
-    assertEquals(expectedBoxedName, boxed.printFullName());
+    Assertions.assertEquals(expectedBoxedName, boxed.printFullName());
   }
 
 }

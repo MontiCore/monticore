@@ -1,13 +1,13 @@
 package de.monticore.types3;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 public class BitExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     setupValues();
   }

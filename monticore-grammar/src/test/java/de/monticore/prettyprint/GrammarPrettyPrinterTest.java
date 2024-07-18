@@ -5,9 +5,9 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  * This test checks if all (hand-written) MontiCore grammars are print-able using the generated pretty printers
  */
 public class GrammarPrettyPrinterTest {
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -59,23 +59,23 @@ public class GrammarPrettyPrinterTest {
     System.err.println(path.toAbsolutePath());
     Optional<ASTMCGrammar> astOpt = Grammar_WithConceptsMill.parser().parse(path.toString());
 
-    Assert.assertTrue(astOpt.isPresent());
+    Assertions.assertTrue(astOpt.isPresent());
 
     String pretty = Grammar_WithConceptsMill.prettyPrint(astOpt.get(), true);
-    Assert.assertEquals("Failed to pretty print without findings: " + path, 0, Log.getFindingsCount());
+    Assertions.assertEquals(0, Log.getFindingsCount(), "Failed to pretty print without findings: " + path);
     Optional<ASTMCGrammar> parsedAST = Grammar_WithConceptsMill.parser().parse_String(pretty);
     if (parsedAST.isEmpty()) {
-      Assert.assertEquals("Failed to parse " + path, Files.readString(path), pretty);
-      Assert.fail("Failed to parse " + path);
+      Assertions.assertEquals(Files.readString(path), pretty, "Failed to parse " + path);
+      Assertions.fail("Failed to parse " + path);
     }
     if (!Log.getFindings().isEmpty()) {
-      Assert.assertEquals("Failed to parse " + path + " without findings", Files.readString(path), pretty);
-      Assert.fail("Failed to parse " + path + " without findings");
+      Assertions.assertEquals(Files.readString(path), pretty, "Failed to parse " + path + " without findings");
+      Assertions.fail("Failed to parse " + path + " without findings");
     }
 
     if (!astOpt.get().deepEquals(parsedAST.get())) {
-      Assert.assertEquals("Failed to deep-equals " + path, Files.readString(path), pretty);
-      Assert.fail("Failed to deep-equals");
+      Assertions.assertEquals(Files.readString(path), pretty, "Failed to deep-equals " + path);
+      Assertions.fail("Failed to deep-equals");
     }
   }
 

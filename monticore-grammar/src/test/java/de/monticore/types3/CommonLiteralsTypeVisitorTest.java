@@ -5,8 +5,9 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types3.util.DefsTypesForTests;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 
 public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void setupForEach() {
     setupValues();
   }
@@ -97,7 +98,7 @@ public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
         .build();
     lit.setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope());
     lit.accept(getTypeMapTraverser());
-    assertFalse(getType4Ast().hasTypeOfExpression(lit));
+    Assertions.assertFalse(getType4Ast().hasTypeOfExpression(lit));
     assertHasErrorCode("0xD02A6");
   }
 
@@ -138,7 +139,7 @@ public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
   protected void check(ASTLiteral lit, String expected) {
     lit.setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope());
     lit.accept(getTypeMapTraverser());
-    assertEquals(expected, getType4Ast().getTypeOfExpression(lit).printFullName());
+    Assertions.assertEquals(expected, getType4Ast().getTypeOfExpression(lit).printFullName());
     assertNoFindings();
   }
 

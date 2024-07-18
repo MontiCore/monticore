@@ -6,9 +6,9 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.grammarinherit.sub.subfeaturedslgrammarinherit._parser.SubFeatureDSLgrammarinheritParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TestGrammarInherit extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -32,9 +32,9 @@ public class TestGrammarInherit extends GeneratorIntegrationsTest {
     SubFeatureDSLgrammarinheritParser p = new SubFeatureDSLgrammarinheritParser();
     p.parseFile(s);
     
-    assertEquals(false, p.hasErrors());
+    Assertions.assertEquals(false, p.hasErrors());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

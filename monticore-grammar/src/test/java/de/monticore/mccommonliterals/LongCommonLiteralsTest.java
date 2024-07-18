@@ -8,18 +8,17 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class LongCommonLiteralsTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -30,17 +29,17 @@ public class LongCommonLiteralsTest {
   private void checkLongLiteral(long l, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
-    assertTrue(lit.isPresent());
-    assertTrue(lit.get() instanceof ASTBasicLongLiteral);
-    assertEquals(l, ((ASTBasicLongLiteral) lit.get()).getValue());
+    Assertions.assertTrue(lit.isPresent());
+    Assertions.assertTrue(lit.get() instanceof ASTBasicLongLiteral);
+    Assertions.assertEquals(l, ((ASTBasicLongLiteral) lit.get()).getValue());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTBasicLongLiteral> lit = parser.parseBasicLongLiteral(new StringReader(s));
-    assertTrue(!lit.isPresent());
+    Assertions.assertTrue(!lit.isPresent());
   }
 
   @Test
@@ -56,7 +55,7 @@ public class LongCommonLiteralsTest {
 
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
 
@@ -75,7 +74,7 @@ public class LongCommonLiteralsTest {
       checkFalse("0 L");
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
 }

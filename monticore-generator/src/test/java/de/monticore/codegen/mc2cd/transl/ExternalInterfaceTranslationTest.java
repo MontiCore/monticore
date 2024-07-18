@@ -6,19 +6,19 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
-import static org.junit.Assert.*;
 
 public class ExternalInterfaceTranslationTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit externalInterface;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     externalInterface = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/ExternalInterface.mc4")).get();
@@ -27,11 +27,11 @@ public class ExternalInterfaceTranslationTest extends TranslationTestCase {
   @Test
   public void testExternalInterface(){
     ASTCDInterface a = getInterfaceBy("ASTAExt", externalInterface);
-    assertTrue(a.getModifier().isPresentStereotype());
-    assertEquals(1, a.getModifier().getStereotype().sizeValues());
-    assertEquals("externalInterface", a.getModifier().getStereotype().getValues(0).getName());
-    assertFalse(a.getModifier().getStereotype().getValues(0).isPresentText());
+    Assertions.assertTrue(a.getModifier().isPresentStereotype());
+    Assertions.assertEquals(1, a.getModifier().getStereotype().sizeValues());
+    Assertions.assertEquals("externalInterface", a.getModifier().getStereotype().getValues(0).getName());
+    Assertions.assertFalse(a.getModifier().getStereotype().getValues(0).isPresentText());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

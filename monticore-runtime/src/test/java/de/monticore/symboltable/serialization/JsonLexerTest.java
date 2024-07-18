@@ -3,9 +3,9 @@ package de.monticore.symboltable.serialization;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.symboltable.serialization.JsonTokenKind.*;
 import static org.junit.Assert.assertEquals;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 public class JsonLexerTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -22,68 +22,68 @@ public class JsonLexerTest {
   @Test
   public void testNumberWhitespaces() {
     JsonLexer lexer = new JsonLexer("12.5 3e9");
-    assertEquals("12.5", lexer.poll().getValue());
-    assertEquals(WHITESPACE, lexer.poll().getKind());
-    assertEquals("3e9", lexer.poll().getValue());
-    assertEquals(false, lexer.hasNext());
+    Assertions.assertEquals("12.5", lexer.poll().getValue());
+    Assertions.assertEquals(WHITESPACE, lexer.poll().getKind());
+    Assertions.assertEquals("3e9", lexer.poll().getValue());
+    Assertions.assertEquals(false, lexer.hasNext());
 
     lexer = new JsonLexer("1\t2.5");
-    assertEquals("1", lexer.poll().getValue());
-    assertEquals(WHITESPACE, lexer.poll().getKind());
-    assertEquals("2.5", lexer.poll().getValue());
-    assertEquals(false, lexer.hasNext());
+    Assertions.assertEquals("1", lexer.poll().getValue());
+    Assertions.assertEquals(WHITESPACE, lexer.poll().getKind());
+    Assertions.assertEquals("2.5", lexer.poll().getValue());
+    Assertions.assertEquals(false, lexer.hasNext());
     
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testJsonObjects() {
     JsonLexer lexer = new JsonLexer("{\"foo\":\"b a r\"}");
-    assertEquals(BEGIN_OBJECT, lexer.poll().getKind());
-    assertEquals(STRING, lexer.poll().getKind());
-    assertEquals(COLON, lexer.poll().getKind());
-    assertEquals(STRING, lexer.poll().getKind());
-    assertEquals(END_OBJECT, lexer.poll().getKind());
-    assertEquals(false, lexer.hasNext());
+    Assertions.assertEquals(BEGIN_OBJECT, lexer.poll().getKind());
+    Assertions.assertEquals(STRING, lexer.poll().getKind());
+    Assertions.assertEquals(COLON, lexer.poll().getKind());
+    Assertions.assertEquals(STRING, lexer.poll().getKind());
+    Assertions.assertEquals(END_OBJECT, lexer.poll().getKind());
+    Assertions.assertEquals(false, lexer.hasNext());
 
     lexer = new JsonLexer("{\"a\":2,\"b\":false}");
-    assertEquals(BEGIN_OBJECT, lexer.poll().getKind());
-    assertEquals(STRING, lexer.poll().getKind());
-    assertEquals(COLON, lexer.poll().getKind());
-    assertEquals(NUMBER, lexer.poll().getKind());
-    assertEquals(COMMA, lexer.poll().getKind());
-    assertEquals(STRING, lexer.poll().getKind());
-    assertEquals(COLON, lexer.poll().getKind());
-    assertEquals(BOOLEAN, lexer.poll().getKind());
-    assertEquals(END_OBJECT, lexer.poll().getKind());
-    assertEquals(false, lexer.hasNext());
+    Assertions.assertEquals(BEGIN_OBJECT, lexer.poll().getKind());
+    Assertions.assertEquals(STRING, lexer.poll().getKind());
+    Assertions.assertEquals(COLON, lexer.poll().getKind());
+    Assertions.assertEquals(NUMBER, lexer.poll().getKind());
+    Assertions.assertEquals(COMMA, lexer.poll().getKind());
+    Assertions.assertEquals(STRING, lexer.poll().getKind());
+    Assertions.assertEquals(COLON, lexer.poll().getKind());
+    Assertions.assertEquals(BOOLEAN, lexer.poll().getKind());
+    Assertions.assertEquals(END_OBJECT, lexer.poll().getKind());
+    Assertions.assertEquals(false, lexer.hasNext());
     
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testJsonArray() {
     JsonLexer lexer = new JsonLexer("[\"fo\\\"o\",\"\\b\\\\ar\"]");
-    assertEquals(BEGIN_ARRAY, lexer.poll().getKind());
-    assertEquals(STRING, lexer.poll().getKind());
-    assertEquals(COMMA, lexer.poll().getKind());
-    assertEquals(STRING, lexer.poll().getKind());
-    assertEquals(END_ARRAY, lexer.poll().getKind());
-    assertEquals(false, lexer.hasNext());
+    Assertions.assertEquals(BEGIN_ARRAY, lexer.poll().getKind());
+    Assertions.assertEquals(STRING, lexer.poll().getKind());
+    Assertions.assertEquals(COMMA, lexer.poll().getKind());
+    Assertions.assertEquals(STRING, lexer.poll().getKind());
+    Assertions.assertEquals(END_ARRAY, lexer.poll().getKind());
+    Assertions.assertEquals(false, lexer.hasNext());
 
     lexer = new JsonLexer("[\"\\\"a\",-2.4e-5,\"b\",null]");
-    assertEquals(BEGIN_ARRAY, lexer.poll().getKind());
-    assertEquals(STRING, lexer.poll().getKind());
-    assertEquals(COMMA, lexer.poll().getKind());
-    assertEquals(NUMBER, lexer.poll().getKind());
-    assertEquals(COMMA, lexer.poll().getKind());
-    assertEquals(STRING, lexer.poll().getKind());
-    assertEquals(COMMA, lexer.poll().getKind());
-    assertEquals(NULL, lexer.poll().getKind());
-    assertEquals(END_ARRAY, lexer.poll().getKind());
-    assertEquals(false, lexer.hasNext());
+    Assertions.assertEquals(BEGIN_ARRAY, lexer.poll().getKind());
+    Assertions.assertEquals(STRING, lexer.poll().getKind());
+    Assertions.assertEquals(COMMA, lexer.poll().getKind());
+    Assertions.assertEquals(NUMBER, lexer.poll().getKind());
+    Assertions.assertEquals(COMMA, lexer.poll().getKind());
+    Assertions.assertEquals(STRING, lexer.poll().getKind());
+    Assertions.assertEquals(COMMA, lexer.poll().getKind());
+    Assertions.assertEquals(NULL, lexer.poll().getKind());
+    Assertions.assertEquals(END_ARRAY, lexer.poll().getKind());
+    Assertions.assertEquals(false, lexer.hasNext());
     
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -124,18 +124,18 @@ public class JsonLexerTest {
     checkSingleToken("\"\\\"\"", "\"",STRING);
     checkSingleToken("\"foo \\b\\f\\r\\n\\t\\\" foo \"", "foo \b\f\r\n\t\" foo ", STRING);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   protected void checkSingleToken(String json, String expectedContent, JsonTokenKind expectedTokenKind){
     JsonLexer lexer = new JsonLexer(json);
     JsonToken actual = lexer.poll();
-    assertEquals(expectedTokenKind, actual.getKind());
+    Assertions.assertEquals(expectedTokenKind, actual.getKind());
     if (actual.getKind().hasValue()) {
       String value = actual.getValue();
-      assertEquals(expectedContent, value);
+      Assertions.assertEquals(expectedContent, value);
     }
-    assertEquals(false, lexer.hasNext());
+    Assertions.assertEquals(false, lexer.hasNext());
   }
 
   protected void checkSingleToken(String json, JsonTokenKind expectedTokenKind) {

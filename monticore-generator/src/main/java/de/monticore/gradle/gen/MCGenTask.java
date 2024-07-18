@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.gradle.gen;
 
-import de.monticore.MCPlugin;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.gradle.AMontiCoreConfiguration;
 import de.monticore.gradle.common.AToolAction;
@@ -30,7 +29,8 @@ public abstract class MCGenTask extends MCSingleFileTask {
 
 
   public MCGenTask() {
-    super("MCGenTask", MCPlugin.GRAMMAR_CONFIGURATION_NAME);
+    // Do not specify a constant symbol path configuration (instead set it dynamically via the plugin)
+    super("MCGenTask", null);
 
     // hand-written java code - used by the TOP decorator, etc.
     setIfPathExists(x -> this.getHandWrittenCodeDir().from(x), Path.of(

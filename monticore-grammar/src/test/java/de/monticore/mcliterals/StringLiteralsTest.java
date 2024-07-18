@@ -7,17 +7,15 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-
 public class StringLiteralsTest {
   
-  @Before
+  @BeforeEach
   public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -27,10 +25,10 @@ public class StringLiteralsTest {
   
   private void checkStringLiteral(String expected, String actual) throws IOException {
     ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(actual);
-    assertTrue(lit instanceof ASTStringLiteral);
-    assertEquals(expected, ((ASTStringLiteral) lit).getValue());
+    Assertions.assertTrue(lit instanceof ASTStringLiteral);
+    Assertions.assertEquals(expected, ((ASTStringLiteral) lit).getValue());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -59,7 +57,7 @@ public class StringLiteralsTest {
       checkStringLiteral("\u010000", "\"\\u010000\"");
     }
     catch (IOException e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
   }
 }
