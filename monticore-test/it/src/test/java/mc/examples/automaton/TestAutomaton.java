@@ -28,13 +28,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TestAutomaton extends GeneratorIntegrationsTest {
-  
+
   @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
-  
+
   private ASTAutomaton parse() throws IOException {
     AutomatonParser parser = new AutomatonParser();
     Optional<ASTAutomaton> optAutomaton;
@@ -65,7 +65,7 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     printOD(ast, "Testautomat");
     Assertions.assertTrue(Log.getFindings().isEmpty());
   }
-  
+
   protected String readFile(String path, Charset encoding)
       throws IOException
   {
