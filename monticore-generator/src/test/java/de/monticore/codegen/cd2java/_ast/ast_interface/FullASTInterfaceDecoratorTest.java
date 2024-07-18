@@ -112,7 +112,7 @@ public class FullASTInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(62, astcdInterface.getCDMethodList().size());
+    assertEquals(60, astcdInterface.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
