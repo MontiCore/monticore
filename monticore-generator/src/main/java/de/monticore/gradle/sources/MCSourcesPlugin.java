@@ -55,8 +55,8 @@ public class MCSourcesPlugin implements Plugin<Project> {
 
     // Use the src/${sourcesetname}/grammars as an input by default
     mcSrcSet.srcDir(project.file("src/" + sourceSet.getName() + "/grammars"));
-    // and only work on mc4 files
-    mcSrcSet.getFilter().include("**/*.mc4");
+    // and only work on mc4 and mlc files
+    mcSrcSet.getFilter().include("**/*.mc4", "**/*.mlc");
 
 
     // Casting the SrcDirSet to a FileCollection seems to be necessary due to compatibility reasons with the
