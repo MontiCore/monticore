@@ -42,7 +42,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(11, decoratedClass.getCDMethodList().size());
+    assertEquals(15, decoratedClass.getCDMethodList().size());
   }
 
   @Test
@@ -204,7 +204,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
         .filter(m -> m.getName().equals("interpret"))
         .collect(Collectors.toList());
 
-    assertEquals(6, interpretMethods.size());
+    assertEquals(10, interpretMethods.size());
     ASTCDMethod method = interpretMethods.get(0);
 
     assertEquals(1, method.getCDParameterList().size());
