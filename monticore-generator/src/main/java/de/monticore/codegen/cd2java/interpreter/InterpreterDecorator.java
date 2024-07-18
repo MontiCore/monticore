@@ -91,15 +91,13 @@ public class InterpreterDecorator
         .setMCType(mcTypeFacade.createQualifiedType(VALUE_FULLNAME)).build();
 
     for (CDTypeSymbol typeSymbol : service.getAllCDTypes()) {
-      if (typeSymbol.isIsClass() || typeSymbol.isIsInterface()) {
-        ASTCDParameter parameter = cdParameterFacade
-            .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
-        ASTCDMethod method = cdMethodFacade.createMethod(
-            PUBLIC.build(), returnType, "interpret", parameter);
-        this.replaceTemplate(
-            EMPTY_BODY, method, new StringHookPoint("return node.evaluate(getRealThis());"));
-        methods.add(method);
-      }
+      ASTCDParameter parameter = cdParameterFacade
+          .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
+      ASTCDMethod method = cdMethodFacade.createMethod(
+          PUBLIC.build(), returnType, "interpret", parameter);
+      this.replaceTemplate(
+          EMPTY_BODY, method, new StringHookPoint("return node.evaluate(getRealThis());"));
+      methods.add(method);
     }
 
     for (DiagramSymbol diagramSymbol : service.getSuperCDsTransitive()) {

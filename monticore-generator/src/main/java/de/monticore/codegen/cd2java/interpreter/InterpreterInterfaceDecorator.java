@@ -12,7 +12,6 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolTOP;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 
@@ -58,7 +57,6 @@ public class InterpreterInterfaceDecorator
 
     return service.getAllCDTypes()
         .stream()
-        .filter(OOTypeSymbolTOP::isIsClass)
         .map(service::createASTFullName)
         .map(name -> cdParameterFacade.createParameter(name, NODE_PARAMETER))
         .map(parameter -> cdMethodFacade.createMethod(

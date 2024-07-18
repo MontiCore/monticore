@@ -38,18 +38,19 @@ public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(1, decoratedInterface.getCDMethodList().size());
+    assertEquals(6, decoratedInterface.getCDMethodList().size());
   }
 
   @Test
   public void testSuperInterfaces() {
     List<ASTMCObjectType> interfaces = decoratedInterface.getInterfaceList();
+    assertEquals(2, interfaces.size());
     assertEquals(
         ((ASTMCQualifiedType) interfaces.get(0)).getMCQualifiedName().getQName(),
-        InterpreterConstants.MODELINTERPRETER_FULLNAME);
+        "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter");
     assertEquals(
         ((ASTMCQualifiedType) interfaces.get(1)).getMCQualifiedName().getQName(),
-        "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter");
+        InterpreterConstants.MODELINTERPRETER_FULLNAME);
   }
 
   @Test
@@ -59,7 +60,7 @@ public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
         .filter(m -> m.getName().equals("interpret"))
         .collect(Collectors.toList());
 
-    assertEquals(1, interpretMethods.size());
+    assertEquals(6, interpretMethods.size());
     ASTCDMethod method = interpretMethods.get(0);
 
     assertEquals(1, method.getCDParameterList().size());
