@@ -34,7 +34,7 @@ build:
   stage: build
   script:
     - "cd monticore-generator && gradle build $GRADLE_OPTS -Pci -i"
-    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -PgenTR=true -PgenEMF=true -PgenTagging=true -PgenInterpreting=true -i --max-workers=4 --stacktrace"
+    - "cd .. && gradle buildMC $GRADLE_OPTS -Pci -PgenTR=true -PgenEMF=true -PgenTagging=true -i --max-workers=4 --stacktrace"
   artifacts:
     paths:
       - ".gradle"
@@ -133,7 +133,7 @@ test_montitrans:
   dependencies:
     - build
   script:
-    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -PgenTR=true -PgenEMF=true -PgenTagging=true -PgenInterpreting=true -Pci --max-workers=4 --stacktrace"
+    - "gradle -p monticore-test/montitrans build $GRADLE_OPTS -PgenTR=true -PgenEMF=true -PgenTagging=true -Pci --max-workers=4 --stacktrace"
   only:
     - merge_requests
     - branches
@@ -145,7 +145,7 @@ deploy:
   dependencies:
     - build
   script:
-    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -PgenTR=true -PgenEMF=true -PgenTagging=true -PgenInterpreting=true -Pci --max-workers=4"
+    - "gradle deployMC -PmavenPassword=$password -PmavenUser=$username $GRADLE_OPTS -PgenTR=true -PgenEMF=true -PgenTagging=true -Pci --max-workers=4"
   only:
     - dev
   except:

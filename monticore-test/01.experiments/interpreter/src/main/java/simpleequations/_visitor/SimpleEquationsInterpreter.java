@@ -12,9 +12,11 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     super();
   }
 
-  public Value interpret(ASTVariable node) {
-    Value value = node.getValue().evaluate(getRealThis());
-    getRealThis().store(node.getSymbol(), value);
+  public Value interpret(ASTProgram node) {
+    node.forEachStatements(s -> s.evaluate(getRealThis()));
+    if (node.isPresentExpression()) {
+      return node.getExpression().evaluate(getRealThis());
+    }
     return new NotAValue();
   }
 
@@ -94,8 +96,44 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     }
   }
 
+  public Value interpret(ASTVariableDefinition node) {
+    Value value = node.getValue().evaluate(getRealThis());
+    getRealThis().store(node.getSymbol(), value);
+    return new NotAValue();
+  }
+
+  public Value interpret(ASTVariableUsage node) {
+    var symbol = node.getEnclosingScope().resolveVariableDefinition(node.getName());
+    Value value = node.getValue().evaluate(getRealThis());
+    symbol.ifPresent(s -> getRealThis().store(s, value));
+    return new NotAValue();
+  }
+
+  public Value interpret(ASTPrintStatement node) {
+    Value output = node.getExpression().evaluate(getRealThis());
+    if (output.isBoolean()) {
+      System.out.println(output.asBoolean());
+    } else if (output.isInt()) {
+      System.out.println(output.asInt());
+    } else if (output.isLong()) {
+      System.out.println(output.asLong());
+    } else if (output.isFloat()) {
+      System.out.println(output.asFloat());
+    } else if (output.isDouble()) {
+      System.out.println(output.asDouble());
+    } else if (output.isChar()) {
+      System.out.println(output.asChar());
+    } else if (output.isString()) {
+      System.out.println(output.asString());
+    } else if (output.isObject()) {
+      System.out.println(output.asObject());
+    }
+    return new NotAValue();
+  }
+
   public Value interpret(ASTNameExpression node) {
-    return ValueFactory.createValue(node.getName());
+    var optSymbol = node.getEnclosingScope().resolveVariableDefinition(node.getName());
+    return optSymbol.map(getRealThis()::load).orElse(new NotAValue());
   }
 
   public Value interpret(ASTNumberExpression node) {

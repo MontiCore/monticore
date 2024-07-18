@@ -377,11 +377,6 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
     return getAsBoolean(GENTAG_LONG);
   }
 
-  public Optional<Boolean> getGenInterpret() {
-    return getAsBoolean(GENINTERPRET_LONG);
-  }
-
-
   /**
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings
@@ -431,13 +426,6 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
               .map(p-> (JsonElement) new JsonBoolean(p))
               .orElse(new JsonNull());
       result.putMember(GENTAG_LONG, tagGen);
-    }
-
-    {
-      JsonElement interpretGen = this.getGenInterpret()
-          .map(p-> (JsonElement) new JsonBoolean(p))
-          .orElse(new JsonNull());
-      result.putMember(GENINTERPRET_LONG, interpretGen);
     }
 
     // Custom Script set?

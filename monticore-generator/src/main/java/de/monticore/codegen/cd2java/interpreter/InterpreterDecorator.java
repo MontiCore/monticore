@@ -71,7 +71,7 @@ public class InterpreterDecorator
     List<String> names = new ArrayList<>();
     List<String> types = new ArrayList<>();
 
-    for (DiagramSymbol symbol: service.getSuperCDsTransitive()) {
+    for (DiagramSymbol symbol : service.getSuperCDsTransitive()) {
       names.add(service.getInterpreterSimpleName(symbol));
       types.add(service.getInterpreterFullName(symbol));
     }
@@ -103,26 +103,25 @@ public class InterpreterDecorator
     }
 
     for (DiagramSymbol diagramSymbol : service.getSuperCDsTransitive()) {
-      if (diagramSymbol == service.getCDSymbol()) {
-        continue;
-      }
-      String interpreterName = uncapFirst(service.getInterpreterSimpleName(diagramSymbol));
-      for (CDTypeSymbol typeSymbol : service.getAllCDTypes(diagramSymbol)) {
-        if (typeSymbol.isIsClass() || typeSymbol.isIsInterface()) {
-          ASTCDParameter parameter = cdParameterFacade
-              .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
-          ASTCDMethod method = cdMethodFacade.createMethod(
-              PUBLIC.build(), returnType, "interpret", parameter);
-          this.replaceTemplate(
-              EMPTY_BODY, method, new StringHookPoint(
-                  String.format("return %s.interpret(node);",
-                      interpreterName)));
-          methods.add(method);
+      if (diagramSymbol != service.getCDSymbol()) {
+        String interpreterName = uncapFirst(service.getInterpreterSimpleName(diagramSymbol));
+        for (CDTypeSymbol typeSymbol : service.getAllCDTypes(diagramSymbol)) {
+          if (typeSymbol.isIsClass()) {
+            ASTCDParameter parameter = cdParameterFacade
+                .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
+            ASTCDMethod method = cdMethodFacade.createMethod(
+                PUBLIC.build(), returnType, "interpret", parameter);
+            this.replaceTemplate(
+                EMPTY_BODY, method, new StringHookPoint(
+                    String.format("return %s.interpret(node);",
+                        interpreterName)));
+            methods.add(method);
+          }
         }
       }
     }
 
-    ASTCDParameter parameter = cdParameterFacade
+/*    ASTCDParameter parameter = cdParameterFacade
         .createParameter(mcTypeFacade.
             createQualifiedType(NODE_TYPE), NODE_PARAMETER);
     ASTCDMethod method = cdMethodFacade.createMethod(
@@ -130,7 +129,7 @@ public class InterpreterDecorator
     this.replaceTemplate(
         EMPTY_BODY, method, new StringHookPoint(
             String.format("return new %s();", NOT_A_VALUE_FULLNAME)));
-    methods.add(method);
+    methods.add(method);*/
 
     return methods;
   }

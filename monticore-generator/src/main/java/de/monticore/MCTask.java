@@ -126,9 +126,6 @@ public abstract class MCTask extends DefaultTask {
   // Whether tagging related artifacts should be generated (the grammar must be a tagdef or tagschema grammar)
   public boolean genTag = false;
 
-  // Whether interpreter related artifacts should be generated
-  public boolean genInterpret = true;
-
   @OutputDirectory
   public DirectoryProperty getOutputDir() {
     return outputDir;
@@ -255,11 +252,6 @@ public abstract class MCTask extends DefaultTask {
   @Input
   public boolean getGenTag() {
     return genTag;
-  }
-
-  @Input
-  public boolean getGenInterpret() {
-    return genInterpret;
   }
 
   public void handcodedPath(String... paths) {
@@ -401,8 +393,6 @@ public abstract class MCTask extends DefaultTask {
     params.add(Boolean.toString(isDSTL));
     params.add("-genTag");
     params.add(Boolean.toString(genTag));
-    params.add("-genInterpret");
-    params.add(Boolean.toString(genInterpret));
     if (configTemplate != null) {
       String cfgTemplateStr = configTemplate.toString();
       params.add("-ct");

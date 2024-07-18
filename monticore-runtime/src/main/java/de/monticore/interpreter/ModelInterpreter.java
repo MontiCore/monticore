@@ -2,6 +2,7 @@
 package de.monticore.interpreter;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.interpreter.values.NotAValue;
 import de.monticore.symboltable.ISymbol;
 
 import java.util.HashMap;
@@ -9,7 +10,9 @@ import java.util.Map;
 
 public interface ModelInterpreter {
 
-  Value interpret(ASTNode n);
+  default Value interpret(ASTNode n) {
+    return new NotAValue();
+  }
 
   void setRealThis(ModelInterpreter realThis);
 

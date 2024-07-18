@@ -4,11 +4,11 @@ package simpleequations._visitor;
 import de.monticore.interpreter.Value;
 import org.junit.Test;
 import simpleequations.SimpleEquationsMill;
-import simpleequations._ast.ASTExpression;
+import simpleequations._ast.ASTProgram;
 import simpleequations._parser.SimpleEquationsParser;
+import simpleequations._symboltable.SimpleEquationsScopesGenitorDelegator;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -20,31 +20,29 @@ public class SimpleEquationsInterpreterTest {
     SimpleEquationsMill.init();
     SimpleEquationsParser parser = SimpleEquationsMill.parser();
     SimpleEquationsInterpreter interpreter = new SimpleEquationsInterpreter();
+    SimpleEquationsScopesGenitorDelegator delegator = SimpleEquationsMill.scopesGenitorDelegator();
 
-    final Optional<ASTExpression> variableAss = parser.parse_String("a=3.5");
-    assertTrue(variableAss.isPresent());
-    final ASTExpression variable = variableAss.get();
+    ASTProgram program = parser.parse_StringProgram("var a=3.5; var b=4; print(a); var c=a+b; c;").get();
 
-    SimpleEquationsMill.scopesGenitorDelegator().createFromAST(variable);
+    delegator.createFromAST(program);
+    Value result = interpreter.interpret(program);
 
-    interpreter.interpret(variable);
-
-    final Optional<ASTExpression> optPlusEq = parser.parse_String("a+2.4");
-    assertTrue(optPlusEq.isPresent());
-    final ASTExpression plusEq = optPlusEq.get();
-
-    Value result = interpreter.interpret(plusEq);
     assertTrue(result.isFloat());
-    assertEquals(result.asFloat(), 5.9f);
+    assertEquals(result.asFloat(), 7.5f, 0.0001f);
 
-    final Optional<ASTExpression> optPlusEq1 = parser.parse_String("5+5");
-    assertTrue(optPlusEq1.isPresent());
-    final ASTExpression plusEq1 = optPlusEq1.get();
+    SimpleEquationsMill.reset();
+    SimpleEquationsMill.init();
+    interpreter = new SimpleEquationsInterpreter();
+    program = parser.parse_StringProgram(
+        "var a = 40; " +
+        "a = 45;" +
+            "a;").get();
 
-    result = interpreter.interpret(plusEq1);
+    delegator.createFromAST(program);
+    result = interpreter.interpret(program);
 
     assertTrue(result.isInt());
-    assertEquals(result.asInt(), 10);
+    assertEquals(result.asInt(), 45);
   }
 
 }

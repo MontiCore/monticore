@@ -4,7 +4,6 @@ package de.monticore.codegen.cd2java.interpreter;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.builder.BuilderConstants;
@@ -19,7 +18,7 @@ import java.util.List;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
-public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDMethod>> {
+public class ASTEvaluateDecorator extends AbstractCreator<ASTCDClass, List<ASTCDMethod>> {
 
   protected final VisitorService visitorService;
 
@@ -32,16 +31,15 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDType, List<ASTCDM
   public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astPackage = getPackage(input, decoratedCD, ASTConstants.AST_PACKAGE);
     astPackage.streamCDElements()
-        .filter(e -> e instanceof ASTCDClass || e instanceof ASTCDInterface)
-        .map(e -> (ASTCDType) e)
+        .filter(e -> e instanceof ASTCDClass)
+        .map(e -> (ASTCDClass) e)
         .forEach(t -> t.addAllCDMembers(decorate(t)));
   }
 
   @Override
-  public List<ASTCDMethod> decorate(ASTCDType input) {
+  public List<ASTCDMethod> decorate(ASTCDClass input) {
     if (input.getName().endsWith(BuilderConstants.BUILDER_SUFFIX) ||
         input.getName().startsWith("ASTConstants") ||
-        input.getName().endsWith(ASTConstants.NODE_SUFFIX) ||
         input.getName().endsWith("Literals")) {
       return new ArrayList<>();
     }
