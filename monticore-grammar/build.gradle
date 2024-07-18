@@ -568,6 +568,16 @@ if (("true").equals(getProperty('genTR'))) {
 
 
 if (("true").equals(getProperty('genTagging'))) {
+  // Because tagging is not properly published as a source set we instead add the tag definitions to the main grammar jars
+  ["grammarsJar", "grammarsForVariantJar"].forEach { taskname ->
+    // We have to add it to both the "compability grammarsForVariant", as well as the grammarsJar publication
+    tasks.named(taskname, org.gradle.jvm.tasks.Jar) {
+      from(tasks.generateMCGrammars.outputDir) {
+        include "**/*TagDefinition.mc4", "**/*TagSchema.mc4"
+      }
+      includeEmptyDirs = false
+    }
+  }
   // Bundle and publish the generated tagging artifacts separately as monticore-grammar-tagging
   tasks.register('taggingJar', Jar) {
     from sourceSets.tagging.output
@@ -585,6 +595,11 @@ if (("true").equals(getProperty('genTagging'))) {
         artifactId = project.name + "-tagging"
         artifact tasks.taggingJar { archiveAppendix = 'tagging' }
         artifact tasks.taggingSourcesJar { archiveAppendix = 'tagging'; archiveClassifier = 'sources' }
+      }
+      if (("true").equals(getProperty('genTR'))) {
+        "trafo" {
+          groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
+        }
       }
     }
   }
