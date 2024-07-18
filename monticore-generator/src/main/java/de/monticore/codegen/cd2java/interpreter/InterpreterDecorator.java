@@ -104,17 +104,15 @@ public class InterpreterDecorator
       if (diagramSymbol != service.getCDSymbol()) {
         String interpreterName = uncapFirst(service.getInterpreterSimpleName(diagramSymbol));
         for (CDTypeSymbol typeSymbol : service.getAllCDTypes(diagramSymbol)) {
-          if (typeSymbol.isIsClass()) {
-            ASTCDParameter parameter = cdParameterFacade
-                .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
-            ASTCDMethod method = cdMethodFacade.createMethod(
-                PUBLIC.build(), returnType, "interpret", parameter);
-            this.replaceTemplate(
-                EMPTY_BODY, method, new StringHookPoint(
-                    String.format("return %s.interpret(node);",
-                        interpreterName)));
-            methods.add(method);
-          }
+          ASTCDParameter parameter = cdParameterFacade
+              .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
+          ASTCDMethod method = cdMethodFacade.createMethod(
+              PUBLIC.build(), returnType, "interpret", parameter);
+          this.replaceTemplate(
+              EMPTY_BODY, method, new StringHookPoint(
+                  String.format("return %s.interpret(node);",
+                      interpreterName)));
+          methods.add(method);
         }
       }
     }
