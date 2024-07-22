@@ -3,182 +3,155 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 buildscript {
-  // fake a different group for Gradle to prevent it from including the build in it self
-  group = "de.mc"
+    dependencies {
+        classpath "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
+    }
 }
 
 plugins {
-  id "java-library"
-  id "io.github.themrmilchmann.ecj" version "0.2.0" // Eclipse compiler as it's much faster than javac
-  id "monticore-bs" version "$previous_mc_version"// MontiCore Plugin
-  id "com.github.johnrengelman.shadow" version "6.1.0"
-  id 'groovy-gradle-plugin'
-  id 'maven-publish'
-  id "jacoco"
+    id "java-library"
+    id "io.github.themrmilchmann.ecj" version "0.2.0" // Eclipse compiler as it's much faster than javac
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id 'groovy-gradle-plugin'
+    id 'maven-publish'
+    id "jacoco"
 }
 
 description = 'MontiCore: Generator'
-if(!hasProperty('bootstrap')){
-  group = "de.monticore"
-} else {
-  group = "de.monticore.bs"
-}
+group = "de.monticore"
 
 ext.grammarDir = 'src/main/grammars'
 buildDir = file("$projectDir/target")
 
 repositories {
-  if(("true").equals(getProperty('useLocalRepo'))){
-    mavenLocal()
-  }
-  maven {
-    url repo
-  }
-  mavenCentral()
+    if (("true").equals(getProperty('useLocalRepo'))) {
+        mavenLocal()
+    }
+    maven {
+        url repo
+    }
+    mavenCentral()
 }
 
 dependencies {
-  implementation gradleApi()
+    implementation gradleApi()
 
-  implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
 
-  implementation "de.monticore.bs:monticore-runtime:$previous_mc_version"
-  implementation "de.monticore.bs:monticore-grammar:$previous_mc_version"
-  grammar "de.monticore.bs:monticore-grammar:$previous_mc_version:grammars"
-  implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
-  implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+    implementation "de.monticore:monticore-runtime:$previous_mc_version"
+    implementation "de.monticore:monticore-grammar:$previous_mc_version"
+    implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
 
-  implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
-  implementation "org.freemarker:freemarker:$freemarker_version"
-  implementation "commons-cli:commons-cli:$commons_cli_version"
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+    implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
+    implementation "org.freemarker:freemarker:$freemarker_version"
+    implementation "commons-cli:commons-cli:$commons_cli_version"
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
 //  implementation 'org.slf4j:slf4j-api:1.7.10'
-  implementation 'ch.qos.logback:logback-classic:1.2.0'
-  implementation 'ch.qos.logback:logback-core:1.2.0'
+    implementation 'ch.qos.logback:logback-classic:1.2.0'
+    implementation 'ch.qos.logback:logback-core:1.2.0'
 
-  implementation "de.monticore.lang.bs:cd4analysis:$cd4a_version"
-  grammar "de.monticore.lang.bs:cd4analysis:$cd4a_version:grammars"
-  implementation "org.antlr:antlr4:$antlr_version"
-  implementation 'org.apache.groovy:groovy:4.0.2'
-  implementation ("com.google.guava:guava:$guava_version")
-  implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
-  testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.24.2'
-  testImplementation "junit:junit:$junit_version"
-  testImplementation 'org.mockito:mockito-core:4.5.1'
+    implementation "de.monticore.lang:cd4analysis:$cd4a_version"
+    implementation "org.antlr:antlr4:$antlr_version"
+    implementation 'org.apache.groovy:groovy:4.0.2'
+    implementation("com.google.guava:guava:$guava_version")
+    implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
+    testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.24.2'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testImplementation 'org.mockito:mockito-core:4.5.1'
 
-}
-
-sourceSets {
-  main.java.srcDirs += [ "$buildDir/generated-sources/monticore/sourcecode"]
-  
-  grammars {
-    resources {
-      srcDirs(grammarDir)
-      include "**/*.mc4"
-    }
-  }
-}
-
-task generateGrammarFamily (type: MCTask) {
-  grammar = file "$grammarDir/de/monticore/grammar/GrammarFamily.mc4"
-  templatePath = [ "$grammarDir"] // Reset path: Don't use actual templates
-  outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-  def uptoDate = incCheck("de/monticore/grammar/GrammarFamily.mc4")
-  outputs.upToDateWhen { uptoDate }
-  templatePath = ["$projectDir/src/main/assemblies"] // do not use src/main/resources
-}
-
-compileJava {
-  dependsOn project.collect { it.tasks.withType(MCTask) }
+  testImplementation gradleTestKit()
 }
 
 tasks.withType(JavaCompile) {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
-  options.encoding = "UTF-8"
-  options.deprecation false
-  options.warnings = false
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+    options.encoding = "UTF-8"
+    options.deprecation false
+    options.warnings = false
 }
 java {
-  withSourcesJar()
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
-  }
-  registerFeature('grammars') {
-    usingSourceSet(sourceSets.grammars)
-  }
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
 }
-
 
 
 tasks.withType(Test) {
-  useJUnit()
+    useJUnitPlatform()
 
-  testLogging {
-    // controls whether test output is shown
-    showStandardStreams= !("false").equals(getProperty('showTestOutput'))
-    showExceptions true
-    showCauses true
-    showStackTraces true
-    exceptionFormat TestExceptionFormat.FULL
-    info {
-      events TestLogEvent.FAILED,
-              TestLogEvent.PASSED,
-              TestLogEvent.SKIPPED,
-              TestLogEvent.STANDARD_OUT
+    testLogging {
+        // controls whether test output is shown
+        showStandardStreams = !("false").equals(getProperty('showTestOutput'))
+        showExceptions true
+        showCauses true
+        showStackTraces true
+        exceptionFormat TestExceptionFormat.FULL
+        info {
+            events TestLogEvent.FAILED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.SKIPPED,
+                    TestLogEvent.STANDARD_OUT
+        }
     }
-  }
-  afterTest { desc, result ->
-    logger.lifecycle "${desc.className} > ${desc.name} ${result.resultType}"
-  }
-  afterSuite { desc, result ->
-    if (!desc.parent) { // will match the outermost suite
-      def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
-      def startItem = '|  ', endItem = '  |'
-      logger.lifecycle startItem + output + endItem
+    afterTest { desc, result ->
+        logger.lifecycle "${desc.className} > ${desc.name} ${result.resultType}"
     }
-  }
-  reports {
-    junitXml.required = false
-    html.required = false
-  }
+    afterSuite { desc, result ->
+        if (!desc.parent) { // will match the outermost suite
+            def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+            def startItem = '|  ', endItem = '  |'
+            logger.lifecycle startItem + output + endItem
+        }
+    }
+    reports {
+        junitXml.required = false
+        html.required = false
+    }
 }
-
-jar.dependsOn grammarsJar
 
 shadowJar { // all in one jar
-  manifest {
-    attributes "Main-Class": "de.monticore.cli.MontiCoreTool"
-  }
-  archiveClassifier = "mc-tool"
-  zip64 true
+    manifest {
+        attributes "Main-Class": "de.monticore.cli.MontiCoreTool"
+    }
+    archiveClassifier = "mc-tool"
+    zip64 true
 }
 
+tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {}
+
+processResources.dependsOn("buildInfo")
 
 def pluginName = 'monticore'
-if(hasProperty('bootstrap')) {
-  pluginName = 'monticore-bs'
-}
+
 gradlePlugin.plugins {
-  monticore {
-    id = pluginName
-    implementationClass = 'de.monticore.MCPlugin'
-  }
-  // New version of our plugin (supporting incremental builds)
-  monticoreGenerator {
-    id = hasProperty("bootstrap") ? "de.monticore.bs.generator" : "de.monticore.generator"
-    implementationClass = 'de.monticore.gradle.MCGeneratorPlugin'
-  }
+    monticore {
+        id = pluginName
+        implementationClass = 'de.monticore.MCPlugin'
+    }
+    // New version of our plugin (supporting incremental builds)
+    monticoreGenerator {
+        id = "de.monticore.generator"
+        implementationClass = 'de.monticore.gradle.MCGeneratorPlugin'
+    }
+    monticoreGeneratorWithTR {
+        id = "de.monticore.generator-withtr"
+        implementationClass = 'de.monticore.gradle.MCGeneratorWithTRPlugin'
+    }
 }
 
 publishing {
-  // The gradle-plugin plugin deploys automatically a pluginMaven publication (from the main component)
-  repositories.maven {
-    credentials.username mavenUser
-    credentials.password mavenPassword
-    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-  }
+    // The gradle-plugin plugin deploys automatically a pluginMaven publication (from the main component)
+    repositories.maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+        url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    }
 }

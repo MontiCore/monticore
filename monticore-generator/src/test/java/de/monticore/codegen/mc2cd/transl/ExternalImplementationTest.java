@@ -6,31 +6,24 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ExternalImplementationTest {
+public class ExternalImplementationTest extends TranslationTestCase {
 
   private ASTCDClass astZ;
 
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  public ExternalImplementationTest() {
+  @BeforeEach
+  public void setupExternalImplementationTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/ExternalImplementationGrammar.mc4")).get();
     astZ = TestHelper.getCDClass(cdCompilationUnit, "ASTZ").get();
@@ -39,10 +32,10 @@ public class ExternalImplementationTest {
   @Test
   public void testExternalImplementation() {
     ASTMCObjectType cdInterface = astZ.getInterfaceList().get(0);
-    assertTrue(cdInterface != null);
+    Assertions.assertTrue(cdInterface != null);
     String name = TransformationHelper.typeToString(cdInterface);
-    assertEquals("mc2cdtransformation.Supergrammar.ASTZExt", name);
+    Assertions.assertEquals("mc2cdtransformation.Supergrammar.ASTZExt", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -10,16 +10,16 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.abc.realabc._parser.RealABCParser;
 
 public class EmbedTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -30,8 +30,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     
     RealABCParser p = parse("a b c");
     
-    assertEquals(false, p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -39,8 +39,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     
     RealABCParser p = parse("a b");
     
-    assertEquals(false, p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -48,8 +48,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     
     RealABCParser p = parse("a a a b b b c c c");
     
-    assertEquals(false, p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -57,8 +57,8 @@ public class EmbedTest extends GeneratorIntegrationsTest {
     
     RealABCParser p = parse("a b c c");
     
-    assertEquals(false, p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   private RealABCParser parse(String in) throws IOException {

@@ -8,18 +8,17 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 public class BasicSymbolsSymbols2JsonTest {
 
   private IBasicSymbolsArtifactScope scope;
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -100,7 +99,7 @@ public class BasicSymbolsSymbols2JsonTest {
   public void testDeSer(){
     performRoundTripSerialization(scope);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   public void performRoundTripSerialization(IBasicSymbolsArtifactScope scope){
@@ -109,74 +108,68 @@ public class BasicSymbolsSymbols2JsonTest {
     String serialized = symbols2Json.serialize(scope);
     // then deserialize it
     IBasicSymbolsArtifactScope deserialized = symbols2Json.deserialize(serialized);
-    assertNotNull(deserialized);
+    Assertions.assertNotNull(deserialized);
     // and assert that the deserialized scope equals the one before
     //check that both can resolve the type "Type"
 
     Optional<TypeSymbol> type = scope.resolveType("Type");
     Optional<TypeSymbol> deserializedType = deserialized.resolveType("Type");
-    assertTrue(type.isPresent());
-    assertTrue(deserializedType.isPresent());
+    Assertions.assertTrue(type.isPresent());
+    Assertions.assertTrue(deserializedType.isPresent());
 
     //check that both can resolve the type "SubType" with the supertype "Type"
     Optional<TypeSymbol> subtype = scope.resolveType("SubType");
     Optional<TypeSymbol> deserializedSubType = deserialized.resolveType("SubType");
-    assertTrue(subtype.isPresent());
-    assertTrue(deserializedSubType.isPresent());
-    assertEquals(1, subtype.get().getSuperTypesList().size());
-    assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
-    assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
-    assertEquals("Type", deserializedSubType.get().getSuperTypesList().get(0).print());
+    Assertions.assertTrue(subtype.isPresent());
+    Assertions.assertTrue(deserializedSubType.isPresent());
+    Assertions.assertEquals(1, subtype.get().getSuperTypesList().size());
+    Assertions.assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
+    Assertions.assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
+    Assertions.assertEquals("Type", deserializedSubType.get().getSuperTypesList().get(0).print());
 
     IBasicSymbolsScope typeSpanned = type.get().getSpannedScope();
     IBasicSymbolsScope deserTypeSpanned = deserializedType.get().getSpannedScope();
 
     //check that both can resolve the TypeVariable "T" in their "Type"
-    assertTrue(typeSpanned.resolveTypeVar("T").isPresent());
-    assertTrue(deserTypeSpanned.resolveTypeVar("T").isPresent());
+    Assertions.assertTrue(typeSpanned.resolveTypeVar("T").isPresent());
+    Assertions.assertTrue(deserTypeSpanned.resolveTypeVar("T").isPresent());
 
     //check for Variable variable in Type
     Optional<VariableSymbol> variable = typeSpanned.resolveVariable("variable");
     Optional<VariableSymbol> deserializedVariable = deserTypeSpanned.resolveVariable("variable");
-    assertTrue(variable.isPresent());
-    assertTrue(deserializedVariable.isPresent());
-    assertEquals("double", variable.get().getType().print());
-    assertEquals("double", deserializedVariable.get().getType().print());
+    Assertions.assertTrue(variable.isPresent());
+    Assertions.assertTrue(deserializedVariable.isPresent());
+    Assertions.assertEquals("double", variable.get().getType().print());
+    Assertions.assertEquals("double", deserializedVariable.get().getType().print());
 
     //check for Variable variable2 in Type
     Optional<VariableSymbol> variable2 = typeSpanned.resolveVariable("variable2");
     Optional<VariableSymbol> deserializedVariable2 = deserTypeSpanned.resolveVariable("variable2");
-    assertTrue(variable2.isPresent());
-    assertTrue(deserializedVariable2.isPresent());
-    assertEquals("T", variable2.get().getType().print());
-    assertEquals("T", deserializedVariable2.get().getType().print());
-    assertEquals("Type.T", variable2.get().getType().printFullName());
-    assertEquals("Type.T", deserializedVariable2.get().getType().printFullName());
-    assertSame(
-        type.get().getSpannedScope(),
-        variable2.get().getType().getTypeInfo().getEnclosingScope()
-    );
-    assertSame(
-        deserializedType.get().getSpannedScope(),
-        deserializedVariable2.get().getType().getTypeInfo().getEnclosingScope()
-    );
+    Assertions.assertTrue(variable2.isPresent());
+    Assertions.assertTrue(deserializedVariable2.isPresent());
+    Assertions.assertEquals("T", variable2.get().getType().print());
+    Assertions.assertEquals("T", deserializedVariable2.get().getType().print());
+    Assertions.assertEquals("Type.T", variable2.get().getType().printFullName());
+    Assertions.assertEquals("Type.T", deserializedVariable2.get().getType().printFullName());
+    Assertions.assertSame(type.get().getSpannedScope(), variable2.get().getType().getTypeInfo().getEnclosingScope());
+    Assertions.assertSame(deserializedType.get().getSpannedScope(), deserializedVariable2.get().getType().getTypeInfo().getEnclosingScope());
 
     //check for Function function in Type
     Optional<FunctionSymbol> function = typeSpanned.resolveFunction("function");
     Optional<FunctionSymbol> deserializedFunction = deserTypeSpanned.resolveFunction("function");
-    assertTrue(function.isPresent());
-    assertTrue(deserializedFunction.isPresent());
-    assertEquals("int", function.get().getType().print());
-    assertEquals("int", deserializedFunction.get().getType().print());
+    Assertions.assertTrue(function.isPresent());
+    Assertions.assertTrue(deserializedFunction.isPresent());
+    Assertions.assertEquals("int", function.get().getType().print());
+    Assertions.assertEquals("int", deserializedFunction.get().getType().print());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSerializedUnknownKind() {
     BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
     symbols2Json.deserialize("{\"symbols\": [{\"kind\":\"unknown\", \"name\":\"test\"}]}");
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -187,13 +180,13 @@ public class BasicSymbolsSymbols2JsonTest {
 
     BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
     symbols2Json.deserialize(invalidJsonForSerializing);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1238"));
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1238"));
 
     symbols2Json.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1233"));
+    Assertions.assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1233"));
 
     symbols2Json.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA0572"));
+    Assertions.assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA0572"));
   }
 
 

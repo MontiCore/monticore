@@ -1,7 +1,7 @@
 package de.monticore.generating.templateengine.reporting.commons;
 
-import de.monticore.generating.templateengine.reporting.commons.StatisticsHandler;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -12,7 +12,7 @@ public class StatisticsHandlerTest {
     String content = "SomeString with many characters? + ?+._ü1^^";
     String SHASH = StatisticsHandler.getSHASH(content);
 
-    assertTrue(StatisticsHandler.isValidSHASH(SHASH, content));
+    Assertions.assertTrue(StatisticsHandler.isValidSHASH(SHASH, content));
   }
   @Test
   public void invalidSHash() {
@@ -20,7 +20,7 @@ public class StatisticsHandlerTest {
     String SHASH = StatisticsHandler.getSHASH(content);
 
     String differentContent = "AnotjherString";
-    assertFalse(StatisticsHandler.isValidSHASH(SHASH, differentContent));
+    Assertions.assertFalse(StatisticsHandler.isValidSHASH(SHASH, differentContent));
   }
 
 }

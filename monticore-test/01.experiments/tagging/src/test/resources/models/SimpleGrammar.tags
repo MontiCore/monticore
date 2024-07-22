@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+tags SimpleGrammar {
+
+    tag Automata with Grammar;
+    within Automata {
+        tag Automaton with SymbolProd = "within";
+    }
+    tag Automata.Automaton with SymbolProd = "fqn";
+
+    within de.monticore.fqn {
+        tag FQNAutomata with FQNGrammar;
+        within FQNAutomata {
+                tag Automaton with SymbolProd = "within";
+        }
+    }
+    tag de.monticore.fqn.FQNAutomata.Automaton with SymbolProd = "fqn";
+}

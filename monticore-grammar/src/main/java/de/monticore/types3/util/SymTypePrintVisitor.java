@@ -23,7 +23,11 @@ import java.util.stream.Collectors;
  */
 public class SymTypePrintVisitor implements ISymTypeVisitor {
 
-  protected static final String FREE_VARIABLE_NAME = "__INTERNAL_TYPEVARIABLE";
+  protected static final String TOP_PRINT = "#TOP";
+
+  protected static final String BOTTOM_PRINT = "#BOTTOM";
+
+  protected static final String OBSCURE_PRINT = "Obscure";
 
   protected StringBuilder print;
 
@@ -47,7 +51,7 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeObscure symType) {
-    getPrint().append("Obscure");
+    getPrint().append(OBSCURE_PRINT);
   }
 
   @Override
@@ -111,22 +115,27 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeOfIntersection symType) {
-    Collection<String> printedTypes = new ArrayList<>();
-    for (SymTypeExpression type : symType.getIntersectedTypeSet()) {
-      String typePrinted = calculate(type);
-      // As function's '->' has a lower precedence than '&'
-      // and unions, and intersections are missing them for better readability
-      // parentheses are added
-      if (isTypePrintedAsInfix(type)) {
-        typePrinted = "(" + typePrinted + ")";
-      }
-      printedTypes.add(typePrinted);
+    if (symType.isEmptyIntersectedTypes()) {
+      getPrint().append(TOP_PRINT);
     }
-    getPrint().append(printedTypes.stream()
-        // sorted to be deterministic
-        .sorted()
-        .collect(Collectors.joining(" & "))
-    );
+    else {
+      Collection<String> printedTypes = new ArrayList<>();
+      for (SymTypeExpression type : symType.getIntersectedTypeSet()) {
+        String typePrinted = calculate(type);
+        // As function's '->' has a lower precedence than '&'
+        // and unions, and intersections are missing them for better readability
+        // parentheses are added
+        if (isTypePrintedAsInfix(type)) {
+          typePrinted = "(" + typePrinted + ")";
+        }
+        printedTypes.add(typePrinted);
+      }
+      getPrint().append(printedTypes.stream()
+          // sorted to be deterministic
+          .sorted()
+          .collect(Collectors.joining(" & "))
+      );
+    }
   }
 
   @Override
@@ -164,22 +173,27 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeOfUnion symType) {
-    Collection<String> printedTypes = new ArrayList<>();
-    for (SymTypeExpression type : symType.getUnionizedTypeSet()) {
-      String typePrinted = calculate(type);
-      // As function's '->' has a lower precedence than '&'
-      // and unions, and intersections are missing them for better readability
-      // parentheses are added
-      if (isTypePrintedAsInfix(type)) {
-        typePrinted = "(" + typePrinted + ")";
-      }
-      printedTypes.add(typePrinted);
+    if (symType.isEmptyUnionizedTypes()) {
+      getPrint().append(BOTTOM_PRINT);
     }
-    getPrint().append(printedTypes.stream()
-        // sorted to be deterministic
-        .sorted()
-        .collect(Collectors.joining(" | "))
-    );
+    else {
+      Collection<String> printedTypes = new ArrayList<>();
+      for (SymTypeExpression type : symType.getUnionizedTypeSet()) {
+        String typePrinted = calculate(type);
+        // As function's '->' has a lower precedence than '&'
+        // and unions, and intersections are missing them for better readability
+        // parentheses are added
+        if (isTypePrintedAsInfix(type)) {
+          typePrinted = "(" + typePrinted + ")";
+        }
+        printedTypes.add(typePrinted);
+      }
+      getPrint().append(printedTypes.stream()
+          // sorted to be deterministic
+          .sorted()
+          .collect(Collectors.joining(" | "))
+      );
+    }
   }
 
   @Override
@@ -193,7 +207,7 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
       getPrint().append(printTypeVarSymbol(symType.getTypeVarSymbol()));
     }
     else {
-      getPrint().append(FREE_VARIABLE_NAME);
+      getPrint().append(symType.getFreeVarIdentifier());
     }
   }
 

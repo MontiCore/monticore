@@ -3,8 +3,8 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class OverridingAbstractNTsTest extends CocoTest{
 
@@ -12,7 +12,7 @@ public class OverridingAbstractNTsTest extends CocoTest{
           "by a production for an %s nonterminal.";
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4008.A4008";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new OverridingAbstractNTs());

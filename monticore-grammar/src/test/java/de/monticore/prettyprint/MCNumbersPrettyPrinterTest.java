@@ -9,8 +9,9 @@ import de.se_rwth.commons.logging.LogStub;
 import mcnumbers._ast.ASTDecimal;
 import mcnumbers._ast.ASTInteger;
 import mcnumbers._prettyprint.MCNumbersFullPrettyPrinter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MCNumbersPrettyPrinterTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -33,79 +34,79 @@ public class MCNumbersPrettyPrinterTest {
   public void testDecimalZero() throws IOException {
     TestMCNumbersParser parser = new TestMCNumbersParser();
     Optional<ASTDecimal> result = parser.parseDecimal(new StringReader("0"));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTDecimal decimal = result.get();
     
     MCNumbersFullPrettyPrinter prettyPrinter = new MCNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(decimal);
     
     result = parser.parseDecimal(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     
-    assertTrue(decimal.deepEquals(result.get()));
+    Assertions.assertTrue(decimal.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testDecimal() throws IOException {
     TestMCNumbersParser parser = new TestMCNumbersParser();
     Optional<ASTDecimal> result = parser.parseDecimal(new StringReader("9702"));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTDecimal decimal = result.get();
     
     MCNumbersFullPrettyPrinter prettyPrinter = new MCNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(decimal);
     
     result = parser.parseDecimal(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     
-    assertTrue(decimal.deepEquals(result.get()));
+    Assertions.assertTrue(decimal.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testIntegerPositive() throws IOException {
     TestMCNumbersParser parser = new TestMCNumbersParser();
     Optional<ASTInteger> result = parser.parseInteger(new StringReader("780530"));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTInteger integer = result.get();
     
     MCNumbersFullPrettyPrinter prettyPrinter = new MCNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(integer);
     
     result = parser.parseInteger(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     
-    assertTrue(integer.deepEquals(result.get()));
+    Assertions.assertTrue(integer.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testIntegerNegative() throws IOException {
     TestMCNumbersParser parser = new TestMCNumbersParser();
     Optional<ASTInteger> result = parser.parseInteger(new StringReader("-9702"));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     ASTInteger integer = result.get();
     
     MCNumbersFullPrettyPrinter prettyPrinter = new MCNumbersFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(integer);
     
     result = parser.parseInteger(new StringReader(output));
-    assertFalse(parser.hasErrors());
-    assertTrue(result.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(result.isPresent());
     
-    assertTrue(integer.deepEquals(result.get()));
+    Assertions.assertTrue(integer.deepEquals(result.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

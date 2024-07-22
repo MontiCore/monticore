@@ -10,16 +10,16 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.listrule.listrule._parser.ListRuleParser;
 
 public class ListRuleTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -32,13 +32,13 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     ListRuleParser p = new ListRuleParser();
     p.parseParent(s);
 
-    assertEquals(false, p.hasErrors());
+    Assertions.assertEquals(false, p.hasErrors());
 
     // Empty lists are NOT allowed
     s = new StringReader("");
     p.parse(s);
 
-    assertEquals(true, p.hasErrors());
+    Assertions.assertEquals(true, p.hasErrors());
   }
 
   @Test
@@ -48,8 +48,8 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     ListRuleParser p = new ListRuleParser();
     p.parseParent2(s);
 
-    assertEquals(false, p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,8 +59,8 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     ListRuleParser p = new ListRuleParser();
     p.parseParent3(s);
 
-    assertEquals(false, p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -70,14 +70,14 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     ListRuleParser p = new ListRuleParser();
     p.parseParent4(s);
 
-    assertEquals(false, p.hasErrors());
+    Assertions.assertEquals(false, p.hasErrors());
 
     // Empty lists are allowed
     s = new StringReader("");
     p.parseParent4(s);
 
-    assertEquals(false, p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -88,6 +88,6 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
     ListRuleParser p = new ListRuleParser();
     p.parseParent6(s);
 
-    assertEquals(false, p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(false, p.hasErrors());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }}

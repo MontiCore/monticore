@@ -10,9 +10,8 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.abstractgrammar.abstractgrammar._ast.ASTUseAbstract;
@@ -20,10 +19,11 @@ import mc.feature.abstractgrammar.abstractgrammar._ast.ASTUseUnterface;
 import mc.feature.abstractgrammar.implementation._ast.ASTB;
 import mc.feature.abstractgrammar.implementation._ast.ASTC;
 import mc.feature.abstractgrammar.implementation._parser.ImplementationParser;
+import org.junit.jupiter.api.Test;
 
 public class AbstractGrammarTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -35,10 +35,10 @@ public class AbstractGrammarTest extends GeneratorIntegrationsTest {
     ImplementationParser p = new ImplementationParser();
     java.util.Optional<ASTUseUnterface> ast = p.parseUseUnterface(new StringReader("use impl myimplinterface"));
         
-    assertTrue(ast.isPresent());
-    assertFalse(p.hasErrors());
-    assertTrue(ast.get().getII() instanceof ASTB);
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertFalse(p.hasErrors());
+    Assertions.assertTrue(ast.get().getII() instanceof ASTB);
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -47,9 +47,9 @@ public class AbstractGrammarTest extends GeneratorIntegrationsTest {
     ImplementationParser p = new ImplementationParser();
     java.util.Optional<ASTUseAbstract> ast = p.parseUseAbstract(new StringReader("use ext myextabstract"));
     
-    assertTrue(ast.isPresent());
-    assertFalse(p.hasErrors());
-    assertTrue(ast.get().getAA() instanceof ASTC);
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertFalse(p.hasErrors());
+    Assertions.assertTrue(ast.get().getAA() instanceof ASTC);
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

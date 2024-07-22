@@ -6,30 +6,20 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
-public class DerivedAttributeNameTest {
+public class DerivedAttributeNameTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit compilationUnit;
 
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @Before
+  @BeforeEach
   public void setUp() {
     this.compilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/DerivedAttributeNameGrammar.mc4")).get();
@@ -46,58 +36,58 @@ public class DerivedAttributeNameTest {
   @Test
   public void testFoo() {
     Optional<ASTCDClass> fooClass = TestHelper.getCDClass(compilationUnit, "ASTFoo");
-    assertTrue(fooClass.isPresent());
-    assertEquals(1, fooClass.get().getCDAttributeList().size());
-    assertEquals("foo", fooClass.get().getCDAttributeList().get(0).getName());
-    assertFalse(hasDerivedAttributeName(fooClass.get().getCDAttributeList().get(0)));
+    Assertions.assertTrue(fooClass.isPresent());
+    Assertions.assertEquals(1, fooClass.get().getCDAttributeList().size());
+    Assertions.assertEquals("foo", fooClass.get().getCDAttributeList().get(0).getName());
+    Assertions.assertFalse(hasDerivedAttributeName(fooClass.get().getCDAttributeList().get(0)));
     
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBar() {
     Optional<ASTCDClass> bar = TestHelper.getCDClass(compilationUnit, "ASTBar");
-    assertTrue(bar.isPresent());
-    assertEquals(2, bar.get().getCDAttributeList().size());
-    assertEquals("abc", bar.get().getCDAttributeList().get(0).getName());
-    assertFalse(hasDerivedAttributeName(bar.get().getCDAttributeList().get(0)));
-    assertEquals("d", bar.get().getCDAttributeList().get(1).getName());
-    assertTrue(hasDerivedAttributeName(bar.get().getCDAttributeList().get(1)));
+    Assertions.assertTrue(bar.isPresent());
+    Assertions.assertEquals(2, bar.get().getCDAttributeList().size());
+    Assertions.assertEquals("abc", bar.get().getCDAttributeList().get(0).getName());
+    Assertions.assertFalse(hasDerivedAttributeName(bar.get().getCDAttributeList().get(0)));
+    Assertions.assertEquals("d", bar.get().getCDAttributeList().get(1).getName());
+    Assertions.assertTrue(hasDerivedAttributeName(bar.get().getCDAttributeList().get(1)));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBlub() {
     Optional<ASTCDClass> blub = TestHelper.getCDClass(compilationUnit, "ASTBlub");
-    assertTrue(blub.isPresent());
-    assertEquals(4, blub.get().getCDAttributeList().size());
-    assertEquals("foo", blub.get().getCDAttributeList().get(0).getName());
-    assertTrue(hasDerivedAttributeName(blub.get().getCDAttributeList().get(0)));
-    assertEquals("bar2", blub.get().getCDAttributeList().get(1).getName());
-    assertFalse(hasDerivedAttributeName(blub.get().getCDAttributeList().get(1)));
-    assertEquals("fooOpt", blub.get().getCDAttributeList().get(2).getName());
-    assertFalse(hasDerivedAttributeName(blub.get().getCDAttributeList().get(2)));
-    assertEquals("efg", blub.get().getCDAttributeList().get(3).getName());
-    assertFalse(hasDerivedAttributeName(blub.get().getCDAttributeList().get(3)));
+    Assertions.assertTrue(blub.isPresent());
+    Assertions.assertEquals(4, blub.get().getCDAttributeList().size());
+    Assertions.assertEquals("foo", blub.get().getCDAttributeList().get(0).getName());
+    Assertions.assertTrue(hasDerivedAttributeName(blub.get().getCDAttributeList().get(0)));
+    Assertions.assertEquals("bar2", blub.get().getCDAttributeList().get(1).getName());
+    Assertions.assertFalse(hasDerivedAttributeName(blub.get().getCDAttributeList().get(1)));
+    Assertions.assertEquals("fooOpt", blub.get().getCDAttributeList().get(2).getName());
+    Assertions.assertFalse(hasDerivedAttributeName(blub.get().getCDAttributeList().get(2)));
+    Assertions.assertEquals("efg", blub.get().getCDAttributeList().get(3).getName());
+    Assertions.assertFalse(hasDerivedAttributeName(blub.get().getCDAttributeList().get(3)));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testTest() {
     Optional<ASTCDClass> test = TestHelper.getCDClass(compilationUnit, "ASTTest");
-    assertTrue(test.isPresent());
-    assertEquals(4, test.get().getCDAttributeList().size());
-    assertEquals("blub", test.get().getCDAttributeList().get(0).getName());
-    assertTrue(hasDerivedAttributeName(test.get().getCDAttributeList().get(0)));
-    assertEquals("faa", test.get().getCDAttributeList().get(1).getName());
-    assertFalse(hasDerivedAttributeName(test.get().getCDAttributeList().get(1)));
-    assertEquals("bar", test.get().getCDAttributeList().get(2).getName());
-    assertTrue(hasDerivedAttributeName(test.get().getCDAttributeList().get(2)));
-    assertEquals("k", test.get().getCDAttributeList().get(3).getName());
-    assertFalse(hasDerivedAttributeName(test.get().getCDAttributeList().get(3)));
+    Assertions.assertTrue(test.isPresent());
+    Assertions.assertEquals(4, test.get().getCDAttributeList().size());
+    Assertions.assertEquals("blub", test.get().getCDAttributeList().get(0).getName());
+    Assertions.assertTrue(hasDerivedAttributeName(test.get().getCDAttributeList().get(0)));
+    Assertions.assertEquals("faa", test.get().getCDAttributeList().get(1).getName());
+    Assertions.assertFalse(hasDerivedAttributeName(test.get().getCDAttributeList().get(1)));
+    Assertions.assertEquals("bar", test.get().getCDAttributeList().get(2).getName());
+    Assertions.assertTrue(hasDerivedAttributeName(test.get().getCDAttributeList().get(2)));
+    Assertions.assertEquals("k", test.get().getCDAttributeList().get(3).getName());
+    Assertions.assertFalse(hasDerivedAttributeName(test.get().getCDAttributeList().get(3)));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

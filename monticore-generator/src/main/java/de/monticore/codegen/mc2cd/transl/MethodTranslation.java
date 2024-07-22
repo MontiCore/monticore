@@ -14,9 +14,9 @@ import de.monticore.grammar.grammar._ast.ASTASTRule;
 import de.monticore.grammar.grammar._ast.ASTGrammarMethod;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTMethodParameter;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.utils.Link;
 
@@ -62,13 +62,13 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
   }
 
   protected ASTCDMethod createSimpleCDMethod(ASTGrammarMethod method) {
-    String dotSeparatedName = MCFullGenericTypesMill.prettyPrint(method.getMCReturnType(), true);
+    String dotSeparatedName = Grammar_WithConceptsMill.prettyPrint(method.getMCReturnType(), true);
     ASTCDMethod cdMethod = CD4CodeBasisMill.cDMethodBuilder().
             setModifier(TransformationHelper.createPublicModifier()).
             setName(method.getName()).
             setMCReturnType(TransformationHelper.createReturnType(dotSeparatedName)).uncheckedBuild();
     for (ASTMethodParameter param : method.getMethodParameterList()) {
-      String typeName = MCFullGenericTypesMill.prettyPrint(param.getType(), true);
+      String typeName = Grammar_WithConceptsMill.prettyPrint(param.getType(), true);
       cdMethod.getCDParameterList().add(TransformationHelper.createParameter(typeName, param.getName()));
     }
     return cdMethod;
@@ -86,7 +86,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
       for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementList()) {
-        code.append(MCFullGenericTypesMill.prettyPrint(action, true));
+        code.append(Grammar_WithConceptsMill.prettyPrint(action, true));
       }
       if (!code.toString().isEmpty()) {
         addMethodBodyStereotype(cdMethod.getModifier(), code);
@@ -102,7 +102,7 @@ public class MethodTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCD
     if (method.getBody() instanceof ASTAction) {
       StringBuilder code = new StringBuilder();
       for (ASTMCBlockStatement action : ((ASTAction) method.getBody()).getMCBlockStatementList()) {
-        code.append(MCFullGenericTypesMill.prettyPrint(action, true));
+        code.append(Grammar_WithConceptsMill.prettyPrint(action, true));
       }
       addMethodBodyStereotype(cdMethod.getModifier(), code);
     }

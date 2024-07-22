@@ -40,4 +40,18 @@ public enum Timing {
   public boolean matches(Timing t) {
     return this.equals(t);
   }
+
+  /**
+   * Checks if this timing is compatible to another timing (e.g. timing fits for port connectors),
+   * with the following rules:
+   * - Sync as a source can send to all targets.
+   * - Timed and Untimed as a target fits all sources.
+   *
+   * @param target timing target this is checked against.
+   * @return true if this timing as a source is compatible with the target timing.
+   */
+  public boolean compatible(@NonNull Timing target) {
+    Preconditions.checkNotNull(target);
+    return this.equals(TIMED_SYNC) || target.equals(TIMED) || target.equals(UNTIMED);
+  }
 }

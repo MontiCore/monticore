@@ -3,8 +3,8 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LexNTsOnlyUseLexNTsTest extends CocoTest {
 
@@ -14,7 +14,7 @@ public class LexNTsOnlyUseLexNTsTest extends CocoTest {
           " defined by lexical productions.";
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4017.A4017";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new LexNTsOnlyUseLexNTs());

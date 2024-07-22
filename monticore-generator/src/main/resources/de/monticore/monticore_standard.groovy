@@ -19,13 +19,13 @@ package de.monticore
 // ############################################################
 // M1: Basic setup and initialization
 // M1.1: Logging
-Log.info("--------------------------------", LOG_ID)
-Log.info("MontiCore", LOG_ID)
-Log.info(" - eating your models since 2005", LOG_ID)
-Log.info("--------------------------------", LOG_ID)
+Log.debug("--------------------------------", LOG_ID)
+Log.debug("MontiCore", LOG_ID)
+Log.debug(" - eating your models since 2005", LOG_ID)
+Log.debug("--------------------------------", LOG_ID)
 Log.debug("Grammar argument    : "
         + _configuration.getGrammarsAsStrings(), LOG_ID)
-Log.debug("Grammar files       : " + grammars, LOG_ID)
+Log.info("Grammar files       : " + grammars, LOG_ID)
 Log.debug("Modelpath           : " + modelPath, LOG_ID)
 Log.debug("handcoded modelpath : " + modelPathHC, LOG_ID)
 Log.debug("Output dir          : " + out, LOG_ID)
@@ -46,6 +46,7 @@ hook(gh1, glex, grammars)
 
 // M1.4: Build Global Scope
 mcScope = createMCGlobalScope(modelPath)
+cdScope = createCD4AGlobalScope(modelPath)
 
 // ############################################################
 // Loop over the list of grammars provided as arguments (these grammars are
@@ -75,7 +76,7 @@ while (grammarIterator.hasNext()) {
     runGrammarCoCos(astGrammar, mcScope)
 
     // M5: Transform grammar AST into a class diagram and report it
-    cd = deriveCD(astGrammar, glex, mcScope)
+    cd = deriveCD(astGrammar, glex, cdScope)
     reportCD(cd, report)
 
     // M6: Generate parser and wrapper
@@ -83,10 +84,10 @@ while (grammarIterator.hasNext()) {
                    templatePath, out)
 
     // M7: Decorate class diagrams and report it
-    decoratedCD = decorateCD(glex, mcScope, cd, handcodedPath)
+    decoratedCD = decorateCD(glex, cdScope, cd, handcodedPath)
     if (genTag) {
       // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
-      decoratedCD = decorateTagCD(glex, mcScope, cd, handcodedPath, decoratedCD, astGrammar)
+      decoratedCD = decorateTagCD(glex, cdScope, cd, handcodedPath, decoratedCD, astGrammar)
     }
     reportDecoratedCD(decoratedCD, report)
 

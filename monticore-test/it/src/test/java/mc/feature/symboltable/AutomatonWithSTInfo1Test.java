@@ -5,16 +5,16 @@ package mc.feature.symboltable;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.Assert.assertTrue;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.Test;
 
 public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -32,11 +32,11 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo1ScopesGenitorDelegator automatonWithSTInfo1SymbolTableCreator;
     StateSymbol stateSymbol = new StateSymbol("S");
-    assertTrue(stateSymbol instanceof StateSymbol);
+    Assertions.assertTrue(stateSymbol instanceof StateSymbol);
 //    Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();
 
     StateSymbolSurrogate stateSymbolReference;
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

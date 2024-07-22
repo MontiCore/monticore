@@ -4,7 +4,8 @@ package de.monticore.types3;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.stream.Collectors;
 
@@ -12,14 +13,15 @@ import static org.junit.Assert.assertTrue;
 
 public class AbstractTypeTest {
 
-  @Before
+  @BeforeEach
   public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
   protected static void assertNoFindings() {
-    assertTrue(getAllFindingsAsString(), Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty(), "Expected no Log findings, but got:"
+            + System.lineSeparator() + getAllFindingsAsString());
   }
 
   /**

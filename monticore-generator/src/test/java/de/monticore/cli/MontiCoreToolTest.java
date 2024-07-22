@@ -2,18 +2,26 @@
 
 package de.monticore.cli;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.FileUtils;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static de.monticore.MontiCoreConfiguration.*;
 import static org.junit.Assert.assertTrue;
@@ -100,75 +108,77 @@ public class MontiCoreToolTest {
   public MontiCoreToolTest() throws IOException {
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
+    Grammar_WithConceptsMill.reset();
+    CD4CodeMill.reset();
+    Grammar_WithConceptsMill.init();
+    CD4CodeMill.init();
   }
   
   @Test
   public void testMontiCoreCLI() {
     new MontiCoreTool().run(simpleArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testMontiCoreDevLogCLI() {
     new MontiCoreTool().run(devLogArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testMontiCoreCustomLogCLI() {
     new MontiCoreTool().run(customLogArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMontiCoreCustomScriptCLI() {
     new MontiCoreTool().run(customScriptArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
     new MontiCoreTool().run(customEmfScriptArgs);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testHelp() {
     new MontiCoreTool().run(help);
 
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
 }
-  @Ignore // It's not possible to switch off fail quick (Logger in CLI)
+  @Disabled // It's not possible to switch off fail quick (Logger in CLI)
   @Test
   public void testArgsWithNoGrammars() {
     new MontiCoreTool().run(argsWithNoGrammars);
     
-    assertTrue(!false);
+    Assertions.assertTrue(!false);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -208,6 +218,8 @@ public class MontiCoreToolTest {
     new MontiCoreTool().run(reproducableArgs1);
     FileUtils.deleteDirectory(reproOutDir2);
     FileUtils.moveDirectory(reproOutDir1, reproOutDir2);
+    Grammar_WithConceptsMill.reset();
+    CD4CodeMill.reset();
 
     new MontiCoreTool().run(reproducableArgs1);
 
@@ -222,7 +234,7 @@ public class MontiCoreToolTest {
           diff.add(relPath1.toString());
         }
 
-        assertTrue("File does not exist \n\t" + f2.getAbsolutePath(), f2.isFile());
+        Assertions.assertTrue(f2.isFile(), "File does not exist \n\t" + f2.getAbsolutePath());
         /*assertTrue("Different output generating twice! \n" +
               "\t" + f1.getAbsolutePath() + "\n" +
               "\t" + f2.getAbsolutePath() + "\n",
@@ -231,12 +243,12 @@ public class MontiCoreToolTest {
       }
     }
     diff.forEach(s -> System.err.println("\t " + s));
-    assertTrue(diff.isEmpty());
+    Assertions.assertTrue(diff.isEmpty());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     Reporting.off();
   }

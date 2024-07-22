@@ -1,113 +1,84 @@
-import de.monticore.MCTask
-
 /* (c) https://github.com/MontiCore/monticore */
 description = 'Experiments: tagging'
 
-def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
+// The grammars of this subproject are built by the generateMCGrammars MCGenTask
 
+// Additional (tagging) tests require TagDef/TagSchema grammars.
+// Those tests are present in a withGen sourceSet
+// Only run these tests if genTagging is true
+if (("true").equals(getProperty('genTagging'))) {
+  sourceSets {
+    withGen
+  }
 
-dependencies {
-  implementation project(path: ':monticore-grammar', configuration: 'tagging')
-}
+  // Two MCGenTasks, one for the TagDef (with genTag=true) & one for the TagSchema
+  var tagDefOutput = project.layout.buildDirectory.dir("generated-withSchemaSources/monticore/tagdef")
+  var tagSchemaOutput = project.layout.buildDirectory.dir("generated-withSchemaSources/monticore/tagschema")
+  tasks.register("generateTagDefGrammars", MCGenTask) {
+    var generateMCGrammars = tasks.named("generateMCGrammars", MCGenTask).get()
+    grammar.setFrom(generateMCGrammars.getTagDefOutput())
+    outputDir = tagDefOutput
+    modelPath.from(generateMCGrammars.getOutputDir()) // the directory hierarchy is required here
+    if (findProperty("ci") != null) {
+      script = "de/monticore/monticore_noreports.groovy" // noreports workflow script
+    }
+    genTag = true
+    dependsOn("generateMCGrammars")
+    symbolPathConfiguration.from(configurations.named("withGenGrammarSymbolDependencies"))
+  }
+  tasks.register("generateTagSchemaGrammars", MCGenTask) {
+    var generateMCGrammars = tasks.named("generateMCGrammars", MCGenTask).get()
+    grammar.setFrom(generateMCGrammars.getTagSchemaOutput())
+    outputDir = tagSchemaOutput
+    modelPath.from(generateMCGrammars.getOutputDir()) // the directory hierarchy is required here
+    if (findProperty("ci") != null) {
+      script = "de/monticore/monticore_noreports.groovy" // noreports workflow script
+    }
+    dependsOn("generateMCGrammars")
+    symbolPathConfiguration.from(configurations.named("withGenGrammarSymbolDependencies"))
+  }
+  // define the withGen sourceSet
+  sourceSets {
+    withGen {
+      java.srcDirs += tasks.generateTagDefGrammars.getOutputDir()
+      java.srcDirs += tasks.generateTagSchemaGrammars.getOutputDir()
+      compileClasspath += sourceSets.main.output
+      runtimeClasspath += sourceSets.main.output
+    }
+  }
 
-task generate (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/Automata.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("Automata.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
+  configurations {
+    withGenImplementation.extendsFrom implementation
+    withGenRuntimeOnly.extendsFrom runtimeOnly
+  }
 
-task generateTagDefinition (type: MCTask, dependsOn: generate) {
-  grammar = file "$grammarOutDir/AutomataTagDefinition.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("AutomataTagDefinition.mc4")
-  outputs.upToDateWhen { uptoDate }
-  genTag = true // generate tagging related infrastructure, such as the Taggers
-}
-task generateTagSchema (type: MCTask, dependsOn: generate) {
-  grammar = file "$grammarOutDir/AutomataTagSchema.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("AutomataTagSchema.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
+  dependencies {
+    withGenImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    withGenImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+    withGenRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    // monticore-grammar-tagging
+    withGenImplementation files(project(":monticore-grammar").sourceSets.tagging.output.classesDirs)
+    withGenImplementation project(project.path)
+    withGenGrammarSymbolDependencies files(project(":monticore-grammar").layout.buildDirectory.dir("generated-sources/monticore/sourcecode"))
+    withGenGrammarSymbolDependencies files(project(":monticore-grammar").sourceSets.main.grammars.getSourceDirectories())
+  }
 
-// ############
+  // Register a jUnit platform
+  tasks.register('withGenTest', Test) {
+    description = 'Runs tests with tagGen.'
+    group = 'verification'
 
-task generateFQN (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/de/monticore/fqn/FQNAutomata.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/fqn/FQNAutomata.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
-task generateFQNTagDefinition (type: MCTask, dependsOn: generateFQN) {
-  grammar = file "$grammarOutDir/de/monticore/fqn/FQNAutomataTagDefinition.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/fqn/FQNAutomataTagDefinition.mc4")
-  outputs.upToDateWhen { uptoDate }
-  genTag = true
-}
-task generateFQNTagSchema (type: MCTask, dependsOn: generateFQN) {
-  grammar = file "$grammarOutDir/de/monticore/fqn/FQNAutomataTagSchema.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/fqn/FQNAutomataTagSchema.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
+    testClassesDirs = sourceSets.withGen.output.classesDirs
+    classpath = sourceSets.withGen.runtimeClasspath
+    shouldRunAfter test
 
-// Note: This revision of tagging does not come with automatic support for tagging of super-grammars
-// Here, we manually add this support using the FQNEnhancedAutomataHC mc4 grammar
-task generateEnhancedFQN (type: MCTask, dependsOn: generateFQN) {
-  grammar = file "$projectDir/$grammarDir/de/monticore/fqn/FQNEnhancedAutomata.mc4"
-  modelPath("$projectDir/$grammarDir")
-  modelPath("$projectDir/target/generated-sources/monticore/sourcecode") // provide the model path for Automata-Tag-Grammars
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/fqn/FQNEnhancedAutomata.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
-task generateEnhancedFQNTagDefinition (type: MCTask, dependsOn: generateEnhancedFQN) {
-  grammar = file "$grammarOutDir/de/monticore/fqn/FQNEnhancedAutomataTagDefinition.mc4"
-  modelPath("$projectDir/$grammarDir")
-  modelPath("$grammarOutDir") // provide the model path for Automata-Tag-Grammars
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/fqn/FQNEnhancedAutomataTagDefinition.mc4")
-  outputs.upToDateWhen { uptoDate }
-  genTag = true
-}
-task generateEnhancedFQNTagSchema (type: MCTask, dependsOn: generateEnhancedFQN) {
-  grammar = file "$grammarOutDir/de/monticore/fqn/FQNEnhancedAutomataTagSchema.mc4"
-  modelPath("$projectDir/$grammarDir")
-  modelPath("$grammarOutDir") // provide the model path for Automata-Tag-Grammars
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/fqn/FQNEnhancedAutomataTagSchema.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
+    useJUnitPlatform()
 
-//
-task generateCDBasis4Tags (type: MCTask) {
-  grammar = file "$projectDir/$grammarDir/de/monticore/tagtest/CDBasis4Tags.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/tagtest/CDBasis4Tags.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
+  }
 
-task generateCDBasis4TagsTagDefinition (type: MCTask, dependsOn: generateCDBasis4Tags) {
-  grammar = file "$grammarOutDir/de/monticore/tagtest/CDBasis4TagsTagDefinition.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/tagtest/CDBasis4TagsTagDefinition.mc4")
-  outputs.upToDateWhen { uptoDate }
-  genTag = true // generate tagging related infrastructure, such as the Taggers
-}
-task generateCDBasis4TagsTagSchema (type: MCTask, dependsOn: generateCDBasis4Tags) {
-  grammar = file "$grammarOutDir/de/monticore/tagtest/CDBasis4TagsTagSchema.mc4"
-  outputDir = file outDir
-  def uptoDate = incCheck("de/monticore/tagtest/CDBasis4TagsTagSchema.mc4")
-  outputs.upToDateWhen { uptoDate }
-}
+  check.dependsOn withGenTest
 
-// (Legacy) Setup for MCTasks
-sourceSets {
-  main.java.srcDirs += [ outDir ]
-}
-compileJava {
-  dependsOn project.collect { it.tasks.withType(MCTask) }
-}
+  compileWithGenJava.dependsOn(tasks.named("generateTagSchemaGrammars"))
+  compileWithGenJava.dependsOn(tasks.named("generateTagDefGrammars"))
 
+}

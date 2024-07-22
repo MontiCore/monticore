@@ -205,9 +205,10 @@ public class ReportManager implements IReportEventHandler {
 
   @Override
   public void reportSetBeforeTemplate(String template,
-      List<? extends HookPoint> beforeHps) {
+                                      Optional<ASTNode> ast,
+                                      List<? extends HookPoint> beforeHps) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
-      handler.reportSetBeforeTemplate(template, beforeHps);
+      handler.reportSetBeforeTemplate(template, ast, beforeHps);
     }
   }
 
@@ -246,17 +247,25 @@ public class ReportManager implements IReportEventHandler {
 
   @Override
   public void reportSetAfterTemplate(String template,
-      List<? extends HookPoint> afterHps) {
+                                     Optional<ASTNode> ast,
+                                     List<? extends HookPoint> afterHps) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
-      handler.reportSetAfterTemplate(template, afterHps);
+      handler.reportSetAfterTemplate(template, ast, afterHps);
     }
   }
 
   @Override
-  public void reportAddAfterTemplate(String template,
+  public void reportAddAfterTemplate(String template, Optional<ASTNode> ast,
                                      List<? extends HookPoint> afterHps) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
-      handler.reportAddAfterTemplate(template, afterHps);
+      handler.reportAddAfterTemplate(template, ast, afterHps);
+    }
+  }
+
+  @Override
+  public void reportAddBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> beforeHps) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportAddAfterTemplate(template, ast, beforeHps);
     }
   }
 

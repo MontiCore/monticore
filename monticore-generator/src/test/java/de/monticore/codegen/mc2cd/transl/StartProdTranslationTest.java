@@ -5,20 +5,18 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
-import static org.junit.Assert.*;
 
-public class StartProdTranslationTest {
+public class StartProdTranslationTest extends TranslationTestCase {
 
   private ASTCDCompilationUnit globalStartProd;
 
@@ -26,16 +24,8 @@ public class StartProdTranslationTest {
 
   private ASTCDCompilationUnit interfaceStartProd;
 
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-
-  @Before
-  public void setUp() {
+  @BeforeEach
+  public void setUpStartProdTranslationTest() {
     globalStartProd = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/StartProd.mc4")).get();
     classStartProd = TestHelper.parseAndTransform(Paths
@@ -46,34 +36,34 @@ public class StartProdTranslationTest {
 
   @Test
   public void testGlobalStartProd() {
-    assertTrue(globalStartProd.getCDDefinition().getModifier().isPresentStereotype());
-    assertEquals(1, globalStartProd.getCDDefinition().getModifier().getStereotype().sizeValues());
-    assertEquals("startProd", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
-    assertFalse(globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue().isEmpty());
-    assertEquals("mc2cdtransformation.Supergrammar.X", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue());
+    Assertions.assertTrue(globalStartProd.getCDDefinition().getModifier().isPresentStereotype());
+    Assertions.assertEquals(1, globalStartProd.getCDDefinition().getModifier().getStereotype().sizeValues());
+    Assertions.assertEquals("startProd", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getName());
+    Assertions.assertFalse(globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue().isEmpty());
+    Assertions.assertEquals("mc2cdtransformation.Supergrammar.X", globalStartProd.getCDDefinition().getModifier().getStereotype().getValues(0).getValue());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassStartProd() {
     ASTCDClass xClass = getClassBy("ASTX", classStartProd);
-    assertTrue(xClass.getModifier().isPresentStereotype());
-    assertEquals(1, xClass.getModifier().getStereotype().sizeValues());
-    assertEquals("startProd", xClass.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(xClass.getModifier().getStereotype().getValues(0).getValue().isEmpty());
+    Assertions.assertTrue(xClass.getModifier().isPresentStereotype());
+    Assertions.assertEquals(1, xClass.getModifier().getStereotype().sizeValues());
+    Assertions.assertEquals("startProd", xClass.getModifier().getStereotype().getValues(0).getName());
+    Assertions.assertTrue(xClass.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceStartProd() {
     ASTCDInterface aInterface = getInterfaceBy("ASTA", interfaceStartProd);
-    assertTrue(aInterface.getModifier().isPresentStereotype());
-    assertEquals(1, aInterface.getModifier().getStereotype().sizeValues());
-    assertEquals("startProd", aInterface.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(aInterface.getModifier().getStereotype().getValues(0).getValue().isEmpty());
+    Assertions.assertTrue(aInterface.getModifier().isPresentStereotype());
+    Assertions.assertEquals(1, aInterface.getModifier().getStereotype().sizeValues());
+    Assertions.assertEquals("startProd", aInterface.getModifier().getStereotype().getValues(0).getName());
+    Assertions.assertTrue(aInterface.getModifier().getStereotype().getValues(0).getValue().isEmpty());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

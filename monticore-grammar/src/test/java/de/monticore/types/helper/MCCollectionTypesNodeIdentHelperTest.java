@@ -2,7 +2,6 @@
 package de.monticore.types.helper;
 
 import de.monticore.types.MCCollectionTypesNodeIdentHelper;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
@@ -10,18 +9,16 @@ import de.monticore.types.mccollectiontypestest.MCCollectionTypesTestMill;
 import de.monticore.types.mccollectiontypestest._parser.MCCollectionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class MCCollectionTypesNodeIdentHelperTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -39,20 +36,20 @@ public class MCCollectionTypesNodeIdentHelperTest {
     Optional<ASTMCBasicTypeArgument> astmcBasicTypeArgument = parser.parse_StringMCBasicTypeArgument("a.B.C");
     Optional<ASTMCPrimitiveTypeArgument> astmcPrimitiveTypeArgument = parser.parse_StringMCPrimitiveTypeArgument("boolean");
 
-    assertFalse(parser.hasErrors());
-    assertTrue(astmcGenericType.isPresent());
-    assertTrue(astmcGenericType1.isPresent());
-    assertTrue(astmcGenericType2.isPresent());
-    assertTrue(astmcGenericType3.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astmcGenericType.isPresent());
+    Assertions.assertTrue(astmcGenericType1.isPresent());
+    Assertions.assertTrue(astmcGenericType2.isPresent());
+    Assertions.assertTrue(astmcGenericType3.isPresent());
 
     MCCollectionTypesNodeIdentHelper helper = new MCCollectionTypesNodeIdentHelper();
-    assertEquals("@Map!MCMapType", helper.getIdent(astmcGenericType.get()));
-    assertEquals("@List!MCListType", helper.getIdent(astmcGenericType1.get()));
-    assertEquals("@Set!MCSetType", helper.getIdent(astmcGenericType2.get()));
-    assertEquals("@Optional!MCOptionalType",helper.getIdent(astmcGenericType3.get()));
-    assertEquals("@a.B.C!MCBasicTypeArgument", helper.getIdent(astmcBasicTypeArgument.get()));
-    assertEquals("@boolean!MCPrimitiveTypeArgument",helper.getIdent(astmcPrimitiveTypeArgument.get()));
+    Assertions.assertEquals("@Map!MCMapType", helper.getIdent(astmcGenericType.get()));
+    Assertions.assertEquals("@List!MCListType", helper.getIdent(astmcGenericType1.get()));
+    Assertions.assertEquals("@Set!MCSetType", helper.getIdent(astmcGenericType2.get()));
+    Assertions.assertEquals("@Optional!MCOptionalType", helper.getIdent(astmcGenericType3.get()));
+    Assertions.assertEquals("@a.B.C!MCBasicTypeArgument", helper.getIdent(astmcBasicTypeArgument.get()));
+    Assertions.assertEquals("@boolean!MCPrimitiveTypeArgument", helper.getIdent(astmcPrimitiveTypeArgument.get()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

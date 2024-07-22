@@ -7,8 +7,8 @@ import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._prettyprint.Grammar_WithConceptsFullPrettyPrinter;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
 import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -88,7 +88,7 @@ public class TagGenerator {
     Optional<URL> hwGrammar = paths.find(hcGrammarPath.toString());
     if (hwGrammar.isPresent()) {
       try{
-        return GrammarFamilyMill.parser().parse(MCPath.toPath(hwGrammar.get()).get().toString());
+        return Grammar_WithConceptsMill.parser().parse(MCPath.toPath(hwGrammar.get()).get().toString());
       }catch (IOException ignored){
 
       }

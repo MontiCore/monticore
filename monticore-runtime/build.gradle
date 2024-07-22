@@ -16,7 +16,9 @@ dependencies {
   implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
   implementation "org.freemarker:freemarker:$freemarker_version"
   implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
-  testImplementation "junit:junit:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
 
 sourceSets {

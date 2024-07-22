@@ -8,7 +8,6 @@ import de.monticore.javalight._ast.ASTJavaMethod;
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.monticore.testjavalight._symboltable.TestJavaLightArtifactScope;
@@ -17,16 +16,14 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 public abstract class JavaLightCocoTest {
 
@@ -36,16 +33,16 @@ public abstract class JavaLightCocoTest {
 
   protected JavaLightCoCoChecker checker;
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
+    init();
   }
   
-  @Before
-  public void init() {
+  protected void init() {
     globalScope = (TestJavaLightGlobalScope) TestJavaLightMill.globalScope();
     globalScope.clear();
 
@@ -60,13 +57,13 @@ public abstract class JavaLightCocoTest {
     final MethodSymbol methodSymbol = artifactScope
             .resolveMethod(methodName)
             .orElse(null);
-    assertNotNull(methodSymbol);
-    assertTrue(methodSymbol.isPresentAstNode());
+    Assertions.assertNotNull(methodSymbol);
+    Assertions.assertTrue(methodSymbol.isPresentAstNode());
 
     Log.getFindings().clear();
     checker.checkAll((ASTJavaLightNode) methodSymbol.getAstNode());
 
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   protected void testInvalid(String fileName, String methodName, String code, String message,
@@ -81,16 +78,16 @@ public abstract class JavaLightCocoTest {
     final MethodSymbol methodSymbol = artifactScope
             .resolveMethod(methodName)
             .orElse(null);
-    assertNotNull(methodSymbol);
-    assertTrue(methodSymbol.isPresentAstNode());
+    Assertions.assertNotNull(methodSymbol);
+    Assertions.assertTrue(methodSymbol.isPresentAstNode());
 
     Log.getFindings().clear();
     checker.checkAll((ASTJavaLightNode) methodSymbol.getAstNode());
 
-    assertFalse(Log.getFindings().isEmpty());
-    assertEquals(numberOfFindings, Log.getFindings().size());
+    Assertions.assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertEquals(numberOfFindings, Log.getFindings().size());
     for (Finding f : Log.getFindings()) {
-      assertEquals(code + message, f.getMsg());
+      Assertions.assertEquals(code + message, f.getMsg());
     }
   }
 
@@ -108,7 +105,7 @@ public abstract class JavaLightCocoTest {
           globalScope.addSubScope(artifactScope);
         }
       } catch (IOException e) {
-        fail();
+        Assertions.fail();
       }
     }
   }

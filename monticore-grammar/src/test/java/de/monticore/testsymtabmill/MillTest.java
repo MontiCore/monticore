@@ -6,16 +6,16 @@ import de.monticore.testsymtabmill.testsymtabmill.TestSymTabMillMill;
 import de.monticore.testsymtabmill.testsymtabmill._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MillTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -36,10 +36,10 @@ public class MillTest {
 
     TestSymTabMillScopesGenitorDelegator symbolTableCreatorDelegator = TestSymTabMillMill.scopesGenitorDelegator();
 
-    assertFalse(scope.isShadowing());
-    assertTrue(symbolTableCreator.getCurrentScope().get().equals(scope));
+    Assertions.assertFalse(scope.isShadowing());
+    Assertions.assertTrue(symbolTableCreator.getCurrentScope().get().equals(scope));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

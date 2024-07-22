@@ -5,13 +5,12 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -25,7 +24,7 @@ import static org.junit.Assert.assertTrue;
  * ASTCDClasses
  * 
  */
-public class InheritanceTest {
+public class InheritanceTest extends TranslationTestCase {
   
   private ASTCDClass astA;
   
@@ -39,14 +38,8 @@ public class InheritanceTest {
   
   private ASTCDClass astF;
 
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  public InheritanceTest() {
+  @BeforeEach
+  public void setupInheritanceTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/InheritanceGrammar.mc4")).get();
 
@@ -65,11 +58,11 @@ public class InheritanceTest {
    */
   @Test
   public void testExtends() {
-    assertTrue(astA.isPresentCDExtendUsage());
+    Assertions.assertTrue(astA.isPresentCDExtendUsage());
     String name = typeToString(astA.getCDExtendUsage().getSuperclass(0));
-    assertEquals("mc2cdtransformation.InheritanceGrammar.ASTextendedProd", name);
+    Assertions.assertEquals("mc2cdtransformation.InheritanceGrammar.ASTextendedProd", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -79,11 +72,11 @@ public class InheritanceTest {
   @Test
   public void testImplements() {
     List<ASTMCObjectType> superInterfaces = astB.getInterfaceList();
-    assertEquals(1, superInterfaces.size());
+    Assertions.assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    assertEquals("mc2cdtransformation.InheritanceGrammar.ASTimplementedProd", name);
+    Assertions.assertEquals("mc2cdtransformation.InheritanceGrammar.ASTimplementedProd", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -92,11 +85,11 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextends() {
-    assertTrue(astC.isPresentCDExtendUsage());
+    Assertions.assertTrue(astC.isPresentCDExtendUsage());
     String name = typeToString(astC.getCDExtendUsage().getSuperclass(0));
-    assertEquals("AstExtendedType", name);
+    Assertions.assertEquals("AstExtendedType", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -106,11 +99,11 @@ public class InheritanceTest {
   @Test
   public void testAstimplements() {
     List<ASTMCObjectType> superInterfaces = astD.getInterfaceList();
-    assertEquals(1, superInterfaces.size());
+    Assertions.assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    assertEquals("AstImplementedType", name);
+    Assertions.assertEquals("AstImplementedType", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -119,11 +112,11 @@ public class InheritanceTest {
    */
   @Test
   public void testAstextendsQualified() {
-    assertTrue(astE.isPresentCDExtendUsage());
+    Assertions.assertTrue(astE.isPresentCDExtendUsage());
     String name = typeToString(astE.getCDExtendUsage().getSuperclass(0));
-    assertEquals("java.util.Observable", name);
+    Assertions.assertEquals("java.util.Observable", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -133,10 +126,10 @@ public class InheritanceTest {
   @Test
   public void testAstimplementsQualified() {
     List<ASTMCObjectType> superInterfaces = astF.getInterfaceList();
-    assertEquals(1, superInterfaces.size());
+    Assertions.assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    assertEquals("java.io.Serializable", name);
+    Assertions.assertEquals("java.io.Serializable", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

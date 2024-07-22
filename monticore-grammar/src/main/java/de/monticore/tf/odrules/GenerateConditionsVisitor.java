@@ -127,6 +127,12 @@ public class GenerateConditionsVisitor implements
     }else{
       condition = format("(!cand.get%s().equals(%s", capitalize(node.getName()), getter);
     }
+    objectCondition.setTargetOptional(targetOptional);
+    objectCondition.setAttribute(node);
+    if (targetObject.isPresent())
+      objectCondition.setTarget(targetObject.get());
+    else
+      objectCondition.setTargetAbsent();
 
     condition += "))";
     if (targetOptional) {
@@ -267,6 +273,12 @@ public class GenerateConditionsVisitor implements
     objectCondition.setObjectName(leftObjectName);
     ASTObjectCondition secondObjectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
     secondObjectCondition.setObjectName(rightObjectName);
+
+    objectCondition.setTargetOptional(targetOptional);
+    objectCondition.setLink(node);
+
+    secondObjectCondition.setTargetOptional(targetOptional);
+    secondObjectCondition.setLink(node);
 
     if (!node.isLink()) {
       // if it is a composition the left side is the parent of the right

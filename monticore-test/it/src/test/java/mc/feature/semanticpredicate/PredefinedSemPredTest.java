@@ -6,19 +6,17 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 
 import mc.feature.semanticpredicate.predefinedsempred._parser.PredefinedSemPredParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.StringReader;
 
-import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
 
 public class PredefinedSemPredTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -30,63 +28,63 @@ public class PredefinedSemPredTest extends GeneratorIntegrationsTest {
 
     // noSpace: "foo" "::" "foo"
     p.parse_StringA("foo :: foo");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringA("foo : : foo");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     p.parse_StringB("foo :: foo");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringB("foo : : foo");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     p.parse_StringC("foo :: foo");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringC("foo : : foo");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     // is/next/cmpToken: "foo" ":";
     p.parse_StringD("foon :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringD("FOO :");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     p.parse_StringE("foon :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringE("FOO :");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     p.parse_StringF("foon :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringF("FOO :");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     p.parse_StringG("foon :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringG("FOO :");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     // cmpTokenRegEx: ("foo"|"FOO") ":";
     p.parse_StringH("foon :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringH("FOO :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringH("FOO1 :");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     p.parse_StringI("foon :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringI("FOO :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringI("FOO1 :");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
 
     // cmpToken (list): "foo"|"FOO") ":";
     p.parse_StringJ("foon :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringJ("FOO :");
-    assertFalse(p.hasErrors());
+    Assertions.assertFalse(p.hasErrors());
     p.parse_StringJ("FOO1 :");
-    assertTrue(p.hasErrors());
+    Assertions.assertTrue(p.hasErrors());
   }
   
 }

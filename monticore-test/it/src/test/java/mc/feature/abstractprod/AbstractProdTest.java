@@ -10,19 +10,19 @@ import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.abstractprod.abstractprod._ast.ASTA;
 import mc.feature.abstractprod.abstractprod._ast.ASTB;
 import mc.feature.abstractprod.abstractprod._ast.ASTC;
 import mc.feature.abstractprod.abstractprod._parser.AbstractProdParser;
+import org.junit.jupiter.api.Test;
 
 public class AbstractProdTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -34,11 +34,11 @@ public class AbstractProdTest extends GeneratorIntegrationsTest {
     AbstractProdParser p = new AbstractProdParser();
     java.util.Optional<ASTA> ast = p.parseA(new StringReader("b"));
     
-    assertTrue(ast.isPresent());
-    assertTrue(ast.get() instanceof ASTB);
-    assertFalse(p.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertTrue(ast.get() instanceof ASTB);
+    Assertions.assertFalse(p.hasErrors());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -47,10 +47,10 @@ public class AbstractProdTest extends GeneratorIntegrationsTest {
     AbstractProdParser p = new AbstractProdParser();
     java.util.Optional<ASTA> ast = p.parseA(new StringReader("c"));
 
-    assertTrue(ast.isPresent());
-    assertTrue(ast.get() instanceof ASTC);
-    assertFalse(p.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertTrue(ast.get() instanceof ASTC);
+    Assertions.assertFalse(p.hasErrors());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

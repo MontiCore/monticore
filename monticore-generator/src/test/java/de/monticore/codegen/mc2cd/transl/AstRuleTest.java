@@ -6,12 +6,11 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
@@ -24,20 +23,14 @@ import static org.junit.Assert.assertTrue;
 /**
  * this test checks the addition of attributes with astrules
  */
-public final class AstRuleTest {
+public final class AstRuleTest extends TranslationTestCase {
 
-  private final ASTCDClass astC;
+  private ASTCDClass astC;
 
-  private final ASTCDClass impl;
+  private ASTCDClass impl;
 
-  @Before
-  public void setup() {
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  public AstRuleTest() {
+  @BeforeEach
+  public void setUpASTRuleTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRule.mc4")).get();
     astC = TestHelper.getCDClass(cdCompilationUnit, "ASTC").get();
@@ -46,17 +39,17 @@ public final class AstRuleTest {
 
   @Test
   public void testAstRuleAddedAttribute() {
-    assertEquals(1, astC.getCDAttributeList().size());
-    assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
+    Assertions.assertEquals(1, astC.getCDAttributeList().size());
+    Assertions.assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
     assertInt(astC.getCDAttributeList().get(0).getMCType());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAstRuleDoubleInheritance() {
     // attributes from super interfaces are inherited
-    assertEquals(2, impl.getCDAttributeList().size());
+    Assertions.assertEquals(2, impl.getCDAttributeList().size());
 
     ASTCDAttribute varName = getAttributeBy("varName", impl);
     assertDeepEquals("varType", varName.getMCType());
@@ -64,7 +57,7 @@ public final class AstRuleTest {
     ASTCDAttribute varName2 = getAttributeBy("varName2", impl);
     assertDeepEquals("varType2", varName2.getMCType());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

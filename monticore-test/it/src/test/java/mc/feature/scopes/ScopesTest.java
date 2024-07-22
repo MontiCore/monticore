@@ -11,9 +11,9 @@ import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScopesGenitorDelegator;
 import mc.feature.scopes.superautomaton._symboltable.AutomatonSymbol;
 import mc.feature.scopes.superautomaton._symboltable.StateSymbol;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -28,20 +28,20 @@ public class ScopesTest {
   private SupAutomatonScopesGenitorDelegator symbolTableCreator;
   private ISupAutomatonGlobalScope globalScope;
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     SupAutomatonMill.reset();
     SupAutomatonMill.init();
     SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
     Optional<ASTSup> astSup = supAutomatonParser.parse("src/test/resources/mc/feature/scopes/SupAutomatonModel.aut");
-    assertFalse(supAutomatonParser.hasErrors());
-    assertTrue(astSup.isPresent());
+    Assertions.assertFalse(supAutomatonParser.hasErrors());
+    Assertions.assertTrue(astSup.isPresent());
 
     ISupAutomatonGlobalScope globalScope = SupAutomatonMill.globalScope();
     globalScope.setFileExt("aut");
@@ -71,13 +71,13 @@ public class ScopesTest {
     //findet also voll qualifiziert auch vom global aus
     Optional<StateSymbol> pingStateSymbolGlobal = globalScope.resolveState("TopPingPong.PingPong.Ping");
 
-    assertTrue(pingPongAutomatonSymbolLokal.isPresent());
-    assertTrue(pingPongAutomatonSymbolGlobal.isPresent());
-    assertTrue(pingStateSymbol.isPresent());
-    assertTrue(pongStateSymbol.isPresent());
-    assertTrue(noGameStateSymbol.isPresent());
-    assertTrue(pingStateSymbolGlobal.isPresent());
+    Assertions.assertTrue(pingPongAutomatonSymbolLokal.isPresent());
+    Assertions.assertTrue(pingPongAutomatonSymbolGlobal.isPresent());
+    Assertions.assertTrue(pingStateSymbol.isPresent());
+    Assertions.assertTrue(pongStateSymbol.isPresent());
+    Assertions.assertTrue(noGameStateSymbol.isPresent());
+    Assertions.assertTrue(pingStateSymbolGlobal.isPresent());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

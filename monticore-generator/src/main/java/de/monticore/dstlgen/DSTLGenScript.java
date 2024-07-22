@@ -22,13 +22,12 @@ import de.monticore.grammar.concepts.antlr.antlr._prettyprint.AntlrPrettyPrinter
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.GrammarTransformer;
+import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.grammar.grammar_withconcepts._prettyprint.Grammar_WithConceptsPrettyPrinter;
+import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
-import de.monticore.grammar.grammarfamily._parser.GrammarFamilyParser;
-import de.monticore.grammar.grammarfamily._symboltable.IGrammarFamilyGlobalScope;
-import de.monticore.grammar.grammarfamily._visitor.GrammarFamilyTraverser;
 import de.monticore.io.paths.MCPath;
 import de.monticore.javalight._prettyprint.JavaLightPrettyPrinter;
 import de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsPrettyPrinter;
@@ -74,7 +73,7 @@ public class DSTLGenScript {
   public ASTMCGrammar parseGrammar(String grammar) {
     Log.debug("Start parsing of the grammar " + grammar, LOG_ID);
     try {
-      GrammarFamilyParser parser = GrammarFamilyMill.parser();
+      Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
       Optional<ASTMCGrammar> ast = parser.parse(grammar);
       if (!parser.hasErrors() && ast.isPresent()) {
         Log.debug("Grammar " + grammar + " parsed successfully", LOG_ID);
@@ -88,8 +87,8 @@ public class DSTLGenScript {
     }
   }
 
-  public IGrammarFamilyGlobalScope createMCGlobalScope(MCPath modelPath, String fileExt) {
-    IGrammarFamilyGlobalScope scope = GrammarFamilyMill.globalScope();
+  public IGrammar_WithConceptsGlobalScope createMCGlobalScope(MCPath modelPath, String fileExt) {
+    IGrammar_WithConceptsGlobalScope scope = Grammar_WithConceptsMill.globalScope();
     // reset global scope
     scope.clear();
 
@@ -142,7 +141,7 @@ public class DSTLGenScript {
 
   public void generateDSTL(ASTMCGrammar grammar, Optional<ASTMCGrammar> grammarExt, GlobalExtensionManagement glex, File outDirectory) {
     DSL2TransformationLanguageVisitor dsl2TfLang = new DSL2TransformationLanguageVisitor();
-    GrammarFamilyTraverser traverser = GrammarFamilyMill.traverser();
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
     traverser.add4Grammar(dsl2TfLang);
     grammar.accept(traverser);
     ASTMCGrammar tfLanguage = dsl2TfLang.getTfLang();
@@ -150,7 +149,7 @@ public class DSTLGenScript {
     // override with handwritten tf rules
     if (grammarExt.isPresent()) {
       TFLanguageOverrideVisitor overrideVisitor = new TFLanguageOverrideVisitor(tfLanguage, grammarExt.get());
-      traverser = GrammarFamilyMill.traverser();
+      traverser = Grammar_WithConceptsMill.traverser();
       traverser.add4Grammar(overrideVisitor);
       grammarExt.get().accept(traverser);
     }
@@ -163,7 +162,7 @@ public class DSTLGenScript {
     IndentPrinter printer = new IndentPrinter();
 
     // Prepare the Pretty Printer as a traverer
-    traverser = GrammarFamilyMill.traverser();
+    traverser = Grammar_WithConceptsMill.traverser();
 
     Grammar_WithConceptsPrettyPrinter grammar_withConceptsPrettyPrinter
             = new Grammar_WithConceptsPrettyPrinter(printer, true);
@@ -461,7 +460,7 @@ public class DSTLGenScript {
   protected void setUpDSTLValues(GlobalExtensionManagement glex, MCGrammarSymbol grammarSymbol) {
     // collect information
     CollectGrammarInformationVisitor informationVisitor = new CollectGrammarInformationVisitor(grammarSymbol);
-    Grammar_WithConceptsTraverser traverser = GrammarFamilyMill.traverser();
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
     traverser.add4Grammar(informationVisitor);
     grammarSymbol.getAstGrammar().get().accept(traverser);
 

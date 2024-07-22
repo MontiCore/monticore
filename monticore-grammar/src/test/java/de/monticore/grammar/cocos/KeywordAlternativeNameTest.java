@@ -7,8 +7,9 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,7 +19,7 @@ public class KeywordAlternativeNameTest extends CocoTest {
   
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4019.A4019";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
   }
@@ -32,10 +33,10 @@ public class KeywordAlternativeNameTest extends CocoTest {
     // test grammar symbol
     globalScope.resolveMCGrammar(grammar).orElse(null);
     
-    assertFalse(Log.getFindings().isEmpty());
-    assertEquals(1, Log.getFindings().size());
+    Assertions.assertFalse(Log.getFindings().isEmpty());
+    Assertions.assertEquals(1, Log.getFindings().size());
     for (Finding f : Log.getFindings()) {
-      assertEquals("0xA2345" + MESSAGE, f.getMsg());
+      Assertions.assertEquals("0xA2345" + MESSAGE, f.getMsg());
     }
   }
   

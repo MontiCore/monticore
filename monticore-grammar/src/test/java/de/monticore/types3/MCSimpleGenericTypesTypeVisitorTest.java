@@ -5,8 +5,8 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types3.util.DefsTypesForTests;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -15,7 +15,7 @@ import java.util.List;
 public class MCSimpleGenericTypesTypeVisitorTest
     extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void initFurtherTypes() {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     IBasicSymbolsScope javaScope =

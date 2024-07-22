@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.grammar.ittestgrammar._ast.ASTMCGrammar;
@@ -19,7 +19,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class MCParserTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -32,9 +32,9 @@ public class MCParserTest extends GeneratorIntegrationsTest {
     
     Optional<ASTMCGrammar> ast = parser.parseMCGrammar("src/test/resources/mc/grammar/SimpleGrammarWithConcept.mc4");
     
-    assertTrue(ast.isPresent());
+    Assertions.assertTrue(ast.isPresent());
   
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

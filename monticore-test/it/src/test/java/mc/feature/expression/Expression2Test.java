@@ -6,19 +6,19 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.expression.expression2._ast.*;
 import mc.feature.expression.expression2._parser.Expression2Parser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
 
 public class Expression2Test extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -34,114 +34,114 @@ public class Expression2Test extends GeneratorIntegrationsTest {
   public void testPlus() {
     try {
       Optional<ASTExpr> res = parse("1+2");
-      assertTrue(res.isPresent());
+      Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast instanceof ASTAddExpr);
-      assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
+      Assertions.assertTrue(ast instanceof ASTAddExpr);
+      Assertions.assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
     } catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testLiteral() {
     try {
       Optional<ASTExpr> res = parse("1");
-      assertTrue(res.isPresent());
+      Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast instanceof ASTPrimaryExpr);
+      Assertions.assertTrue(ast instanceof ASTPrimaryExpr);
       
-      assertEquals("1", ((ASTPrimaryExpr) ast).getNumericLiteral());
+      Assertions.assertEquals("1", ((ASTPrimaryExpr) ast).getNumericLiteral());
     } catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testStar() {
     try {
       Optional<ASTExpr> res = parse("1*2");
-      assertTrue(res.isPresent());
+      Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast instanceof ASTMultExpr);
+      Assertions.assertTrue(ast instanceof ASTMultExpr);
       
-      assertEquals(ASTConstantsExpression2.STAR, ((ASTMultExpr) ast).getOp());
+      Assertions.assertEquals(ASTConstantsExpression2.STAR, ((ASTMultExpr) ast).getOp());
     } catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testBracket() {
     try {
       Optional<ASTExpr> res = parse("(1*2)");
-      assertTrue(res.isPresent());
+      Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast instanceof ASTBracketExpr);
+      Assertions.assertTrue(ast instanceof ASTBracketExpr);
     } catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testExpr1() {
     try {
       Optional<ASTExpr> res = parse("1*2+3");
-      assertTrue(res.isPresent());
+      Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast instanceof ASTAddExpr);
+      Assertions.assertTrue(ast instanceof ASTAddExpr);
       
-      assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
+      Assertions.assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
     } catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testExpr2() {
     try {
       Optional<ASTExpr> res = parse("1+2*3");
-      assertTrue(res.isPresent());
+      Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast instanceof ASTAddExpr);
+      Assertions.assertTrue(ast instanceof ASTAddExpr);
       
-      assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
+      Assertions.assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
     } catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testExpr3() {
     try {
       Optional<ASTExpr> res = parse("1-2-3");
-      assertTrue(res.isPresent());
+      Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      assertTrue(ast instanceof ASTAddExpr);
+      Assertions.assertTrue(ast instanceof ASTAddExpr);
       
-      assertEquals(ASTConstantsExpression2.MINUS, ((ASTAddExpr) ast).getOp());
+      Assertions.assertEquals(ASTConstantsExpression2.MINUS, ((ASTAddExpr) ast).getOp());
     } catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testPowerWithRightAssoc() {
     try {
       Optional<ASTExpr> res = parse("2^3^4");
-      assertTrue(res.isPresent());
-      assertTrue(res.get() instanceof ASTPowerExpr);
+      Assertions.assertTrue(res.isPresent());
+      Assertions.assertTrue(res.get() instanceof ASTPowerExpr);
     } catch (Exception e) {
-      fail(e.getMessage());
+      Assertions.fail(e.getMessage());
     }
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
 }

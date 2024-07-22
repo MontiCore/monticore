@@ -7,9 +7,9 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTB;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TestLists extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -45,10 +45,10 @@ public class TestLists extends GeneratorIntegrationsTest {
     list.add(f);
     list.add(g);
     
-    assertEquals(6, list.indexOf(g));
+    Assertions.assertEquals(6, list.indexOf(g));
     list.remove(g);
-    assertEquals(-1, list.indexOf(g));
+    Assertions.assertEquals(-1, list.indexOf(g));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

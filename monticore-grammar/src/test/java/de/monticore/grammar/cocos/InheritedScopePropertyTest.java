@@ -3,15 +3,15 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 public class InheritedScopePropertyTest extends CocoTest {
 
   private final String grammar = "de.monticore.grammar.cocos.invalid.A0135.A0135";
   private final String grammar2 = "de.monticore.grammar.cocos.invalid.A0135.A0135a";
   private final String grammar3 = "de.monticore.grammar.cocos.invalid.A0135.A0135b";
 
-  @Before
+  @BeforeEach
   public void init() {
     checker = new Grammar_WithConceptsCoCoChecker();
     checker.addCoCo(new InheritedScopeProperty());

@@ -1,60 +1,86 @@
 ///* (c) https://github.com/MontiCore/monticore */
 
 buildscript {
-  if (findProperty('bootstrap')) {
     // fake a different group for Gradle to prevent it from including the build in it self
     group = "de.mc"
-  }
 }
 
 plugins {
   id "java-library"
   id "com.github.johnrengelman.shadow" version "7.1.2"
-  id "de.monticore.generator" version "$version"
+  // in case a "genTR" property is set to "true", transformation grammars are also created
+  id "de.monticore.generator-withtr" version "$version"
   id "jacoco"
 }
 
 description = 'MontiCore: Grammar'
-if (!hasProperty('bootstrap')) {
-  group = "de.monticore"
-} else {
-  group = "de.monticore.bs"
-}
+group = "de.monticore"
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
-def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
-def trafoOutDir = "$buildDir/generated-sources/monticore/trafo"
 def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
-
+def symbolsDir = 'src/main/resources'
 
 sourceSets {
-  // main.java.srcDirs is already being added
-  test.java.srcDirs += [testGrammarOutDir]
+  // Add mlc files to grammars source set (resulting in them being included in the grammars-jar)
+  main.grammars.include(["**/*.mlc", "**/*.mc4"])
 
-  grammars {
+  symbols {
+    resources {
+      srcDirs(symbolsDir)
+      include "**/*.sym"
+    }
+  }
+  // The following is required as we still publish a Feature-variant (with usingSourceSet(grammarsForVariant))
+  grammarsForVariant {
     java.srcDirs = []
     resources {
-      srcDirs([grammarDir, grammarOutDir])
+      // DO not include the grammars out dir here (with the TR grammars)
+      srcDirs([grammarDir])
       include "**/*.mc4"
       include "**/*.mlc"
     }
+    grammars.srcDirs = []
   }
-  trafo {
-    java.srcDirs = [trafoOutDir]
+  test {
+    // Add the examples grammars to the test source set
+    grammars.srcDirs += "src/main/examples"
   }
-  tagging {
-    java.srcDirs = [taggingOutDir]
+  // The trafo source set might be configured based on the genTR property via the -withtr plugin
+
+  // If tagging is enabled, also create the tagging source set
+  if (("true").equals(getProperty('genTagging'))) {
+    tagging { // and compile its java code
+      java.srcDirs(taggingOutDir)
+    }
   }
 }
+
+// Declare the de.monticore:monticore-grammar-grammars capability for compatibility reasons
+// Otherwise usage of the requireCapability notation would break
+configurations {
+  grammarSymbolOutElements {
+    outgoing {
+      capability("de.monticore:monticore-grammar-grammars:$version") // compat
+      capability("de.monticore:monticore-grammar:$version") // default
+    }
+  }
+}
+
+
+// for grammarsForVariant optimization
+processGrammarsForVariantResources.dependsOn generateMCGrammars
 
 dependencies {
   api project(':monticore-runtime')
   implementation "com.google.guava:guava:$guava_version"
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
-  testImplementation "junit:junit:$junit_version"
-  trafoCompileOnly project(path)
-  taggingCompileOnly project(path)
-  // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  if (("true").equals(getProperty('genTagging'))) {
+    // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
+    taggingCompileOnly project(path)
+  }
 }
 
 
@@ -79,28 +105,8 @@ tasks.register("generateSingleMCGrammarForDev", MCGenTask) {
 // Note: In the future we will introduce options for TR/Tag output to the tool
 import de.monticore.gradle.gen.MCGenTask;
 
-if (("true").equals(getProperty('genTR'))) {
-  tasks.register("generateTRGrammars", MCGenTask) {
-    // Make sure we use the output of the generate task
-    // (this ensures, that the inFputs are not evaluated too early, resulting in this task being skipped)
-    grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTROutput()
-            .matching {
-              exclude(['**/de/monticore/tf/*', '**/de/monticore/grammar/*'])
-              exclude(['**/de/monticore/siunit/*'])
-            })
-    outputDir = file trafoOutDir
-    genDST = true
-    modelPath.from(file grammarOutDir) // requires the directory structure
-    if (findProperty("ci") != null) {
-      script = "de/monticore/monticore_noreports.groovy"
-    }
-    group = 'mc'
-  }
-  processGrammarsResources.dependsOn(generateTRGrammars)
-  compileTrafoJava.dependsOn(generateTRGrammars)
-}
-
 if (("true").equals(getProperty('genTagging'))) {
+  // Explicitly configure tagging
   tasks.register("generateTagDefGrammars", MCGenTask.class) {
     // Make sure we use the output of the generate task
     // (this ensures, that the inputs are not evaluated too early, resulting in this task being skipped)
@@ -111,12 +117,15 @@ if (("true").equals(getProperty('genTagging'))) {
     genTag = true
     modelPath.from(file grammarOutDir)
     dependsOn("generateMCGrammars")
+
+
     if (findProperty("ci") != null) {
       script = "de/monticore/monticore_noreports.groovy"
     }
+    symbolPathConfiguration.from(configurations.named("taggingGrammarSymbolDependencies"))
   }
   compileTaggingJava.dependsOn(generateTagDefGrammars)
-  processGrammarsResources.dependsOn(generateTagDefGrammars)
+  processGrammarsForVariantResources.dependsOn(generateTagDefGrammars)
   tasks.register("generateTagSchemaGrammars", MCGenTask.class) {
     // Make sure we use the output of the generate task
     // (this ensures, that the inputs are not evaluated too early, resulting in this task being skipped)
@@ -129,9 +138,18 @@ if (("true").equals(getProperty('genTagging'))) {
     if (findProperty("ci") != null) {
       script = "de/monticore/monticore_noreports.groovy"
     }
+    symbolPathConfiguration.from(configurations.named("taggingGrammarSymbolDependencies"))
   }
   compileTaggingJava.dependsOn(generateTagSchemaGrammars)
-  processGrammarsResources.dependsOn(generateTagSchemaGrammars)
+  processGrammarsForVariantResources.dependsOn(generateTagSchemaGrammars)
+}
+
+
+if (("true").equals(getProperty('genTR'))) {
+  // Further exclude the grammar and basic tf grammars from being included in the TR grammar input set
+  extractTRGrammars {
+    exclude(["**/de/monticore/tf/*", "**/de/monticore/grammar/*",  "**/de/monticore/siunit/*"])
+  }
 }
 
 // grammar dependencies without generated TR grammars
@@ -209,28 +227,6 @@ def grammarDependencies = ext {
   // nine dependencies
   Grammar_WithConcepts = ["Grammar", "MCCommonStatements", "MCReturnStatements", "MCExceptionStatements", "JavaClassExpressions", "JavaLight", "Antlr", "CommonExpressions", "BitExpressions"]
 }
-
-task generateTest {}
-
-tasks.register("generateTestGrammars", MCGenTask.class) {
-  grammar.setFrom(file "src/test/grammars")
-  grammar.from(file "src/main/examples")
-  outputDir = file testGrammarOutDir
-  hwcDir = file "$projectDir/src/main/java"
-  hwcDir += file "$projectDir/src/test/java"
-
-  modelPath("$projectDir/$grammarDir",
-          "$projectDir/src/test/grammars",
-          "$projectDir/src/main/examples")
-
-  if (findProperty("ci") != null) {
-    script = "de/monticore/monticore_noreports.groovy"
-  }
-}
-
-compileTestJava.dependsOn(generateTestGrammars)
-processGrammarsResources.dependsOn(generateMCGrammars)
-
 
 /**
  * Integration with MLC language and tool
@@ -536,72 +532,74 @@ showArtifactsMCStructuralTypes.dependsOn(showArtifactsMCBasicTypes)
 
 ///////////// MLC tasks - End ///////////////////////
 
+
 java {
+  // Deprecated
   registerFeature('grammars') {
-    usingSourceSet(sourceSets.grammars)
+    usingSourceSet(sourceSets.grammarsForVariant)
   }
+  // End deprecation
   registerFeature('tests') {
     usingSourceSet(sourceSets.test)
   }
 }
 
 shadowJar {
-  from sourceSets.grammars.resources
+  from sourceSets.main.grammars
 }
 
-shadowJar.dependsOn(generateMCGrammars)
-shadowJar.dependsOn(generateTestGrammars)
+generateTestMCGrammars {
+//   Temporary - for optimizations (due to feature)
+  dependsOn(tasks.grammarsForVariantJar)
+}
 
 jar.dependsOn(shadowJar)
-jar.dependsOn(grammarsJar)
 
 if (findProperty('ci') == null) {
   jar.dependsOn(shadowJar, testJar)
 }
 
 if (("true").equals(getProperty('genTR'))) {
-  // Bundle and publish the generated TR artifacts separately as monticore-grammar-trafo
-  tasks.register('trafoJar', Jar) {
-    from sourceSets.trafo.output
-    group 'build'
-  }
-  tasks.register('trafoSourcesJar', Jar) {
-    from sourceSets.trafo.java
-    group 'build'
-  }
-  publishing {
-    publications {
-      "trafo"(MavenPublication) {
-        artifactId = project.name + "-trafo"
-        artifact tasks.trafoJar { appendix 'trafo' }
-        artifact tasks.trafoSourcesJar { appendix 'trafo'; classifier 'sources' }
-      }
-    }
-  }
-  // And expose the trafo jar artifact to other subprojects using a 'trafo' configuration
-  configurations {
-    trafo
-  }
-  artifacts {
-    trafo(trafoJar)
+  generateTrafoMCGrammars {
+    // Temporary - for optimizations
+    dependsOn(tasks.grammarsForVariantJar)
   }
 }
+
+
 if (("true").equals(getProperty('genTagging'))) {
+  // Because tagging is not properly published as a source set we instead add the tag definitions to the main grammar jars
+  ["grammarsJar", "grammarsForVariantJar"].forEach { taskname ->
+    // We have to add it to both the "compability grammarsForVariant", as well as the grammarsJar publication
+    tasks.named(taskname, org.gradle.jvm.tasks.Jar) {
+      from(tasks.generateMCGrammars.outputDir) {
+        include "**/*TagDefinition.mc4", "**/*TagSchema.mc4"
+      }
+      includeEmptyDirs = false
+    }
+  }
   // Bundle and publish the generated tagging artifacts separately as monticore-grammar-tagging
   tasks.register('taggingJar', Jar) {
     from sourceSets.tagging.output
     group 'build'
+    dependsOn(tasks.generateTaggingMCGrammars)
   }
   tasks.register('taggingSourcesJar', Jar) {
     from sourceSets.tagging.java
     group 'build'
+    dependsOn(tasks.generateTaggingMCGrammars)
   }
   publishing {
     publications {
       "tagging"(MavenPublication) {
         artifactId = project.name + "-tagging"
-        artifact tasks.taggingJar { appendix 'tagging' }
-        artifact tasks.taggingSourcesJar { appendix 'tagging'; classifier 'sources' }
+        artifact tasks.taggingJar { archiveAppendix = 'tagging' }
+        artifact tasks.taggingSourcesJar { archiveAppendix = 'tagging'; archiveClassifier = 'sources' }
+      }
+      if (("true").equals(getProperty('genTR'))) {
+        "trafo" {
+          groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
+        }
       }
     }
   }
@@ -610,5 +608,17 @@ if (("true").equals(getProperty('genTagging'))) {
   }
   artifacts {
     tagging(taggingJar)
+  }
+}
+
+if (("true").equals(getProperty('genTR'))) {
+  configurations {
+    // This configuration exposes the trafo compile classpath to the montitrans tests within this project
+    // (still using the old, non-transitive MC generator gradle plugin
+    trafoCompileClasspathForLegacyCompat {
+      extendsFrom trafoCompileClasspath
+      setCanBeResolved(false)
+      setCanBeConsumed(true)
+    }
   }
 }

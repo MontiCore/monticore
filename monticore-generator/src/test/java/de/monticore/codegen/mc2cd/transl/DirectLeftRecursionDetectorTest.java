@@ -2,18 +2,17 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import parser.MCGrammarParser;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -25,24 +24,17 @@ import static org.junit.Assert.assertTrue;
  * Tests the helper class on a concrete grammar containing left recursive and normal rules.
  *
  */
-public class DirectLeftRecursionDetectorTest {
+public class DirectLeftRecursionDetectorTest extends TranslationTestCase {
 
   private Optional<ASTMCGrammar> astMCGrammarOptional;
   
   private DirectLeftRecursionDetector directLeftRecursionDetector = new DirectLeftRecursionDetector();
 
-  @Before
-  public void setUp(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void setup() {
+  @BeforeEach
+  public void setup() throws IOException {
     final Path modelPath = Paths.get("src/test/resources/mc2cdtransformation/DirectLeftRecursionDetector.mc4");
-    astMCGrammarOptional = MCGrammarParser.parse(modelPath);;
-    assertTrue(astMCGrammarOptional.isPresent());
+    astMCGrammarOptional =Grammar_WithConceptsMill.parser().parse(modelPath.toString());;
+    Assertions.assertTrue(astMCGrammarOptional.isPresent());
   }
 
   @Test
@@ -52,17 +44,17 @@ public class DirectLeftRecursionDetectorTest {
     final ASTClassProd exprProduction = productions.get(0);
 
     boolean isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(exprProduction.getAlt(0), exprProduction.getName());
-    Assert.assertTrue(isLeftRecursive);
+    Assertions.assertTrue(isLeftRecursive);
 
     final ASTClassProd nonRecursiveProudction1 = productions.get(1);
     isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction1.getAlt(0), nonRecursiveProudction1.getName());
-    Assert.assertFalse(isLeftRecursive);
+    Assertions.assertFalse(isLeftRecursive);
 
     final ASTClassProd nonRecursiveProudction2 = productions.get(2);
     isLeftRecursive = directLeftRecursionDetector.isAlternativeLeftRecursive(nonRecursiveProudction2.getAlt(0), nonRecursiveProudction2.getName());
-    Assert.assertFalse(isLeftRecursive);
+    Assertions.assertFalse(isLeftRecursive);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

@@ -16,7 +16,8 @@ import mc.feature.visitors.a._symboltable.IAScope;
 import mc.feature.visitors.c._visitor.CInheritanceHandler;
 import mc.feature.visitors.c._visitor.CTraverser;
 import mc.feature.visitors.c._visitor.CVisitor2;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,21 +39,21 @@ public class InheritanceVisitorTest {
     ICScope scope = CMill.scope();
     scope.accept(traverser);
 
-    assertEquals("ASBSCS", sb.toString());
+    Assertions.assertEquals("ASBSCS", sb.toString());
 
     sb = new StringBuilder();
 
     ICGlobalScope globalScope = CMill.globalScope();
     globalScope.accept(traverser);
 
-    assertEquals("AGSASBGSBSCSCGS", sb.toString());
+    Assertions.assertEquals("AGSASBGSBSCSCGS", sb.toString());
 
     sb = new StringBuilder();
 
     ICArtifactScope artifactScope = CMill.artifactScope();
     artifactScope.accept(traverser);
 
-    assertEquals("AASASBASBSCSCAS", sb.toString());
+    Assertions.assertEquals("AASASBASBSCSCAS", sb.toString());
   }
 
 

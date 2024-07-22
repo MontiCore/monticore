@@ -8,8 +8,6 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
-import de.monticore.types.check.FullSynthesizeFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
@@ -19,8 +17,9 @@ import de.monticore.types3.Type4Ast;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -30,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -91,14 +90,14 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
 
   protected void testValid(String type, String exprStr) throws IOException {
     check(type, exprStr);
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
     Log.clearFindings();
   }
 
   protected void testInvalid(String type, String exprStr) throws IOException {
     check(type, exprStr);
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xFD724"));
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xFD724"));
     Log.clearFindings();
   }
 
@@ -118,10 +117,10 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
     Optional<ASTMCType> optType = CombineExpressionsWithLiteralsMill
         .parser()
         .parse_StringMCType(type);
-    assertTrue(optType.isPresent());
+    Assertions.assertTrue(optType.isPresent());
 
     TypeCheckResult typeExpression = synthesize.synthesizeType(optType.get());
-    assertTrue(typeExpression.isPresentResult());
+    Assertions.assertTrue(typeExpression.isPresentResult());
 
     CombineExpressionsWithLiteralsMill
         .globalScope()
@@ -132,11 +131,11 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
 
     Optional<ASTExpression> exprOpt = CombineExpressionsWithLiteralsMill
         .parser().parse_StringExpression(exprStr);
-    assertTrue(exprOpt.isPresent());
+    Assertions.assertTrue(exprOpt.isPresent());
 
     generateScopes(exprOpt.get());
 
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
     getChecker(derive).checkAll(exprOpt.get());
   }
 

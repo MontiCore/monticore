@@ -20,14 +20,14 @@ import mylang.MyLangMill;
 import mylang.FullSynthesizeFromMyLang;
 import mylang._ast.ASTMyVar;
 import mylang._parser.MyLangParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class MyLangTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -40,8 +40,8 @@ public class MyLangTest {
     MyLangParser parser = MyLangMill.parser();
   
     Optional<ASTMyVar> varOpt = parser.parse_String("boolean x = 3 > 4");
-    assertFalse(parser.hasErrors());
-    assertTrue(varOpt.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(varOpt.isPresent());
     
     MyLangMill.scopesGenitorDelegator().createFromAST(varOpt.get());
   
@@ -60,20 +60,20 @@ public class MyLangTest {
     SymTypeExpression symType2 = tc.typeOf(exp);
     
     // check whether the type is boolean
-    assertEquals("boolean",symType1.getTypeInfo().getName());
-    assertTrue(TypeCheck.isBoolean(symType1));
+    Assertions.assertEquals("boolean", symType1.getTypeInfo().getName());
+    Assertions.assertTrue(TypeCheck.isBoolean(symType1));
     
-    assertEquals("boolean",symType2.getTypeInfo().getName());
+    Assertions.assertEquals("boolean", symType2.getTypeInfo().getName());
   
-    assertTrue(TypeCheck.isBoolean(symType2));
+    Assertions.assertTrue(TypeCheck.isBoolean(symType2));
     
     // check whether both types are compatible
-    assertTrue(TypeCheck.compatible(symType1,symType2));
+    Assertions.assertTrue(TypeCheck.compatible(symType1,symType2));
   
     // check whether the expression is of assignable type 
-    assertTrue(tc.isOfTypeForAssign(symType1,exp));
+    Assertions.assertTrue(tc.isOfTypeForAssign(symType1,exp));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   

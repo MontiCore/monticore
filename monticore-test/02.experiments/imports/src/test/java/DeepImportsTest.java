@@ -7,12 +7,11 @@ import cdlight._symboltable.*;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.ImportStatement;
-import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,18 +19,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
-
 public class DeepImportsTest {
 
-  @Before
+  @BeforeEach
   public void setup() {
     Log.init();
     CdLightMill.init();
     CdLightMill.globalScope().clear();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     CdLightMill.reset();
   }
@@ -44,17 +41,17 @@ public class DeepImportsTest {
     ICdLightArtifactScope as = createSymTab(cd);
     ICdLightGlobalScope gs = CdLightMill.globalScope();
 
-    assertTrue(as.getImports(0).getStatement().equals("my.test"));
+    Assertions.assertTrue(as.getImports(0).getStatement().equals("my.test"));
 
-    assertTrue(gs.resolveOOType("a.b.X").isPresent());
-    assertTrue(gs.resolveOOType("a.b.Y").isPresent());
-    assertTrue(gs.resolveField("a.b.X.z").isPresent());
-    assertTrue(gs.resolveMethod("a.b.Y.bar").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("a.b.X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("a.b.Y").isPresent());
+    Assertions.assertTrue(gs.resolveField("a.b.X.z").isPresent());
+    Assertions.assertTrue(gs.resolveMethod("a.b.Y.bar").isPresent());
 
-    assertEquals(1, gs.resolveOOTypeMany("a.b.X").size());
-    assertEquals(1, gs.resolveOOTypeMany("a.b.Y").size());
-    assertEquals(1, gs.resolveFieldMany("a.b.X.z").size());
-    assertEquals(1, gs.resolveMethodMany("a.b.Y.bar").size());
+    Assertions.assertEquals(1, gs.resolveOOTypeMany("a.b.X").size());
+    Assertions.assertEquals(1, gs.resolveOOTypeMany("a.b.Y").size());
+    Assertions.assertEquals(1, gs.resolveFieldMany("a.b.X.z").size());
+    Assertions.assertEquals(1, gs.resolveMethodMany("a.b.Y.bar").size());
   }
 
   @Test
@@ -65,13 +62,13 @@ public class DeepImportsTest {
     ICdLightArtifactScope as = createSymTabWithPkg(cd);
     ICdLightGlobalScope gs = CdLightMill.globalScope();
 
-    assertEquals("cdlight", as.getPackageName());
-    assertTrue(as.getImports(0).getStatement().equals("my.test"));
+    Assertions.assertEquals("cdlight", as.getPackageName());
+    Assertions.assertTrue(as.getImports(0).getStatement().equals("my.test"));
 
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
-    assertTrue(gs.resolveField("cdlight.Simple.a.b.X.z").isPresent());
-    assertTrue(gs.resolveMethod("cdlight.Simple.a.b.Y.bar").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
+    Assertions.assertTrue(gs.resolveField("cdlight.Simple.a.b.X.z").isPresent());
+    Assertions.assertTrue(gs.resolveMethod("cdlight.Simple.a.b.Y.bar").isPresent());
   }
 
   @Test
@@ -82,13 +79,13 @@ public class DeepImportsTest {
     ICdLightArtifactScope as = createSymTabWithPkg(cd);
     ICdLightGlobalScope gs = CdLightMill.globalScope();
 
-    assertEquals("cdlight", as.getPackageName());
-    assertTrue(as.getImports(0).getStatement().equals("my.test"));
+    Assertions.assertEquals("cdlight", as.getPackageName());
+    Assertions.assertTrue(as.getImports(0).getStatement().equals("my.test"));
 
-    assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.a.b.Y").isPresent());
-    assertTrue(gs.resolveField("cdlight.a.b.X.z").isPresent());
-    assertTrue(gs.resolveMethod("cdlight.a.b.Y.bar").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.a.b.Y").isPresent());
+    Assertions.assertTrue(gs.resolveField("cdlight.a.b.X.z").isPresent());
+    Assertions.assertTrue(gs.resolveMethod("cdlight.a.b.Y.bar").isPresent());
   }
 
   @Test
@@ -102,17 +99,17 @@ public class DeepImportsTest {
     symPath.addEntry(new File("src/test/resources/symbols/").toPath());
     gs.setSymbolPath(symPath);
 
-    assertEquals("cdlight", as.getPackageName());
-    assertTrue(as.getImports(0).getStatement().equals("cdlight.Simple.a.b"));
+    Assertions.assertEquals("cdlight", as.getPackageName());
+    Assertions.assertTrue(as.getImports(0).getStatement().equals("cdlight.Simple.a.b"));
 
-    assertFalse(as.resolveOOType("a.b.X").isPresent());
-    assertFalse(as.resolveOOType("a.b.Y").isPresent());
+    Assertions.assertFalse(as.resolveOOType("a.b.X").isPresent());
+    Assertions.assertFalse(as.resolveOOType("a.b.Y").isPresent());
 
-    assertTrue(as.resolveOOType("X").isPresent());
-    assertTrue(as.resolveOOType("Y").isPresent());
+    Assertions.assertTrue(as.resolveOOType("X").isPresent());
+    Assertions.assertTrue(as.resolveOOType("Y").isPresent());
 
-    assertTrue(as.resolveOOType("cdlight.Simple.a.b.X").isPresent());
-    assertTrue(as.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
+    Assertions.assertTrue(as.resolveOOType("cdlight.Simple.a.b.X").isPresent());
+    Assertions.assertTrue(as.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
   }
 
   @Test
@@ -126,21 +123,21 @@ public class DeepImportsTest {
     symPath.addEntry(new File("src/test/resources/symbols/").toPath());
     gs.setSymbolPath(symPath);
 
-    assertEquals("cdlight", as.getPackageName());
-    assertTrue(as.getImports(0).getStatement().equals("cdlight.Simple.a.b"));
+    Assertions.assertEquals("cdlight", as.getPackageName());
+    Assertions.assertTrue(as.getImports(0).getStatement().equals("cdlight.Simple.a.b"));
 
-    assertTrue(as.resolveOOType("X").isPresent());
-    assertTrue(as.resolveOOType("Y").isPresent());
-    assertFalse(as.resolveOOType("a.b.X").isPresent());
-    assertFalse(as.resolveOOType("a.b.Y").isPresent());
+    Assertions.assertTrue(as.resolveOOType("X").isPresent());
+    Assertions.assertTrue(as.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(as.resolveOOType("a.b.X").isPresent());
+    Assertions.assertFalse(as.resolveOOType("a.b.Y").isPresent());
 
-    assertEquals(0, gs.resolveOOTypeMany("X").size());
-    assertEquals(0, gs.resolveOOTypeMany("Y").size());
-    assertEquals(0, gs.resolveOOTypeMany("a.b.X").size());
-    assertEquals(0, gs.resolveOOTypeMany("a.b.Y").size());
+    Assertions.assertEquals(0, gs.resolveOOTypeMany("X").size());
+    Assertions.assertEquals(0, gs.resolveOOTypeMany("Y").size());
+    Assertions.assertEquals(0, gs.resolveOOTypeMany("a.b.X").size());
+    Assertions.assertEquals(0, gs.resolveOOTypeMany("a.b.Y").size());
 
-    assertEquals(1, gs.resolveOOTypeMany("cdlight.Simple.a.b.X").size());
-    assertEquals(1, gs.resolveOOTypeMany("cdlight.Simple.a.b.Y").size());
+    Assertions.assertEquals(1, gs.resolveOOTypeMany("cdlight.Simple.a.b.X").size());
+    Assertions.assertEquals(1, gs.resolveOOTypeMany("cdlight.Simple.a.b.Y").size());
   }
 
   @Test
@@ -154,13 +151,13 @@ public class DeepImportsTest {
     symPath.addEntry(new File("src/test/resources/symbols/").toPath());
     gs.setSymbolPath(symPath);
 
-    assertTrue(as.getImports(0).getStatement().equals("SimpleNoPkg"));
+    Assertions.assertTrue(as.getImports(0).getStatement().equals("SimpleNoPkg"));
 
-    assertTrue(gs.resolveOOType("SimpleNoPkg.a.b.X").isPresent());
-    assertTrue(gs.resolveOOType("SimpleNoPkg.a.b.Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("SimpleNoPkg.a.b.X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("SimpleNoPkg.a.b.Y").isPresent());
 
-    assertTrue(gs.resolveOOType("a.b.X").isPresent());
-    assertTrue(gs.resolveOOType("a.b.Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("a.b.X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("a.b.Y").isPresent());
   }
 
   @Test
@@ -174,16 +171,16 @@ public class DeepImportsTest {
     symPath.addEntry(new File("src/test/resources/symbols/").toPath());
     gs.setSymbolPath(symPath);
 
-    assertTrue(as.getImports(0).getStatement().equals("cdlight.Simple.a.b"));
+    Assertions.assertTrue(as.getImports(0).getStatement().equals("cdlight.Simple.a.b"));
 
-    assertTrue(as.resolveOOType("X").isPresent());
-    assertTrue(as.resolveOOType("Y").isPresent());
+    Assertions.assertTrue(as.resolveOOType("X").isPresent());
+    Assertions.assertTrue(as.resolveOOType("Y").isPresent());
 
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
 
-    assertTrue(gs.resolveOOType("SimpleNoPkg.a.b.X").isPresent());
-    assertTrue(gs.resolveOOType("SimpleNoPkg.a.b.Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("SimpleNoPkg.a.b.X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("SimpleNoPkg.a.b.Y").isPresent());
   }
 
 
@@ -196,21 +193,21 @@ public class DeepImportsTest {
     ICdLightGlobalScope gs = CdLightMill.globalScope();
 
     // assume import to be cdlight.Simple.a.b.X
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertFalse(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
 
     // assume import to be Simple.a.b.X
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
 
     // the following only work, if the symbol table is already loaded
 
     // assume import to be a.b.X
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
   }
 
 
@@ -223,24 +220,24 @@ public class DeepImportsTest {
     ICdLightGlobalScope gs = CdLightMill.globalScope();
 
     // assume import to be cdlight.Simple.a.b.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertFalse(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertFalse(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
 
     // assume import to be Simple.a.b.X.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertTrue(gs.resolveOOType("Simple.a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("Simple.a.b.Y").isPresent());
 
     // the following only work, if the symbol table is already loaded
 
     // assume import to be a.b.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertTrue(gs.resolveOOType("a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("a.b.Y").isPresent());
   }
 
   @Test
@@ -252,24 +249,24 @@ public class DeepImportsTest {
     ICdLightGlobalScope gs = CdLightMill.globalScope();
 
     // assume import to be cdlight.Simple.a.b.X
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
 
     // assume import to be Simple.a.b.X
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertFalse(gs.resolveOOType("Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
 
     // the following only work, if the symbol table is already loaded
 
     // assume import to be a.b.X
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertFalse(gs.resolveOOType("a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
 
     // assume import to be cdlight.a.b.X
-    assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
 
   }
 
@@ -282,30 +279,30 @@ public class DeepImportsTest {
     ICdLightGlobalScope gs = CdLightMill.globalScope();
 
     // assume import to be cdlight.Simple.a.b.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
 
     // assume import to be Simple.a.b.X.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertFalse(gs.resolveOOType("Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertFalse(gs.resolveOOType("Simple.a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Simple.a.b.Y").isPresent());
 
     // the following only work, if the symbol table is already loaded
 
     // assume import to be a.b.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertFalse(gs.resolveOOType("a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertFalse(gs.resolveOOType("a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("a.b.Y").isPresent());
 
     // assume import to be cdlight.a.b.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.a.b.Y").isPresent());
   }
 
   @Test
@@ -321,37 +318,37 @@ public class DeepImportsTest {
     ICdLightGlobalScope gs = CdLightMill.globalScope();
 
     // assume import to be cdlight.Simple.a.b.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.Simple.a.b.Y").isPresent());
 
     // assume import to be Simple.a.b.X.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertFalse(gs.resolveOOType("Simple.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertFalse(gs.resolveOOType("Simple.a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Simple.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Simple.a.b.Y").isPresent());
 
     // the following only work, if the symbol table is already loaded
 
     // assume import to be a.b.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertFalse(gs.resolveOOType("a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertFalse(gs.resolveOOType("a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("a.b.Y").isPresent());
 
     // assume import to be cdlight.a.b.*
-    assertFalse(gs.resolveOOType("X").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
-    assertFalse(gs.resolveOOType("Y").isPresent());
-    assertTrue(gs.resolveOOType("cdlight.a.b.Y").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("X").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.a.b.X").isPresent());
+    Assertions.assertFalse(gs.resolveOOType("Y").isPresent());
+    Assertions.assertTrue(gs.resolveOOType("cdlight.a.b.Y").isPresent());
   }
 
   public ASTCdCompilationUnit parse(String model) throws IOException {
     CdLightParser parser = CdLightMill.parser();
     Optional<ASTCdCompilationUnit> cd = parser.parse(model);
-    assertFalse(parser.hasErrors());
-    assertTrue(cd.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(cd.isPresent());
     return cd.get();
   }
 

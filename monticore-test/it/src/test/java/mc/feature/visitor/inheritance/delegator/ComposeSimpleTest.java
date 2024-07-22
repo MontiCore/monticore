@@ -6,9 +6,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mc.feature.visitor.inheritance.a.AMill;
 import mc.feature.visitor.inheritance.a._ast.ASTXA;
@@ -33,7 +33,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ComposeSimpleTest extends CommonVisitorTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -52,7 +52,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
   
   private boolean setUpDone = false;
   
-  @Before
+  @BeforeEach
   public void setUp() {
     run.setLength(0);
     expectedRun.setLength(0);
@@ -70,25 +70,22 @@ public class ComposeSimpleTest extends CommonVisitorTest {
   @Test
   public void testSimpleComposed() {
     traverser.handle(AMill.xABuilder().build());
-    assertEquals("SimpleAVisitor.hXASimpleAVisitor.vXASimpleAVisitor.tXASimpleAVisitor.eXA",
-        run.toString());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals("SimpleAVisitor.hXASimpleAVisitor.vXASimpleAVisitor.tXASimpleAVisitor.eXA", run.toString());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testSimpleComposed2() {
     traverser.handle(BMill.xBBuilder().build());
-    assertEquals("SimpleBVisitor.hXBSimpleBVisitor.vXBSimpleBVisitor.tXBSimpleBVisitor.eXB",
-        run.toString());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals("SimpleBVisitor.hXBSimpleBVisitor.vXBSimpleBVisitor.tXBSimpleBVisitor.eXB", run.toString());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testSimpleComposed3() {
     traverser.handle(mc.feature.visitor.inheritance.c.CMill.xCBuilder().build());
-    assertEquals("SimpleCVisitor.hXCSimpleCVisitor.vXCSimpleCVisitor.tXCSimpleCVisitor.eXC",
-        run.toString());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals("SimpleCVisitor.hXCSimpleCVisitor.vXCSimpleCVisitor.tXCSimpleCVisitor.eXC", run.toString());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -104,8 +101,8 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     expectedRun.append("SimpleBVisitor.hYBSimpleBVisitor.vYBSimpleBVisitor.tYBSimpleBVisitor.eYB");
     // rest of yc
     expectedRun.append("SimpleCVisitor.eYC");
-    assertEquals(expectedRun.toString(), run.toString());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(expectedRun.toString(), run.toString());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -126,8 +123,8 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     expectedRun.append("SimpleBVisitor.hYBSimpleBVisitor.vYBSimpleBVisitor.tYBSimpleBVisitor.eYB");
     // rest of zb
     expectedRun.append("SimpleBVisitor.eZB");
-    assertEquals(expectedRun.toString(), run.toString());
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertEquals(expectedRun.toString(), run.toString());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

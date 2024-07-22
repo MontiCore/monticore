@@ -9,18 +9,16 @@ import mc.feature.keyrule.nokeywordrule._ast.ASTB;
 import mc.feature.keyrule.nokeywordrule._ast.ASTJ;
 import mc.feature.keyrule.nokeywordrule._ast.ASTK;
 import mc.feature.keyrule.nokeywordrule._parser.NoKeywordRuleParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-
 public class NoKeywordRuleTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -30,23 +28,23 @@ public class NoKeywordRuleTest extends GeneratorIntegrationsTest {
   public void test() throws IOException {
     NoKeywordRuleParser parser = new NoKeywordRuleParser();
     parser.parse_StringA("bla1 bla1");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
     parser.parse_StringA("bla2 bla1");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
     parser.parse_StringA("bla3 bla1");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
     Optional<ASTB> ast = parser.parse_StringB("bla1 bla1");
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
-    assertEquals("bla1", ast.get().getBla());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertEquals("bla1", ast.get().getBla());
     Optional<ASTJ> astj = parser.parse_StringJ("blaj");
-    assertFalse(parser.hasErrors());
-    assertTrue(astj.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astj.isPresent());
     astj = parser.parse_StringJ("blax");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
     Optional<ASTK> astk = parser.parse_StringK("bla1");
-    assertFalse(parser.hasErrors());
-    assertTrue(astk.isPresent());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astk.isPresent());
   }
   
 }

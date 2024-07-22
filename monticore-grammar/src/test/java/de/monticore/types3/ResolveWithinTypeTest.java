@@ -21,8 +21,9 @@ import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,7 +46,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -76,21 +77,21 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType.getSpannedScope());
-    assertEquals("(() -> t) & t", type.printFullName());
-    assertTrue(type.isIntersectionType());
-    assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
+    Assertions.assertEquals("(() -> t) & t", type.printFullName());
+    Assertions.assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
         .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
 
     type = calculateTypeWithinScope("t()", oOType.getSpannedScope());
     assertNoFindings();
-    assertEquals("t", type.printFullName());
-    assertSame(type.getTypeInfo(), oOType);
+    Assertions.assertEquals("t", type.printFullName());
+    Assertions.assertSame(type.getTypeInfo(), oOType);
 
     type = calculateTypeWithinScope("t", method.getSpannedScope());
-    assertEquals("(() -> t) & t", type.printFullName());
-    assertTrue(type.isIntersectionType());
-    assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
+    Assertions.assertEquals("(() -> t) & t", type.printFullName());
+    Assertions.assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
         .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
   }
@@ -126,16 +127,16 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType.getSpannedScope());
-    assertEquals("(t -> t) & t", type.printFullName());
-    assertTrue(type.isIntersectionType());
-    assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
+    Assertions.assertEquals("(t -> t) & t", type.printFullName());
+    Assertions.assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
         .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
 
     type = calculateTypeWithinScope("t", method.getSpannedScope());
-    assertEquals("(t -> t) & t", type.printFullName());
-    assertTrue(type.isIntersectionType());
-    assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
+    Assertions.assertEquals("(t -> t) & t", type.printFullName());
+    Assertions.assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
         .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
   }
@@ -174,16 +175,16 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType.getSpannedScope());
-    assertEquals("(s -> s) & s.t", type.printFullName());
-    assertTrue(type.isIntersectionType());
-    assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
+    Assertions.assertEquals("(s -> s) & s.t", type.printFullName());
+    Assertions.assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
         .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType1));
 
     type = calculateTypeWithinScope("t", method.getSpannedScope());
-    assertEquals("(s -> s) & s", type.printFullName());
-    assertTrue(type.isIntersectionType());
-    assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
+    Assertions.assertEquals("(s -> s) & s", type.printFullName());
+    Assertions.assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
         .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
   }
@@ -216,20 +217,20 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType.getSpannedScope());
-    assertEquals("(() -> s.t) & s.t", type.printFullName());
-    assertTrue(type.isIntersectionType());
-    assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
+    Assertions.assertEquals("(() -> s.t) & s.t", type.printFullName());
+    Assertions.assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
         .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType1));
 
     type = calculateTypeWithinScope("t()", oOType.getSpannedScope());
-    assertEquals("s.t", type.printFullName());
-    assertSame(type.getTypeInfo(), oOType1);
+    Assertions.assertEquals("s.t", type.printFullName());
+    Assertions.assertSame(type.getTypeInfo(), oOType1);
 
     type = calculateTypeWithinScope("t", method.getSpannedScope());
-    assertEquals("(() -> s.t) & s.t", type.printFullName());
-    assertTrue(type.isIntersectionType());
-    assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
+    Assertions.assertEquals("(() -> s.t) & s.t", type.printFullName());
+    Assertions.assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
         .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType1));
   }
@@ -258,8 +259,8 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType1.getSpannedScope());
-    assertEquals("t", type.printFullName());
-    assertSame(oOType, type.getTypeInfo());
+    Assertions.assertEquals("t", type.printFullName());
+    Assertions.assertSame(oOType, type.getTypeInfo());
   }
 
   // class t {}
@@ -293,8 +294,8 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType2.getSpannedScope());
-    assertEquals("t", type.printFullName());
-    assertSame(type.getTypeInfo(), oOType);
+    Assertions.assertEquals("t", type.printFullName());
+    Assertions.assertSame(type.getTypeInfo(), oOType);
   }
 
   // class t<t> {

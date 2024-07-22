@@ -10,13 +10,11 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
-import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -33,7 +31,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
    *    types/MCBasicTypes.mc4
    */
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -59,7 +57,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
   FlatExpressionScopeSetter scopeSetter;
   CombineExpressionsWithLiteralsTraverser traverser;
 
-  @Before
+  @BeforeEach
   public void initScope(){
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     traverser = CombineExpressionsWithLiteralsMill.traverser();
@@ -73,7 +71,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "double";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -81,7 +79,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "int";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -89,7 +87,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "A";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -97,7 +95,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -105,27 +103,27 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
   public void symTypeFromAST_VoidTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
-    assertEquals("void", tc.symTypeFromAST(v).printFullName());
+    Assertions.assertEquals("void", tc.symTypeFromAST(v).printFullName());
   }
   
   @Test
   public void symTypeFromAST_ReturnTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(v).build();
-    assertEquals("void", tc.symTypeFromAST(r).printFullName());
+    Assertions.assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
 
   @Test
   public void symTypeFromAST_ReturnTest2() throws IOException {
     // im Prinzip dassselbe via Parser:
     ASTMCReturnType r = parser.parse_StringMCReturnType("void").get();
-    assertEquals("void", tc.symTypeFromAST(r).printFullName());
+    Assertions.assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
   
   @Test
@@ -134,7 +132,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "Person";
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
     r.accept(traverser);
-    assertEquals(s, tc.symTypeFromAST(r).printFullName());
+    Assertions.assertEquals(s, tc.symTypeFromAST(r).printFullName());
   }
   
 }

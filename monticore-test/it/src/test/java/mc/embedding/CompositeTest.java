@@ -12,24 +12,22 @@ import mc.embedding.composite._symboltable.Text2ContentAdapter;
 import mc.embedding.embedded._symboltable.TextSymbol;
 import mc.embedding.host._symboltable.ContentSymbol;
 import mc.embedding.host._symboltable.HostSymbol;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.*;
-
 public class CompositeTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     CompositeMill.reset();
     CompositeMill.init();
@@ -42,21 +40,21 @@ public class CompositeTest extends GeneratorIntegrationsTest {
 
   // Symbol of the host language
     final HostSymbol hostSymbol = scope.resolveHost("ZComposite").orElse(null);
-    assertNotNull(hostSymbol);
-    assertEquals("ZComposite", hostSymbol.getName());
+    Assertions.assertNotNull(hostSymbol);
+    Assertions.assertEquals("ZComposite", hostSymbol.getName());
 
     // Symbol of the embedded language
-    assertTrue(hostSymbol.getSpannedScope() instanceof ICompositeScope);
+    Assertions.assertTrue(hostSymbol.getSpannedScope() instanceof ICompositeScope);
         final TextSymbol textSymbol = ((ICompositeScope)hostSymbol.getSpannedScope()).resolveText("Hello").orElse(null);
-    assertNotNull(textSymbol);
+    Assertions.assertNotNull(textSymbol);
 
     // Adapted text symbol -> content symbol
     final ContentSymbol text2ContentSymbol = hostSymbol.getSpannedScope().resolveContent("Hello").orElse(null);
-    assertNotNull(text2ContentSymbol);
-    assertTrue(text2ContentSymbol instanceof Text2ContentAdapter);
+    Assertions.assertNotNull(text2ContentSymbol);
+    Assertions.assertTrue(text2ContentSymbol instanceof Text2ContentAdapter);
   
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

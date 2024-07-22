@@ -8,8 +8,9 @@ import de.monticore.types.mcfunctiontypestest.MCFunctionTypesTestMill;
 import de.monticore.types.mcfunctiontypestest._parser.MCFunctionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MCFunctionTypesPrettyPrinterTest {
 
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -66,9 +67,9 @@ public class MCFunctionTypesPrettyPrinterTest {
   protected ASTMCFunctionType parse(String mcTypeStr) throws IOException {
     MCFunctionTypesTestParser parser = new MCFunctionTypesTestParser();
     Optional<ASTMCFunctionType> typeOpt = parser.parse_StringMCFunctionType(mcTypeStr);
-    assertNotNull(typeOpt);
-    assertTrue(typeOpt.isPresent());
-    assertEquals(0, Log.getFindingsCount());
+    Assertions.assertNotNull(typeOpt);
+    Assertions.assertTrue(typeOpt.isPresent());
+    Assertions.assertEquals(0, Log.getFindingsCount());
     return typeOpt.get();
   }
 
@@ -76,7 +77,7 @@ public class MCFunctionTypesPrettyPrinterTest {
     MCFunctionTypesFullPrettyPrinter printer = new MCFunctionTypesFullPrettyPrinter(
         new IndentPrinter());
     String typeStr = printer.prettyprint(type);
-    assertEquals(0, Log.getFindingsCount());
+    Assertions.assertEquals(0, Log.getFindingsCount());
     return typeStr;
   }
 
@@ -84,8 +85,8 @@ public class MCFunctionTypesPrettyPrinterTest {
     ASTMCFunctionType type = parse(typeStr);
     String printed = print(type);
     ASTMCFunctionType typeOfPrinted = parse(printed);
-    assertTrue(typeOfPrinted.deepEquals(type));
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(typeOfPrinted.deepEquals(type));
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }

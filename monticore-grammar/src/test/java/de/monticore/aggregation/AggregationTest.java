@@ -17,10 +17,9 @@ import de.monticore.aggregation.foo._symboltable.FooScopesGenitorDelegator;
 import de.monticore.aggregation.foo._symboltable.IFooArtifactScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -29,7 +28,7 @@ import static junit.framework.TestCase.assertTrue;
 
 public class AggregationTest {
   
-  @Before
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -80,14 +79,14 @@ public class AggregationTest {
     // check dummy symbol is present in local scope
     Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blahmodel.blubScope1.blubSymbol1");
     
-    assertTrue(blubSymbol1.isPresent());
+    Assertions.assertTrue(blubSymbol1.isPresent());
 //
 //
     
     // check dummy symbol is present in global scope
     Optional<BarSymbol> barSymbol = globalScope.resolveBar("blahmodel.blubScope1.blubSymbol1");
     
-    assertTrue(barSymbol.isPresent());
+    Assertions.assertTrue(barSymbol.isPresent());
 
 
    /* ***************************************************************************************************************
@@ -101,7 +100,7 @@ public class AggregationTest {
     Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() } name");
     
     // Check foo model is parsed
-    assertTrue(fooModel.isPresent());
+    Assertions.assertTrue(fooModel.isPresent());
     
     // create symbol table for "foo"
     FooScopesGenitorDelegator fooSymbolTableCreator = FooMill.scopesGenitorDelegator();
@@ -109,9 +108,9 @@ public class AggregationTest {
     
     // check symbol is resolvable
     Optional<BarSymbol> k = fooScope.resolveBar("name");
-    assertTrue(k.isPresent());
+    Assertions.assertTrue(k.isPresent());
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   

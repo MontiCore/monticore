@@ -5,12 +5,11 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
@@ -18,18 +17,12 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class OverridingClassProdTest {
+public class OverridingClassProdTest extends TranslationTestCase {
   
   private ASTCDClass astX;
 
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  public OverridingClassProdTest() {
+  @BeforeEach
+  public void setupOverridingClassProdTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/OverridingClassProdGrammar.mc4")).get();
     astX = TestHelper.getCDClass(cdCompilationUnit, "ASTX").get();
@@ -41,10 +34,10 @@ public class OverridingClassProdTest {
    */
   @Test
   public void testOverride() {
-    assertTrue(astX.isPresentCDExtendUsage());
+    Assertions.assertTrue(astX.isPresentCDExtendUsage());
     String name = typeToString(astX.getCDExtendUsage().getSuperclass(0));
-    assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
+    Assertions.assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

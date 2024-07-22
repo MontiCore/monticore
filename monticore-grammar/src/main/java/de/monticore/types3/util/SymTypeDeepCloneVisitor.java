@@ -188,7 +188,7 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
     }
     else {
       result = SymTypeExpressionFactory.createTypeVariable(
-          null,
+          symType.getFreeVarIdentifier(),
           symType.getStoredLowerBound(),
           symType.getStoredUpperBound()
       );

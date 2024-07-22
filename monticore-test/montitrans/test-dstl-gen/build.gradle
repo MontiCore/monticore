@@ -149,6 +149,12 @@ task generateUsingEmptyComponentGrammarTR (type: MCTask, dependsOn: generateEmpt
     dependsOn generateEmptyComponentGrammarTR
 }
 
+// The following explicit task dependencies are required in order to upgrade to Gradle 8+
+// They are not required when using the de.monticore.generator / MCGenTask
+tasks.withType(MCTask.class).configureEach {
+  dependsOn(":monticore-grammar:grammarsJar")
+  dependsOn(":monticore-grammar:trafoGrammarsJar")
+}
 
 compileJava {
   dependsOn project.collect { it.tasks.withType(MCTask) }

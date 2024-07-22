@@ -95,4 +95,8 @@ component grammar OptionalOperators
   OptionalNotSimilarExpression implements Expression <130>, InfixExpression =
     left:Expression operator:"?!~" right:Expression;
 
+  // Due to possible scanner clashes with "List<?>"
+  // we split the token:
+  splittoken "?>";
+
 }

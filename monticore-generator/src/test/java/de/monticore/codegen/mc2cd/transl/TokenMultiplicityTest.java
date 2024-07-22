@@ -6,12 +6,11 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -21,18 +20,12 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TokenMultiplicityTest {
+public class TokenMultiplicityTest extends TranslationTestCase {
 
-  private final ASTCDClass testListClass;
+  private ASTCDClass testListClass;
 
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  public TokenMultiplicityTest() {
+  @BeforeEach
+  public void setupTokenMultiplicityTest() {
     Optional<ASTCDCompilationUnit> cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/LexerFormat.mc4"));
     testListClass = TestHelper.getCDClass(cdCompilationUnit.get(), "ASTTestList").get();
@@ -42,8 +35,8 @@ public class TokenMultiplicityTest {
   public void testTokenStar() {
     List<ASTCDAttribute> attributes = testListClass.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
-    assertEquals("java.util.List", name);
+    Assertions.assertEquals("java.util.List", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

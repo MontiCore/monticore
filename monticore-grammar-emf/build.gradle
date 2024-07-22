@@ -19,16 +19,24 @@ dependencies {
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.common:2.15.0'
-    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     testImplementation 'org.apache.groovy:groovy:4.0.2'
 }
 
 def srcDir = "$buildDir/main/java"
+def srcResourcesDir = "$buildDir/main/resources"
 def testDir = "$buildDir/test/java"
 
 task copySrc(type: Copy) {
   from "${project(':monticore-grammar').projectDir}/src/main/java"
   into srcDir
+}
+
+task copySrcResources(type: Copy) {
+    from "${project(':monticore-grammar').projectDir}/src/main/resources"
+    into srcResourcesDir
 }
 
 task copyTest(type: Copy) {
@@ -47,6 +55,7 @@ def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
 
 sourceSets {
   main.java.srcDirs = [ srcDir]
+  main.resources.srcDirs = [ srcResourcesDir]
   test.java.srcDirs = [ testDir, testGrammarOutDir]
 }
 
@@ -90,6 +99,7 @@ test {
 
 
 compileJava.dependsOn (tasks.named("copySrc"))
+compileJava.dependsOn (tasks.named("copySrcResources"))
 compileTestJava.dependsOn (tasks.named("copyTest"))
 compileTestJava.dependsOn (tasks.named("copyTestResources"))
 compileTestJava.dependsOn (tasks.named("generateMCTestGrammars"))

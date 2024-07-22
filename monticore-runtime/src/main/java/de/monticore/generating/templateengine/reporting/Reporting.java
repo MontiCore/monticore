@@ -754,25 +754,27 @@ public class Reporting extends Log {
    * . This does not include any other assignment or replacement.
    *
    * @param template
+   * @param ast
    * @param beforeHps
    */
-  public static void reportSetBeforeTemplate(String template, List<? extends HookPoint> beforeHps) {
+  public static void reportSetBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> beforeHps) {
     if (isEnabled()) {
-      getReportManager().reportSetBeforeTemplate(template, beforeHps);
+      getReportManager().reportSetBeforeTemplate(template, ast, beforeHps);
     }
   }
 
   /**
    * Reports the addition of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#addAfterTemplate(String , List )}
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
    * . This does not include any other assignment or replacement.
    *
    * @param template
+   * @param ast
    * @param afterHps
    */
-  public static void reportSetAfterTemplate(String template, List<? extends HookPoint> afterHps) {
+  public static void reportSetAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
-      getReportManager().reportSetAfterTemplate(template, afterHps);
+      getReportManager().reportSetAfterTemplate(template, ast, afterHps);
     }
   }
 
@@ -788,15 +790,29 @@ public class Reporting extends Log {
    * . This does not include any other assignment or replacement.
    *
    * @param template
+   * @param ast
    * @param afterHps
    */
-  public static void reportAddAfterTemplate(String template, List<? extends HookPoint> afterHps) {
+  public static void reportAddAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
-      getReportManager().reportAddAfterTemplate(template, afterHps);
+      getReportManager().reportAddAfterTemplate(template, ast, afterHps);
     }
   }
 
-
+  /**
+   * Reports the assignment of hook points to a template via
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
+   * . This does not include any other assignment or replacement.
+   *
+   * @param template
+   * @param ast
+   * @param afterHps
+   */
+  public static void reportAddBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
+    if (isEnabled()) {
+      getReportManager().reportAddBeforeTemplate(template, ast, afterHps);
+    }
+  }
   /**
    * Reports the check for existence of an artifact
    *

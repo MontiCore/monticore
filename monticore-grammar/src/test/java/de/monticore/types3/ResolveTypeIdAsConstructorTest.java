@@ -16,8 +16,9 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -41,7 +42,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
@@ -81,30 +82,30 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
     // do not find the constructor if we find a function
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType.getSpannedScope());
-    assertEquals("() -> int", type.printFullName());
-    assertSame(method, ((SymTypeOfFunction) type).getSymbol());
+    Assertions.assertEquals("() -> int", type.printFullName());
+    Assertions.assertSame(method, ((SymTypeOfFunction) type).getSymbol());
 
     // do not find the constructor if we find a function
     type = calculateTypeWithinScope("t.t", gs);
-    assertEquals("() -> int", type.printFullName());
-    assertSame(method, ((SymTypeOfFunction) type).getSymbol());
+    Assertions.assertEquals("() -> int", type.printFullName());
+    Assertions.assertSame(method, ((SymTypeOfFunction) type).getSymbol());
 
     // find the constructor based on the type id
     type = calculateTypeWithinScope("t", gs);
-    assertTrue(type.isIntersectionType());
+    Assertions.assertTrue(type.isIntersectionType());
     Collection<SymTypeExpression> functions =
         ((SymTypeOfIntersection) type).getIntersectedTypeSet();
-    assertTrue(functions.stream().allMatch(f -> f.isFunctionType()));
+    Assertions.assertTrue(functions.stream().allMatch(f -> f.isFunctionType()));
     Collection<SymTypeOfFunction> constructors = functions.stream()
         .map(f -> (SymTypeOfFunction) f)
         .collect(Collectors.toSet());
-    assertEquals(2, constructors.size());
-    assertTrue(constructors.stream().anyMatch(c -> c.getSymbol() == constructor));
-    assertTrue(constructors.stream().anyMatch(c -> c.getSymbol() == constructor2));
-    assertTrue(constructors.stream()
+    Assertions.assertEquals(2, constructors.size());
+    Assertions.assertTrue(constructors.stream().anyMatch(c -> c.getSymbol() == constructor));
+    Assertions.assertTrue(constructors.stream().anyMatch(c -> c.getSymbol() == constructor2));
+    Assertions.assertTrue(constructors.stream()
         .map(SymTypeOfFunction::printFullName)
         .anyMatch(p -> p.equals("() -> t")));
-    assertTrue(constructors.stream()
+    Assertions.assertTrue(constructors.stream()
         .map(SymTypeOfFunction::printFullName)
         .anyMatch(p -> p.equals("t -> t")));
 
@@ -153,23 +154,23 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
 
     // find the constructor based on the type id
     SymTypeExpression type = calculateTypeWithinScope("t", gs);
-    assertTrue(type.isFunctionType());
-    assertSame(constructor, ((SymTypeOfFunction) type).getSymbol());
+    Assertions.assertTrue(type.isFunctionType());
+    Assertions.assertSame(constructor, ((SymTypeOfFunction) type).getSymbol());
 
     // find the constructor of the inner type,
     // as the constructor of the outer type is filtered out
     type = calculateTypeWithinScope("t.t", gs);
-    assertTrue(type.isFunctionType());
-    assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
+    Assertions.assertTrue(type.isFunctionType());
+    Assertions.assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
 
     // find the constructor of the inner type,
     // as the constructor of the outer type is filtered out
     type = calculateTypeWithinScope("t", oOType.getSpannedScope());
-    assertTrue(type.isFunctionType());
-    assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
+    Assertions.assertTrue(type.isFunctionType());
+    Assertions.assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
 
     type = calculateTypeWithinScope("t", innerOOType.getSpannedScope());
-    assertEquals("(float -> t.t) & (int -> t.t)", type.printFullName());
+    Assertions.assertEquals("(float -> t.t) & (int -> t.t)", type.printFullName());
 
     assertNoFindings();
   }

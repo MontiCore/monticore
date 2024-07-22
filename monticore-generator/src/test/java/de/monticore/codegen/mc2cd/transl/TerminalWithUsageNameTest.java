@@ -8,30 +8,23 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TerminalWithUsageNameTest {
+public class TerminalWithUsageNameTest extends TranslationTestCase {
   
   private ASTCDClass astA;
 
-  @Before
-  public void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  public TerminalWithUsageNameTest() {
+  @BeforeEach
+  public void setupTerminalWithUsageNameTest() {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/TerminalWithUsageNameGrammar.mc4")).get();
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
@@ -45,9 +38,9 @@ public class TerminalWithUsageNameTest {
   public void testTerminalUsageName() {
     ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributeList());
     
-    assertEquals("testname", cdAttribute.getName());
-    assertEquals("String", TransformationHelper.typeToString(cdAttribute.getMCType()));
+    Assertions.assertEquals("testname", cdAttribute.getName());
+    Assertions.assertEquals("String", TransformationHelper.typeToString(cdAttribute.getMCType()));
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

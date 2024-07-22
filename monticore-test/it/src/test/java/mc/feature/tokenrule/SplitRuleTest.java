@@ -7,19 +7,18 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.tokenrule.splitrule._ast.ASTD;
 import mc.feature.tokenrule.splitrule._ast.ASTF;
 import mc.feature.tokenrule.splitrule._parser.SplitRuleParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
 
 public class SplitRuleTest extends GeneratorIntegrationsTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -29,21 +28,21 @@ public class SplitRuleTest extends GeneratorIntegrationsTest {
   public void test() throws IOException {
     SplitRuleParser parser = new SplitRuleParser();
     parser.parse_StringA("::: Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
     parser.parse_StringA(": :: Foo");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
     parser.parse_StringA(": Foo");
-    assertTrue(parser.hasErrors());
+    Assertions.assertTrue(parser.hasErrors());
     parser.parse_StringB("::: ::: Foo");
-    assertFalse(parser.hasErrors());
+    Assertions.assertFalse(parser.hasErrors());
     Optional<ASTD> ast = parser.parse_StringD(":::");
-    assertFalse(parser.hasErrors());
-    assertTrue(ast.isPresent());
-    assertEquals(":::", ast.get().getFoo());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(ast.isPresent());
+    Assertions.assertEquals(":::", ast.get().getFoo());
     Optional<ASTF> astg = parser.parse_StringF(":::");
-    assertFalse(parser.hasErrors());
-    assertTrue(astg.isPresent());
-    assertTrue(astg.get().isFoo());
+    Assertions.assertFalse(parser.hasErrors());
+    Assertions.assertTrue(astg.isPresent());
+    Assertions.assertTrue(astg.get().isFoo());
   }
   
 }

@@ -5,28 +5,20 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.BeforeClass;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
+import org.junit.jupiter.api.BeforeEach;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 
-public class ConstantTest {
+public class ConstantTest extends TranslationTestCase {
   
   private ASTCDClass astA;
   
   private ASTCDClass astB;
 
-  @BeforeClass
-  public static void setup(){
-    GrammarFamilyMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  public ConstantTest() {
+  @BeforeEach
+  public void setupConstantTest() throws IOException {
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/ConstantsGrammar.mc4")).get();
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();

@@ -37,6 +37,11 @@ public class SymTypeOfTuple extends SymTypeExpression {
   }
 
   @Override
+  public SymTypeOfTuple deepClone() {
+    return super.deepClone().asTupleType();
+  }
+
+  @Override
   public boolean deepEquals(SymTypeExpression sym) {
     if (!sym.isTupleType()) {
       return false;

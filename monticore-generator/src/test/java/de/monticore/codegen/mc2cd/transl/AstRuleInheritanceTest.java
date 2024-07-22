@@ -7,27 +7,23 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
-import de.monticore.grammar.grammarfamily.GrammarFamilyMill;
+import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * tests astextends and astimplements functionality at astrules
  */
-public class AstRuleInheritanceTest {
+public class AstRuleInheritanceTest extends TranslationTestCase {
 
   private ASTCDClass astA;
 
@@ -41,17 +37,8 @@ public class AstRuleInheritanceTest {
 
   private ASTCDClass astF;
 
-  @Before
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @Before
+  @BeforeEach
   public void setUp() {
-    GrammarFamilyMill.reset();
-    GrammarFamilyMill.init();
-
     ASTCDCompilationUnit cdCompilationUnit = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/AstRuleInheritance.mc4")).get();
 
@@ -62,12 +49,12 @@ public class AstRuleInheritanceTest {
     Optional<ASTCDInterface> asteOpt = TestHelper.getCDInterface(cdCompilationUnit, "ASTE");
     Optional<ASTCDClass> astfOpt = TestHelper.getCDClass(cdCompilationUnit, "ASTF");
 
-    assertTrue(astaOpt.isPresent());
-    assertTrue(astbOpt.isPresent());
-    assertTrue(astcOpt.isPresent());
-    assertTrue(astdOpt.isPresent());
-    assertTrue(asteOpt.isPresent());
-    assertTrue(astfOpt.isPresent());
+    Assertions.assertTrue(astaOpt.isPresent());
+    Assertions.assertTrue(astbOpt.isPresent());
+    Assertions.assertTrue(astcOpt.isPresent());
+    Assertions.assertTrue(astdOpt.isPresent());
+    Assertions.assertTrue(asteOpt.isPresent());
+    Assertions.assertTrue(astfOpt.isPresent());
 
     astA = astaOpt.get();
     astB = astbOpt.get();
@@ -82,23 +69,23 @@ public class AstRuleInheritanceTest {
    */
   @Test
   public void testAstSuperClass() {
-    assertTrue(astA.isPresentCDExtendUsage());
+    Assertions.assertTrue(astA.isPresentCDExtendUsage());
     String name = typeToString(astA.getCDExtendUsage().getSuperclass(0));
-    assertEquals("ASTExternalProd", name);
+    Assertions.assertEquals("ASTExternalProd", name);
 
-    assertTrue(astC.isPresentCDExtendUsage());
+    Assertions.assertTrue(astC.isPresentCDExtendUsage());
     name = typeToString(astC.getCDExtendUsage().getSuperclass(0));
-    assertEquals("mc2cdtransformation.AstRuleInheritance.ASTA", name);
+    Assertions.assertEquals("mc2cdtransformation.AstRuleInheritance.ASTA", name);
 
-    assertTrue(astD.isPresentCDExtendUsage());
+    Assertions.assertTrue(astD.isPresentCDExtendUsage());
     name = typeToString(astD.getCDExtendUsage().getSuperclass(0));
-    assertEquals("mc2cdtransformation.Supergrammar.ASTSuperProd", name);
+    Assertions.assertEquals("mc2cdtransformation.Supergrammar.ASTSuperProd", name);
 
-    assertTrue(astF.isPresentCDExtendUsage());
+    Assertions.assertTrue(astF.isPresentCDExtendUsage());
     name = typeToString(astF.getCDExtendUsage().getSuperclass(0));
-    assertEquals("java.util.Observable", name);
+    Assertions.assertEquals("java.util.Observable", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -107,29 +94,26 @@ public class AstRuleInheritanceTest {
    */
   @Test
   public void testStereotypesForAstSuperclass() {
-    assertTrue(astA.getModifier().isPresentStereotype());
+    Assertions.assertTrue(astA.getModifier().isPresentStereotype());
     // one stereotype for the startProd flag and one for the checked external type
-    assertEquals(2, astA.getModifier().getStereotype().getValuesList().size());
-    assertEquals(astA.getModifier().getStereotype().getValuesList().get(0).getName(),
-        MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertFalse(astA.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
-    assertEquals(astA.getModifier().getStereotype().getValuesList().get(0).getValue(), "ASTExternalProd");
+    Assertions.assertEquals(2, astA.getModifier().getStereotype().getValuesList().size());
+    Assertions.assertEquals(astA.getModifier().getStereotype().getValuesList().get(0).getName(), MC2CDStereotypes.EXTERNAL_TYPE.toString());
+    Assertions.assertFalse(astA.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
+    Assertions.assertEquals(astA.getModifier().getStereotype().getValuesList().get(0).getValue(), "ASTExternalProd");
 
-    assertTrue(astF.getModifier().isPresentStereotype());
-    assertEquals(1, astF.getModifier().getStereotype().getValuesList().size());
-    assertEquals(astF.getModifier().getStereotype().getValuesList().get(0).getName(),
-        MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertFalse(astF.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
-    assertEquals(astF.getModifier().getStereotype().getValuesList().get(0).getValue(), "java.util.Observable");
+    Assertions.assertTrue(astF.getModifier().isPresentStereotype());
+    Assertions.assertEquals(1, astF.getModifier().getStereotype().getValuesList().size());
+    Assertions.assertEquals(astF.getModifier().getStereotype().getValuesList().get(0).getName(), MC2CDStereotypes.EXTERNAL_TYPE.toString());
+    Assertions.assertFalse(astF.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
+    Assertions.assertEquals(astF.getModifier().getStereotype().getValuesList().get(0).getValue(), "java.util.Observable");
 
-    assertTrue(astD.getModifier().isPresentStereotype());
-    assertEquals(1, astD.getModifier().getStereotype().getValuesList().size());
-    assertEquals(astD.getModifier().getStereotype().getValuesList().get(0).getName(),
-        MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertFalse(astD.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
-    assertEquals(astD.getModifier().getStereotype().getValuesList().get(0).getValue(), "java.io.Serializable");
+    Assertions.assertTrue(astD.getModifier().isPresentStereotype());
+    Assertions.assertEquals(1, astD.getModifier().getStereotype().getValuesList().size());
+    Assertions.assertEquals(astD.getModifier().getStereotype().getValuesList().get(0).getName(), MC2CDStereotypes.EXTERNAL_TYPE.toString());
+    Assertions.assertFalse(astD.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
+    Assertions.assertEquals(astD.getModifier().getStereotype().getValuesList().get(0).getValue(), "java.io.Serializable");
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -138,18 +122,16 @@ public class AstRuleInheritanceTest {
    */
   @Test
   public void testStereotypesForAstInterfaces() {
-    assertTrue(astE.getModifier().isPresentStereotype());
-    assertEquals(2, astE.getModifier().getStereotype().getValuesList().size());
-    assertEquals(astE.getModifier().getStereotype().getValuesList().get(0).getName(),
-        MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertFalse(astE.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
-    assertEquals(astE.getModifier().getStereotype().getValuesList().get(0).getValue(), "ASTExternalInterface");
-    assertEquals(astE.getModifier().getStereotype().getValuesList().get(1).getName(),
-        MC2CDStereotypes.EXTERNAL_TYPE.toString());
-    assertFalse(astE.getModifier().getStereotype().getValuesList().get(1).getValue().isEmpty());
-    assertEquals(astE.getModifier().getStereotype().getValuesList().get(1).getValue(), "java.io.Serializable");
+    Assertions.assertTrue(astE.getModifier().isPresentStereotype());
+    Assertions.assertEquals(2, astE.getModifier().getStereotype().getValuesList().size());
+    Assertions.assertEquals(astE.getModifier().getStereotype().getValuesList().get(0).getName(), MC2CDStereotypes.EXTERNAL_TYPE.toString());
+    Assertions.assertFalse(astE.getModifier().getStereotype().getValuesList().get(0).getValue().isEmpty());
+    Assertions.assertEquals(astE.getModifier().getStereotype().getValuesList().get(0).getValue(), "ASTExternalInterface");
+    Assertions.assertEquals(astE.getModifier().getStereotype().getValuesList().get(1).getName(), MC2CDStereotypes.EXTERNAL_TYPE.toString());
+    Assertions.assertFalse(astE.getModifier().getStereotype().getValuesList().get(1).getValue().isEmpty());
+    Assertions.assertEquals(astE.getModifier().getStereotype().getValuesList().get(1).getValue(), "java.io.Serializable");
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -159,15 +141,15 @@ public class AstRuleInheritanceTest {
   @Test
   public void testASTExtendsAndImplements() {
     List<ASTMCObjectType> superInterfaces = astD.getInterfaceList();
-    assertEquals(3, superInterfaces.size());
+    Assertions.assertEquals(3, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    assertEquals("mc2cdtransformation.AstRuleInheritance.ASTB", name);
+    Assertions.assertEquals("mc2cdtransformation.AstRuleInheritance.ASTB", name);
     name = typeToString(superInterfaces.get(1));
-    assertEquals("mc2cdtransformation.Supergrammar.ASTSuperInterface", name);
+    Assertions.assertEquals("mc2cdtransformation.Supergrammar.ASTSuperInterface", name);
     name = typeToString(superInterfaces.get(2));
-    assertEquals("java.io.Serializable", name);
+    Assertions.assertEquals("java.io.Serializable", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -177,17 +159,17 @@ public class AstRuleInheritanceTest {
   @Test
   public void testAstInterfaces() {
     List<ASTMCObjectType> superInterfaces = astE.getInterfaceList();
-    assertEquals(4, superInterfaces.size());
+    Assertions.assertEquals(4, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    assertEquals("mc2cdtransformation.AstRuleInheritance.ASTB", name);
+    Assertions.assertEquals("mc2cdtransformation.AstRuleInheritance.ASTB", name);
     name = typeToString(superInterfaces.get(1));
-    assertEquals("mc2cdtransformation.Supergrammar.ASTSuperInterface", name);
+    Assertions.assertEquals("mc2cdtransformation.Supergrammar.ASTSuperInterface", name);
     name = typeToString(superInterfaces.get(2));
-    assertEquals("ASTExternalInterface", name);
+    Assertions.assertEquals("ASTExternalInterface", name);
     name = typeToString(superInterfaces.get(3));
-    assertEquals("java.io.Serializable", name);
+    Assertions.assertEquals("java.io.Serializable", name);
   
-    assertTrue(Log.getFindings().isEmpty());
+    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }
