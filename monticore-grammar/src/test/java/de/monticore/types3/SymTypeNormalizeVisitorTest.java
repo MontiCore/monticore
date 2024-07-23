@@ -63,7 +63,7 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
             createFunction(_personSymType, _shortSymType),
             createFunction(_studentSymType, _intSymType)
         ),
-        "int -> Student"
+        "short -> Person"
     );
     assertNoFindings();
   }
@@ -82,7 +82,11 @@ public class SymTypeNormalizeVisitorTest extends AbstractTypeTest {
             createFunction(_personSymType, _shortSymType),
             createFunction(_studentSymType, _intSymType)
         ),
-        "short -> Person"
+        // while the function does map every short to a Person,
+        // there is the information that every int gets mapped to a Student;
+        // Since every short is an int,
+        // the shorts need to be mapped to Students as well.
+        "int -> Student"
     );
     assertNoFindings();
   }
