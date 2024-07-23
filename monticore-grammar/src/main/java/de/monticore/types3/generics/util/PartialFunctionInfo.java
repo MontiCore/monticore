@@ -105,6 +105,16 @@ public class PartialFunctionInfo {
     }
   }
 
+  /**
+   * QOL: sets all argument expressions + number of arguments at once
+   */
+  public void setArgumentExprs(List<? extends ASTExpression> argumentExprs) {
+    setParameterCount(argumentExprs.size());
+    for (int i = 0; i < argumentExprs.size(); i++) {
+      setArgumentExpr(i, argumentExprs.get(i));
+    }
+  }
+
   public boolean hasArgumentExpr(int idx) {
     return argumentExprs.containsKey(idx);
   }
