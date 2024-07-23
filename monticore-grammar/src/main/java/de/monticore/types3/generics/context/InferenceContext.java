@@ -85,4 +85,17 @@ public class InferenceContext {
     this.inferredTypes = inferredTypes;
   }
 
+  /**
+   * Warn: inferred types are cloned rather shallow,
+   * as cloning them tends to not be required.
+   */
+  public InferenceContext deepClone() {
+    InferenceContext clone = new InferenceContext();
+    clone.mode = getVisitorMode();
+    clone.targetType = targetType.map(SymTypeExpression::deepClone);
+    clone.partialFunctionInfo = partialFunctionInfo.deepClone();
+    clone.inferredTypes = new ArrayList<>(inferredTypes);
+    return clone;
+  }
+
 }
