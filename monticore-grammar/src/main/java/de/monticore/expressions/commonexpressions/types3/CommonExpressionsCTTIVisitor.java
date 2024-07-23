@@ -3,6 +3,7 @@ package de.monticore.expressions.commonexpressions.types3;
 
 import de.monticore.expressions.commonexpressions._ast.ASTBracketExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTConditionalExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
@@ -27,8 +28,39 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createObscureTyp
 public class CommonExpressionsCTTIVisitor
     extends CommonExpressionsTypeVisitor {
 
-  // todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4179
-  // extend here for conditional expression
+  @Override
+  public void handle(ASTConditionalExpression expr) {
+    InferenceContext infCtx =
+        getInferenceContext4Ast().getContextOfExpression(expr);
+    getInferenceContext4Ast().setContextOfExpression(
+        expr.getTrueExpression(), infCtx.deepClone()
+    );
+    getInferenceContext4Ast().setContextOfExpression(
+        expr.getFalseExpression(), infCtx.deepClone()
+    );
+    if (getInferenceContext4Ast().getContextOfExpression(expr)
+        .getVisitorMode() != InferenceVisitorMode.TYPE_CHECKING
+    ) {
+      expr.getTrueExpression().accept(getTraverser());
+      expr.getFalseExpression().accept(getTraverser());
+      List<InferenceResult> infRess = new ArrayList<>();
+      infRess.addAll(getInferenceContext4Ast()
+          .getContextOfExpression(expr.getTrueExpression())
+          .getInferenceResults()
+      );
+      infRess.addAll(getInferenceContext4Ast()
+          .getContextOfExpression(expr.getFalseExpression())
+          .getInferenceResults()
+      );
+      getInferenceContext4Ast().getContextOfExpression(expr)
+          .setInferredTypes(infRess);
+    }
+    else {
+      visit(expr);
+      traverse(expr);
+      endVisit(expr);
+    }
+  }
 
   @Override
   public void handle(ASTBracketExpression expr) {
