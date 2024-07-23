@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * describes partial SymTypeOfFunction information,
@@ -133,6 +134,15 @@ public class PartialFunctionInfo {
       ));
     }
     return result;
+  }
+
+  public PartialFunctionInfo deepClone() {
+    PartialFunctionInfo clone = new PartialFunctionInfo();
+    clone.returnTargetType = returnTargetType.map(SymTypeExpression::deepClone);
+    clone.parameterCount = parameterCount.map(Function.identity());
+    clone.argumentExprs = new HashMap<>(argumentExprs);
+    clone.argumentTypes = new HashMap<>(argumentTypes);
+    return clone;
   }
 
 }
