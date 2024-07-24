@@ -45,6 +45,11 @@ public class MCGenPluginTest {
   }
 
   @Test
+  public void testCanApplyPlugin_v7_6_4() throws IOException {
+    this.testCanApplyPlugin("7.6.4");
+  }
+
+  @Test
   public void testCanApplyPlugin_v8_0_1() throws IOException {
     this.testCanApplyPlugin("8.0.1");
   }
@@ -80,6 +85,11 @@ public class MCGenPluginTest {
   @Test
   public void testGenerateGrammar_v7_4_2() throws IOException {
     this.testGenerateGrammar("7.4.2");
+  }
+
+  @Test
+  public void testGenerateGrammar_v7_6_4() throws IOException {
+    this.testGenerateGrammar("7.6.4");
   }
 
   @Test
