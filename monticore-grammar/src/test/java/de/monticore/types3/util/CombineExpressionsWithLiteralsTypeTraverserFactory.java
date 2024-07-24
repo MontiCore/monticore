@@ -14,10 +14,12 @@ import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsC
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
+import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
 import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
+import de.monticore.ocl.setexpressions.types3.SetExpressionsCTTIVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsTypeVisitor;
 import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
 import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
@@ -136,11 +138,17 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.derSetExpressions != null) {
       visitors.derSetExpressions.setType4Ast(type4Ast);
     }
+    else if (visitors.cTTISetExpressions != null) {
+      visitors.cTTISetExpressions.setType4Ast(type4Ast);
+    }
     if (visitors.derTupleExpressions != null) {
       visitors.derTupleExpressions.setType4Ast(type4Ast);
     }
     if (visitors.derUglyExpressions != null) {
       visitors.derUglyExpressions.setType4Ast(type4Ast);
+    }
+    else if (visitors.cTTIUglyExpressions != null) {
+      visitors.cTTIUglyExpressions.setType4Ast(type4Ast);
     }
     if (visitors.derOfMCCommonLiterals != null) {
       visitors.derOfMCCommonLiterals.setType4Ast(type4Ast);
@@ -192,6 +200,12 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.cTTIExpressionBasis != null) {
       visitors.cTTIExpressionBasis.setContext4Ast(ctx4Ast);
     }
+    if (visitors.cTTISetExpressions != null) {
+      visitors.cTTISetExpressions.setContext4Ast(ctx4Ast);
+    }
+    if (visitors.cTTIUglyExpressions != null) {
+      visitors.cTTIUglyExpressions.setContext4Ast(ctx4Ast);
+    }
   }
 
   protected VisitorList constructVisitorsCTTI() {
@@ -204,9 +218,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derLambdaExpressions = new LambdaExpressionsTypeVisitor();
     visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
     visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
-    visitors.derSetExpressions = new SetExpressionsTypeVisitor();
+    visitors.cTTISetExpressions = new SetExpressionsCTTIVisitor();
     visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
-    visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
+    visitors.cTTIUglyExpressions = new UglyExpressionsCTTIVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     visitors.derSIUnitLiterals = new SIUnitLiteralsTypeVisitor();
     // MCTypes
@@ -339,11 +353,19 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.derSetExpressions != null) {
       traverser.add4SetExpressions(visitors.derSetExpressions);
     }
+    else if (visitors.cTTISetExpressions != null) {
+      traverser.add4SetExpressions(visitors.cTTISetExpressions);
+      traverser.setSetExpressionsHandler(visitors.cTTISetExpressions);
+    }
     if (visitors.derTupleExpressions != null) {
       traverser.add4TupleExpressions(visitors.derTupleExpressions);
     }
     if (visitors.derUglyExpressions != null) {
       traverser.add4UglyExpressions(visitors.derUglyExpressions);
+    }
+    else if (visitors.cTTIUglyExpressions != null) {
+      traverser.add4UglyExpressions(visitors.cTTIUglyExpressions);
+      traverser.setUglyExpressionsHandler(visitors.cTTIUglyExpressions);
     }
     if (visitors.derOfMCCommonLiterals != null) {
       traverser.add4MCCommonLiterals(visitors.derOfMCCommonLiterals);
@@ -413,9 +435,13 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
     public SetExpressionsTypeVisitor derSetExpressions;
 
+    public SetExpressionsCTTIVisitor cTTISetExpressions;
+
     public TupleExpressionsTypeVisitor derTupleExpressions;
 
     public UglyExpressionsTypeVisitor derUglyExpressions;
+
+    public UglyExpressionsCTTIVisitor cTTIUglyExpressions;
 
     // Literals
 

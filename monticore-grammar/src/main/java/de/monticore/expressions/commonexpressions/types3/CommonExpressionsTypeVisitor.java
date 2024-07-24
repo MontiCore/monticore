@@ -520,17 +520,17 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       args.add(getType4Ast().getPartialTypeOfExpr(expr.getArguments().getExpression(i)));
     }
     Set<SymTypeExpression> inner;
-    if (getType4Ast().getPartialTypeOfExpr(expr.getExpression())
-        .isIntersectionType()) {
+    SymTypeExpression calculatedInner = SymTypeRelations.normalize(
+        getType4Ast().getPartialTypeOfExpr(expr.getExpression())
+    );
+    if (calculatedInner.isIntersectionType()) {
       inner = new HashSet<>(
-          ((SymTypeOfIntersection) getType4Ast()
-              .getPartialTypeOfExpr(expr.getExpression())
-          ).getIntersectedTypeSet()
+          ((SymTypeOfIntersection)calculatedInner).getIntersectedTypeSet()
       );
     }
     else {
       inner = new HashSet<>();
-      inner.add(getType4Ast().getPartialTypeOfExpr(expr.getExpression()));
+      inner.add(calculatedInner);
     }
 
     // error already logged if Obscure

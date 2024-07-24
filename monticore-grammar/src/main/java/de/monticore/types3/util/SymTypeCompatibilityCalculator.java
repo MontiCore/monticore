@@ -691,7 +691,8 @@ public class SymTypeCompatibilityCalculator {
     else if (!subFunc.getType().isVoidType()
         && !superFunc.getType().isVoidType()
     ) {
-      result.addAll(internal_constrainSubTypeOfPreNormalized(superFunc.getType(), subFunc.getType()));
+      // return types: co-variant
+      result.addAll(internal_constrainSubTypeOfPreNormalized(subFunc.getType(), superFunc.getType()));
     }
     // if the super-function is elliptic, the sub one must be as well
     if (!subFunc.isElliptic() && superFunc.isElliptic()) {
@@ -728,8 +729,9 @@ public class SymTypeCompatibilityCalculator {
               superFunc.getArgumentType(
                   Math.min(i, superFunc.sizeArgumentTypes() - 1)
               );
+      // argument types: contra-variant
       result.addAll(internal_constrainSubTypeOfPreNormalized(
-          subParamType, superParamType
+          superParamType, subParamType
       ));
     }
     return result;

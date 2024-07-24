@@ -172,6 +172,25 @@ public class CallGenericFunctionsTest
     checkErrorExpr("id(varint)", "short", "0xFD451");
   }
 
+  @Test
+  public void deriveFromGenericsConditionalExprs() throws IOException {
+    checkExpr("(varboolean ? getTarget : getTarget)",
+        "() -> int", "() -> int"
+    );
+    checkExpr("(varboolean ? getTarget : getTarget)()",
+        "int", "int"
+    );
+    checkExpr("(varboolean ? getTarget : getTargetList)",
+        "() -> List<int>", "() -> List<int>"
+    );
+    checkExpr("id(varboolean ? id(getTarget) : getTargetList)()",
+        "List<int>", "List<int>"
+    );
+    checkExpr("(varboolean ? getTargetLinkedList : getTargetList)()",
+        "List<int>", "List<int>"
+    );
+  }
+
   /**
    * example from Java Spec 21 18.5.1
    */

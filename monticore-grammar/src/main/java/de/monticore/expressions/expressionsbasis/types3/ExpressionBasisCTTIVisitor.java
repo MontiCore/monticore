@@ -5,6 +5,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.generics.util.CompileTimeTypeCalculator;
 
 import java.util.Optional;
@@ -40,10 +41,17 @@ public class ExpressionBasisCTTIVisitor
       return;
     }
     Optional<SymTypeExpression> potentialType = calculateNameExpressionOrLogError(expr);
-    CompileTimeTypeCalculator.handleResolvedType(
-        expr, potentialType,
-        getTraverser(), getType4Ast(), getInferenceContext4Ast()
-    );
+    if (potentialType.isEmpty()) {
+      getType4Ast().setTypeOfExpression(expr,
+          SymTypeExpressionFactory.createObscureType()
+      );
+    }
+    else {
+      CompileTimeTypeCalculator.handleResolvedType(
+          expr, potentialType.get(),
+          getTraverser(), getType4Ast(), getInferenceContext4Ast()
+      );
+    }
   }
 
 }

@@ -21,6 +21,7 @@ import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -139,6 +140,9 @@ public class UglyExpressionsTypeVisitor
 
   @Override
   public void endVisit(ASTCreatorExpression expr) {
+    if (getType4Ast().hasPartialTypeOfExpression(expr)) {
+      return;
+    }
     SymTypeExpression createdType = getCreatorType(expr.getCreator());
     getType4Ast().setTypeOfExpression(expr, createdType);
   }
@@ -185,54 +189,36 @@ public class UglyExpressionsTypeVisitor
         creator.getArguments().streamExpressions()
             .map(arg -> getType4Ast().getPartialTypeOfExpr(arg))
             .collect(Collectors.toList());
-    if (typeToCreate.isObscureType() ||
-        argumentTypes.stream().anyMatch(SymTypeExpression::isObscureType)) {
+    List<SymTypeOfFunction> constructors = getConstructors(creator);
+    if (constructors.isEmpty()) {
       result = createObscureType();
     }
     else {
-      if (typeToCreate.isObjectType() || typeToCreate.isGenericType()) {
-        // search for a constructor
-        // Hint: to support default constructors,
-        // a corresponding OOWithinTypeBasicSymbolsResolver is required
-        AccessModifier modifier = getTypeCtxCalc().getAccessModifier(
-            typeToCreate.getTypeInfo(), creator.getEnclosingScope());
-        List<SymTypeOfFunction> constructors = getOOWithinTypeResolver()
-            .resolveConstructors(typeToCreate, modifier, c -> true);
-        List<SymTypeOfFunction> applicableConstructors = constructors.stream()
-            .filter(c -> FunctionRelations.canBeCalledWith(c, argumentTypes))
-            .collect(Collectors.toList());
-        Optional<SymTypeOfFunction> mostSpecificConstructor =
-            FunctionRelations.getMostSpecificFunctionOrLogError(applicableConstructors);
-        if (mostSpecificConstructor.isPresent()) {
-          result = mostSpecificConstructor.get().getType();
-        }
-        else {
-          Log.error("0xFD553 could not find constructor to call for "
-                  + typeToCreate.printFullName()
-                  + " given arguments:"
-                  + System.lineSeparator()
-                  + argumentTypes.stream()
-                  .map(SymTypeExpression::printFullName)
-                  .collect(Collectors.joining(System.lineSeparator()))
-                  + System.lineSeparator()
-                  + "constructors found:"
-                  + System.lineSeparator()
-                  + constructors.stream()
-                  .map(SymTypeExpression::printFullName)
-                  .collect(Collectors.joining(System.lineSeparator()))
-                  + System.lineSeparator(),
-              creator.get_SourcePositionStart(),
-              creator.get_SourcePositionEnd()
-          );
-          result = createObscureType();
-        }
+      List<SymTypeOfFunction> applicableConstructors = constructors.stream()
+          .filter(c -> FunctionRelations.canBeCalledWith(c, argumentTypes))
+          .collect(Collectors.toList());
+      Optional<SymTypeOfFunction> mostSpecificConstructor = FunctionRelations
+          .getMostSpecificFunctionOrLogError(applicableConstructors);
+      if (mostSpecificConstructor.isPresent()) {
+        result = mostSpecificConstructor.get().getType();
       }
       else {
-        Log.error("0xFD552 unexpected type "
+        Log.error("0xFD553 could not find constructor to call for "
                 + typeToCreate.printFullName()
-                + " for \"new\"",
-            creator.getMCType().get_SourcePositionStart(),
-            creator.getMCType().get_SourcePositionEnd()
+                + " given arguments:"
+                + System.lineSeparator()
+                + argumentTypes.stream()
+                .map(SymTypeExpression::printFullName)
+                .collect(Collectors.joining(System.lineSeparator()))
+                + System.lineSeparator()
+                + "constructors found:"
+                + System.lineSeparator()
+                + constructors.stream()
+                .map(SymTypeExpression::printFullName)
+                .collect(Collectors.joining(System.lineSeparator()))
+                + System.lineSeparator(),
+            creator.get_SourcePositionStart(),
+            creator.get_SourcePositionEnd()
         );
         result = createObscureType();
       }
@@ -270,6 +256,8 @@ public class UglyExpressionsTypeVisitor
     }
     return result;
   }
+
+  // Helper
 
   /**
    * only returns the dimensionality if the expression types are correct
@@ -320,4 +308,47 @@ public class UglyExpressionsTypeVisitor
     return dimensions;
   }
 
+  /**
+   * Constructors of the inner type, NOT filtered by the argument expressions.
+   * Important: The {@link ASTClassCreator#getMCType()} has to have
+   * its type stored in the map already.
+   *
+   * @return if empty, an error will have been logged
+   */
+  protected List<SymTypeOfFunction> getConstructors(
+      ASTClassCreator creator
+  ) {
+    List<SymTypeOfFunction> constructors;
+    SymTypeExpression typeToCreate =
+        getType4Ast().getPartialTypeOfTypeId(creator.getMCType());
+    if (typeToCreate.isObscureType()) {
+      constructors = Collections.emptyList();
+    }
+    else if (typeToCreate.isObjectType() || typeToCreate.isGenericType()) {
+      // search for a constructor
+      // Hint: to support default constructors,
+      // a corresponding OOWithinTypeBasicSymbolsResolver is required
+      AccessModifier modifier = getTypeCtxCalc().getAccessModifier(
+          typeToCreate.getTypeInfo(), creator.getEnclosingScope());
+      constructors = getOOWithinTypeResolver()
+          .resolveConstructors(typeToCreate, modifier, c -> true);
+      if (constructors.isEmpty()) {
+        Log.error("0xFD557 could not find constructors for "
+                + typeToCreate.printFullName(),
+            creator.get_SourcePositionStart(),
+            creator.get_SourcePositionEnd()
+        );
+      }
+    }
+    else {
+      Log.error("0xFD552 unexpected type "
+              + typeToCreate.printFullName()
+              + " for \"new\"",
+          creator.getMCType().get_SourcePositionStart(),
+          creator.getMCType().get_SourcePositionEnd()
+      );
+      constructors = Collections.emptyList();
+    }
+    return constructors;
+  }
 }
