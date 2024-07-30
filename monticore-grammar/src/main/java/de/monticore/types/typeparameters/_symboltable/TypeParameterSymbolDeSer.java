@@ -1,0 +1,42 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types.typeparameters._symboltable;
+
+import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionDeSer;
+
+import java.util.List;
+
+public class TypeParameterSymbolDeSer extends TypeParameterSymbolDeSerTOP {
+
+  protected static final String SUPERTYPES_NAME = "superTypes";
+
+  @Override
+  protected void serializeSuperTypes(
+      List<SymTypeExpression> superTypes,
+      TypeParametersSymbols2Json s2j
+  ) {
+    SymTypeExpressionDeSer.serializeMember(
+        s2j.getJsonPrinter(), SUPERTYPES_NAME, superTypes
+    );
+  }
+
+  @Override
+  protected List<SymTypeExpression> deserializeSuperTypes(
+      JsonObject symbolJson
+  ) {
+    // support deprecated behavior
+    return deserializeSuperTypes(null, symbolJson);
+  }
+
+  @Override
+  public List<SymTypeExpression> deserializeSuperTypes(
+      ITypeParametersScope enclosingScope,
+      JsonObject symbolJson
+  ) {
+    return SymTypeExpressionDeSer.deserializeListMember(
+        "superTypes", symbolJson, enclosingScope
+    );
+  }
+
+}
