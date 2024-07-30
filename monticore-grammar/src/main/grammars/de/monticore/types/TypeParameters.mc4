@@ -1,0 +1,63 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.symbols.BasicSymbols;
+
+// TODO FDr: remove from JavaDSL after merge
+// TODO FDr: documentation in MDs
+// TODO FDr: CoCos -> Test and COCO that types fit together
+
+/**
+ * This grammar introduces type parameters such as T, U extends Set<int>,
+ * and type parameter lists such as <T, S extends T>
+ * that can be used to declare generic model elements
+ * such as generic classes and functions.
+ *
+ * Like Java, each type parameter can have an upper bound
+ * consisting of an arbitrary number of types.
+*/
+
+component grammar TypeParameters
+          extends BasicSymbols,
+                  MCBasicTypes {
+
+  /**
+   * ASTTypeParameters are type parameter lists that are can be used to
+   * declare generic model elements.
+   * Each type parameter lists contains at least one type parameter.
+   * Example:
+   * <T>
+   * <T, U extends T & Comparable<U>>
+  */
+  TypeParameters =
+    "<" (TypeParameter || ",")+ ">"
+    ;
+
+  /**
+   * ASTTypeParameter represents one type parameter.
+   * Each type parameter has a name
+   * and can have an optional upper type bound.
+   * Example:
+   * T
+   * U extends T & Comparable<U>
+  */
+  symbol TypeParameter implements TypeVar =
+    Name
+    ("extends" TypeBounds)?
+    ;
+
+  /**
+   * ASTTypeBounds represents the (upper) type bounds of a type parameter.
+   * Each bound list consists of an arbitrary positive number of types.
+   * Each of those types is a supertype of the corresponding type parameter.
+   * Example:
+   * Person
+   * Person & Comparable<Student>
+  */
+  TypeBounds =
+    (MCType || "&")+
+    ;
+
+}
