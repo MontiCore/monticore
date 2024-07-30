@@ -1,0 +1,24 @@
+package de.monticore.types;
+
+mlc MCFullGenericTypes {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/types/TypeParameters.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/types/typeparameters/**.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/types/typeparameters/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.types.TypeParameters";
+  }
+
+}
