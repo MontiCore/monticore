@@ -149,7 +149,7 @@ The following snippets show examples, in which the default configuration is modi
 generateMCGrammars {
     modelPath("$projectDir/src/main/grammars", "$projectDir/src/notquitemain/grammars")
 }
-````
+```
 
 *Note:* We have introduced a breaking change to the `modelPath()` behavior:
 It is no longer possible to specify multiple directories by calling `modelPath(...)` multiple times,
