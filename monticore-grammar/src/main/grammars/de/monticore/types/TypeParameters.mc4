@@ -39,7 +39,7 @@ component grammar TypeParameters
    * T
    * U extends T & Comparable<U>
   */
-  symbol TypeParameter implements TypeVar =
+  TypeParameter implements TypeVar =
     Name
     ("extends" TypeBounds)?
     ;
