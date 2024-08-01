@@ -5,10 +5,6 @@ package de.monticore.types;
 
 import de.monticore.symbols.BasicSymbols;
 
-// TODO FDr: remove from JavaDSL after merge
-// TODO FDr: documentation in MDs
-// TODO FDr: CoCos -> Test and COCO that types fit together
-
 /**
  * This grammar introduces type parameters such as T, U extends Set<int>,
  * and type parameter lists such as <T, S extends T>
