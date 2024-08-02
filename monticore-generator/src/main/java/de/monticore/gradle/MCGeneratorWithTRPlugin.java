@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.gradle;
 
+import de.monticore.gradle.dependencies.MCSourceSets;
 import de.monticore.gradle.gen.MCGenTask;
 import de.monticore.gradle.sources.MCGrammarsSourceDirectorySet;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
@@ -54,9 +56,22 @@ public class MCGeneratorWithTRPlugin implements Plugin<Project> {
     trafoSourceSet.getExtensions().getByType(MCGrammarsSourceDirectorySet.class)
             .srcDir(extractTRTask);
 
-    // Add a dependency to the project itself from the trafoGrammar configuration
-    Dependency selfDependency = project.getDependencies().project(Map.of("path", project.getPath()));
-    project.getDependencies().add("trafoGrammar", selfDependency);
+    // Add the main grammars (as files) to the trafoGrammar-symbol-dependencies
+    project.getConfigurations().named(MCSourceSets.getSymbolDependencyConfigName(trafoSourceSet))
+            .configure(trafoGrammar -> {
+              SourceSet main = project.getExtensions().getByType(JavaPluginExtension.class)
+                      .getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+              FileCollection grammarSrc = MCGrammarsSourceDirectorySet.getGrammars(main).getSourceDirectories();
+              Dependency localFilesDependency = project.getDependencies().create(grammarSrc);
+              trafoGrammar.getDependencies().add(localFilesDependency);
+            });
+
+    project.getConfigurations().named(trafoSourceSet.getImplementationConfigurationName())
+            .configure(configuration -> {
+              // Add an implementation dependency to the main project
+              Dependency mainDependency = project.getDependencies().project(Map.of("path", project.getPath()));
+              configuration.getDependencies().add(mainDependency);
+            });
 
     // Enable the DST flag
     project.getTasks().named("generateTrafoMCGrammars", MCGenTask.class).configure(it -> {
@@ -68,6 +83,10 @@ public class MCGeneratorWithTRPlugin implements Plugin<Project> {
     if (project.getPluginManager().hasPlugin("maven-publish")) {
       project.getExtensions().getByType(MCGeneratorExtension.class)
               .publishSourceSet(trafoSourceSet);
+
+      // Add a dependency to the main project itself to the outgoing trafo config
+      Dependency mainDependency = project.getDependencies().project(Map.of("path", project.getPath()));
+      project.getDependencies().add(MCSourceSets.getOutgoingSymbolConfigName(trafoSourceSet), mainDependency);
     } else {
       project.getLogger().info("The trafo source set will not be published (In case you wish to publish it, apply the maven-publish plugin first!)");
     }
