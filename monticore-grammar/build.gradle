@@ -373,6 +373,9 @@ checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
 
 checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
 
+checkArtifactsTypeParameters.dependsOn(checkArtifactsBasicSymbols)
+checkArtifactsTypeParameters.dependsOn(checkArtifactsMCBasicTypes)
+
 checkArtifactsCardinality.dependsOn(checkArtifactsMCBasics)
 checkArtifactsCardinality.dependsOn(checkArtifactsMCCommonLiterals)
 
@@ -503,6 +506,9 @@ showArtifactsMCCollectionTypes.dependsOn(showArtifactsMCBasicTypes)
 showArtifactsMCFullGenericTypes.dependsOn(showArtifactsMCSimpleGenericTypes)
 
 showArtifactsMCSimpleGenericTypes.dependsOn(showArtifactsMCCollectionTypes)
+
+showArtifactsTypeParameters.dependsOn(showArtifactsBasicSymbols)
+showArtifactsTypeParameters.dependsOn(showArtifactsMCBasicTypes)
 
 showArtifactsCardinality.dependsOn(showArtifactsMCBasics)
 showArtifactsCardinality.dependsOn(showArtifactsMCCommonLiterals)

@@ -1,6 +1,6 @@
 package de.monticore.types;
 
-mlc MCFullGenericTypes {
+mlc TypeParameters {
 
   //export the grammar
   export "$projectDir/src/main/grammars" {
@@ -18,7 +18,12 @@ mlc MCFullGenericTypes {
   }
 
   promote {
-    mlc "de.monticore.types.TypeParameters";
+    include "$projectDir/src/main/java/de/monticore/types3/*.java";
+  }
+
+  promote {
+    mlc "de.monticore.symbols.BasicSymbols";
+    mlc "de.monticore.types.MCBasicTypes";
   }
 
 }
