@@ -186,6 +186,18 @@ be issued (instead of runtime errors only).
 * `String` could be treated identical to `R".*"`, but it may be that 
 the chosen typecheck wants to enforce explicit coercion.
 
+### [TypeParameters.mc4](types/TypeParameters.mc4) (alpha)
+
+This grammar offers ways to define type parameters for,
+e.g., classes or functions.
+Modeling elements with type parameters represent
+type-level functions that take type arguments;
+For Example, the generic type `List<T>` has one type parameter `T`
+and therefore takes one type argument.
+`List<T>` or `List` cannot be used directly in a model,
+instead, providing a type argument (e.g., `int`)
+yields a type `List<int>` that can be used.
+
 ## Symbols: List of Grammars in package `de.monticore.symbols`
 
 These two grammars do not provide syntax themselves, but 
