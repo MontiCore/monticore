@@ -57,21 +57,6 @@ public class TypeParametersPrettyPrinterTest extends AbstractTypeTest {
     );
   }
 
-  @ParameterizedTest
-  @ValueSource(strings = {
-      "String",
-      "Map<T,List<T>>",
-      "A & B",
-      "A & B & C & D"
-  })
-  public void testTypeBound(String model) throws IOException {
-    TypeParametersTestParser parser = TypeParametersTestMill.parser();
-    testPrettyPrinter(
-        model, parser, parser::parse_StringTypeBounds,
-        ast -> TypeParametersTestMill.prettyPrint(ast, true)
-    );
-  }
-
   // this function could be used for all pretty printer tests if required,
   // however, the parameters are not great.
   protected <N extends ASTNode> void testPrettyPrinter(

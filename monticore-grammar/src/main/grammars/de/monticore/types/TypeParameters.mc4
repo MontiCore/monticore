@@ -34,26 +34,16 @@ component grammar TypeParameters
   /**
    * ASTTypeParameter represents one type parameter.
    * Each type parameter has a name
-   * and can have an optional upper type bound.
+   * and can have an optional list of upper type bounds.
+   * Each bound list consists of an arbitrary positive number of types.
+   * Each of those types is a supertype of the corresponding type parameter.
    * Example:
    * T
    * U extends T & Comparable<U>
   */
   TypeParameter implements TypeVar =
     Name
-    ("extends" TypeBounds)?
-    ;
-
-  /**
-   * ASTTypeBounds represents the (upper) type bounds of a type parameter.
-   * Each bound list consists of an arbitrary positive number of types.
-   * Each of those types is a supertype of the corresponding type parameter.
-   * Example:
-   * Person
-   * Person & Comparable<Student>
-  */
-  TypeBounds =
-    (MCType || "&")+
+    ("extends" (MCType || "&")+)?
     ;
 
 }
