@@ -33,6 +33,7 @@ component grammar TypeParameters
 
   /**
    * ASTTypeParameter represents one type parameter.
+   * It itself is represented in the symbol table as a TypeVarSymbol.
    * Each type parameter has a name
    * and can have an optional list of upper type bounds.
    * Each bound list consists of an arbitrary positive number of types.
