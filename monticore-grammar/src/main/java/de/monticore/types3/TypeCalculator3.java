@@ -14,10 +14,11 @@ import de.se_rwth.commons.logging.Log;
 
 /**
  * Temporary(!) interface implementation for the temporary(!) usage of TC3.
- * This is temporary as the interface has not been discussed yet.
- * (but it may necessarily not change)
- * todo https://git.rwth-aachen.de/monticore/monticore/-/issues/3420
+ * This is temporary as the interface had not been discussed yet.
+ * s. https://git.rwth-aachen.de/monticore/monticore/-/issues/3420
+ * @deprecated use {@link TypeCheck3}
  */
+@Deprecated
 public class TypeCalculator3 implements ITypeCalculator {
 
   protected ITraverser typeTraverser;
