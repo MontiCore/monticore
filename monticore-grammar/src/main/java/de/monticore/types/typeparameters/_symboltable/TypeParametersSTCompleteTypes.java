@@ -11,12 +11,6 @@ import java.util.List;
 
 /**
  * Sets the superTypes of the type parameter symbols.
- * <p>
- * IMPORTANT: usually, the symbols are moved from the scope they are in
- * into their corresponding types scope.
- * In this case, they cannot be found from within the scope enclosing
- * of ASTNode referencing the superTypes.
- * As such, this must be run before any such transformation takes place!
  */
 public class TypeParametersSTCompleteTypes implements TypeParametersVisitor2 {
 
@@ -28,13 +22,12 @@ public class TypeParametersSTCompleteTypes implements TypeParametersVisitor2 {
 
   @Override
   public void visit(ASTTypeParameter node) {
-    if (node.isPresentTypeBounds()) {
-      List<SymTypeExpression> bounds = new ArrayList<>();
-      for (ASTMCType astTypeBound : node.getTypeBounds().getMCTypeList()) {
-        bounds.add(tc.symTypeFromAST(astTypeBound));
-      }
-      // error logged if obscure
-      node.getSymbol().setSuperTypesList(bounds);
+    List<SymTypeExpression> bounds = new ArrayList<>();
+    for (ASTMCType astTypeBound : node.getMCTypeList()) {
+      bounds.add(tc.symTypeFromAST(astTypeBound));
     }
+    // error logged if obscure
+    node.getSymbol().setSuperTypesList(bounds);
   }
+
 }

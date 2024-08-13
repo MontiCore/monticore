@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types;
 
-import de.monticore.types.typeparameters._ast.ASTTypeBounds;
 import de.monticore.types.typeparameters._ast.ASTTypeParameter;
 import de.monticore.types.typeparameters._ast.ASTTypeParameters;
 import de.monticore.types.typeparameterstest.TypeParametersTestMill;
@@ -39,13 +38,12 @@ public class TypeParameterTest {
     assertEquals(2, tps.sizeTypeParameters());
     ASTTypeParameter tp0 = tps.getTypeParameter(0);
     assertEquals("T", tp0.getName());
-    assertFalse(tp0.isPresentTypeBounds());
+    assertTrue(tp0.isEmptyMCTypes());
     ASTTypeParameter tp1 = tps.getTypeParameter(1);
     assertEquals("U", tp1.getName());
-    assertTrue(tp1.isPresentTypeBounds());
-    ASTTypeBounds tb1 = tp1.getTypeBounds();
-    assertEquals(1, tb1.sizeMCTypes());
-    assertEquals("A.B", tb1.getMCType(0).printType());
+    assertFalse(tp1.isEmptyMCTypes());
+    assertEquals(1, tp1.sizeMCTypes());
+    assertEquals("A.B", tp1.getMCType(0).printType());
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -63,11 +61,9 @@ public class TypeParameterTest {
     assertEquals(1, tps.sizeTypeParameters());
     ASTTypeParameter tp0 = tps.getTypeParameter(0);
     assertEquals("T", tp0.getName());
-    assertTrue(tp0.isPresentTypeBounds());
-    ASTTypeBounds tb1 = tp0.getTypeBounds();
-    assertEquals(2, tb1.sizeMCTypes());
-    assertEquals("A", tb1.getMCType(0).printType());
-    assertEquals("B", tb1.getMCType(1).printType());
+    assertEquals(2, tp0.sizeMCTypes());
+    assertEquals("A", tp0.getMCType(0).printType());
+    assertEquals("B", tp0.getMCType(1).printType());
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -83,11 +79,9 @@ public class TypeParameterTest {
     assertEquals(1, tps.sizeTypeParameters());
     ASTTypeParameter tp0 = tps.getTypeParameter(0);
     assertEquals("T", tp0.getName());
-    assertTrue(tp0.isPresentTypeBounds());
-    ASTTypeBounds tb1 = tp0.getTypeBounds();
-    assertEquals(2, tb1.sizeMCTypes());
-    assertEquals("A", tb1.getMCType(0).printType());
-    assertEquals("B", tb1.getMCType(1).printType());
+    assertEquals(2, tp0.sizeMCTypes());
+    assertEquals("A", tp0.getMCType(0).printType());
+    assertEquals("B", tp0.getMCType(1).printType());
     assertTrue(Log.getFindings().isEmpty());
   }
 
