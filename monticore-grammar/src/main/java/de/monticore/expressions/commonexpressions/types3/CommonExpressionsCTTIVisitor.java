@@ -14,6 +14,7 @@ import de.monticore.types3.generics.context.InferenceVisitorMode;
 import de.monticore.types3.generics.util.CompileTimeTypeCalculator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +34,13 @@ public class CommonExpressionsCTTIVisitor
     getInferenceContext4Ast().setContextOfExpression(
         expr.getFalseExpression(), infCtx.deepClone()
     );
+
+    List<InferenceResult> infRess = new ArrayList<>();
     if (getInferenceContext4Ast().getContextOfExpression(expr)
         .getVisitorMode() != InferenceVisitorMode.TYPE_CHECKING
     ) {
       expr.getTrueExpression().accept(getTraverser());
       expr.getFalseExpression().accept(getTraverser());
-      List<InferenceResult> infRess = new ArrayList<>();
       infRess.addAll(getInferenceContext4Ast()
           .getContextOfExpression(expr.getTrueExpression())
           .getInferenceResults()
@@ -47,13 +49,16 @@ public class CommonExpressionsCTTIVisitor
           .getContextOfExpression(expr.getFalseExpression())
           .getInferenceResults()
       );
-      getInferenceContext4Ast().getContextOfExpression(expr)
-          .setInferredTypes(infRess);
     }
-    else {
+
+    if (infRess.isEmpty()) {
       visit(expr);
       traverse(expr);
       endVisit(expr);
+    }
+    else {
+      getInferenceContext4Ast().getContextOfExpression(expr)
+          .setInferredTypes(infRess);
     }
   }
 
@@ -64,17 +69,21 @@ public class CommonExpressionsCTTIVisitor
         expr.getExpression(), infCtx
     );
 
+    List<InferenceResult> infRess = Collections.emptyList();
     if (infCtx.getVisitorMode() != InferenceVisitorMode.TYPE_CHECKING) {
       expr.getExpression().accept(getTraverser());
-      List<InferenceResult> infRess = getInferenceContext4Ast()
+      infRess = getInferenceContext4Ast()
           .getContextOfExpression(expr.getExpression()).getInferenceResults();
-      getInferenceContext4Ast()
-          .getContextOfExpression(expr).setInferredTypes(infRess);
     }
-    else {
+
+    if (infRess.isEmpty()) {
       visit(expr);
       traverse(expr);
       endVisit(expr);
+    }
+    else {
+      getInferenceContext4Ast().getContextOfExpression(expr)
+          .setInferredTypes(infRess);
     }
   }
 
