@@ -33,9 +33,6 @@ import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.method;
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * tests whether we can resolve correctly constructors within a type.
@@ -48,8 +45,8 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     // replace the typeMapTraverser with an OO-aware variant
-    typeMapTraverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
-        .createTraverserForOO(type4Ast);
+    new CombineExpressionsWithLiteralsTypeTraverserFactory()
+        .initTypeCheck3ForOO();
   }
 
   // class t {
@@ -149,8 +146,7 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
     ASTExpression expr = parseExpr(exprStr);
     generateScopes(expr);
     expr.accept(getExpressionScopeSetter(scope));
-    calculateTypes(expr);
-    SymTypeExpression type = getType4Ast().getTypeOfExpression(expr);
+    SymTypeExpression type = TypeCheck3.typeOf(expr);
     assertNoFindings();
     return type;
   }

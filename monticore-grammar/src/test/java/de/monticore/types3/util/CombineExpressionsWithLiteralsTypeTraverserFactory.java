@@ -34,6 +34,7 @@ import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVi
 import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
+import de.monticore.visitor.ITraverser;
 
 public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
@@ -59,6 +60,14 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     return traverser;
   }
 
+  public MapBasedTypeCheck3 initTypeCheck3() {
+    Type4Ast type4Ast = new Type4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    ITraverser traverser = createTraverser(type4Ast, ctx4Ast);
+    // sets itself as delegate
+    return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
+  }
+
   /**
    * @deprecated use version below
    */
@@ -81,6 +90,14 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     return traverser;
   }
 
+  public MapBasedTypeCheck3 initTypeCheck3ForOO() {
+    Type4Ast type4Ast = new Type4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    ITraverser traverser = createTraverserForOO(type4Ast, ctx4Ast);
+    // sets itself as delegate
+    return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
+  }
+
   /**
    * @deprecated use version below
    */
@@ -101,6 +118,14 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     setContext4Ast(visitors, ctx4Ast);
     populateTraverser(visitors, traverser);
     return traverser;
+  }
+
+  public MapBasedTypeCheck3 initTypeCheck3ForOOWithConstructors() {
+    Type4Ast type4Ast = new Type4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    ITraverser traverser = createTraverserForOOWithConstructors(type4Ast, ctx4Ast);
+    // sets itself as delegate
+    return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
   }
 
   protected void setType4Ast(VisitorList visitors, Type4Ast type4Ast) {
@@ -470,5 +495,16 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public SIUnitTypes4ComputingTypeVisitor synSIUnitTypes4Computing;
 
     public SIUnitTypes4MathTypeVisitor synSIUnitTypes4Math;
+  }
+
+  /**
+   * during construction, sets this as the delegate
+   */
+  protected static class TypeCheck3Impl extends MapBasedTypeCheck3 {
+
+    protected TypeCheck3Impl(ITraverser typeTraverser, Type4Ast type4Ast, InferenceContext4Ast ctx4Ast) {
+      super(typeTraverser, type4Ast, ctx4Ast);
+      setThisAsDelegate();
+    }
   }
 }

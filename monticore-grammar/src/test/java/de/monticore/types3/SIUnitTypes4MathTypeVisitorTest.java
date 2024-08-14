@@ -14,7 +14,6 @@ import java.util.List;
 import static de.monticore.types3.util.SIUnitIteratorForTests.get2UnitsGroup;
 import static de.monticore.types3.util.SIUnitIteratorForTests.getPrefixedUnits;
 import static de.monticore.types3.util.SIUnitIteratorForTests.getUnits;
-import static junit.framework.TestCase.assertEquals;
 
 public class SIUnitTypes4MathTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -55,8 +54,7 @@ public class SIUnitTypes4MathTypeVisitorTest
       String expectedType = "[" + groupsWithDelimiter.next() + "]";
       ASTMCType astType = parseMCType(typeStr);
       generateScopes(astType);
-      calculateTypes(astType);
-      SymTypeExpression type = getType4Ast().getTypeOfTypeIdentifier(astType);
+      SymTypeExpression type = TypeCheck3.symTypeFromAST(astType);
       assertNoFindings();
       if (!type.printFullName().equals(expectedType)) {
         ambiguous.add(typeStr);
