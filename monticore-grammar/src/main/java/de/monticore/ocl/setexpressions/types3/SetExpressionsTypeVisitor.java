@@ -21,6 +21,8 @@ import java.util.Set;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
+import static de.monticore.types3.SymTypeRelations.isIntegralType;
+import static de.monticore.types3.SymTypeRelations.normalize;
 
 public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     implements SetExpressionsVisitor2 {
@@ -498,8 +500,8 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression leftResult = getType4Ast().getPartialTypeOfExpr(expr.getLowerBound());
     SymTypeExpression rightResult = getType4Ast().getPartialTypeOfExpr(expr.getUpperBound());
     if (!leftResult.isObscureType() && !rightResult.isObscureType()) {
-      if (!MCCollectionSymTypeRelations.isIntegralType(leftResult)
-          || !MCCollectionSymTypeRelations.isIntegralType(rightResult)) {
+      if (!isIntegralType(normalize(leftResult))
+          || !isIntegralType(normalize(rightResult))) {
         Log.error(
             "0xFD217 bounds in SetValueRange "
                 + "are not integral types, but have to be, got "
@@ -609,8 +611,8 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     if (lowerRangeType.isObscureType() || upperRangeType.isObscureType()) {
       return true;
     }
-    else if (!MCCollectionSymTypeRelations.isIntegralType(lowerRangeType)
-        || !MCCollectionSymTypeRelations.isIntegralType(upperRangeType)) {
+    else if (!isIntegralType(normalize(lowerRangeType))
+        || !isIntegralType(normalize(upperRangeType))) {
       Log.error(
           "0xFD551 expected integral types in value range, "
               + "but got "
