@@ -29,7 +29,7 @@ import de.se_rwth.commons.logging.Log;
  * If the type has already been derived and stored in {@link Type4Ast},
  * then it will not be derived again.
  */
-public abstract class MapBasedTypeCheck3 extends TypeCheck3 {
+public class MapBasedTypeCheck3 extends TypeCheck3 {
 
   protected ITraverser typeTraverser;
 
@@ -44,7 +44,7 @@ public abstract class MapBasedTypeCheck3 extends TypeCheck3 {
    * @param type4Ast      a map of types to be filled
    * @param ctx4Ast       a map of contexts to be filled
    */
-  protected MapBasedTypeCheck3(
+  public MapBasedTypeCheck3(
       ITraverser typeTraverser,
       Type4Ast type4Ast,
       InferenceContext4Ast ctx4Ast
@@ -57,7 +57,7 @@ public abstract class MapBasedTypeCheck3 extends TypeCheck3 {
   /**
    * This will be set as the TypeCheck3 delegate.
    */
-  protected void setThisAsDelegate() {
+  public void setThisAsDelegate() {
     TypeCheck3.setDelegate(this);
   }
 
