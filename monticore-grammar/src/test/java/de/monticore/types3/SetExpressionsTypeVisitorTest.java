@@ -308,6 +308,8 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("[1..(2+3)]", "List<int>");
     checkExpr("{1..true?1:2}", "Set<int>");
     checkExpr("[1..true?1:2]", "List<int>");
+    checkExpr("{1..(short)2}", "Set<int>");
+    checkExpr("[1..(short)2]", "List<int>");
     checkExpr("{1, 1..2, 2..3, 4}", "Set<int>");
     checkExpr("[1, 1..2, 2..3, 4]", "List<int>");
     // examples with char
