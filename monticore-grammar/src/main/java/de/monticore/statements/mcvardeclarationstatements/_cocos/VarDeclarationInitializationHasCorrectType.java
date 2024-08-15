@@ -1,9 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.mcvardeclarationstatements._cocos;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.statements.mcvardeclarationstatements.MCVarDeclarationStatementsMill;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.types.check.*;
+import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -16,7 +20,8 @@ public class VarDeclarationInitializationHasCorrectType
   /**
    * Used to derive the {@link SymTypeExpression} to which initialization expressions evaluate to.
    */
-  protected final IDerive typeDeriver;
+  @Deprecated
+  protected IDerive typeDeriver;
 
   /**
    * Indicates that the type of the initialization expression is not compatible with the type of the assigned variable.
@@ -38,9 +43,13 @@ public class VarDeclarationInitializationHasCorrectType
 
   /**
    * @param typeDeriver Used to derive the {@link SymTypeExpression} to which initialization expressions evaluate to.
+   * @deprecated use default constructor
    */
   public VarDeclarationInitializationHasCorrectType(IDerive typeDeriver) {
     this.typeDeriver = typeDeriver;
+  }
+
+  public VarDeclarationInitializationHasCorrectType() {
   }
 
   @Override
@@ -55,22 +64,39 @@ public class VarDeclarationInitializationHasCorrectType
 
     } else { // Proceed with checking the coco
       SymTypeExpression varType = node.getDeclarator().getSymbol().getType();
-      TypeCheckResult initType = typeDeriver.deriveType(((ASTSimpleInit) node.getVariableInit()).getExpression());
+      SymTypeExpression initType;
+      if (typeDeriver != null) {
+        // support deprecated behavior
+        TypeCheckResult initResult = typeDeriver.deriveType(((ASTSimpleInit) node.getVariableInit()).getExpression());
+        if (initResult.isPresentResult()) {
+          if (initResult.isType()) {
+            Log.error(TYPE_REF_ASSIGNMENT_ERROR_CODE + " " + String.format(TYPE_REF_ASSIGNMENT_ERROR_MSG_FORMAT,
+                node.getDeclarator().getName(), initResult.getResult().print()));
+          }
+          initType = initResult.getResult();
 
-      if(!initType.isPresentResult()) {
+        }
+        else {
+          initType = SymTypeExpressionFactory.createObscureType();
+        }
+      }
+      else {
+        ASTExpression initExpr = MCVarDeclarationStatementsMill.typeDispatcher()
+            .asMCVarDeclarationStatementsASTSimpleInit(node.getVariableInit())
+            .getExpression();
+        initType = TypeCheck3.typeOf(initExpr, varType);
+      }
+
+      if (initType.isObscureType()) {
         // The error is already printed by the IDerive visitors, thus we would spam the log if we would log an error
         // again. Therefore, we only leave a note in the debug log.
         Log.debug(String.format("As the initialization expression for variable '%s' at %s is invalid, coco '%s' " +
           "will not be checked.",
           node.getDeclarator().getName(), node.get_SourcePositionStart(), this.getClass().getSimpleName()), "Cocos");
 
-      } else if(initType.isType()) {
-        Log.error(TYPE_REF_ASSIGNMENT_ERROR_CODE + " " + String.format(TYPE_REF_ASSIGNMENT_ERROR_MSG_FORMAT,
-          node.getDeclarator().getName(), initType.getResult().print()));
-
-      } else if(!TypeCheck.compatible(varType, initType.getResult())) {
+      } else if (!SymTypeRelations.isCompatible(varType, initType)) {
         Log.error(ERROR_CODE + " " + String.format(ERROR_MSG_FORMAT,
-          initType.getResult().print(), node.getDeclarator().getName(), varType.print()));
+            initType.printFullName(), node.getDeclarator().getName(), varType.printFullName()));
       }
     }
   }
