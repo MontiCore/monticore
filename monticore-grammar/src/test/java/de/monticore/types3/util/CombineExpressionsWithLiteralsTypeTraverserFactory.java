@@ -39,7 +39,7 @@ import de.monticore.visitor.ITraverser;
 public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
   /**
-   * @deprecated use version below
+   * @deprecated use version with InferenceContext4Ast
    */
   @Deprecated
   public CombineExpressionsWithLiteralsTraverser createTraverser(
@@ -69,7 +69,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   }
 
   /**
-   * @deprecated use version below
+   * @deprecated use version with InferenceContext4Ast
    */
   @Deprecated
   public CombineExpressionsWithLiteralsTraverser createTraverserForOO(
@@ -99,7 +99,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   }
 
   /**
-   * @deprecated use version below
+   * @deprecated use version with InferenceContext4Ast
    */
   @Deprecated
   public CombineExpressionsWithLiteralsTraverser createTraverserForOOWithConstructors(
