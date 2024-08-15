@@ -10,7 +10,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 
 /**
  * interface to calculate types from an AST
- * [TODO: https://git.rwth-aachen.de/monticore/monticore/-/issues/4186]
  * @deprecated use {@link TypeCheck3}
  */
 @Deprecated
