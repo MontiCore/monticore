@@ -9,11 +9,13 @@ import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineE
 import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.IDerive;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsISynthesize;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.Type4Ast;
+import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -26,6 +28,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
 
@@ -35,6 +38,8 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    new CombineExpressionsWithLiteralsTypeTraverserFactory()
+        .initTypeCheck3();
   }
 
   @Test
@@ -107,26 +112,20 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
     CombineExpressionsWithLiteralsTypeTraverserFactory factory =
         new CombineExpressionsWithLiteralsTypeTraverserFactory();
     Type4Ast type4Ast = new Type4Ast();
-    CombineExpressionsWithLiteralsTraverser traverser =
-        factory.createTraverser(type4Ast);
-    TypeCheck3AsIDerive derive = new TypeCheck3AsIDerive(
-        traverser, type4Ast, new CommonExpressionsLValueRelations());
-    TypeCheck3AsISynthesize synthesize =
-        new TypeCheck3AsISynthesize(traverser, type4Ast);
 
     Optional<ASTMCType> optType = CombineExpressionsWithLiteralsMill
         .parser()
         .parse_StringMCType(type);
     Assertions.assertTrue(optType.isPresent());
 
-    TypeCheckResult typeExpression = synthesize.synthesizeType(optType.get());
-    Assertions.assertTrue(typeExpression.isPresentResult());
+    SymTypeExpression typeExpression = TypeCheck3.symTypeFromAST(optType.get());
+    assertFalse(typeExpression.isObscureType());
 
     CombineExpressionsWithLiteralsMill
         .globalScope()
         .add(CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
         .setName("t")
-        .setType(typeExpression.getResult())
+        .setType(typeExpression)
         .build());
 
     Optional<ASTExpression> exprOpt = CombineExpressionsWithLiteralsMill
@@ -136,13 +135,13 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
     generateScopes(exprOpt.get());
 
     Assertions.assertTrue(Log.getFindings().isEmpty());
-    getChecker(derive).checkAll(exprOpt.get());
+    getChecker().checkAll(exprOpt.get());
   }
 
-  protected AssignmentExpressionsCoCoChecker getChecker(IDerive derive) {
+  protected AssignmentExpressionsCoCoChecker getChecker() {
     AssignmentExpressionsCoCoChecker checker =
         new AssignmentExpressionsCoCoChecker();
-    checker.addCoCo(new LiteralAssignmentMatchesRegExExpressionCoCo(derive));
+    checker.addCoCo(new LiteralAssignmentMatchesRegExExpressionCoCo());
     return checker;
   }
 

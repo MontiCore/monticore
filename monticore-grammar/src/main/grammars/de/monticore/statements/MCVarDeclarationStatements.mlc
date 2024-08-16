@@ -32,6 +32,9 @@ mlc MCVarDeclarationStatements {
 
   uses {
     include "$projectDir/src/main/java/de/monticore/expressions/prettyprint/ExpressionsBasisPrettyPrinter.java";
+    // uses type check for CoCos
+    include "$projectDir/src/main/java/de/monticore/types/check/**.java";
+    include "$projectDir/src/main/java/de/monticore/types3/**.java";
   }
 
 }

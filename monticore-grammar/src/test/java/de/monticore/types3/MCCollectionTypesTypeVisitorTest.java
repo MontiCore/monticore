@@ -18,9 +18,6 @@ import java.io.IOException;
 
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.type;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class MCCollectionTypesTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -48,8 +45,7 @@ public class MCCollectionTypesTypeVisitorTest
     generateScopes(asttype);
 
     // When
-    asttype.accept(getTypeMapTraverser());
-    SymTypeExpression result = getType4Ast().getPartialTypeOfTypeId(asttype);
+    SymTypeExpression result = TypeCheck3.symTypeFromAST(asttype);
 
     // Then
     assertNoFindings();
@@ -72,8 +68,7 @@ public class MCCollectionTypesTypeVisitorTest
     generateScopes(asttype);
 
     // When
-    asttype.accept(getTypeMapTraverser());
-    SymTypeExpression result = getType4Ast().getPartialTypeOfTypeId(asttype);
+    SymTypeExpression result = TypeCheck3.symTypeFromAST(asttype);
 
     // Then
     assertNoFindings();
@@ -95,8 +90,7 @@ public class MCCollectionTypesTypeVisitorTest
     generateScopes(asttype);
 
     // When
-    asttype.accept(getTypeMapTraverser());
-    SymTypeExpression result = getType4Ast().getPartialTypeOfTypeId(asttype);
+    SymTypeExpression result = TypeCheck3.symTypeFromAST(asttype);
 
     // Then
     assertNoFindings();
@@ -122,8 +116,7 @@ public class MCCollectionTypesTypeVisitorTest
     generateScopes(asttype);
 
     // When
-    asttype.accept(getTypeMapTraverser());
-    SymTypeExpression result = getType4Ast().getPartialTypeOfTypeId(asttype);
+    SymTypeExpression result = TypeCheck3.symTypeFromAST(asttype);
 
     // Then
     assertNoFindings();
@@ -145,8 +138,7 @@ public class MCCollectionTypesTypeVisitorTest
     generateScopes(asttype);
 
     // When
-    asttype.accept(getTypeMapTraverser());
-    SymTypeExpression result = getType4Ast().getPartialTypeOfTypeId(asttype);
+    SymTypeExpression result = TypeCheck3.symTypeFromAST(asttype);
 
     // Then
     assertNoFindings();
