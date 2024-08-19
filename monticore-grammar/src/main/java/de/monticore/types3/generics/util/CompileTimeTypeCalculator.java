@@ -7,10 +7,6 @@ import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.Type4Ast;
-import de.monticore.types3.generics.context.InferenceContext;
-import de.monticore.types3.generics.context.InferenceContext4Ast;
-import de.monticore.types3.generics.context.InferenceResult;
-import de.monticore.types3.generics.context.InferenceVisitorMode;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.bounds.CaptureBound;
@@ -19,6 +15,10 @@ import de.monticore.types3.generics.constraints.BoundWrapperConstraint;
 import de.monticore.types3.generics.constraints.Constraint;
 import de.monticore.types3.generics.constraints.ExpressionCompatibilityConstraint;
 import de.monticore.types3.generics.constraints.TypeCompatibilityConstraint;
+import de.monticore.types3.generics.context.InferenceContext;
+import de.monticore.types3.generics.context.InferenceContext4Ast;
+import de.monticore.types3.generics.context.InferenceResult;
+import de.monticore.types3.generics.context.InferenceVisitorMode;
 import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.monticore.visitor.ITraverser;
@@ -26,12 +26,19 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
+import static de.monticore.types.check.SymTypeExpressionFactory.createIntersectionOrDefault;
+import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
+import static de.monticore.types.check.SymTypeExpressionFactory.createUnionOrDefault;
 
 public class CompileTimeTypeCalculator {
 
@@ -66,14 +73,14 @@ public class CompileTimeTypeCalculator {
    * target type: short -> short
    * result: short -> byte
    *
-   * @param resolvedType empty if nothing was resolved.
-   *                     An error should be logged beforehand.
-   *                     Free type variables must have been replaced
+   * @param resolvedType Free type variables must have been replaced
    *                     with inference variables before calling this method.
+   *                     It is not required for this
+   *                     to contain references to symbols.
    */
   public static void handleResolvedType(
       ASTExpression expr,
-      Optional<SymTypeExpression> resolvedType,
+      SymTypeExpression resolvedType,
       ITraverser typeTraverser,
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
@@ -83,21 +90,74 @@ public class CompileTimeTypeCalculator {
     );
   }
 
-  protected void calculateHandleResolvedType(
+  /**
+   * Sets the compile-time type OR the inference results
+   * of a call to a function type in the expression-node.
+   * <p>
+   * E.g., let the expression be '1 : intStream';
+   * The Operator ':' can be represented with the function type
+   * (a, Stream<a>) -> Stream<a> with 'a' being a free type variable.
+   * The arguments of the function will be '1' and 'intStream'.
+   * In this case, this will first calculate the compile-time type
+   * of the operator to be (int, Stream<int>) -> Stream<int>.
+   * Therefore, the type of the expression is Stream<int>,
+   * which is stored in the type4AstMap.
+   */
+  public static void handleCall(
       ASTExpression expr,
-      Optional<SymTypeExpression> resolvedType,
+      SymTypeExpression funcType,
+      List<ASTExpression> arguments,
       ITraverser typeTraverser,
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    if (resolvedType.isEmpty()) {
-      type4Ast.setTypeOfExpression(expr, SymTypeExpressionFactory.createObscureType());
-      return;
-    }
+    getDelegate().calculateHandleCall(
+        expr, funcType, arguments,
+        typeTraverser, type4Ast, infCtx4Ast
+    );
+  }
 
+  /**
+   * Sets the compile-time type OR the inference results
+   * of a call to a function type in the expression-node.
+   * <p>
+   * This is similar to
+   * {@link #handleCall(ASTExpression, SymTypeExpression, List, ITraverser, Type4Ast, InferenceContext4Ast)},
+   * but it differs in that
+   * 1. There exists an expression that the compile-time function type
+   * needs to be calculated from.
+   * The type is (usually) not known yet.
+   * 2. There can be more than one inference result,
+   * e.g., from "(b ? f1 : f2)(1)", there will be the inference results
+   * from both f1 and f2.
+   * The first difference changes which information is available
+   * at which point in the CTTI process,
+   * which is why this method is implemented separately.
+   */
+  public static void handleCall(
+      ASTExpression callExpr,
+      ASTExpression funcExpr,
+      List<ASTExpression> arguments,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    getDelegate().calculateHandleCall(
+        callExpr, funcExpr, arguments,
+        typeTraverser, type4Ast, infCtx4Ast
+    );
+  }
+
+  protected void calculateHandleResolvedType(
+      ASTExpression expr,
+      SymTypeExpression resolvedType,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
     InferenceContext ctx = infCtx4Ast.getContextOfExpression(expr);
     InferenceResult infResult = inferCalledFunction(
-        resolvedType.get(), ctx,
+        resolvedType, ctx,
         typeTraverser, type4Ast, infCtx4Ast
     );
 
@@ -108,20 +168,355 @@ public class CompileTimeTypeCalculator {
       if (infResult.hasErrorOccurred()) {
         result = SymTypeExpressionFactory.createObscureType();
       }
-      else if (infResult.hasResolvedFunction()) {
-        // Guaranteed to succeed,
-        // else, there would have been an error already.
-        result = infResult.getInvocationType().get();
-      }
       else {
         // expected to be set
-        result = infResult.getResolvedNonInvocationType();
+        result = infResult.getCompileTimeType().get();
       }
       type4Ast.setTypeOfExpression(expr, result);
     }
     else {
       ctx.setInferredTypes(List.of(infResult));
     }
+  }
+
+  protected void calculateHandleCall(
+      ASTExpression callExpr,
+      SymTypeExpression resolvedFuncType,
+      List<ASTExpression> arguments,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    // use CTTI on the resolved function type
+    InferenceContext infCtx = infCtx4Ast.getContextOfExpression(callExpr);
+    InferenceContext funcCtx = new InferenceContext();
+    funcCtx.setVisitorMode(infCtx.getVisitorMode());
+    PartialFunctionInfo funcInfo = funcCtx.getPartialFunctionInfo();
+    if (infCtx.hasTargetType()) {
+      funcInfo.setReturnTargetType(infCtx.getTargetType());
+    }
+    funcInfo.setArgumentExprs(arguments);
+    InferenceResult infResult = inferCalledFunction(
+        resolvedFuncType, funcCtx,
+        typeTraverser, type4Ast, infCtx4Ast
+    );
+
+    handleInferenceResultsOfCallExpression(
+        callExpr, List.of(infResult), arguments,
+        typeTraverser, type4Ast, infCtx4Ast
+    );
+  }
+
+  protected void calculateHandleCall(
+      ASTExpression callExpr,
+      ASTExpression funcExpr,
+      List<ASTExpression> arguments,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    InferenceContext callCtx = infCtx4Ast.getContextOfExpression(callExpr);
+    InferenceVisitorMode mode = callCtx.getVisitorMode();
+    List<InferenceResult> inferenceResults =
+        infCtx4Ast.getContextOfExpression(funcExpr).getInferenceResults();
+
+    // small check that the visitor is configured correctly
+    if (mode == InferenceVisitorMode.TYPE_CHECKING &&
+        !inferenceResults.isEmpty()
+    ) {
+      Log.error("0xFD212 internal error: unexpected inference result."
+              + " TypeCheck misconfigured?",
+          callExpr.get_SourcePositionStart(),
+          callExpr.get_SourcePositionEnd()
+      );
+      type4Ast.setTypeOfExpression(callExpr, createObscureType());
+      return;
+    }
+
+    // store the calculated function type as an inference result
+    if (inferenceResults.isEmpty()) {
+      // here: mode = InferenceVisitorMode.TYPE_CHECKING;
+      // at this point, the function types have been calculated
+      SymTypeExpression funcExprTypeNotNormalized =
+          type4Ast.getPartialTypeOfExpr(funcExpr);
+      SymTypeExpression funcExprType = SymTypeRelations.normalize(
+          funcExprTypeNotNormalized
+      );
+
+      // handle obscure
+      if (funcExprType.isObscureType()) {
+        type4Ast.setTypeOfExpression(callExpr, createObscureType());
+        return;
+      }
+
+      // specifically, a set of functions must have been resolved
+      if (getNonFunctionOfResolvedType(funcExprType).isPresent() ||
+          getFunctionsOfResolvedType(funcExprType).isEmpty()
+      ) {
+        Log.error("0xFDAB4 encountered a function call, "
+                + "but the called value does not have a function type, "
+                + "instead, the type is "
+                + funcExprTypeNotNormalized.printFullName(),
+            callExpr.get_SourcePositionStart(),
+            callExpr.get_SourcePositionEnd()
+        );
+        type4Ast.setTypeOfExpression(callExpr, createObscureType());
+        return;
+      }
+
+      // store each function as an inference result.
+      List<SymTypeOfFunction> functions =
+          getFunctionsOfResolvedType(funcExprType);
+      inferenceResults = new ArrayList<>(functions.size());
+      for (SymTypeOfFunction function : functions) {
+        InferenceResult funcTypeAsInfRes = new InferenceResult();
+        funcTypeAsInfRes.setResolvedFunction(function);
+        // function IS the compile-time type, thus no bounds.
+        funcTypeAsInfRes.setB4(Collections.emptyList());
+        funcTypeAsInfRes.setLastInferenceMode(InferenceVisitorMode.TYPE_CHECKING);
+        inferenceResults.add(funcTypeAsInfRes);
+      }
+    }
+
+    handleInferenceResultsOfCallExpression(
+        callExpr, inferenceResults, arguments,
+        typeTraverser, type4Ast, infCtx4Ast
+    );
+
+  }
+
+  /**
+   * Given an expression that calls a function
+   * or comparable expressions (e.g., use of operator),
+   * this will use the inferred information
+   * and the arguments of the call to
+   * 1. either store the compile-time type of the call
+   * 2. or pass the inference information to nodes further up the AST
+   * <p>
+   * This is the common part of both
+   * {@link #handleCall} methods.
+   */
+  protected void handleInferenceResultsOfCallExpression(
+      ASTExpression callExpr,
+      List<InferenceResult> infResults,
+      List<ASTExpression> arguments,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    // handle errors
+    if (infResults.stream().anyMatch(InferenceResult::hasErrorOccurred)) {
+      // already logged
+      type4Ast.setTypeOfExpression(callExpr, createObscureType());
+      return;
+    }
+
+    InferenceContext infCtx = infCtx4Ast.getContextOfExpression(callExpr);
+    // Use the inference result to
+    // 1. either store the compile-time type
+    if (infCtx.getVisitorMode() == InferenceVisitorMode.TYPE_CHECKING ||
+        infResults.stream().allMatch(infRes ->
+            infRes.getLastInferenceMode() == InferenceVisitorMode.TYPE_CHECKING
+        )
+    ) {
+
+      List<SymTypeExpression> inferredTypes = new ArrayList<>(infResults.size());
+      for (InferenceResult infRes : infResults) {
+        Optional<SymTypeExpression> compileTimeType =
+            infRes.getCompileTimeType();
+        // handle error
+        if (compileTimeType.isEmpty()) {
+          Log.error("0xFD144 internal error: expected an inferred type"
+                  + " at this point [implementation error]",
+              callExpr.get_SourcePositionStart(),
+              callExpr.get_SourcePositionEnd()
+          );
+          type4Ast.setTypeOfExpression(callExpr, createObscureType());
+          return;
+        }
+        inferredTypes.add(compileTimeType.get());
+      }
+
+      // are the inferred types all functions?
+      List<SymTypeOfFunction> inferredFuncs =
+          new ArrayList<>(inferredTypes.size());
+      for (SymTypeExpression inferredType : inferredTypes) {
+        if (!inferredType.isFunctionType()) {
+          if (!inferredType.isObscureType()) {
+            Log.error("0xFD345 expected function type(s)"
+                    + " as input and calculated " + inferredType.printFullName()
+                    + " to be the compile-time type.",
+                callExpr.get_SourcePositionStart(),
+                callExpr.get_SourcePositionEnd()
+            );
+          }
+          type4Ast.setTypeOfExpression(callExpr, createObscureType());
+          return;
+        }
+        inferredFuncs.add(inferredType.asFunctionType());
+      }
+
+      checkArgumentsForCompileTimeTypeAndSetType(
+          callExpr, inferredFuncs, arguments,
+          typeTraverser, type4Ast, infCtx4Ast
+      );
+    }
+    // 2. or store the inference data of the call
+    else {
+      passInferenceInformationUpwardsForFunctionCall(
+          callExpr, infResults, infCtx4Ast
+      );
+    }
+
+  }
+
+  /**
+   * Given an expression that calls a function,
+   * if the functions compile-time type has not been calculated,
+   * this will store the inference information corresponding to the call
+   * in InferenceContext4Ast.
+   * This corresponds directly to
+   * {@link #checkArgumentsForCompileTimeTypeAndSetType}
+   *
+   * @param inferenceResults The inference result(s) of the function,
+   *                         not of the call.
+   *                         Is required to be non-empty.
+   */
+  protected void passInferenceInformationUpwardsForFunctionCall(
+      ASTExpression callExpr,
+      List<InferenceResult> inferenceResults,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    assert !inferenceResults.isEmpty();
+    InferenceContext callCtx = infCtx4Ast.getContextOfExpression(callExpr);
+    if (inferenceResults.stream().anyMatch(
+        infRes -> infRes.getLastInferenceMode()
+            == InferenceVisitorMode.APPLICABILITY_TEST
+    )) {
+      // Since there are inference results,
+      // there is a function with a return type that must be inferred.
+      // Thus, this callExpression is not pertinent to applicability
+      InferenceResult applicabilityRes = new InferenceResult();
+      applicabilityRes.setLastInferenceMode(InferenceVisitorMode.APPLICABILITY_TEST);
+      callCtx.setInferredTypes(List.of(applicabilityRes));
+    }
+    else if (inferenceResults.stream().allMatch(infRes -> infRes.getLastInferenceMode()
+        == InferenceVisitorMode.EXPRESSION_COMPATIBILITY_REDUCTION
+    )) {
+      List<ExpressionCompatibilityConstraint> constraints = new ArrayList<>();
+      for (InferenceResult inferenceResult : inferenceResults) {
+        constraints.addAll(inferenceResult.getB4C());
+      }
+      InferenceResult applicabilityRes = new InferenceResult();
+      applicabilityRes.setLastInferenceMode(InferenceVisitorMode.EXPRESSION_COMPATIBILITY_REDUCTION);
+      applicabilityRes.setB3(Collections.emptyList());
+      applicabilityRes.setB4C(constraints);
+      callCtx.setInferredTypes(List.of(applicabilityRes));
+    }
+    else {
+      Log.error("0xFD114 internal error: unexpected inference results");
+    }
+  }
+
+  /**
+   * Checks the arguments of the found compile-time function type,
+   * given an expression that calls said function.
+   * Sets the type in type4Ast for the callExpr.
+   * S.a. {@link #passInferenceInformationUpwardsForFunctionCall(ASTExpression, List, InferenceContext4Ast)}
+   *
+   * @param targetFunctions compile-time types;
+   *                        1. no inference variables
+   *                        2. fixed arity
+   *                        3. most specific function chosen
+   *                        (for each subExpression that provides a function)
+   */
+  protected void checkArgumentsForCompileTimeTypeAndSetType(
+      ASTExpression callExpr,
+      List<SymTypeOfFunction> targetFunctions,
+      List<ASTExpression> arguments,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    assert !targetFunctions.isEmpty();
+
+    // Given multiple functions, at this point
+    // all functions are valid compile-time types.
+    // E.g., (b ? f1 : f2)(arg)
+    // here, the compile-time types of f1 and f2 are available.
+    // Let f1 have type a1->r1 and f2 have type a2->r2
+    // the argument arg requires exactly ONE type,
+    // as such, f1 and f2 are 'fused' into
+    // (a1&a2)->(r1|r2).
+
+    // Important: depending on the complexity of expressions,
+    // in some cases, not enough information is passed down the AST
+    // to support varargs,
+    // e.g., as of writing f()() with f: ()->(a...)->r
+    // will calculate (a...)->r for f(), instead of ()->r (fixed arity).
+    // As long as more complex calculations in this regard are not required,
+    // this is simply handled here.
+    SymTypeExpression targetFuncRetType = createUnionOrDefault(
+        createObscureType(),
+        targetFunctions.stream()
+            .map(SymTypeOfFunction::getType)
+            .collect(Collectors.toList())
+    );
+    List<SymTypeExpression> targetFuncArgTypes = new ArrayList<>();
+    for (int i = 0; i < arguments.size(); i++) {
+      int argIdx = Math.min(i, targetFunctions.get(0).sizeArgumentTypes());
+      targetFuncArgTypes.add(createIntersectionOrDefault(
+              createObscureType(),
+              targetFunctions.stream()
+                  .map(f -> f.getArgumentType(argIdx))
+                  .collect(Collectors.toList())
+          )
+      );
+    }
+    SymTypeOfFunction targetFunc = createFunction(
+        targetFuncRetType, targetFuncArgTypes
+    );
+
+    // as the target type is given,
+    // calculate the compile-time type of each argument
+    List<SymTypeExpression> argTypes = new ArrayList<>(arguments.size());
+    for (int i = 0; i < arguments.size(); i++) {
+      ASTExpression argExpr = arguments.get(i);
+      type4Ast.reset(argExpr);
+      infCtx4Ast.reset(argExpr);
+      infCtx4Ast.getContextOfExpression(argExpr)
+          .setVisitorMode(InferenceVisitorMode.TYPE_CHECKING);
+      infCtx4Ast.setTargetTypeOfExpression(
+          argExpr,
+          targetFunc.getArgumentType(i)
+      );
+      argExpr.accept(typeTraverser);
+      argTypes.add(type4Ast.getPartialTypeOfExpr(argExpr));
+    }
+    if (argTypes.stream().anyMatch(SymTypeExpression::isObscureType)) {
+      // already logged
+      type4Ast.setTypeOfExpression(callExpr, createObscureType());
+      return;
+    }
+
+    // are the argument types compatible with the parameter types?
+    if (!FunctionRelations.canBeCalledWith(targetFunc, argTypes)) {
+      Log.error("0xFDAB3 arguments " + argTypes.stream()
+              .map(SymTypeExpression::printFullName)
+              .collect(Collectors.joining(", "))
+              + " cannot be used to call the function."
+              + " The compile-time function type for the expression "
+              + "has been calculated to be " + targetFunc.printFullName()
+              + ".",
+          callExpr.get_SourcePositionStart(),
+          callExpr.get_SourcePositionEnd()
+      );
+      type4Ast.setTypeOfExpression(callExpr, createObscureType());
+      return;
+    }
+
+    // passed the arguments check, thus set call type
+    type4Ast.setTypeOfExpression(callExpr, targetFunc.getType());
   }
 
   protected InferenceResult inferCalledFunction(
@@ -155,8 +550,11 @@ public class CompileTimeTypeCalculator {
       }
     }
 
+    // Note: this MUST(!) be Map that uses object identity;
+    // otherwise, the case is not identified
+    // when there are two identical functions (modulo symbols) resolved.
     Map<SymTypeOfFunction, InferenceResult> func2InferenceResult =
-        new TreeMap<>(new SymTypeExpressionComparator());
+        new HashMap<>();
     for (SymTypeOfFunction func : potentiallyApplicableFuncs) {
       InferenceResult result = new InferenceResult();
       result.setResolvedFunction(func);
@@ -235,12 +633,12 @@ public class CompileTimeTypeCalculator {
       return infResult;
     }
     if (infResult.getInvocationCompatibilityInstantiation().isEmpty()) {
-      Log.error("0xFD451 the return type" +
-          " of the selected compile-time declaration " +
-          infResult.getResolvedFunction().printFullName()
-          + "( partially instantiated to "
-          + infResult.getApplicabilityInstantiation() + ")"
-          + " is not compatible with the target type "
+      Log.error("0xFD451 the return type"
+          + " of the selected compile-time declaration "
+          + infResult.getResolvedFunction().printFullName()
+          + " (partially instantiated to "
+          + infResult.getApplicabilityInstantiation().get().printFullName()
+          + ") is not compatible with the target type "
           // There is a return target type, or else there would
           // have already been an error earlier:
           + funcInfo.getReturnTargetType().printFullName()
@@ -481,17 +879,30 @@ public class CompileTimeTypeCalculator {
   ) {
     List<Bound> bounds = new ArrayList<>();
     SymTypeOfFunction func = inferenceResult.getResolvedFunction();
-    Map<SymTypeVariable, SymTypeVariable> typeParamReplaceMap =
-        getParamReplaceMap(func);
-    for (Map.Entry<SymTypeVariable, SymTypeVariable> param2InfVar :
-        typeParamReplaceMap.entrySet()
-    ) {
-      SymTypeVariable typeVar = param2InfVar.getValue();
-      SymTypeVariable parameter = param2InfVar.getKey();
-      SymTypeExpression upperBound = parameter.getUpperBound();
-      SymTypeExpression upperBoundWithInfVars = TypeParameterRelations
-          .replaceTypeVariables(upperBound, typeParamReplaceMap);
-      bounds.add(new SubTypingBound(typeVar, upperBoundWithInfVars));
+    if (func.hasSymbol()) {
+      Map<SymTypeVariable, SymTypeVariable> typeParamReplaceMap =
+          getParamReplaceMap(func);
+      for (Map.Entry<SymTypeVariable, SymTypeVariable> param2InfVar :
+          typeParamReplaceMap.entrySet()
+      ) {
+        SymTypeVariable typeVar = param2InfVar.getValue();
+        SymTypeVariable parameter = param2InfVar.getKey();
+        SymTypeExpression upperBound = parameter.getUpperBound();
+        SymTypeExpression upperBoundWithInfVars = TypeParameterRelations
+            .replaceTypeVariables(upperBound, typeParamReplaceMap);
+        bounds.add(new SubTypingBound(typeVar, upperBoundWithInfVars));
+      }
+    }
+    else {
+      // no symbol => no restrictive parameter bounds,
+      // but, the bound typeVar <: Top is required, thus added here.
+      // this function type most likely has been created
+      // as a stand-in for e.g., an operator.
+      List<SymTypeVariable> typeVars = TypeParameterRelations
+          .getIncludedInferenceVariables(func);
+      for (SymTypeVariable typeVar : typeVars) {
+        bounds.add(new SubTypingBound(typeVar, createTopType()));
+      }
     }
     // can always calculate B0 (assuming no internal error)
     inferenceResult.setB0(bounds);

@@ -17,7 +17,8 @@ import de.monticore.expressions.ExpressionsBasis;
  * Stream expressions are partly 
  * 1) extending the Expression syntax by grammatical operations (see below),
  * 2) are provided as library of available Stream operations, and
- * 3) are based on the type constructor Stream<T> (defined in Types)
+ * 3) are based on the type constructors Stream<T>, EventStream<T>, SyncStream<T>,
+ * ToptStream<T> (defined in Types)
  *
  * The language developer may choose the subset of expressions
  * of interest and combine these with the appropriate typing infrastructure
@@ -37,9 +38,16 @@ component grammar StreamExpressions extends CommonExpressions {
   /* ------ Special Syntax for Functions on Streams ---------------- */
 
   /* 
-   * Empty Stream constant 
+   * Stream constructor in concordance to the literature
+   * <> denotes the empty stream
+   * <a> is equal to a:<>
+   * <a,b> is equal to a:<b> and transitively a:b:<>
+   * the default timing is (timed) event
+   * Stream constructor has to bind harder than name expressions to avoid
+   * the scanner recognizing timing keywords as names
    */
-  EmptyStreamExpression implements Expression = "<>";
+  StreamConstructorExpression implements Expression <360> =
+    timing:[key("event") | key("sync") | key("topt") | key("untimed")]? "<" (Expression || ",")* ">";
 
   /* 
    * Append first element 

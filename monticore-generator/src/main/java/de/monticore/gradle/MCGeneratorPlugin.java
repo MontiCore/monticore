@@ -9,6 +9,7 @@ import de.monticore.gradle.sources.MCSourcesPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -132,11 +133,12 @@ public class MCGeneratorPlugin implements Plugin<Project> {
                         project.getConfigurations().getByName(MCSourceSets.getDependencyDeclarationConfigName(main)));
               });
 
-      // testGrammarSymbolDependencies dependency on project(path)
+      // testGrammarSymbolDependencies dependency on files(main.grammars.srcDirs)
       project.getConfigurations().named(MCSourceSets.getSymbolDependencyConfigName(test))
               .configure(testGrammar -> {
-                Dependency selfDependency = project.getDependencies().project(Map.of("path", project.getPath()));
-                testGrammar.getDependencies().add(selfDependency);
+                FileCollection grammarSrc = MCGrammarsSourceDirectorySet.getGrammars(main).getSourceDirectories();
+                Dependency localFilesDependency = project.getDependencies().create(grammarSrc);
+                testGrammar.getDependencies().add(localFilesDependency);
               });
     });
   }

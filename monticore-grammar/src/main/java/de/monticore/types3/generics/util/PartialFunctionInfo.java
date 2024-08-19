@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * describes partial SymTypeOfFunction information,
@@ -104,6 +105,16 @@ public class PartialFunctionInfo {
     }
   }
 
+  /**
+   * QOL: sets all argument expressions + number of arguments at once
+   */
+  public void setArgumentExprs(List<? extends ASTExpression> argumentExprs) {
+    setParameterCount(argumentExprs.size());
+    for (int i = 0; i < argumentExprs.size(); i++) {
+      setArgumentExpr(i, argumentExprs.get(i));
+    }
+  }
+
   public boolean hasArgumentExpr(int idx) {
     return argumentExprs.containsKey(idx);
   }
@@ -133,6 +144,15 @@ public class PartialFunctionInfo {
       ));
     }
     return result;
+  }
+
+  public PartialFunctionInfo deepClone() {
+    PartialFunctionInfo clone = new PartialFunctionInfo();
+    clone.returnTargetType = returnTargetType.map(SymTypeExpression::deepClone);
+    clone.parameterCount = parameterCount.map(Function.identity());
+    clone.argumentExprs = new HashMap<>(argumentExprs);
+    clone.argumentTypes = new HashMap<>(argumentTypes);
+    return clone;
   }
 
 }

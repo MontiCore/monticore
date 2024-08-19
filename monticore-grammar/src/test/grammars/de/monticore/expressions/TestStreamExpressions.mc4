@@ -2,7 +2,7 @@
 package de.monticore.expressions;
 
 grammar TestStreamExpressions extends de.monticore.expressions.StreamExpressions,
-                                      de.monticore.literals.MCCommonLiterals {
+                                      de.monticore.expressions.CombineExpressionsWithLiterals {
 
   start Expression;
 

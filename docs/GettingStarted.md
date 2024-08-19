@@ -1243,7 +1243,7 @@ http://www.monticore.de/download/Automaton.zip
 ```
 2.  Open Eclipse and select
     -   File \> Import \> Gradle (if you are required to choose a Gradle
-        version, then choose version 7.4.1) \> Existing Gradle
+        version, then choose version 7.6.4) \> Existing Gradle
         Projects \> Next.
     -   Click on the *Browse..* button and import the directory that
         contains the file `build.gradle` from the `Automata` example.

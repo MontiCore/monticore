@@ -400,16 +400,16 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createFunction(_personSymType, List.of(_intSymType), true)
     ));
     Assertions.assertTrue(SymTypeRelations.isCompatible(
-        createFunction(_studentSymType, _intSymType),
-        createFunction(_personSymType, _intSymType)
+        createFunction(_personSymType, _intSymType),
+        createFunction(_studentSymType, _intSymType)
     ));
     Assertions.assertTrue(SymTypeRelations.isCompatible(
-        createFunction(_personSymType, _longSymType),
-        createFunction(_personSymType, _intSymType)
+        createFunction(_personSymType, _intSymType),
+        createFunction(_personSymType, _longSymType)
     ));
     Assertions.assertTrue(SymTypeRelations.isCompatible(
-        createFunction(_personSymType, _longSymType),
-        createFunction(_personSymType, List.of(_intSymType), true)
+        createFunction(_personSymType, _intSymType),
+        createFunction(_personSymType, List.of(_longSymType), true)
     ));
     Assertions.assertTrue(SymTypeRelations.isCompatible(
         createFunction(_personSymType, _intSymType, _intSymType),
@@ -423,12 +423,12 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createFunction(_personSymType), createFunction(_carSymType)
     ));
     Assertions.assertFalse(SymTypeRelations.isCompatible(
-        createFunction(_personSymType, _intSymType),
-        createFunction(_studentSymType, _intSymType)
+        createFunction(_studentSymType, _intSymType),
+        createFunction(_personSymType, _intSymType)
     ));
     Assertions.assertFalse(SymTypeRelations.isCompatible(
-        createFunction(_personSymType, _intSymType),
-        createFunction(_personSymType, _longSymType)
+        createFunction(_personSymType, _longSymType),
+        createFunction(_personSymType, _intSymType)
     ));
     Assertions.assertFalse(SymTypeRelations.isCompatible(
         createFunction(_personSymType, List.of(_intSymType), true),
