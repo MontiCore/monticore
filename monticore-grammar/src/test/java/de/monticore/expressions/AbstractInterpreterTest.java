@@ -160,21 +160,29 @@ public abstract class AbstractInterpreterTest {
     }
     assertNotNull(interpretationResult);
     assertTrue(Log.getFindings().isEmpty());
-    if (interpretationResult.isBoolean()) {
+    if (expected.isBoolean()) {
+      assertTrue(interpretationResult.isBoolean());
       assertEquals(interpretationResult.asBoolean(), expected.asBoolean());
-    } else if (interpretationResult.isInt()) {
+    } else if (expected.isInt()) {
+      assertTrue(interpretationResult.isInt());
       assertEquals(interpretationResult.asInt(), expected.asInt());
-    } else if (interpretationResult.isLong()) {
+    } else if (expected.isLong()) {
+      assertTrue(interpretationResult.isLong());
       assertEquals(interpretationResult.asLong(), expected.asLong());
-    } else if (interpretationResult.isFloat()) {
+    } else if (expected.isFloat()) {
+      assertTrue(interpretationResult.isFloat());
       assertEquals(interpretationResult.asFloat(), expected.asFloat(), delta);
-    } else if (interpretationResult.isDouble()) {
+    } else if (expected.isDouble()) {
+      assertTrue(interpretationResult.isDouble());
       assertEquals(interpretationResult.asDouble(), expected.asDouble(), delta);
-    } else if (interpretationResult.isChar()) {
+    } else if (expected.isChar()) {
+      assertTrue(interpretationResult.isChar());
       assertEquals(interpretationResult.asChar(), expected.asChar());
-    } else if (interpretationResult.isString()) {
+    } else if (expected.isString()) {
+      assertTrue(interpretationResult.isString());
       assertEquals(interpretationResult.asString(), expected.asString());
-    } else if (interpretationResult.isObject()) {
+    } else if (expected.isObject()) {
+      assertTrue(interpretationResult.isObject());
       assertEquals(interpretationResult.asObject(), expected.asObject());
     }
     assertTrue(Log.getFindings().isEmpty());

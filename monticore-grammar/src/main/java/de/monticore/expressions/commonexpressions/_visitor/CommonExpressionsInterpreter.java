@@ -143,69 +143,18 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     Value left = node.getLeft().evaluate(getRealThis());
     Value right = node.getRight().evaluate(getRealThis());
 
-    if (left.isString() || right.isString()) {
+    if (left.isString() || right.isString() || left.isBoolean() ||
+        right.isBoolean() || left.isObject() || right.isObject()) {
       Log.error("Minus operation is not applicable for these types.");
-    } else if (left.isBoolean() || right.isBoolean()) {
-      Log.error("Minus operation is not applicable for these types.");
-    } else if (left.isObject() || right.isObject()) {
-      Log.error("Minus operation is not applicable for these types.");
-    } else if (left.isInt() || right.isInt()) {
-      if (left.isInt() && right.isInt()) {
-        return ValueFactory.createValue(left.asInt() - right.asInt());
-      } else if (left.isDouble()) {
-        return ValueFactory.createValue(left.asDouble() - right.asInt());
-      } else if (right.isDouble()) {
-        return ValueFactory.createValue(left.asInt() - right.asDouble());
-      } else if (left.isChar()) {
-        return ValueFactory.createValue(left.asChar() - right.asInt());
-      } else if (right.isChar()) {
-        return ValueFactory.createValue(left.asInt() - right.asChar());
-      } else if (left.isFloat()) {
-        return ValueFactory.createValue(left.asFloat() - right.asInt());
-      } else if (right.isFloat()) {
-        return ValueFactory.createValue(left.asInt() - right.asFloat());
-      } else if (left.isLong()) {
-        return ValueFactory.createValue(left.asLong() - right.asInt());
-      } else if (right.isLong()) {
-        return ValueFactory.createValue(left.asInt() - right.asLong());
-      }
     } else if (left.isDouble() || right.isDouble()) {
-      if (left.isDouble() && right.isDouble()) {
-        return ValueFactory.createValue(left.asDouble() - right.asDouble());
-      } else if (left.isChar()) {
-        return ValueFactory.createValue(left.asChar() - right.asDouble());
-      } else if (right.isChar()) {
-        return ValueFactory.createValue(left.asDouble() - right.asChar());
-      } else if (left.isFloat()) {
-        return ValueFactory.createValue(left.asFloat() - right.asDouble());
-      } else if (right.isFloat()) {
-        return ValueFactory.createValue(left.asDouble() - right.asFloat());
-      } else if (left.isLong()) {
-        return ValueFactory.createValue(left.asLong() - right.asDouble());
-      } else if (right.isLong()) {
-        return ValueFactory.createValue(left.asDouble() - right.asLong());
-      }
+      return ValueFactory.createValue(left.asDouble() - right.asDouble());
     } else if (left.isFloat() || right.isFloat()) {
-      if (left.isFloat() && right.isFloat()) {
-        return ValueFactory.createValue(left.asFloat() - right.asFloat());
-      } else if (left.isChar()) {
-        return ValueFactory.createValue(left.asChar() - right.asFloat());
-      } else if (right.isChar()) {
-        return ValueFactory.createValue(left.asFloat() - right.asChar());
-      } else if (left.isLong()) {
-        return ValueFactory.createValue(left.asLong() - right.asFloat());
-      } else if (right.isLong()) {
-        return ValueFactory.createValue(left.asFloat() - right.asLong());
-      }
+      return ValueFactory.createValue(left.asFloat() - right.asFloat());
     } else if (left.isLong() || right.isLong()) {
-      if (left.isLong() && right.isLong()) {
-        return ValueFactory.createValue(left.asLong() - right.asLong());
-      } else if (left.isChar()) {
-        return ValueFactory.createValue(left.asChar() - right.asLong());
-      } else if (right.isChar()) {
-        return ValueFactory.createValue(left.asLong() - right.asChar());
-      }
-    } else if (left.isChar() && right.isChar()) {
+      return ValueFactory.createValue(left.asLong() - right.asLong());
+    } else if (left.isInt() || right.isInt()) {
+      return ValueFactory.createValue(left.asInt() - right.asInt());
+    } else if (left.isChar() || right.isChar()) {
       return ValueFactory.createValue(left.asChar() - right.asChar());
     }
     return new NotAValue();

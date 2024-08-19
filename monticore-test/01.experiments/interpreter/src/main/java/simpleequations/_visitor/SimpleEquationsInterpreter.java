@@ -24,76 +24,40 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     Value left = node.getLeft().evaluate(getRealThis());
     Value right = node.getRight().evaluate(getRealThis());
 
-    if (left.isInt()) {
-      if (right.isInt()) {
+    if (left.isInt() && right.isInt()) {
         return ValueFactory.createValue(left.asInt() + right.asInt());
-      } else {
-        return ValueFactory.createValue(left.asInt() + right.asFloat());
       }
-    } else {
-      if (right.isInt()) {
-        return ValueFactory.createValue(left.asFloat() + right.asInt());
-      } else {
-        return ValueFactory.createValue(left.asFloat() + right.asFloat());
-      }
-    }
+    return ValueFactory.createValue(left.asFloat() + right.asFloat());
   }
 
   public Value interpret(ASTMinusEquation node) {
     Value left = node.getLeft().evaluate(getRealThis());
     Value right = node.getRight().evaluate(getRealThis());
 
-    if (left.isInt()) {
-      if (right.isInt()) {
-        return ValueFactory.createValue(left.asInt() - right.asInt());
-      } else {
-        return ValueFactory.createValue(left.asInt() - right.asFloat());
-      }
-    } else {
-      if (right.isInt()) {
-        return ValueFactory.createValue(left.asFloat() - right.asInt());
-      } else {
-        return ValueFactory.createValue(left.asFloat() - right.asFloat());
-      }
+    if (left.isInt() && right.isInt()) {
+      return ValueFactory.createValue(left.asInt() - right.asInt());
     }
+    return ValueFactory.createValue(left.asFloat() - right.asFloat());
   }
 
   public Value interpret(ASTMultiplyEquation node) {
     Value left = node.getLeft().evaluate(getRealThis());
     Value right = node.getRight().evaluate(getRealThis());
 
-    if (left.isInt()) {
-      if (right.isInt()) {
-        return ValueFactory.createValue(left.asInt() * right.asInt());
-      } else {
-        return ValueFactory.createValue(left.asInt() * right.asFloat());
-      }
-    } else {
-      if (right.isInt()) {
-        return ValueFactory.createValue(left.asFloat() * right.asInt());
-      } else {
-        return ValueFactory.createValue(left.asFloat() * right.asFloat());
-      }
+    if (left.isInt() && right.isInt()) {
+      return ValueFactory.createValue(left.asInt() * right.asInt());
     }
+    return ValueFactory.createValue(left.asFloat() * right.asFloat());
   }
 
   public Value interpret(ASTDivideEquation node) {
     Value left = node.getLeft().evaluate(getRealThis());
     Value right = node.getRight().evaluate(getRealThis());
 
-    if (left.isInt()) {
-      if (right.isInt()) {
-        return ValueFactory.createValue(left.asInt() / right.asInt());
-      } else {
-        return ValueFactory.createValue(left.asInt() / right.asFloat());
-      }
-    } else {
-      if (right.isInt()) {
-        return ValueFactory.createValue(left.asFloat() / right.asInt());
-      } else {
-        return ValueFactory.createValue(left.asFloat() / right.asFloat());
-      }
+    if (left.isInt() && right.isInt()) {
+      return ValueFactory.createValue(left.asInt() / right.asInt());
     }
+    return ValueFactory.createValue(left.asFloat() / right.asFloat());
   }
 
   public Value interpret(ASTVariableDefinition node) {
@@ -111,22 +75,11 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
   public Value interpret(ASTPrintStatement node) {
     Value output = node.getExpression().evaluate(getRealThis());
-    if (output.isBoolean()) {
-      System.out.println(output.asBoolean());
-    } else if (output.isInt()) {
+
+    if (output.isInt()) {
       System.out.println(output.asInt());
-    } else if (output.isLong()) {
-      System.out.println(output.asLong());
     } else if (output.isFloat()) {
       System.out.println(output.asFloat());
-    } else if (output.isDouble()) {
-      System.out.println(output.asDouble());
-    } else if (output.isChar()) {
-      System.out.println(output.asChar());
-    } else if (output.isString()) {
-      System.out.println(output.asString());
-    } else if (output.isObject()) {
-      System.out.println(output.asObject());
     }
     return new NotAValue();
   }
