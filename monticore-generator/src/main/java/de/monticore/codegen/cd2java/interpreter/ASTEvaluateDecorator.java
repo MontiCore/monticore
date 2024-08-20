@@ -4,10 +4,12 @@ package de.monticore.codegen.cd2java.interpreter;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._ast.builder.BuilderConstants;
+import de.monticore.codegen.cd2java._ast_emf.EmfConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -15,6 +17,8 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -39,8 +43,11 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDClass, List<ASTCD
 
   @Override
   public List<ASTCDMethod> decorate(ASTCDClass input) {
-    if (input.getName().endsWith(BuilderConstants.BUILDER_SUFFIX) ||
-        input.getName().startsWith("ASTConstants")) {
+    Set<String> names = visitorService.getAllCDTypes()
+        .stream()
+        .map(CDTypeSymbol::getName)
+        .collect(Collectors.toSet());
+    if (!names.contains(input.getName())) {
       return new ArrayList<>();
     }
 

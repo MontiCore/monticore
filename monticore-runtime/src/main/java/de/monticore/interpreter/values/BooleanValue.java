@@ -20,4 +20,9 @@ public class BooleanValue implements Value {
   public boolean asBoolean() {
     return value;
   }
+
+  @Override
+  public String asString() {
+    return String.valueOf(value);
+  }
 }

@@ -3,9 +3,15 @@ package de.monticore.expressions.commonexpressions._visitor;
 
 import de.monticore.expressions.AbstractInterpreterTest;
 import de.monticore.interpreter.ValueFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CommonExpressionsInterpreterTest extends AbstractInterpreterTest {
+
+  @BeforeEach
+  public void before() {
+    init(127);
+  }
 
   @Test
   public void testInterpretPlusExpression() {
@@ -228,8 +234,8 @@ public class CommonExpressionsInterpreterTest extends AbstractInterpreterTest {
     testValidExpression("3L / 1.5f", ValueFactory.createValue(2.f));
     testValidExpression("3L / 1.5", ValueFactory.createValue(2.));
     testValidExpression("3.0 / 2L", ValueFactory.createValue(1.5));
-    testValidExpression("1L / 'a'", ValueFactory.createValue(0));
-    testValidExpression("'a' / 2L", ValueFactory.createValue(48));
+    testValidExpression("1L / 'a'", ValueFactory.createValue(0L));
+    testValidExpression("'a' / 2L", ValueFactory.createValue(48L));
     testInvalidExpression("1L / \"a\"");
     testInvalidExpression("\"a\" / 2L");
 
@@ -278,7 +284,7 @@ public class CommonExpressionsInterpreterTest extends AbstractInterpreterTest {
     testInvalidExpression("\"a\" % false");
 
     testValidExpression("1 % 2", ValueFactory.createValue(1));
-    testValidExpression("1L % 2", ValueFactory.createValue(1));
+    testValidExpression("1L % 2", ValueFactory.createValue(1L));
     testValidExpression("1 % 2L", ValueFactory.createValue(1L));
     testValidExpression("1.5f % 2", ValueFactory.createValue(1.5f));
     testValidExpression("1 % 1.2f", ValueFactory.createValue(1.0f));

@@ -58,7 +58,7 @@ public class InterpreterInterfaceDecorator
 
     return service.getAllCDTypes()
         .stream()
-        .filter(OOTypeSymbolTOP::isIsClass)
+        .filter(s -> s.isIsClass() || s.isIsInterface())
         .map(service::createASTFullName)
         .map(name -> cdParameterFacade.createParameter(name, NODE_PARAMETER))
         .map(parameter -> cdMethodFacade.createMethod(

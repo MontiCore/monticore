@@ -13,7 +13,6 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,13 +24,19 @@ public abstract class AbstractInterpreterTest {
 
   protected static final double delta = 0.00001;
 
+  protected static final int BOOL = 1;
+  protected static final int INT = 2;
+  protected static final int LONG = 4;
+  protected static final int FLOAT = 8;
+  protected static final int DOUBLE = 16;
+  protected static final int CHAR = 32;
+  protected static final int STRING = 64;
+
+  protected CombineExpressionsWithLiteralsInterpreter interpreter;
   protected CombineExpressionsWithLiteralsParser parser;
   protected CombineExpressionsWithLiteralsScopesGenitorDelegator delegator;
 
-  protected CombineExpressionsWithLiteralsInterpreter interpreter;
-
-  @Before
-  public void before() throws IOException {
+  public void init(int values) {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
@@ -44,100 +49,44 @@ public abstract class AbstractInterpreterTest {
     delegator = CombineExpressionsWithLiteralsMill.scopesGenitorDelegator();
     interpreter = new CombineExpressionsWithLiteralsInterpreter();
 
-    final Optional<ASTFoo> optIntAssignment = parser.parse_StringFoo("bar i = 1");
-    assertTrue(optIntAssignment.isPresent());
-    final ASTFoo intAssignment = optIntAssignment.get();
-    delegator.createFromAST(intAssignment);
-    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("i",
-        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-            .setType(SymTypeExpressionFactory.createPrimitive("int"))
-            .setName("i")
-            .setFullName("i")
-            .setPackageName("")
-            .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-            .build());
-    interpreter.interpret(intAssignment);
+    try {
+      if ((values & BOOL) != 0) {
+        initBool();
+      }
 
-    final Optional<ASTFoo> optLongAssignment = parser.parse_StringFoo("bar l = 5L");
-    assertTrue(optLongAssignment.isPresent());
-    final ASTFoo longAssignment = optLongAssignment.get();
-    delegator.createFromAST(longAssignment);
-    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("l",
-        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-            .setType(SymTypeExpressionFactory.createPrimitive("long"))
-            .setName("l")
-            .setFullName("l")
-            .setPackageName("")
-            .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-            .build());
-    interpreter.interpret(longAssignment);
+      if ((values & INT) != 0) {
+        initInt();
+      }
 
-    final Optional<ASTFoo> optCharAssignment = parser.parse_StringFoo("bar c = 'a'");
-    assertTrue(optCharAssignment.isPresent());
-    final ASTFoo charAssignment = optCharAssignment.get();
-    delegator.createFromAST(charAssignment);
-    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("c",
-        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-            .setType(SymTypeExpressionFactory.createPrimitive("char"))
-            .setName("c")
-            .setFullName("c")
-            .setPackageName("")
-            .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-            .build());
-    interpreter.interpret(charAssignment);
+      if ((values & LONG) != 0) {
+        initLong();
+      }
 
-    final Optional<ASTFoo> optStringAssignment = parser.parse_StringFoo("bar s = \"hello\"");
-    assertTrue(optStringAssignment.isPresent());
-    final ASTFoo stringAssignment = optStringAssignment.get();
-    delegator.createFromAST(stringAssignment);
-    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("s",
-        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-            .setType(SymTypeExpressionFactory.createPrimitive("String"))
-            .setName("s")
-            .setFullName("s")
-            .setPackageName("")
-            .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-            .build());
-    interpreter.interpret(stringAssignment);
+      if ((values & FLOAT) != 0) {
+        initFloat();
+      }
 
-    final Optional<ASTFoo> optFloatAssignment = parser.parse_StringFoo("bar f = 1.5f");
-    assertTrue(optFloatAssignment.isPresent());
-    final ASTFoo floatAssignment = optFloatAssignment.get();
-    delegator.createFromAST(floatAssignment);
-    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("f",
-        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-            .setType(SymTypeExpressionFactory.createPrimitive("float"))
-            .setName("f")
-            .setFullName("f")
-            .setPackageName("")
-            .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-            .build());
-    interpreter.interpret(floatAssignment);
+      if ((values & DOUBLE) != 0) {
+        initDouble();
+      }
 
-    final Optional<ASTFoo> optDoubleAssignment = parser.parse_StringFoo("bar d = 3.14");
-    assertTrue(optDoubleAssignment.isPresent());
-    final ASTFoo doubleAssignment = optDoubleAssignment.get();
-    delegator.createFromAST(doubleAssignment);
-    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("d",
-        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
-            .setType(SymTypeExpressionFactory.createPrimitive("double"))
-            .setName("d")
-            .setFullName("d")
-            .setPackageName("")
-            .setAccessModifier(AccessModifier.ALL_INCLUSION)
-            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
-            .build());
-    interpreter.interpret(doubleAssignment);
+      if ((values & CHAR) != 0) {
+        initChar();
+      }
 
-    final Optional<ASTFoo> optBooleanAssignment = parser.parse_StringFoo("bar b = true");
-    assertTrue(optBooleanAssignment.isPresent());
-    final ASTFoo booleanAssignment = optBooleanAssignment.get();
-    delegator.createFromAST(booleanAssignment);
+      if ((values & STRING) != 0) {
+        initString();
+      }
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  protected void initBool() throws IOException {
+    final Optional<ASTFoo> optAST = parser.parse_String("bar b = true");
+    assertTrue(optAST.isPresent());
+    final ASTFoo ast = optAST.get();
+    delegator.createFromAST(ast);
     CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("b",
         CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
             .setType(SymTypeExpressionFactory.createPrimitive("boolean"))
@@ -147,7 +96,109 @@ public abstract class AbstractInterpreterTest {
             .setAccessModifier(AccessModifier.ALL_INCLUSION)
             .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
             .build());
-    interpreter.interpret(booleanAssignment);
+    interpreter.interpret(ast);
+  }
+
+  protected void initInt() throws IOException {
+    final Optional<ASTFoo> optAST = parser.parse_String("bar i = 1");
+    assertTrue(optAST.isPresent());
+    final ASTFoo ast = optAST.get();
+    delegator.createFromAST(ast);
+    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("i",
+        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
+            .setType(SymTypeExpressionFactory.createPrimitive("int"))
+            .setName("i")
+            .setFullName("i")
+            .setPackageName("")
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
+            .build());
+    interpreter.interpret(ast);
+  }
+
+  protected void initLong() throws IOException {
+    final Optional<ASTFoo> optAST = parser.parse_String("bar l = 5L");
+    assertTrue(optAST.isPresent());
+    final ASTFoo ast = optAST.get();
+    delegator.createFromAST(ast);
+    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("l",
+        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
+            .setType(SymTypeExpressionFactory.createPrimitive("long"))
+            .setName("l")
+            .setFullName("l")
+            .setPackageName("")
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
+            .build());
+    interpreter.interpret(ast);
+  }
+
+  protected void initFloat() throws IOException {
+    final Optional<ASTFoo> optAST = parser.parse_String("bar f = 1.5f");
+    assertTrue(optAST.isPresent());
+    final ASTFoo ast = optAST.get();
+    delegator.createFromAST(ast);
+    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("f",
+        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
+            .setType(SymTypeExpressionFactory.createPrimitive("float"))
+            .setName("f")
+            .setFullName("f")
+            .setPackageName("")
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
+            .build());
+    interpreter.interpret(ast);
+  }
+
+  protected void initDouble() throws IOException {
+    final Optional<ASTFoo> optAST = parser.parse_String("bar d = 3.14");
+    assertTrue(optAST.isPresent());
+    final ASTFoo ast = optAST.get();
+    delegator.createFromAST(ast);
+    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("d",
+        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
+            .setType(SymTypeExpressionFactory.createPrimitive("double"))
+            .setName("d")
+            .setFullName("d")
+            .setPackageName("")
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
+            .build());
+    interpreter.interpret(ast);
+  }
+
+  protected void initChar() throws IOException {
+    final Optional<ASTFoo> optAST = parser.parse_String("bar c = 'a'");
+    assertTrue(optAST.isPresent());
+    final ASTFoo ast = optAST.get();
+    delegator.createFromAST(ast);
+    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("c",
+        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
+            .setType(SymTypeExpressionFactory.createPrimitive("char"))
+            .setName("c")
+            .setFullName("c")
+            .setPackageName("")
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
+            .build());
+    interpreter.interpret(ast);
+  }
+
+  protected void initString() throws IOException {
+    final Optional<ASTFoo> optAST = parser.parse_String("bar s = \"hello\"");
+    assertTrue(optAST.isPresent());
+    final ASTFoo ast = optAST.get();
+    delegator.createFromAST(ast);
+    CombineExpressionsWithLiteralsMill.globalScope().getVariableSymbols().put("s",
+        CombineExpressionsWithLiteralsMill.variableSymbolBuilder()
+            .setType(SymTypeExpressionFactory.createPrimitive("String"))
+            .setName("s")
+            .setFullName("s")
+            .setPackageName("")
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope())
+            .build());
+    interpreter.interpret(ast);
   }
 
   protected void testValidExpression(String expr, Value expected) {
@@ -202,7 +253,7 @@ public abstract class AbstractInterpreterTest {
   }
 
   protected Value parseExpressionAndInterpret(String expr) throws IOException {
-    final Optional<ASTFoo> optAST = parser.parse_StringFoo("bar " + expr);
+    final Optional<ASTFoo> optAST = parser.parse_String("bar " + expr);
     assertTrue(optAST.isPresent());
     final ASTFoo ast = optAST.get();
     delegator.createFromAST(ast);

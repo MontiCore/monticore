@@ -2,702 +2,726 @@
 package de.monticore.expressions.assignmentexpressions._visitor;
 
 import de.monticore.expressions.AbstractInterpreterTest;
-import de.monticore.interpreter.ValueFactory;
-import org.junit.Test;
+import de.monticore.interpreter.Value;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static java.util.Objects.isNull;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static de.monticore.interpreter.ValueFactory.createValue;
 
 public class AssignmentExpressionsInterpreterTest extends AbstractInterpreterTest {
 
-  @Test
-  public void testIncSuffixExpression() {
-    testValidExpression("c++", ValueFactory.createValue(98));
-    testInvalidExpression("s++");
-    testValidExpression("i++", ValueFactory.createValue(2));
-    testValidExpression("l++", ValueFactory.createValue(6L));
-    testValidExpression("f++", ValueFactory.createValue(2.5f));
-    testValidExpression("d++", ValueFactory.createValue(4.14));
-    testInvalidExpression("b++");
+  protected static Stream<Arguments> incSuffixExpression() {
+    return Stream.of(
+        arguments("b++", null, BOOL),
+        arguments("i++", createValue(2), INT),
+        arguments("l++", createValue(6L), LONG),
+        arguments("f++", createValue(2.5f), FLOAT),
+        arguments("d++", createValue(4.14), DOUBLE),
+        arguments("c++", createValue(98), CHAR),
+        arguments("s++", null, STRING));
   }
 
-  @Test
-  public void testIncPrefixExpression() {
-    testValidExpression("++c", ValueFactory.createValue(98));
-    testInvalidExpression("++s");
-    testValidExpression("++i", ValueFactory.createValue(2));
-    testValidExpression("++l", ValueFactory.createValue(6L));
-    testValidExpression("++f", ValueFactory.createValue(2.5f));
-    testValidExpression("++d", ValueFactory.createValue(4.14));
-    testInvalidExpression("++b");
+  protected static Stream<Arguments> incPrefixExpression() {
+    return Stream.of(
+        arguments("++b", null, BOOL),
+        arguments("++i", createValue(2), INT),
+        arguments("++l", createValue(6L), LONG),
+        arguments("++f", createValue(2.5f), FLOAT),
+        arguments("++d", createValue(4.14), DOUBLE),
+        arguments("++c", createValue(98), CHAR),
+        arguments("++s", null, STRING));
   }
 
-  @Test
-  public void testDecSuffixExpression() {
-    testValidExpression("c--", ValueFactory.createValue(96));
-    testInvalidExpression("s--");
-    testValidExpression("i--", ValueFactory.createValue(0));
-    testValidExpression("l--", ValueFactory.createValue(4L));
-    testValidExpression("f--", ValueFactory.createValue(0.5f));
-    testValidExpression("d--", ValueFactory.createValue(2.14));
-    testInvalidExpression("b--");
+  protected static Stream<Arguments> decSuffixExpression() {
+    return Stream.of(
+        arguments("c--", createValue(96), CHAR),
+        arguments("s--", null, STRING),
+        arguments("i--", createValue(0), INT),
+        arguments("l--", createValue(4L), LONG),
+        arguments("f--", createValue(0.5f), FLOAT),
+        arguments("d--", createValue(2.14), DOUBLE),
+        arguments("b--", null, BOOL));
   }
 
-  @Test
-  public void testDecPrefixExpression() {
-    testValidExpression("--c", ValueFactory.createValue(96));
-    testInvalidExpression("--s");
-    testValidExpression("--i", ValueFactory.createValue(0));
-    testValidExpression("--l", ValueFactory.createValue(4L));
-    testValidExpression("--f", ValueFactory.createValue(0.5f));
-    testValidExpression("--d", ValueFactory.createValue(2.14));
-    testInvalidExpression("--b");
+  protected static Stream<Arguments> decPrefixExpression() {
+    return Stream.of(
+        arguments("--c", createValue(96), CHAR),
+        arguments("--s", null, STRING),
+        arguments("--i", createValue(0), INT),
+        arguments("--l", createValue(4L), LONG),
+        arguments("--f", createValue(0.5f), FLOAT),
+        arguments("--d", createValue(2.14), DOUBLE),
+        arguments("--b", null, BOOL));
   }
 
-  @Test
-  public void testAndEqualsExpression() {
-    testInvalidExpression("b &= false");
-    testInvalidExpression("b &= 1");
-    testInvalidExpression("b &= 2L");
-    testInvalidExpression("b &= 1.5f");
-    testInvalidExpression("b &= 3.14");
-    testInvalidExpression("b &= 'a'");
-    testInvalidExpression("b &= \"test\"");
+  protected static Stream<Arguments> andEqualsExpression() {
+    return Stream.of(
+        arguments("b &= false", null, BOOL),
+        arguments("b &= 1", null, BOOL),
+        arguments("b &= 2L", null, BOOL),
+        arguments("b &= 1.5f", null, BOOL),
+        arguments("b &= 3.14", null, BOOL),
+        arguments("b &= 'c'", null, BOOL),
+        arguments("b &= \"test\"", null, BOOL),
 
-    testInvalidExpression("i &= false");
-    testValidExpression("i &= 1", ValueFactory.createValue(1));
-    testValidExpression("i &= 2L", ValueFactory.createValue(0));
-    testInvalidExpression("i &= 1.5f");
-    testInvalidExpression("i &= 3.14");
-    testValidExpression("i &= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("i &= \"test\"");
+        arguments("i &= false", null, INT),
+        arguments("i &= 1", createValue(1), INT),
+        arguments("i &= 2L", createValue(0L), INT),
+        arguments("i &= 1.5f", null, INT),
+        arguments("i &= 3.14", null, INT),
+        arguments("i &= 'a'", createValue(1), INT),
+        arguments("i &= \"test\"", null, INT),
 
-    testInvalidExpression("l &= false");
-    testValidExpression("l &= 1", ValueFactory.createValue(1));
-    testValidExpression("l &= 2L", ValueFactory.createValue(0));
-    testInvalidExpression("l &= 1.5f");
-    testInvalidExpression("l &= 3.14");
-    testValidExpression("l &= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("l &= \"test\"");
+        arguments("l &= false", null, LONG),
+        arguments("l &= 1", createValue(1L), LONG),
+        arguments("l &= 2L", createValue(0L), LONG),
+        arguments("l &= 1.5f", null, LONG),
+        arguments("l &= 3.14", null, LONG),
+        arguments("l &= 'a'", createValue(1L), LONG),
+        arguments("l &= \"test\"", null, LONG),
 
-    testInvalidExpression("f &= false");
-    testInvalidExpression("f &= 1");
-    testInvalidExpression("f &= 2L");
-    testInvalidExpression("f &= 1.5f");
-    testInvalidExpression("f &= 3.14");
-    testInvalidExpression("f &= 'a'");
-    testInvalidExpression("f &= \"test\"");
+        arguments("f &= false", null, FLOAT),
+        arguments("f &= 1", null, FLOAT),
+        arguments("f &= 2L", null, FLOAT),
+        arguments("f &= 1.5f", null, FLOAT),
+        arguments("f &= 3.14", null, FLOAT),
+        arguments("f &= 'a'", null, FLOAT),
+        arguments("f &= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d &= false");
-    testInvalidExpression("d &= 1");
-    testInvalidExpression("d &= 2L");
-    testInvalidExpression("d &= 1.5f");
-    testInvalidExpression("d &= 3.14");
-    testInvalidExpression("d &= 'a'");
-    testInvalidExpression("d &= \"test\"");
+        arguments("d &= false", null, DOUBLE),
+        arguments("d &= 1", null, DOUBLE),
+        arguments("d &= 2L", null, DOUBLE),
+        arguments("d &= 1.5f", null, DOUBLE),
+        arguments("d &= 3.14", null, DOUBLE),
+        arguments("d &= 'a'", null, DOUBLE),
+        arguments("d &= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c &= false");
-    testValidExpression("c &= 1", ValueFactory.createValue(1));
-    testValidExpression("c &= 2L", ValueFactory.createValue(0));
-    testInvalidExpression("c &= 1.5f");
-    testInvalidExpression("c &= 3.14");
-    testValidExpression("c &= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("c &= \"test\"");
+        arguments("c &= false", null, CHAR),
+        arguments("c &= 1", createValue(1), CHAR),
+        arguments("c &= 2L", createValue(0L), CHAR),
+        arguments("c &= 1.5f", null, CHAR),
+        arguments("c &= 3.14", null, CHAR),
+        arguments("c &= 'a'", createValue(97), CHAR),
+        arguments("c &= \"test\"", null, CHAR),
 
-    testInvalidExpression("s &= false");
-    testInvalidExpression("s &= 1");
-    testInvalidExpression("s &= 2L");
-    testInvalidExpression("s &= 1.5f");
-    testInvalidExpression("s &= 3.14");
-    testInvalidExpression("s &= 'a'");
-    testInvalidExpression("s &= \"test\"");
+        arguments("s &= false", null, STRING),
+        arguments("s &= 1", null, STRING),
+        arguments("s &= 2L", null, STRING),
+        arguments("s &= 1.5f", null, STRING),
+        arguments("s &= 3.14", null, STRING),
+        arguments("s &= 'a'", null, STRING),
+        arguments("s &= \"test\"", null, STRING));
   }
 
-  @Test
-  public void testGTGTEqualsExpression() {
-    testInvalidExpression("b >>= false");
-    testInvalidExpression("b >>= 1");
-    testInvalidExpression("b >>= 2L");
-    testInvalidExpression("b >>= 1.5f");
-    testInvalidExpression("b >>= 3.14");
-    testInvalidExpression("b >>= 'a'");
-    testInvalidExpression("b >>= \"test\"");
+  protected static Stream<Arguments> gTGTEqualsExpression() {
+    return Stream.of(
+        arguments("b >>= false", null, BOOL),
+        arguments("b >>= 1", null, BOOL),
+        arguments("b >>= 2L", null, BOOL),
+        arguments("b >>= 1.5f", null, BOOL),
+        arguments("b >>= 3.14", null, BOOL),
+        arguments("b >>= 'a'", null, BOOL),
+        arguments("b >>= \"test\"", null, BOOL),
 
-    testInvalidExpression("i >>= false");
-    testValidExpression("i >>= 1", ValueFactory.createValue(0));
-    testValidExpression("i >>= 2L", ValueFactory.createValue(0));
-    testInvalidExpression("i >>= 1.5f");
-    testInvalidExpression("i >>= 3.14");
-    testValidExpression("i >>= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("i >>= \"test\"");
+        arguments("i >>= false", null, INT),
+        arguments("i >>= 1", createValue(0), INT),
+        arguments("i >>= 2L", createValue(0), INT),
+        arguments("i >>= 1.5f", null, INT),
+        arguments("i >>= 3.14", null, INT),
+        arguments("i >>= 'a'", createValue(0), INT),
+        arguments("i >>= \"test\"", null, INT),
 
-    testInvalidExpression("l >>= false");
-    testValidExpression("l >>= 1", ValueFactory.createValue(2));
-    testValidExpression("l >>= 2L", ValueFactory.createValue(0));
-    testInvalidExpression("l >>= 1.5f");
-    testInvalidExpression("l >>= 3.14");
-    testValidExpression("l >>= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("l >>= \"test\"");
+        arguments("l >>= false", null, LONG),
+        arguments("l >>= 1", createValue(2L), LONG),
+        arguments("l >>= 2L", createValue(1L), LONG),
+        arguments("l >>= 1.5f", null, LONG),
+        arguments("l >>= 3.14", null, LONG),
+        arguments("l >>= 'a'", createValue(0L), LONG),
+        arguments("l >>= \"test\"", null, LONG),
 
-    testInvalidExpression("f >>= false");
-    testInvalidExpression("f >>= 1");
-    testInvalidExpression("f >>= 2L");
-    testInvalidExpression("f >>= 1.5f");
-    testInvalidExpression("f >>= 3.14");
-    testInvalidExpression("f >>= 'a'");
-    testInvalidExpression("f >>= \"test\"");
+        arguments("f >>= false", null, FLOAT),
+        arguments("f >>= 1", null, FLOAT),
+        arguments("f >>= 2L", null, FLOAT),
+        arguments("f >>= 1.5f", null, FLOAT),
+        arguments("f >>= 3.14", null, FLOAT),
+        arguments("f >>= 'a'", null, FLOAT),
+        arguments("f >>= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d >>= false");
-    testInvalidExpression("d >>= 1");
-    testInvalidExpression("d >>= 2L");
-    testInvalidExpression("d >>= 1.5f");
-    testInvalidExpression("d >>= 3.14");
-    testInvalidExpression("d >>= 'a'");
-    testInvalidExpression("d >>= \"test\"");
+        arguments("d >>= false", null, DOUBLE),
+        arguments("d >>= 1", null, DOUBLE),
+        arguments("d >>= 2L", null, DOUBLE),
+        arguments("d >>= 1.5f", null, DOUBLE),
+        arguments("d >>= 3.14", null, DOUBLE),
+        arguments("d >>= 'a'", null, DOUBLE),
+        arguments("d >>= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c >>= false");
-    testValidExpression("c >>= 1", ValueFactory.createValue(48));
-    testValidExpression("c >>= 2L", ValueFactory.createValue(12));
-    testInvalidExpression("c >>= 1.5f");
-    testInvalidExpression("c >>= 3.14");
-    testValidExpression("c >>= 'a'", ValueFactory.createValue(6));
-    testInvalidExpression("c >>= \"test\"");
+        arguments("c >>= false", null, CHAR),
+        arguments("c >>= 1", createValue(48), CHAR),
+        arguments("c >>= 2L", createValue(24), CHAR),
+        arguments("c >>= 1.5f", null, CHAR),
+        arguments("c >>= 3.14", null, CHAR),
+        arguments("c >>= 'a'", createValue(48), CHAR),
+        arguments("c >>= \"test\"", null, CHAR),
 
-    testInvalidExpression("s >>= false");
-    testInvalidExpression("s >>= 1");
-    testInvalidExpression("s >>= 2L");
-    testInvalidExpression("s >>= 1.5f");
-    testInvalidExpression("s >>= 3.14");
-    testInvalidExpression("s >>= 'a'");
-    testInvalidExpression("s >>= \"test\"");
-  }
-  
-  @Test
-  public void testGTGTGTEqualsExpression() {
-    testInvalidExpression("b >>>= false");
-    testInvalidExpression("b >>>= 1");
-    testInvalidExpression("b >>>= 2L");
-    testInvalidExpression("b >>>= 1.5f");
-    testInvalidExpression("b >>>= 3.14");
-    testInvalidExpression("b >>>= 'a'");
-    testInvalidExpression("b >>>= \"test\"");
-
-    testInvalidExpression("i >>>= false");
-    testValidExpression("i >>>= 1", ValueFactory.createValue(0));
-    testValidExpression("i >>>= 2L", ValueFactory.createValue(0));
-    testInvalidExpression("i >>>= 1.5f");
-    testInvalidExpression("i >>>= 3.14");
-    testValidExpression("i >>>= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("i >>>= \"test\"");
-
-    testInvalidExpression("l >>>= false");
-    testValidExpression("l >>>= 1", ValueFactory.createValue(2));
-    testValidExpression("l >>>= 2L", ValueFactory.createValue(0));
-    testInvalidExpression("l >>>= 1.5f");
-    testInvalidExpression("l >>>= 3.14");
-    testValidExpression("l >>>= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("l >>>= \"test\"");
-
-    testInvalidExpression("f >>>= false");
-    testInvalidExpression("f >>>= 1");
-    testInvalidExpression("f >>>= 2L");
-    testInvalidExpression("f >>>= 1.5f");
-    testInvalidExpression("f >>>= 3.14");
-    testInvalidExpression("f >>>= 'a'");
-    testInvalidExpression("f >>>= \"test\"");
-
-    testInvalidExpression("d >>>= false");
-    testInvalidExpression("d >>>= 1");
-    testInvalidExpression("d >>>= 2L");
-    testInvalidExpression("d >>>= 1.5f");
-    testInvalidExpression("d >>>= 3.14");
-    testInvalidExpression("d >>>= 'a'");
-    testInvalidExpression("d >>>= \"test\"");
-
-    testInvalidExpression("c >>>= false");
-    testValidExpression("c >>>= 1", ValueFactory.createValue(48));
-    testValidExpression("c >>>= 2L", ValueFactory.createValue(12));
-    testInvalidExpression("c >>>= 1.5f");
-    testInvalidExpression("c >>>= 3.14");
-    testValidExpression("c >>>= 'a'", ValueFactory.createValue(6));
-    testInvalidExpression("c >>>= \"test\"");
-
-    testInvalidExpression("s >>>= false");
-    testInvalidExpression("s >>>= 1");
-    testInvalidExpression("s >>>= 2L");
-    testInvalidExpression("s >>>= 1.5f");
-    testInvalidExpression("s >>>= 3.14");
-    testInvalidExpression("s >>>= 'a'");
-    testInvalidExpression("s >>>= \"test\"");
+        arguments("s >>= false", null, STRING),
+        arguments("s >>= 1", null, STRING),
+        arguments("s >>= 2L", null, STRING),
+        arguments("s >>= 1.5f", null, STRING),
+        arguments("s >>= 3.14", null, STRING),
+        arguments("s >>= 'a'", null, STRING),
+        arguments("s >>= \"test\"", null, STRING));
   }
 
-  @Test
-  public void testLTLTEqualsExpression() {
-    testInvalidExpression("b <<= false");
-    testInvalidExpression("b <<= 1");
-    testInvalidExpression("b <<= 2L");
-    testInvalidExpression("b <<= 1.5f");
-    testInvalidExpression("b <<= 3.14");
-    testInvalidExpression("b <<= 'a'");
-    testInvalidExpression("b <<= \"test\"");
+  protected static Stream<Arguments> gTGTGTEqualsExpression() {
+    return Stream.of(
+        arguments("b >>>= false", null, BOOL),
+        arguments("b >>>= 1", null, BOOL),
+        arguments("b >>>= 2L", null, BOOL),
+        arguments("b >>>= 1.5f", null, BOOL),
+        arguments("b >>>= 3.14", null, BOOL),
+        arguments("b >>>= 'a'", null, BOOL),
+        arguments("b >>>= \"test\"", null, BOOL),
 
-    testInvalidExpression("i <<= false");
-    testValidExpression("i <<= 1", ValueFactory.createValue(2));
-    testValidExpression("i <<= 2L", ValueFactory.createValue(8));
-    testInvalidExpression("i <<= 1.5f");
-    testInvalidExpression("i <<= 3.14");
-    testValidExpression("i <<= 'a'", ValueFactory.createValue(16));
-    testInvalidExpression("i <<= \"test\"");
+        arguments("i >>>= false", null, INT),
+        arguments("i >>>= 1", createValue(0), INT),
+        arguments("i >>>= 2L", createValue(0), INT),
+        arguments("i >>>= 1.5f", null, INT),
+        arguments("i >>>= 3.14", null, INT),
+        arguments("i >>>= 'a'", createValue(0), INT),
+        arguments("i >>>= \"test\"", null, INT),
 
-    testInvalidExpression("l <<= false");
-    testValidExpression("l <<= 1", ValueFactory.createValue(10));
-    testValidExpression("l <<= 2L", ValueFactory.createValue(40));
-    testInvalidExpression("l <<= 1.5f");
-    testInvalidExpression("l <<= 3.14");
-    testValidExpression("l <<= 'a'", ValueFactory.createValue(343597383680L));
-    testInvalidExpression("l <<= \"test\"");
+        arguments("l >>>= false", null, LONG),
+        arguments("l >>>= 1", createValue(2L), LONG),
+        arguments("l >>>= 2L", createValue(1L), LONG),
+        arguments("l >>>= 1.5f", null, LONG),
+        arguments("l >>>= 3.14", null, LONG),
+        arguments("l >>>= 'a'", createValue(0L), LONG),
+        arguments("l >>>= \"test\"", null, LONG),
 
-    testInvalidExpression("f <<= false");
-    testInvalidExpression("f <<= 1");
-    testInvalidExpression("f <<= 2L");
-    testInvalidExpression("f <<= 1.5f");
-    testInvalidExpression("f <<= 3.14");
-    testInvalidExpression("f <<= 'a'");
-    testInvalidExpression("f <<= \"test\"");
+        arguments("f >>>= false", null, FLOAT),
+        arguments("f >>>= 1", null, FLOAT),
+        arguments("f >>>= 2L", null, FLOAT),
+        arguments("f >>>= 1.5f", null, FLOAT),
+        arguments("f >>>= 3.14", null, FLOAT),
+        arguments("f >>>= 'a'", null, FLOAT),
+        arguments("f >>>= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d <<= false");
-    testInvalidExpression("d <<= 1");
-    testInvalidExpression("d <<= 2L");
-    testInvalidExpression("d <<= 1.5f");
-    testInvalidExpression("d <<= 3.14");
-    testInvalidExpression("d <<= 'a'");
-    testInvalidExpression("d <<= \"test\"");
+        arguments("d >>>= false", null, DOUBLE),
+        arguments("d >>>= 1", null, DOUBLE),
+        arguments("d >>>= 2L", null, DOUBLE),
+        arguments("d >>>= 1.5f", null, DOUBLE),
+        arguments("d >>>= 3.14", null, DOUBLE),
+        arguments("d >>>= 'a'", null, DOUBLE),
+        arguments("d >>>= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c <<= false");
-    testValidExpression("c <<= 1", ValueFactory.createValue(194));
-    testValidExpression("c <<= 2L", ValueFactory.createValue(776));
-    testInvalidExpression("c <<= 1.5f");
-    testInvalidExpression("c <<= 3.14");
-    testValidExpression("c <<= 'a'", ValueFactory.createValue(1552));
-    testInvalidExpression("c <<= \"test\"");
+        arguments("c >>>= false", null, CHAR),
+        arguments("c >>>= 1", createValue(48), CHAR),
+        arguments("c >>>= 2L", createValue(24), CHAR),
+        arguments("c >>>= 1.5f", null, CHAR),
+        arguments("c >>>= 3.14", null, CHAR),
+        arguments("c >>>= 'a'", createValue(48), CHAR),
+        arguments("c >>>= \"test\"", null, CHAR),
 
-    testInvalidExpression("s <<= false");
-    testInvalidExpression("s <<= 1");
-    testInvalidExpression("s <<= 2L");
-    testInvalidExpression("s <<= 1.5f");
-    testInvalidExpression("s <<= 3.14");
-    testInvalidExpression("s <<= 'a'");
-    testInvalidExpression("s <<= \"test\"");
+        arguments("s >>>= false", null, STRING),
+        arguments("s >>>= 1", null, STRING),
+        arguments("s >>>= 2L", null, STRING),
+        arguments("s >>>= 1.5f", null, STRING),
+        arguments("s >>>= 3.14", null, STRING),
+        arguments("s >>>= 'a'", null, STRING),
+        arguments("s >>>= \"test\"", null, STRING));
   }
 
-  @Test
-  public void testMinusEqualsExpression() {
-    testInvalidExpression("b -= false");
-    testInvalidExpression("b -= 1");
-    testInvalidExpression("b -= 2L");
-    testInvalidExpression("b -= 1.5f");
-    testInvalidExpression("b -= 3.14");
-    testInvalidExpression("b -= 'a'");
-    testInvalidExpression("b -= \"test\"");
+  protected static Stream<Arguments> lTLTEqualsExpression() {
+    return Stream.of(
+        arguments("b <<= false", null, BOOL),
+        arguments("b <<= 1", null, BOOL),
+        arguments("b <<= 2L", null, BOOL),
+        arguments("b <<= 1.5f", null, BOOL),
+        arguments("b <<= 3.14", null, BOOL),
+        arguments("b <<= 'a'", null, BOOL),
+        arguments("b <<= \"test\"", null, BOOL),
 
-    testInvalidExpression("i -= false");
-    testValidExpression("i -= 1", ValueFactory.createValue(0));
-    testValidExpression("i -= 2L", ValueFactory.createValue(-2));
-    testValidExpression("i -= 1.5f", ValueFactory.createValue(-3.5f));
-    testValidExpression("i -= 3.14", ValueFactory.createValue(-6.64));
-    testValidExpression("i -= 'a'", ValueFactory.createValue(-103.64));
-    testInvalidExpression("i -= \"test\"");
+        arguments("i <<= false", null, INT),
+        arguments("i <<= 1", createValue(2), INT),
+        arguments("i <<= 2L", createValue(4), INT),
+        arguments("i <<= 1.5f", null, INT),
+        arguments("i <<= 3.14", null, INT),
+        arguments("i <<= 'a'", createValue(2), INT),
+        arguments("i <<= \"test\"", null, INT),
 
-    testInvalidExpression("l -= false");
-    testValidExpression("l -= 1", ValueFactory.createValue(4));
-    testValidExpression("l -= 2L", ValueFactory.createValue(2));
-    testValidExpression("l -= 1.5f", ValueFactory.createValue(0.5f));
-    testValidExpression("l -= 3.14", ValueFactory.createValue(-2.64));
-    testValidExpression("l -= 'a'", ValueFactory.createValue(-99.64));
-    testInvalidExpression("l -= \"test\"");
+        arguments("l <<= false", null, LONG),
+        arguments("l <<= 1", createValue(10L), LONG),
+        arguments("l <<= 2L", createValue(20L), LONG),
+        arguments("l <<= 1.5f", null, LONG),
+        arguments("l <<= 3.14", null, LONG),
+        arguments("l <<= 'a'", createValue(42949672960L), LONG),
+        arguments("l <<= \"test\"", null, LONG),
 
-    testInvalidExpression("f -= false");
-    testValidExpression("f -= 1", ValueFactory.createValue(0.5f));
-    testValidExpression("f -= 2L", ValueFactory.createValue(-1.5f));
-    testValidExpression("f -= 1.5f", ValueFactory.createValue(-3f));
-    testValidExpression("f -= 3.14", ValueFactory.createValue(-6.14));
-    testValidExpression("f -= 'a'", ValueFactory.createValue(-103.14));
-    testInvalidExpression("f -= \"test\"");
+        arguments("f <<= false", null, FLOAT),
+        arguments("f <<= 1", null, FLOAT),
+        arguments("f <<= 2L", null, FLOAT),
+        arguments("f <<= 1.5f", null, FLOAT),
+        arguments("f <<= 3.14", null, FLOAT),
+        arguments("f <<= 'a'", null, FLOAT),
+        arguments("f <<= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d -= false");
-    testValidExpression("d -= 1", ValueFactory.createValue(2.14));
-    testValidExpression("d -= 2L", ValueFactory.createValue(0.14));
-    testValidExpression("d -= 1.5f", ValueFactory.createValue(-1.36));
-    testValidExpression("d -= 3.14", ValueFactory.createValue(-4.5));
-    testValidExpression("d -= 'a'", ValueFactory.createValue(-101.5));
-    testInvalidExpression("d -= \"test\"");
+        arguments("d <<= false", null, DOUBLE),
+        arguments("d <<= 1", null, DOUBLE),
+        arguments("d <<= 2L", null, DOUBLE),
+        arguments("d <<= 1.5f", null, DOUBLE),
+        arguments("d <<= 3.14", null, DOUBLE),
+        arguments("d <<= 'a'", null, DOUBLE),
+        arguments("d <<= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c -= false");
-    testValidExpression("c -= 1", ValueFactory.createValue(96));
-    testValidExpression("c -= 2L", ValueFactory.createValue(94));
-    testValidExpression("c -= 1.5f", ValueFactory.createValue(92.5f));
-    testValidExpression("c -= 3.14", ValueFactory.createValue(89.36));
-    testValidExpression("c -= 'a'", ValueFactory.createValue(-7.64));
-    testInvalidExpression("c -= \"test\"");
+        arguments("c <<= false", null, CHAR),
+        arguments("c <<= 1", createValue(194), CHAR),
+        arguments("c <<= 2L", createValue(388), CHAR),
+        arguments("c <<= 1.5f", null, CHAR),
+        arguments("c <<= 3.14", null, CHAR),
+        arguments("c <<= 'a'", createValue(194), CHAR),
+        arguments("c <<= \"test\"", null, CHAR),
 
-    testInvalidExpression("s -= false");
-    testInvalidExpression("s -= 1");
-    testInvalidExpression("s -= 2L");
-    testInvalidExpression("s -= 1.5f");
-    testInvalidExpression("s -= 3.14");
-    testInvalidExpression("s -= 'a'");
-    testInvalidExpression("s -= \"test\"");
+        arguments("s <<= false", null, STRING),
+        arguments("s <<= 1", null, STRING),
+        arguments("s <<= 2L", null, STRING),
+        arguments("s <<= 1.5f", null, STRING),
+        arguments("s <<= 3.14", null, STRING),
+        arguments("s <<= 'a'", null, STRING),
+        arguments("s <<= \"test\"", null, STRING));
   }
 
-  @Test
-  public void testPercentEqualsExpression() {
-    testInvalidExpression("b %= false");
-    testInvalidExpression("b %= 1");
-    testInvalidExpression("b %= 2L");
-    testInvalidExpression("b %= 1.5f");
-    testInvalidExpression("b %= 3.14");
-    testInvalidExpression("b %= 'a'");
-    testInvalidExpression("b %= \"test\"");
+  protected static Stream<Arguments> minusEqualsExpression() {
+    return Stream.of(
+        arguments("b -= false", null, BOOL),
+        arguments("b -= 1", null, BOOL),
+        arguments("b -= 2L", null, BOOL),
+        arguments("b -= 1.5f", null, BOOL),
+        arguments("b -= 3.14", null, BOOL),
+        arguments("b -= 'a'", null, BOOL),
+        arguments("b -= \"test\"", null, BOOL),
 
-    testInvalidExpression("i %= false");
-    testValidExpression("i %= 1", ValueFactory.createValue(0));
-    testValidExpression("i %= 2L", ValueFactory.createValue(0));
-    testValidExpression("i %= 1.5f", ValueFactory.createValue(0));
-    testValidExpression("i %= 3.14", ValueFactory.createValue(0));
-    testValidExpression("i %= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("i %= \"test\"");
+        arguments("i -= false", null, INT),
+        arguments("i -= 1", createValue(0), INT),
+        arguments("i -= 2L", createValue(-1L), INT),
+        arguments("i -= 1.5f", createValue(-.5f), INT),
+        arguments("i -= 3.14", createValue(-2.14), INT),
+        arguments("i -= 'a'", createValue(-96), INT),
+        arguments("i -= \"test\"", null, INT),
 
-    testInvalidExpression("l %= false");
-    testValidExpression("l %= 1", ValueFactory.createValue(0));
-    testValidExpression("l %= 2L", ValueFactory.createValue(0));
-    testValidExpression("l %= 1.5f", ValueFactory.createValue(0));
-    testValidExpression("l %= 3.14", ValueFactory.createValue(0));
-    testValidExpression("l %= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("l %= \"test\"");
+        arguments("l -= false", null, LONG),
+        arguments("l -= 1", createValue(4L), LONG),
+        arguments("l -= 2L", createValue(3L), LONG),
+        arguments("l -= 1.5f", createValue(3.5f), LONG),
+        arguments("l -= 3.14", createValue(1.86), LONG),
+        arguments("l -= 'a'", createValue(-92L), LONG),
+        arguments("l -= \"test\"", null, LONG),
 
-    testInvalidExpression("f %= false");
-    testValidExpression("f %= 1", ValueFactory.createValue(0.5f));
-    testValidExpression("f %= 2L", ValueFactory.createValue(0.5f));
-    testValidExpression("f %= 1.5f", ValueFactory.createValue(0.5f));
-    testValidExpression("f %= 3.14", ValueFactory.createValue(0.5));
-    testValidExpression("f %= 'a'", ValueFactory.createValue(0.5));
-    testInvalidExpression("f %= \"test\"");
+        arguments("f -= false", null, FLOAT),
+        arguments("f -= 1", createValue(0.5f), FLOAT),
+        arguments("f -= 2L", createValue(-0.5f), FLOAT),
+        arguments("f -= 1.2f", createValue(.3f), FLOAT),
+        arguments("f -= 3.14", createValue(-1.64), FLOAT),
+        arguments("f -= 'a'", createValue(-95.5f), FLOAT),
+        arguments("f -= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d %= false");
-    testValidExpression("d %= 1", ValueFactory.createValue(0.14));
-    testValidExpression("d %= 2L", ValueFactory.createValue(0.14));
-    testValidExpression("d %= 1.5f", ValueFactory.createValue(0.14));
-    testValidExpression("d %= 3.14", ValueFactory.createValue(0.14));
-    testValidExpression("d %= 'a'", ValueFactory.createValue(0.14));
-    testInvalidExpression("d %= \"test\"");
+        arguments("d -= false", null, DOUBLE),
+        arguments("d -= 1", createValue(2.14), DOUBLE),
+        arguments("d -= 2L", createValue(1.14), DOUBLE),
+        arguments("d -= 1.5f", createValue(1.64), DOUBLE),
+        arguments("d -= 3.04", createValue(.1), DOUBLE),
+        arguments("d -= 'a'", createValue(-93.86), DOUBLE),
+        arguments("d -= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c %= false");
-    testValidExpression("c %= 1", ValueFactory.createValue(0));
-    testValidExpression("c %= 2L", ValueFactory.createValue(0));
-    testValidExpression("c %= 1.5f", ValueFactory.createValue(0));
-    testValidExpression("c %= 3.14", ValueFactory.createValue(0));
-    testValidExpression("c %= 'a'", ValueFactory.createValue(0));
-    testInvalidExpression("c %= \"test\"");
+        arguments("c -= false", null, CHAR),
+        arguments("c -= 1", createValue(96), CHAR),
+        arguments("c -= 2L", createValue(95L), CHAR),
+        arguments("c -= 1.5f", createValue(95.5f), CHAR),
+        arguments("c -= 3.14", createValue(93.86), CHAR),
+        arguments("c -= 'a'", createValue(0), CHAR),
+        arguments("c -= \"test\"", null, CHAR),
 
-    testInvalidExpression("s %= false");
-    testInvalidExpression("s %= 1");
-    testInvalidExpression("s %= 2L");
-    testInvalidExpression("s %= 1.5f");
-    testInvalidExpression("s %= 3.14");
-    testInvalidExpression("s %= 'a'");
-    testInvalidExpression("s %= \"test\"");
+        arguments("s -= false", null, STRING),
+        arguments("s -= 1", null, STRING),
+        arguments("s -= 2L", null, STRING),
+        arguments("s -= 1.5f", null, STRING),
+        arguments("s -= 3.14", null, STRING),
+        arguments("s -= 'a'", null, STRING),
+        arguments("s -= \"test\"", null, STRING));
   }
 
-  @Test
-  public void testPipeEqualsExpression() {
-    testInvalidExpression("b |= false");
-    testInvalidExpression("b |= 1");
-    testInvalidExpression("b |= 2L");
-    testInvalidExpression("b |= 1.5f");
-    testInvalidExpression("b |= 3.14");
-    testInvalidExpression("b |= 'a'");
-    testInvalidExpression("b |= \"test\"");
+  protected static Stream<Arguments> percentEqualsExpression() {
+    return Stream.of(
+        arguments("b %= false", null, BOOL),
+        arguments("b %= 1", null, BOOL),
+        arguments("b %= 2L", null, BOOL),
+        arguments("b %= 1.5f", null, BOOL),
+        arguments("b %= 3.14", null, BOOL),
+        arguments("b %= 'a'", null, BOOL),
+        arguments("b %= \"test\"", null, BOOL),
 
-    testInvalidExpression("i |= false");
-    testValidExpression("i |= 1", ValueFactory.createValue(1));
-    testValidExpression("i |= 2L", ValueFactory.createValue(3));
-    testInvalidExpression("i |= 1.5f");
-    testInvalidExpression("i |= 3.14");
-    testValidExpression("i |= 'a'", ValueFactory.createValue(99));
-    testInvalidExpression("i |= \"test\"");
+        arguments("i %= false", null, INT),
+        arguments("i %= 1", createValue(0), INT),
+        arguments("i %= 2L", createValue(1L), INT),
+        arguments("i %= 1.5f", createValue(1f), INT),
+        arguments("i %= 3.14", createValue(1.), INT),
+        arguments("i %= 'a'", createValue(1), INT),
+        arguments("i %= \"test\"", null, INT),
 
-    testInvalidExpression("l |= false");
-    testValidExpression("l |= 1", ValueFactory.createValue(5));
-    testValidExpression("l |= 2L", ValueFactory.createValue(7));
-    testInvalidExpression("l |= 1.5f");
-    testInvalidExpression("l |= 3.14");
-    testValidExpression("l |= 'a'", ValueFactory.createValue(103));
-    testInvalidExpression("l |= \"test\"");
+        arguments("l %= false", null, LONG),
+        arguments("l %= 1", createValue(0L), LONG),
+        arguments("l %= 2L", createValue(1L), LONG),
+        arguments("l %= 1.5f", createValue(0.5f), LONG),
+        arguments("l %= 3.14", createValue(1.86), LONG),
+        arguments("l %= 'a'", createValue(5L), LONG),
+        arguments("l %= \"test\"", null, LONG),
 
-    testInvalidExpression("f |= false");
-    testInvalidExpression("f |= 1");
-    testInvalidExpression("f |= 2L");
-    testInvalidExpression("f |= 1.5f");
-    testInvalidExpression("f |= 3.14");
-    testInvalidExpression("f |= 'a'");
-    testInvalidExpression("f |= \"test\"");
+        arguments("f %= false", null, FLOAT),
+        arguments("f %= 1", createValue(0.5f), FLOAT),
+        arguments("f %= 2L", createValue(1.5f), FLOAT),
+        arguments("f %= 1.5f", createValue(0f), FLOAT),
+        arguments("f %= 3.14", createValue(1.5), FLOAT),
+        arguments("f %= 'a'", createValue(1.5f), FLOAT),
+        arguments("f %= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d |= false");
-    testInvalidExpression("d |= 1");
-    testInvalidExpression("d |= 2L");
-    testInvalidExpression("d |= 1.5f");
-    testInvalidExpression("d |= 3.14");
-    testInvalidExpression("d |= 'a'");
-    testInvalidExpression("d |= \"test\"");
+        arguments("d %= false", null, DOUBLE),
+        arguments("d %= 1", createValue(0.14), DOUBLE),
+        arguments("d %= 2L", createValue(1.14), DOUBLE),
+        arguments("d %= 1.5f", createValue(0.14), DOUBLE),
+        arguments("d %= 3.14", createValue(0.), DOUBLE),
+        arguments("d %= 'a'", createValue(3.14), DOUBLE),
+        arguments("d %= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c |= false");
-    testValidExpression("c |= 1", ValueFactory.createValue(97));
-    testValidExpression("c |= 2L", ValueFactory.createValue(99));
-    testInvalidExpression("c |= 1.5f");
-    testInvalidExpression("c |= 3.14");
-    testValidExpression("c |= 'a'", ValueFactory.createValue(99));
-    testInvalidExpression("c |= \"test\"");
+        arguments("c %= false", null, CHAR),
+        arguments("c %= 1", createValue(0), CHAR),
+        arguments("c %= 2L", createValue(1L), CHAR),
+        arguments("c %= 1.5f", createValue(1f), CHAR),
+        arguments("c %= 3.14", createValue(2.8), CHAR),
+        arguments("c %= 'a'", createValue(0), CHAR),
+        arguments("c %= \"test\"", null, CHAR),
 
-    testInvalidExpression("s |= false");
-    testInvalidExpression("s |= 1");
-    testInvalidExpression("s |= 2L");
-    testInvalidExpression("s |= 1.5f");
-    testInvalidExpression("s |= 3.14");
-    testInvalidExpression("s |= 'a'");
-    testInvalidExpression("s |= \"test\"");
+        arguments("s %= false", null, STRING),
+        arguments("s %= 1", null, STRING),
+        arguments("s %= 2L", null, STRING),
+        arguments("s %= 1.5f", null, STRING),
+        arguments("s %= 3.14", null, STRING),
+        arguments("s %= 'a'", null, STRING),
+        arguments("s %= \"test\"", null, STRING));
   }
 
-  @Test
-  public void testPlusEqualsExpression() {
-    testInvalidExpression("b += false");
-    testInvalidExpression("b += 1");
-    testInvalidExpression("b += 2L");
-    testInvalidExpression("b += 1.5f");
-    testInvalidExpression("b += 3.14");
-    testInvalidExpression("b += 'a'");
-    testInvalidExpression("b += \"test\"");
+  protected static Stream<Arguments> pipeEqualsExpression() {
+    return Stream.of(
+        arguments("b |= false", null, BOOL),
+        arguments("b |= 1", null, BOOL),
+        arguments("b |= 2L", null, BOOL),
+        arguments("b |= 1.5f", null, BOOL),
+        arguments("b |= 3.14", null, BOOL),
+        arguments("b |= 'a'", null, BOOL),
+        arguments("b |= \"test\"", null, BOOL),
 
-    testInvalidExpression("i += false");
-    testValidExpression("i += 1", ValueFactory.createValue(2));
-    testValidExpression("i += 2L", ValueFactory.createValue(4));
-    testValidExpression("i += 1.5f", ValueFactory.createValue(5.5f));
-    testValidExpression("i += 3.14", ValueFactory.createValue(8.64));
-    testValidExpression("i += 'a'", ValueFactory.createValue(105.64));
-    testInvalidExpression("i += \"test\"");
+        arguments("i |= false", null, INT),
+        arguments("i |= 1", createValue(1), INT),
+        arguments("i |= 2L", createValue(3L), INT),
+        arguments("i |= 1.5f", null, INT),
+        arguments("i |= 3.14", null, INT),
+        arguments("i |= 'a'", createValue(97), INT),
+        arguments("i |= \"test\"", null, INT),
 
-    testInvalidExpression("l += false");
-    testValidExpression("l += 1", ValueFactory.createValue(6));
-    testValidExpression("l += 2L", ValueFactory.createValue(8));
-    testValidExpression("l += 1.5f", ValueFactory.createValue(9.5f));
-    testValidExpression("l += 3.14", ValueFactory.createValue(12.64));
-    testValidExpression("l += 'a'", ValueFactory.createValue(109.64));
-    testInvalidExpression("l += \"test\"");
+        arguments("l |= false", null, LONG),
+        arguments("l |= 1", createValue(5L), LONG),
+        arguments("l |= 2L", createValue(7L), LONG),
+        arguments("l |= 1.5f", null, LONG),
+        arguments("l |= 3.14", null, LONG),
+        arguments("l |= 'a'", createValue(101L), LONG),
+        arguments("l |= \"test\"", null, LONG),
 
-    testInvalidExpression("f += false");
-    testValidExpression("f += 1", ValueFactory.createValue(2.5f));
-    testValidExpression("f += 2L", ValueFactory.createValue(4.5f));
-    testValidExpression("f += 1.5f", ValueFactory.createValue(6.0f));
-    testValidExpression("f += 3.14", ValueFactory.createValue(9.14));
-    testValidExpression("f += 'a'", ValueFactory.createValue(106.14));
-    testInvalidExpression("f += \"test\"");
+        arguments("f |= false", null, FLOAT),
+        arguments("f |= 1", null, FLOAT),
+        arguments("f |= 2L", null, FLOAT),
+        arguments("f |= 1.5f", null, FLOAT),
+        arguments("f |= 3.14", null, FLOAT),
+        arguments("f |= 'a'", null, FLOAT),
+        arguments("f |= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d += false");
-    testValidExpression("d += 1", ValueFactory.createValue(4.14));
-    testValidExpression("d += 2L", ValueFactory.createValue(6.14));
-    testValidExpression("d += 1.5f", ValueFactory.createValue(7.64));
-    testValidExpression("d += 3.14", ValueFactory.createValue(10.78));
-    testValidExpression("d += 'a'", ValueFactory.createValue(107.78));
-    testInvalidExpression("d += \"test\"");
+        arguments("d |= false", null, DOUBLE),
+        arguments("d |= 1", null, DOUBLE),
+        arguments("d |= 2L", null, DOUBLE),
+        arguments("d |= 1.5f", null, DOUBLE),
+        arguments("d |= 3.14", null, DOUBLE),
+        arguments("d |= 'a'", null, DOUBLE),
+        arguments("d |= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c += false");
-    testValidExpression("c += 1", ValueFactory.createValue(98));
-    testValidExpression("c += 2L", ValueFactory.createValue(100));
-    testValidExpression("c += 1.5f", ValueFactory.createValue(101.5f));
-    testValidExpression("c += 3.14", ValueFactory.createValue(104.64));
-    testValidExpression("c += 'a'", ValueFactory.createValue(201.64));
-    testInvalidExpression("c += \"test\"");
+        arguments("c |= false", null, CHAR),
+        arguments("c |= 1", createValue(97), CHAR),
+        arguments("c |= 2L", createValue(99L), CHAR),
+        arguments("c |= 1.5f", null, CHAR),
+        arguments("c |= 3.14", null, CHAR),
+        arguments("c |= 'a'", createValue(97), CHAR),
+        arguments("c |= \"test\"", null, CHAR),
 
-    testValidExpression("s += false", ValueFactory.createValue("hellofalse"));
-    testValidExpression("s += 1", ValueFactory.createValue("hellofalse1"));
-    testValidExpression("s += 2L", ValueFactory.createValue("hellofalse12"));
-    testValidExpression("s += 1.5f", ValueFactory.createValue("hellofalse121.5"));
-    testValidExpression("s += 3.14", ValueFactory.createValue("hellofalse121.53.14"));
-    testValidExpression("s += 'a'", ValueFactory.createValue("hellofalse121.53.14a"));
-    testValidExpression("s += \"test\"", ValueFactory.createValue("hellofalse121.53.14atest"));
+        arguments("s |= false", null, STRING),
+        arguments("s |= 1", null, STRING),
+        arguments("s |= 2L", null, STRING),
+        arguments("s |= 1.5f", null, STRING),
+        arguments("s |= 3.14", null, STRING),
+        arguments("s |= 'a'", null, STRING),
+        arguments("s |= \"test\"", null, STRING));
   }
 
-  @Test
-  public void testRoofEqualsExpression() {
-    testInvalidExpression("b ^= false");
-    testInvalidExpression("b ^= 1");
-    testInvalidExpression("b ^= 2L");
-    testInvalidExpression("b ^= 1.5f");
-    testInvalidExpression("b ^= 3.14");
-    testInvalidExpression("b ^= 'a'");
-    testInvalidExpression("b ^= \"test\"");
+  protected static Stream<Arguments> plusEqualsExpression() {
+    return Stream.of(
+        arguments("b += false", null, BOOL),
+        arguments("b += 1", null, BOOL),
+        arguments("b += 2L", null, BOOL),
+        arguments("b += 1.5f", null, BOOL),
+        arguments("b += 3.14", null, BOOL),
+        arguments("b += 'a'", null, BOOL),
+        arguments("b += \"test\"", null, BOOL),
 
-    testInvalidExpression("i ^= false");
-    testValidExpression("i ^= 3", ValueFactory.createValue(2));
-    testValidExpression("i ^= 4L", ValueFactory.createValue(6));
-    testInvalidExpression("i ^= 1.5f");
-    testInvalidExpression("i ^= 3.14");
-    testValidExpression("i ^= 'a'", ValueFactory.createValue(103));
-    testInvalidExpression("i ^= \"test\"");
+        arguments("i += false", null, INT),
+        arguments("i += 1", createValue(2), INT),
+        arguments("i += 2L", createValue(3L), INT),
+        arguments("i += 1.5f", createValue(2.5f), INT),
+        arguments("i += 3.14", createValue(4.14), INT),
+        arguments("i += 'a'", createValue(98), INT),
+        arguments("i += \"test\"", null, INT),
 
-    testInvalidExpression("l ^= false");
-    testValidExpression("l ^= 1", ValueFactory.createValue(4));
-    testValidExpression("l ^= 2L", ValueFactory.createValue(6));
-    testInvalidExpression("l ^= 1.5f");
-    testInvalidExpression("l ^= 3.14");
-    testValidExpression("l ^= 'a'", ValueFactory.createValue(103));
-    testInvalidExpression("l ^= \"test\"");
+        arguments("l += false", null, LONG),
+        arguments("l += 1", createValue(6L), LONG),
+        arguments("l += 2L", createValue(7L), LONG),
+        arguments("l += 1.5f", createValue(6.5f), LONG),
+        arguments("l += 3.14", createValue(8.14), LONG),
+        arguments("l += 'a'", createValue(102L), LONG),
+        arguments("l += \"test\"", null, LONG),
 
-    testInvalidExpression("f ^= false");
-    testInvalidExpression("f ^= 1");
-    testInvalidExpression("f ^= 2L");
-    testInvalidExpression("f ^= 1.5f");
-    testInvalidExpression("f ^= 3.14");
-    testInvalidExpression("f ^= 'a'");
-    testInvalidExpression("f ^= \"test\"");
+        arguments("f += false", null, FLOAT),
+        arguments("f += 1", createValue(2.5f), FLOAT),
+        arguments("f += 2L", createValue(3.5f), FLOAT),
+        arguments("f += 1.5f", createValue(3.0f), FLOAT),
+        arguments("f += 3.14", createValue(4.64), FLOAT),
+        arguments("f += 'a'", createValue(98.5f), FLOAT),
+        arguments("f += \"test\"", null, FLOAT),
 
-    testInvalidExpression("d ^= false");
-    testInvalidExpression("d ^= 1");
-    testInvalidExpression("d ^= 2L");
-    testInvalidExpression("d ^= 1.5f");
-    testInvalidExpression("d ^= 3.14");
-    testInvalidExpression("d ^= 'a'");
-    testInvalidExpression("d ^= \"test\"");
+        arguments("d += false", null, DOUBLE),
+        arguments("d += 1", createValue(4.14), DOUBLE),
+        arguments("d += 2L", createValue(5.14), DOUBLE),
+        arguments("d += 1.5f", createValue(4.64), DOUBLE),
+        arguments("d += 3.14", createValue(6.28), DOUBLE),
+        arguments("d += 'a'", createValue(100.14), DOUBLE),
+        arguments("d += \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c ^= false");
-    testValidExpression("c ^= 1", ValueFactory.createValue(96));
-    testValidExpression("c ^= 2L", ValueFactory.createValue(98));
-    testInvalidExpression("c ^= 1.5f");
-    testInvalidExpression("c ^= 3.14" );
-    testValidExpression("c ^= 'a'", ValueFactory.createValue(3));
-    testInvalidExpression("c ^= \"test\"");
+        arguments("c += false", null, CHAR),
+        arguments("c += 1", createValue(98), CHAR),
+        arguments("c += 2L", createValue(99L), CHAR),
+        arguments("c += 1.5f", createValue(98.5f), CHAR),
+        arguments("c += 3.14", createValue(100.14), CHAR),
+        arguments("c += 'a'", createValue(194), CHAR),
+        arguments("c += \"test\"", null, CHAR),
 
-    testInvalidExpression("s ^= false");
-    testInvalidExpression("s ^= 1");
-    testInvalidExpression("s ^= 2L");
-    testInvalidExpression("s ^= 1.5f");
-    testInvalidExpression("s ^= 3.14");
-    testInvalidExpression("s ^= 'a'");
-    testInvalidExpression("s ^= \"test\"");
+        arguments("s += false", createValue("hellofalse"), STRING),
+        arguments("s += 1", createValue("hello1"), STRING),
+        arguments("s += 2L", createValue("hello2"), STRING),
+        arguments("s += 1.5f", createValue("hello1.5"), STRING),
+        arguments("s += 3.14", createValue("hello3.14"), STRING),
+        arguments("s += 'a'", createValue("helloa"), STRING),
+        arguments("s += \"test\"", createValue("hellotest"), STRING));
   }
 
-  @Test
-  public void testSlashEqualsExpression() {
-    testInvalidExpression("b /= false");
-    testInvalidExpression("b /= 1");
-    testInvalidExpression("b /= 2L");
-    testInvalidExpression("b /= 1.5f");
-    testInvalidExpression("b /= 3.14");
-    testInvalidExpression("b /= 'a'");
-    testInvalidExpression("b /= \"test\"");
+  protected static Stream<Arguments> roofEqualsExpression() {
+    return Stream.of(
+        arguments("b ^= false", null, BOOL),
+        arguments("b ^= 1", null, BOOL),
+        arguments("b ^= 2L", null, BOOL),
+        arguments("b ^= 1.5f", null, BOOL),
+        arguments("b ^= 3.14", null, BOOL),
+        arguments("b ^= 'a'", null, BOOL),
+        arguments("b ^= \"test\"", null, BOOL),
 
-    testInvalidExpression("i /= false");
-    testValidExpression("i /= 0.25f", ValueFactory.createValue(4.f));
-    testValidExpression("i /= 0.4", ValueFactory.createValue(10.));
-    testValidExpression("i /= 2", ValueFactory.createValue(5));
-    testValidExpression("i /= 5L", ValueFactory.createValue(1L));
-    testValidExpression("i /= 'A'", ValueFactory.createValue(0.01538461));
-    testInvalidExpression("i /= \"test\"");
+        arguments("i ^= false", null, INT),
+        arguments("i ^= 3", createValue(2), INT),
+        arguments("i ^= 4L", createValue(5L), INT),
+        arguments("i ^= 1.5f", null, INT),
+        arguments("i ^= 3.14", null, INT),
+        arguments("i ^= 'a'", createValue(96), INT),
+        arguments("i ^= \"test\"", null, INT),
 
-    testInvalidExpression("l /= false");
-    testValidExpression("l /= 1.25f", ValueFactory.createValue(4.f));
-    testValidExpression("l /= 0.4", ValueFactory.createValue(10.));
-    testValidExpression("l /= 2", ValueFactory.createValue(5));
-    testValidExpression("l /= 5L", ValueFactory.createValue(1L));
-    testValidExpression("l /= 'A'", ValueFactory.createValue(0.01538461));
-    testInvalidExpression("l /= \"test\"");
+        arguments("l ^= false", null, LONG),
+        arguments("l ^= 1", createValue(4L), LONG),
+        arguments("l ^= 2L", createValue(7L), LONG),
+        arguments("l ^= 1.5f", null, LONG),
+        arguments("l ^= 3.14", null, LONG),
+        arguments("l ^= 'a'", createValue(100L), LONG),
+        arguments("l ^= \"test\"", null, LONG),
 
-    testInvalidExpression("f /= false");
-    testValidExpression("f /= 3", ValueFactory.createValue(.5f));
-    testValidExpression("f /= 2L", ValueFactory.createValue(0.25f));
-    testValidExpression("f /= 0.025f", ValueFactory.createValue(10.f));
-    testValidExpression("f /= 2.5", ValueFactory.createValue(4));
-    testValidExpression("f /= 'A'", ValueFactory.createValue(0.061538f));
-    testInvalidExpression("f /= \"test\"");
+        arguments("f ^= false", null, FLOAT),
+        arguments("f ^= 1", null, FLOAT),
+        arguments("f ^= 2L", null, FLOAT),
+        arguments("f ^= 1.5f", null, FLOAT),
+        arguments("f ^= 3.14", null, FLOAT),
+        arguments("f ^= 'a'", null, FLOAT),
+        arguments("f ^= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d /= false");
-    testValidExpression("d /= 1", ValueFactory.createValue(3.14));
-    testValidExpression("d /= 2L", ValueFactory.createValue(1.57));
-    testValidExpression("d /= 1.57f", ValueFactory.createValue(1.));
-    testValidExpression("d /= 0.02", ValueFactory.createValue(50));
-    testValidExpression("d /= 'A'", ValueFactory.createValue(0.76923));
-    testInvalidExpression("d /= \"test\"");
+        arguments("d ^= false", null, DOUBLE),
+        arguments("d ^= 1", null, DOUBLE),
+        arguments("d ^= 2L", null, DOUBLE),
+        arguments("d ^= 1.5f", null, DOUBLE),
+        arguments("d ^= 3.14", null, DOUBLE),
+        arguments("d ^= 'a'", null, DOUBLE),
+        arguments("d ^= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c /= false");
-    testValidExpression("c /= 1", ValueFactory.createValue(97));
-    testValidExpression("c /= 97L", ValueFactory.createValue(1L));
-    testValidExpression("c /= 0.25f", ValueFactory.createValue(4));
-    testValidExpression("c /= 0.4", ValueFactory.createValue(10));
-    testValidExpression("c /= 'A'", ValueFactory.createValue(0.153846));
-    testInvalidExpression("c /= \"test\"");
+        arguments("c ^= false", null, CHAR),
+        arguments("c ^= 1", createValue(96), CHAR),
+        arguments("c ^= 2L", createValue(99L), CHAR),
+        arguments("c ^= 1.5f", null, CHAR),
+        arguments("c ^= 3.14", null, CHAR),
+        arguments("c ^= 'a'", createValue(0), CHAR),
+        arguments("c ^= \"test\"", null, CHAR),
 
-    testInvalidExpression("s /= false");
-    testInvalidExpression("s /= 1");
-    testInvalidExpression("s /= 2L");
-    testInvalidExpression("s /= 1.5f");
-    testInvalidExpression("s /= 3.14");
-    testInvalidExpression("s /= 'a'");
-    testInvalidExpression("s /= \"test\"");
+        arguments("s ^= false", null, STRING),
+        arguments("s ^= 1", null, STRING),
+        arguments("s ^= 2L", null, STRING),
+        arguments("s ^= 1.5f", null, STRING),
+        arguments("s ^= 3.14", null, STRING),
+        arguments("s ^= 'a'", null, STRING),
+        arguments("s ^= \"test\"", null, STRING));
   }
 
-  @Test
-  public void testStarEqualsExpression() {
-    testInvalidExpression("b *= false");
-    testInvalidExpression("b *= 1");
-    testInvalidExpression("b *= 2L");
-    testInvalidExpression("b *= 1.5f");
-    testInvalidExpression("b *= 3.14");
-    testInvalidExpression("b *= 'a'");
-    testInvalidExpression("b *= \"test\"");
+  protected static Stream<Arguments> slashEqualsExpression() {
+    return Stream.of(
+        arguments("b /= false", null, BOOL),
+        arguments("b /= 1", null, BOOL),
+        arguments("b /= 2L", null, BOOL),
+        arguments("b /= 1.5f", null, BOOL),
+        arguments("b /= 3.14", null, BOOL),
+        arguments("b /= 'a'", null, BOOL),
+        arguments("b /= \"test\"", null, BOOL),
 
-    testInvalidExpression("i *= false");
-    testValidExpression("i *= 0.25f", ValueFactory.createValue(0.25f));
-    testValidExpression("i *= 4.5", ValueFactory.createValue(1.125));
-    testValidExpression("i *= 2", ValueFactory.createValue(2.25));
-    testValidExpression("i *= 2L", ValueFactory.createValue(4.5));
-    testValidExpression("i *= 'A'", ValueFactory.createValue(292.5));
-    testInvalidExpression("i *= \"test\"");
+        arguments("i /= false", null, INT),
+        arguments("i /= 0.25f", createValue(4.f), INT),
+        arguments("i /= 0.4", createValue(2.5), INT),
+        arguments("i /= 2", createValue(0), INT),
+        arguments("i /= 5L", createValue(0L), INT),
+        arguments("i /= 'A'", createValue(0), INT),
+        arguments("i /= \"test\"", null, INT),
 
-    testInvalidExpression("l *= false");
-    testValidExpression("l *= 0.5f", ValueFactory.createValue(2.5f));
-    testValidExpression("l *= 0.2", ValueFactory.createValue(0.5));
-    testValidExpression("l *= 2", ValueFactory.createValue(1));
-    testValidExpression("l *= 10L", ValueFactory.createValue(10L));
-    testValidExpression("l *= 'A'", ValueFactory.createValue(650));
-    testInvalidExpression("l *= \"test\"");
+        arguments("l /= false", null, LONG),
+        arguments("l /= 1.25f", createValue(4.f), LONG),
+        arguments("l /= 0.4", createValue(12.5), LONG),
+        arguments("l /= 2", createValue(2L), LONG),
+        arguments("l /= 5L", createValue(1L), LONG),
+        arguments("l /= 'A'", createValue(0L), LONG),
+        arguments("l /= \"test\"", null, LONG),
 
-    testInvalidExpression("f *= false");
-    testValidExpression("f *= 3", ValueFactory.createValue(4.5f));
-    testValidExpression("f *= 2L", ValueFactory.createValue(9f));
-    testValidExpression("f *= 0.5f", ValueFactory.createValue(4.5f));
-    testValidExpression("f *= 0.5", ValueFactory.createValue(2.25));
-    testValidExpression("f *= 'A'", ValueFactory.createValue(146.25));
-    testInvalidExpression("f *= \"test\"");
+        arguments("f /= false", null, FLOAT),
+        arguments("f /= 3", createValue(.5f), FLOAT),
+        arguments("f /= 2L", createValue(0.75f), FLOAT),
+        arguments("f /= 0.025f", createValue(60.f), FLOAT),
+        arguments("f /= 2.5", createValue(.6), FLOAT),
+        arguments("f /= 'A'", createValue(0.0230769f), FLOAT),
+        arguments("f /= \"test\"", null, FLOAT),
 
-    testInvalidExpression("d *= false");
-    testValidExpression("d *= 1", ValueFactory.createValue(3.14));
-    testValidExpression("d *= 2L", ValueFactory.createValue(6.28));
-    testValidExpression("d *= 0.5f", ValueFactory.createValue(3.14));
-    testValidExpression("d *= 0.5", ValueFactory.createValue(1.57));
-    testValidExpression("d *= 'A'", ValueFactory.createValue(102.05));
-    testInvalidExpression("d *= \"test\"");
+        arguments("d /= false", null, DOUBLE),
+        arguments("d /= 1", createValue(3.14), DOUBLE),
+        arguments("d /= 2L", createValue(1.57), DOUBLE),
+        arguments("d /= 1.57f", createValue(2.), DOUBLE),
+        arguments("d /= 0.02", createValue(157.), DOUBLE),
+        arguments("d /= 'A'", createValue(0.048307692307), DOUBLE),
+        arguments("d /= \"test\"", null, DOUBLE),
 
-    testInvalidExpression("c *= false");
-    testValidExpression("c *= 2", ValueFactory.createValue(194));
-    testValidExpression("c *= 2L", ValueFactory.createValue(388L));
-    testValidExpression("c *= 0.25f", ValueFactory.createValue(97));
-    testValidExpression("c *= 0.5", ValueFactory.createValue(48.5));
-    testValidExpression("c *= 'A'", ValueFactory.createValue(3152.5));
-    testInvalidExpression("c *= \"test\"");
+        arguments("c /= false", null, CHAR),
+        arguments("c /= 1", createValue(97), CHAR),
+        arguments("c /= 97L", createValue(1L), CHAR),
+        arguments("c /= 0.25f", createValue(388.f), CHAR),
+        arguments("c /= 0.4", createValue(242.5), CHAR),
+        arguments("c /= 'A'", createValue(1), CHAR),
+        arguments("c /= \"test\"", null, CHAR),
 
-    testInvalidExpression("s *= false");
-    testInvalidExpression("s *= 1");
-    testInvalidExpression("s *= 2L");
-    testInvalidExpression("s *= 1.5f");
-    testInvalidExpression("s *= 3.14");
-    testInvalidExpression("s *= 'a'");
-    testInvalidExpression("s *= \"test\"");
+        arguments("s /= false", null, STRING),
+        arguments("s /= 1", null, STRING),
+        arguments("s /= 2L", null, STRING),
+        arguments("s /= 1.5f", null, STRING),
+        arguments("s /= 3.14", null, STRING),
+        arguments("s /= 'a'", null, STRING),
+        arguments("s /= \"test\"", null, STRING));
   }
-  
+
+  protected static Stream<Arguments> starEqualsExpression() {
+    return Stream.of(
+        arguments("b *= false", null, BOOL),
+        arguments("b *= 1", null, BOOL),
+        arguments("b *= 2L", null, BOOL),
+        arguments("b *= 1.5f", null, BOOL),
+        arguments("b *= 3.14", null, BOOL),
+        arguments("b *= 'a'", null, BOOL),
+        arguments("b *= \"test\"", null, BOOL),
+
+        arguments("i *= false", null, INT),
+        arguments("i *= 0.25f", createValue(0.25f), INT),
+        arguments("i *= 4.5", createValue(4.5), INT),
+        arguments("i *= 2", createValue(2), INT),
+        arguments("i *= 2L", createValue(2L), INT),
+        arguments("i *= 'A'", createValue(65), INT),
+        arguments("i *= \"test\"", null, INT),
+
+        arguments("l *= false", null, LONG),
+        arguments("l *= 0.5f", createValue(2.5f), LONG),
+        arguments("l *= 0.2", createValue(1.), LONG),
+        arguments("l *= 2", createValue(10L), LONG),
+        arguments("l *= 10L", createValue(50L), LONG),
+        arguments("l *= 'A'", createValue(325L), LONG),
+        arguments("l *= \"test\"", null, LONG),
+
+        arguments("f *= false", null, FLOAT),
+        arguments("f *= 3", createValue(4.5f), FLOAT),
+        arguments("f *= 2L", createValue(3f), FLOAT),
+        arguments("f *= 0.5f", createValue(.75f), FLOAT),
+        arguments("f *= 0.5", createValue(.75), FLOAT),
+        arguments("f *= 'A'", createValue(97.5f), FLOAT),
+        arguments("f *= \"test\"", null, FLOAT),
+
+        arguments("d *= false", null, DOUBLE),
+        arguments("d *= 1", createValue(3.14), DOUBLE),
+        arguments("d *= 2L", createValue(6.28), DOUBLE),
+        arguments("d *= 0.5f", createValue(1.57), DOUBLE),
+        arguments("d *= 0.5", createValue(1.57), DOUBLE),
+        arguments("d *= 'A'", createValue(204.1), DOUBLE),
+        arguments("d *= \"test\"", null, DOUBLE),
+
+        arguments("c *= false", null, CHAR),
+        arguments("c *= 2", createValue(194), CHAR),
+        arguments("c *= 2L", createValue(194L), CHAR),
+        arguments("c *= 0.25f", createValue(24.25f), CHAR),
+        arguments("c *= 0.5", createValue(48.5), CHAR),
+        arguments("c *= 'A'", createValue(6305), CHAR),
+        arguments("c *= \"test\"", null, CHAR),
+
+        arguments("s *= false", null, STRING),
+        arguments("s *= 1", null, STRING),
+        arguments("s *= 2L", null, STRING),
+        arguments("s *= 1.5f", null, STRING),
+        arguments("s *= 3.14", null, STRING),
+        arguments("s *= 'a'", null, STRING),
+        arguments("s *= \"test\"", null, STRING));
+  }
+
+  @ParameterizedTest
+  @MethodSource({
+      "incSuffixExpression", "incPrefixExpression", "decSuffixExpression",
+      "decPrefixExpression", "andEqualsExpression", "gTGTEqualsExpression",
+      "gTGTGTEqualsExpression", "lTLTEqualsExpression", "minusEqualsExpression",
+      "percentEqualsExpression", "pipeEqualsExpression", "plusEqualsExpression",
+      "roofEqualsExpression", "slashEqualsExpression", "starEqualsExpression"
+  })
+  public void testInterpreter(String expression, Value result, int types) {
+    init(types);
+    if (isNull(result)) {
+      testInvalidExpression(expression);
+    } else {
+      testValidExpression(expression, result);
+    }
+  }
 }
