@@ -16,6 +16,7 @@ import de.monticore.types.check.IDerive;
 import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Assertions;
@@ -39,14 +40,13 @@ public class ExpressionStatementIsValidTest {
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     TestMCCommonStatementsMill.globalScope().clear();
+    new CombineExpressionsWithLiteralsTypeTraverserFactory()
+        .initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
     initSymbols();
 
-    ISynthesize synthesize = new FullSynthesizeFromCombineExpressionsWithLiterals();
-    IDerive derive = new FullDeriveFromCombineExpressionsWithLiterals();
-    TypeCalculator typeCalc = new TypeCalculator(synthesize, derive);
     checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new ExpressionStatementIsValid(typeCalc));
+    checker.addCoCo(new ExpressionStatementIsValid());
   }
 
   protected static void initSymbols() {

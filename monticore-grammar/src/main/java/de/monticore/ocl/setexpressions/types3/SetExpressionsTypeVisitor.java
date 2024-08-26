@@ -21,6 +21,8 @@ import java.util.Set;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
+import static de.monticore.types3.SymTypeRelations.isIntegralType;
+import static de.monticore.types3.SymTypeRelations.normalize;
 
 public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     implements SetExpressionsVisitor2 {
@@ -470,57 +472,16 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTSetEnumeration expr) {
     SymTypeExpression result;
-
-    // get all expressions within the set enumeration
-    List<SymTypeExpression> containedExprTypes = new ArrayList<>();
-    for (ASTSetCollectionItem cItem : expr.getSetCollectionItemList()) {
-      if (SetExpressionsMill.typeDispatcher().isSetExpressionsASTSetValueItem(cItem)) {
-        ASTSetValueItem setValueItem =
-            SetExpressionsMill.typeDispatcher().asSetExpressionsASTSetValueItem(cItem);
-        SymTypeExpression setValueItemType =
-            getType4Ast().getPartialTypeOfExpr(setValueItem.getExpression());
-        containedExprTypes.add(setValueItemType);
-      }
-      else if (SetExpressionsMill.typeDispatcher().isSetExpressionsASTSetValueRange(cItem)) {
-        ASTSetValueRange valueRange =
-            SetExpressionsMill.typeDispatcher().asSetExpressionsASTSetValueRange(cItem);
-        // each contained type has to be numeric
-        SymTypeExpression lowerRangeType =
-            getType4Ast().getPartialTypeOfExpr(valueRange.getLowerBound());
-        SymTypeExpression upperRangeType =
-            getType4Ast().getPartialTypeOfExpr(valueRange.getUpperBound());
-        if (lowerRangeType.isObscureType() || upperRangeType.isObscureType()) {
-          containedExprTypes.add(createObscureType());
-        }
-        else if (!MCCollectionSymTypeRelations.isIntegralType(lowerRangeType)
-            || !MCCollectionSymTypeRelations.isIntegralType(upperRangeType)) {
-          Log.error(
-              "0xFD551 expected integral types in value range, "
-                  + "but got "
-                  + lowerRangeType.printFullName()
-                  + " and "
-                  + upperRangeType.printFullName(),
-              cItem.get_SourcePositionStart(),
-              cItem.get_SourcePositionEnd());
-          containedExprTypes.add(createObscureType());
-        }
-        else {
-          containedExprTypes.add(lowerRangeType);
-          containedExprTypes.add(upperRangeType);
-        }
-      }
-      else {
-        Log.error(
-            "0xFD550 internal error: "
-                + "unexpected subtype of ASTSetCollectionItem",
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd());
-        containedExprTypes.add(createObscureType());
-      }
-    }
-
+    List<SymTypeExpression> containedExprTypes = getContainedExpressionTypes(expr);
     if (containedExprTypes.stream().anyMatch(SymTypeExpression::isObscureType)) {
       result = createObscureType();
+    }
+    else if (!assertRangesContainIntegrals(expr)) {
+      result = createObscureType();
+    }
+    else if (getType4Ast().hasTypeOfExpression(expr)) {
+      // type already calculated
+      return;
     }
     else {
       SymTypeExpression elementType = createUnion(Set.copyOf(containedExprTypes));
@@ -539,8 +500,8 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression leftResult = getType4Ast().getPartialTypeOfExpr(expr.getLowerBound());
     SymTypeExpression rightResult = getType4Ast().getPartialTypeOfExpr(expr.getUpperBound());
     if (!leftResult.isObscureType() && !rightResult.isObscureType()) {
-      if (!MCCollectionSymTypeRelations.isIntegralType(leftResult)
-          || !MCCollectionSymTypeRelations.isIntegralType(rightResult)) {
+      if (!isIntegralType(normalize(leftResult))
+          || !isIntegralType(normalize(rightResult))) {
         Log.error(
             "0xFD217 bounds in SetValueRange "
                 + "are not integral types, but have to be, got "
@@ -562,5 +523,107 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
   protected boolean isSetOrListCollection(SymTypeExpression type) {
     return MCCollectionSymTypeRelations.isList(type) ||
         MCCollectionSymTypeRelations.isSet(type);
+  }
+
+  // Helper
+
+  /**
+   * Get all expressions within the set enumeration.
+   * E.g.: "{1, 2..4}" -> "1","2","4"
+   * Returns empty on error (will have been logged)
+   */
+  protected Optional<List<ASTExpression>> getContainedExpressions(ASTSetEnumeration expr) {
+    List<ASTExpression> containedExprs = new ArrayList<>();
+    for (ASTSetCollectionItem cItem : expr.getSetCollectionItemList()) {
+      if (SetExpressionsMill.typeDispatcher().isSetExpressionsASTSetValueItem(cItem)) {
+        ASTSetValueItem setValueItem =
+            SetExpressionsMill.typeDispatcher().asSetExpressionsASTSetValueItem(cItem);
+        containedExprs.add(setValueItem.getExpression());
+      }
+      else if (SetExpressionsMill.typeDispatcher().isSetExpressionsASTSetValueRange(cItem)) {
+        ASTSetValueRange valueRange =
+            SetExpressionsMill.typeDispatcher().asSetExpressionsASTSetValueRange(cItem);
+        containedExprs.add(valueRange.getLowerBound());
+        containedExprs.add(valueRange.getUpperBound());
+      }
+      else {
+        Log.error(
+            "0xFD550 internal error: "
+                + "unexpected subtype of ASTSetCollectionItem",
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd());
+        return Optional.empty();
+      }
+    }
+    return Optional.of(containedExprs);
+  }
+
+  /**
+   * Get all expressions' types within the set enumeration.
+   * They need to be stored in Type4Ast before calling this.
+   * E.g.: "{1, 2..4}" -> int, int, int
+   * May contain Obscure (error will have been logged).
+   */
+  protected List<SymTypeExpression> getContainedExpressionTypes(ASTSetEnumeration expr) {
+    Optional<List<ASTExpression>> containedExprs =
+        getContainedExpressions(expr);
+    if (containedExprs.isEmpty()) {
+      return List.of(createObscureType());
+    }
+    List<SymTypeExpression> exprTypes =
+        new ArrayList<>(containedExprs.get().size());
+    for (ASTExpression containedExpr : containedExprs.get()) {
+      exprTypes.add(getType4Ast().getPartialTypeOfExpr(containedExpr));
+    }
+    return exprTypes;
+  }
+
+  /**
+   * s. {@link #assertRangeContainsIntegrals(ASTSetValueRange)}
+   */
+  protected boolean assertRangesContainIntegrals(ASTSetEnumeration expr) {
+    for (ASTSetCollectionItem cItem : expr.getSetCollectionItemList()) {
+      if (SetExpressionsMill.typeDispatcher()
+          .isSetExpressionsASTSetValueRange(cItem)
+      ) {
+        ASTSetValueRange valueRange = SetExpressionsMill.typeDispatcher()
+            .asSetExpressionsASTSetValueRange(cItem);
+        if (!assertRangeContainsIntegrals(valueRange)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Logs an error if the lower and upper bounds
+   * of the range are not integral types.
+   *
+   * @return true iff no error occurred.
+   */
+  protected boolean assertRangeContainsIntegrals(ASTSetValueRange range) {
+    // each contained type has to be numeric
+    SymTypeExpression lowerRangeType =
+        getType4Ast().getPartialTypeOfExpr(range.getLowerBound());
+    SymTypeExpression upperRangeType =
+        getType4Ast().getPartialTypeOfExpr(range.getUpperBound());
+    if (lowerRangeType.isObscureType() || upperRangeType.isObscureType()) {
+      return true;
+    }
+    else if (!isIntegralType(normalize(lowerRangeType))
+        || !isIntegralType(normalize(upperRangeType))) {
+      Log.error(
+          "0xFD551 expected integral types in value range, "
+              + "but got "
+              + lowerRangeType.printFullName()
+              + " and "
+              + upperRangeType.printFullName(),
+          range.get_SourcePositionStart(),
+          range.get_SourcePositionEnd()
+      );
+      return false;
+    }
+    return true;
   }
 }

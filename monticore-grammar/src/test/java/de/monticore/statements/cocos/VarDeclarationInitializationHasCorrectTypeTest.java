@@ -12,6 +12,7 @@ import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVar
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -39,13 +40,15 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     TestMCVarDeclarationStatementsMill.init();
 
     TestMCVarDeclarationStatementsMill.globalScope().clear();
+    new CombineExpressionsWithLiteralsTypeTraverserFactory()
+        .initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
     addMyTypeToGlobalScope();
     addStringToGlobalScope();
 
     checker = new TestMCVarDeclarationStatementsCoCoChecker();
     checker.setTraverser(TestMCVarDeclarationStatementsMill.traverser());
-    checker.addCoCo(new VarDeclarationInitializationHasCorrectType(new FullDeriveFromCombineExpressionsWithLiterals()));
+    checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
     parser = new TestMCVarDeclarationStatementsParser();
   }
 
@@ -116,7 +119,7 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     // Given
     String multiVarDeclaration = "int a = 3, b, c = MyType, d = \"no no no\";";
     List<String> expectedErrors = Lists.newArrayList(
-      VarDeclarationInitializationHasCorrectType.TYPE_REF_ASSIGNMENT_ERROR_CODE,
+      "0xFD118",
       VarDeclarationInitializationHasCorrectType.ERROR_CODE
     );
     ASTRootVarDeclaration astDecl = parser.parse_StringRootVarDeclaration(multiVarDeclaration).get();

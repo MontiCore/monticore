@@ -1,18 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 public class MCBasicTypesTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -47,9 +43,7 @@ public class MCBasicTypesTypeVisitorTest
       // if it can be parsed, we expect an error
       Assertions.assertTrue(typeOpt.isPresent());
       generateScopes(typeOpt.get());
-      typeOpt.get().accept(typeMapTraverser);
-      Assertions.assertTrue(!Log.getFindings().isEmpty());
-      Assertions.assertNotEquals("void", getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName());
+      checkType(typeOpt.get(), "void");
     }
   }
 
@@ -58,8 +52,8 @@ public class MCBasicTypesTypeVisitorTest
     Optional<ASTMCReturnType> typeOpt =
         parser.parse_StringMCReturnType("void");
     Assertions.assertTrue(typeOpt.isPresent());
-    typeOpt.get().accept(typeMapTraverser);
-    Assertions.assertEquals("void", getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName());
+    SymTypeExpression type = TypeCheck3.symTypeFromAST(typeOpt.get());
+    Assertions.assertEquals("void", type.printFullName());
     assertNoFindings();
   }
 
@@ -70,8 +64,8 @@ public class MCBasicTypesTypeVisitorTest
     Assertions.assertTrue(typeOpt.isPresent());
     Assertions.assertTrue(typeOpt.get().isPresentMCType());
     generateScopes(typeOpt.get().getMCType());
-    typeOpt.get().accept(typeMapTraverser);
-    Assertions.assertEquals("Person", getType4Ast().getPartialTypeOfTypeId(typeOpt.get()).printFullName());
+    SymTypeExpression type = TypeCheck3.symTypeFromAST(typeOpt.get());
+    Assertions.assertEquals("Person", type.printFullName());
     assertNoFindings();
   }
 

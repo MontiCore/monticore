@@ -14,10 +14,12 @@ import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsC
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
+import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
 import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
+import de.monticore.ocl.setexpressions.types3.SetExpressionsCTTIVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsTypeVisitor;
 import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
 import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
@@ -32,11 +34,12 @@ import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVi
 import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
+import de.monticore.visitor.ITraverser;
 
 public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
   /**
-   * @deprecated use version below
+   * @deprecated use version with InferenceContext4Ast
    */
   @Deprecated
   public CombineExpressionsWithLiteralsTraverser createTraverser(
@@ -57,8 +60,16 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     return traverser;
   }
 
+  public MapBasedTypeCheck3 initTypeCheck3() {
+    Type4Ast type4Ast = new Type4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    ITraverser traverser = createTraverser(type4Ast, ctx4Ast);
+    // sets itself as delegate
+    return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
+  }
+
   /**
-   * @deprecated use version below
+   * @deprecated use version with InferenceContext4Ast
    */
   @Deprecated
   public CombineExpressionsWithLiteralsTraverser createTraverserForOO(
@@ -79,8 +90,16 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     return traverser;
   }
 
+  public MapBasedTypeCheck3 initTypeCheck3ForOO() {
+    Type4Ast type4Ast = new Type4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    ITraverser traverser = createTraverserForOO(type4Ast, ctx4Ast);
+    // sets itself as delegate
+    return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
+  }
+
   /**
-   * @deprecated use version below
+   * @deprecated use version with InferenceContext4Ast
    */
   @Deprecated
   public CombineExpressionsWithLiteralsTraverser createTraverserForOOWithConstructors(
@@ -99,6 +118,14 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     setContext4Ast(visitors, ctx4Ast);
     populateTraverser(visitors, traverser);
     return traverser;
+  }
+
+  public MapBasedTypeCheck3 initTypeCheck3ForOOWithConstructors() {
+    Type4Ast type4Ast = new Type4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    ITraverser traverser = createTraverserForOOWithConstructors(type4Ast, ctx4Ast);
+    // sets itself as delegate
+    return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
   }
 
   protected void setType4Ast(VisitorList visitors, Type4Ast type4Ast) {
@@ -136,11 +163,17 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.derSetExpressions != null) {
       visitors.derSetExpressions.setType4Ast(type4Ast);
     }
+    else if (visitors.cTTISetExpressions != null) {
+      visitors.cTTISetExpressions.setType4Ast(type4Ast);
+    }
     if (visitors.derTupleExpressions != null) {
       visitors.derTupleExpressions.setType4Ast(type4Ast);
     }
     if (visitors.derUglyExpressions != null) {
       visitors.derUglyExpressions.setType4Ast(type4Ast);
+    }
+    else if (visitors.cTTIUglyExpressions != null) {
+      visitors.cTTIUglyExpressions.setType4Ast(type4Ast);
     }
     if (visitors.derOfMCCommonLiterals != null) {
       visitors.derOfMCCommonLiterals.setType4Ast(type4Ast);
@@ -192,6 +225,12 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.cTTIExpressionBasis != null) {
       visitors.cTTIExpressionBasis.setContext4Ast(ctx4Ast);
     }
+    if (visitors.cTTISetExpressions != null) {
+      visitors.cTTISetExpressions.setContext4Ast(ctx4Ast);
+    }
+    if (visitors.cTTIUglyExpressions != null) {
+      visitors.cTTIUglyExpressions.setContext4Ast(ctx4Ast);
+    }
   }
 
   protected VisitorList constructVisitorsCTTI() {
@@ -204,9 +243,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derLambdaExpressions = new LambdaExpressionsTypeVisitor();
     visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
     visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
-    visitors.derSetExpressions = new SetExpressionsTypeVisitor();
+    visitors.cTTISetExpressions = new SetExpressionsCTTIVisitor();
     visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
-    visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
+    visitors.cTTIUglyExpressions = new UglyExpressionsCTTIVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     visitors.derSIUnitLiterals = new SIUnitLiteralsTypeVisitor();
     // MCTypes
@@ -339,11 +378,19 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.derSetExpressions != null) {
       traverser.add4SetExpressions(visitors.derSetExpressions);
     }
+    else if (visitors.cTTISetExpressions != null) {
+      traverser.add4SetExpressions(visitors.cTTISetExpressions);
+      traverser.setSetExpressionsHandler(visitors.cTTISetExpressions);
+    }
     if (visitors.derTupleExpressions != null) {
       traverser.add4TupleExpressions(visitors.derTupleExpressions);
     }
     if (visitors.derUglyExpressions != null) {
       traverser.add4UglyExpressions(visitors.derUglyExpressions);
+    }
+    else if (visitors.cTTIUglyExpressions != null) {
+      traverser.add4UglyExpressions(visitors.cTTIUglyExpressions);
+      traverser.setUglyExpressionsHandler(visitors.cTTIUglyExpressions);
     }
     if (visitors.derOfMCCommonLiterals != null) {
       traverser.add4MCCommonLiterals(visitors.derOfMCCommonLiterals);
@@ -413,9 +460,13 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
     public SetExpressionsTypeVisitor derSetExpressions;
 
+    public SetExpressionsCTTIVisitor cTTISetExpressions;
+
     public TupleExpressionsTypeVisitor derTupleExpressions;
 
     public UglyExpressionsTypeVisitor derUglyExpressions;
+
+    public UglyExpressionsCTTIVisitor cTTIUglyExpressions;
 
     // Literals
 
@@ -444,5 +495,16 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public SIUnitTypes4ComputingTypeVisitor synSIUnitTypes4Computing;
 
     public SIUnitTypes4MathTypeVisitor synSIUnitTypes4Math;
+  }
+
+  /**
+   * during construction, sets this as the delegate
+   */
+  protected static class TypeCheck3Impl extends MapBasedTypeCheck3 {
+
+    protected TypeCheck3Impl(ITraverser typeTraverser, Type4Ast type4Ast, InferenceContext4Ast ctx4Ast) {
+      super(typeTraverser, type4Ast, ctx4Ast);
+      setThisAsDelegate();
+    }
   }
 }

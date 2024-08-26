@@ -520,17 +520,17 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       args.add(getType4Ast().getPartialTypeOfExpr(expr.getArguments().getExpression(i)));
     }
     Set<SymTypeExpression> inner;
-    if (getType4Ast().getPartialTypeOfExpr(expr.getExpression())
-        .isIntersectionType()) {
+    SymTypeExpression calculatedInner = SymTypeRelations.normalize(
+        getType4Ast().getPartialTypeOfExpr(expr.getExpression())
+    );
+    if (calculatedInner.isIntersectionType()) {
       inner = new HashSet<>(
-          ((SymTypeOfIntersection) getType4Ast()
-              .getPartialTypeOfExpr(expr.getExpression())
-          ).getIntersectedTypeSet()
+          ((SymTypeOfIntersection)calculatedInner).getIntersectedTypeSet()
       );
     }
     else {
       inner = new HashSet<>();
-      inner.add(getType4Ast().getPartialTypeOfExpr(expr.getExpression()));
+      inner.add(calculatedInner);
     }
 
     // error already logged if Obscure
@@ -813,7 +813,11 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       Log.error("0xF737F given expression of type "
               + getType4Ast().getPartialTypeOfExpr(expr.getExpression()).printFullName()
               + " unable to derive the type of the access \"."
-              + expr.getName() + "\"",
+              + expr.getName() + "\". You may want to check whether"
+              + System.lineSeparator()
+              + "  1. The element exists in the models/included symboltables"
+              + System.lineSeparator()
+              + "  2. The element's access modifier is set (e.g., to public)",
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
       );

@@ -16,4 +16,10 @@ mlc MCStatementsBasis {
     mlc "de.monticore.MCBasics";
   }
 
+  uses {
+    // uses type check for CoCos
+    include "$projectDir/src/main/java/de/monticore/types/check/**.java";
+    include "$projectDir/src/main/java/de/monticore/types3/**.java";
+  }
+
 }

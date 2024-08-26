@@ -35,9 +35,6 @@ import static de.monticore.types3.util.DefsTypesForTests.method;
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
 import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * tests whether we can resolve correctly within a type.
@@ -328,8 +325,7 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     ASTExpression expr = parseExpr(exprStr);
     generateScopes(expr);
     expr.accept(getExpressionScopeSetter(scope));
-    calculateTypes(expr);
-    SymTypeExpression type = getType4Ast().getTypeOfExpression(expr);
+    SymTypeExpression type = TypeCheck3.typeOf(expr);
     assertNoFindings();
     return type;
   }
@@ -370,8 +366,7 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     ASTMCType mcType = parseMCType(typeStr);
     generateScopes(mcType);
     mcType.accept(getMCTypeScopeSetter(scope));
-    calculateTypes(mcType);
-    SymTypeExpression type = getType4Ast().getTypeOfTypeIdentifier(mcType);
+    SymTypeExpression type = TypeCheck3.symTypeFromAST(mcType);
     assertHasErrorCode(errorCode);
     return type;
   }

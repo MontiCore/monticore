@@ -104,13 +104,13 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     MethodSymbol constructor1 = method("Person", _personSymType, _intSymType);
     constructor1.setIsConstructor(true);
     personScope.add(constructor1);
-    checkErrorExpr("new Person(1.2f)", "0xFD553");
+    checkErrorExpr("new Person(1.2f)", "0xFD444");
     // constructors: () -> Person, (int) -> Person, (int) -> Person
     // no most specific constructor exists
     MethodSymbol constructor2 = method("Person", _personSymType, _intSymType);
     constructor2.setIsConstructor(true);
     personScope.add(constructor2);
-    checkErrorExpr("new Person(2)", "0xFD553");
+    checkErrorExpr("new Person(2)", "0xFD446");
   }
 
   @Test
