@@ -3,16 +3,17 @@ package de.monticore.gradle.dependencies;
 
 import de.monticore.gradle.MCGeneratorExtension;
 import de.monticore.gradle.sources.MCGrammarsSourceDirectorySet;
-import org.gradle.api.DomainObjectCollection;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.ConfigurationVariant;
 import org.gradle.api.artifacts.PublishArtifact;
 import org.gradle.api.attributes.Attribute;
+import org.gradle.api.attributes.Bundling;
+import org.gradle.api.attributes.Category;
+import org.gradle.api.attributes.DocsType;
+import org.gradle.api.attributes.Usage;
 import org.gradle.api.component.AdhocComponentWithVariants;
-import org.gradle.api.component.ComponentWithVariants;
 import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.internal.artifacts.dsl.LazyPublishArtifact;
@@ -22,7 +23,6 @@ import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
-import org.gradle.api.plugins.internal.DefaultAdhocSoftwareComponent;
 import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.publish.PublishingExtension;
@@ -30,7 +30,6 @@ import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.maven.internal.publication.DefaultMavenPublication;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.internal.impldep.org.bouncycastle.crypto.agreement.jpake.JPAKERound1Payload;
 import org.gradle.jvm.tasks.Jar;
 
 import javax.annotation.Nonnull;
@@ -200,18 +199,22 @@ public class MCPublishingPlugin implements Plugin<Project> {
     PublishArtifact jarArtifact = createPublishedArtifact(jarTask, project);
     PublishArtifact sourcesJarArtifact = createPublishedArtifact(sourcesJarTask, project);
 
-    // Next, we add a runtime variant from the runtime classpath configuration (and add both outgoing jar artifacts)
+    // Next, we add a runtime variant from the runtime classpath configuration (and add the jar Artifact)
     Configuration runtimeClasspathConfig = project.getConfigurations().getByName(sourceSet.getRuntimeClasspathConfigurationName());
     component.addVariantsFromConfiguration(runtimeClasspathConfig, new JavaConfigurationVariantMapping("runtime", false));
     runtimeClasspathConfig.getOutgoing().getArtifacts().add(jarArtifact);
-    runtimeClasspathConfig.getOutgoing().getArtifacts().add(sourcesJarArtifact);
 
+    // Next, we add a separate documentation/sources variant
+    Configuration sourcesElementsConfig = createDocumentationConfig(project, sourceSet, DocsType.SOURCES);
+    // and add the sources artifact to this config
+    sourcesElementsConfig.getOutgoing().getArtifacts().add(sourcesJarArtifact);
+    // Then, add a variant to the component, as otherwise no variant is published
+    component.addVariantsFromConfiguration(sourcesElementsConfig, new JavaConfigurationVariantMapping("compile", true));
 
     // Next, we add also a compile variant from the compile classpath configuration (and add both outgoing jar artifacts)
     Configuration compileClasspathConfig = project.getConfigurations().getByName(sourceSet.getCompileClasspathConfigurationName());
     component.addVariantsFromConfiguration(compileClasspathConfig, new JavaConfigurationVariantMapping("compile", false));
     compileClasspathConfig.getOutgoing().getArtifacts().add(jarArtifact);
-    compileClasspathConfig.getOutgoing().getArtifacts().add(sourcesJarArtifact);
 
     // Ensure maven-publish is applied
     @Nullable PublishingExtension publExt = project.getExtensions().findByType(PublishingExtension.class);
@@ -330,6 +333,24 @@ public class MCPublishingPlugin implements Plugin<Project> {
     project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(jarTask));
 
     return jarTask;
+  }
+
+  /**
+   * Creates an outgoing configuration containing the sources of a SourceSet (if it does not already exist)
+   */
+  protected Configuration createDocumentationConfig(Project project, SourceSet sourceSet, String docsType) {
+    Configuration sourcesElementsConfig = project.getConfigurations().maybeCreate(sourceSet.getSourcesElementsConfigurationName());
+    sourcesElementsConfig.setCanBeConsumed(true);
+    sourcesElementsConfig.setVisible(false);
+    sourcesElementsConfig.setCanBeResolved(false);
+    sourcesElementsConfig.setDescription(docsType + " elements for " + sourceSet.getName());
+
+    sourcesElementsConfig.getAttributes().attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, Usage.JAVA_RUNTIME));
+    sourcesElementsConfig.getAttributes().attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.DOCUMENTATION));
+    sourcesElementsConfig.getAttributes().attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
+    sourcesElementsConfig.getAttributes().attribute(DocsType.DOCS_TYPE_ATTRIBUTE, project.getObjects().named(DocsType.class, docsType));
+
+    return sourcesElementsConfig;
   }
 
   /**
