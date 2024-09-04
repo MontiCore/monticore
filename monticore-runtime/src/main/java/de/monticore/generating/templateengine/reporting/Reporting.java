@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.generating.templateengine.reporting;
 
 import java.net.URL;
@@ -26,7 +25,6 @@ import de.se_rwth.commons.logging.Log;
 /**
  * Facade for all reporting activities. Invoking a report method causes all
  * AReporter implementing this method to execute it.
- *
  */
 public class Reporting extends Log {
 
@@ -50,12 +48,12 @@ public class Reporting extends Log {
    * For creating report managers on-demand for newly processed models.
    */
   protected ReportManagerFactory factory;
-  
+
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.Reporting
    *
    * @param outputDirectory for storing the reports
-   * @param factory for creating specific report manager configurations
+   * @param factory         for creating specific report manager configurations
    */
   private Reporting(String outputDirectory, String reportDirectory, ReportManagerFactory factory) {
     this.outputDirectory = outputDirectory;
@@ -161,12 +159,11 @@ public class Reporting extends Log {
     // and log the error
     if (t.isPresent()) {
       super.doError(msg, t.get());
-    }
-    else if(start.isPresent() && end.isPresent()){
+    } else if (start.isPresent() && end.isPresent()) {
       super.doError(msg, start.get(), end.get());
-    } else if(start.isPresent()) {
+    } else if (start.isPresent()) {
       super.doError(msg, start.get());
-    }else{
+    } else {
       super.doError(msg);
     }
 
@@ -175,8 +172,7 @@ public class Reporting extends Log {
     if (wantsToFailQuick) {
       try {
         flush(null);
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         // this is rather generic but it'll probably do for now
         super.doError("0xA4055 Error during error reporting. Enable debug for more details.");
         super.doDebug("Error during error reporting", e, ReportManager.class.getName());
@@ -262,7 +258,8 @@ public class Reporting extends Log {
 
     currentModel = modelName;
     enabled = true;
-    return enabled;
+
+    return isEnabled();
   }
 
   /**
@@ -300,36 +297,37 @@ public class Reporting extends Log {
     }
   }
 
-  public static void reportTransformationOldValue(String transformationName, ASTNode ast){
+  public static void reportTransformationOldValue(String transformationName, ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportTransformationOldValue(transformationName, ast);
     }
   }
 
-  public static void reportTransformationNewValue(String transformationName, ASTNode ast){
+  public static void reportTransformationNewValue(String transformationName, ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportTransformationNewValue(transformationName, ast);
     }
   }
-  public static void reportTransformationOldValue(String transformationName, String value){
+
+  public static void reportTransformationOldValue(String transformationName, String value) {
     if (isEnabled()) {
       getReportManager().reportTransformationOldValue(transformationName, value);
     }
   }
 
-  public static void reportTransformationNewValue(String transformationName, String value){
+  public static void reportTransformationNewValue(String transformationName, String value) {
     if (isEnabled()) {
       getReportManager().reportTransformationNewValue(transformationName, value);
     }
   }
 
-  public static void reportTransformationOldValue(String transformationName, boolean value){
+  public static void reportTransformationOldValue(String transformationName, boolean value) {
     if (isEnabled()) {
       getReportManager().reportTransformationOldValue(transformationName, value);
     }
   }
 
-  public static void reportTransformationNewValue(String transformationName, boolean value){
+  public static void reportTransformationNewValue(String transformationName, boolean value) {
     if (isEnabled()) {
       getReportManager().reportTransformationNewValue(transformationName, value);
     }
@@ -359,13 +357,8 @@ public class Reporting extends Log {
     }
   }
 
-
-
   /**
    * Reports the execution of templates
-   *
-   * @param templateName
-   * @param ast
    */
   /* handwritten templates, and templates within Template Hookpoints and AST
    * specific Template Hookpoints */
@@ -377,13 +370,7 @@ public class Reporting extends Log {
 
   /**
    * Reports the execution of a standard template that is wrapped into a
-   * template hook point via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
-   * getTemplateForwardings} method. The template is wrapped into the template
-   * hook point only if there is no other template forwarding.
-   *
-   * @param templateName
-   * @param ast
+   * template hook point,
    */
   public static void reportExecuteStandardTemplate(String templateName, ASTNode ast) {
     if (isEnabled()) {
@@ -397,33 +384,24 @@ public class Reporting extends Log {
    * writeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}.
-   *
-   * @param templateName
-   * @param path
-   * @param ast
    */
   public static void reportFileCreation(String templateName, Path path, ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportFileCreation(templateName, path, ast);
     }
   }
-  
+
   /**
    * Reports a file creation
-   *
-   * @param parentPath
-   * @param file
    */
   public static void reportFileCreation(Path parentPath, Path file) {
     if (isEnabled()) {
       getReportManager().reportFileCreation(parentPath, file);
     }
   }
-  
+
   /**
    * Reports a file creation
-   *
-   * @param fileName
    */
   public static void reportFileCreation(String fileName) {
     if (isEnabled()) {
@@ -433,10 +411,6 @@ public class Reporting extends Log {
 
   /**
    * Reports the end of a file creation (file finalization).
-   *
-   * @param templateName
-   * @param path
-   * @param ast
    */
   public static void reportFileFinalization(String templateName, Path path, ASTNode ast) {
     if (isEnabled()) {
@@ -446,14 +420,9 @@ public class Reporting extends Log {
 
   /**
    * Reports a template based file creation.
-   *
-   * @param templateName
-   * @param qualifiedFilename
-   * @param fileExtension
-   * @param ast
    */
   public static void reportFileCreation(String templateName, String qualifiedFilename,
-      String fileExtension, ASTNode ast) {
+                                        String fileExtension, ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportFileCreation(templateName, qualifiedFilename, fileExtension, ast);
     }
@@ -461,38 +430,27 @@ public class Reporting extends Log {
 
   /**
    * Reports the end of a file creation (file finalization).
-   *
-   * @param templateName
-   * @param qualifiedFilename
-   * @param fileExtension
-   * @param ast
    */
   public static void reportFileFinalization(String templateName, String qualifiedFilename,
-      String fileExtension, ASTNode ast) {
+                                            String fileExtension, ASTNode ast) {
     if (isEnabled()) {
       getReportManager()
-          .reportFileFinalization(templateName, qualifiedFilename, fileExtension, ast);
+        .reportFileFinalization(templateName, qualifiedFilename, fileExtension, ast);
     }
   }
-  
+
   /**
-   * Reports a checking of file existence 
-   *
-   * @param parentPath
-   * @param file
+   * Reports a checking of file existence
    */
   public static void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     if (isEnabled()) {
       getReportManager()
-          .reportFileExistenceChecking(parentPath, file);
+        .reportFileExistenceChecking(parentPath, file);
     }
   }
-  
+
   /**
    * Reports the end of a template execution.
-   *
-   * @param templateName
-   * @param ast
    */
   public static void reportTemplateEnd(String templateName, ASTNode ast) {
     if (isEnabled()) {
@@ -531,15 +489,7 @@ public class Reporting extends Log {
   }
 
   /**
-   * Reports the template inclusion via the
-   * logTemplateCallOrInclude} method called by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method of the
-   * {@link de.monticore.generating.templateengine.TemplateController
-   * TemplateController} after calculating all forwardings.
-   *
-   * @param templateName
-   * @param ast
+   * Reports template inclusion.
    */
   public static void reportTemplateInclude(String templateName, ASTNode ast) {
     if (isEnabled()) {
@@ -548,17 +498,8 @@ public class Reporting extends Log {
   }
 
   /**
-   * Reports the template write via the
-
-   * logTemplateCallOrInclude} method called by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method of the
-   * {@link de.monticore.generating.templateengine.TemplateController
-   * TemplateController}. TemplateWrite does not calculate forwardings, it
+   * Reports the template write. TemplateWrite does not calculate forwardings, it
    * processes the template instantly.
-   *
-   * @param templateName
-   * @param ast
    */
   public static void reportTemplateWrite(String templateName, ASTNode ast) {
     if (isEnabled()) {
@@ -572,9 +513,6 @@ public class Reporting extends Log {
    * setHookPoint} method of the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}.
-   *
-   * @param hookName
-   * @param hp
    */
   public static void reportSetHookPoint(String hookName, HookPoint hp) {
     if (isEnabled()) {
@@ -587,10 +525,6 @@ public class Reporting extends Log {
    * callHookPoint} method. This does not include the execution of hook points
    * registered by the setBefore, setAfter or replaceTemplate Methods, nor the
    * execution of AST specific hook points.
-   *
-   * @param hookName
-   * @param hp
-   * @param ast
    */
   public static void reportCallHookPointStart(String hookName, HookPoint hp, ASTNode ast) {
     if (isEnabled()) {
@@ -602,8 +536,6 @@ public class Reporting extends Log {
    * Reports the end of the execution of a hook point via the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#bindHookPoint(String, HookPoint)} (TemplateController, String, ASTNode)
    * callHookPoint} method.
-   *
-   * @param hookName
    */
   public static void reportCallHookPointEnd(String hookName) {
     if (isEnabled()) {
@@ -619,18 +551,10 @@ public class Reporting extends Log {
    * includeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. This includes the execution of all hook points
-   * registered by setAfter. This method is called in the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
-   * getTemplateForwardings} method triggered by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method.
-   *
-   * @param oldTemplate
-   * @param afterHps
-   * @param ast
+   * registered by setAfter.
    */
   public static void reportCallAfterHookPoint(String oldTemplate, Collection<HookPoint> afterHps,
-      ASTNode ast) {
+                                              ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportCallAfterHookPoint(oldTemplate, afterHps, ast);
     }
@@ -644,18 +568,10 @@ public class Reporting extends Log {
    * includeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. This includes the execution of all hook points
-   * registered by setBefore. This method is called in the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
-   * getTemplateForwardings} method triggered by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method.
-   *
-   * @param oldTemplate
-   * @param beforeHps
-   * @param ast
+   * registered by setBefore.
    */
   public static void reportCallBeforeHookPoint(String oldTemplate, Collection<HookPoint> beforeHps,
-      ASTNode ast) {
+                                               ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportCallBeforeHookPoint(oldTemplate, beforeHps, ast);
     }
@@ -669,19 +585,10 @@ public class Reporting extends Log {
    * includeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. This includes the execution of all hook points
-   * registered by setReplace. These hook points replace a template. This method
-   * is called in the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardingsX(String , ASTNode)
-   * getTemplateForwardingsX} method triggered by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method.
-   *
-   * @param oldTemplate
-   * @param hps
-   * @param ast
+   * registered by setReplace. These hook points replace a template.
    */
   public static void reportCallReplacementHookPoint(String oldTemplate, List<HookPoint> hps,
-      ASTNode ast) {
+                                                    ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportCallReplacementHookPoint(oldTemplate, hps, ast);
     }
@@ -695,18 +602,10 @@ public class Reporting extends Log {
    * includeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. This includes the execution of all hook points
-   * registered by setASTSpecificReplacement. This method is called in the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
-   * getTemplateForwardings} method triggered by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method.
-   *
-   * @param oldTemplate
-   * @param hps
-   * @param ast
+   * registered by setASTSpecificReplacement.
    */
   public static void reportCallSpecificReplacementHookPoint(String oldTemplate,
-      List<HookPoint> hps, ASTNode ast) {
+                                                            List<HookPoint> hps, ASTNode ast) {
     if (isEnabled()) {
       getReportManager().reportCallSpecificReplacementHookPoint(oldTemplate, hps, ast);
     }
@@ -714,18 +613,14 @@ public class Reporting extends Log {
 
   /**
    * Reports the replacement of a template by an AST hook point via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String , ASTNode , HookPoint )
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String, ASTNode, HookPoint)
    * replaceTemplate} method of the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}. This does not include any other assignment or
    * replacement.
-   *
-   * @param oldTemplate
-   * @param node
-   * @param newHp
    */
   public static void reportASTSpecificTemplateReplacement(String oldTemplate, ASTNode node,
-      HookPoint newHp) {
+                                                          HookPoint newHp) {
     if (isEnabled()) {
       getReportManager().reportASTSpecificTemplateReplacement(oldTemplate, node, newHp);
     }
@@ -733,14 +628,11 @@ public class Reporting extends Log {
 
   /**
    * Reports the replacement of a template by hook points via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String , List )
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String, List)
    * replaceTemplate} method of the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}. This does not include any other assignment or
    * replacement.
-   *
-   * @param oldTemplate
-   * @param newHps
    */
   public static void reportTemplateReplacement(String oldTemplate, List<? extends HookPoint> newHps) {
     if (isEnabled()) {
@@ -750,12 +642,8 @@ public class Reporting extends Log {
 
   /**
    * Reports the assignment of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setBeforeTemplate(String , List )}
-   * . This does not include any other assignment or replacement.
-   *
-   * @param template
-   * @param ast
-   * @param beforeHps
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setBeforeTemplate(String, List)}.
+   * This does not include any other assignment or replacement.
    */
   public static void reportSetBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> beforeHps) {
     if (isEnabled()) {
@@ -765,12 +653,8 @@ public class Reporting extends Log {
 
   /**
    * Reports the addition of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
-   * . This does not include any other assignment or replacement.
-   *
-   * @param template
-   * @param ast
-   * @param afterHps
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String, List)}.
+   * This does not include any other assignment or replacement.
    */
   public static void reportSetAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
@@ -786,12 +670,8 @@ public class Reporting extends Log {
 
   /**
    * Reports the assignment of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
-   * . This does not include any other assignment or replacement.
-   *
-   * @param template
-   * @param ast
-   * @param afterHps
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String, List)}.
+   * This does not include any other assignment or replacement.
    */
   public static void reportAddAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
@@ -801,24 +681,17 @@ public class Reporting extends Log {
 
   /**
    * Reports the assignment of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
-   * . This does not include any other assignment or replacement.
-   *
-   * @param template
-   * @param ast
-   * @param afterHps
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String, List)}.
+   * This does not include any other assignment or replacement.
    */
   public static void reportAddBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
       getReportManager().reportAddBeforeTemplate(template, ast, afterHps);
     }
   }
+
   /**
    * Reports the check for existence of an artifact
-   *
-   * @param mcp
-   * @param fileName
-   * @param resolvedPath contains the result if artifact exists
    */
   public static void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> resolvedPath) {
     if (isEnabled()) {
@@ -829,9 +702,9 @@ public class Reporting extends Log {
   public static void reportUserSpecificTemplate(Path parentDir, Path fileName) {
     if (isEnabled()) {
       getReportManager().reportUserSpecificTemplate(parentDir, fileName);
-    }    
+    }
   }
-  
+
   public static void reportAddValue(String name, Object value, int size) {
     if (isEnabled()) {
       getReportManager().reportAddValue(name, value, size);
@@ -853,22 +726,17 @@ public class Reporting extends Log {
    * This method is called when an input file is opened which is obtained via
    * model resolution. Such files typically are dependency models (e.g., super
    * grammars, super CDs, ...).
-   *
-   * @param parentPath
-   * @param file
    */
   public static void reportOpenInputFile(Optional<Path> parentPath, Path file) {
     if (isEnabled()) {
       getReportManager().reportOpenInputFile(parentPath, file);
     }
   }
-  
+
   /**
    * This method is called when an input file is opened which is obtained via
    * model resolution. Such files typically are dependency models (e.g., super
    * grammars, super CDs, ...).
-   *
-   * @param fileName
    */
   public static void reportOpenInputFile(String fileName) {
     if (isEnabled()) {
@@ -880,10 +748,7 @@ public class Reporting extends Log {
    * This method is called when an input file is parsed; i.e., this report hook
    * point is designed for the main input artifacts only. E.g., files that are
    * loaded on demand during further processing should not report using this
-   * method but {@link #reportOpenInputFile(Optional, Path)}  instead.
-   *
-   * @param inputFilePath
-   * @param modelName
+   * method but {@link #reportOpenInputFile(Optional, Path)} instead.
    */
   public static void reportParseInputFile(Path inputFilePath, String modelName) {
     if (isEnabled()) {
@@ -894,8 +759,6 @@ public class Reporting extends Log {
   /**
    * This method is called to report the content of the symbol table. The method
    * should only be called once during the execution of the generator.
-   *
-   * @param scope
    */
   public static void reportSymbolTableScope(IScope scope) {
     if (isEnabled()) {
