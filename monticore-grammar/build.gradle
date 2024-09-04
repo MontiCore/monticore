@@ -597,11 +597,6 @@ if (("true").equals(getProperty('genTagging'))) {
         artifact tasks.taggingJar { archiveAppendix = 'tagging' }
         artifact tasks.taggingSourcesJar { archiveAppendix = 'tagging'; archiveClassifier = 'sources' }
       }
-      if (("true").equals(getProperty('genTR'))) {
-        "trafo" {
-          groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
-        }
-      }
     }
   }
   configurations {
@@ -620,6 +615,14 @@ if (("true").equals(getProperty('genTR'))) {
       extendsFrom trafoCompileClasspath
       setCanBeResolved(false)
       setCanBeConsumed(true)
+    }
+  }
+
+  publishing {
+    publications {
+      "trafo" {
+        groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
+      }
     }
   }
 }
