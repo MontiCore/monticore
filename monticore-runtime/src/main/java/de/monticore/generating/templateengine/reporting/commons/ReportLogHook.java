@@ -75,7 +75,7 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
     return this.reportManagers;
   }
 
-  private ReportManager getReportManager(String modelName) {
+  protected ReportManager getReportManager(String modelName) {
     if (!this.getReportManagers().containsKey(modelName)) {
       ReportManager repoMan = this.getFactory().provide(modelName);
       this.getReportManagers().put(modelName, repoMan);
@@ -86,7 +86,7 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
   /**
    * @return the currently active/responsible report manager instance
    */
-  private ReportManager getReportManager() {
+  protected ReportManager getReportManager() {
     return getReportManager(Reporting.getCurrentModel());
   }
 
