@@ -581,8 +581,9 @@ public class CompileTimeTypeCalculator {
       Log.error("0xFD444 no applicable function found!"
           + System.lineSeparator() + "Arguments pertinent to applicability:"
           + argInfo
-          + System.lineSeparator() + " resolved functions:"
-          + System.lineSeparator() + resolvedFuncs.stream()
+          + System.lineSeparator()
+          + " potentially applicable functions (before inference): "
+          + System.lineSeparator() + potentiallyApplicableFuncs.stream()
           .map(SymTypeExpression::printFullName)
           .collect(Collectors.joining(System.lineSeparator()))
       );
