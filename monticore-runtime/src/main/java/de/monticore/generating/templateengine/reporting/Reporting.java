@@ -1,199 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.generating.templateengine.reporting;
-
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.reporting.commons.ReportManager;
+import de.monticore.generating.templateengine.reporting.commons.ReportLogHook;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
-import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.ConsoleLogHook;
-import de.se_rwth.commons.logging.DefaultErrorHook;
 import de.se_rwth.commons.logging.Log;
+
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Facade for all reporting activities. Invoking a report method causes all
  * AReporter implementing this method to execute it.
- *
  */
 public class Reporting extends Log {
-
-  /**
-   * Map of model names to actual report managers.
-   */
-  protected Map<String, ReportManager> reportManagers = new HashMap<>();
-
-  /**
-   * Where output will be written to.
-   */
-  protected String outputDirectory;
-
-  /**
-   * Where reports will be written to.
-   */
-  protected String reportDirectory;
-
-
-  /**
-   * For creating report managers on-demand for newly processed models.
-   */
-  protected ReportManagerFactory factory;
-  
-  /**
-   * Constructor for de.monticore.generating.templateengine.reporting.Reporting
-   *
-   * @param outputDirectory for storing the reports
-   * @param factory for creating specific report manager configurations
-   */
-  private Reporting(String outputDirectory, String reportDirectory, ReportManagerFactory factory) {
-    this.outputDirectory = outputDirectory;
-    this.reportDirectory = reportDirectory;
-    this.factory = factory;
-  }
-
-  protected Map<String, ReportManager> getReportManagers() {
-    return this.reportManagers;
-  }
-
-  protected String getOutputDirectory() {
-    return this.outputDirectory;
-  }
-
-  protected String getReportDirectory() {
-    return this.reportDirectory;
-  }
-
-  protected ReportManagerFactory getFactory() {
-    return this.factory;
-  }
-
-  private ReportManager getReportManager(String modelName) {
-    if (!this.getReportManagers().containsKey(modelName)) {
-      ReportManager repoMan = this.getFactory().provide(modelName);
-      this.getReportManagers().put(modelName, repoMan);
-    }
-    return this.getReportManagers().get(modelName);
-  }
-
-  // #########################
-  // some log overriding magic
-
-  /**
-   * @see de.se_rwth.commons.logging.Log#warn(java.lang.String)
-   */
-  @Override
-  public void doWarn(String msg) {
-    reportWarning(msg);
-    super.doWarn(msg);
-  }
-
-  @Override
-  public void doWarn(String msg, SourcePosition position) {
-    reportWarning(msg);
-    super.doWarn(msg, position);
-  }
-
-  @Override
-  public void doWarn(String msg, SourcePosition start, SourcePosition end) {
-    reportWarning(msg);
-    super.doWarn(msg, start, end);
-  }
-
-
-  /**
-   * @see de.se_rwth.commons.logging.Log#warn(java.lang.String,
-   * java.lang.Throwable)
-   */
-  @Override
-  public void doWarn(String msg, Throwable t) {
-    reportWarning(msg);
-    super.doWarn(msg, t);
-  }
-
-  /**
-   * @see de.se_rwth.commons.logging.Log#error(java.lang.String)
-   */
-  @Override
-  public void doError(String msg) {
-    _doError(msg, Optional.empty(), Optional.empty(), Optional.empty());
-  }
-
-  @Override
-  public void doError(String msg, SourcePosition position) {
-    _doError(msg, Optional.empty(), Optional.ofNullable(position), Optional.empty());
-  }
-
-  @Override
-  public void doError(String msg, SourcePosition start, SourcePosition end) {
-    _doError(msg, Optional.empty(), Optional.ofNullable(start), Optional.ofNullable(end));
-  }
-
-  /**
-   * @see de.se_rwth.commons.logging.Log#error(java.lang.String,
-   * java.lang.Throwable)
-   */
-  @Override
-  public void doError(String msg, Throwable t) {
-    _doError(msg, Optional.ofNullable(t), Optional.empty(), Optional.empty());
-  }
-
-  protected void _doError(String msg, Optional<Throwable> t, Optional<SourcePosition> start, Optional<SourcePosition> end) {
-    // we need to know whether we wanted to fail immediately
-    boolean wantsToFailQuick = Log.isFailQuickEnabled();
-    if (wantsToFailQuick) {
-      // if so, then temporary deactivate fail quick to allow proper logging
-      Log.enableFailQuick(false);
-    }
-    // report the error
-    reportError(msg);
-    // and log the error
-    if (t.isPresent()) {
-      super.doError(msg, t.get());
-    }
-    else if(start.isPresent() && end.isPresent()){
-      super.doError(msg, start.get(), end.get());
-    } else if(start.isPresent()) {
-      super.doError(msg, start.get());
-    }else{
-      super.doError(msg);
-    }
-
-    // now if we wanted to fail quick, we need to flush the reports without
-    // causing a crash, i.e., we need to catch exceptions
-    if (wantsToFailQuick) {
-      try {
-        flush(null);
-      }
-      catch (Exception e) {
-        // this is rather generic but it'll probably do for now
-        super.doError("0xA4055 Error during error reporting. Enable debug for more details.");
-        super.doDebug("Error during error reporting", e, ReportManager.class.getName());
-      }
-    }
-
-    // eventually, if we wanted to fail quick we do it now
-    if (wantsToFailQuick) {
-      Log.enableFailQuick(true);
-    }
-  }
-
-  // end of the log overriding magic
-  // #########################
-
-  /* the singleton */
-  private static Reporting singleton;
 
   /* whether reporting is enabled at the moment */
   protected static boolean enabled = false;
@@ -201,13 +29,11 @@ public class Reporting extends Log {
   /* the currently active model for which reporting takes place */
   protected static String currentModel;
 
-  /**
-   * @return the single reporting instance
-   */
-  private static Reporting get() {
-    return singleton;
+  public static String getCurrentModel() {
+    return currentModel;
   }
 
+  @Deprecated
   public static void init(String outputDirectory, String reportDirectory, ReportManagerFactory factory) {
     if (outputDirectory == null || outputDirectory.isEmpty()) {
       Log.error("0xA4050 Output directory must not be null or empty.");
@@ -218,30 +44,21 @@ public class Reporting extends Log {
     if (factory == null) {
       Log.error("0xA4051 Report manager factory must not be null.");
     }
-    singleton = new Reporting(outputDirectory, reportDirectory, factory);
-    singleton.logHooks = new ArrayList<>();
-    singleton.logHooks.add(new ConsoleLogHook());
-    singleton.errorHook = new DefaultErrorHook();
-    Log.setLog(singleton);
+    init(reportDirectory, factory);
   }
 
-  /**
-   * @return whether reporting was properly initialized
-   * @see Reporting#init(String, String, ReportManagerFactory)
-   */
-  public static boolean isInitialized() {
-    return get() != null;
+  public static void init(String reportDirectory, ReportManagerFactory factory) {
+    if (Log.getLog() == null) {
+      Log.init();
+    }
+    addReportHook(new ReportLogHook(reportDirectory, factory));
   }
 
   /**
    * @return whether reporting is currently enabled
    */
   public static boolean isEnabled() {
-    if (isInitialized()) {
-      return enabled;
-    }
-    // if it's not initialized it's also not enabled
-    return false;
+    return enabled;
   }
 
   /**
@@ -255,14 +72,11 @@ public class Reporting extends Log {
     if (modelName == null || modelName.isEmpty()) {
       Log.error("0xA4109 Must specify valid model name for reporting.");
     }
-    if (!isInitialized()) {
-      Log.warn("0xA4053 You must initialize reporting before enabling it.");
-      return false;
-    }
 
     currentModel = modelName;
     enabled = true;
-    return enabled;
+
+    return isEnabled();
   }
 
   /**
@@ -271,123 +85,139 @@ public class Reporting extends Log {
    * @return the currently active model name for which reporting was active
    */
   public static String off() {
-    if (isInitialized()) {
-      enabled = false;
-      if (currentModel != null) {
-        return currentModel;
-      }
+    enabled = false;
+    if (currentModel != null) {
+      return currentModel;
     }
     return "";
   }
 
-  /**
-   * @return the currently active/responsible report manager instance
-   */
-  private static ReportManager getReportManager() {
-    // must only be used internally and with preceeding checks fo initialization
-    return get().getReportManager(currentModel);
+  static List<ReportLogHook> reportHooks = new ArrayList<>();
+
+  protected static List<ReportLogHook> getReportHooks() {
+    return reportHooks;
+  }
+
+  public static void addReportHook(ReportLogHook reportHook) {
+    reportHooks.add(reportHook);
   }
 
   public static void reportTransformationStart(String transformationName) {
     if (isEnabled()) {
-      getReportManager().reportTransformationStart(transformationName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationStart(transformationName);
+      }
     }
   }
 
   public static void reportTransformationObjectMatch(String transformationName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTransformationObjectMatch(transformationName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationObjectMatch(transformationName, ast);
+      }
     }
   }
 
-  public static void reportTransformationOldValue(String transformationName, ASTNode ast){
+  public static void reportTransformationOldValue(String transformationName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTransformationOldValue(transformationName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationOldValue(transformationName, ast);
+      }
     }
   }
 
-  public static void reportTransformationNewValue(String transformationName, ASTNode ast){
+  public static void reportTransformationNewValue(String transformationName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTransformationNewValue(transformationName, ast);
-    }
-  }
-  public static void reportTransformationOldValue(String transformationName, String value){
-    if (isEnabled()) {
-      getReportManager().reportTransformationOldValue(transformationName, value);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationNewValue(transformationName, ast);
+      }
     }
   }
 
-  public static void reportTransformationNewValue(String transformationName, String value){
+  public static void reportTransformationOldValue(String transformationName, String value) {
     if (isEnabled()) {
-      getReportManager().reportTransformationNewValue(transformationName, value);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationOldValue(transformationName, value);
+      }
     }
   }
 
-  public static void reportTransformationOldValue(String transformationName, boolean value){
+  public static void reportTransformationNewValue(String transformationName, String value) {
     if (isEnabled()) {
-      getReportManager().reportTransformationOldValue(transformationName, value);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationNewValue(transformationName, value);
+      }
     }
   }
 
-  public static void reportTransformationNewValue(String transformationName, boolean value){
+  public static void reportTransformationOldValue(String transformationName, boolean value) {
     if (isEnabled()) {
-      getReportManager().reportTransformationNewValue(transformationName, value);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationOldValue(transformationName, value);
+      }
+    }
+  }
+
+  public static void reportTransformationNewValue(String transformationName, boolean value) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationNewValue(transformationName, value);
+      }
     }
   }
 
   public static void reportTransformationObjectChange(String transformationName, ASTNode ast, String attributeName) {
     if (isEnabled()) {
-      getReportManager().reportTransformationObjectChange(transformationName, ast, attributeName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationObjectChange(transformationName, ast, attributeName);
+      }
     }
   }
 
   public static void reportTransformationObjectCreation(String transformationName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTransformationObjectCreation(transformationName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationObjectCreation(transformationName, ast);
+      }
     }
   }
 
   public static void reportTransformationObjectDeletion(String transformationName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTransformationObjectDeletion(transformationName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTransformationObjectDeletion(transformationName, ast);
+      }
     }
   }
 
   public static void reportModelStart(ASTNode ast, String modelName, String fileName) {
     if (isEnabled()) {
-      getReportManager().reportModelStart(ast, modelName, fileName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportModelStart(ast, modelName, fileName);
+      }
     }
   }
 
-
-
   /**
    * Reports the execution of templates
-   *
-   * @param templateName
-   * @param ast
    */
-  /* handwritten templates, and templates within Template Hookpoints and AST
-   * specific Template Hookpoints */
   public static void reportTemplateStart(String templateName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTemplateStart(templateName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateStart(templateName, ast);
+      }
     }
   }
 
   /**
    * Reports the execution of a standard template that is wrapped into a
-   * template hook point via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
-   * getTemplateForwardings} method. The template is wrapped into the template
-   * hook point only if there is no other template forwarding.
-   *
-   * @param templateName
-   * @param ast
+   * template hook point,
    */
   public static void reportExecuteStandardTemplate(String templateName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportExecuteStandardTemplate(templateName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportExecuteStandardTemplate(templateName, ast);
+      }
     }
   }
 
@@ -397,172 +227,154 @@ public class Reporting extends Log {
    * writeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}.
-   *
-   * @param templateName
-   * @param path
-   * @param ast
    */
   public static void reportFileCreation(String templateName, Path path, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportFileCreation(templateName, path, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportFileCreation(templateName, path, ast);
+      }
     }
   }
-  
+
   /**
    * Reports a file creation
-   *
-   * @param parentPath
-   * @param file
    */
   public static void reportFileCreation(Path parentPath, Path file) {
     if (isEnabled()) {
-      getReportManager().reportFileCreation(parentPath, file);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportFileCreation(parentPath, file);
+      }
     }
   }
-  
+
   /**
    * Reports a file creation
-   *
-   * @param fileName
    */
   public static void reportFileCreation(String fileName) {
     if (isEnabled()) {
-      getReportManager().reportFileCreation(fileName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportFileCreation(fileName);
+      }
     }
   }
 
   /**
    * Reports the end of a file creation (file finalization).
-   *
-   * @param templateName
-   * @param path
-   * @param ast
    */
   public static void reportFileFinalization(String templateName, Path path, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportFileFinalization(templateName, path, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportFileFinalization(templateName, path, ast);
+      }
     }
   }
 
   /**
    * Reports a template based file creation.
-   *
-   * @param templateName
-   * @param qualifiedFilename
-   * @param fileExtension
-   * @param ast
    */
   public static void reportFileCreation(String templateName, String qualifiedFilename,
-      String fileExtension, ASTNode ast) {
+                                        String fileExtension, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportFileCreation(templateName, qualifiedFilename, fileExtension, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportFileCreation(templateName, qualifiedFilename, fileExtension, ast);
+      }
     }
   }
 
   /**
    * Reports the end of a file creation (file finalization).
-   *
-   * @param templateName
-   * @param qualifiedFilename
-   * @param fileExtension
-   * @param ast
    */
   public static void reportFileFinalization(String templateName, String qualifiedFilename,
-      String fileExtension, ASTNode ast) {
+                                            String fileExtension, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager()
-          .reportFileFinalization(templateName, qualifiedFilename, fileExtension, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportFileFinalization(templateName, qualifiedFilename, fileExtension, ast);
+      }
     }
   }
-  
+
   /**
-   * Reports a checking of file existence 
-   *
-   * @param parentPath
-   * @param file
+   * Reports a checking of file existence
    */
   public static void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     if (isEnabled()) {
-      getReportManager()
-          .reportFileExistenceChecking(parentPath, file);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportFileExistenceChecking(parentPath, file);
+      }
     }
   }
-  
+
   /**
    * Reports the end of a template execution.
-   *
-   * @param templateName
-   * @param ast
    */
   public static void reportTemplateEnd(String templateName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTemplateEnd(templateName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateEnd(templateName, ast);
+      }
     }
   }
 
   public static void reportModelEnd(String modelName, String fileName) {
     if (isEnabled()) {
-      getReportManager().reportModelEnd(modelName, fileName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportModelEnd(modelName, fileName);
+      }
     }
   }
 
   public static void reportModelLoad(String qualifiedName) {
     if (isEnabled()) {
-      getReportManager().reportModelLoad(qualifiedName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportModelLoad(qualifiedName);
+      }
     }
   }
 
   public static void reportSetValue(String name, Object value) {
     if (isEnabled()) {
-      getReportManager().reportSetValue(name, value);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportSetValue(name, value);
+      }
     }
   }
 
   public static void reportInstantiate(String className, List<Object> params) {
     if (isEnabled()) {
-      getReportManager().reportInstantiate(className, params);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportInstantiate(className, params);
+      }
     }
   }
 
   public static void reportMethodCall(String className, String methodName, List<Object> params) {
     if (isEnabled()) {
-      getReportManager().reportMethodCall(className, methodName, params);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportMethodCall(className, methodName, params);
+      }
     }
   }
 
   /**
-   * Reports the template inclusion via the
-   * logTemplateCallOrInclude} method called by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method of the
-   * {@link de.monticore.generating.templateengine.TemplateController
-   * TemplateController} after calculating all forwardings.
-   *
-   * @param templateName
-   * @param ast
+   * Reports template inclusion.
    */
   public static void reportTemplateInclude(String templateName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTemplateInclude(templateName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateInclude(templateName, ast);
+      }
     }
   }
 
   /**
-   * Reports the template write via the
-
-   * logTemplateCallOrInclude} method called by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method of the
-   * {@link de.monticore.generating.templateengine.TemplateController
-   * TemplateController}. TemplateWrite does not calculate forwardings, it
+   * Reports the template write. TemplateWrite does not calculate forwardings, it
    * processes the template instantly.
-   *
-   * @param templateName
-   * @param ast
    */
   public static void reportTemplateWrite(String templateName, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportTemplateWrite(templateName, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateWrite(templateName, ast);
+      }
     }
   }
 
@@ -572,13 +384,12 @@ public class Reporting extends Log {
    * setHookPoint} method of the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}.
-   *
-   * @param hookName
-   * @param hp
    */
   public static void reportSetHookPoint(String hookName, HookPoint hp) {
     if (isEnabled()) {
-      getReportManager().reportSetHookPoint(hookName, hp);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportSetHookPoint(hookName, hp);
+      }
     }
   }
 
@@ -587,14 +398,12 @@ public class Reporting extends Log {
    * callHookPoint} method. This does not include the execution of hook points
    * registered by the setBefore, setAfter or replaceTemplate Methods, nor the
    * execution of AST specific hook points.
-   *
-   * @param hookName
-   * @param hp
-   * @param ast
    */
   public static void reportCallHookPointStart(String hookName, HookPoint hp, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportCallHookPointStart(hookName, hp, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportCallHookPointStart(hookName, hp, ast);
+      }
     }
   }
 
@@ -602,12 +411,12 @@ public class Reporting extends Log {
    * Reports the end of the execution of a hook point via the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#bindHookPoint(String, HookPoint)} (TemplateController, String, ASTNode)
    * callHookPoint} method.
-   *
-   * @param hookName
    */
   public static void reportCallHookPointEnd(String hookName) {
     if (isEnabled()) {
-      getReportManager().reportCallHookPointEnd(hookName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportCallHookPointEnd(hookName);
+      }
     }
   }
 
@@ -619,20 +428,14 @@ public class Reporting extends Log {
    * includeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. This includes the execution of all hook points
-   * registered by setAfter. This method is called in the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
-   * getTemplateForwardings} method triggered by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method.
-   *
-   * @param oldTemplate
-   * @param afterHps
-   * @param ast
+   * registered by setAfter.
    */
   public static void reportCallAfterHookPoint(String oldTemplate, Collection<HookPoint> afterHps,
-      ASTNode ast) {
+                                              ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportCallAfterHookPoint(oldTemplate, afterHps, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportCallAfterHookPoint(oldTemplate, afterHps, ast);
+      }
     }
   }
 
@@ -644,20 +447,14 @@ public class Reporting extends Log {
    * includeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. This includes the execution of all hook points
-   * registered by setBefore. This method is called in the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
-   * getTemplateForwardings} method triggered by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method.
-   *
-   * @param oldTemplate
-   * @param beforeHps
-   * @param ast
+   * registered by setBefore.
    */
   public static void reportCallBeforeHookPoint(String oldTemplate, Collection<HookPoint> beforeHps,
-      ASTNode ast) {
+                                               ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportCallBeforeHookPoint(oldTemplate, beforeHps, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportCallBeforeHookPoint(oldTemplate, beforeHps, ast);
+      }
     }
   }
 
@@ -669,21 +466,14 @@ public class Reporting extends Log {
    * includeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. This includes the execution of all hook points
-   * registered by setReplace. These hook points replace a template. This method
-   * is called in the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardingsX(String , ASTNode)
-   * getTemplateForwardingsX} method triggered by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method.
-   *
-   * @param oldTemplate
-   * @param hps
-   * @param ast
+   * registered by setReplace. These hook points replace a template.
    */
   public static void reportCallReplacementHookPoint(String oldTemplate, List<HookPoint> hps,
-      ASTNode ast) {
+                                                    ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportCallReplacementHookPoint(oldTemplate, hps, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportCallReplacementHookPoint(oldTemplate, hps, ast);
+      }
     }
   }
 
@@ -695,146 +485,134 @@ public class Reporting extends Log {
    * includeArgs} method of the
    * {@link de.monticore.generating.templateengine.TemplateController
    * TemplateController}. This includes the execution of all hook points
-   * registered by setASTSpecificReplacement. This method is called in the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#getTemplateForwardings(String , ASTNode)
-   * getTemplateForwardings} method triggered by the
-   * {@link de.monticore.generating.templateengine.TemplateController#processTemplate(String, ASTNode, List)
-   * processTemplate} method.
-   *
-   * @param oldTemplate
-   * @param hps
-   * @param ast
+   * registered by setASTSpecificReplacement.
    */
   public static void reportCallSpecificReplacementHookPoint(String oldTemplate,
-      List<HookPoint> hps, ASTNode ast) {
+                                                            List<HookPoint> hps, ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().reportCallSpecificReplacementHookPoint(oldTemplate, hps, ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportCallSpecificReplacementHookPoint(oldTemplate, hps, ast);
+      }
     }
   }
 
   /**
    * Reports the replacement of a template by an AST hook point via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String , ASTNode , HookPoint )
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String, ASTNode, HookPoint)
    * replaceTemplate} method of the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}. This does not include any other assignment or
    * replacement.
-   *
-   * @param oldTemplate
-   * @param node
-   * @param newHp
    */
   public static void reportASTSpecificTemplateReplacement(String oldTemplate, ASTNode node,
-      HookPoint newHp) {
+                                                          HookPoint newHp) {
     if (isEnabled()) {
-      getReportManager().reportASTSpecificTemplateReplacement(oldTemplate, node, newHp);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportASTSpecificTemplateReplacement(oldTemplate, node, newHp);
+      }
     }
   }
 
   /**
    * Reports the replacement of a template by hook points via the
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String , List )
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#replaceTemplate(String, List)
    * replaceTemplate} method of the
    * {@link de.monticore.generating.templateengine.GlobalExtensionManagement
    * GlobalExtensionManagement}. This does not include any other assignment or
    * replacement.
-   *
-   * @param oldTemplate
-   * @param newHps
    */
   public static void reportTemplateReplacement(String oldTemplate, List<? extends HookPoint> newHps) {
     if (isEnabled()) {
-      getReportManager().reportTemplateReplacement(oldTemplate, newHps);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateReplacement(oldTemplate, newHps);
+      }
     }
   }
 
   /**
    * Reports the assignment of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setBeforeTemplate(String , List )}
-   * . This does not include any other assignment or replacement.
-   *
-   * @param template
-   * @param ast
-   * @param beforeHps
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setBeforeTemplate(String, List)}.
+   * This does not include any other assignment or replacement.
    */
   public static void reportSetBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> beforeHps) {
     if (isEnabled()) {
-      getReportManager().reportSetBeforeTemplate(template, ast, beforeHps);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportSetBeforeTemplate(template, ast, beforeHps);
+      }
     }
   }
 
   /**
    * Reports the addition of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
-   * . This does not include any other assignment or replacement.
-   *
-   * @param template
-   * @param ast
-   * @param afterHps
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String, List)}.
+   * This does not include any other assignment or replacement.
    */
   public static void reportSetAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
-      getReportManager().reportSetAfterTemplate(template, ast, afterHps);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportSetAfterTemplate(template, ast, afterHps);
+      }
     }
   }
 
   public static void reportUseHandwrittenCodeFile(Path parentDir, Path fileName) {
     if (isEnabled()) {
-      getReportManager().reportUseHandwrittenCodeFile(parentDir, fileName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportUseHandwrittenCodeFile(parentDir, fileName);
+      }
     }
   }
 
   /**
    * Reports the assignment of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
-   * . This does not include any other assignment or replacement.
-   *
-   * @param template
-   * @param ast
-   * @param afterHps
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String, List)}.
+   * This does not include any other assignment or replacement.
    */
   public static void reportAddAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
-      getReportManager().reportAddAfterTemplate(template, ast, afterHps);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportAddAfterTemplate(template, ast, afterHps);
+      }
     }
   }
 
   /**
    * Reports the assignment of hook points to a template via
-   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String , List )}
-   * . This does not include any other assignment or replacement.
-   *
-   * @param template
-   * @param ast
-   * @param afterHps
+   * {@link de.monticore.generating.templateengine.GlobalExtensionManagement#setAfterTemplate(String, List)}.
+   * This does not include any other assignment or replacement.
    */
   public static void reportAddBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     if (isEnabled()) {
-      getReportManager().reportAddBeforeTemplate(template, ast, afterHps);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportAddBeforeTemplate(template, ast, afterHps);
+      }
     }
   }
+
   /**
    * Reports the check for existence of an artifact
-   *
-   * @param mcp
-   * @param fileName
-   * @param resolvedPath contains the result if artifact exists
    */
   public static void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> resolvedPath) {
     if (isEnabled()) {
-      getReportManager().reportHWCExistenceCheck(mcp, fileName, resolvedPath);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportHWCExistenceCheck(mcp, fileName, resolvedPath);
+      }
     }
   }
 
   public static void reportUserSpecificTemplate(Path parentDir, Path fileName) {
     if (isEnabled()) {
-      getReportManager().reportUserSpecificTemplate(parentDir, fileName);
-    }    
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportUserSpecificTemplate(parentDir, fileName);
+      }
+    }
   }
-  
+
   public static void reportAddValue(String name, Object value, int size) {
     if (isEnabled()) {
-      getReportManager().reportAddValue(name, value, size);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportAddValue(name, value, size);
+      }
     }
   }
 
@@ -844,8 +622,8 @@ public class Reporting extends Log {
    * @param value that will be reported in DetailedReporter
    */
   public static void reportToDetailed(String value) {
-    if (isEnabled()) {
-      getReportManager().reportDetailed(value);
+    for (ReportLogHook hook : getReportHooks()) {
+      hook.reportDetailed(value);
     }
   }
 
@@ -853,26 +631,25 @@ public class Reporting extends Log {
    * This method is called when an input file is opened which is obtained via
    * model resolution. Such files typically are dependency models (e.g., super
    * grammars, super CDs, ...).
-   *
-   * @param parentPath
-   * @param file
    */
   public static void reportOpenInputFile(Optional<Path> parentPath, Path file) {
     if (isEnabled()) {
-      getReportManager().reportOpenInputFile(parentPath, file);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportOpenInputFile(parentPath, file);
+      }
     }
   }
-  
+
   /**
    * This method is called when an input file is opened which is obtained via
    * model resolution. Such files typically are dependency models (e.g., super
    * grammars, super CDs, ...).
-   *
-   * @param fileName
    */
   public static void reportOpenInputFile(String fileName) {
     if (isEnabled()) {
-      getReportManager().reportOpenInputFile(fileName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportOpenInputFile(fileName);
+      }
     }
   }
 
@@ -880,26 +657,25 @@ public class Reporting extends Log {
    * This method is called when an input file is parsed; i.e., this report hook
    * point is designed for the main input artifacts only. E.g., files that are
    * loaded on demand during further processing should not report using this
-   * method but {@link #reportOpenInputFile(Optional, Path)}  instead.
-   *
-   * @param inputFilePath
-   * @param modelName
+   * method but {@link #reportOpenInputFile(Optional, Path)} instead.
    */
   public static void reportParseInputFile(Path inputFilePath, String modelName) {
     if (isEnabled()) {
-      getReportManager().reportParseInputFile(inputFilePath, modelName);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportParseInputFile(inputFilePath, modelName);
+      }
     }
   }
 
   /**
    * This method is called to report the content of the symbol table. The method
    * should only be called once during the execution of the generator.
-   *
-   * @param scope
    */
   public static void reportSymbolTableScope(IScope scope) {
     if (isEnabled()) {
-      getReportManager().reportSymbolTableScope(scope);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportSymbolTableScope(scope);
+      }
     }
   }
 
@@ -911,33 +687,25 @@ public class Reporting extends Log {
    */
   public static void flush(ASTNode ast) {
     if (isEnabled()) {
-      getReportManager().flush(ast);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.flush(ast);
+      }
     }
   }
 
-  public static void reportWarning(String message) {
+  public static void reportWarning(String msg) {
     if (isEnabled()) {
-      getReportManager().reportWarning(message);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportWarning(msg);
+      }
     }
   }
 
   public static void reportError(String msg) {
     if (isEnabled()) {
-      getReportManager().reportError(msg);
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportError(msg);
+      }
     }
-  }
-
-  public static String getOutputDir() {
-    if (isInitialized()) {
-      return get().getOutputDirectory();
-    }
-    return "";
-  }
-
-  public static String getReportDir() {
-    if (isInitialized()) {
-      return get().getReportDirectory();
-    }
-    return "";
   }
 }
