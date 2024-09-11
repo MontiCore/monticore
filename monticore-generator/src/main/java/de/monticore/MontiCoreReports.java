@@ -18,7 +18,6 @@ import de.monticore.generating.templateengine.reporting.reporter.InvolvedFilesRe
 import de.monticore.generating.templateengine.reporting.reporter.NodeTreeDecoratedReporter;
 import de.monticore.generating.templateengine.reporting.reporter.NodeTreeReporter;
 import de.monticore.generating.templateengine.reporting.reporter.NodeTypesReporter;
-import de.monticore.generating.templateengine.reporting.reporter.StatisticsReporter;
 import de.monticore.generating.templateengine.reporting.reporter.SuccessfulReporter;
 import de.monticore.generating.templateengine.reporting.reporter.SummaryReporter;
 import de.monticore.generating.templateengine.reporting.reporter.TemplateTreeReporter;
@@ -111,7 +110,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     ArtifactGVReporter artifactGV = new ArtifactGVReporter(this.reportDirectory, lowerCaseName);
     ODReporter objDiagram = new ODReporter(this.reportDirectory, lowerCaseName, repository);
     SuccessfulReporter finishReporter = new SuccessfulReporter(this.reportDirectory, lowerCaseName);
-    StatisticsReporter statistics = new StatisticsReporter(mcConfig, "MC_JAR_JSON", this.reportDirectory, lowerCaseName, repository, traverserSummary);
+    StatisticsReporterFix statistics = new StatisticsReporterFix(mcConfig, "MC_JAR_JSON", this.reportDirectory, lowerCaseName, repository, traverserSummary);
     IncGenGradleReporter gradleReporter = new IncGenGradleReporter(this.reportDirectory, reportPathOutput, lowerCaseName);
 
     reports.addReportEventHandler(summary); // 01_Summary
