@@ -9,6 +9,7 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
+import de.monticore.StatisticsHandlerFix;
 import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
@@ -62,6 +63,7 @@ public class MontiCoreTool {
     Log.init();
     Grammar_WithConceptsMill.init();
     new MontiCoreTool().run(args);
+    StatisticsHandlerFix.shutdown();
   }
 
   /**

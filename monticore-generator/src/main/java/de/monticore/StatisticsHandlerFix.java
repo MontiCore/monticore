@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.generating.templateengine.reporting.commons;
+package de.monticore;
 
 import com.google.common.hash.Hashing;
 
@@ -8,13 +8,10 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
-
-public class StatisticsHandler {
+@Deprecated
+public class StatisticsHandlerFix {
 
   protected static ExecutorService _reportSendingExecutorService;
 
@@ -22,7 +19,7 @@ public class StatisticsHandler {
     if (_reportSendingExecutorService == null) {
       _reportSendingExecutorService = Executors.newCachedThreadPool();
       // just before the JVM runtime shuts down
-      Runtime.getRuntime().addShutdownHook(new Thread(StatisticsHandler::shutdown));
+      Runtime.getRuntime().addShutdownHook(new Thread(StatisticsHandlerFix::shutdown));
     }
     return _reportSendingExecutorService;
   }
@@ -81,5 +78,4 @@ public class StatisticsHandler {
       service.shutdownNow();
     }
   }
-
 }
