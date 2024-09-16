@@ -111,7 +111,7 @@ while (grammarIterator.hasNext()) {
     // M9.1: Inform about successful completion for grammar
     Log.info("Grammar " + astGrammar.getName() + " processed successfully!", LOG_ID)
 
-    // M10: Flush reporting
+    // M9.2: Flush reporting
     Reporting.reportModelEnd(astGrammar.getName(), "")
     Reporting.flush(astGrammar)
   }
