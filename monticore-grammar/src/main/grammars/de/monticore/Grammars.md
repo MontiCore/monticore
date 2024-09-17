@@ -141,9 +141,9 @@ thus be combined with any of the above grammars.
 The known units `s, m, kg, A, K, mol, cd` from the international system of 
 units (SI Units) and their combinations, such as `km/h` or `mg`, etc. can 
 be used as ordinary types (instead of only numbers). 
-The typecheck is extended to prevent, e.g., assignment of a weight to a length 
-variable or to add appropriate conversion, e.g., when a `km/h`-based velocity is, 
-e.g., stored in a `m/s`-based variable.
+The typecheck prevents e.g., assignment of a weight to a length 
+variable or to implicitely add appropriate conversion in the resulting program, 
+e.g., when a `km/h`-based velocity is stored in a `m/s`-based variable.
 
 * Example type definitions: `[km/h]`
 
@@ -158,13 +158,22 @@ such as `int`, `long`, `double`, `float` as argument.
 
 ### [RegExType.mc4](regex/RegExType.mc4) (stable)
 
-Embedded in `R"..."` a regular expressions
-can be used as ordinary type to constrain the values allowed for stored variables, attributes, 
-parameters. Types are e.g. , such as `R"[a-z]"` (single character) or `R"^([01][0-9]|2[0-3])$"` (hours).
-A typecheck for these types can only be executed at runtime and e.g. issue
-exceptions (or trigger repair functions) if violated. The static typecheck only uses `String` as 
-underlying carrier type.
-
+* If a variable should not use all kinds of `String`s, its is possible 
+to use a type definition of form in `R"..."` that contains a regular 
+expression (see above) to constrain the set of storable strings. This 
+is e.g. helpful to prevent malign user input in security relevant 
+codes. 
+* Types are e.g. , such as `R"[a-z]"` (single character) or 
+`R"^([01][0-9]|2[0-3])$"` (hours). 
+* When assigning  values of these types normally a typecheck executed is
+at runtime and e.g. issues an exception, if an assignment violation occurs. 
+* In some occasions, e.g. if in assignment `R"re1" v1 = v2` the type 
+`R"re2"` of `v2` is a subset then the typecheck identifies compatibility of 
+the strings and may omit the dynamic regular expression check. Subset 
+relationship of regular expressions is decidable (at compiletime).
+* If the regular expressions are disjoint, a compile time error may be 
+issued.
+* `String` is treated identical to `R".*"`.  
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
 
