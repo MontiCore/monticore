@@ -102,6 +102,14 @@ public class Reporting extends Log {
     reportHooks.add(reportHook);
   }
 
+  /**
+   * Clears the current report hooks, e.g. at the end of a tool call
+   * Note: This does not report the clearing of the hooks!
+   */
+  public static void clearReportHooks() {
+    reportHooks.clear();
+  }
+
   public static void reportTransformationStart(String transformationName) {
     if (isEnabled()) {
       for (ReportLogHook hook : getReportHooks()) {
