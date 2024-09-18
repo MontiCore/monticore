@@ -8,6 +8,7 @@ import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDClass;
@@ -24,7 +25,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -368,7 +368,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   public static void assertOneOf(ASTMCType actualType, String... expected) {
     boolean result = false;
-    String actual = actualType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+    String actual = CD4CodeMill.prettyPrint(actualType, false);
     for (String exp : expected) {
       if (actual.equals(exp)) {
         result = true;

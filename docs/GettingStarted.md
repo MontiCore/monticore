@@ -43,13 +43,13 @@ Java Development Kit (JDK) and validate that the installation was successful:
     JDK (e.g., `javac 11.0.5`), then the setup was successful.
 - *(Optional)* Install [Gradle](https://gradle.org/install/) version 7.6. 
 
-Now we have the prerequisites to run MontiCore from the command line and 
- using Gradle.
+Now we have the prerequisites to run MontiCore from the command line (CLI)
+or alternatively using Gradle.
 
 ## Use the MontiCore Command Line Interface
 
 This section describes instructions to perform the following first steps
-to use MontiCore, both as a CLI tool and with Gradle:
+to use MontiCore, either as a CLI tool or with Gradle:
 
 -   Installation of the MontiCore distribution file.
 -   Grammar inspection
@@ -61,7 +61,7 @@ to use MontiCore, both as a CLI tool and with Gradle:
 ### Installation
 
 For installing MontiCore for either CLI or Gradle usage,
- select the suitable tab below, and perform the following steps:
+select the suitable tab below, and perform the following steps:
 
 === "CLI"
 

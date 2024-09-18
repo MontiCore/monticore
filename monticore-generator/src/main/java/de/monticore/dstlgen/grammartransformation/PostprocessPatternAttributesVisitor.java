@@ -3,6 +3,7 @@ package de.monticore.dstlgen.grammartransformation;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.Comment;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.dstlgen.ruletranslation.DSTLGenInheritanceHelper;
 import de.monticore.dstlgen.util.DSTLUtil;
 import de.monticore.grammar.grammar.GrammarMill;
@@ -10,16 +11,9 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 
 import static de.se_rwth.commons.StringTransformations.uncapitalize;
 
@@ -35,7 +29,7 @@ public class PostprocessPatternAttributesVisitor implements
 
   @Override
   public void visit(ASTAdditionalAttribute node) {
-    String typeName = node.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+    String typeName = CD4CodeMill.prettyPrint(node.getMCType(), false);
     Optional<ProdSymbol> typeSymbol = grammarSymbol.getProdWithInherited(typeName);
     if ("Name".equals(typeName) || (typeSymbol.isPresent() && typeSymbol.get().isIsLexerProd())) {
       ASTMCBasicGenericType tfElementReference = GrammarMill.mCBasicGenericTypeBuilder().uncheckedBuild();

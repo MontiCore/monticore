@@ -76,7 +76,7 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC_STATIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.getCDParameterList().size());
-    assertDeepEquals("String[]", method.getCDParameter(0).getMCType());
+    assertDeepEquals("String []", method.getCDParameter(0).getMCType());
     assertEquals("args", method.getCDParameter(0).getName());
   
     assertTrue(Log.getFindings().isEmpty());
@@ -129,7 +129,7 @@ public class CLIDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, method.getCDParameterList().size());
-    assertDeepEquals("String[]", method.getCDParameter(0).getMCType());
+    assertDeepEquals("String []", method.getCDParameter(0).getMCType());
     assertEquals("args", method.getCDParameter(0).getName());
   
     assertTrue(Log.getFindings().isEmpty());
