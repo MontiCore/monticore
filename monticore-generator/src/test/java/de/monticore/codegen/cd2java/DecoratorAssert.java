@@ -3,11 +3,10 @@ package de.monticore.codegen.cd2java;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.cd.facade.CDModifier;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
 import static org.junit.Assert.assertEquals;
@@ -27,12 +26,11 @@ public final class DecoratorAssert {
   }
 
   public static void assertDeepEquals(ASTMCType expected, ASTMCType actual) {
-    CD4CodeFullPrettyPrinter p = new CD4CodeFullPrettyPrinter();
-    assertEquals(p.prettyprint(expected), p.prettyprint(actual));
+    assertEquals(CD4CodeMill.prettyPrint(expected, false), CD4CodeMill.prettyPrint(actual, false));
   }
 
   private static String getAsString(ASTNode node) {
-    return node instanceof ASTMCType ? ((ASTMCType) node).printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) : node.toString();
+    return node instanceof ASTMCType ? CD4CodeMill.prettyPrint(node, false) : node.toString();
   }
 
   public static void assertDeepEquals(CDModifier expected, ASTNode actual) {
@@ -51,12 +49,12 @@ public final class DecoratorAssert {
 
   public static void assertDeepEquals(Class<?> expected, ASTNode actual) {
     assertTrue(actual instanceof ASTMCType);
-    assertEquals(expected.getSimpleName(), (new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
+    assertEquals(expected.getSimpleName(), CD4CodeMill.prettyPrint(actual, false));
   }
 
   public static void assertDeepEquals(String name, ASTNode actual) {
     assertTrue(actual instanceof ASTMCType);
-    assertEquals(name, (new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
+    assertEquals(name, CD4CodeMill.prettyPrint(actual, false));
   }
 
   public static void assertBoolean(ASTNode actual) {
@@ -81,19 +79,19 @@ public final class DecoratorAssert {
   public static void assertOptionalOf(Class<?> clazz, ASTNode actual) {
     String type = "Optional<" + clazz.getSimpleName() + ">";
     assertTrue(actual instanceof ASTMCType);
-    assertEquals(type,(new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
+    assertEquals(type,CD4CodeMill.prettyPrint(actual, false));
   }
 
   public static void assertOptionalOf(String name, ASTNode actual) {
     String type = "Optional<" + name + ">";
     assertTrue(actual instanceof ASTMCType);
-    assertEquals(type,(new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
+    assertEquals(type,CD4CodeMill.prettyPrint(actual, false));
   }
 
   public static void assertListOf(Class<?> clazz, ASTNode actual) {
     String type = "List<" + clazz.getSimpleName() + ">";
     assertTrue(actual instanceof ASTMCType);
-    assertEquals(type,(new CD4CodeFullPrettyPrinter()).prettyprint((ASTMCType) actual));
+    assertEquals(type,CD4CodeMill.prettyPrint(actual, false));
   }
 
   public static void assertListOf(String name, ASTNode actual) {

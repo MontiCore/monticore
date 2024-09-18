@@ -6,7 +6,6 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4codebasis._ast.*;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -21,7 +20,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.ArrayList;
@@ -201,7 +199,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTMCQualifiedType retType = getMCTypeFacade().createQualifiedType(symbolTableService.getASTPackage() + "." + AST_PREFIX + astClassName);
     method = getCDMethodFacade().createMethod(PUBLIC.build(), retType, "getAstNode");
     this.replaceTemplate(EMPTY_BODY,method, new StringHookPoint("return ("
-            + retType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()))
+            + CD4CodeMill.prettyPrint(retType, false)
             + ") super.getAstNode();"));
     methods.add(method);
     return methods;
@@ -291,10 +289,10 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
       String errorCode = "0xA7010" + symbolTableService.getGeneratedErrorCode(symbolInput.getName()+
-              superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+          CD4CodeMill.prettyPrint(superVisitorType, false));
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
               this.visitorService.getTraverserInterfaceFullName(), errorCode, symbolInput.getName(),
-              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType), "Symbol"));
+          CD4CodeMill.prettyPrint(superVisitorType, false), "Symbol"));
       result.add(superAccept);
     }
     return result;
