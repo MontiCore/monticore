@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast.builder;
 
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -14,8 +15,6 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,21 +23,10 @@ import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertInt;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
-import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILD_METHOD;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.IS_VALID;
-import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.codegen.cd2java.DecoratorAssert.*;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
+import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
+import static org.junit.Assert.*;
 
 public class BuilderDecoratorTest extends DecoratorTestCase {
 
@@ -154,7 +142,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
   public void testInheritedSetterNoGetter(){
     ASTCDMethod setF = getMethodBy("setF", builderClass);
     assertTrue(setF.getMCReturnType().isPresentMCType());
-    assertEquals(builderClass.getName(), setF.getMCReturnType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+    assertEquals(builderClass.getName(), CD4CodeMill.prettyPrint(setF.getMCReturnType(), false));
     assertDeepEquals(PUBLIC, setF.getModifier());
     assertEquals(1, setF.getCDParameterList().size());
 

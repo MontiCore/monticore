@@ -2,27 +2,22 @@
 package de.monticore.codegen.cd2java;
 
 import com.google.common.base.Preconditions;
-import de.monticore.ast.ASTNode;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.CDTypeSymbolSurrogate;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.MCBasicTypesHelper;
-import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
@@ -134,10 +129,10 @@ public class DecorationHelper extends MCBasicTypesHelper {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
     if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
-      return ((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get()
-          .printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+      return CD4CodeMill.prettyPrint(((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get(), false);
+
     }
-    return astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+    return CD4CodeMill.prettyPrint(astType, false);
   }
 
   public String getSimpleNativeType(ASTMCType astType) {
@@ -206,7 +201,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
       return false;
     }
     
-    String typeName = attr.getMCType().printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter()));
+    String typeName = CD4CodeMill.prettyPrint(attr.getMCType(), false);
     
     if (!typeName.contains(".") && !typeName.startsWith(AST_PREFIX)) {
       return false;
@@ -229,7 +224,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
    * needed in templates
    */
   public String getPlainGetter(ASTCDAttribute ast) {
-    String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+    String astType = CD4CodeMill.prettyPrint(ast.getMCType(), false);
     StringBuilder sb = new StringBuilder();
     // Do not use CDTypes.isBoolean() because only primitive boolean uses GET_PREFIX_BOOLEAN
     if (astType.equals("boolean")) {
@@ -252,7 +247,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   public String getPlainSetter(ASTCDAttribute ast) {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
-    String astType = ast.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+    String astType = CD4CodeMill.prettyPrint(ast.getMCType(), false);
     if (isListType(astType)) {
       if (hasDerivedAttributeName(ast) && ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
         sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),
@@ -275,7 +270,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
    * only needed for templates, so that no instance of the PrettyPrinter has to be created in the template
    */
   public String printType(ASTMCType type) {
-    return type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+    return CD4CodeMill.prettyPrint(type, false);
   }
 
   public HookPoint createPackageHookPoint(final String... packageName) {
