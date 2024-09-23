@@ -403,7 +403,7 @@ the following steps:
     [Chapters 17- 20 of the handbook](https://www.monticore.de/handbook.pdf).
 
     A more detailed description of the MontiCore Gradle plugin is given 
-    [here](/docs/Gradle.md).
+    [here](Gradle.md).
 
 
 Executing the command launches MontiCore, which results in the
