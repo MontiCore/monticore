@@ -34,6 +34,7 @@ import de.se_rwth.commons.logging.Log;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 // Note: We can't use symbol-table information for multiplicities due to GrammarTransformer#removeNonTerminalSeparators, etc
 public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
@@ -482,7 +483,9 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     String humanName = node.isPresentUsageName() ? node.getUsageName() : node.getName();
     String getter = getPlainGetterSymbol(humanName, Multiplicity.STANDARD);
 
-    boolean onlyOneConstant = node.getConstantList().size() == 1;
+    // The detection process of weather a constant groups AST attribute is an int or boolean
+    // must be able to handle u:[c:"a" | c:"b"], (op:["*"]|op:["/"]) and ASTRule shenanigans
+    boolean onlyOneConstant = !TransformationHelper.isConstGroupIterated(node.getSymbol());
     if (onlyOneConstant) {
       // catch (op:["*"]|op:["/"]) and ASTRule shenanigans
       String nodeAttrName = node.isPresentUsageName() ? node.getUsageName() : node.getName();
@@ -499,6 +502,11 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       constants.add(new AbstractMap.SimpleEntry<>(constant.getHumanName(), constant.getName()));
       if (!onlyOneConstant && LexNamer.createGoodName(constant.getHumanName()).isEmpty()) // The constant will be named CONSTANT{num} instead
         this.failureMessage = "Unable to find good Constant name for " + getter + " and value " + constant.getHumanName();
+    }
+
+    if (onlyOneConstant) {
+      // in case of u:[c:"a" | c:"b"], limit the size of the used constants to 1
+      constants = constants.stream().limit(1).collect(Collectors.toSet());
     }
 
     PPGuardComponent component = PPGuardComponent.forCG(getter, constants);
