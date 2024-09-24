@@ -96,7 +96,7 @@ while (grammarIterator.hasNext()) {
 
     if (genDST) {
       // Generate infrastructure for domain-specific transformation IFF this task is run on a TR grammar
-      generateDSTInfrastructure(astGrammar, out, modelPathHC)
+      generateDSTInfrastructure(astGrammar, out, handcodedPath)
     } else {
       // Generate a DSTL (ending in TR.mc4)
       generateDSTLanguage(astGrammar, out, modelPathHC)
