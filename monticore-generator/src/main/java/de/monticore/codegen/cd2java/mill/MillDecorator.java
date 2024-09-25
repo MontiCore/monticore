@@ -100,7 +100,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       List<ASTCDClass> classList = cd.getCDElementList()
           .stream()
           .filter(x -> x instanceof ASTCDClass)
-          .map(x -> (ASTCDClass) x)
+          .map(ASTCDClass.class::cast)
           .filter(x -> !x.getModifier().isAbstract())
           .filter(this::checkIncludeInMill)
           .map(x -> x.deepClone())

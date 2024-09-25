@@ -25,8 +25,8 @@ grammar SemPredWithInterface extends mc.common.Basics {
       first: boolean;
     
     FirstRun implements { first }? I =
-        { _builder.setFirst(true); first = false;} "foo";
+        {first = false;} "foo";
     
     OtherRun implements { !first }? I =
-        {_builder.setFirst(false);} "foo";
+       "foo";
 }

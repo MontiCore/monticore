@@ -38,15 +38,13 @@ component grammar MCBasics {
       Comments are ignored by the parser.
   */
   token SL_COMMENT =
-    "//" (~('\n' | '\r' ))* : ->skip
-    {storeComment();};
+    "//" (~('\n' | '\r' ))* : -> channel(HIDDEN);
 
   /** A multi line comment in Java style.
       The comments are not nested.
       Comments are ignored by the parser.
   */
   token ML_COMMENT =
-    "/*" .*? "*/"  : -> skip
-    {storeComment();};
+    "/*" .*? "*/" : -> channel(HIDDEN);
 
 }
