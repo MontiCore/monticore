@@ -5,5 +5,5 @@ grammar SuperParser {
     ParserSuperClass = "superparser.ModifiedMCParserBase"
   }
 
-  P = "..." { doCustomMethod(); };
+  P = {doCustomMethod()}? "..." ;
 }

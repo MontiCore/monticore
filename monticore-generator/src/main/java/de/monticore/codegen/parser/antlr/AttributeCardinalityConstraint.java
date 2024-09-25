@@ -18,11 +18,11 @@ import java.util.Optional;
  * MinMax-constraint checks
  */
 public class AttributeCardinalityConstraint {
-  
+
   protected ParserGeneratorHelper parserGenHelper;
-  
+
   protected MCGrammarSymbol symbolTable;
-  
+
   public AttributeCardinalityConstraint(ParserGeneratorHelper parserGenHelper) {
     this.parserGenHelper = parserGenHelper;
     this.symbolTable = parserGenHelper.getGrammarSymbol();
@@ -35,18 +35,18 @@ public class AttributeCardinalityConstraint {
     for (AdditionalAttributeSymbol att : prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols()) {
       String usageName = att.getName();
       if (TransformationHelper.getMax(att).isPresent()
-              || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
+          || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
         ret.append("\n" + "int " + getCounterName(usageName) + "=0;");
       }
     }
     return ret.toString();
   }
-  
+
   public String addActionForRuleAfterRuleBody(ASTClassProd ast) {
     StringBuilder ret = new StringBuilder();
     ProdSymbol prodSymbol = ast.getSymbol();
     for (AdditionalAttributeSymbol att : prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols()) {
-      
+
       String usageName = att.getName();
       Optional<Integer> min = MCGrammarSymbolTableHelper.getMin(att);
       Optional<Integer> max = TransformationHelper.getMax(att);
@@ -54,13 +54,13 @@ public class AttributeCardinalityConstraint {
         if (min.isPresent()) {
 
           String runtimemessage = "\"0xA7017" + getGeneratedErrorCode(ast) + " Invalid minimal occurence for %attributename% in rule %rulename% : Should be %reference% but is \"+%value%+\"!\"";
-          
+
           runtimemessage = runtimemessage.replaceAll("%attributename%", usageName);
           runtimemessage = runtimemessage.replaceAll("%rulename%", ast.getName());
           runtimemessage = runtimemessage.replaceAll("%value%", getCounterName(usageName));
           runtimemessage = runtimemessage.replaceAll("%reference%",
               ParserGeneratorHelper.formatAttributeValue(min));
-          
+
           String message = "if (!checkMin("
               + getCounterName(usageName)
               + ","
@@ -95,20 +95,20 @@ public class AttributeCardinalityConstraint {
         }
       }
     }
-    
+
     return ret.toString();
   }
-  
+
   public String addActionForNonTerminal(ASTNonTerminal ast) {
     StringBuilder ret = new StringBuilder();
-    
+
     String usageName = parserGenHelper.getUsageName(ast);
-    
+
     Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
     if (!rule.isPresent()) {
       return ret.toString();
     }
-    
+
     Optional<AdditionalAttributeSymbol> att = rule.get().getSpannedScope().resolveAdditionalAttributeLocally(usageName);
     if (att.isPresent() && (TransformationHelper.getMax(att.get()).isPresent()
         || MCGrammarSymbolTableHelper.getMin(att.get()).isPresent())) {

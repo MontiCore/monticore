@@ -33,11 +33,11 @@ public class ParserTest extends GeneratorIntegrationsTest {
     Assertions.assertTrue(hasError);
   }
   
-  // Test that too many Hallo and Welt are detected in one go
+  // Test that the last Hallo is too much
   @Test
   public void test2() throws IOException {
         
-    boolean hasError = parse("Hallo Hallo Hallo Hallo Welt ");
+    boolean hasError = parse("Hallo Hallo Hallo Hallo ");
     Assertions.assertTrue(hasError);
   }
   
@@ -51,7 +51,16 @@ public class ParserTest extends GeneratorIntegrationsTest {
   
     Assertions.assertTrue(Log.getFindings().isEmpty());
   }
-  
+
+  // Tests that one hallo is issing
+  @Test
+  public void test4() throws IOException {
+
+    boolean hasError = parse("Hallo ");
+
+    Assertions.assertTrue(hasError);
+  }
+
   // Test that one Welt is too much
   @Test
   public void testl() throws IOException {
