@@ -175,7 +175,7 @@ codes.
      occurs. 
 * The static typecheck is recommended when adding RegExTypes to a 
   language. Note that explicit type coercion is then needed, e.g. 
-  using the `typif` construct.
+  using the `typeif` construct.
 * In some occasions, e.g. if in assignment `R"re1" v1 = v2` the type 
 `R"re2"` of `v2` is a subset then the static typecheck identifies 
 compatibility of the strings and may omit the dynamic regular 
@@ -183,7 +183,7 @@ expression check at runtime. Subset
 relationship of regular expressions is decidable (at compiletime).
 * If the regular expressions are disjoint, a compile time error may 
 be issued (instead of runtime errors only).
-* `String` could be treted identical to `R".*"`, but it may be that 
+* `String` could be treated identical to `R".*"`, but it may be that 
 the chosen typecheck wants to enforce explicit coercion.
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
