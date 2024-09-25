@@ -237,6 +237,7 @@ task checkArtifacts {}
 configurations { MLC }
 dependencies {
   MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
+  MLC(project(':monticore-runtime')) // Ensure the proper runtime is used for MLC
 }
 StringJoiner joiner = new StringJoiner(" ")
 configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }

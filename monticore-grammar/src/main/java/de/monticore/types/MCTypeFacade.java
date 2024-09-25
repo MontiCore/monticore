@@ -230,9 +230,13 @@ public class MCTypeFacade {
    */
 
   public ASTMCArrayType createArrayType(final ASTMCType type, int dimension) {
+    List<String> dimList = Lists.newArrayList();
+    for (int i=0; i<dimension; i++) {
+      dimList.add("[");
+    }
     return MCArrayTypesMill.mCArrayTypeBuilder()
         .setMCType(type)
-        .setDimensions(dimension)
+        .setDimTList(dimList)
         .build();
   }
 

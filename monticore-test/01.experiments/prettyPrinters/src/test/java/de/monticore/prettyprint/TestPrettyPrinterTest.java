@@ -8,8 +8,8 @@ import de.monticore.testprettyprinters._ast.ASTProdNamedTerminal;
 import de.monticore.testprettyprinters._ast.ASTToBeReplacedKeyword;
 import de.monticore.testprettyprinters._parser.TestPrettyPrintersParser;
 import de.monticore.testprettyprinters._prettyprint.TestPrettyPrintersFullPrettyPrinter;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.*;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class TestPrettyPrinterTest extends PPTestClass {
   @BeforeClass
   public static void setup() {
     TestPrettyPrintersMill.init();
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 

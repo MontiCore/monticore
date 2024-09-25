@@ -24,8 +24,7 @@ grammar Basics {
     "//" (~('\n' |
       '\r' )
     )*
-    : -> skip
-    {storeComment();}
+    : -> channel(HIDDEN)
   ;
 
   token ML_COMMENT =
@@ -35,8 +34,7 @@ grammar Basics {
       '\n' |
       '\r' )
     )*
-    "*/" : -> skip 
-    {storeComment();}
+    "*/" : -> channel(HIDDEN)
   ;
 
   fragment token ESC =

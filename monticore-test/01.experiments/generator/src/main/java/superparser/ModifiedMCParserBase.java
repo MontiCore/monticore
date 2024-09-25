@@ -14,8 +14,9 @@ public abstract class ModifiedMCParserBase extends MCParser {
 
   public static int customCalled;
 
-  public void doCustomMethod() {
+  public boolean doCustomMethod() {
     customCalled++;
+    return true;
   }
 
 }

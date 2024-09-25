@@ -4,9 +4,6 @@ ${tc.signature("suffix")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
 parser grammar ${ast.getName()}AntlrParser${suffix};
 @parser::header {
-<#if genHelper.isJava()>
-package ${genHelper.getParserPackage()};
-</#if>
 <#if genHelper.isEmbeddedJavaCode()>
 import de.monticore.antlr4.*;
 import de.monticore.parser.*;

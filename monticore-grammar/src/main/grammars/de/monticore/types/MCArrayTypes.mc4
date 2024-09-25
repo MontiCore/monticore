@@ -25,10 +25,12 @@ component grammar MCArrayTypes
   /** ASTArrayType introduces array for arbitrary types
   */
   MCArrayType implements MCType =
-    MCType 
-    ("[" "]" {_builder.setDimensions(_builder.getDimensions()+1);} )+;
+    MCType (dimT:"[" "]" )+;
 
   // counter dimensions counts the array depth
   astrule MCArrayType =
-    dimensions:int;
+    method public int getDimensions() {
+      return this.sizeDimT();
+    }
+  ;
 }
