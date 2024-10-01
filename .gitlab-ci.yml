@@ -195,6 +195,9 @@ checkMLCs:
     paths:
       - "**/target/reports/"
     expire_in: 1 week
+  only:
+    - merge_requests
+    - branches
   except:
     - master
 
