@@ -204,6 +204,7 @@ def grammarDependencies = ext {
   SIUnitLiterals = ["MCCommonLiterals", "SIUnits"]
   SIUnitTypes4Math = ["MCBasicTypes", "SIUnits"]
   SIUnitTypes4Computing = ["MCBasicTypes", "SIUnitTypes4Math"]
+  TypeParameters = ["BasicSymbols", "MCBasicTypes"]
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
@@ -372,6 +373,9 @@ checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
 
 checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
 
+checkArtifactsTypeParameters.dependsOn(checkArtifactsBasicSymbols)
+checkArtifactsTypeParameters.dependsOn(checkArtifactsMCBasicTypes)
+
 checkArtifactsCardinality.dependsOn(checkArtifactsMCBasics)
 checkArtifactsCardinality.dependsOn(checkArtifactsMCCommonLiterals)
 
@@ -502,6 +506,9 @@ showArtifactsMCCollectionTypes.dependsOn(showArtifactsMCBasicTypes)
 showArtifactsMCFullGenericTypes.dependsOn(showArtifactsMCSimpleGenericTypes)
 
 showArtifactsMCSimpleGenericTypes.dependsOn(showArtifactsMCCollectionTypes)
+
+showArtifactsTypeParameters.dependsOn(showArtifactsBasicSymbols)
+showArtifactsTypeParameters.dependsOn(showArtifactsMCBasicTypes)
 
 showArtifactsCardinality.dependsOn(showArtifactsMCBasics)
 showArtifactsCardinality.dependsOn(showArtifactsMCCommonLiterals)

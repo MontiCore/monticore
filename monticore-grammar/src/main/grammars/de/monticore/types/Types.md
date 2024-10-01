@@ -17,6 +17,7 @@ the following language components:
 * [`MCArrayTypes`](MCArrayTypes.mc4)
 * [`MCFunctionTypes`](MCFunctionTypes.mc4)
 * [`MCStructuralTypes`](MCStructuralTypes.mc4)
+* [`TypeParameters`](TypeParameters.mc4)
 * [`SIUnitTypes4Math`](../siunit/SIUnitTypes4Math.mc4)
 * [`SIUnitTypes4Computing`](../siunit/SIUnitTypes4Computing.mc4)
 * [`RegExType`](../regex/RegExType.mc4)
@@ -64,6 +65,17 @@ the expression of inner generic types of arbitrary classes with arbitrary
 arguments including wild card types. When using this language component,
 types such as `Person<?>`, `Map<Person<String>, ? extends Person>`, and
 `a.b.C<D>.E.F<G>.H` are expressible.
+
+## [`TypeParameters`](TypeParameters.mc4)
+
+This language component offers ways to define type parameter lists
+for generic model elements, e.g., generic classes such as `Map<K, V>`.
+The resulting Symbols can than be used with, e.g., 
+[`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4), or
+[`MCFullGenericTypes`](MCFullGenericTypes.mc4)
+to define types by providing the corresponding type arguments.
+Additionally, type parameters may optionally have upper bounds,
+e.g., `T extends Person`, `U extends T & Comparable<U>`.
 
 ## [`MCArrayTypes`](MCArrayTypes.mc4)
 
