@@ -220,10 +220,8 @@ def grammarDependencies = ext {
   ODRules = ["TFBasisExts", "MCCommonLiterals", "MCJavaLiterals", "UMLStereotype"]
   MCVarDeclarationStatements = ["MCStatementsBasis", "MCBasicTypes", "ExpressionsBasis", "OOSymbols"]
 
-  // five dependencies
-  JavaLight = ["AssignmentExpressions", "JavaClassExpressions", "MCCommonStatements", "MCArrayStatements", "MCReturnStatements"]
-
   // six dependencies
+  JavaLight = ["AssignmentExpressions", "JavaClassExpressions", "MCCommonStatements", "MCArrayStatements", "MCReturnStatements", "TypeParameters"]
   MCFullJavaStatements = ["MCAssertStatements", "MCExceptionStatements", "MCLowLevelStatements", "MCReturnStatements", "MCSynchronizedStatements", "MCArrayStatements"]
 
   // nine dependencies
