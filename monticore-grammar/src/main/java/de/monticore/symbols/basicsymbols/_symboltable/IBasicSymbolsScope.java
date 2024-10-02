@@ -15,7 +15,11 @@ public interface IBasicSymbolsScope extends IBasicSymbolsScopeTOP {
    * e.g. class C<T> {} // T is bound within the class
    */
   default boolean isTypeVariableBound(TypeVarSymbol typeVar) {
-    if (getLocalTypeVarSymbols().stream()
+    List<TypeVarSymbol> localVars = resolveTypeVarLocallyMany(
+        false, typeVar.getName(),
+        AccessModifier.ALL_INCLUSION, (tv) -> true
+    );
+    if (localVars.stream()
         .anyMatch(otherTypeVar -> otherTypeVar == typeVar)) {
       return true;
     }

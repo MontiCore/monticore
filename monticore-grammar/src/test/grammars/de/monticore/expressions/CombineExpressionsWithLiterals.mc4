@@ -18,6 +18,7 @@ grammar CombineExpressionsWithLiterals extends
           de.monticore.types.MCArrayTypes,
           de.monticore.types.MCFunctionTypes,
           de.monticore.types.MCStructuralTypes,
+          de.monticore.types.TypeParameters,
           de.monticore.regex.RegExType,
           de.monticore.siunit.SIUnitTypes4Math,
           de.monticore.siunit.SIUnitTypes4Computing,

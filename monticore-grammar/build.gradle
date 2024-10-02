@@ -204,6 +204,7 @@ def grammarDependencies = ext {
   SIUnitLiterals = ["MCCommonLiterals", "SIUnits"]
   SIUnitTypes4Math = ["MCBasicTypes", "SIUnits"]
   SIUnitTypes4Computing = ["MCBasicTypes", "SIUnitTypes4Math"]
+  TypeParameters = ["BasicSymbols", "MCBasicTypes"]
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
@@ -219,10 +220,8 @@ def grammarDependencies = ext {
   ODRules = ["TFBasisExts", "MCCommonLiterals", "MCJavaLiterals", "UMLStereotype"]
   MCVarDeclarationStatements = ["MCStatementsBasis", "MCBasicTypes", "ExpressionsBasis", "OOSymbols"]
 
-  // five dependencies
-  JavaLight = ["AssignmentExpressions", "JavaClassExpressions", "MCCommonStatements", "MCArrayStatements", "MCReturnStatements"]
-
   // six dependencies
+  JavaLight = ["AssignmentExpressions", "JavaClassExpressions", "MCCommonStatements", "MCArrayStatements", "MCReturnStatements", "TypeParameters"]
   MCFullJavaStatements = ["MCAssertStatements", "MCExceptionStatements", "MCLowLevelStatements", "MCReturnStatements", "MCSynchronizedStatements", "MCArrayStatements"]
 
   // nine dependencies
@@ -372,6 +371,9 @@ checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
 
 checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
 
+checkArtifactsTypeParameters.dependsOn(checkArtifactsBasicSymbols)
+checkArtifactsTypeParameters.dependsOn(checkArtifactsMCBasicTypes)
+
 checkArtifactsCardinality.dependsOn(checkArtifactsMCBasics)
 checkArtifactsCardinality.dependsOn(checkArtifactsMCCommonLiterals)
 
@@ -380,6 +382,7 @@ checkArtifactsJavaLight.dependsOn(checkArtifactsJavaClassExpressions)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCCommonStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCArrayStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsTypeParameters)
 checkArtifactsJavaLight.dependsOn(checkArtifactsUglyExpressions)
 
 checkArtifactsMCCommon.dependsOn(checkArtifactsCardinality)
@@ -503,6 +506,9 @@ showArtifactsMCFullGenericTypes.dependsOn(showArtifactsMCSimpleGenericTypes)
 
 showArtifactsMCSimpleGenericTypes.dependsOn(showArtifactsMCCollectionTypes)
 
+showArtifactsTypeParameters.dependsOn(showArtifactsBasicSymbols)
+showArtifactsTypeParameters.dependsOn(showArtifactsMCBasicTypes)
+
 showArtifactsCardinality.dependsOn(showArtifactsMCBasics)
 showArtifactsCardinality.dependsOn(showArtifactsMCCommonLiterals)
 
@@ -511,6 +517,7 @@ showArtifactsJavaLight.dependsOn(showArtifactsJavaClassExpressions)
 showArtifactsJavaLight.dependsOn(showArtifactsMCCommonStatements)
 showArtifactsJavaLight.dependsOn(showArtifactsMCArrayStatements)
 showArtifactsJavaLight.dependsOn(showArtifactsMCReturnStatements)
+showArtifactsJavaLight.dependsOn(showArtifactsTypeParameters)
 showArtifactsJavaLight.dependsOn(showArtifactsUglyExpressions)
 
 showArtifactsMCCommon.dependsOn(showArtifactsCardinality)

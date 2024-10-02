@@ -320,14 +320,16 @@ public class SymTypeVariable extends SymTypeExpression {
       return true;
     }
     SymTypeVariable symVar = (SymTypeVariable) sym;
+    if (!denotesSameVar(symVar)) {
+      return false;
+    }
     if (!getUpperBound().deepEquals(symVar.getUpperBound())) {
       return false;
     }
     else if (!getLowerBound().deepEquals(symVar.getLowerBound())) {
       return false;
     }
-    // cannot identify without a name at this point
-    return denotesSameVar(symVar);
+    return true;
   }
 
   @Override
