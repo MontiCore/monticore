@@ -14,7 +14,6 @@ public class Reporting extends ReportingFix {
   @Deprecated
   public static void init(String outputDirectory, String reportDirectory, ReportManager.ReportManagerFactory factory) {
     // Delegate to static
-    System.err.println("###### Reporting.init ####");
     ReportingFix.init(outputDirectory, reportDirectory, factory);
   }
 
