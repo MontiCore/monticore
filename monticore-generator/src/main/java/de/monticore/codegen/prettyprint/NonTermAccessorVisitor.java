@@ -54,7 +54,7 @@ public class NonTermAccessorVisitor implements GrammarVisitor2 {
           }
         }
         ClassProdNonTermPrettyPrintData data = classProds.computeIfAbsent(prodSymbol.getName(), x -> new ClassProdNonTermPrettyPrintData(prodSymbol.getSpannedScope()));
-        data.nonTerminalMultiplicities.put(compName, multiplicity);
+        data.nonTerminalMultiplicities.put(StringTransformations.uncapitalize(compName), multiplicity);
       }
     }
   }

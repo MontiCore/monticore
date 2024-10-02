@@ -21,6 +21,7 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
   CPIteratorStar = A "term" A*  Name "term" Name*;
   CPIteratorPlus = A "term" A+  Name "term" Name+;
   CPIteratorAlt = A "term" (A | Name);
+  CPIteratorAltU = A:A "term" (A:A | Name); // Also test with capital usage-name
   CPIteratorAltName = Name "term" (Name | A);
 
   CPNonSepS = "term" ( Name || ".")*;
