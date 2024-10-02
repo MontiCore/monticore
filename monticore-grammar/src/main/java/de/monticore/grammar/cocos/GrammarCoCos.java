@@ -88,6 +88,7 @@ public class GrammarCoCos {
     checker.addCoCo(new NoForbiddenSymbolName());
     checker.addCoCo(new NoForbiddenSymbolNameAddon());
     checker.addCoCo(new RuleComponentsCompatible());
+    checker.addCoCo(new ReferenceToIndirectLeftRecursiveNT());
 
     return checker;
   }
