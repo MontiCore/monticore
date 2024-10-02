@@ -63,6 +63,12 @@ public class ReportingFix extends Log {
     return wasInitialized;
   }
 
+
+  public static void resetInitializedFlagFix() {
+    // Unset the wasInitialized flag - can be removed once #isInitialized is realized as described
+    wasInitialized = false;
+  }
+
   /**
    * @return whether reporting is currently enabled
    */
