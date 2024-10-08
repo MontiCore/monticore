@@ -302,57 +302,33 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
           .isConstGroupIterated(ast.getSymbol());
     }
 
-
-    // No += refs for constant groups
+    addToCodeSection("(");
+    String del = "";
+    String tmpName = parserHelper.getTmpVarName(ast);
     String label = "=";
 
-    // One entry leads to boolean isMethods
-    if (!iterated) {
-      ASTConstant x = ast.getConstantList().get(0);
-      addToCodeSection("(");
-      String tmpName = parserHelper.getTmpVarName(x);
+    for (Iterator<ASTConstant> iter = ast.getConstantList().iterator(); iter
+        .hasNext(); ) {
+      addToCodeSection(del);
+
+      ASTConstant x = iter.next();
+      if (iterated) {
+        tmpName = parserHelper.getTmpVarName(x);
+      }
+
       if (x.isPresentKeyConstant()) {
         addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList(), tmpName + label));
-      } else if (x.isPresentTokenConstant()) {
-        addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getTokenConstant().getString()));
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-        addToCodeSection(tmpName + label +parserHelper.getLexSymbolName(x.getName()));
+        addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getName()));
       } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
-        addToCodeSection(tmpName + label +parserHelper.getKeyRuleName(x.getName()));
+        addToCodeSection(tmpName + label + parserHelper.getKeyRuleName(x.getName()));
       } else {
-        addToCodeSection(tmpName + label +parserHelper.getLexSymbolName(x.getName()));
+        addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getName()));
       }
 
-      addToCodeSection(")", printIteration(ast.getIteration()));
-
+      del = "|\n";
     }
-
-    // More than one entry leads to an int
-    else {
-      addToCodeSection("(");
-      String del = "";
-      for (Iterator<ASTConstant> iter = ast.getConstantList().iterator(); iter
-          .hasNext(); ) {
-        addToCodeSection(del);
-        ASTConstant x = iter.next();
-        String tmpName = parserHelper.getTmpVarName(x);
-
-        if (x.isPresentKeyConstant()) {
-          addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList(), tmpName + label));
-        } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-          addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getName()));
-        } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
-          addToCodeSection(tmpName + label + parserHelper.getKeyRuleName(x.getName()));
-        } else {
-          addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getName()));
-        }
-
-        del = "|\n";
-      }
-
-      addToCodeSection(")", printIteration(ast.getIteration()));
-    }
-
+    addToCodeSection(")", printIteration(ast.getIteration()));
     endCodeSection(ast);
   }
 

@@ -1351,7 +1351,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     dstlgenUtil.generateDSTL(astGrammar, gext, dstlGlex, grammarOut);
   }
 
-  public void generateDSTInfrastructure(ASTMCGrammar astTRGrammar, File out, MCPath modelPathHC) {
+  public void generateDSTInfrastructure(ASTMCGrammar astTRGrammar, File out, MCPath codePathHC) {
     if(!astTRGrammar.getSymbol().getName().endsWith("TR") || astTRGrammar.getPackageList().stream().noneMatch(p -> p.equals("tr"))) {
       Log.error("0xA1018 Unable to generate DST infrastructure on non-TR Grammar:" + astTRGrammar.getSymbol().getFullName());
       return;
@@ -1373,13 +1373,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // No D2, D3: TR Grammar is already present (see generateDSTLanguage)
 
     // D4 Generate context conditions
-    dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, modelPathHC, dstlGlex);
+    dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, codePathHC, dstlGlex);
 
     // D5 Generate DSTL to ODRule translator
-    dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, modelPathHC);
+    dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, codePathHC);
 
     // D6 Generate TFGenTool class
-    dstlgenUtil.generateTFGenToolClass(astGrammar, dstlGenerator, modelPathHC);
+    dstlgenUtil.generateTFGenToolClass(astGrammar, dstlGenerator, codePathHC);
   }
 
   /**

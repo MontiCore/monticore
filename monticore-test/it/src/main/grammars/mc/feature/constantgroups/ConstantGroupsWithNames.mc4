@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.constantgroups;
+
+grammar ConstantGroupsWithNames {
+   CG1 = cg:[ a:"cg1" | a:"cg2"];
+
+   CG2 = cg:[a:"cg1"]  | cg:[a:"cg2"];
+
+   CG3 = cg:["a" | a:"cg1" | a:"cg2"];
+
+   CG_i = cg:["a" | a1:"cg1" | a2:"cg2"];
+}
+

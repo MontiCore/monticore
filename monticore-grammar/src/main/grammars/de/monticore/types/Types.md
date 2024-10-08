@@ -74,7 +74,7 @@ The resulting Symbols can than be used with, e.g.,
 [`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4), or
 [`MCFullGenericTypes`](MCFullGenericTypes.mc4)
 to define types by providing the corresponding type arguments.
-Additionally, type parameters may optionally have upper bounds,
+Type parameters may optionally have upper bounds,
 e.g., `T extends Person`, `U extends T & Comparable<U>`.
 
 ## [`MCArrayTypes`](MCArrayTypes.mc4)
