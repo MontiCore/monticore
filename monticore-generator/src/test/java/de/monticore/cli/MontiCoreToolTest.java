@@ -3,7 +3,7 @@
 package de.monticore.cli;
 
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.reporting.ReportingFix;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -250,6 +250,6 @@ public class MontiCoreToolTest {
   
   @AfterEach
   public void tearDown() throws Exception {
-    Reporting.off();
+    ReportingFix.off();
   }
 }
