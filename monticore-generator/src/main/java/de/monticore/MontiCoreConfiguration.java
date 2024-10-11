@@ -5,12 +5,7 @@ package de.monticore;
 import com.google.common.collect.Sets;
 import de.monticore.gradle.AMontiCoreConfiguration;
 import de.monticore.io.paths.MCPath;
-import de.monticore.symboltable.serialization.json.JsonArray;
-import de.monticore.symboltable.serialization.json.JsonBoolean;
-import de.monticore.symboltable.serialization.json.JsonElement;
-import de.monticore.symboltable.serialization.json.JsonNull;
-import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.symboltable.serialization.json.UserJsonString;
+import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -19,12 +14,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -387,7 +377,7 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
    * @return Optional path to the script
    */
   public Optional<Boolean> getGenINT() {
-    return getAsBoolean(GENINT);
+    return hasProperty(GENINT) ? Optional.of(true) : Optional.empty();
   }
   
   /**
