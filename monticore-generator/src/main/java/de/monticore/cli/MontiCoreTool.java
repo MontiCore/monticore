@@ -419,7 +419,13 @@ public class MontiCoreTool {
             .hasArg(true)
             .desc("Specifies if tagging infrastructure should be generated for the given tagging grammar.")
             .build());
-
+    
+    // toggle interpreter generation
+    options.addOption(Option.builder(GENINT)
+        .longOpt(GENINT_LONG)
+        .desc("Specifies if interpreter infrastructure should be generated for the given grammar.")
+        .build());
+    
     // help dialog
     options.addOption(Option.builder(HELP)
         .longOpt(HELP_LONG)

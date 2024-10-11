@@ -64,12 +64,16 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
   public static final String GROOVYHOOK2 = "gh2";
 
   public static final String HELP = "h";
+  
+  public static final String GENINT = "genINT";
 
   public static final String GROOVYHOOK1_LONG = "groovyHook1";
 
   public static final String GROOVYHOOK2_LONG = "groovyHook2";
 
   public static final String HELP_LONG = "help";
+  
+  public static final String GENINT_LONG = "genInterpreter";
 
 
   /**
@@ -376,7 +380,16 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
   public Optional<Boolean> getGenTag() {
     return getAsBoolean(GENTAG_LONG);
   }
-
+  
+  /**
+   * Getter for the optional interpreter infrastructure generation.
+   *
+   * @return Optional path to the script
+   */
+  public Optional<Boolean> getGenINT() {
+    return getAsBoolean(GENINT);
+  }
+  
   /**
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings

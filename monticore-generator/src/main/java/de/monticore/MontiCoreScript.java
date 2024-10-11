@@ -1520,6 +1520,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(TEMPLATEPATH_LONG, templatePath);
           builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
           builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
+          builder.addVariable(GENINT, mcConfig.getGenDST().orElse(false));
           builder.addVariable("LOG_ID", LOG_ID);
           builder.addVariable("grammarIterator", grammarsPath.getEntries().iterator());
           reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),

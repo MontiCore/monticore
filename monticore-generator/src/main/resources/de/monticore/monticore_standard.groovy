@@ -90,7 +90,9 @@ while (grammarIterator.hasNext()) {
       decoratedCD = decorateTagCD(glex, cdScope, cd, handcodedPath, decoratedCD, astGrammar)
     }
 
-    decorateWithInterpreter(cd, decoratedCD, glex)
+    if (genINT) {
+      decorateWithInterpreter(cd, decoratedCD, glex)
+    }
 
     reportDecoratedCD(decoratedCD, report)
 
