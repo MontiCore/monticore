@@ -67,6 +67,7 @@ generateMCGrammars {
   script = "de/monticore/monticore_emf.groovy"
   modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
   handcodedPath srcDir
+  genINT = true
   dependsOn(copySrc, copyTest, copyTestResources)
 }
 
