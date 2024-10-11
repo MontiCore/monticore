@@ -2,6 +2,8 @@
 
 package de.monticore
 
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit
+
 /*
  * This configuration file contains the standard workflow of MontiCore:
  * It mainly processes a grammar (and imported sub-grammars) and produces
@@ -84,6 +86,8 @@ while (grammarIterator.hasNext()) {
       // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
       decoratedCD = decorateTagCD(glex, cdScope, cd, handcodedPath, decoratedCD, astGrammar)
     }
+
+    decorateWithInterpreter(cd, decoratedCD, glex)
 
     // groovy script hook point
     hook(gh2, glex, astGrammar, decoratedCD, cd)

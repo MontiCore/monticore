@@ -35,6 +35,7 @@ mlc MCBasics {
     include "$mp/de/monticore/antlr4/**";
     include "$mp/de/monticore/ast/**";
     include "$mp/de/monticore/generating/**";
+    include "$mp/de/monticore/interpreter/**";
     include "$mp/de/monticore/io/**";
     include "$mp/de/monticore/parser/**";
     include "$mp/de/monticore/prettyprint/**";

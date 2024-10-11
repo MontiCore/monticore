@@ -89,6 +89,9 @@ while (grammarIterator.hasNext()) {
       // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
       decoratedCD = decorateTagCD(glex, cdScope, cd, handcodedPath, decoratedCD, astGrammar)
     }
+
+    decorateWithInterpreter(cd, decoratedCD, glex)
+
     reportDecoratedCD(decoratedCD, report)
 
     // groovy script hook point 

@@ -72,6 +72,10 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
+import de.monticore.codegen.cd2java.interpreter.ASTEvaluateDecorator;
+import de.monticore.codegen.cd2java.interpreter.InterpreterDecorator;
+import de.monticore.codegen.cd2java.interpreter.InterpreterInterfaceDecorator;
+import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -794,8 +798,23 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
 
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
-
     decorator.decorate(cd, decoratedCD);
+
+  }
+
+  public void decorateWithInterpreter(List<ASTCDCompilationUnit> cds,
+                                      ASTCDCompilationUnit decoratedCD,
+                                      GlobalExtensionManagement glex) {
+    VisitorService visitorService = new VisitorService(cds.get(0));
+
+    InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
+    interpreterInterfaceDecorator.decorate(cds.get(0), decoratedCD);
+
+    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
+    interpreterDecorator.decorate(cds.get(0), decoratedCD);
+
+    ASTEvaluateDecorator evaluateDecorator = new ASTEvaluateDecorator(glex, visitorService);
+    evaluateDecorator.decorate(cds.get(0), decoratedCD);
   }
 
   public void decorateForCoCoPackage(GlobalExtensionManagement glex,

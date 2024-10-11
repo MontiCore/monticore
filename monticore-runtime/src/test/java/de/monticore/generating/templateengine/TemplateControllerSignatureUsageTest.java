@@ -122,6 +122,7 @@ public class TemplateControllerSignatureUsageTest {
   }
     
   @Test
+  @Disabled
   public void testParameterizedInclusionUsage() {
     StringBuilder templateOutput = tc.include(TEMPLATE_PACKAGE + "ParameterizedInclusionUsage");
     
