@@ -14,7 +14,6 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code._symboltable.CD4CodeScopesGenitorDelegator;
 import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
@@ -75,7 +74,6 @@ import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
 import de.monticore.codegen.cd2java.interpreter.ASTEvaluateDecorator;
 import de.monticore.codegen.cd2java.interpreter.InterpreterDecorator;
 import de.monticore.codegen.cd2java.interpreter.InterpreterInterfaceDecorator;
-import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -1520,7 +1518,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(TEMPLATEPATH_LONG, templatePath);
           builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
           builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
-          builder.addVariable(GENINT, mcConfig.getGenDST().orElse(false));
+          builder.addVariable(GENINT, mcConfig.getGenINT().orElse(false));
           builder.addVariable("LOG_ID", LOG_ID);
           builder.addVariable("grammarIterator", grammarsPath.getEntries().iterator());
           reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
