@@ -144,7 +144,7 @@ public class SynthesizeSymTypeFromMCArrayTypesTest {
   @Test
   public void symTypeFrom_AST_ArrayTest() throws IOException {
     ASTMCType prim = parser.parse_StringMCType("int").get();
-    ASTMCArrayType asttype = MCArrayTypesMill.mCArrayTypeBuilder().setMCType(prim).setDimensions(2).build();
+    ASTMCArrayType asttype = MCArrayTypesMill.mCArrayTypeBuilder().setMCType(prim).addDimT("[]").addDimT("[]").build();
     asttype.accept(traverser);
     Assertions.assertEquals("int[][]", tc.symTypeFromAST(asttype).printFullName());
   }
@@ -152,7 +152,7 @@ public class SynthesizeSymTypeFromMCArrayTypesTest {
   @Test
   public void symTypeFrom_AST_ArrayTest2() throws IOException {
     ASTMCType person = parser.parse_StringMCType("Person").get();
-    ASTMCArrayType asttype = MCArrayTypesMill.mCArrayTypeBuilder().setMCType(person).setDimensions(1).build();
+    ASTMCArrayType asttype = MCArrayTypesMill.mCArrayTypeBuilder().setMCType(person).addDimT("[]").build();
     asttype.accept(traverser);
     Assertions.assertEquals("Person[]", tc.symTypeFromAST(asttype).printFullName());
   }

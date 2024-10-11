@@ -105,7 +105,7 @@ public class ASTConstantsDecoratorTest extends DecoratorTestCase {
   public void testSuperGrammarsAttribute() {
     ASTCDAttribute astcdAttribute = getAttributeBy("superGrammars", constantClass);
     assertDeepEquals(CDModifier.PUBLIC_STATIC, astcdAttribute.getModifier());
-    assertDeepEquals("String[]", astcdAttribute.getMCType());
+    assertDeepEquals("String []", astcdAttribute.getMCType());
     assertFalse(astcdAttribute.isPresentInitial());
   
     assertTrue(Log.getFindings().isEmpty());

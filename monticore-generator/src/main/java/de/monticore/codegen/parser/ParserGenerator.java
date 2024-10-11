@@ -6,6 +6,8 @@ import com.google.common.base.Joiner;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.TopDecorator;
+import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecorationHelper;
@@ -15,6 +17,7 @@ import de.monticore.codegen.cd2java._parser.ParserForSuperDecorator;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.parser.antlr.AntlrTool;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
+import de.monticore.codegen.parser.antlr.Grammar2ParseVisitor;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -63,8 +66,8 @@ public class ParserGenerator {
       MCPath templatePath,
       File targetDir)
   {
-    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir);
-    generateParserWrapper(glex, astClassDiagram, handcodedPath, templatePath, targetDir);
+    ASTCDClass parseVisitorClass = generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir);
+    generateParserWrapper(glex, astClassDiagram, parseVisitorClass, handcodedPath, templatePath, targetDir);
   }
 
 
@@ -76,7 +79,7 @@ public class ParserGenerator {
    * @param astGrammar - grammar AST
    * @param targetDir - target file
    */
-  public static void generateParser(
+  public static ASTCDClass generateParser(
       GlobalExtensionManagement glex,
       ASTMCGrammar astGrammar,
       IGrammar_WithConceptsGlobalScope symbolTable,
@@ -84,7 +87,7 @@ public class ParserGenerator {
       MCPath templatePath,
       File targetDir)
   {
-    generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir, true, Languages.JAVA);
+    return generateParser(glex, astGrammar, symbolTable, handcodedPath, templatePath, targetDir, true, Languages.JAVA);
   }
 
 
@@ -97,7 +100,7 @@ public class ParserGenerator {
    * @param targetDir - target file
    * @param embeddedJavaCode - embed Java Code
    */
-  public static void generateParser(
+  public static ASTCDClass generateParser(
       GlobalExtensionManagement glex,
       ASTMCGrammar astGrammar,
       IGrammar_WithConceptsGlobalScope symbolTable,
@@ -131,7 +134,7 @@ public class ParserGenerator {
     if (astGrammar.isComponent()) {
       ParserInfoGenerator.generateParserInfoForComponent(astGrammar, setup, genHelper.getParserPackage(), lang);
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
-      return;
+      return null;
     }
 
     Log.debug("Start parser generation for the grammar " + astGrammar.getName(), LOG);
@@ -148,6 +151,15 @@ public class ParserGenerator {
         astGrammar.getName() + "AntlrParser" + suffix + ".g4");
     new GeneratorEngine(setup).generate("parser.Parser", parserPath, astGrammar, grammar2Antlr, suffix);
 
+    // 1.5 ParseVisitor
+    CD4C.init(setup);
+    traverser = Grammar_WithConceptsMill.traverser();
+    Grammar2ParseVisitor parserVisitor = new Grammar2ParseVisitor(glex, genHelper, grammarInfo, grammar2Antlr.getTmpNameDict());
+    traverser.add4Grammar(parserVisitor);
+    traverser.setGrammarHandler(parserVisitor);
+    astGrammar.accept(traverser);
+
+
     // 2. Lexer
     suffix  = GeneratorEngine.existsHandwrittenClass(handcodedPath,
             genHelper.getParserPackage()+"."+astGrammar.getName()+"AntlrLexer")?"TOP":"";
@@ -162,7 +174,14 @@ public class ParserGenerator {
     Path gLexer = Paths.get(targetDir.getPath(), lexerPath.toString());
 
     AntlrTool antlrTool = new AntlrTool(
-            new String[] { outputLang, "-o", antlrPath.toString(), "-Xexact-output-dir", "-no-listener", gLexer.toString(), gParser.toString() },
+            new String[] { outputLang,
+                    "-o", antlrPath.toString(),
+                    "-package", genHelper.getParserPackage(),
+                    "-Xexact-output-dir",
+                    "-no-listener",
+                    "-visitor",
+                    gLexer.toString().replace('\\', '/'), // fix windows paths unicode \\u
+                    gParser.toString().replace('\\', '/') },
             grammarSymbol,
             grammar2Antlr.getTmpNameDict()
     );
@@ -174,6 +193,8 @@ public class ParserGenerator {
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
 
     ParserInfoGenerator.generateParserInfo(astGrammar, setup, antlrTool.getNonTerminalToParserStates(), genHelper.getParserPackage(), lang);
+
+    return parserVisitor.getVisitorClass();
   }
 
   /**
@@ -185,6 +206,7 @@ public class ParserGenerator {
   public static void generateParserWrapper(
       GlobalExtensionManagement glex,
       ASTCDCompilationUnit astClassDiagram,
+      ASTCDClass parseVisitorClass,
       MCPath handcodedPath,
       MCPath templatePath,
       File targetDir) {
@@ -194,6 +216,11 @@ public class ParserGenerator {
     final ParserCDDecorator parserCDDecorator = new ParserCDDecorator(glex, parserClassDecorator, parserForSuperDecorator, parserService);
 
     ASTCDCompilationUnit decoratedCD = parserCDDecorator.decorate(astClassDiagram);
+
+    if (parseVisitorClass != null) {
+      // add the ASTBuilder class if exists
+      decoratedCD.getCDDefinition().getCDPackagesList().iterator().next().addCDElement(parseVisitorClass);
+    }
 
     TopDecorator topDecorator = new TopDecorator(handcodedPath);
     topDecorator.decorate(decoratedCD);

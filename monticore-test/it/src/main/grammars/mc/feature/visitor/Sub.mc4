@@ -6,6 +6,9 @@ grammar Sub extends mc.feature.visitor.Sup {
 
   E = B;
   
-  B = "test2";
+  B = "test2" NodeImpl?;
+
+  @Override
+  NodeImpl implements SomeNode = "NodeOverride";
 
 }

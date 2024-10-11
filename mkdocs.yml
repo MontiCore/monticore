@@ -9,6 +9,8 @@ theme:
     - navigation.tabs
     - toc.integrate
     - toc.follow
+    - content.tabs.link
+    - content.code.copy
   icon:
     logo: 'fontawesome/solid/desktop'
 
@@ -25,6 +27,9 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.superfences
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
 
 nav:
   - Home: 'README.md'

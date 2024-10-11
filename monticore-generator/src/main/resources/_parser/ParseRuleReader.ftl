@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("grammarName","astClassName", "parseRuleNameJavaCompatible")}
   ${grammarName}AntlrParser parser = create(reader);
-  ${astClassName} ast;
-  ast = parser.${parseRuleNameJavaCompatible}().ret;
+  ${astClassName} astPV;
+  var prc = parser.${parseRuleNameJavaCompatible}();
   if (parser.hasErrors()) {
     setError(true);
     return Optional.empty();
@@ -14,4 +14,8 @@ ${tc.signature("grammarName","astClassName", "parseRuleNameJavaCompatible")}
     Log.error("Expected EOF but found token " + currentToken, parser.computeStartPosition(currentToken));
     return Optional.empty();
   }
-  return Optional.of(ast);
+  // Build ast
+  ${grammarName}ASTBuildVisitor buildVisitor = new ${grammarName}ASTBuildVisitor(parser.getFilename(), (org.antlr.v4.runtime.CommonTokenStream)parser.getTokenStream());
+  astPV = (${astClassName})prc.accept(buildVisitor);
+  buildVisitor.addFinalComments(astPV, prc);
+  return Optional.of(astPV);

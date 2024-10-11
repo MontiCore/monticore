@@ -38,9 +38,13 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
   CPCGSingle = ["cg1"] ;
   CPCGSingleU1 = [u:"cg1"] ;
   CPCGSingleU2 = u:["cg1"] ;
+  CPCGSingleU3 = cg:[ a:"cg1" | a:"cg2"] ; // Note: Only the first constant is generated for the parser
+  CPCGSingleU4 = cg:["a" | a:"cg1" | a:"cg2"] ; // Note: Only the first constant is generated
 
   CPCGMulti1 = cg:["cg1" | "cg2"] ;
   CPCGMulti2 = cg:[u:"cg1" | v:"cg2"] ;
+  CPCGMulti3 = cg:[a:"cg1" | a:"cg2" |  b: "b"] ;
+  CPCGMulti4 = (op:["*"] | op:["/"]);   // special constand handling
 
   MultiCGPlus = (["a"]| ["b"] | ["c"])+ D?;
   MultiCGStar = (["a"] | ["b"] | ["c"])* D?;
@@ -55,6 +59,18 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
 
   // Duplicate NonTerminal usagenames
   DuplicateUsageName =  Name  ("=" value:Name |"=" value:String)? ;
+  DuplicateUsageName2 = a:Name a:Name;
+  DuplicateUsageName3 = a:Name (a:Name)*;
+
+  // Duplicate Token-NonTerminal usagenames
+  token MyToken = "MYTOKEN";
+  DuplicateTokenUsageName =  MyToken  ("=" value:MyToken |"+=" value:MyToken)? ;
+  DuplicateTokenUsageName2 = a:MyToken a:MyToken;
+  DuplicateTokenUsageName3 = a:MyToken (a:MyToken)*;
+
+  // Duplicate Terminal with usagenames
+  DuplicateTermUsageName2 = a:"a" a:"a";
+  DuplicateTermUsageName3 = a:"a" (a:"a")*;
 
   CPAstList = (A | B | C)*;         // Unsupported
   astrule CPAstList = a:A max=1;    // Unsupported
@@ -64,7 +80,6 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
 
   CPCGSup = complete:["(c)"];
   CPCGUnsupName = ending:[".dot"|".jpg"];   // Unsupported due to constants name
-  CPCGUnsuppDup = (op:["*"]|op:["/"]);      // Unsupported
 
   CPListInDList = B (B A*)*;
   CPListInPList = B (B+ A*)*;

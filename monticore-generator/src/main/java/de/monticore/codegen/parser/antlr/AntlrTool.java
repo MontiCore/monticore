@@ -66,7 +66,7 @@ public class AntlrTool extends Tool {
     for (int i = 0; i < args.length; i++) {
       if (args[i] instanceof String) {
         String name = StringTransformations.capitalize((String) args[i]);
-        Optional<ProdSymbol> rule = grammarSymbol==null?grammarSymbol.getProd(name):Optional.empty();
+        Optional<ProdSymbol> rule = grammarSymbol!=null?grammarSymbol.getProd(name):Optional.empty();
         if (rule.isPresent()) {
           args[i] = name;
           if (i == 0) {

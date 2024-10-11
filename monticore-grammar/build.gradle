@@ -204,6 +204,7 @@ def grammarDependencies = ext {
   SIUnitLiterals = ["MCCommonLiterals", "SIUnits"]
   SIUnitTypes4Math = ["MCBasicTypes", "SIUnits"]
   SIUnitTypes4Computing = ["MCBasicTypes", "SIUnitTypes4Math"]
+  TypeParameters = ["BasicSymbols", "MCBasicTypes"]
 
   // three dependencies
   LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
@@ -219,10 +220,8 @@ def grammarDependencies = ext {
   ODRules = ["TFBasisExts", "MCCommonLiterals", "MCJavaLiterals", "UMLStereotype"]
   MCVarDeclarationStatements = ["MCStatementsBasis", "MCBasicTypes", "ExpressionsBasis", "OOSymbols"]
 
-  // five dependencies
-  JavaLight = ["AssignmentExpressions", "JavaClassExpressions", "MCCommonStatements", "MCArrayStatements", "MCReturnStatements"]
-
   // six dependencies
+  JavaLight = ["AssignmentExpressions", "JavaClassExpressions", "MCCommonStatements", "MCArrayStatements", "MCReturnStatements", "TypeParameters"]
   MCFullJavaStatements = ["MCAssertStatements", "MCExceptionStatements", "MCLowLevelStatements", "MCReturnStatements", "MCSynchronizedStatements", "MCArrayStatements"]
 
   // nine dependencies
@@ -237,6 +236,7 @@ task checkArtifacts {}
 configurations { MLC }
 dependencies {
   MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
+  MLC(project(':monticore-runtime')) // Ensure the proper runtime is used for MLC
 }
 StringJoiner joiner = new StringJoiner(" ")
 configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
@@ -371,6 +371,9 @@ checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
 
 checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
 
+checkArtifactsTypeParameters.dependsOn(checkArtifactsBasicSymbols)
+checkArtifactsTypeParameters.dependsOn(checkArtifactsMCBasicTypes)
+
 checkArtifactsCardinality.dependsOn(checkArtifactsMCBasics)
 checkArtifactsCardinality.dependsOn(checkArtifactsMCCommonLiterals)
 
@@ -379,6 +382,7 @@ checkArtifactsJavaLight.dependsOn(checkArtifactsJavaClassExpressions)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCCommonStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCArrayStatements)
 checkArtifactsJavaLight.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsTypeParameters)
 checkArtifactsJavaLight.dependsOn(checkArtifactsUglyExpressions)
 
 checkArtifactsMCCommon.dependsOn(checkArtifactsCardinality)
@@ -502,6 +506,9 @@ showArtifactsMCFullGenericTypes.dependsOn(showArtifactsMCSimpleGenericTypes)
 
 showArtifactsMCSimpleGenericTypes.dependsOn(showArtifactsMCCollectionTypes)
 
+showArtifactsTypeParameters.dependsOn(showArtifactsBasicSymbols)
+showArtifactsTypeParameters.dependsOn(showArtifactsMCBasicTypes)
+
 showArtifactsCardinality.dependsOn(showArtifactsMCBasics)
 showArtifactsCardinality.dependsOn(showArtifactsMCCommonLiterals)
 
@@ -510,6 +517,7 @@ showArtifactsJavaLight.dependsOn(showArtifactsJavaClassExpressions)
 showArtifactsJavaLight.dependsOn(showArtifactsMCCommonStatements)
 showArtifactsJavaLight.dependsOn(showArtifactsMCArrayStatements)
 showArtifactsJavaLight.dependsOn(showArtifactsMCReturnStatements)
+showArtifactsJavaLight.dependsOn(showArtifactsTypeParameters)
 showArtifactsJavaLight.dependsOn(showArtifactsUglyExpressions)
 
 showArtifactsMCCommon.dependsOn(showArtifactsCardinality)
@@ -597,11 +605,6 @@ if (("true").equals(getProperty('genTagging'))) {
         artifact tasks.taggingJar { archiveAppendix = 'tagging' }
         artifact tasks.taggingSourcesJar { archiveAppendix = 'tagging'; archiveClassifier = 'sources' }
       }
-      if (("true").equals(getProperty('genTR'))) {
-        "trafo" {
-          groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
-        }
-      }
     }
   }
   configurations {
@@ -620,6 +623,14 @@ if (("true").equals(getProperty('genTR'))) {
       extendsFrom trafoCompileClasspath
       setCanBeResolved(false)
       setCanBeConsumed(true)
+    }
+  }
+
+  publishing {
+    publications {
+      "trafo" {
+        groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
+      }
     }
   }
 }

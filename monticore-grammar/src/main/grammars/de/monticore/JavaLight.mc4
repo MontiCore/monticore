@@ -27,7 +27,8 @@ component grammar JavaLight extends AssignmentExpressions,
                                     JavaClassExpressions,
                                     MCCommonStatements,
                                     MCArrayStatements,
-                                    MCReturnStatements {
+                                    MCReturnStatements,
+                                    TypeParameters {
 
 interface ClassBodyDeclaration;
 
@@ -45,12 +46,12 @@ symbolrule JavaMethod =
     isDefault: boolean;
 
 MethodDeclaration implements JavaMethod, ClassBodyDeclaration, InterfaceBodyDeclaration
-    =   MCModifier* ("<"(MCTypeArgument||",")+">")?
+    =   MCModifier* TypeParameters?
                MCReturnType Name FormalParameters (dim:"[" "]")*
                ("throws" Throws)? (MCJavaBlock | ";");
 
 ConstructorDeclaration implements JavaMethod, ClassBodyDeclaration
-    =   MCModifier* ("<"(MCTypeArgument||",")+">")? Name FormalParameters
+    =   MCModifier* TypeParameters? Name FormalParameters
                 ("throws" Throws)? MCJavaBlock;
 
 ConstDeclaration extends LocalVariableDeclarationStatement

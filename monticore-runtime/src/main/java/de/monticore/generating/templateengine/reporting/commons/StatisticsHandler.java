@@ -16,20 +16,15 @@ import java.util.concurrent.TimeUnit;
 
 public class StatisticsHandler {
 
-  protected static final ExecutorService reportSendingExecutorService;
+  protected static ExecutorService _reportSendingExecutorService;
 
-  static {
-    reportSendingExecutorService = Executors.newCachedThreadPool();
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+  static ExecutorService getReportSendingExecutorService() {
+    if (_reportSendingExecutorService == null) {
+      _reportSendingExecutorService = Executors.newCachedThreadPool();
       // just before the JVM runtime shuts down
-      try {
-        // no longer accept new reports to be submitted
-        reportSendingExecutorService.shutdown();
-        // and wait up to 60 seconds for all reports to be sent
-        reportSendingExecutorService.awaitTermination(60, TimeUnit.SECONDS);
-      } catch (InterruptedException ignored) {
-      }
-    }));
+      Runtime.getRuntime().addShutdownHook(new Thread(StatisticsHandler::shutdown));
+    }
+    return _reportSendingExecutorService;
   }
 
   private static void sendRequest(URI url, String data, String type) throws IOException, InterruptedException {
@@ -69,7 +64,22 @@ public class StatisticsHandler {
         sendRequest(new URI("https://" + "build.se.rwth-aachen.de" + ":8844"), report, type);
       } catch (Exception ignored) {
       }
-    }, reportSendingExecutorService);
+    }, getReportSendingExecutorService());
+  }
+
+  public static void shutdown() {
+    if (_reportSendingExecutorService == null) return;
+    ExecutorService service = _reportSendingExecutorService;
+    try {
+      _reportSendingExecutorService = null;
+      // no longer accept new reports to be submitted
+      service.shutdown();
+      // and wait up to 60 seconds for all reports to be sent
+      service.awaitTermination(60, TimeUnit.SECONDS);
+    } catch (InterruptedException ignored) {
+      // In case of an interrupt (such as Ctrl-C), really exit
+      service.shutdownNow();
+    }
   }
 
 }

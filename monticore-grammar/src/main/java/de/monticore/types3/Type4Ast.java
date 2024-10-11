@@ -511,6 +511,8 @@ public class Type4Ast {
    * and replaced it with an instantiation.
    */
   protected void assertNoInferenceVars(ASTNode node, SymTypeExpression type) {
+    // todo reenable after https://git.rwth-aachen.de/monticore/monticore/-/issues/4268
+    if (false)
     if (TypeParameterRelations.hasInferenceVariables(type)) {
       Log.info("0xFD777 internal error: "
               + "(this is going to be considered an error, currently(!) "

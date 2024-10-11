@@ -106,7 +106,7 @@ while (grammarIterator.hasNext()) {
 
     if (genDST) {
       // Generate infrastructure for domain-specific transformation IFF this task is run on a TR grammar
-      generateDSTInfrastructure(astGrammar, out, modelPathHC)
+      generateDSTInfrastructure(astGrammar, out, handcodedPath)
     } else {
       // Generate a DSTL (ending in TR.mc4)
       generateDSTLanguage(astGrammar, out, modelPathHC)
@@ -122,7 +122,7 @@ while (grammarIterator.hasNext()) {
     Log.info("Grammar " + astGrammar.getName() +
             " processed successfully!", LOG_ID)
 
-    // M10: Flush reporting
+    // M9.2: Flush reporting
     Reporting.reportModelEnd(astGrammar.getName(), "")
     Reporting.flush(astGrammar)
   }

@@ -9,12 +9,6 @@ options {
 }
 </#if>
 
-@lexer::header {
-<#if genHelper.isJava()>
-  package ${genHelper.getParserPackage()};
-</#if>
-}
-
 ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarSymbol().getName()])}
 
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>

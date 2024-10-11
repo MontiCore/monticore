@@ -104,7 +104,7 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
-import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.reporting.ReportingFix;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -382,9 +382,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     MCGrammarSymbol symbol = result.getSymbol();
     for(MCGrammarSymbol it: MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if(!it.getFullName().equals(symbol.getFullName())) {
-        Reporting.reportOpenInputFile(Optional.empty(),
+        ReportingFix.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
-        Reporting.reportOpenInputFile(Optional.empty(),
+        ReportingFix.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
 
       }
@@ -1370,7 +1370,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     dstlgenUtil.generateDSTL(astGrammar, gext, dstlGlex, grammarOut);
   }
 
-  public void generateDSTInfrastructure(ASTMCGrammar astTRGrammar, File out, MCPath modelPathHC) {
+  public void generateDSTInfrastructure(ASTMCGrammar astTRGrammar, File out, MCPath codePathHC) {
     if(!astTRGrammar.getSymbol().getName().endsWith("TR") || astTRGrammar.getPackageList().stream().noneMatch(p -> p.equals("tr"))) {
       Log.error("0xA1018 Unable to generate DST infrastructure on non-TR Grammar:" + astTRGrammar.getSymbol().getFullName());
       return;
@@ -1392,13 +1392,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // No D2, D3: TR Grammar is already present (see generateDSTLanguage)
 
     // D4 Generate context conditions
-    dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, modelPathHC, dstlGlex);
+    dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, codePathHC, dstlGlex);
 
     // D5 Generate DSTL to ODRule translator
-    dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, modelPathHC);
+    dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, codePathHC);
 
     // D6 Generate TFGenTool class
-    dstlgenUtil.generateTFGenToolClass(astGrammar, dstlGenerator, modelPathHC);
+    dstlgenUtil.generateTFGenToolClass(astGrammar, dstlGenerator, codePathHC);
   }
 
   /**
@@ -1419,7 +1419,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // initialize glex
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.addAfterTemplate("cd2java.Imports", new TemplateHookPoint("mc.Imports"));
-    if(Reporting.isInitialized()) {
+    if(ReportingFix.isInitialized()) {
       if(mcConfig.getConfigTemplate().isPresent()) {
         String configTemplate = mcConfig.getConfigTemplate().get();
         if (configTemplate.endsWith(".ftl")) { // remove file ending
@@ -1459,14 +1459,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             "de.monticore.io.paths",
             "de.monticore.languages.grammar",
             "de.se_rwth.commons.logging",
-            "de.monticore.generating.templateengine.reporting",
+            "de.monticore.generating.templateengine.reporting.fix", // TODO: Remove .fix after 7.7.0 release
             "de.se_rwth.commons",
-            "de.monticore.generating.templateengine.reporting.reporter",
             "de.monticore.incremental"};
 
     public static final String[] DEFAULT_STATIC_IMPORTS = {
             "de.se_rwth.commons.logging.Log",
-            "de.monticore.generating.templateengine.reporting.Reporting",
+            "de.monticore.generating.templateengine.reporting.fix.Reporting", // TODO: Remove .fix after 7.7.0 release
             "de.se_rwth.commons.Names"};
 
 

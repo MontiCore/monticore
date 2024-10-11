@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
+import de.monticore.cd4code._prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDBasisNode;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.Names;
 
 import java.io.File;
@@ -18,7 +19,7 @@ public class CDReporting {
   protected static final String CD_EXTENSION = ".cd";
 
   public CDReporting() {
-    this.cdPrettyPrinter = new CD4CodeFullPrettyPrinter();
+    this.cdPrettyPrinter = new CD4CodeFullPrettyPrinter(new IndentPrinter());
   }
 
   /**

@@ -2,8 +2,8 @@
 package de.monticore.gradle.gen;
 
 import de.monticore.AmbiguityException;
-import de.monticore.cli.MontiCoreTool;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
+import de.monticore.generating.templateengine.reporting.ReportingFix;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.mcbasics.MCBasicsMill;
@@ -13,7 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Arrays;
 
 /**
- * This class contains a method which actually calls the {@link MontiCoreTool}.
+ * This class contains a method which actually calls the {@link MCGradleTool}.
  * It will be called by either the {@link MCToolAction} or the {@link MCGenTask}
  * itself, if debugging is enabled.
  * We isolate the method into its own class, to enable classloader isolation.
@@ -34,10 +34,10 @@ public class MCToolInvoker {
       // resulting in blocked mc-tool-"main" threads, inducing extra overhead somewhere in the JVM
       // due to switching threads all trying to access the same .jar file.
       // We thus preload some classes in a synchronized block (its monitor is being shared across isolation borders)
-      MontiCoreTool.preLoad();
+      MCGradleTool.preLoad();
     });
     try {
-      MontiCoreTool.main(args);
+      MCGradleTool.main(args);
     }catch (final AmbiguityException | MontiCoreFreeMarkerException e) {
       RuntimeException newThrow = e;
       if (e.getCause() instanceof AmbiguityException) { // Freemarker adds special Freemarker Exceptions
@@ -51,6 +51,7 @@ public class MCToolInvoker {
       MCBasicsMill.globalScope().clearLoadedFiles();
       MCBasicsMill.globalScope().getSymbolPath().close();
       Grammar_WithConceptsMill.reset();
+      ReportingFix.resetInitializedFlagFix();
     }
   }
 }

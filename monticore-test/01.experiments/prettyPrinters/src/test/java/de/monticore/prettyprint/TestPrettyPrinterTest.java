@@ -8,8 +8,8 @@ import de.monticore.testprettyprinters._ast.ASTProdNamedTerminal;
 import de.monticore.testprettyprinters._ast.ASTToBeReplacedKeyword;
 import de.monticore.testprettyprinters._parser.TestPrettyPrintersParser;
 import de.monticore.testprettyprinters._prettyprint.TestPrettyPrintersFullPrettyPrinter;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.*;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class TestPrettyPrinterTest extends PPTestClass {
   @BeforeClass
   public static void setup() {
     TestPrettyPrintersMill.init();
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
@@ -202,6 +202,19 @@ public class TestPrettyPrinterTest extends PPTestClass {
   }
 
   @Test
+  public void testCPCGSingleU3() throws IOException {
+    testPP("cg1", TestPrettyPrintersMill.parser()::parse_StringCPCGSingleU3);
+//    testPP("cg2", TestPrettyPrintersMill.parser()::parse_StringCPCGSingleU3); // Note: Only the first constant is generated for the parser
+  }
+
+  @Test
+  public void testCPCGSingleU4() throws IOException {
+    testPP("a", TestPrettyPrintersMill.parser()::parse_StringCPCGSingleU4);
+//    testPP("cg1", TestPrettyPrintersMill.parser()::parse_StringCPCGSingleU4); // Note: Only the first constant is generated for the parser
+//    testPP("cg2", TestPrettyPrintersMill.parser()::parse_StringCPCGSingleU4); // Note: Only the first constant is generated for the parser
+  }
+
+  @Test
   public void testCPCGMulti1() throws IOException {
     testPP("cg1", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti1);
     testPP("cg2", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti1);
@@ -211,6 +224,19 @@ public class TestPrettyPrinterTest extends PPTestClass {
   public void testCPCGMulti2() throws IOException {
     testPP("cg1", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti2);
     testPP("cg2", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti2);
+  }
+
+  @Test
+  public void testCPCGMulti3() throws IOException {
+    testPP("cg1", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti3);
+    testPP("cg2", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti3);
+    testPP("b", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti3);
+  }
+
+  @Test
+  public void testCPCGMulti4() throws IOException {
+    testPP("*", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti4);
+    testPP("/", TestPrettyPrintersMill.parser()::parse_StringCPCGMulti4);
   }
 
   @Test
@@ -262,6 +288,49 @@ public class TestPrettyPrinterTest extends PPTestClass {
   }
 
   @Test
+  public void testDuplicateUsageName2() throws IOException {
+    testPP("n1 n2", TestPrettyPrintersMill.parser()::parse_StringDuplicateUsageName2);
+  }
+
+  @Test
+  public void testDuplicateUsageName3() throws IOException {
+    testPP("n1", TestPrettyPrintersMill.parser()::parse_StringDuplicateUsageName3);
+    testPP("n1 n2", TestPrettyPrintersMill.parser()::parse_StringDuplicateUsageName3);
+    testPP("n1 n2 n3", TestPrettyPrintersMill.parser()::parse_StringDuplicateUsageName3);
+  }
+
+  @Test
+  public void testDuplicateTokenUsageName() throws IOException {
+    testPP("MYTOKEN", TestPrettyPrintersMill.parser()::parse_StringDuplicateTokenUsageName);
+    testPP("MYTOKEN = MYTOKEN", TestPrettyPrintersMill.parser()::parse_StringDuplicateTokenUsageName);
+    testPP("MYTOKEN += MYTOKEN", TestPrettyPrintersMill.parser()::parse_StringDuplicateTokenUsageName);
+  }
+
+  @Test
+  public void testDuplicateTokenUsageName2() throws IOException {
+    testPP("MYTOKEN MYTOKEN", TestPrettyPrintersMill.parser()::parse_StringDuplicateTokenUsageName2);
+  }
+
+  @Test
+  public void testDuplicateTokenUsageName3() throws IOException {
+    testPP("MYTOKEN", TestPrettyPrintersMill.parser()::parse_StringDuplicateTokenUsageName3);
+    testPP("MYTOKEN MYTOKEN", TestPrettyPrintersMill.parser()::parse_StringDuplicateTokenUsageName3);
+    testPP("MYTOKEN MYTOKEN MYTOKEN", TestPrettyPrintersMill.parser()::parse_StringDuplicateTokenUsageName3);
+  }
+
+  @Test
+  public void testDuplicateTermUsageName2() throws IOException {
+    testPP("a a", TestPrettyPrintersMill.parser()::parse_StringDuplicateTermUsageName2);
+  }
+
+  @Test
+  public void testDuplicateTermUsageName3() throws IOException {
+    testPP("a", TestPrettyPrintersMill.parser()::parse_StringDuplicateTermUsageName3);
+    testPP("a a", TestPrettyPrintersMill.parser()::parse_StringDuplicateTermUsageName3);
+    testPP("a a a", TestPrettyPrintersMill.parser()::parse_StringDuplicateTermUsageName3);
+  }
+
+  @Test
   @Ignore
   public void testCPAstList() throws IOException {
     // Currently throws "Contains a list of Alts where one is not iterator ready!"
@@ -289,16 +358,6 @@ public class TestPrettyPrinterTest extends PPTestClass {
       Assert.fail();
     } catch (IllegalStateException expected) {
       Assert.assertEquals("Unable to find good Constant name for getEnding and value ", expected.getMessage());
-    }
-  }
-
-  @Test
-  public void testCPCGUnsuppDup() throws IOException {
-    try {
-      testPP("*", TestPrettyPrintersMill.parser()::parse_StringCPCGUnsuppDup);
-      Assert.fail();
-    } catch (IllegalStateException expected) {
-      Assert.assertEquals("Unable to handle ConstantGroup with size of 1, but multiple elements named op present", expected.getMessage());
     }
   }
 

@@ -7,9 +7,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.parser.MCGrammarInfo;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
 import de.monticore.grammar.DirectLeftRecursionDetector;
-import de.monticore.codegen.parser.MCGrammarInfo;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
@@ -20,7 +20,6 @@ import de.monticore.grammar.grammar._visitor.GrammarHandler;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
-import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -35,7 +34,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected MCGrammarSymbol grammarEntry;
 
-  GrammarTraverser traverser;
+  protected GrammarTraverser traverser;
 
   /**
    * This list is used for the detection of the left recursion
@@ -44,11 +43,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected DirectLeftRecursionDetector leftRecursionDetector = new DirectLeftRecursionDetector();
 
-  protected SourcePositionActions positionActions;
-
   protected AttributeCardinalityConstraint attributeConstraints;
-
-  protected ASTConstructionActions astActions;
 
   protected List<String> productionAntlrCode = Lists.newArrayList();
 
@@ -65,32 +60,26 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   protected Map<ASTProd, Map<ASTNode, String>> tmpNameDict = new LinkedHashMap<>();
 
   public Grammar2Antlr(
-          ParserGeneratorHelper parserGeneratorHelper,
-          MCGrammarInfo grammarInfo) {
+      ParserGeneratorHelper parserGeneratorHelper,
+      MCGrammarInfo grammarInfo) {
     Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
+    this.attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
     this.grammarEntry = parserGeneratorHelper.getGrammarSymbol();
     this.grammarInfo = grammarInfo;
     this.parserHelper = parserGeneratorHelper;
-
-    astActions = new ASTConstructionActions(parserGeneratorHelper);
-    attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
-    positionActions = new SourcePositionActions(parserGeneratorHelper);
 
     this.embeddedJavaCode = true;
   }
 
   public Grammar2Antlr(
-          ParserGeneratorHelper parserGeneratorHelper,
-          MCGrammarInfo grammarInfo,
-          boolean embeddedJavaCode) {
+      ParserGeneratorHelper parserGeneratorHelper,
+      MCGrammarInfo grammarInfo,
+      boolean embeddedJavaCode) {
     Preconditions.checkArgument(parserGeneratorHelper.getGrammarSymbol() != null);
+    this.attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
     this.grammarEntry = parserGeneratorHelper.getGrammarSymbol();
     this.grammarInfo = grammarInfo;
     this.parserHelper = parserGeneratorHelper;
-
-    astActions = new ASTConstructionActions(parserGeneratorHelper);
-    attributeConstraints = new AttributeCardinalityConstraint(parserGeneratorHelper);
-    positionActions = new SourcePositionActions(parserGeneratorHelper);
 
     this.embeddedJavaCode = embeddedJavaCode;
   }
@@ -190,39 +179,23 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     // Start code codeSection for rules
     addToCodeSection(ruleName);
     List<PredicatePair> subRules = grammarInfo
-            .getSubRulesForParsing(ast.getName());
+        .getSubRulesForParsing(ast.getName());
 
     if (embeddedJavaCode) {
-      addToCodeSection(" returns [", classnameFromRulenameorInterfacename, " ret = ",
-              getDefaultValue(ruleByName), "]\n", options);
-
       // Add actions
-      if (ast.isPresentAction() && ast.getAction() instanceof ASTAction) {
+      if (ast.isPresentAction()) {
         addToAction(ParserGeneratorHelper.getText(ast.getAction()));
       }
 
       // Action at beginning of rule @init
-      addToAction(astActions.getActionForRuleBeforeRuleBody(ast));
-      // Action for determining positions
-      addToAction(positionActions.startPosition());
-      // Action for determining positions of comments (First set position)
-      addToAction("setActiveBuilder(_builder);\n");
-
       addToAction(attributeConstraints.addActionForRuleBeforeRuleBody(ast));
-
       if (!isActionEmpty()) {
         addToCodeSection("@init");
         addActionToCodeSection();
       }
 
       // Action at end of rule
-      addToAction(positionActions.endPosition());
       addToAction(attributeConstraints.addActionForRuleAfterRuleBody(ast));
-      if (subRules != null && !subRules.isEmpty()) {
-        addToAction("\nif (_localctx.ret == null)");
-      }
-      addToAction(astActions.getBuildAction());
-
       if (!isActionEmpty()) {
         addToCodeSection("\n@after");
         addActionToCodeSection();
@@ -253,9 +226,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         startCodeSection();
         String subRuleVar = "subRuleVar" + i;
         addToCodeSection("(" + subRuleVar + " = " + getRuleNameForAntlr(x.getClassname()));
-        if (embeddedJavaCode) {
-          addToCodeSection(" {$ret = $" + subRuleVar + ".ret;}");
-        }
         addToCodeSection(") | \n");
         endCodeSection();
         i++;
@@ -270,7 +240,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     createAntlrCodeForAlts(alts);
 
     addDummyRules(ast.getName(), ruleName,
-            classnameFromRulenameorInterfacename);
+        classnameFromRulenameorInterfacename);
 
     addToAntlrCode(";");
 
@@ -289,21 +259,22 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     // Head of Rule
     addToCodeSection(ruleName + " returns ["
-            + getQualifiedName(ruleByName) + " ret = "
-            + getDefaultValue(ruleByName) + "] ");
+        + getQualifiedName(ruleByName) + " ret = "
+        + getDefaultValue(ruleByName) + "] ");
 
     addToCodeSection("\n: ");
 
     String sep = "";
+    int index = 0;
     for (ASTConstant c : ast.getConstantList()) {
       addToCodeSection(sep);
-      addToCodeSection("\n", parserHelper.getLexSymbolName(c.getName()));
+      addToCodeSection("\n", "e_" + index++ + "=" + parserHelper.getLexSymbolName(c.getName()));
 
       if (embeddedJavaCode) {
         String temp1 = "";
         temp1 += "$ret = " + getQualifiedName(ruleByName)
-                + "."
-                + parserHelper.getConstantNameForConstant(c) + ";";
+            + "."
+            + parserHelper.getConstantNameForConstant(c) + ";";
 
         if (!temp1.isEmpty()) {
           addToCodeSection("\n{" + temp1 + "}");
@@ -328,63 +299,36 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     boolean iterated = false;
     if (ast.isPresentSymbol()) {
       iterated = TransformationHelper
-              .isConstGroupIterated(ast.getSymbol());
+          .isConstGroupIterated(ast.getSymbol());
     }
 
-    // One entry leads to boolean isMethods
-    if (!iterated) {
-      ASTConstant x = ast.getConstantList().get(0);
-      addToCodeSection("(");
+    addToCodeSection("(");
+    String del = "";
+    String tmpName = parserHelper.getTmpVarName(ast);
+    String label = "=";
+
+    for (Iterator<ASTConstant> iter = ast.getConstantList().iterator(); iter
+        .hasNext(); ) {
+      addToCodeSection(del);
+
+      ASTConstant x = iter.next();
+      if (iterated) {
+        tmpName = parserHelper.getTmpVarName(x);
+      }
+
       if (x.isPresentKeyConstant()) {
-        addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
-      } else if (x.isPresentTokenConstant()) {
-        addToCodeSection(parserHelper.getLexSymbolName(x.getTokenConstant().getString()));
+        addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList(), tmpName + label));
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-        addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
+        addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getName()));
       } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
-        addToCodeSection(parserHelper.getKeyRuleName(x.getName()));
+        addToCodeSection(tmpName + label + parserHelper.getKeyRuleName(x.getName()));
       } else {
-        addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
+        addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getName()));
       }
 
-      if (embeddedJavaCode) {
-        addToAction(astActions.getConstantInConstantGroupSingleEntry(x, ast));
-        addActionToCodeSectionWithNewLine();
-      }
-      addToCodeSection(")", printIteration(ast.getIteration()));
-
+      del = "|\n";
     }
-
-    // More than one entry leads to an int
-    else {
-      addToCodeSection("(");
-      String del = "";
-      for (Iterator<ASTConstant> iter = ast.getConstantList().iterator(); iter
-              .hasNext(); ) {
-        addToCodeSection(del);
-        ASTConstant x = iter.next();
-
-        if (x.isPresentKeyConstant()) {
-          addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList()));
-        } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-          addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
-        } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
-          addToCodeSection(parserHelper.getKeyRuleName(x.getName()));
-        } else {
-          addToCodeSection(parserHelper.getLexSymbolName(x.getName()));
-        }
-
-        if (embeddedJavaCode) {
-          addToAction(astActions.getConstantInConstantGroupMultipleEntries(x, ast));
-          addActionToCodeSectionWithNewLine();
-        }
-
-        del = "|\n";
-      }
-
-      addToCodeSection(")", printIteration(ast.getIteration()));
-    }
-
+    addToCodeSection(")", printIteration(ast.getIteration()));
     endCodeSection(ast);
   }
 
@@ -427,10 +371,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addToCodeSection("(");
     if (ast.isPresentOption()) {
       addToCodeSection("\noptions {", ast.getOption().getID(), "=", ast.getOption()
-              .getValue(), ";}");
-    }
-    if (embeddedJavaCode && ast.isPresentInitAction()) {
-      addToCodeSection("{", ParserGeneratorHelper.getText(ast.getInitAction()), "}");
+          .getValue(), ";}");
     }
     endCodeSection();
 
@@ -497,15 +438,14 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       addToCodeSection("\n }");
     }
 
-    // Print init actions
-    if (embeddedJavaCode && a.isPresentInitAction()) {
-      addToCodeSection("{" + ParserGeneratorHelper.getText(a.getInitAction()) + "}");
-    }
-
     endCodeSection();
+
+    ruleIteratedStack.push((!ruleIteratedStack.isEmpty() && ruleIteratedStack.peek()) || isIterated(a.getIteration()));
 
     // Visit all alternatives
     createAntlrCodeForAlts(a.getAltList());
+
+    ruleIteratedStack.pop();
 
     // Start of Block with iteration
     startCodeSection();
@@ -538,8 +478,12 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     if (keywords.containsKey(ast.getName())) {
       addToCodeSection("(");
       String seperator = "";
+      int nokeywordindex = 0; // we use an index
       for (String replaceString: keywords.get(ast.getName())) {
         addToCodeSection(seperator);
+        addToCodeSection(parserHelper.getTmpVarName(ast) + "_nk" + nokeywordindex++);
+        addToCodeSection(ast.isPresentSymbol() && ast.getSymbol().isIsList() ? "+=" : "=");
+
         if (grammarInfo.getKeywordRules().contains(replaceString)) {
           addToCodeSection(parserHelper.getKeyRuleName(replaceString));
         } else {
@@ -549,22 +493,10 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       }
       addToCodeSection(")");
     } else {
+      addToCodeSection(parserHelper.getTmpVarName(ast));
+      addToCodeSection((ast.isPresentSymbol() && ast.getSymbol().isIsList() ? "+=" : "="));
       addToCodeSection(rulename);
     }
-
-    if (embeddedJavaCode) {
-      // Add Actions
-      if (isAttribute) {
-        if (ast.getSymbol().isIsList()) {
-          addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
-        } else {
-          addToAction(astActions.getActionForTerminalNotIteratedAttribute(ast));
-        }
-      } else {
-        addToAction(astActions.getActionForTerminalIgnore(ast));
-      }
-    }
-
     addActionToCodeSection();
 
     if (isAttribute && isListOrOpt) {
@@ -576,13 +508,13 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  protected String createKeyPredicate(List<String> stringList) {
+  protected String createKeyPredicate(List<String> stringList, String tmpNamePlusLbl) {
     String rulename = "(";
     String sep = "";
     for (String key : stringList) {
       rulename += sep;
       sep = " | ";
-      rulename += parserHelper.getKeyRuleName(key);
+      rulename += tmpNamePlusLbl + parserHelper.getKeyRuleName(key);
 
     }
     rulename += ")";
@@ -594,36 +526,27 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     startCodeSection("ASTKeyTerminal " + ast.getName());
     addToCodeSection("(");
-    String rulename = createKeyPredicate(ast.getKeyConstant().getStringList());
 
-    if (grammarEntry.getReplacedKeywordsWithInherited().containsKey(ast.getName())) {
+    String labelAssignment = ast.isPresentSymbol() && ast.getSymbol().isIsList()  ? "+=" : "=";
+
+    String tmpVarName = parserHelper.getTmpVarName(ast);
+    var replacedAdditionalKeywords = grammarEntry.getReplacedKeywordsWithInherited();
+    if (replacedAdditionalKeywords.containsKey(ast.getName())) {
+      handleTerminal(labelAssignment, tmpVarName, replacedAdditionalKeywords, ast.getName());
+    } else if (ast.getKeyConstant().sizeStrings() == 1) {
+      // Extra case for one-long strings
+      addToCodeSection(tmpVarName + labelAssignment + parserHelper.getKeyRuleName(ast.getKeyConstant().getString(0)));
+    } else {
+      // replace keyword is currently not implemented for multiple key
       addToCodeSection("(");
       String seperator = "";
-      for (String replaceString: grammarEntry.getAdditionalKeywords().get(ast.getName())) {
+      int nkIndex = 0;
+      for (String keyString : ast.getKeyConstant().getStringList()) {
         addToCodeSection(seperator);
-        if (grammarInfo.getKeywordRules().contains(replaceString)) {
-          addToCodeSection(parserHelper.getKeyRuleName(replaceString));
-        } else {
-          addToCodeSection(parserHelper.getLexSymbolName(replaceString));
-        }
-        seperator = " | ";
+        addToCodeSection(tmpVarName + "_key" + nkIndex++ + labelAssignment + parserHelper.getKeyRuleName(keyString));
+        seperator = "|";
       }
       addToCodeSection(")");
-    } else {
-      addToCodeSection(rulename);
-    }
-
-    if (embeddedJavaCode) {
-      boolean isAttribute = ast.isPresentUsageName();
-      boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
-      // Add Actions
-      if (isAttribute) {
-        if (isList) {
-          addToAction(astActions.getActionForKeyTerminalIteratedAttribute(ast));
-        } else {
-          addToAction(astActions.getActionForKeyTerminalNotIteratedAttribute(ast));
-        }
-      }
     }
 
     addActionToCodeSection();
@@ -634,40 +557,36 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   }
 
+  void handleTerminal(String labelAssignment, String tmpVarName, Map<String, Collection<String>> replacedAdditionalKeywords, String name) {
+    addToCodeSection("(");
+    String seperator = "";
+    int nokeywordindex = 0;
+    for (String replaceString: replacedAdditionalKeywords.get(name)) {
+      addToCodeSection(seperator);
+      addToCodeSection(tmpVarName + "_nk" + nokeywordindex++);
+      addToCodeSection(labelAssignment);
+      if (grammarInfo.getKeywordRules().contains(replaceString)) {
+        addToCodeSection(parserHelper.getKeyRuleName(replaceString));
+      } else {
+        addToCodeSection(parserHelper.getLexSymbolName(replaceString));
+      }
+      seperator = " | ";
+    }
+    addToCodeSection(")");
+  }
+
   @Override
   public void visit(ASTTokenTerminal ast) {
-
     startCodeSection("ASTTokenTerminal " + ast.getName());
     addToCodeSection("(");
 
-    if (grammarEntry.getReplacedKeywordsWithInherited().containsKey(ast.getName())) {
-      addToCodeSection("(");
-      String seperator = "";
-      for (String replaceString: grammarEntry.getAdditionalKeywords().get(ast.getName())) {
-        addToCodeSection(seperator);
-        if (grammarInfo.getKeywordRules().contains(replaceString)) {
-          addToCodeSection(parserHelper.getKeyRuleName(replaceString));
-        } else {
-          addToCodeSection(parserHelper.getLexSymbolName(replaceString));
-        }
-        seperator = " | ";
-      }
-      addToCodeSection(")");
+    String labelAssignment = ast.isPresentSymbol() && ast.getSymbol().isIsList()  ? "+=" : "=";
+    String tmpVarName = parserHelper.getTmpVarName(ast);
+    var replacedAdditionalKeywords = grammarEntry.getReplacedKeywordsWithInherited();
+    if (replacedAdditionalKeywords.containsKey(ast.getName())) {
+      handleTerminal(labelAssignment, tmpVarName, replacedAdditionalKeywords, ast.getName());
     } else {
-      addToCodeSection(parserHelper.getLexSymbolName(ast.getTokenConstant().getString()));
-    }
-
-    if (embeddedJavaCode) {
-      boolean isAttribute = ast.isPresentUsageName();
-      boolean isList = ast.isPresentSymbol() && ast.getSymbol().isIsList();
-      // Add Actions
-      if (isAttribute) {
-        if (isList) {
-          addToAction(astActions.getActionForTerminalIteratedAttribute(ast));
-        } else {
-          addToAction(astActions.getActionForTerminalNotIteratedAttribute(ast));
-        }
-      }
+      addToCodeSection(tmpVarName + labelAssignment + parserHelper.getLexSymbolName(ast.getTokenConstant().getString()));
     }
 
     addActionToCodeSection();
@@ -786,7 +705,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     Optional<ProdSymbol> prod = grammarEntry.getProdWithInherited(ast.getName());
     if (!prod.isPresent()) {
       Log.error("0xA2201 Production symbol for " + ast.getName() + " couldn't be resolved.",
-              ast.get_SourcePositionStart());
+          ast.get_SourcePositionStart());
     }
     // Lexer Rule
     if (prod.get().isIsLexerProd()) {
@@ -794,12 +713,12 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
     // Other Rule called
     else if (prod.get().isParserProd()
-            ||
-            prod.get().isIsInterface()
-            ||
-            prod.get().isIsAbstract()
-            ||
-            prod.get().isIsEnum()) {
+        ||
+        prod.get().isIsInterface()
+        ||
+        prod.get().isIsAbstract()
+        ||
+        prod.get().isIsEnum()) {
 
       addCodeForRuleReference(ast);
     }
@@ -884,6 +803,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   public List<String> createAntlrCodeForInterface(ProdSymbol interfaceRule) {
 
     clearAntlrCode();
+    parserHelper.resetTmpVarNames();
 
     String interfacename = interfaceRule.getName();
     // Dummy rules
@@ -893,9 +813,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     startCodeSection(interfaceRule.getName());
 
     addToAntlrCode(getRuleNameForAntlr(interfacename));
-    if (embeddedJavaCode) {
-      addToAntlrCode(" returns [" + usageName + " ret]");
-    }
     addToAntlrCode(": ");
 
     List<NodePair> alts = new ArrayList<>();
@@ -905,8 +822,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     // Append sorted alternatives
     Collections.sort(alts, (p2, p1) ->
-            new Integer(p1.getPredicatePair().getRuleReference().isPresentPrio() ? p1.getPredicatePair().getRuleReference().getPrio() : "0").compareTo(
-                    new Integer(p2.getPredicatePair().getRuleReference().isPresentPrio() ? p2.getPredicatePair().getRuleReference().getPrio() : "0")));
+        new Integer(p1.getPredicatePair().getRuleReference().isPresentPrio() ? p1.getPredicatePair().getRuleReference().getPrio() : "0").compareTo(
+            new Integer(p2.getPredicatePair().getRuleReference().isPresentPrio() ? p2.getPredicatePair().getRuleReference().getPrio() : "0")));
 
     for (NodePair entry : alts) {
       addToAntlrCode(del);
@@ -923,61 +840,20 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         // Left recursive rule
         ASTAlt alt = (ASTAlt) entry.getAlternative();
         String className = entry.getPredicatePair().getClassname();
-        if (embeddedJavaCode) {
-          // Generate code for left recursive alternatives
-          addToAction(astActions.getActionForAltBeforeRuleBody(className, alt));
-          // Action for determining positions
-          addToAction(positionActions.startPosition());
-          // Action for determining positions of comments (First set position)
-          addToAction("setActiveBuilder(_builder);\n");
-          if (!leftRecursionDetector.isAlternativeLeftRecursive(alt, interfacename)) {
-            // If the alternative is left-recursive, the code may only
-            // be saved later. With left-recursive rules, Antlr expects the first
-            // element to be the recursive element.
-            // Code is also not allowed at this point.
-            // But for the other rules it is necessary that the code
-            // is saved first
-            addActionToCodeSection();
-            endCodeSection();
-          }
-        }
+
         alt.accept(getTraverser());
-        if (embeddedJavaCode) {
-          addToAction(positionActions.endPosition());
-          addToAction(astActions.getBuildAction());
-          addActionToCodeSection();
-          endCodeSection();
-        }
       } else {
         if (left && entry.getAlternative() instanceof ASTClassProd && ((ASTClassProd) entry.getAlternative()).getAltList().size() == 1) {
           ASTAlt alt = ((ASTClassProd) entry.getAlternative()).getAltList().get(0);
           String className = entry.getPredicatePair().getClassname();
-          if (embeddedJavaCode) {
-            // Generate code for left recursive alternatives
-            addToAction(astActions.getActionForAltBeforeRuleBody(className, alt));
-            // Action for determining positions
-            addToAction(positionActions.startPosition());
-            // Action for determining positions of comments (First set position)
-            addToAction("setActiveBuilder(_builder);\n");
-            startCodeSection();
-            addActionToCodeSection();
-            endCodeSection();
-          }
           alt.accept(getTraverser());
-          addToAction(positionActions.endPosition());
-          addToAction(astActions.getBuildAction());
-          addActionToCodeSectionWithNewLine();
           endCodeSection();
         } else {
           // normal rule
           startCodeSection();
           String tmpVar = parserHelper.getTmpVarName(entry.getAlternative());
           addToCodeSection(tmpVar + "="
-                  + getRuleNameForAntlr(entry.getPredicatePair().getClassname()));
-          if (embeddedJavaCode) {
-            // Action for AntLR4
-            addToCodeSection("\n{$ret=$" + tmpVar + ".ret;}");
-          }
+              + getRuleNameForAntlr(entry.getPredicatePair().getClassname()));
           endCodeSection();
         }
       }
@@ -988,6 +864,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addDummyRules(interfacename, ruleName, usageName);
 
     addToAntlrCode(";");
+
+    tmpNameDict.put(interfaceRule.getAstNode(), new LinkedHashMap<>(parserHelper.getTmpVariables()));
 
     return getAntlrCode();
   }
@@ -1048,7 +926,11 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     // AntLR2 -> AntLR4: Replace : by =
     // tmp = "( %tmp%=%rulename% %initaction% %actions%";
 
-    addToCodeSection(parserHelper.getTmpVarName(ast), "=", ast.getName());
+    // In case the AST has a list of this rule (*/+), we use += instead of = in the g4 rule
+    boolean isRuleIterated = getASTMax(ast);
+
+    String tmpName = parserHelper.getTmpVarName(ast);
+    addToCodeSection(tmpName, isRuleIterated ? "+=" : "=", ast.getName());
 
     if (embeddedJavaCode) {
       // Add Actions
@@ -1058,12 +940,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         addToAction(attributeConstraints.addActionForNonTerminal(ast));
         String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
         List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentDownMany(attributename);
-        if (!rcs.isEmpty()
-                && rcs.get(0).isIsList()) {
-          addToAction(astActions.getActionForLexerRuleIteratedAttribute(ast));
-        } else {
-          addToAction(astActions.getActionForLexerRuleNotIteratedAttribute(ast));
-        }
       }
 
       addActionToCodeSection();
@@ -1075,23 +951,23 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     if (ast.isPlusKeywords()) {
       addToAntlrCode("/* Automatically added keywords " + grammarInfo.getKeywords()
-              + " */");
+          + " */");
 
       ArrayList<String> keys = Lists.newArrayList(grammarInfo.getKeywords());
       keys.removeAll(grammarInfo.getKeywordRules());
       for (String y : keys) {
         addToAntlrCode(" | ");
         ASTTerminal term = Grammar_WithConceptsMill.terminalBuilder()
-                .setName(y).build();
+            .setName(y).build();
 
         if (ast.isPresentSymbol()) {
           RuleComponentSymbol componentSymbol = ast.getSymbol();
           Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
-                  .getEnclosingRule(componentSymbol);
+              .getEnclosingRule(componentSymbol);
           term.setUsageName(ParserGeneratorHelper.getUsageName(ast));
 
           if (rule.isPresent()) {
-            addActionForKeyword(term, rule.get(), componentSymbol.isIsList());
+            addActionForKeyword(term, rule.get(), componentSymbol.isIsList(), tmpName + (isRuleIterated?"+=":"="));
           }
         }
       }
@@ -1107,6 +983,9 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     return "";
   }
 
+  // Stack for Block iterations (Prod)* => should result in tmp +=
+  protected Stack<Boolean> ruleIteratedStack = new Stack<>();
+
   /**
    * Print code for references to other rules in the same grammar
    *
@@ -1120,10 +999,10 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     }
     boolean isLeftRecursive = false;
     if (scope.get().getName().equals(ast.getName())
-            && !altList.isEmpty()) {
+        && !altList.isEmpty()) {
       // Check if rule is left recursive
       isLeftRecursive = leftRecursionDetector
-              .isAlternativeLeftRecursive(altList.get(0), ast);
+          .isAlternativeLeftRecursive(altList.get(0), ast);
     }
 
     startCodeSection();
@@ -1137,22 +1016,14 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     String tmpVarName = parserHelper.getTmpVarName(ast);
 
-    addToCodeSection(braceopen, " ", tmpVarName, "=", getRuleNameForAntlr(ast.getName()));
+    // In case the AST has a list of this rule (*/+), we use += instead of = in the g4 rule
+    boolean isRuleIterated = getASTMax(ast);
+
+    String label = isRuleIterated ? "+=":"=";
+    addToCodeSection(braceopen, " ", tmpVarName, label, getRuleNameForAntlr(ast.getName()));
 
     if (embeddedJavaCode) {
-      if (isLeftRecursive) {
-        addToAction(astActions
-                .getActionForInternalRuleNotIteratedLeftRecursiveAttribute(ast));
-      }
       addToAction(attributeConstraints.addActionForNonTerminal(ast));
-      String attributename = ast.isPresentUsageName() ? ast.getUsageName() : StringTransformations.uncapitalize(ast.getName());
-      List<RuleComponentSymbol> rcs = scope.get().getSpannedScope().resolveRuleComponentDownMany(attributename);
-      if (!rcs.isEmpty() && rcs.get(0).isIsList()) {
-        addToAction(astActions.getActionForInternalRuleIteratedAttribute(ast));
-      } else {
-        addToAction(astActions.getActionForInternalRuleNotIteratedAttribute(ast));
-      }
-
       addActionToCodeSection();
     }
 
@@ -1162,7 +1033,23 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   }
 
-  protected void addActionForKeyword(ASTTerminal keyword, ProdSymbol rule, boolean isList) {
+  boolean getASTMax(ASTNonTerminal ast) {
+    String usageName = ParserGeneratorHelper.getUsageName(ast);
+    Optional<Integer> max = ast.getEnclosingScope().getLocalAdditionalAttributeSymbols()
+        .stream()
+        .filter(e -> e.getName().equals(usageName))
+        .map(TransformationHelper::getMax)
+        .map(e->e.orElse(1))
+        .findFirst();
+
+    boolean isRuleIterated = (!ruleIteratedStack.isEmpty() && ruleIteratedStack.peek()) || isIterated(ast.getIteration());
+
+    if (max.isPresent() && max.get() == 1)
+      return false; // an astrule forcefully set the cardinality
+    return isRuleIterated;
+  }
+
+  protected void addActionForKeyword(ASTTerminal keyword, ProdSymbol rule, boolean isList, String tmpNamePlusLbl) {
 
     startCodeSection();
 
@@ -1174,25 +1061,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     // No actions in predicates
     // Template engine cannot be used for substition in rare cases
-    addToCodeSection(rulename); // + " %initaction% %actions% ) %iteration% ";
-
-    if (embeddedJavaCode) {
-      boolean isAttribute = (keyword.isPresentUsageName());
-
-      // Add Actions
-      if (isAttribute) {
-        if (isList) {
-          addToAction(astActions.getActionForTerminalIteratedAttribute(keyword));
-        } else {
-          addToAction(astActions.getActionForTerminalNotIteratedAttribute(keyword));
-        }
-      } else {
-        addToAction(astActions.getActionForTerminalIgnore(keyword));
-      }
-
-      addActionToCodeSection();
-    }
-
+    addToCodeSection(tmpNamePlusLbl + rulename); // + " %initaction% %actions% ) %iteration% ";
     addToCodeSection(")", printIteration(keyword.getIteration()));
 
     endCodeSection();
@@ -1373,5 +1242,9 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   @Override
   public void setTraverser(GrammarTraverser traverser) {
     this.traverser = traverser;
+  }
+
+  public boolean isIterated(int iteration) {
+    return iteration == ASTConstantsGrammar.STAR || iteration == ASTConstantsGrammar.PLUS;
   }
 }

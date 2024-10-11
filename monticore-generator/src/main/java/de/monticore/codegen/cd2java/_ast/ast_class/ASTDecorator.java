@@ -19,19 +19,16 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
-import de.monticore.types.prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
@@ -118,10 +115,10 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
         String errorCode = astService.getGeneratedErrorCode(clazz.getName());
         methods.stream().filter(m -> m.getName().equals("setEnclosingScope")).forEach(m ->
             this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetEnclosingScope", errorCode,
-                MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
+                CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false), scopeInterfaceType)));
         methods.stream().filter(m -> m.getName().equals("setSpannedScope")).forEach(m ->
                 this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.ast_class.symboltable.InheritedSetSpannedScope", errorCode,
-                        MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(m.getCDParameter(0).getMCType()), scopeInterfaceType)));
+                    CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false), scopeInterfaceType)));
         methodDecorator.enableTemplates();
         clazz.addAllCDMembers(methods);
       }
@@ -148,10 +145,10 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
 
       ASTCDMethod superAccept = this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter);
       String errorCode = "0x70000" + astService.getGeneratedErrorCode(astClass.getName()+
-              superVisitorType.printType(new MCBasicTypesFullPrettyPrinter(new IndentPrinter())));
+              CD4CodeMill.prettyPrint(superVisitorType, false));
       this.replaceTemplate(EMPTY_BODY, superAccept, new TemplateHookPoint("data.AcceptSuper",
           this.visitorService.getTraverserInterfaceFullName(), errorCode, astClass.getName(),
-              MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(superVisitorType), "AST node"));
+          CD4CodeMill.prettyPrint(superVisitorType, false), "AST node"));
       this.replaceTemplate(JAVADOC, superAccept,
               JavaDoc.of("Entry point for the Visitor pattern.",
                       "Cf. MontiCore handbook chapter 8.").asHP());

@@ -29,25 +29,12 @@ component grammar Cardinality
   */
   Cardinality =
     "["
-    ( many:["*"] {_builder.setLowerBound(0);_builder.setUpperBound(0);}
+    ( many:["*"]
       | lowerBoundLit:NatLiteral
-        { _builder.setLowerBound(
-             _builder.getLowerBoundLit().getValue());
-          _builder.setUpperBound(_builder.getLowerBound()); }
       ( ".." (
         upperBoundLit:NatLiteral
-        ( {_builder.setUpperBound(
-                  _builder.getUpperBoundLit().getValue());})
         |
-        noUpperLimit:["*"] {_builder.setUpperBound(0);} ) )?
+        noUpperLimit:["*"]  ) )?
     ) "]";
-
-  /**
-    A Cardinality Object stores the bounds as integers.
-   */
-
-  astrule Cardinality =
-    lowerBound:int
-    upperBound:int;
 
 }

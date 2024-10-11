@@ -17,6 +17,7 @@ the following language components:
 * [`MCArrayTypes`](MCArrayTypes.mc4)
 * [`MCFunctionTypes`](MCFunctionTypes.mc4)
 * [`MCStructuralTypes`](MCStructuralTypes.mc4)
+* [`TypeParameters`](TypeParameters.mc4)
 * [`SIUnitTypes4Math`](../siunit/SIUnitTypes4Math.mc4)
 * [`SIUnitTypes4Computing`](../siunit/SIUnitTypes4Computing.mc4)
 * [`RegExType`](../regex/RegExType.mc4)
@@ -65,6 +66,17 @@ arguments including wild card types. When using this language component,
 types such as `Person<?>`, `Map<Person<String>, ? extends Person>`, and
 `a.b.C<D>.E.F<G>.H` are expressible.
 
+## [`TypeParameters`](TypeParameters.mc4)
+
+This language component offers ways to define type parameter lists
+for generic model elements, e.g., generic classes such as `Map<K, V>`.
+The resulting Symbols can than be used with, e.g., 
+[`MCSimpleGenericTypes`](MCSimpleGenericTypes.mc4), or
+[`MCFullGenericTypes`](MCFullGenericTypes.mc4)
+to define types by providing the corresponding type arguments.
+Type parameters may optionally have upper bounds,
+e.g., `T extends Person`, `U extends T & Comparable<U>`.
+
 ## [`MCArrayTypes`](MCArrayTypes.mc4)
 
 This language component allows to express array types like `Person[]` or
@@ -83,7 +95,7 @@ generic and array types,
 ## [`MCStructuralTypes`](MCStructuralTypes.mc4)
 
 This language component allows to express additional types
-that are defined by the combination of other types,
+by combining other types,
 like the union type `Foo | Bar` which is the type that is "`Foo` or `Bar`".
 As structural types are orthogonal to other kinds of types,
 `MCStructuralTypes` can be combined with any of the above
@@ -104,7 +116,10 @@ The documentation can be found in [`SIUnits`](../siunit/SIUnits.md).
 ## [`RegExType`](../regex/RegExType.mc4) 
 
 When using this language component,
-RegEx types like `R"H(a|e)llo"` become expressible.
+Subtypes of `String` defined as RegEx types like 
+`R"H(a|e)llo"`, or `R"-?[0-9]+"` `R"0x[a-f0-9]+"` 
+become expressible. This is useful to prevent e.g. security breaches by 
+malign input text.
 This is documented in [`RegEx`](../regex/RegEx.md).
 
 ## Further Information

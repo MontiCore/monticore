@@ -20,7 +20,9 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.se_rwth.commons.Joiners;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
@@ -100,10 +102,10 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
   protected ASTCDMethod   getASTHandleMethod(ASTCDClass astcdClass, String languageInterfaceName, String handlerSimpleTypeName) {
     ASTCDMethod handleMethod = visitorService.getVisitorMethod(HANDLE,
             getMCTypeFacade().createQualifiedType(Joiners.DOT.join(visitorService.getASTPackage(), astcdClass.getName())));
-    List<String> superTypeList = new ArrayList<>();
+    Set<String> superTypeList = new LinkedHashSet<>();
     // super classes
     if (astcdClass.isPresentCDExtendUsage() && !astcdClass.printSuperclasses().isEmpty()) {
-      superTypeList= visitorService.getAllSuperClassesTransitive(astcdClass);
+      superTypeList.addAll(visitorService.getAllSuperClassesTransitive(astcdClass));
     }
     // super interfaces
     superTypeList.addAll(visitorService.getAllSuperInterfacesTransitive(astcdClass.getSymbol()));

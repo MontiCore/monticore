@@ -141,15 +141,16 @@ thus be combined with any of the above grammars.
 The known units `s, m, kg, A, K, mol, cd` from the international system of 
 units (SI Units) and their combinations, such as `km/h` or `mg`, etc. can 
 be used as ordinary types (instead of only numbers). 
-The typecheck is extended to prevent, e.g., assignment of a weight to a length 
-variable or to add appropriate conversion, e.g., when a `km/h`-based velocity is, 
-e.g., stored in a `m/s`-based variable.
+The typecheck prevents e.g., assignment of a weight to a length 
+variable or to implicitely add appropriate conversion in the resulting program, 
+e.g., when a `km/h`-based velocity is stored in a `m/s`-based variable.
 
 * Example type definitions: `[km/h]`
 
 ### [SIUnitTypes4Computing.mc4](siunit/SIUnitTypes4Computing.mc4) for Physical SI Units (stable)
 
-Includes the types from `SIUnitTypes4Math`(see above), like `[km/h]`, but also allows to add a
+Includes the types from `SIUnitTypes4Math`(see above), like `[km/h]`, 
+but also allows to add a
 resolution, such as `[km/h]<int>`. Here SI Unit types, 
 like `[km/h]<.>`, are used as generic type constructor that may take a number type,
 such as `int`, `long`, `double`, `float` as argument.
@@ -158,13 +159,41 @@ such as `int`, `long`, `double`, `float` as argument.
 
 ### [RegExType.mc4](regex/RegExType.mc4) (stable)
 
-Embedded in `R"..."` a regular expressions
-can be used as ordinary type to constrain the values allowed for stored variables, attributes, 
-parameters. Types are e.g. , such as `R"[a-z]"` (single character) or `R"^([01][0-9]|2[0-3])$"` (hours).
-A typecheck for these types can only be executed at runtime and e.g. issue
-exceptions (or trigger repair functions) if violated. The static typecheck only uses `String` as 
-underlying carrier type.
+* If a variable should not use all kinds of `String`s, its is possible 
+to use a type definition of form in `R"..."` that contains a regular 
+expression (see above) to constrain the set of storable strings. This 
+is e.g. helpful to prevent malign user input in security relevant 
+codes. 
+* Types are e.g. , such as `R"[a-z]"` (single character), 
+`R"^([01][0-9]|2[0-3])$"` (hours), or `R"[1-9][0-9]*"` (integers). 
+* There are two possibilities for interpreters handling these types,
+  and both are possible uses in interpreters/generators: 
+  1. A typecheck ensures that all assignments, parameters are correct
+     in the types, or
+  2. no static typecheck, but a dynamig typecheck is executed 
+     at runtime and e.g. issues an exception, if a type violation 
+     occurs. 
+* The static typecheck is recommended when adding RegExTypes to a 
+  language. Note that explicit type coercion is then needed, e.g. 
+  using the `typeif` construct.
+* In some occasions, e.g. if in assignment `R"re1" v1 = v2` the type 
+`R"re2"` of `v2` is a subset then the static typecheck identifies 
+compatibility of the strings and may omit the dynamic regular 
+expression check at runtime. Subset 
+relationship of regular expressions is decidable (at compiletime).
+* If the regular expressions are disjoint, a compile time error may 
+be issued (instead of runtime errors only).
+* `String` could be treated identical to `R".*"`, but it may be that 
+the chosen typecheck wants to enforce explicit coercion.
 
+### [TypeParameters.mc4](types/TypeParameters.mc4) (alpha)
+
+This grammar defines type parameters for,
+e.g., classes or functions, such as `<T>`, `<U,V>`,
+`T extends Person`, `U extends T & Comparable<U>`.
+Modeling elements with type parameters therefore take type arguments.
+For example, the generic type `List<T>` has the type parameter `T` 
+allowing to use the type `List<int>`.
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
 
@@ -179,7 +208,8 @@ kinds of symbols.
 * The defined symbols are of general form and can be used in functional, OO
   and other contexts. They do not preculde a concrete syntax and do not yet 
   embody OO specifics.
-* Remark: This grammar is not intended to define concrete or abstract syntax, but the
+* Remark: This grammar is not intended to define concrete or abstract 
+  syntax, but the
   infrastructure for symbols. 
 
 ### [OOSymbols.mc4](symbols/OOSymbols.mc4) (stable)
@@ -188,7 +218,8 @@ kinds of symbols.
 * The newly defined symbols extend the general ones by typical 
   objectoriented features, such as private, static, etc.
   Again they do not preculde a concrete syntax.
-* Remark: This grammar is not intended to define concrete or abstract syntax, but the
+* Remark: This grammar is not intended to define concrete or 
+  abstract syntax, but the
   infrastructure for symbols in objectoriented context. 
 
 
@@ -264,11 +295,14 @@ like <<, >>, >>>, &, ^ and |
 these operations are typical for a logic with set operations, like 
 UML's OCL. These operators are usually infix and are thus more intuitive
 as they allow math oriented style of specification.
-* Most of these operators are in principle executable, so it might be interesting to include them in a high level programming language (see e.g. Haskell)
+* Most of these operators are in principle executable, 
+  so it might be interesting to include them in a high level programming 
+  language (see e.g. Haskell)
 
 
 ### [OptionalOperators.mc4](ocl/OptionalOperators.mc4) (stable)
-* This grammar defines nine operators dealing with optional values, e.g. defined by 
+* This grammar defines nine operators dealing with optional values, e.g.
+  defined by 
   `java.lang.Optional`. The operators are also called *Elvis operators*.
 * E.g.: `val ?: 42`     equals to   `val.isPresent() ? val.get() : 42`
 * `x ?>= y` equals `x.isPresent() ? x.get() >= y : false` 
@@ -416,7 +450,8 @@ is inspired by Java (actually subset of Java). Some example statements:
 several other grammars are also available:
 
 ### [RegularExpressions.mc4](regex/RegularExpressions.mc4) (stable)
-* This grammar defines regular expressions (RegEx) as used in Java (see e.g. `java.util.regex.Pattern`).
+* This grammar defines regular expressions (RegEx) as used in Java 
+  (see e.g. `java.util.regex.Pattern`).
 * It provides common regex tokens such as 
   * character classes, e.g., lowercase letters (`[a-z]`), the letters a, b, 
     and c (`[abc]`)
@@ -426,10 +461,11 @@ several other grammars are also available:
   in replacements.  
 * For example, `^([01][0-9]|2[0-3]):[0-5][0-9]$` matches all valid timestamps in 
   `HH:MM` format.
-* The main nonterminal `RegularExpression` is not part of the expression hierarchy and 
+* The main nonterminal `RegularExpression` is not part of the expression
+  hierarchy and 
   thus regular expressions are not used as ordinary values. Instead 
-  the nonterminal `RegularExpression` is can be used in aother places of a language
-  e.g. we do that as additional 
+  the nonterminal `RegularExpression` is can be used in aother places 
+  of a language e.g. we do that as additional 
   restriction for String values in input/output channels in architectural langages.
 
 ### [Cardinality.mc4](Cardinality.mc4) (stable)
@@ -441,9 +477,10 @@ several other grammars are also available:
 
 ### [UMLModifier.mc4](UMLModifier.mc4) (stable)
 * The grammar contains the modifiers that UML provides.
-* This includes ``public`` ``private``, ``protected``, ``final``, ``abstract``, ``local``,
-          ``derived``, ``readonly``, and ``static``, but also the 
-          compact syntactic versions ``+``, ``#``, ``-``, ``/`` and ``?`` (for readonly).
+* This includes ``public`` ``private``, ``protected``, ``final``, 
+  ``abstract``, ``local``, ``derived``, ``readonly``, and ``static``, 
+  but also the compact syntactic versions ``+``, ``#``, ``-``, ``/`` 
+  and ``?`` (for readonly).
 * UML modifiers are not identical to Java modifiers (e.g. ``native`` or 
   ``threadsafe`` are missing.)
 
