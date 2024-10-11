@@ -560,6 +560,7 @@ shadowJar {
 
 generateTestMCGrammars {
 //   Temporary - for optimizations (due to feature)
+  genINT = true
   dependsOn(tasks.grammarsForVariantJar)
 }
 
