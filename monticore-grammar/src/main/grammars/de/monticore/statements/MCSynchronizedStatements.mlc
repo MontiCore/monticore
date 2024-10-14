@@ -7,11 +7,6 @@ mlc MCSynchronizedStatements {
     include "de/monticore/statements/MCSynchronizedStatements.mc4";
   }
 
-  //export the pretty printer
-  export "$projectDir/src/main/java" {
-    include "de/monticore/statements/prettyprint/MCSynchronizedStatements*.java";
-  }
-
   // export all Java files generated from the grammar
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
     include "de/monticore/statements/mcsynchronizedstatements/**.java";
@@ -21,8 +16,5 @@ mlc MCSynchronizedStatements {
     mlc "de.monticore.statements.MCCommonStatements";
   }
 
-  uses {
-    include "$projectDir/src/main/java/de/monticore/expressions/prettyprint/ExpressionsBasisPrettyPrinter.java";
-  }
 
 }

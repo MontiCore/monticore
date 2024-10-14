@@ -10,7 +10,6 @@ mlc MCVarDeclarationStatements {
   //export the handwritten TOP-classes and pretty printer
   export "$projectDir/src/main/java" {
     include "de/monticore/statements/mcvardeclarationstatements/**.java";
-    include "de/monticore/statements/prettyprint/MCVarDeclarationStatements*.java";
   }
 
   // export all Java files generated from the grammar
@@ -31,7 +30,6 @@ mlc MCVarDeclarationStatements {
   }
 
   uses {
-    include "$projectDir/src/main/java/de/monticore/expressions/prettyprint/ExpressionsBasisPrettyPrinter.java";
     // uses type check for CoCos
     include "$projectDir/src/main/java/de/monticore/types/check/**.java";
     include "$projectDir/src/main/java/de/monticore/types3/**.java";

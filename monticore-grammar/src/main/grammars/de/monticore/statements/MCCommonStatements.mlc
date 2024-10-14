@@ -10,7 +10,6 @@ mlc MCCommonStatements {
   //export the handwritten TOP-classes and pretty printer
   export "$projectDir/src/main/java" {
     include "de/monticore/statements/mccommonstatements/**.java";
-    include "de/monticore/statements/prettyprint/MCCommonStatements*.java";
     exclude "de/monticore/statements/mccommonstatements/cocos/*.java";
   }
 
@@ -24,7 +23,6 @@ mlc MCCommonStatements {
   }
 
   uses {
-    include "$projectDir/src/main/java/de/monticore/expressions/prettyprint/ExpressionsBasisPrettyPrinter.java";
     // uses type check for CoCos
     include "$projectDir/src/main/java/de/monticore/types/check/**.java";
     include "$projectDir/src/main/java/de/monticore/types3/**.java";

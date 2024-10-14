@@ -10,7 +10,6 @@ mlc MCCollectionTypes {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mccollectiontypes/**.java";
-    include "de/monticore/types/prettyprint/MCCollectionTypes**.java";
     include "de/monticore/types/MCCollectionTypes**.java";
 
     include "de/monticore/types/check/FullSynthesizeFromMCCollectionTypes.java";
