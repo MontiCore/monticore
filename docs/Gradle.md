@@ -304,3 +304,24 @@ This might be fixed by [8078641](https://github.com/openjdk/jdk/commit/21012f2bb
 * Modelpath adding: see above using the source sets
 * Ensure the generation target is NOT added to the java sources (otherwise the TOP mechanism will fail)
 * Ensure no resources.srcDirs += grammarOutDir is used (otherwise your build will depend on itself)
+
+### Using legacy-dependencies with the new plugin
+
+Due to the diverging capabilities/variants of the new plugin,
+ the resolution of legacy built grammars requires additional effort:
+
+```groovy
+configurations {
+  legacyGrammar // configuration for legacy-MC-projects
+}
+dependencies {
+  // resolve the grammars of myolddsl
+  legacyGrammar "de.monticore.languages:myolddsl:7.7.0-SNAPSHOT:grammars"
+  // we also have to add the implementation/java classes
+  implementation "de.monticore.languages:myolddsl:7.7.0-SNAPSHOT"
+}
+tasks.generateMCGrammars.configure {
+  // Add the legacy-grammars to the symbol/model path of the generation
+  symbolPathConfiguration.from(configurations.legacyGrammar)
+}
+```
