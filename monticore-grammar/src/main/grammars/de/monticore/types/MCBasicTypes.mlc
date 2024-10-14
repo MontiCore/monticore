@@ -10,7 +10,6 @@ mlc MCBasicTypes {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mcbasictypes/**.java";
-    include "de/monticore/types/prettyprint/MCBasicTypes**.java";
     include "de/monticore/types/MCBasicTypes**.java";
 
     include "de/monticore/types/check/FullSynthesizeFromMCBasicTypes.java";
@@ -29,6 +28,8 @@ mlc MCBasicTypes {
 
   promote {
     include "$projectDir/src/main/java/de/monticore/types/check/*.java";
+    // monticore-runtime
+    include "$mp/de/monticore/prettyprint/**";
   }
 
   uses {

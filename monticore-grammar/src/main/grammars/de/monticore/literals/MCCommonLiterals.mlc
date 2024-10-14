@@ -19,6 +19,7 @@ mlc MCCommonLiterals {
     mlc "de.monticore.MCBasics";
     mlc "de.monticore.literals.MCLiteralsBasis";
     mlc "de.monticore.symbols.BasicSymbols";
+    include "$mp/de/monticore/prettyprint/**";
   }
 
   // locally allowed
