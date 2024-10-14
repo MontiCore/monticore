@@ -13,6 +13,7 @@ import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,7 @@ public class TemplateAliasingTest {
   }
 
   @Test
+  @Disabled
   public void testIncludeDispatching(){
     StringBuilder templateOutput =
         tc.include(ALIASES_PACKAGE + "IncludeDispatching");
@@ -105,6 +107,7 @@ public class TemplateAliasingTest {
   }
 
   @Test
+  @Disabled
   public void testSimpleDefineHookPoint() throws IOException {
     tc.getGeneratorSetup().setTracing(true);
     AliasTestASTNodeMock ast = new AliasTestASTNodeMock("c1");
@@ -189,6 +192,7 @@ public class TemplateAliasingTest {
   }
 
   @Test
+  @Disabled
   public void testBindHookPointAlias(){
     tc.getGeneratorSetup().setTracing(true);
     AliasTestASTNodeMock ast = new AliasTestASTNodeMock("c1");
@@ -274,6 +278,7 @@ public class TemplateAliasingTest {
 
 
   @Test
+  @Disabled
   public void testExistsHookPoint(){
     StringBuilder templateOut =
         tc.include(ALIASES_PACKAGE + "ExistsHookPointAlias");

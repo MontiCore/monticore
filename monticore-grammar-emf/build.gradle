@@ -67,6 +67,7 @@ generateMCGrammars {
   script = "de/monticore/monticore_emf.groovy"
   modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
   handcodedPath srcDir
+  genINT = true
   dependsOn(copySrc, copyTest, copyTestResources)
 }
 
@@ -80,6 +81,7 @@ tasks.register("generateMCTestGrammars", de.monticore.gradle.gen.MCGenTask.class
   script = "de/monticore/monticore_emf.groovy"
   modelPath("$grammarDir", "${project(':monticore-grammar').projectDir}/src/test/grammars", "${project(':monticore-grammar').projectDir}/src/main/examples")
   handcodedPath(srcDir, testDir)
+  genINT = true
   dependsOn(copySrc, copyTest, copyTestResources)
 }
 

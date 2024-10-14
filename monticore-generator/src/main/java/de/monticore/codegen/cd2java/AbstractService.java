@@ -139,7 +139,7 @@ public class AbstractService<T extends AbstractService> {
   public List<CDTypeSymbol> getAllCDTypes() {
     return getAllCDTypes(getCDSymbol());
   }
-  
+
   public List<CDTypeSymbol> getAllCDTypes(DiagramSymbol cdSymbol) {
     List<CDPackageSymbol> directPackages = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getLocalCDPackageSymbols().stream().collect(Collectors.toList());
     List<CDTypeSymbol> types = Lists.newArrayList();

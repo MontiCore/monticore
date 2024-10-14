@@ -188,15 +188,12 @@ the chosen typecheck wants to enforce explicit coercion.
 
 ### [TypeParameters.mc4](types/TypeParameters.mc4) (alpha)
 
-This grammar offers ways to define type parameters for,
-e.g., classes or functions.
-Modeling elements with type parameters represent
-type-level functions that take type arguments;
-For Example, the generic type `List<T>` has one type parameter `T`
-and therefore takes one type argument.
-`List<T>` or `List` cannot be used directly in a model,
-instead, providing a type argument (e.g., `int`)
-yields a type `List<int>` that can be used.
+This grammar defines type parameters for,
+e.g., classes or functions, such as `<T>`, `<U,V>`,
+`T extends Person`, `U extends T & Comparable<U>`.
+Modeling elements with type parameters therefore take type arguments.
+For example, the generic type `List<T>` has the type parameter `T` 
+allowing to use the type `List<int>`.
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
 

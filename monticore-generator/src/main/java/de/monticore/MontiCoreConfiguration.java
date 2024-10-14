@@ -5,12 +5,7 @@ package de.monticore;
 import com.google.common.collect.Sets;
 import de.monticore.gradle.AMontiCoreConfiguration;
 import de.monticore.io.paths.MCPath;
-import de.monticore.symboltable.serialization.json.JsonArray;
-import de.monticore.symboltable.serialization.json.JsonBoolean;
-import de.monticore.symboltable.serialization.json.JsonElement;
-import de.monticore.symboltable.serialization.json.JsonNull;
-import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.symboltable.serialization.json.UserJsonString;
+import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.configuration.Configuration;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -19,12 +14,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,12 +54,16 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
   public static final String GROOVYHOOK2 = "gh2";
 
   public static final String HELP = "h";
+  
+  public static final String GENINT = "genINT";
 
   public static final String GROOVYHOOK1_LONG = "groovyHook1";
 
   public static final String GROOVYHOOK2_LONG = "groovyHook2";
 
   public static final String HELP_LONG = "help";
+  
+  public static final String GENINT_LONG = "genInterpreter";
 
 
   /**
@@ -376,7 +370,16 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
   public Optional<Boolean> getGenTag() {
     return getAsBoolean(GENTAG_LONG);
   }
-
+  
+  /**
+   * Getter for the optional interpreter infrastructure generation.
+   *
+   * @return Optional path to the script
+   */
+  public Optional<Boolean> getGenINT() {
+    return hasProperty(GENINT) ? Optional.of(true) : Optional.empty();
+  }
+  
   /**
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings

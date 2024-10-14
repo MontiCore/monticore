@@ -89,6 +89,11 @@ while (grammarIterator.hasNext()) {
       // Also decorate infrastructure for domain-specific tagging IFF this task is run on a tagging grammar
       decoratedCD = decorateTagCD(glex, cdScope, cd, handcodedPath, decoratedCD, astGrammar)
     }
+
+    if (genINT) {
+      decorateWithInterpreter(cd, decoratedCD, glex)
+    }
+
     reportDecoratedCD(decoratedCD, report)
 
     // groovy script hook point 
@@ -103,7 +108,7 @@ while (grammarIterator.hasNext()) {
 
     if (genDST) {
       // Generate infrastructure for domain-specific transformation IFF this task is run on a TR grammar
-      generateDSTInfrastructure(astGrammar, out, modelPathHC)
+      generateDSTInfrastructure(astGrammar, out, handcodedPath)
     } else {
       // Generate a DSTL (ending in TR.mc4)
       generateDSTLanguage(astGrammar, out, modelPathHC)

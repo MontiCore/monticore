@@ -738,7 +738,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
 
       ParseVisitorEntry e = new ParseVisitorEntry();
       stack.peek().blockComponents.add(e);
-      String tmpName = tmpNames.get(x);
+      String tmpName = tmpNames.get(node);
       e.condition = "ctx." + tmpName + " != null";
       e.usageName = (node.isPresentUsageName()) ? node.getUsageName() : x.getHumanName();
       e.constantValue = "true";

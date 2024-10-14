@@ -2,6 +2,8 @@
 
 package de.monticore.ast;
 
+import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.interpreter.Value;
 import de.monticore.symboltable.IScope;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
@@ -677,4 +679,7 @@ public interface ASTNode {
     visitor.handle(this);
   }
 
+  default Value evaluate(ModelInterpreter interpreter) {
+    return interpreter.interpret(this);
+  }
 }

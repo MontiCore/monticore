@@ -2,7 +2,9 @@
 package de.monticore.codegen.cd2java._ast.ast_interface;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractTransformer;
@@ -10,13 +12,18 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTScopeDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTSymbolDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.interpreter.InterpreterConstants;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 
 /**
@@ -98,7 +105,6 @@ public class ASTInterfaceDecorator extends AbstractTransformer<ASTCDInterface> {
       scopeMethods.addAll(methods);
     }
     return scopeMethods;
-
   }
 
 }

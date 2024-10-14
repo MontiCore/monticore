@@ -2,6 +2,8 @@
 
 package de.monticore
 
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit
+
 /*
  * This configuration file contains the standard workflow of MontiCore:
  * It mainly processes a grammar (and imported sub-grammars) and produces
@@ -85,6 +87,10 @@ while (grammarIterator.hasNext()) {
       decoratedCD = decorateTagCD(glex, cdScope, cd, handcodedPath, decoratedCD, astGrammar)
     }
 
+    if (genINT) {
+      decorateWithInterpreter(cd, decoratedCD, glex)
+    }
+
     // groovy script hook point
     hook(gh2, glex, astGrammar, decoratedCD, cd)
 
@@ -96,7 +102,7 @@ while (grammarIterator.hasNext()) {
 
     if (genDST) {
       // Generate infrastructure for domain-specific transformation IFF this task is run on a TR grammar
-      generateDSTInfrastructure(astGrammar, out, modelPathHC)
+      generateDSTInfrastructure(astGrammar, out, handcodedPath)
     } else {
       // Generate a DSTL (ending in TR.mc4)
       generateDSTLanguage(astGrammar, out, modelPathHC)

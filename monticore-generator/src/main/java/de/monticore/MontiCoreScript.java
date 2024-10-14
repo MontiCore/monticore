@@ -14,7 +14,6 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4code._symboltable.CD4CodeScopesGenitorDelegator;
 import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cd4code._symboltable.ICD4CodeGlobalScope;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
@@ -72,6 +71,9 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
+import de.monticore.codegen.cd2java.interpreter.ASTEvaluateDecorator;
+import de.monticore.codegen.cd2java.interpreter.InterpreterDecorator;
+import de.monticore.codegen.cd2java.interpreter.InterpreterInterfaceDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -100,7 +102,7 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
-import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.reporting.ReportingFix;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -378,9 +380,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     MCGrammarSymbol symbol = result.getSymbol();
     for(MCGrammarSymbol it: MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if(!it.getFullName().equals(symbol.getFullName())) {
-        Reporting.reportOpenInputFile(Optional.empty(),
+        ReportingFix.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
-        Reporting.reportOpenInputFile(Optional.empty(),
+        ReportingFix.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
 
       }
@@ -794,8 +796,23 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
 
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
-
     decorator.decorate(cd, decoratedCD);
+
+  }
+
+  public void decorateWithInterpreter(List<ASTCDCompilationUnit> cds,
+                                      ASTCDCompilationUnit decoratedCD,
+                                      GlobalExtensionManagement glex) {
+    VisitorService visitorService = new VisitorService(cds.get(0));
+
+    InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
+    interpreterInterfaceDecorator.decorate(cds.get(0), decoratedCD);
+
+    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
+    interpreterDecorator.decorate(cds.get(0), decoratedCD);
+
+    ASTEvaluateDecorator evaluateDecorator = new ASTEvaluateDecorator(glex, visitorService);
+    evaluateDecorator.decorate(cds.get(0), decoratedCD);
   }
 
   public void decorateForCoCoPackage(GlobalExtensionManagement glex,
@@ -1351,7 +1368,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     dstlgenUtil.generateDSTL(astGrammar, gext, dstlGlex, grammarOut);
   }
 
-  public void generateDSTInfrastructure(ASTMCGrammar astTRGrammar, File out, MCPath modelPathHC) {
+  public void generateDSTInfrastructure(ASTMCGrammar astTRGrammar, File out, MCPath codePathHC) {
     if(!astTRGrammar.getSymbol().getName().endsWith("TR") || astTRGrammar.getPackageList().stream().noneMatch(p -> p.equals("tr"))) {
       Log.error("0xA1018 Unable to generate DST infrastructure on non-TR Grammar:" + astTRGrammar.getSymbol().getFullName());
       return;
@@ -1373,13 +1390,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // No D2, D3: TR Grammar is already present (see generateDSTLanguage)
 
     // D4 Generate context conditions
-    dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, modelPathHC, dstlGlex);
+    dstlgenUtil.generateDSTLCoCos(astGrammar, dstlGenerator, codePathHC, dstlGlex);
 
     // D5 Generate DSTL to ODRule translator
-    dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, modelPathHC);
+    dstlgenUtil.generateTranslator(astGrammar, dstlGenerator, codePathHC);
 
     // D6 Generate TFGenTool class
-    dstlgenUtil.generateTFGenToolClass(astGrammar, dstlGenerator, modelPathHC);
+    dstlgenUtil.generateTFGenToolClass(astGrammar, dstlGenerator, codePathHC);
   }
 
   /**
@@ -1400,7 +1417,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // initialize glex
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.addAfterTemplate("cd2java.Imports", new TemplateHookPoint("mc.Imports"));
-    if(Reporting.isInitialized()) {
+    if(ReportingFix.isInitialized()) {
       if(mcConfig.getConfigTemplate().isPresent()) {
         String configTemplate = mcConfig.getConfigTemplate().get();
         if (configTemplate.endsWith(".ftl")) { // remove file ending
@@ -1440,14 +1457,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             "de.monticore.io.paths",
             "de.monticore.languages.grammar",
             "de.se_rwth.commons.logging",
-            "de.monticore.generating.templateengine.reporting",
+            "de.monticore.generating.templateengine.reporting.fix", // TODO: Remove .fix after 7.7.0 release
             "de.se_rwth.commons",
-            "de.monticore.generating.templateengine.reporting.reporter",
             "de.monticore.incremental"};
 
     public static final String[] DEFAULT_STATIC_IMPORTS = {
             "de.se_rwth.commons.logging.Log",
-            "de.monticore.generating.templateengine.reporting.Reporting",
+            "de.monticore.generating.templateengine.reporting.fix.Reporting", // TODO: Remove .fix after 7.7.0 release
             "de.se_rwth.commons.Names"};
 
 
@@ -1502,6 +1518,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(TEMPLATEPATH_LONG, templatePath);
           builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
           builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
+          builder.addVariable(GENINT, mcConfig.getGenINT().orElse(false));
           builder.addVariable("LOG_ID", LOG_ID);
           builder.addVariable("grammarIterator", grammarsPath.getEntries().iterator());
           reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),

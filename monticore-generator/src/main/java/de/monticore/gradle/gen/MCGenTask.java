@@ -59,6 +59,10 @@ public abstract class MCGenTask extends MCSingleFileTask {
   @Input
   @Optional
   public abstract Property<Boolean> getGenTag();
+  
+  @Input
+  @Optional
+  public abstract Property<Boolean> getGenINT();
 
   @Input
   @Optional
@@ -98,6 +102,11 @@ public abstract class MCGenTask extends MCSingleFileTask {
     // genTag
     args.add("-" + MontiCoreConfiguration.GENTAG_LONG);
     args.add(Boolean.toString(getGenTag().getOrElse(false)));
+    
+    // genINT
+    if (this.getGenINT().isPresent() && this.getGenINT().get() == true) {
+      args.add("-" + MontiCoreConfiguration.GENINT);
+    }
 
     if (getCustomLog().isPresent()) {
       args.add("-" + MontiCoreConfiguration.CUSTOMLOG);

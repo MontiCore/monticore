@@ -13,11 +13,13 @@ import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.interpreter.InterpreterConstants;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
@@ -132,7 +134,7 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
                     "Cf. MontiCore handbook chapter 8.").asHP());
     return acceptMethod;
   }
-  
+
   protected List<ASTCDMethod> createAcceptTraverserSuperMethods(ASTCDClass astClass) {
     List<ASTCDMethod> result = new ArrayList<>();
     //accept methods for super visitors

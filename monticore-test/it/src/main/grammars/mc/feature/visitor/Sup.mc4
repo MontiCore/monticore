@@ -8,4 +8,8 @@ component grammar Sup extends mc.common.Basics {
   
   A = "test1" E;
 
+  interface SomeNode;
+
+  NodeImpl implements SomeNode = "NodeImpl";
+
 }

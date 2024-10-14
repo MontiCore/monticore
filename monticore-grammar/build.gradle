@@ -88,6 +88,7 @@ dependencies {
 generateMCGrammars {
   outputDir = file grammarOutDir
   debug = false
+  genINT = true
   if (findProperty("ci") != null) {
     script = "de/monticore/monticore_noreports.groovy"
   }
@@ -559,6 +560,7 @@ shadowJar {
 
 generateTestMCGrammars {
 //   Temporary - for optimizations (due to feature)
+  genINT = true
   dependsOn(tasks.grammarsForVariantJar)
 }
 
