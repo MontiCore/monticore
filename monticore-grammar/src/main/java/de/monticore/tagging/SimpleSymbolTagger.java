@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tagging;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -99,13 +98,14 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
     Iterator<ASTTargetElement> iterator = new ProgressiveIterator<ASTTargetElement, ASTTagUnit>
             (backingTagUnits.get().iterator()) {
       @Override
-      Collection<? extends ASTTargetElement> doWork(ASTTagUnit tagUnit) {
+      @Nonnull
+      protected Collection<? extends ASTTargetElement> doWork(ASTTagUnit tagUnit) {
         // Add the matching ASTTargetElement from #findTagTargetsOfTagUnit to the buffer
         return findTagTargetsOfTagUnit(tagUnit, fqn);
       }
 
       @Override
-      void cleanup() {
+      protected void cleanup() {
         // cleanup (remove unloaded TagUnits)
         tagUnitMapping.cleanUp();
       }
@@ -237,7 +237,13 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
         return;
       }
       // Actually do the tagging related logic
-      targetElementBuffer.addAll(this.doWork(backing.next()));
+      while (backing.hasNext() && targetElementBuffer.isEmpty()) {
+        // Repeat the work until the buffer is no longer empty (or the backing iterator consumed)
+        targetElementBuffer.addAll(this.doWork(backing.next()));
+      }
+      if (!backing.hasNext()) {
+        this.cleanup();
+      }
     }
 
     /**
@@ -247,9 +253,9 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
      * @return the values to be added to a buffer
      */
     @Nonnull
-    abstract Collection<? extends A> doWork(B next);
+    protected abstract Collection<? extends A> doWork(B next);
 
-    abstract void cleanup();
+    protected abstract void cleanup();
   }
 
   protected static class TagFQNMapping {
