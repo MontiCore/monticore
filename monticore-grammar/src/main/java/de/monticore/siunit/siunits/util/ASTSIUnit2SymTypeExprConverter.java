@@ -174,18 +174,6 @@ public class ASTSIUnit2SymTypeExprConverter {
     // but it would be useful for this method only.
     // Runtime can be improved if required.
 
-    // we have prefixes and units in a list,
-    // they need to be split
-    // "^" to match only start of String
-    // "(?!ol|in)" to avoid issues with "lmin/lmol" having "lm" matched
-    Pattern prefixPat =
-        Pattern.compile("^" + PREFIX_PATTERN + "(?!ol|in)");
-    Pattern unitWithPrefixPat =
-        Pattern.compile("^" + PREFIX_UNIT_PATTERN + "(?!ol|in)");
-    Pattern unitWithoutPrefixPat =
-        Pattern.compile("^" + NO_PREFIX_UNIT_PATTERN + "(?!ol|in)");
-    Pattern unitWithoutPrefixPrefPat =
-        Pattern.compile("^" + NO_PREFIX_PREFERED_UNIT_PATTERN + "(?!ol|in)");
     // hint: longest potential finding of a unit (with prefix) is 5 chars long,
     // e.g., "dakat"
     String toBeParsed = inputStr;
@@ -193,10 +181,10 @@ public class ASTSIUnit2SymTypeExprConverter {
       Optional<String> prefix = Optional.empty();
       String unit;
       // start by searching for prefix + unit
-      Matcher unitWithPrefixMat = unitWithPrefixPat.matcher(toBeParsed);
+      Matcher unitWithPrefixMat = getUnitWithPrefixPattern().matcher(toBeParsed);
       if (unitWithPrefixMat.find()) {
         String prefixedUnit = unitWithPrefixMat.group();
-        Matcher prefixMat = prefixPat.matcher(prefixedUnit);
+        Matcher prefixMat = getPrefixPattern().matcher(prefixedUnit);
         if (prefixMat.find()) {
           // remove the prefix
           prefix = Optional.of(prefixMat.group());
@@ -209,9 +197,9 @@ public class ASTSIUnit2SymTypeExprConverter {
       }
       // search for unit without prefix,
       // but prefer 'min' over 'm', etc.
-      Matcher unitMat = unitWithoutPrefixPrefPat.matcher(toBeParsed);
+      Matcher unitMat = getUnitWithoutPrefixPrefPattern().matcher(toBeParsed);
       if (!unitMat.find()) {
-        unitMat = unitWithoutPrefixPat.matcher(toBeParsed);
+        unitMat = getUnitWithoutPrefixPattern().matcher(toBeParsed);
         if (!unitMat.find()) {
           Log.error(INTERNAL_LOGIC_ERROR + inputStr);
           return Collections.emptyList();
@@ -235,7 +223,7 @@ public class ASTSIUnit2SymTypeExprConverter {
    * logs an error if the input is not a valid SIUnitGroup
    */
   protected static boolean assertValidSIUnitGroup(String inputStr) {
-    if (inputStr.matches(GROUP_PATTERN)) {
+    if (getGroupPattern().matcher(inputStr).matches()) {
       return true;
     }
     else {
@@ -249,6 +237,59 @@ public class ASTSIUnit2SymTypeExprConverter {
     String litStr = SIUnitsMill.prettyPrint(lit, false);
     res = Integer.parseInt(litStr);
     return res;
+  }
+
+  // Helper/Cache - Compiled Patterns:
+  // these will be initialized during get() and then cached,
+  // as in most cases, they are not used at all.
+  // we have prefixes and units in a list,
+  // they need to be split
+  // "^" to match only start of String
+  // "(?!ol|in)" to avoid issues with "lmin/lmol" having "lm" matched
+
+  protected static Pattern prefixPat;
+
+  protected static Pattern unitWithPrefixPat;
+
+  protected static Pattern unitWithoutPrefixPat;
+
+  protected static Pattern unitWithoutPrefixPrefPat;
+
+  protected static Pattern groupPat;
+
+  protected static Pattern getPrefixPattern() {
+    if (prefixPat == null) {
+      prefixPat = Pattern.compile("^" + PREFIX_PATTERN + "(?!ol|in)");
+    }
+    return prefixPat;
+  }
+
+  protected static Pattern getUnitWithPrefixPattern() {
+    if (unitWithPrefixPat == null) {
+      unitWithPrefixPat = Pattern.compile("^" + PREFIX_UNIT_PATTERN + "(?!ol|in)");
+    }
+    return unitWithPrefixPat;
+  }
+
+  protected static Pattern getUnitWithoutPrefixPattern() {
+    if (unitWithoutPrefixPat == null) {
+      unitWithoutPrefixPat = Pattern.compile("^" + NO_PREFIX_UNIT_PATTERN + "(?!ol|in)");
+    }
+    return unitWithoutPrefixPat;
+  }
+
+  protected static Pattern getUnitWithoutPrefixPrefPattern() {
+    if (unitWithoutPrefixPrefPat == null) {
+      unitWithoutPrefixPrefPat = Pattern.compile("^" + NO_PREFIX_PREFERED_UNIT_PATTERN + "(?!ol|in)");
+    }
+    return unitWithoutPrefixPrefPat;
+  }
+
+  protected static Pattern getGroupPattern() {
+    if (groupPat == null) {
+      groupPat = Pattern.compile(GROUP_PATTERN);
+    }
+    return groupPat;
   }
 
 }
