@@ -19,6 +19,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -143,7 +144,13 @@ public final class MCPath {
     String fileNameRegEx = Names.getSimpleName(k.qualifiedName) + "\\." + k.fileExtRegEx;
 
     // initialize a file filter filtering for the regular expression
-    FileFilter filter = new RegexFileFilter(fileNameRegEx);
+    FileFilter filter;
+    try {
+      filter = new RegexFileFilter(fileNameRegEx);
+    } catch (PatternSyntaxException e) {
+      Log.error("0xFDAB0 MCPath: recieved invalid RegEx.", e);
+      return Optional.empty();
+    }
 
     List<URL> resolvedURLs = new ArrayList<>();
     // iterate MCPath entries and check whether folder path exists within these
