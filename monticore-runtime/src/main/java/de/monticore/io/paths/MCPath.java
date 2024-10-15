@@ -148,7 +148,7 @@ public final class MCPath {
     try {
       filter = new RegexFileFilter(fileNameRegEx);
     } catch (PatternSyntaxException e) {
-      Log.error("0xFDAB0 MCPath: recieved invalid RegEx.", e);
+      Log.error("0xFDAB0 MCPath: received invalid RegEx.", e);
       return Optional.empty();
     }
 
