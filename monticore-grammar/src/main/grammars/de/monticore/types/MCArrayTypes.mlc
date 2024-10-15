@@ -10,7 +10,6 @@ mlc MCArrayTypes {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mcarraytypes/**.java";
-    include "de/monticore/types/prettyprint/MCArrayTypes**.java";
     include "de/monticore/types/MCArrayTypes**.java";
 
     include "de/monticore/types/check/FullSynthesizeFromMCArrayTypes.java";

@@ -16,14 +16,10 @@ mlc UMLStereotype {
   // export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/umlstereotype/**.java";
-    include "de/monticore/prettyprint/UMLStereotype*.java";
   }
 
   promote {
     mlc "de.monticore.literals.MCCommonLiterals";
   }
 
-  uses {
-    include "$projectDir/src/main/java/de/monticore/literals/prettyprint/MCCommonLiteralsPrettyPrinter.java";
-  }
 }

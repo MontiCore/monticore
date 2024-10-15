@@ -10,7 +10,6 @@ mlc MCFullGenericTypes {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mcfullgenerictypes/**.java";
-    include "de/monticore/types/prettyprint/MCFullGenericTypes**.java";
     include "de/monticore/types/MCFullGenericTypes**.java";
 
     include "de/monticore/types/check/FullSynthesizeFromMCFullGenericTypes.java";

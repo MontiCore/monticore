@@ -41,9 +41,12 @@ public class TagTest {
     Log.enableFailQuick(false);
 
     // Load all relevant models
-    Optional opt = TagRepository.loadTagModel(new File("src/test/resources/models/Simple.tags"));
-    if (opt.isEmpty())
-      Assert.fail("Failed to load Simple.tags");
+    var emptyTagsOpt1 = TagRepository.loadTagModel(new File("src/test/resources/models/Empty.tags"));
+    Assert.assertTrue("Failed to load Empty.tags", emptyTagsOpt1.isPresent());
+    var opt = TagRepository.loadTagModel(new File("src/test/resources/models/Simple.tags"));
+    Assert.assertTrue("Failed to load Simple.tags", opt.isPresent());
+    var emptyTagsOpt2 = TagRepository.loadTagModel(new File("src/test/resources/models/Empty.tags"));
+    Assert.assertTrue("Failed to load Empty.tags", emptyTagsOpt2.isPresent());
 
     tagger = new SimpleSymbolTagger(TagRepository::getLoadedTagUnits);
 

@@ -10,7 +10,6 @@ mlc MCSimpleGenericTypes {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mcsimplegenerictypes/**.java";
-    include "de/monticore/types/prettyprint/MCSimpleGenericTypes**.java";
     include "de/monticore/types/MCSimpleGenericTypes**.java";
 
     include "de/monticore/types/check/FullSynthesizeFromMCBasicTypes.java";

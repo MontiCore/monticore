@@ -10,7 +10,6 @@ mlc MCFunctionTypes {
   //export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mcfunctiontypes/**.java";
-    include "de/monticore/types/prettyprint/MCFunctionTypes**.java";
 
     include "de/monticore/types/check/FullSynthesizeFromMCFunctionTypes.java";
     include "de/monticore/types/check/SynthesizeSymTypeFromMCFunctionTypes.java";
