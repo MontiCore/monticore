@@ -362,4 +362,27 @@ public class TemplateControllerHookPointsTest {
     hpValue = glex.defineHookPoint(tc, "hp1", "B", 42, "LA");
     Assertions.assertEquals("Name is B, age is 42, city is LA", hpValue);
   }
+
+  @Test
+  public void testBeforeHookpoint() {
+    ASTNode ast1 = new ASTNodeMock();
+
+    // without binding
+    glex.setBeforeTemplate( "hp", ast1, new StringHookPoint("Before Hookpoint"));
+    Assertions.assertEquals("Before Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
+
+    // with binding
+    glex.bindHookPoint("hp", new StringHookPoint(":Bind Hookpoint"));
+    Assertions.assertEquals("Before Hookpoint:Bind Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
+
+  }
+
+  @Test
+  public void testAfterHookpoint() {
+    ASTNode ast1 = new ASTNodeMock();
+
+    glex.setAfterTemplate( "hp", ast1, new StringHookPoint("After Hookpoint"));
+    Assertions.assertEquals("After Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
+
+  }
 }
