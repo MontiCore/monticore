@@ -93,6 +93,22 @@ public class JsonNumber implements JsonElement {
   public void setNumber(long value) {
     this.value = value + "";
   }
+
+  public short getNumberAsShort() {
+    return Short.parseShort(value);
+  }
+
+  public void setNumber(short value) {
+    this.value = value + "";
+  }
+
+  public byte getNumberAsByte() {
+    return Byte.parseByte(value);
+  }
+
+  public void setNumber(byte value) {
+    this.value = value + "";
+  }
   
   @Override
   public String toString() {
