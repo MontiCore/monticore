@@ -303,17 +303,29 @@ public class GlobalExtensionManagement {
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast) {
 
-    String result = controller.getGeneratorSetup().isTracing()?"/* Hookpoint: " + hookName + " */":"";
-    HookPoint hp = hookPoints.get(hookName);
-    Reporting.reportCallHookPointStart(hookName, hp, ast);
+    StringBuffer result = new StringBuffer(controller.getGeneratorSetup().isTracing()?"/* Hookpoint: " + hookName + " */":"");
 
-    if (hookPoints.containsKey(hookName)) {
-      result = hp.processValue(controller, ast);
+    // Before replacement
+    List<HookPoint> beforeHooks = getBeforeTemplates(hookName, ast);
+    for (HookPoint h: beforeHooks) {
+      result.append(h.processValue(controller, ast));
     }
 
+    // HookPoint
+    HookPoint hp = hookPoints.get(hookName);
+    Reporting.reportCallHookPointStart(hookName, hp, ast);
+    if (hookPoints.containsKey(hookName)) {
+      result.append(hp.processValue(controller, ast));
+    }
     Reporting.reportCallHookPointEnd(hookName);
 
-    return Strings.nullToEmpty(result);
+    // After replacement
+    List<HookPoint> afterHooks = getAfterTemplates(hookName, ast);
+    for (HookPoint h: afterHooks) {
+      result.append(h.processValue(controller, ast));
+    }
+
+    return result.toString();
   }
 
   /**
@@ -333,17 +345,28 @@ public class GlobalExtensionManagement {
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast, Object... args) {
 
-    String result = null;
-    HookPoint hp = hookPoints.get(hookName);
-    Reporting.reportCallHookPointStart(hookName, hp, ast);
+    StringBuffer result = new StringBuffer();
 
-    if (hookPoints.containsKey(hookName)) {
-      result = hp.processValue(controller, ast, Arrays.asList(args));
+    // Before replacement
+    List<HookPoint> beforeHooks = getBeforeTemplates(hookName, ast);
+    for (HookPoint h: beforeHooks) {
+      result.append(h.processValue(controller, ast));
     }
 
+    HookPoint hp = hookPoints.get(hookName);
+    Reporting.reportCallHookPointStart(hookName, hp, ast);
+    if (hookPoints.containsKey(hookName)) {
+      result.append(hp.processValue(controller, ast, Arrays.asList(args)));
+    }
     Reporting.reportCallHookPointEnd(hookName);
 
-    return Strings.nullToEmpty(result);
+    // After replacement
+    List<HookPoint> afterHooks = getAfterTemplates(hookName, ast);
+    for (HookPoint h: afterHooks) {
+      result.append(h.processValue(controller, ast));
+    }
+
+    return result.toString();
   }
 
   /**
@@ -363,17 +386,30 @@ public class GlobalExtensionManagement {
    */
   public String defineHookPoint(TemplateController controller, String hookName, Object... args) {
 
-    String result = null;
+    StringBuffer result = new StringBuffer();
+
+    // Before replacement
+    List<HookPoint> beforeHooks = getBeforeTemplates(hookName, controller.getAST());
+    for (HookPoint h: beforeHooks) {
+      result.append(h.processValue(controller, controller.getAST()));
+    }
+
     HookPoint hp = hookPoints.get(hookName);
     Reporting.reportCallHookPointStart(hookName, hp, controller.getAST());
 
     if (hookPoints.containsKey(hookName)) {
-      result = hp.processValue(controller, Arrays.asList(args));
+      result.append(hp.processValue(controller, Arrays.asList(args)));
     }
 
     Reporting.reportCallHookPointEnd(hookName);
 
-    return Strings.nullToEmpty(result);
+    // After replacement
+    List<HookPoint> afterHooks = getAfterTemplates(hookName, controller.getAST());
+    for (HookPoint h: afterHooks) {
+      result.append(h.processValue(controller, controller.getAST()));
+    }
+
+    return result.toString();
   }
 
   /**
@@ -804,6 +840,36 @@ public class GlobalExtensionManagement {
    */
   public TemplateStringHookPoint templateStringHP(String statement) throws IOException {
     return new TemplateStringHookPoint(statement);
+  }
+
+  // Before replacement
+  protected List<HookPoint> getBeforeTemplates(String templateName, ASTNode ast) {
+    List<HookPoint> beforeHooks;
+    if (this.specificBefore.contains(templateName, ast)) {
+      beforeHooks = this.specificBefore.get(templateName, ast);
+      Reporting.reportAddBeforeTemplate(templateName, Optional.of(ast), beforeHooks);
+    } else {
+      beforeHooks = Lists.newArrayList(this.before.get(templateName));
+      if (!beforeHooks.isEmpty()) {
+        Reporting.reportCallBeforeHookPoint(templateName, beforeHooks, ast);
+      }
+    }
+    return beforeHooks;
+  }
+
+  // After replacement
+  protected List<HookPoint> getAfterTemplates(String templateName, ASTNode ast) {
+    List<HookPoint> afterHooks;
+    if (this.specificAfter.contains(templateName, ast)) {
+      afterHooks = this.specificAfter.get(templateName, ast);
+      Reporting.reportAddAfterTemplate(templateName, Optional.of(ast), afterHooks);
+    } else {
+      afterHooks = Lists.newArrayList(this.after.get(templateName));
+      if (!afterHooks.isEmpty()) {
+        Reporting.reportCallAfterHookPoint(templateName, afterHooks, ast);
+      }
+    }
+    return afterHooks;
   }
 
 }

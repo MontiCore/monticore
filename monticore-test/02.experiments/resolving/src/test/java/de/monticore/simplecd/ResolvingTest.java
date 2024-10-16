@@ -28,6 +28,7 @@ public class ResolvingTest {
   public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
+    SimpleCDMill.init();
   }
 
   protected Optional<ASTCDCompilationUnit> parseAndTransform(String model){
@@ -116,6 +117,13 @@ public class ResolvingTest {
     } catch(ResolvedSeveralEntriesForSymbolException e) {
       Assertions.assertTrue(e.getMessage().startsWith("0xA4095"));
     }
+  }
+
+  @Test
+  public void testNameInvalid() {
+    SimpleCDMill.globalScope().resolveType("veryInvalid(b(#)(%$(@");
+    assert (!Log.getFindings().isEmpty());
+    assert (Log.getFindings().get(0).getMsg().startsWith("0xFDAB0"));
   }
 
 
