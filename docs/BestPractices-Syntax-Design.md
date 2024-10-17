@@ -2,7 +2,7 @@
 
 # MontiCore Best Practices - Concrete and Abstract Syntax
 
-[[_TOC_]]
+
 
 [MontiCore](https://www.monticore.de) provides a number of options to design 
 languages, access and modify the abstract syntax tree, and produce output files.
