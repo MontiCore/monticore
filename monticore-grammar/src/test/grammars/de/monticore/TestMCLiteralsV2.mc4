@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar TestMCLiteralsV2 extends
+  MCNumbers,
+  // de.monticore.MCLiteralsV2,
+  StringLiterals
+  {
+
+ DecimalList = "["  (Decimal | ",")* "]" ;
+ IntegerList = "["  (Integer | ",")* "]" ;
+ CharList = "["  (CharLiteral | ",")* "]" ;
+ StringList = "["  (StringLiteral | ",")* "]" ;
+
+ // test reuse of a fragment
+ token XHexDigit = 'X' HexDigit* 'X' ;
+ BTest = XHexDigit "," XHexDigit;
+
+ // List with only optional separator (but also space separates)
+ // Thi scan be used to check end-detection for tokens
+ AnyTokenList = ":" (AnyToken ","?)* ":" ;
+ AnyToken = DecimalToken | CharToken | StringToken
+        | "[" | "]" | ".." ;
+
+}

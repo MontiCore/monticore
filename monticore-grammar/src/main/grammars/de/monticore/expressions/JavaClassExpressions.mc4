@@ -1,0 +1,86 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.expressions.*;
+import de.monticore.statements.*;
+import de.monticore.types.*;
+
+/**
+ * This grammar defines Java specific class expressions like super,
+ * this, etc.
+ *
+ * This grammar should only be included, when a mapping to Java is
+ * intended and the full power of Java should be available in the
+ * modelling language.
+ *
+ * There are also other kinds of expressions defined in the
+ * grammars mentioned below. These expression definitions can safely be
+ * composed if desired.
+ *
+ * The grammar has several extension points for types to be filled when used.
+ *
+ * This grammar is part of a hierarchy of expressions, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
+ *
+*/
+
+component grammar JavaClassExpressions
+          extends CommonExpressions,
+          MCVarDeclarationStatements,
+          MCFullGenericTypes,
+          UglyExpressions {
+
+  /*=================================================================*/
+
+  PrimaryThisExpression implements Expression <320> =
+    "this";
+
+  ThisExpression implements Expression <280> =
+    Expression "." "this";
+
+  SuperExpression implements Expression <270> =
+    Expression "." "super" SuperSuffix;
+
+  GenericInvocationExpression implements Expression <260> =
+    Expression "." PrimaryGenericInvocationExpression;
+
+  PrimarySuperExpression implements Expression <330> =
+    "super";
+
+  /*=================================================================*/
+
+  // access of class object uses a type
+  ClassExpression implements Expression <360> =
+    MCReturnType "." "class";
+
+  // generic invocation may specify type arguments
+  PrimaryGenericInvocationExpression implements Expression <370> =
+    "<"(MCTypeArgument||",")+">" GenericInvocationSuffix;
+
+  GenericInvocationSuffix
+    =   ["super"] SuperSuffix
+    |   ["this"] Arguments
+    |   Name Arguments
+    ;
+
+  SuperSuffix
+    =   Arguments
+    |   "." ("<"(MCTypeArgument||",")+">")? Name Arguments?
+    ;
+
+  /*=================================================================*/
+
+  // instance of needs a type or pattern as argument
+  InstanceofPatternExpression implements Expression <140> =
+    Expression "instanceof" Pattern;
+
+  interface Pattern;
+
+  TypePattern implements Pattern = LocalVariableDeclaration;
+
+}

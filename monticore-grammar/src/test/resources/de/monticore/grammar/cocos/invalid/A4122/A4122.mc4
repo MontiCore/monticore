@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.grammar.cocos.invalid.A4122;
+
+grammar A4122 {
+
+  symbol A = Name;
+
+  ASymbol = "foo";
+
+}

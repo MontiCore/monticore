@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A2107;
+
+grammar A2107b {
+  external A;
+
+  abstract B extends A;
+
+}

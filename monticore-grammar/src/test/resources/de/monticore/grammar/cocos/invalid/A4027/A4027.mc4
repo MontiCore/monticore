@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4027;
+
+grammar A4027 extends de.monticore.grammar.cocos.valid.Enum {
+
+  E;
+}

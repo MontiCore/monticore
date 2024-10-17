@@ -1,0 +1,121 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tf;
+
+grammar ODRules extends de.monticore.tf.TFBasisExts,
+                        de.monticore.literals.MCCommonLiterals,
+                        de.monticore.literals.MCJavaLiterals, //ToDo: Remove all int references in the rule2od
+                        de.monticore.UMLStereotype {
+
+    astrule ODRule =
+     variables:de.monticore.tf.rule2od.Variable2AttributeMap
+     name:String
+     method public String getGrammarPackageName() {
+        return de.se_rwth.commons.Joiners.DOT.join(getGrammarPackageList());
+     }
+     ;
+
+    ODRule =
+        ("package" package:(Name& || ".")+ ";")?
+        MCImportStatement*
+        "grammar" grammarPackage:(Name& || ".")* "."? grammarName:Name ";"
+        "pattern" lhs:ODDefinition
+        ("replacement" rhs:ODDefinition)?
+        ("folding" "{" FoldingSet* "}")?
+        ("where" "{" constraint:Expression "}")?
+        ("assign" "{" Assignment* "}")?
+        ("do"  doBlock:MCJavaBlock )?
+        ("undo"  undoBlock:MCJavaBlock )?;
+
+    ODRuleBlock  = "{" ODRule "}";
+
+    /**
+    * A folding tuple is a list of at least two foldable objects in parentheses
+    */
+    FoldingSet =
+       "("objectNames:Name ("," objectNames:Name)+")";
+
+    Assignment = lhs:Name "=" rhs:Expression ";";
+
+
+    /** ASTODDefinition represents a UML Objectdiagram
+      @attribute completeness Optional Comleteness of this Objectdiagramm
+      @attribute stereotype   Optional Stereotype
+      @attribute name         Name of this Objectdiagram
+      @attribute oDObjects    List of Objects of this Objectdiagram
+      @attribute oDLinks      List of Links of this Objectdiagram
+      @attribute invaritants  List of Invaritants of this Objectdiagram
+    */
+    symbol scope ODDefinition =
+      ("objectdiagram" | "astobjectdiagram") Name
+      "{"
+      (
+        oDObject:ODObject
+        |
+        oDLink:ODLink
+      )*
+      "}";
+
+
+    /** ASTODAttribute represents an Attribute of an Object
+        @attribute type        Type of this Attribute
+        @attribute name        Name of this Attribute
+        @attribute singleValue Value of this Attribute
+    */
+    symbol ODAttribute  =
+      MCType?
+      Name
+      attributeCardinality:Cardinality
+      ("=" (singleValue:Expression valueOptional:["[0..1]"]? | list:ArrayInit))? ";";
+
+    /** ASTODObject represents an Object in a UML Objectdiagram
+      @attribute stereotype       Optional Stereotype of this Object
+      @attribute name             Optional Name of this Object
+      @attribute type             Optional Type of this Object
+      @attribute attributes       List of Attributes of this Object
+      @attribute innerLinks       List of inner Links of this Object
+      @attribute valueCollections List of value collections of this Object
+    */
+    symbol scope ODObject =
+      Stereotype?
+      (Name (":" type:MCType)? | (":" type:MCType))
+      (
+         ("{" (attributes:ODAttribute | innerLinks:ODInnerLink )* "}")
+         |
+         ";"
+      );
+
+    /** ASTODLink represents a Link between Objects
+      @attribute stereotype          Optional Stereotype
+      @attribute Name                Name of the Association of this Link
+      @attribute leftReferenceNames  List of References of the Objects on the
+                                     left side of this Link
+      @attribute leftRole            Role of Objects on the Links left side
+      @attribute rightRole           Role of Objects on the Links right side
+      @attribute rightReferenceNames List of References of the Objects on the
+                                     right side of this Link
+    */
+    ODLink =
+      Stereotype?
+      ("composition" | ["link"])
+      Name?
+      leftReferenceName:(MCQualifiedName || ",")+
+      ("(" leftRole:Name ")")?
+      "--"
+      ("(" rightRole:Name ")")?
+      attributeCardinality:Cardinality
+      rightReferenceName:(MCQualifiedName || ",")+
+      ";";
+
+    /** ASTCardinality represents a Cardinality in a Classdiagram
+      @attribute many          True if "*" is set as Cardinality
+      @attribute one           True if [1] is set as Cardinality
+      @attribute oneToMany     True if [1..*] is set as Cardinality
+      @attribute optional      True if [0..1] is set as Cardinality
+    */
+    Cardinality = many:["[*]"] | one:["[1]"] | oneToMany:["[1..*]"] | optional:["[0..1]"];
+
+
+    ODInnerLink =
+      (linkName:Name "=")? ODObject;
+          
+}

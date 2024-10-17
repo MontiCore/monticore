@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4090;
+
+grammar A4090g extends de.monticore.common.TestLiterals{
+
+  A = "a";
+  B = who:Num_Int who:A;
+
+}

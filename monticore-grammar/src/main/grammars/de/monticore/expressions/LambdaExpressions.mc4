@@ -1,0 +1,69 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.expressions;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.expressions.*;
+import de.monticore.symbols.*;
+import de.monticore.types.*;
+
+component grammar LambdaExpressions
+          extends BasicSymbols,
+                  MCBasicTypes,
+                  ExpressionsBasis {
+
+  /**
+   * This grammar defines lambda expressions, e.g.
+   * (int x, int y) -> x * y, () -> 5, x -> x * 2
+   *
+   * Not part of this grammar are Java-like lambdas with codeblocks, e.g.
+   * (int x) -> {int y = x + 2; return y;}
+   *
+   * The grammar has the extension point LambdaBody which can be used to 
+   * allow different kinds of lambda bodies, e.g. codeblocks.
+   *
+   * There are also other kinds of expressions defined in the
+   * grammars mentioned below. These expression definitions can safely be
+   * composed if desired.
+   *
+   * This grammar is part of a hierarchy of expressions, which can be found
+   * under
+   *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+   *                 src/main/grammars/de/monticore/expressions/Expressions.md
+   *
+  */
+
+  /*=================================================================*/
+
+  /**
+   * LambdaParameters have optional explicit typing.
+   * However, not setting the type explicitly requires
+   * some sort of type inference to be present.
+   */
+  LambdaParameter implements Variable = MCType? Name;
+
+  LambdaParameters =
+    LambdaParameter
+    | parenthesis:"(" (LambdaParameter || ",")* ")"
+  ;
+
+  /**
+   * Extension point that can be used to allow different bodies for 
+   * lambda statements, e.g codeblocks.
+   */
+  interface LambdaBody;
+
+  astrule LambdaBody =
+    type: de.monticore.types.check.SymTypeExpression ;
+
+  LambdaExpressionBody implements LambdaBody = Expression;
+
+  scope (shadowing non_exporting ordered) LambdaExpression 
+                                    implements Expression <50> =
+    <rightassoc>
+    LambdaParameters "->"
+    LambdaBody
+  ;
+
+}

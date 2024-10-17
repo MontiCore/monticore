@@ -1,0 +1,117 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.statements;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.statements.*;
+
+/**
+ * This grammar defines typical statements, such as
+ * method calls (which are actually expressions),
+ * assignment of variables, if, for, while, switch statements, and blocks.
+ *
+ * This embodies a complete structured statement language, however does not
+ * provide return, assert, exceptions, and low-level constructs like break.
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCVarDeclarationStatements.mc4
+ * * -- -- statements/MCArrayStatements.mc4
+ * * -- -- statements/MCCommonStatements.mc4
+ * * -- -- -- statements/MCExceptionStatements.mc4
+ * * -- -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
+
+component grammar MCCommonStatements
+          extends MCVarDeclarationStatements {
+
+/**
+ * Standard Form of a block { ... }
+ * it allows to define local variables that are not exported
+ * and can only be used after defined (typical within code bodies).
+ */
+scope(non_exporting ordered) MCJavaBlock implements MCStatement
+    = "{" MCBlockStatement* "}" ;
+    
+/**
+ * All the Java Modifier
+ */
+JavaModifier implements MCModifier =
+      Modifier:["private" | "public" | "protected" | "static"
+          | "transient" | "final" | "abstract" | "native"
+          | "threadsafe" | "synchronized" | "const" | "volatile"
+          | "strictfp" | modifier_default:"default"] ;
+
+IfStatement implements MCStatement
+    =   "if" "(" condition:Expression ")"
+                    thenStatement:MCStatement
+            ("else" elseStatement:MCStatement)? ;
+   // we use "elseStatement", because the
+   // generated Java code doesn't allow "else" as Name 
+
+
+scope (non_exporting ordered) ForStatement implements MCStatement
+    = "for" "(" ForControl ")" MCStatement ;
+
+interface ForControl ;
+
+CommonForControl implements ForControl
+    = ForInit? ";" condition:Expression? ";" (Expression || ",")* ;
+
+ForInit
+    = ForInitByExpressions | LocalVariableDeclaration ;
+
+ForInitByExpressions
+    = (Expression || ",")+ ;
+
+EnhancedForControl implements ForControl
+    = FormalParameter ":" Expression;
+
+FormalParameter
+    =   JavaModifier* MCType Declarator;
+
+WhileStatement implements MCStatement
+    = "while" "(" condition:Expression ")" MCStatement ;
+
+DoWhileStatement implements MCStatement
+    = "do" MCStatement "while" "(" condition:Expression ")" ";" ;
+
+SwitchStatement implements MCStatement
+    = "switch" "(" Expression ")"
+           "{" SwitchBlockStatementGroup* SwitchLabel* "}" ;
+
+EmptyStatement implements MCStatement
+    = ";" ;
+
+ExpressionStatement implements MCStatement
+    = Expression ";" ;
+
+// Matches cases then statements, both of which are mandatory.
+// To handle empty cases at the end, SwitchLabel* is explicitly added
+// in  the statement body
+SwitchBlockStatementGroup
+    =   SwitchLabel+ MCBlockStatement+ ;
+
+interface SwitchLabel ;
+
+ConstantExpressionSwitchLabel implements SwitchLabel
+    =   "case" constant:Expression ":" ;
+
+EnumConstantSwitchLabel implements SwitchLabel
+    =   "case" enumConstant:Name ":" ;
+
+DefaultSwitchLabel implements SwitchLabel
+    =   "default" ":" ;
+
+BreakStatement implements MCStatement
+    =   "break" ";" ;
+
+}

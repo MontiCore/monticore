@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.valid;
+
+component grammar Component {
+
+  external A;
+
+  abstract B;
+
+  interface C;
+
+}

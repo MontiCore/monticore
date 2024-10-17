@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A2025;
+
+grammar A2025 {
+
+  B;
+
+  A;
+
+  abstract A;
+
+  enum A = "B";
+
+  interface A;
+
+  external A;
+
+  token A  = "B";
+
+  A;
+
+  abstract A;
+
+  enum A  = "B";
+
+  interface A;
+
+  external A;
+
+  token A = "B";
+
+}

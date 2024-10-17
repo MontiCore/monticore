@@ -1,0 +1,39 @@
+package de.monticore.grammar;
+
+mlc Grammar_WithConcepts {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/grammar/Grammar_WithConcepts.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/grammar/grammar_withconcepts/**.java";
+
+    // CoCos
+    include "de/monticore/grammar/cocos/**.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/grammar/grammar_withconcepts/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.grammar.Grammar";
+    mlc "de.monticore.statements.MCCommonStatements";
+    mlc "de.monticore.statements.MCReturnStatements";
+    mlc "de.monticore.statements.MCExceptionStatements";
+    mlc "de.monticore.expressions.JavaClassExpressions";
+    mlc "de.monticore.JavaLight";
+    mlc "de.monticore.grammar.concepts.antlr.Antlr";
+    mlc "de.monticore.expressions.CommonExpressions";
+    mlc "de.monticore.expressions.BitExpressions";
+  }
+
+  uses {
+    mlc "de.monticore.expressions.UglyExpressions";
+  }
+
+}

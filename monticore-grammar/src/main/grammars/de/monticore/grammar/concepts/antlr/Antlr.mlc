@@ -1,0 +1,19 @@
+package de.monticore.grammar.concepts.antlr;
+
+mlc Antlr {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/grammar/concepts/antlr/Antlr.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/grammar/concepts/antlr/antlr/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.MCBasics";
+  }
+
+}
