@@ -14,3 +14,4 @@ pluginManagement {
 }
 
 rootProject.name = 'monticore-generator'
+include ':monticore-runtime-fix'

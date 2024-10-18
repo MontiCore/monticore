@@ -5,7 +5,7 @@ package de.monticore.codegen.parser;
 import de.monticore.MontiCoreScript;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.reporting.ReportingFix;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -183,9 +183,9 @@ public class ParserGeneratorTest {
     MCGrammarSymbol symbol = result.getSymbol();
     for (MCGrammarSymbol it : MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if (!it.getFullName().equals(symbol.getFullName())) {
-        ReportingFix.reportOpenInputFile(Optional.empty(),
+        Reporting.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
-        ReportingFix.reportOpenInputFile(Optional.empty(),
+        Reporting.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
       }
     }

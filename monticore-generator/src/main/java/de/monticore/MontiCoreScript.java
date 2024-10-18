@@ -102,7 +102,7 @@ import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
-import de.monticore.generating.templateengine.reporting.ReportingFix;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.cocos.GrammarCoCos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
@@ -380,9 +380,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     MCGrammarSymbol symbol = result.getSymbol();
     for(MCGrammarSymbol it: MCGrammarSymbolTableHelper.getAllSuperGrammars(symbol)) {
       if(!it.getFullName().equals(symbol.getFullName())) {
-        ReportingFix.reportOpenInputFile(Optional.empty(),
+        Reporting.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".mc4")));
-        ReportingFix.reportOpenInputFile(Optional.empty(),
+        Reporting.reportOpenInputFile(Optional.empty(),
             Paths.get(it.getFullName().replaceAll("\\.", "/").concat(".cd")));
 
       }
@@ -1417,7 +1417,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // initialize glex
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.addAfterTemplate("cd2java.Imports", new TemplateHookPoint("mc.Imports"));
-    if(ReportingFix.isInitialized()) {
+    if(Reporting.isInitialized()) {
       if(mcConfig.getConfigTemplate().isPresent()) {
         String configTemplate = mcConfig.getConfigTemplate().get();
         if (configTemplate.endsWith(".ftl")) { // remove file ending
@@ -1457,13 +1457,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
             "de.monticore.io.paths",
             "de.monticore.languages.grammar",
             "de.se_rwth.commons.logging",
-            "de.monticore.generating.templateengine.reporting.fix", // TODO: Remove .fix after 7.7.0 release
+            "de.monticore.generating.templateengine.reporting",
             "de.se_rwth.commons",
             "de.monticore.incremental"};
 
     public static final String[] DEFAULT_STATIC_IMPORTS = {
             "de.se_rwth.commons.logging.Log",
-            "de.monticore.generating.templateengine.reporting.fix.Reporting", // TODO: Remove .fix after 7.7.0 release
+            "de.monticore.generating.templateengine.reporting.Reporting",
             "de.se_rwth.commons.Names"};
 
 

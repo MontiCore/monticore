@@ -17,7 +17,7 @@ import de.monticore.cli.MontiCoreTool;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.generating.templateengine.reporting.ReportingFix;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
@@ -317,7 +317,7 @@ public class MontiCoreScriptTest {
     new MontiCoreScript().run(cfg);
     // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
-    ReportingFix.off();
+    Reporting.off();
     Assertions.assertTrue(!false);
   }
 
@@ -335,7 +335,7 @@ public class MontiCoreScriptTest {
     new MontiCoreScript().run_emf(cfg);
     // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
-    ReportingFix.off();
+    Reporting.off();
     Assertions.assertTrue(!false);
   }
 

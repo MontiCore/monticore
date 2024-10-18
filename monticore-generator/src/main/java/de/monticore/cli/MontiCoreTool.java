@@ -11,7 +11,7 @@ import de.monticore.MontiCoreConfiguration;
 import de.monticore.MontiCoreScript;
 import de.monticore.StatisticsHandlerFix;
 import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
-import de.monticore.generating.templateengine.reporting.ReportingFix;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
@@ -175,7 +175,7 @@ public class MontiCoreTool {
     // Case 3: Use custom log file logging if configured and present
     else if (cmd.hasOption("cl")) {
       File userLogFile = new File(cmd.getOptionValue("cl", StringUtils.EMPTY));
-      ReportingFix.reportFileExistenceChecking(Lists.newArrayList(),
+      Reporting.reportFileExistenceChecking(Lists.newArrayList(),
           userLogFile.toPath().toAbsolutePath());
         
       if (userLogFile.exists() && userLogFile.isFile()) {
@@ -249,7 +249,7 @@ public class MontiCoreTool {
       // available and load its content
       if (cmd.hasOption(SCRIPT)) {
         File f = new File(cmd.getOptionValue(SCRIPT, StringUtils.EMPTY));
-        ReportingFix.reportFileExistenceChecking(Lists.newArrayList(),
+        Reporting.reportFileExistenceChecking(Lists.newArrayList(),
             f.toPath().toAbsolutePath());
 
         if (f.exists() && f.isFile()) {
