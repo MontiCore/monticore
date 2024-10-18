@@ -38,7 +38,7 @@ dependencies {
 
     implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
 
-    implementation "de.monticore:monticore-runtime:$previous_mc_version"
+    implementation project(":monticore-runtime-fix") // The previous runtime, but with future-ported fixes
     implementation "de.monticore:monticore-grammar:$previous_mc_version"
     implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"

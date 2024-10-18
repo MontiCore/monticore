@@ -102,7 +102,10 @@ public class MCGenPluginTest {
     this.testGenerateGrammar("8.7");
   }
 
-  // Test if the generate task succeeds and is cacheable
+  // Test if the generate task succeeds
+  // and is cacheable
+  // and up-to-date-checks work on modified files
+  // and up-to-date-checks work on modified super files
   void testGenerateGrammar(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
     String buildFileContent = "plugins {" +
@@ -113,6 +116,8 @@ public class MCGenPluginTest {
     // as the monticore-grammar dependency might not be available yet
     writeFile(new File(grammarDir, "MyTestGrammar.mc4"),
             "grammar MyTestGrammar { Monti = \"Core\"; }");
+    writeFile(new File(grammarDir, "MyTestGrammarS.mc4"),
+            "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core\"; }");
 
 
     BuildResult result = GradleRunner.create()
@@ -124,6 +129,8 @@ public class MCGenPluginTest {
 
     // file MyTestGrammar is worked on
     Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammar.mc4]"));
+    // file MyTestGrammarS is worked on
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammarS.mc4]"));
     // and the task was successful
     Assert.assertEquals(SUCCESS, result.task(":generateMCGrammars").getOutcome());
 
@@ -139,6 +146,37 @@ public class MCGenPluginTest {
     // and then check, that the build cache was used
     Assert.assertEquals("generateMCGrammars was not cached",
             FROM_CACHE, result.task(":generateMCGrammars").getOutcome());
+
+    // Next, test up-to-date checks:
+    // by changing MyTestGrammarS
+    writeFile(new File(grammarDir, "MyTestGrammarS.mc4"),
+            "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core2\"; }");
+    // and run again
+    result = GradleRunner.create()
+            .withPluginClasspath()
+            .withGradleVersion(version)
+            .withProjectDir(testProjectDir)
+            .withArguments("generateMCGrammars", "--build-cache")
+            .build();
+    // and the task was successful
+    Assert.assertEquals(SUCCESS, result.task(":generateMCGrammars").getOutcome());
+    // Only MyTestGrammarS SHOULD not be up-to-date
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
+    Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammarS.mc4 is UP-TO-DATE, no action required"));
+
+    // and change MyTestGrammar
+    writeFile(new File(grammarDir, "MyTestGrammar.mc4"),
+            "grammar MyTestGrammar { Monti = \"Core2\"; }");
+    // and run again
+    result = GradleRunner.create()
+            .withPluginClasspath()
+            .withGradleVersion(version)
+            .withProjectDir(testProjectDir)
+            .withArguments("generateMCGrammars", "--build-cache")
+            .build();
+    // Nothing SHOULD not be up-to-date
+    Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
+    Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammarS.mc4 is UP-TO-DATE, no action required"));
   }
 
 

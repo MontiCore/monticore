@@ -3,7 +3,7 @@ package de.monticore.gradle.gen;
 
 import de.monticore.AmbiguityException;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
-import de.monticore.generating.templateengine.reporting.ReportingFix;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.mcbasics.MCBasicsMill;
@@ -51,7 +51,7 @@ public class MCToolInvoker {
       MCBasicsMill.globalScope().clearLoadedFiles();
       MCBasicsMill.globalScope().getSymbolPath().close();
       Grammar_WithConceptsMill.reset();
-      ReportingFix.resetInitializedFlagFix();
+      Reporting.resetInitializedFlagFix();
     }
   }
 }

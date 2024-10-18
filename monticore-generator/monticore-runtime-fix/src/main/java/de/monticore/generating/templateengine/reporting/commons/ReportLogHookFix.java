@@ -3,7 +3,7 @@ package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.generating.templateengine.reporting.ReportingFix;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
@@ -12,11 +12,12 @@ import de.se_rwth.commons.logging.ILogHook;
 
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-// TODO: Remove after 7.7.0 release
-// Future-porting the reporting-logger-changes, copy of ReportLogHook.java
-@Deprecated
 public class ReportLogHookFix implements ILogHook, IReportEventHandler {
 
   /**
@@ -24,7 +25,7 @@ public class ReportLogHookFix implements ILogHook, IReportEventHandler {
    * @param factory         for creating specific report manager configurations
    */
   public ReportLogHookFix(String reportDirectory,
-                          ReportManager.ReportManagerFactory factory) {
+                       ReportManager.ReportManagerFactory factory) {
     this.reportDirectory = reportDirectory;
     this.factory = factory;
   }
@@ -86,7 +87,7 @@ public class ReportLogHookFix implements ILogHook, IReportEventHandler {
    * @return the currently active/responsible report manager instance
    */
   protected ReportManager getReportManager() {
-    return getReportManager(ReportingFix.getCurrentModel());
+    return getReportManager(Reporting.getCurrentModel());
   }
 
   /**
@@ -242,12 +243,11 @@ public class ReportLogHookFix implements ILogHook, IReportEventHandler {
     this.getReportManager().reportTemplateReplacement(oldTemplate, newHps);
   }
 
-
-  /* TODO: Re-add once #4095 is upstream (7.7.0 release)
   @Override
   public void reportSetBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> beforeHps) {
     this.getReportManager().reportSetBeforeTemplate(template, ast, beforeHps);
   }
+
   @Override
   public void reportSetAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     this.getReportManager().reportSetAfterTemplate(template, ast, afterHps);
@@ -262,23 +262,6 @@ public class ReportLogHookFix implements ILogHook, IReportEventHandler {
   public void reportAddBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> beforeHps) {
     this.getReportManager().reportAddBeforeTemplate(template, ast, beforeHps);
   }
-  */
-
-  @Override
-  public void reportSetBeforeTemplate(String template, List<? extends HookPoint> beforeHps) {
-    this.getReportManager().reportSetBeforeTemplate(template, beforeHps);
-  }
-
-  @Override
-  public void reportSetAfterTemplate(String template, List<? extends HookPoint> afterHps) {
-    this.getReportManager().reportSetAfterTemplate(template, afterHps);
-  }
-
-  @Override
-  public void reportAddAfterTemplate(String template, List<? extends HookPoint> afterHps) {
-    this.getReportManager().reportAddAfterTemplate(template, afterHps);
-  }
-
 
   @Override
   public void reportTransformationStart(String transformationName) {

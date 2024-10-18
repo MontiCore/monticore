@@ -3,7 +3,7 @@ package de.monticore.tagging;
 
 import com.google.common.base.Joiner;
 import de.monticore.codegen.cd2java._tagging.TaggingConstants;
-import de.monticore.generating.templateengine.reporting.ReportingFix;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
@@ -76,7 +76,7 @@ public class TagGenerator {
       Files.createDirectories(Paths.get(directories));
     }
     Path path = Paths.get(directories + "/" + defDerivGrammar.getName() + ".mc4");
-    ReportingFix.reportFileCreation(path.toString());
+    Reporting.reportFileCreation(path.toString());
     return Files.writeString(path, fpp.prettyprint(defDerivGrammar));
   }
 

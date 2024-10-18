@@ -238,6 +238,10 @@ public class FileReaderWriter {
    * @return
    */
   public static Reader getReader(URL location) {
+    return getFileReaderWriter()._getReader(location);
+  }
+
+  protected Reader _getReader(URL location) {
     try {
       if (!"jar".equals(location.getProtocol())) {
         Path p = Paths.get(location.toURI());

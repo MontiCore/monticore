@@ -51,6 +51,7 @@ public class Reporting extends Log {
     if (Log.getLog() == null) {
       Log.init();
     }
+    getReportHooks().clear();
     addReportHook(new ReportLogHook(reportDirectory, factory));
   }
 
