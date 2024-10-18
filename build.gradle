@@ -114,6 +114,7 @@ task buildMC {
 }
 
 buildMC.dependsOn(gradle.includedBuilds*.task(':build'))
+buildMC.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:build'))
 
 /**
  *  Assembles the core projects, i.e. the generator, runtime and grammar library.
@@ -131,6 +132,7 @@ task assembleMC {
 }
 
 assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
+assembleMC.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:assemble'))
 
 
 /**
@@ -149,6 +151,7 @@ task testMC {
 }
 
 testMC.dependsOn(gradle.includedBuilds*.task(':test'))
+testMC.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:test'))
 
 /**
  *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
@@ -169,6 +172,7 @@ task deployMC {
 }
 
 deployMC.dependsOn(gradle.includedBuilds*.task(':publish'))
+deployMC.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:publish'))
 
 /**
  *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
@@ -188,6 +192,7 @@ task publishMCToMavenLocal {
 }
 
 publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocal'))
+publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:publishToMavenLocal'))
 
 /**
  *  Build the test projects, i.e. integration tests and experiments.
