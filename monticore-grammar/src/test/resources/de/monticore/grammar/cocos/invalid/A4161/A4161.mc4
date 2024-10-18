@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4161;
+
+grammar A4161  {
+
+  P = "a" un:"b" "c"* cg:["cg"];
+
+  replacekeyword "a" : "a", "aa";
+  replacekeyword "c" : "c", "cc";
+
+  replacekeyword "b" : "b", "bb";
+
+}

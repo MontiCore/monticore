@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.grammar.concepts.antlr;
+
+component grammar Antlr {
+
+    /** Used for embedding java declarations */
+	external JavaCode;
+	
+ 	/** An AntlrConcept allows to specify additional antlr rules and Java code for Parser and lexer
+	@attribute AntlrParserCode Additional Antlr rules for the parser
+	@attribute AntlrParserAction Additional Java code for the parser
+	@attribute AntlrLexerCode Additional Antlr rules for the lexer
+	@attribute AntlrLexerAction Additional Java code for the lexer
+	*/	
+	ConceptAntlr = 
+		"{"
+		   (AntlrParserAction | AntlrLexerAction)*
+		"}";
+		
+	astrule ConceptAntlr =
+		method public String toString() {
+			return "";
+		};
+			
+	/** Additional Java code for the parser
+	@attribute Text	Java Code
+	*/		
+	AntlrParserAction=
+		"parserjava" "{" text:JavaCode "}";
+		
+	/** Additional Additional Java code for the lexer
+	@attribute Text	Java Code
+	*/
+	AntlrLexerAction= 
+		"lexerjava" "{" text:JavaCode "}";
+}
+
+

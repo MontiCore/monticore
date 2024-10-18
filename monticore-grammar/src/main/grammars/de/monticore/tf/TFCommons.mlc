@@ -1,0 +1,24 @@
+package de.monticore.tf;
+
+mlc TFCommons {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/tf/TFCommons.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/tf/tfcommons/**.java";
+  }
+
+  // promote using the JDK except for reflection
+  promote {
+    mlc "de.monticore.tf.TFBasisExts";
+  }
+
+  uses {
+    mlc "de.monticore.expressions.UglyExpressions";
+  }
+
+}

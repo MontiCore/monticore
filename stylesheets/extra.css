@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+.md-header {
+  background-color: #006BA5;
+}
+:root {
+  --md-primary-fg-color: #006BA5;
+}
+.tip {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+.tip-header {
+  font-size: larger;
+  border-bottom: 2px solid grey;
+}
+.bibliography {
+  empty-cells: hide;
+}

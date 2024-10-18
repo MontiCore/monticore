@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package  de.monticore.grammar.cocos.valid;
+
+grammar ProdAndOverriddenProdUseSameAttrNameForDiffNTs_super{
+
+  A;
+
+  Prod1 = x:A;
+
+  Prod2 = c:B;
+
+  Prod3 = "b";
+
+  State =
+  "state" Name
+  ( ("{" (State)* "}") | ";") ;
+
+  Prod4 = u:Digit | u:Char;
+  token Digit = '0'..'9';
+  token Char = 'a'..'z';
+
+}

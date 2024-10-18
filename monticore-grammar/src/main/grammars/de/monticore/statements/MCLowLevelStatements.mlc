@@ -1,0 +1,19 @@
+package de.monticore.statements;
+
+mlc MCLowLevelStatements {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/statements/MCLowLevelStatements.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/statements/mclowlevelstatements/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.statements.MCStatementsBasis";
+  }
+
+}
