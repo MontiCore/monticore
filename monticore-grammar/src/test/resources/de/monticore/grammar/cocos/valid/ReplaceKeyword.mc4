@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.valid;
+
+grammar ReplaceKeyword {
+
+  P = "a" un:"b" "c"* cg:["cg"];
+
+  replacekeyword "a" : "a", "aa";
+  replacekeyword "c" : "c", "cc";
+
+ 
+}

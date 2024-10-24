@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.grammar.cocos.invalid.A0810;
+
+grammar A0810b extends de.monticore.common.TestLexicals {
+
+  symbol E = Name;
+
+  scope F extends E = Name "Test3";
+
+}

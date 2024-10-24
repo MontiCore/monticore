@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4001;
+
+grammar A4001 extends de.monticore.common.TestTypes {
+
+  QualifiedName extends Name;
+
+}

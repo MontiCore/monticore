@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4056;
+
+grammar A4056a {
+
+      interface Expression;
+
+      PlusExpression implements Expression = (Expression) "+" Expression;
+
+      LeafExpression implements Expression = "Bar";
+
+}

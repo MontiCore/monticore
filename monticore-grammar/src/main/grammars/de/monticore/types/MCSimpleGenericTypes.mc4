@@ -1,0 +1,56 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.types.*;
+
+/**
+ * This grammar introduces freely defined generic types
+ * such as Blubb<A>, Bla<B,C>, Foo<Blubb<D>>
+ * 
+ * These generics are covering a wide range of uses for generic types,
+ * although they don't cover type restrictions on the arguments, like in 
+ * Java. 
+ * 
+ * This eases the reuse of type structures in languages similar to Java,
+ * that are somewhat simplified.
+ *
+ * This grammar is part of a hierarchy of types, namely 
+ * * types.MCBasicTypes.mc4       
+ *   * types/MCArrayTypes.mc4
+ *   * types/MCCollectionTypes.mc4  
+ *     * types/MCSimpleGenericTypes.mc4
+ *       * types/MCFullGenericTypes.mc4    
+ *
+*/
+
+component grammar MCSimpleGenericTypes
+          extends MCCollectionTypes {
+
+
+  /*=================================================================*/
+
+  /** ASTMCCollectionTypesType represents class or interface
+   *  types which could have a qualified name like this: a.b.C<Arg>. 
+   * 
+   *  Any number of arguments is possible.
+   *
+   *  @attribute name             Name of the type
+   *  @attribute typeArgumentList The types between '<...>'
+  */
+
+  MCBasicGenericType implements MCGenericType <20> =
+       (Name || ".")+ "<" (MCTypeArgument || ",")* ">";
+
+  
+  /*=================================================================*/
+  
+  /** ASTMCCustomTypeArgument allows all MCTypes as TypeArguments.
+   *  This extension of the imported grammar is conservative, and it
+   *  enables recursive Generics e.g. List<Map<String, socnet.Person>>
+  */
+  MCCustomTypeArgument implements MCTypeArgument <20> = MCType;
+
+}

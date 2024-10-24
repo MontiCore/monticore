@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A0144;
+
+grammar A0144bb extends A0144b {
+
+  // While "Foo" is now defined twice, it is valid due to beeing overriden
+  @Override
+  Foo = "betterfoo";
+
+}

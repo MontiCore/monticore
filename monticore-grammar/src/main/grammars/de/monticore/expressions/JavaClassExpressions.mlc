@@ -1,0 +1,29 @@
+package de.monticore.expressions;
+
+mlc JavaClassExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/JavaClassExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/javaclassexpressions/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.CommonExpressions";
+    mlc "de.monticore.types.MCFullGenericTypes";
+  }
+
+  uses {
+    mlc "de.monticore.expressions.UglyExpressions";
+    mlc "de.monticore.statements.MCStatementsBasis";
+    mlc "de.monticore.statements.MCVarDeclarationStatements";
+
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    include "$projectDir/src/main/java/de/monticore/types3/SymTypeRelations.java";
+  }
+
+}

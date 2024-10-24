@@ -1,0 +1,57 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.types.*;
+
+/**
+ * This grammar completes the type definitions to 
+ * support the full Java type system including wildcards Blubb<? extends A>
+ *
+ * A general advice: When you are not sure that you need this kind of
+ * types, then use a simpler version.
+ * Type checking ist tricky.
+ * 
+ * This grammar is part of a hierarchy of types, namely 
+ * * types.MCBasicTypes.mc4       
+ *   * types/MCArrayTypes.mc4
+ *   * types/MCCollectionTypes.mc4  
+ *     * types/MCSimpleGenericTypes.mc4
+ *       * types/MCFullGenericTypes.mc4    
+ *
+*/
+
+component grammar MCFullGenericTypes
+          extends MCSimpleGenericTypes {
+
+  /*=================================================================*/
+
+  /** ASTWildcardTypeArgument represents a wildcard type in a type argument
+  *   (generics). It also contains either an upper- or a lower bound.
+  *
+  *   @attribute upperBound Supertye of the type argument
+  *   @attribute lowerBound Subtype of the type argument
+  */
+  MCWildcardTypeArgument implements MCTypeArgument =
+       "?" (  ("extends" upperBound:MCType) 
+            | ("super"   lowerBound:MCType) )?;
+
+
+  /*=================================================================*/
+
+  /** ASTMCMultipleGenericType 
+   *  is only used for parsing, if referenced Type is
+   *  generic AND has generic inner classes e.g.
+   *  monticore.Generic1<TypeParam1>.GenericInnerClass<TypeParam2>
+  */
+  MCMultipleGenericType implements MCGenericType, MCType =
+       MCBasicGenericType  // complex Outer Type qualification
+        "."  (MCInnerType || ".")+  ;
+
+  // At this point it is not unique whether a type name is used or defined: 
+  // this left open to the embedding nonterminal
+  MCInnerType = Name ("<" (MCTypeArgument || ",")+ ">")?;
+
+}

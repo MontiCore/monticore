@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A0144;
+
+grammar A0144a {
+
+  Foo = "foo";
+
+  Bar = "bar";
+}

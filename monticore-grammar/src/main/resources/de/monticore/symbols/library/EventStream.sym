@@ -1,0 +1,1023 @@
+{
+  "generated-using": "www.MontiCore.de technology",
+  "name": "EventStream",
+  "symbols": [
+    {
+      "kind": "de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol",
+      "name": "EventStream",
+      "fullName": "EventStream",
+      "spannedScope": {
+        "symbols": [
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "emptyStream",
+            "fullName": "EventStream.emptyStream",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "EventStream.emptyStream.S"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "appendFirst",
+            "fullName": "EventStream.appendFirst",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "EventStream.appendFirst.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "first",
+                  "fullName": "EventStream.appendFirst.first",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "EventStream.appendFirst.S"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "tail",
+                  "fullName": "EventStream.appendFirst.tail",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "EventStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.appendFirst.S"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "conc",
+            "fullName": "EventStream.conc",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "EventStream.conc.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "head",
+                  "fullName": "EventStream.conc.head",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "EventStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.conc.S"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "tail",
+                  "fullName": "EventStream.conc.tail",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "EventStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.conc.S"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "len",
+            "fullName": "EventStream.len",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypePrimitive",
+              "primitiveName": "long"
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "dropFirst",
+            "fullName": "EventStream.dropFirst",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "take",
+            "fullName": "EventStream.take",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "EventStream.take.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "drop",
+            "fullName": "EventStream.drop",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "EventStream.drop.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "repeat",
+            "fullName": "EventStream.repeat",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "EventStream.repeat.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "elem",
+                  "fullName": "EventStream.repeat.elem",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "EventStream.repeat.S"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "EventStream.repeat.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "times",
+            "fullName": "EventStream.times",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "EventStream.times.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "map",
+            "fullName": "EventStream.map",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.U"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "EventStream.map.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "function",
+                  "fullName": "EventStream.map.function",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "EventStream.map.U"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.map.T"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "iterate",
+            "fullName": "EventStream.iterate",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "EventStream.iterate.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "function",
+                  "fullName": "EventStream.iterate.function",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "EventStream.iterate.S"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.iterate.S"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "elem",
+                  "fullName": "EventStream.iterate.elem",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "EventStream.iterate.S"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "filter",
+            "fullName": "EventStream.filter",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "predicate",
+                  "fullName": "EventStream.filter.predicate",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "EventStream.filter.T"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.filter.Bool"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "takeWhile",
+            "fullName": "EventStream.takeWhile",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "predicate",
+                  "fullName": "EventStream.takeWhile.predicate",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "EventStream.takeWhile.T"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.takeWhile.Bool"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "dropWhile",
+            "fullName": "EventStream.dropWhile",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "predicate",
+                  "fullName": "EventStream.dropWhile.predicate",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "EventStream.dropWhile.T"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.dropWhile.Bool"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "rcDups",
+            "fullName": "EventStream.rcDups",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "zip",
+            "fullName": "EventStream.zip",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeOfTuple",
+                  "listedTypes": [
+                    {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "T"
+                    },
+                    {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "U"
+                    }
+                  ]
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "EventStream.zip.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "second",
+                  "fullName": "EventStream.zip.second",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "EventStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.zip.U"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "projFst",
+            "fullName": "EventStream.projFst",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.S"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "EventStream.projFst.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "EventStream.projFst.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "list",
+                  "fullName": "EventStream.projFst.list",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "EventStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeOfTuple",
+                        "listedTypes": [
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "S"
+                          },
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "U"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "projSnd",
+            "fullName": "EventStream.projSnd",
+            "isMethod": true,
+            "isStatic": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.U"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "EventStream.projSnd.S"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "EventStream.projSnd.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "list",
+                  "fullName": "EventStream.projSnd.list",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "EventStream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeOfTuple",
+                        "listedTypes": [
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "S"
+                          },
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "U"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "values",
+            "fullName": "EventStream.values",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Set",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "infTimes",
+            "fullName": "EventStream.infTimes",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "scanl",
+            "fullName": "EventStream.scanl",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.U"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "EventStream.scanl.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "predicate",
+                  "fullName": "EventStream.scanl.predicate",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "EventStream.scanl.U"
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.scanl.U"
+                      },
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "EventStream.scanl.T"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "acc",
+                  "fullName": "EventStream.scanl.acc",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "EventStream.scanl.U"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "first",
+            "fullName": "EventStream.first",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "nth",
+            "fullName": "EventStream.nth",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "n",
+                  "fullName": "EventStream.nth.n",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "delay",
+            "fullName": "EventStream.delay",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "timeslices",
+                  "fullName": "EventStream.delay.timeslices",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "int"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "mapSlice",
+            "fullName": "EventStream.mapSlice",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.U"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "EventStream.mapSlice.U"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "f",
+                  "fullName": "EventStream.mapSlice.f",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfFunction",
+                    "returnType": {
+                      "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                      "typeConstructorFullName": "List",
+                      "arguments": [
+                        {
+                          "kind": "de.monticore.types.check.SymTypeVariable",
+                          "varName": "EventStream.mapSlice.U"
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                        "typeConstructorFullName": "List",
+                        "arguments": [
+                          {
+                            "kind": "de.monticore.types.check.SymTypeVariable",
+                            "varName": "EventStream.mapSlice.T"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "rougherTime",
+            "fullName": "EventStream.rougherTime",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "EventStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "slices",
+                  "fullName": "EventStream.rougherTime.slices",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "int"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "finerTime",
+            "fullName": "EventStream.finerTime",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Set",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                  "typeConstructorFullName": "EventStream",
+                  "arguments": [
+                    {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "EventStream.T"
+                    }
+                  ]
+                }
+              ]
+            },
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+                  "name": "slices",
+                  "fullName": "EventStream.finerTime.slices",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "int"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "untimed",
+            "fullName": "EventStream.untimed",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "sync",
+            "fullName": "EventStream.sync",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "SyncStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.oosymbols._symboltable.MethodSymbol",
+            "name": "topt",
+            "fullName": "EventStream.topt",
+            "isMethod": true,
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "ToptStream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "EventStream.T"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+            "name": "T",
+            "fullName": "EventStream.T"
+          }
+        ]
+      }
+    }
+  ]
+}

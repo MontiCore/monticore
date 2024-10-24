@@ -1,0 +1,453 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.regex;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.literals.*;
+
+/**
+ * This grammar defines regular expressions over UTF characters, such as
+ *      a*b+a?cc
+ *      [A-F0-9]{4,6}
+ *      Hello_(World|Tom)
+ *
+ * The syntax used for this grammar is modeled after the syntax used 
+ * in Java, see e.g. 
+ * https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html
+ *
+ * The grammar conforms to the specification at
+ * https://en.wikipedia.org/wiki/Regular_expression#Formal_language_theory  
+ *
+ * A detailed explanation of regular expressions can be found at
+ * https://en.wikipedia.org/wiki/Regular_expression
+ *
+ * The grammar can be used in isolated form, but usually is embedded
+ * in DSLs where a regular expression is of use, e.g. when 
+ * describing allowed input pattern.
+ *
+ * This grammar only relies on MontiCores literals.
+ * Although nonterminals are called "RegularExpression", they are 
+ * defined independently of the expression grammars of MontiCore.
+ *
+ * The grammar uses a special mode, namely REGEX.
+ * This mode is needed, because the parsing of regular expressions 
+ * and especially their tokens significantly differs from the normal 
+ * forms of tokens.
+ *
+ * The nonterminal RegularExpression is designed in such a way that
+ * it assumes that the mode REGEX has already been switched on
+ * (and will be switched of) by the calling nonterminal.
+ * This functionality is provided by the nonterminal RegExLiteral.
+ *
+*/
+
+component grammar RegularExpressions extends MCCommonLiterals {
+
+  /*=================================================================*/
+  /*================== REGULAR EXPRESSION ===========================*/
+  /*=================================================================*/
+
+  /**
+   * Represents a regular expression. "left" and "right" are only present
+   * if regular expression comprises two parts split by a pipe. Otherwise, the
+   * regular expression is made up of (non-empty) items.
+   *   Syntax  e.g.:   R1|R2  ,  R1R2R3
+   *   Matches e.g.:   alternatives and sequences
+   */
+  RegularExpression =
+    left:RegularExpression Pipe right:RegularExpression
+    | RegExItem+
+  ;
+
+  RegExLiteral = RegExStartToken RegularExpression RegExEndToken;
+
+  token RegExStartToken = 'R' '"' : -> pushMode(REGEX);
+
+  token RegExEndToken(REGEX) = '"' : -> popMode;
+
+  /*=================================================================*/
+  /*========================= ITEM ==================================*/
+  /*=================================================================*/
+
+  /**
+   * Interface for every character or symbol which can occur inside of
+   * a regular expression.
+   */
+  interface RegExItem;
+
+  /*=================================================================*/
+  /*=================== BRACKET ITEMS [...] =========================*/
+  /*=================================================================*/
+
+  /**
+   * This represents an (inversed) bracket expression. A single character
+   * contained in the brackets is matched when evaluating the regular
+   * expression.
+   *   Syntax  e.g.:   [R],  [^R]
+   *   Matches e.g.:   a single character (not) contained in R
+   */
+  BracketRegEx implements RegExItem =
+    LBrack Roof? BracketRegExItem* RBrack;
+
+  /**
+   * Interface for every character or symbol which can occur inside of a
+   * bracket expression.
+   */
+  interface BracketRegExItem;
+
+  /**
+   * Represents a normal character used in a bracket expression
+   */
+  CharOption implements BracketRegExItem =
+    CharacterInCharacterElement;
+
+  /**
+   * SpecialCharOption represents a single character
+   * of the specials characters, which are usable in a bracket expression. 
+   * 
+   * Remark:
+   * This nonterminal is needed because the token
+   * CharacterInCharacterElement does not match special characters used
+   * in other places of this grammar, as they have a higher priority than
+   * the CharacterInCharacterElement token in the lexing process.
+   */
+  SpecialCharOption implements BracketRegExItem =
+    Point | Star | Plus | Comma | Roof | Pipe |
+    Backslash | LCurly | RCurly | LBrack | Dollar |
+    LParen | RParen | Question | SingleDigit;
+
+  /**
+   * Represents a range of characters or numbers.
+   *
+   * These are only characters and digits.
+   */
+  CharRange implements BracketRegExItem = Range;
+
+  
+  /*=================================================================*/
+  /*=================== CAPTURING GROUPS ============================*/
+  /*=================================================================*/
+
+  /**
+   * Bundles a part of a regular expression in parentheses to (optionally) use
+   * it later in the same expression or to replace it with a new String.
+   *   Syntax      :   (R)
+   *   Matches     :   R  and allows to reuse it later in the 
+   *                      regex via \n
+   */
+  CapturingGroup implements RegExItem =
+    LParen RegularExpression RParen;
+
+  /*=================================================================*/
+
+  /**
+   * Bundles a part of a regular expression in parentheses to (optionally) use
+   * it later in the same expression or to replace it with a new String.
+   * Giving the capturing group a name fosters its reusability.
+   *   Syntax      :   (?<name>R)
+   *   Matches     :   R     and allows to reuse it later via \k<name>
+   */
+  symbol NamedCapturingGroup implements RegExItem =
+    NamedCapturingGroupStart Name NamedCapturingGroupEnd
+    RegularExpression
+    RParen;
+
+  /**
+   * Indicates the start of the name of a capturing group. Switches the lexer
+   * mode to recognize a consecutive Name token.
+   */
+  token NamedCapturingGroupStart(REGEX) = "(?<" : -> pushMode(DEFAULT_MODE);
+
+  /**
+   * Indicates the end of the name of a capturing group. Switches the lexer
+   * mode to recognize consecutive regular expression tokens.
+   */
+  token NamedCapturingGroupEnd = ">" : -> popMode;
+
+  /*=================================================================*/
+
+  /**
+   * Bundles a part of a regular expression that does not need to be reused
+   * anywhere else, i.e. this a normal parentheses.
+   *   Syntax      :   (?:R)
+   *   Matches     :   R 
+   */
+  NonCapturingGroup implements RegExItem =
+    NonCapturingGroupStart RegularExpression RParen;
+
+  /**
+   * Indicates the start of a non-capturing group.
+   */
+  token NonCapturingGroupStart(REGEX) = "(?:";
+
+  /*=================================================================*/
+
+  /**
+   * Refers to a capturing group.
+   *   Syntax  e.g.:   \0, \9, \k<name>
+   *   Matches     :   what has been defined in a group before
+   */
+  BackReference implements RegExItem =
+    Backslash (SingleDigit |
+    BackReferenceStart Name@NamedCapturingGroup NamedCapturingGroupEnd);
+
+  /**
+   * Indicates the start of the name of a capturing group. Switches 
+   * the lexer mode to recognize a consecutive Name token.
+   */
+  token BackReferenceStart(REGEX) = "k<" : -> pushMode(DEFAULT_MODE);
+
+  /*=================================================================*/
+  /*================== ITEM (cont.) =================================*/
+  /*=================================================================*/
+
+  /**
+   * Represents a character used in a regular expression.
+   *   Syntax      :   a, b, Z, etc.
+   *   Matches     :   a, b, Z, etc.
+   */
+  RegExChar implements RegExItem =
+    CharacterInCharacterElement;
+
+  /**
+   * Represents a point in a regular expression which matches any character.
+   *   Syntax      :   .
+   *   Matches     :   a, §, 5, etc.
+   */
+  RegExPoint implements RegExItem = Point;
+
+  /**
+   * Represents a single digit used in a regular expression.
+   *   Syntax      :   0, 1, 9, etc.
+   *   Matches     :   0, 1, 9, etc.
+   */
+  RegExDigit implements RegExItem = SingleDigit;
+
+  /**
+   * Indicates that the consecutive regular expression should start 
+   * with a new line.
+   *   Syntax      :   ^R
+   *   Matches     :   newline|linefeed and then R
+   */
+  StartOfLine implements RegExItem = Roof RegularExpression;
+
+  /**
+   * This allows to qualify an item with an allowed quantity or
+   * marks it as the end of a line.
+   *   Syntax      :   R?, R+, R*, R$
+   *                   R{3,5}, R{4}, R{3,},  R{,5}
+   *   Matches     :   R in the appropriate quantity,
+   *                   or R before the end of a line with R$
+   */
+  QualifiedRegEx implements RegExItem =
+    RegExItem Qualification;
+
+
+  /*=================================================================*/
+  /*==================== QUALIFICATION ==============================*/
+  /*=================================================================*/
+
+  /**
+   * Interface for the qualifications allowed in regular expressions.
+   */
+  interface Qualification;
+
+  /**
+   * All simple qualifications which are allowed after 
+   * a regular expression
+   */
+  RegExQualification implements Qualification =
+    Star | Plus | Question | Dollar;
+
+  /**
+   * ASTRangeQualification can be used after an item in a regular
+   * expression if the item should be matched a specified amount of times.
+   */
+  RangeQualification implements Qualification =
+    LCurly (lowerBound:SingleDigit+)? Comma (upperBound:SingleDigit+)? RCurly;
+
+  /**
+   * ASTNumberQualification can be used after an item in a regular
+   * expression if the item should be matched a specified amount of times.
+   */
+  NumberQualification implements Qualification = LCurly SingleDigit+ RCurly;
+
+
+  /*=================================================================*/
+  /*==================== ESCAPES FOR SINGLE CHARACTERS ==============*/
+  /*=================================================================*/
+
+  /**
+   * ASTEscapeChar is an interface for all character descriptions using 
+   * an "\"-operator as escape. 
+   *   Syntax      :   \p{ASCII}, \p{Cntrl}, \w, \W, \B, \S, ...
+   *   Matches     :   single characters
+   */
+  interface EscapeChar extends RegExItem;
+
+  /*=================================================================*/
+
+  /**
+   * ASTSpecificChars allows to specify \p - escapes, matching a 
+   * single character withing a named (and thus predefined group):
+   *   Syntax      :   \p{ASCII}, \p{Cntrl}, ...
+   *   Matches     :   single characters
+   *
+   * The arguments usable for \p are:
+   *   ASCII, Alnum, Alpha, Blank, Cntrl, Digit, Graph, Lower, Print,
+   *   Punct, Space, Upper, XDigit
+   */
+  SpecificChars implements EscapeChar =
+    SpecificCharsStart SpecificCharsName;
+
+  /** See SpecificChars nonterminal */
+  token SpecificCharsStart(REGEX) = "\\p" : -> pushMode(DEFAULT_MODE);
+
+  /** See SpecificChars nonterminal */
+  token SpecificCharsName = "{" Name "}" : -> popMode;
+
+  /*=================================================================*/
+  /*==================== SIMPLE MATCHERS ============================*/
+  /*=================================================================*/
+
+  /**
+   * ASTRegExEscapeChar allows to specify all escapes with no arguments,
+   *   Syntax      :   \w, \W, \B, \S, ...
+   *   Matches e.g.:   single characters
+   */
+  RegExEscapeChar implements EscapeChar =
+    AlphaNumCharsWithUnderscoreToken 
+    | NonWordCharsToken 
+    | WordBoundariesToken
+    | NonWordBoundariesToken 
+    | DigitCharsToken 
+    | NonDigitCharsToken 
+    | WhitespaceCharsToken 
+    | NonWhitespaceCharsToken 
+    | Backslash;
+
+  /**
+   * Matches all alphanumeric characters as well as "_".
+   *   Syntax      :   \w
+   *   Matches e.g.:   a, z, A, Z, 0, 9, _
+   */
+  token AlphaNumCharsWithUnderscoreToken(REGEX) = "\\w";
+
+  /**
+   * Matches all non-alphanumeric characters except "_".
+   *   Syntax      :   \W
+   *   Matches e.g.:   %, (, $, Space, Linefeed, etc.
+   */
+  token NonWordCharsToken(REGEX) = "\\W";
+
+  /**
+   * Matches all word boundaries.
+   * A word boundary is not a character but a 
+   * position between two characters. 
+   *   Syntax      :   \b
+   *   Matches e.g.:   |Hello| |World|
+   *           ( where "|" indicates word boundary)
+   */
+  token WordBoundariesToken(REGEX) = "\\b";
+
+  /**
+   * Matches all non-word boundaries. 
+   * A non-word boundary is not a character but a 
+   * position between two characters. 
+   *   Syntax      :   \B
+   *   Matches e.g.:   H|e|l|l|o W|o|r|l|d
+   *           ( where "|" indicates non word boundary)
+   */
+  token NonWordBoundariesToken(REGEX) = "\\B";
+
+  /**
+   * Matches all digits.
+   *   Syntax      :   \s
+   *   Matches e.g.:   0, 4, 9
+   */
+  token DigitCharsToken(REGEX) = "\\d";
+
+  /**
+   * Matches everything except digits.
+   *   Syntax      :   \D
+   *   Matches e.g.:   _, a
+   */
+  token NonDigitCharsToken(REGEX) = "\\D";
+
+  /**
+   * Matches all whitespace characters.
+   *   Syntax      :   \s
+   *   Matches e.g.:   Space, Linefeed, Newline, Tab 
+   */
+  token WhitespaceCharsToken(REGEX) = "\\s";
+
+  /**
+   *  Matches everything except whitespace characters.
+   *   Syntax      :   \S
+   *   Matches e.g.:   0, _, a
+   */
+  token NonWhitespaceCharsToken(REGEX) = "\\S";
+
+
+  /*=================================================================*/
+  /*=============== CORE TOKENS FOR REGEX CONTROL ===================*/
+  /*=================================================================*/
+
+  /**
+   * SingleDigit denotes a single digit
+   */
+  token SingleDigit(REGEX) = Digit;
+
+  /**
+   * CharacterInCharacterElement describes any single character, except 
+   * the closing ')'.
+   *   Syntax  e.g.:   g, 0, /
+   *   Matches e.g.:   g, 0, /   (i.e. itself)
+   */
+  token CharacterInCharacterElement(REGEX) = . ;
+
+  /**
+   * Range is used to parse a range of characters or numbers.
+   *   Syntax  e.g.:   g-j,  0-9
+   *   Matches e.g.:   a, 0, F
+   */
+  token Range(REGEX) =
+    ('a' .. 'z' | 'A' .. 'Z' | '0' .. '9') '-'
+      ('a' .. 'z' | 'A' .. 'Z' | '0' .. '9');
+
+  /**
+   * The following tokens are defined in this grammar to make 
+   * them accessible in the "REGEX" grammar mode.
+   *
+   */
+  token Pipe(REGEX) = "|";
+
+  token LBrack(REGEX) = "[";
+
+  token RBrack(REGEX) = "]";
+
+  token Roof(REGEX) = "^";
+
+  token RParen(REGEX) = ")";
+
+  token LParen(REGEX) = "(";
+
+  token Point(REGEX) = ".";
+
+  token Backslash(REGEX) = "\\";
+
+  token Star(REGEX) = "*";
+
+  token Plus(REGEX) = "+";
+
+  token Question(REGEX) = "?";
+
+  token Comma(REGEX) = ",";
+
+  token Dollar(REGEX) = "$";
+
+  token RCurly(REGEX) = "}";
+
+  token LCurly(REGEX) = "{";
+}

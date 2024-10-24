@@ -1,0 +1,31 @@
+package de.monticore.statements;
+
+mlc MCCommonStatements {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/statements/MCCommonStatements.mc4";
+  }
+
+  //export the handwritten TOP-classes and pretty printer
+  export "$projectDir/src/main/java" {
+    include "de/monticore/statements/mccommonstatements/**.java";
+    exclude "de/monticore/statements/mccommonstatements/cocos/*.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/statements/mccommonstatements/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.statements.MCVarDeclarationStatements";
+  }
+
+  uses {
+    // uses type check for CoCos
+    include "$projectDir/src/main/java/de/monticore/types/check/**.java";
+    include "$projectDir/src/main/java/de/monticore/types3/**.java";
+  }
+
+}

@@ -1,0 +1,129 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tf;
+
+component grammar ODRuleGeneration extends de.monticore.types.MCFullGenericTypes {
+
+ TransformationStructure =
+   package:Name
+   imports:Name*
+   classname:Name
+   Pattern
+   Replacement
+   constraintExpression:Name
+   doStatement:Name
+   undoStatement:Name
+   assignments:Name*
+   Variable*;
+
+
+ Pattern =
+   matchingObjects:MatchingObject*
+   lHSObjects:MatchingObject*
+   assoc:Association*
+   objectConditions:ObjectCondition*
+   linkConditions:LinkCondition*
+   types:Name*; //a Set?
+
+ Replacement =
+   requirements:Requirement*
+   changes:Change*
+   createObjects:CreateOperation*
+   deleteObjects:DeleteOperation*;
+
+ Variable = Name type:Name;
+
+ MatchingObject =
+   objectName:Name
+   type:Name
+   listtype:Name?
+   listimpltype:Name?
+   ["LHSObject"]?
+   ["NotObject"]?
+   ["OptObject"]?
+   ["ListObject"]?
+   innerLinkObjectNames:Name*;
+
+ Association =
+   Name
+   gname:Name;
+
+ Condition =
+   objectName:Name
+   conditionString:Name
+   Dependency?;
+ astrule Condition =
+   targetOptional: boolean
+   attribute: de.monticore.tf.odrules._ast.ASTODAttribute
+   link: de.monticore.tf.odrules._ast.ASTODLink
+   target: de.monticore.tf.odrules._ast.ASTODObject?;
+
+ ObjectCondition extends Condition;
+
+ LinkCondition extends Condition =
+   linktype:Name;
+
+ Dependency = content:Name;
+
+ Requirement =
+   type:Name
+   attribute:Name
+   getter:Name
+   object:Name;
+
+ Change =
+   ["objectWithinOpt"]?
+   ["objectWithinList"]?
+   objectGetter:Name
+   ["valueWithinOpt"]?
+   ["valueWithinList"]?
+   valueGetter:Name?
+   ["oldValueWithinOpt"]?
+   ["oldValueWithinList"]?
+   oldValueGetter:Name?
+
+   ["primitiveType"]?
+   ["attributeIterated"]?
+   ["attributeOptional"]?
+   ["copy"]?
+   ["objectInList"]?
+   ["valueStringList"]?
+   ["valueListObject"]?
+   ["composite"]?
+   type:Name
+   objectType:Name?
+   objectName:Name
+   attributeName:Name
+   value:Name?
+   oldValue:Name?
+   getter:Name
+   getIsPresent:Name?
+   setter:Name
+   unsetter:Name
+   simpleType:Name
+   boxingType:Name?
+   valueType:Name
+   insertPosition:Name?
+   genericType:Name;
+
+ CreateOperation =
+   Name
+   type:Name
+   simpleType:Name
+   factoryName:Name;
+
+ DeleteOperation =
+   Name
+   type:Name
+   ["list"]?
+   simpleType:Name
+   grammarType:Name
+   typepackage:Name
+   parentsSet:Name*;
+
+ ChangeOperation =
+   setAttributeOperations:Change*
+   deleteOperations:DeleteOperation*
+   createOperations:CreateOperation*;
+
+
+}

@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A2030;
+
+grammar A2030e {
+
+  interface A extends B;
+
+}
