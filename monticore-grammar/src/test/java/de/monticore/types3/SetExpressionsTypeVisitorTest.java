@@ -9,8 +9,12 @@ import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFacto
 import de.monticore.types3.util.DefsVariablesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import static de.monticore.types3.util.DefsTypesForTests._BooleanSymType;
 import static de.monticore.types3.util.DefsTypesForTests._booleanSymType;
@@ -20,6 +24,7 @@ import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
 import static de.monticore.types3.util.DefsVariablesForTests._intUnboxedListVarSym;
 import static de.monticore.types3.util.DefsVariablesForTests._intUnboxedSetVarSym;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
@@ -291,40 +296,48 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkErrorExpr("{x | x in varintSet, x+x}", "0xFD554");
   }
 
-  @Test
-  public void deriveFromSetEnumeration() throws IOException {
-    // examples with int
-    checkExpr("{1}", "Set<int>");
-    checkExpr("[1]", "List<int>");
-    checkExpr("{1,2}", "Set<int>");
-    checkExpr("[1,2]", "List<int>");
-    checkExpr("{1,1,1,1,1}", "Set<int>");
-    checkExpr("[1,1,1,1,1]", "List<int>");
-    checkExpr("{1..1}", "Set<int>");
-    checkExpr("[1..1]", "List<int>");
-    checkExpr("{1..5}", "Set<int>");
-    checkExpr("[1..5]", "List<int>");
-    checkExpr("{1..(2+3)}", "Set<int>");
-    checkExpr("[1..(2+3)]", "List<int>");
-    checkExpr("{1..true?1:2}", "Set<int>");
-    checkExpr("[1..true?1:2]", "List<int>");
-    checkExpr("{1..(short)2}", "Set<int>");
-    checkExpr("[1..(short)2]", "List<int>");
-    checkExpr("{1, 1..2, 2..3, 4}", "Set<int>");
-    checkExpr("[1, 1..2, 2..3, 4]", "List<int>");
-    // examples with char
-    checkExpr("{'a'..'z'}", "Set<char>");
-    checkExpr("['a'..'z']", "List<char>");
-    // examples combining numeric types
-    checkExpr("{1.2, 1}", "Set<double>");
-    checkExpr("[1.2, 1]", "List<double>");
-    checkExpr("{1, 1.2f}", "Set<float>");
-    checkExpr("[1, 1.2f]", "List<float>");
-    checkExpr("{(char)1, (byte)1, (short)1, (int)1, (float)1}", "Set<float>");
-    checkExpr("[(char)1, (byte)1, (short)1, (int)1, (float)1]", "List<float>");
-    // examples combining non-numeric types
-    checkExpr("{\"1\", 1}", "Set<(String | int)>");
-    checkExpr("{\"1\", varPerson}", "Set<(Person | String)>");
+  @ParameterizedTest
+  @MethodSource
+  public void deriveFromSetEnumeration(String exprStr, String expectTypeStr)
+      throws IOException {
+    checkExpr(exprStr, expectTypeStr);
+  }
+
+  protected static Stream<Arguments> deriveFromSetEnumeration() {
+    return Stream.of(
+        // examples with int
+        arguments("{1}", "Set<int>"),
+        arguments("[1]", "List<int>"),
+        arguments("{1,2}", "Set<int>"),
+        arguments("[1,2]", "List<int>"),
+        arguments("{1,1,1,1,1}", "Set<int>"),
+        arguments("[1,1,1,1,1]", "List<int>"),
+        arguments("{1..1}", "Set<int>"),
+        arguments("[1..1]", "List<int>"),
+        arguments("{1..5}", "Set<int>"),
+        arguments("[1..5]", "List<int>"),
+        arguments("{1..(2+3)}", "Set<int>"),
+        arguments("[1..(2+3)]", "List<int>"),
+        arguments("{1..true?1:2}", "Set<int>"),
+        arguments("[1..true?1:2]", "List<int>"),
+        arguments("{1..(short)2}", "Set<int>"),
+        arguments("[1..(short)2]", "List<int>"),
+        arguments("{1, 1..2, 2..3, 4}", "Set<int>"),
+        arguments("[1, 1..2, 2..3, 4]", "List<int>"),
+        // examples with char
+        arguments("{'a'..'z'}", "Set<char>"),
+        arguments("['a'..'z']", "List<char>"),
+        // examples combining numeric types
+        arguments("{1.2, 1}", "Set<double>"),
+        arguments("[1.2, 1]", "List<double>"),
+        arguments("{1, 1.2f}", "Set<float>"),
+        arguments("[1, 1.2f]", "List<float>"),
+        arguments("{(char)1, (byte)1, (short)1, (int)1, (float)1}", "Set<float>"),
+        arguments("[(char)1, (byte)1, (short)1, (int)1, (float)1]", "List<float>"),
+        // examples combining non-numeric types
+        arguments("{\"1\", 1}", "Set<(String | int)>"),
+        arguments("{\"1\", varPerson}", "Set<(Person | String)>")
+    );
   }
 
   @Test

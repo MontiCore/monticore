@@ -31,6 +31,18 @@ public class NominalSuperTypeCalculator {
    * but not an explicitly defined one.
    * We consider explicitly defined super types to be the ones
    * given by the list of super types in the type symbol.
+   * <p>
+   * "nominal" supertypes in that the superTypes are explicitly "named"/listed,
+   * it is NOT required that they have a name themselves;
+   * This does not quite but mostly fit the following definition:
+   * Pierce, Types and Programming Languages (chapter 19.3):
+   * """
+   * Type systems like Java's, in which names are significant
+   * and subtyping is explicitly declared, are called nominal.
+   * Type systems [...] in which names are inessential
+   * and subtyping is defined directly
+   * on the structures of types are called structural.
+   * """
    */
   public List<SymTypeExpression> getNominalSuperTypes(SymTypeExpression thisType) {
     if (!isSupported(thisType)) {

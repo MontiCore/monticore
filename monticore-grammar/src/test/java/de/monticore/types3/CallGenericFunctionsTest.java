@@ -9,9 +9,13 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
@@ -19,7 +23,10 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
 import static de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory.createList;
+import static de.monticore.types3.util.DefsTypesForTests._IntegerSymType;
 import static de.monticore.types3.util.DefsTypesForTests._carSymType;
+import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
+import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests._linkedListSymType;
 import static de.monticore.types3.util.DefsTypesForTests._personSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedString;
@@ -31,6 +38,7 @@ import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
 import static de.monticore.types3.util.DefsVariablesForTests._carVarSym;
 import static de.monticore.types3.util.DefsVariablesForTests._personVarSym;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class CallGenericFunctionsTest
     extends AbstractTypeVisitorTest {
@@ -118,6 +126,39 @@ public class CallGenericFunctionsTest
         createTypeVariable(idRetVar)
     ));
     idRetSym.getSpannedScope().add(idRetVar);
+
+    // <T extends int> T maxOfint(T... t)
+    TypeVarSymbol maxOfintVar = typeVariable("T");
+    maxOfintVar.setSuperTypesList(List.of(_intSymType));
+    FunctionSymbol maxOfintSym = inScope(gs, function(
+        "maxOfint",
+        createTypeVariable(maxOfintVar),
+        createTypeVariable(maxOfintVar)
+    ));
+    maxOfintSym.setIsElliptic(true);
+    maxOfintSym.getSpannedScope().add(maxOfintVar);
+
+    // <T extends float> T maxOffloat(T... t)
+    TypeVarSymbol maxOffloatVar = typeVariable("T");
+    maxOffloatVar.setSuperTypesList(List.of(_floatSymType));
+    FunctionSymbol maxOffloatSym = inScope(gs, function(
+        "maxOffloat",
+        createTypeVariable(maxOffloatVar),
+        createTypeVariable(maxOffloatVar)
+    ));
+    maxOffloatSym.setIsElliptic(true);
+    maxOffloatSym.getSpannedScope().add(maxOffloatVar);
+
+    // <T extends java.lang.Integer> T maxOfInteger(T... t)
+    TypeVarSymbol maxOfIntegerVar = typeVariable("T");
+    maxOfIntegerVar.setSuperTypesList(List.of(_IntegerSymType));
+    FunctionSymbol maxOfIntegerSym = inScope(gs, function(
+        "maxOfInteger",
+        createTypeVariable(maxOfIntegerVar),
+        createTypeVariable(maxOfIntegerVar)
+    ));
+    maxOfIntegerSym.setIsElliptic(true);
+    maxOfIntegerSym.getSpannedScope().add(maxOfIntegerVar);
   }
 
   @Test
@@ -189,6 +230,110 @@ public class CallGenericFunctionsTest
     checkExpr("(varboolean ? getTargetLinkedList : getTargetList)()",
         "List<int>", "List<int>"
     );
+  }
+
+  @Test
+  public void deriveFromGenericsImplicitBoxing() throws IOException {
+    checkExpr("id(varint)", "java.lang.Integer", "int");
+    checkExpr("[1]", "List<java.lang.Integer>", "List<java.lang.Integer>");
+    checkExpr("[1]", "List<? extends java.lang.Integer>", "List<java.lang.Integer>");
+    checkExpr("[varInteger]", "List<? extends int>", "List<int>");
+    // if a <: Integer und a --> int have the same prio, this results in List<(int | Integer)>, which makes sense, but is not great.
+    // Thus, here we assure that "<:" has a higher prio than "-->" such that the result is Integer
+    checkExpr("[1]", "List<? super java.lang.Integer>", "List<java.lang.Integer>"); // makes sense..., but is not great
+    checkExpr("[varInteger]", "List<? super int>", "List<int>");
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  public void upperBoundAndCompatibilityWithTargetType(
+      String exprStr,
+      String targetTypeStr,
+      String expectedTypeStr
+  ) throws IOException {
+    checkExpr(exprStr, targetTypeStr, expectedTypeStr);
+  }
+
+  public static Stream<Arguments> upperBoundAndCompatibilityWithTargetType() {
+    return Stream.of(
+        // restriction is "same-ish" type
+        arguments("maxOfint(varint)", "int", "int"),
+        arguments("maxOfint(varint)", "java.lang.Integer", "int"),
+        arguments("maxOfint(varInteger)", "int", "int"),
+        arguments("maxOfint(varInteger)", "java.lang.Integer", "int"),
+        arguments("maxOfInteger(varint)", "int", "java.lang.Integer"),
+        arguments("maxOfInteger(varint)", "java.lang.Integer", "java.lang.Integer"),
+        arguments("maxOfInteger(varInteger)", "int", "java.lang.Integer"),
+        arguments("maxOfInteger(varInteger)", "java.lang.Integer", "java.lang.Integer"),
+        // restriction is "supertype-ish"
+        arguments("maxOffloat(varint)", "int", "int"),
+        arguments("maxOffloat(varint)", "java.lang.Integer", "int"),
+        arguments("maxOffloat(varInteger)", "int", "int"),
+        arguments("maxOffloat(varint)", "float", "int"),
+        arguments("maxOffloat(varInteger)", "float", "float"),
+        arguments("maxOffloat(varint)", "java.lang.Float", "int"),
+        arguments("maxOffloat(varInteger)", "java.lang.Float", "float"),
+        // multiples
+        arguments("maxOffloat(varint, varInteger)", "java.lang.Integer", "int")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  public void upperBoundAndCompatibility(
+      String exprStr,
+      String expectedTypeStr
+  ) throws IOException {
+    checkExpr(exprStr, expectedTypeStr);
+  }
+
+  public static Stream<Arguments> upperBoundAndCompatibility() {
+    return Stream.of(
+        arguments("maxOfint(varint)", "int"),
+        arguments("maxOfint(varInteger)", "int"),
+        arguments("maxOfInteger(varint)", "java.lang.Integer"),
+        arguments("maxOfInteger(varInteger)", "java.lang.Integer"),
+        // the two following tests may seem unintuitive;
+        // in the first test, "int" is a known type and thus can be resolved
+        arguments("maxOffloat(varint)", "int"),
+        arguments("maxOffloat(varInteger)", "float")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  public void upperBoundAndCompatibilityErrorWithTargetType(
+      String exprStr,
+      String targetTypeStr,
+      String expectedError
+  ) throws IOException {
+    checkErrorExpr(exprStr, targetTypeStr, expectedError);
+  }
+
+  public static Stream<Arguments> upperBoundAndCompatibilityErrorWithTargetType() {
+    // these cases should be rather rare
+    return Stream.of(
+        // solution would have been int, which is not in the bounds
+        // one COULD support this, but currently there is no reason to,
+        // as nearly all cases are supported anyway
+        arguments("maxOffloat(varInteger)", "java.lang.Integer", "0xFD319")
+    );
+  }
+
+  @Test
+  public void nullNotAllowedForUnboundTypeVar() throws IOException {
+    checkErrorExpr("id(null)", "0xFD444");
+    // target type has no influence on applicability
+    checkErrorExpr("id(null)", "java.lang.Integer", "0xFD444");
+  }
+
+  @Test
+  public void nullAllowedForTypeVarWithCompatibleBound() throws IOException {
+    checkExpr("maxOfInteger(null)", "java.lang.Integer", "java.lang.Integer");
+    // of course, null can still fail for other reasons
+    //todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4363
+    checkErrorExpr("maxOfInteger(null)", "Person", "0xFD319");
+    checkErrorExpr("maxOfInteger(null)", "Car", "0xFD451");
   }
 
   /**

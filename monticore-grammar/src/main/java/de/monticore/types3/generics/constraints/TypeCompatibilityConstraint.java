@@ -18,7 +18,17 @@ public class TypeCompatibilityConstraint extends Constraint {
   ) {
     this.sourceType = sourceType;
     this.targetType = targetType;
-    if (!TypeParameterRelations.hasInferenceVariables(sourceType)) {
+    if (!TypeParameterRelations.hasInferenceVariables(sourceType) &&
+        // The following checks if this has been added with
+        // the TargetCompatibilityBound, which, during incorporation
+        // can lead to new TypeCompatibilityConstraints.
+        // Thus, with TargetCompatibilityBounds it is not guaranteed anymore,
+        // that the source type is capture converted.
+        // An alternative would be to only
+        // do this check if outside of incorporation.
+        TypeParameterRelations.hasWildcards(sourceType) &&
+        !targetType.deepEquals(sourceType)
+    ) {
       if (!TypeParameterRelations.getCaptureConverted(sourceType)
           .deepEquals(sourceType)
       ) {
