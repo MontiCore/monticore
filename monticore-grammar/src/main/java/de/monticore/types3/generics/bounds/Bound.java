@@ -28,6 +28,10 @@ public abstract class Bound {
     return false;
   }
 
+  public boolean isTypeCompatibilityBound() {
+    return false;
+  }
+
   public boolean isTypeEqualityBound() {
     return false;
   }
