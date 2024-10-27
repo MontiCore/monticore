@@ -50,4 +50,28 @@ grammar ParseErrors extends de.monticore.MCBasics {
 
   NoSpaceTest = {noSpace(2)}? "@" Name;
 
+  // Example productions based on CDs
+  CDLike = "cd" CDLikeElement*;
+
+  interface CDLikeElement;
+
+  CDLikeTerm implements CDLikeElement = Modifier "class" Name "{" "}";
+  CDLikeKey  implements CDLikeElement = key("package") Name "{" "}";
+  CDLikeAlt  implements CDLikeElement = Modifier CDLikeAltElem Name ";";
+
+  // Various alternatives via interfaces
+  interface CDLikeAltElem;
+  CDAssocTypeAssoc implements CDLikeAltElem = "association";
+  CDAssocTypeComp  implements CDLikeAltElem = "composition";
+
+  // Modifier may be empty
+  Modifier = Stereo? (["public"] | [public:"+"] | ["private"] )*;
+
+  Stereo = "<<" Name ">>";
+
+  // the 'Unrelated' MUST not be contained within CDLike Elements
+  SomeUnrelatedProd = Modifier "Unrelated";
+
+   P = "ax" Name | "bx" Name;
+
 }
