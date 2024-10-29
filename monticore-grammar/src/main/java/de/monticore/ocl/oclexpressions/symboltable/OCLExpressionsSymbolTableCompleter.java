@@ -118,7 +118,7 @@ public class OCLExpressionsSymbolTableCompleter
                 String.format(
                     "The MCType (%s) and the expression type (%s) in Symbol (%s) are not compatible",
                     ast.getMCType().printType(),
-                    setInnerType,
+                    setInnerType.printFullName(),
                     symbol.getName()));
           }
           // if no MCType present: symbol has type of expression

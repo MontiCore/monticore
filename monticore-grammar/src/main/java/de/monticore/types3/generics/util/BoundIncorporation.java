@@ -14,11 +14,13 @@ import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.bounds.CaptureBound;
 import de.monticore.types3.generics.bounds.SubTypingBound;
+import de.monticore.types3.generics.bounds.TypeCompatibilityBound;
 import de.monticore.types3.generics.bounds.TypeEqualityBound;
 import de.monticore.types3.generics.bounds.UnsatisfiableBound;
 import de.monticore.types3.generics.constraints.BoundWrapperConstraint;
 import de.monticore.types3.generics.constraints.Constraint;
 import de.monticore.types3.generics.constraints.SubTypingConstraint;
+import de.monticore.types3.generics.constraints.TypeCompatibilityConstraint;
 import de.monticore.types3.generics.constraints.TypeEqualityConstraint;
 import de.monticore.types3.util.SymTypeCollectionVisitor;
 import de.monticore.types3.util.SymTypeExpressionComparator;
@@ -129,9 +131,22 @@ public class BoundIncorporation {
    */
   protected List<Constraint> incorporate(Bound b1, Bound b2) {
     List<Constraint> constraints;
+    // Bound ordering is SubTyping, Compatibility, Equality, Capture
+    // SubTyping
     if (b1.isSubTypingBound() && b2.isSubTypingBound()) {
       constraints = incorporate((SubTypingBound) b1, (SubTypingBound) b2);
     }
+    // SubTyping, Compatibility
+    else if (b1.isTypeCompatibilityBound() && b2.isTypeCompatibilityBound()) {
+      constraints = incorporate((TypeCompatibilityBound) b1, (TypeCompatibilityBound) b2);
+    }
+    else if (b1.isSubTypingBound() && b2.isTypeCompatibilityBound()) {
+      constraints = incorporate((SubTypingBound) b1, (TypeCompatibilityBound) b2);
+    }
+    else if (b1.isTypeCompatibilityBound() && b2.isSubTypingBound()) {
+      constraints = incorporate((SubTypingBound) b2, (TypeCompatibilityBound) b1);
+    }
+    // SubTyping, Compatibility, Equality
     else if (b1.isTypeEqualityBound() && b2.isTypeEqualityBound()) {
       constraints = incorporate((TypeEqualityBound) b1, (TypeEqualityBound) b2);
     }
@@ -141,11 +156,27 @@ public class BoundIncorporation {
     else if (b1.isTypeEqualityBound() && b2.isSubTypingBound()) {
       constraints = incorporate((TypeEqualityBound) b1, (SubTypingBound) b2);
     }
+    else if (b1.isTypeCompatibilityBound() && b2.isTypeEqualityBound()) {
+      constraints = incorporate((TypeEqualityBound) b2, (TypeCompatibilityBound) b1);
+    }
+    else if (b1.isTypeEqualityBound() && b2.isTypeCompatibilityBound()) {
+      constraints = incorporate((TypeEqualityBound) b1, (TypeCompatibilityBound) b2);
+    }
+    // SubTyping, Compatibility, Equality, Capture
+    else if (b1.isCaptureBound() && b2.isCaptureBound()) {
+      constraints = Collections.emptyList();
+    }
     else if (b1.isCaptureBound() && b2.isSubTypingBound()) {
       constraints = incorporate((CaptureBound) b1, (SubTypingBound) b2);
     }
     else if (b1.isSubTypingBound() && b2.isCaptureBound()) {
       constraints = incorporate((CaptureBound) b2, (SubTypingBound) b1);
+    }
+    else if (b1.isCaptureBound() && b2.isTypeCompatibilityBound()) {
+      constraints = incorporate((CaptureBound) b1, (TypeCompatibilityBound) b2);
+    }
+    else if (b1.isTypeCompatibilityBound() && b2.isCaptureBound()) {
+      constraints = incorporate((CaptureBound) b2, (TypeCompatibilityBound) b1);
     }
     else if (b1.isCaptureBound() && b2.isTypeEqualityBound()) {
       constraints = incorporate((CaptureBound) b1, (TypeEqualityBound) b2);
@@ -153,9 +184,7 @@ public class BoundIncorporation {
     else if (b1.isTypeEqualityBound() && b2.isCaptureBound()) {
       constraints = incorporate((CaptureBound) b2, (TypeEqualityBound) b1);
     }
-    else if (b1.isCaptureBound() && b2.isCaptureBound()) {
-      constraints = Collections.emptyList();
-    }
+    // unsat
     else if (b1.isUnsatisfiableBound() || b2.isUnsatisfiableBound()) {
       // at least one bound is unsatisfiable
       constraints = Collections.emptyList();
@@ -196,9 +225,10 @@ public class BoundIncorporation {
   protected Optional<Constraint> incorporateNonSymmetrical(
       TypeEqualityBound b1, TypeEqualityBound b2
   ) {
+    Optional<Constraint> result;
     // a = S and a = T implies <S = T>
     if (b1.getFirstType().denotesSameVar(b2.getFirstType())) {
-      return Optional.of(new TypeEqualityConstraint(b1.getSecondType(), b2.getSecondType()));
+      result = Optional.of(new TypeEqualityConstraint(b1.getSecondType(), b2.getSecondType()));
     }
     // a = U and b = T (with b != a) implies <b[a:=U] = T[a:=U]>
     else {
@@ -215,12 +245,13 @@ public class BoundIncorporation {
               !SymTypeRelations.normalize(secondType)
                   .deepEquals(SymTypeRelations.normalize(b2.getSecondType()))
       ) {
-        return Optional.of(new TypeEqualityConstraint(typeVar, secondType));
+        result = Optional.of(new TypeEqualityConstraint(typeVar, secondType));
       }
       else {
-        return Optional.empty();
+        result = Optional.empty();
       }
     }
+    return result;
   }
 
   protected List<Constraint> incorporate(SubTypingBound b1, SubTypingBound b2) {
@@ -233,13 +264,14 @@ public class BoundIncorporation {
   protected List<Constraint> incorporateNonSymmetrical(
       SubTypingBound b1, SubTypingBound b2
   ) {
+    List<Constraint> result;
     // S <: a and a <: T implies <S <: T>
     if (TypeParameterRelations.isInferenceVariable(b1.getSubType()) &&
         TypeParameterRelations.isInferenceVariable(b2.getSuperType()) &&
         b1.getSubType().asTypeVariable()
             .denotesSameVar(b2.getSuperType().asTypeVariable())
     ) {
-      return Collections.singletonList(
+      result = Collections.singletonList(
           new SubTypingConstraint(b2.getSubType(), b1.getSuperType())
       );
     }
@@ -353,7 +385,7 @@ public class BoundIncorporation {
             LOG_NAME
         );
       }
-      return constraints;
+      result = constraints;
     }
     // S < a, T < a
     // not in Java Spec, this can be required for, e.g., functions
@@ -368,9 +400,16 @@ public class BoundIncorporation {
       // which does not allow us to extract more constraints.
       // this can be extended
       // if we do not want to allow the inference of union types
-      return Collections.emptyList();
+      Log.trace("Bound combination " + b1.print() + ", "
+              + b2.print() + " is deliberately ignored.",
+          LOG_NAME
+      );
+      result = Collections.emptyList();
     }
-    return Collections.emptyList();
+    else {
+      result = Collections.emptyList();
+    }
+    return result;
   }
 
   /**
@@ -382,6 +421,12 @@ public class BoundIncorporation {
    * given a <: A & B & ..., due to them being supertypes of the same type,
    * constraints follow,
    * e.g., List<a> and List<B> lead to the constraint <a = B>.
+   * If different rules apply (e.g., in OCL),
+   * then this method could be overwritten.
+   * However, as of now it is simply assumed that
+   * 1. One does not derive from build in collection types (this should hold!)
+   * 2. Java-Collection types simply fulfill the constraint above,
+   * which may or may not get unintuitive in combination with boxing.
    *
    * @param commonSuperTypes may not contain any type variables
    */
@@ -616,6 +661,142 @@ public class BoundIncorporation {
     return paths;
   }
 
+  protected List<Constraint> incorporate(
+      TypeCompatibilityBound b1, TypeCompatibilityBound b2
+  ) {
+    List<Constraint> constraints = new ArrayList<>();
+    constraints.addAll(incorporateNonSymmetrical(b1, b2));
+    constraints.addAll(incorporateNonSymmetrical(b2, b1));
+    return constraints;
+  }
+
+  protected List<Constraint> incorporateNonSymmetrical(
+      TypeCompatibilityBound b1, TypeCompatibilityBound b2
+  ) {
+    List<Constraint> result;
+    // S --> a and a --> T implies <S --> T>
+    // note that this implies that compatibility is transitive;
+    // Forall types a,b,c. a-->b and b-->c implies a-->c.
+    if (TypeParameterRelations.isInferenceVariable(b1.getSourceType()) &&
+        b1.getSourceType().asTypeVariable().denotesSameVar(b2.getTargetType())
+    ) {
+      result = Collections.singletonList(
+          new TypeCompatibilityConstraint(b2.getSourceType(), b1.getTargetType())
+      );
+    }
+    // a --> S and a --> T
+    // compare a <: S and a <: T!
+    // As S could be int and T could be Float,
+    // it is unclear what further constraints follow.
+    // For now, we simply assume that there are none
+    // that are not checked later after
+    // A. either getting the same bounds as subtyping bounds,
+    // B. or finding the instantiation of a.
+    // Currently, we hope that this information is not required in some way,
+    // which SHOULD hold true for any/most reasonable complex expressions?
+    else if (TypeParameterRelations.isInferenceVariable(b1.getSourceType()) &&
+        b1.getSourceType().asTypeVariable().denotesSameVar(b2.getSourceType()) &&
+        !hasTypeVariables(b1.getTargetType()) &&
+        !hasTypeVariables(b2.getTargetType())
+    ) {
+      Log.trace("Bound combination " + b1.print() + ", "
+              + b2.print() + " is deliberately ignored.",
+          LOG_NAME
+      );
+      result = Collections.emptyList();
+    }
+    // S --> a, T --> a
+    // compare S <: a, T <: a
+    else if (
+        TypeParameterRelations.isInferenceVariable(b1.getTargetType()) &&
+            b1.getTargetType().asTypeVariable().denotesSameVar(b2.getTargetType()) &&
+            !hasTypeVariables(b1.getSourceType()) &&
+            !hasTypeVariables(b2.getSourceType())
+    ) {
+      // deliberately empty due to union types existing
+      Log.trace("Bound combination " + b1.print() + ", "
+              + b2.print() + " is deliberately ignored.",
+          LOG_NAME
+      );
+      result = Collections.emptyList();
+    }
+    else {
+      result = Collections.emptyList();
+    }
+    return result;
+  }
+
+  protected List<Constraint> incorporate(SubTypingBound bS, TypeCompatibilityBound bComp) {
+    List<Constraint> result;
+    // S <: a and a --> T implies <S --> T>
+    if (TypeParameterRelations.isInferenceVariable(bS.getSuperType()) &&
+        bS.getSuperType().asTypeVariable().denotesSameVar(bComp.getSourceType())
+    ) {
+      result = Collections.singletonList(
+          new TypeCompatibilityConstraint(bS.getSubType(), bComp.getTargetType())
+      );
+    }
+    // S --> a and a <: T implies <S --> T>
+    if (TypeParameterRelations.isInferenceVariable(bS.getSubType()) &&
+        bS.getSubType().asTypeVariable().denotesSameVar(bComp.getTargetType())
+    ) {
+      result = Collections.singletonList(
+          new TypeCompatibilityConstraint(bComp.getSourceType(), bS.getSuperType())
+      );
+    }
+    // a <: S and a --> T
+    // compare a --> S and a <: T
+    else if (TypeParameterRelations.isInferenceVariable(bS.getSubType()) &&
+        bS.getSubType().asTypeVariable().denotesSameVar(bComp.getSourceType()) &&
+        !hasTypeVariables(bS.getSuperType()) &&
+        !hasTypeVariables(bComp.getTargetType())
+    ) {
+      // FDr NOTE: can be extended with a similar check as a <: S and a <: T,
+      // but need to check the implications:
+      // it does not seem unreasonable, though?
+
+      // S <: T implies a <: T, which is important if S is not a proper type
+      // (this SHOULD currently be checked in BoundResolution as well,
+      // but one expects this to happen in incorporation, thus here)
+      if (SymTypeRelations.isSubTypeOf(bS.getSuperType(), bComp.getTargetType())) {
+        result = Collections.singletonList(
+            new SubTypingConstraint(bS.getSubType(), bComp.getSourceType())
+        );
+      }
+      // T <: S implies a --> S, but that is a given since a <: S.
+      // S --> T implies a --> T which is already known.
+      // T --> S implies a --> S, but that is a given since a <: S.
+      // One COULD add these information to increase the information exchange
+      // between the types of Bounds, but it does not seem useful
+      else {
+        Log.trace("Bound combination " + bS.print() + ", "
+                + bComp.print() + " is deliberately ignored.",
+            LOG_NAME
+        );
+        result = Collections.emptyList();
+      }
+    }
+    // S <: a, T --> a
+    // compare S <: a, T <: a
+    else if (
+        TypeParameterRelations.isInferenceVariable(bS.getSuperType()) &&
+            bS.getSuperType().asTypeVariable().denotesSameVar(bComp.getTargetType()) &&
+            !hasTypeVariables(bS.getSubType()) &&
+            !hasTypeVariables(bComp.getSourceType())
+    ) {
+      // deliberately empty due to union types existing
+      Log.trace("Bound combination " + bS.print() + ", "
+              + bComp.print() + " is deliberately ignored.",
+          LOG_NAME
+      );
+      result = Collections.emptyList();
+    }
+    else {
+      result = Collections.emptyList();
+    }
+    return result;
+  }
+
   protected List<Constraint> incorporate(TypeEqualityBound bE, SubTypingBound bS) {
     List<Constraint> constraints = new ArrayList<>();
     incorporateNonSymmetrical(bE, bS).ifPresent(constraints::add);
@@ -630,13 +811,14 @@ public class BoundIncorporation {
       TypeEqualityBound bE,
       SubTypingBound bS
   ) {
+    Optional<Constraint> result;
     // a = S and a <: T implies <S <: T>
     if (bE.getFirstType().denotesSameVar(bS.getSubType())) {
-      return Optional.of(new SubTypingConstraint(bE.getSecondType(), bS.getSuperType()));
+      result = Optional.of(new SubTypingConstraint(bE.getSecondType(), bS.getSuperType()));
     }
     // a = S and T <: a implies <T <: S>
     else if (bE.getFirstType().denotesSameVar(bS.getSuperType())) {
-      return Optional.of(new SubTypingConstraint(bS.getSubType(), bE.getSecondType()));
+      result = Optional.of(new SubTypingConstraint(bS.getSubType(), bE.getSecondType()));
     }
     // a = U and S <: T (with S != a and T != a) implies <S[a:=U] <: T[a:=U]>
     else if (!TypeParameterRelations.hasInferenceVariables(bE.getSecondType())) {
@@ -652,21 +834,75 @@ public class BoundIncorporation {
               !SymTypeRelations.normalize(subType)
                   .deepEquals(SymTypeRelations.normalize(bS.getSuperType()))
       ) {
-        return Optional.of(new SubTypingConstraint(subType, superType));
+        result = Optional.of(new SubTypingConstraint(subType, superType));
       }
       else {
-        return Optional.empty();
+        result = Optional.empty();
       }
     }
     else {
-      return Optional.empty();
+      result = Optional.empty();
     }
+    return result;
   }
 
-  protected List<Constraint> incorporate(CaptureBound bC, SubTypingBound bS) {
+  protected List<Constraint> incorporate(TypeEqualityBound bE, TypeCompatibilityBound bComp) {
+    List<Constraint> constraints = new ArrayList<>();
+    incorporateNonSymmetrical(bE, bComp).ifPresent(constraints::add);
+    Optional<TypeEqualityBound> flipped = bE.getFlipped();
+    if (flipped.isPresent()) {
+      incorporateNonSymmetrical(flipped.get(), bComp).ifPresent(constraints::add);
+    }
+    return constraints;
+  }
+
+  /**
+   * basically identical to
+   * {@link #incorporateNonSymmetrical(TypeEqualityBound, SubTypingBound)}
+   */
+  protected Optional<Constraint> incorporateNonSymmetrical(
+      TypeEqualityBound bE,
+      TypeCompatibilityBound bComp
+  ) {
+    Optional<Constraint> result;
+    // a = S and a --> T implies <S --> T>
+    if (bE.getFirstType().denotesSameVar(bComp.getSourceType())) {
+      result = Optional.of(new TypeCompatibilityConstraint(bE.getSecondType(), bComp.getTargetType()));
+    }
+    // a = S and T --> a implies <T --> S>
+    else if (bE.getFirstType().denotesSameVar(bComp.getTargetType())) {
+      result = Optional.of(new TypeCompatibilityConstraint(bComp.getSourceType(), bE.getSecondType()));
+    }
+    // a = U and S --> T (with S != a and T != a) implies <S[a:=U] --> T[a:=U]>
+    else if (!TypeParameterRelations.hasInferenceVariables(bE.getSecondType())) {
+      Map<SymTypeVariable, SymTypeExpression> replaceMap
+          = Map.of(bE.getFirstType(), bE.getSecondType());
+      SymTypeExpression sourceType =
+          TypeParameterRelations.replaceTypeVariables(bComp.getSourceType(), replaceMap);
+      SymTypeExpression targetType =
+          TypeParameterRelations.replaceTypeVariables(bComp.getTargetType(), replaceMap);
+      if (
+          !SymTypeRelations.normalize(sourceType)
+              .deepEquals(SymTypeRelations.normalize(bComp.getSourceType())) ||
+              !SymTypeRelations.normalize(sourceType)
+                  .deepEquals(SymTypeRelations.normalize(bComp.getTargetType()))
+      ) {
+        result = Optional.of(new TypeCompatibilityConstraint(sourceType, targetType));
+      }
+      else {
+        result = Optional.empty();
+      }
+    }
+    else {
+      result = Optional.empty();
+    }
+    return result;
+  }
+
+  protected List<Constraint> incorporate(CaptureBound bCap, SubTypingBound bS) {
     // s. Java Spec 21 18.3.2
     Optional<Constraint> constraint = Optional.empty();
-    List<SymTypeVariable> infVars = bC.getInferenceVariables();
+    List<SymTypeVariable> infVars = bCap.getInferenceVariables();
 
     int argIdx = -1;
     for (int i = 0; i < infVars.size(); i++) {
@@ -677,8 +913,8 @@ public class BoundIncorporation {
       }
     }
 
-    if (argIdx != -1 && bC.getTypeArguments().get(argIdx).isWildcard()) {
-      SymTypeOfWildcard wc = bC.getTypeArguments().get(argIdx).asWildcard();
+    if (argIdx != -1 && bCap.getTypeArguments().get(argIdx).isWildcard()) {
+      SymTypeOfWildcard wc = bCap.getTypeArguments().get(argIdx).asWildcard();
       // G<...,ai,...>  = capture(G<...,Ai,...>) and R <: ai
       // (with R is not an inference variable and Ai is a wildcard)
       if (!TypeParameterRelations.isInferenceVariable(bS.getSubType())) {
@@ -702,7 +938,7 @@ public class BoundIncorporation {
       if (!TypeParameterRelations.isInferenceVariable(bS.getSuperType())) {
         SymTypeExpression superType = bS.getSuperType();
         SymTypeExpression modifiedBound =
-            bC.getModifiedDeclaredBounds().get(argIdx);
+            bCap.getModifiedDeclaredBounds().get(argIdx);
         if (!wc.hasBound() || !wc.isUpper()) {
           constraint = Optional.of(
               new SubTypingConstraint(modifiedBound, superType)
@@ -730,26 +966,95 @@ public class BoundIncorporation {
     return constraint.stream().collect(Collectors.toList());
   }
 
-  protected List<Constraint> incorporate(CaptureBound bC, TypeEqualityBound bE) {
+  /**
+   * basically a copy of
+   * {@link #incorporate(CaptureBound, SubTypingBound)}
+   */
+  protected List<Constraint> incorporate(CaptureBound bCap, TypeCompatibilityBound bComp) {
+    Optional<Constraint> constraint = Optional.empty();
+    List<SymTypeVariable> infVars = bCap.getInferenceVariables();
+
+    int argIdx = -1;
+    for (int i = 0; i < infVars.size(); i++) {
+      if (infVars.get(i).denotesSameVar(bComp.getSourceType()) ||
+          infVars.get(i).denotesSameVar(bComp.getTargetType())
+      ) {
+        argIdx = i;
+      }
+    }
+
+    if (argIdx != -1 && bCap.getTypeArguments().get(argIdx).isWildcard()) {
+      SymTypeOfWildcard wc = bCap.getTypeArguments().get(argIdx).asWildcard();
+      // G<...,ai,...>  = capture(G<...,Ai,...>) and R  ai
+      // (with R is not an inference variable and Ai is a wildcard)
+      if (!TypeParameterRelations.isInferenceVariable(bComp.getSourceType())) {
+        SymTypeExpression sourceType = bComp.getSourceType();
+        if (!wc.hasBound() || wc.isUpper()) {
+          constraint = Optional.of(
+              new BoundWrapperConstraint(new UnsatisfiableBound(
+                  sourceType.printFullName() + " cannot be included in "
+                      + wc.printFullName()
+              ))
+          );
+        }
+        else {
+          constraint = Optional.of(
+              new TypeCompatibilityConstraint(sourceType, wc.getBound())
+          );
+        }
+      }
+      // G<...,ai,...>  = capture(G<...,Ai,...>) and ai --> R
+      // (with R is not an inference variable and Ai is a wildcard)
+      if (!TypeParameterRelations.isInferenceVariable(bComp.getTargetType())) {
+        SymTypeExpression targetType = bComp.getTargetType();
+        SymTypeExpression modifiedBound =
+            bCap.getModifiedDeclaredBounds().get(argIdx);
+        if (!wc.hasBound() || !wc.isUpper()) {
+          constraint = Optional.of(
+              new TypeCompatibilityConstraint(modifiedBound, targetType)
+          );
+        }
+        else {
+          if (SymTypeRelations.isTop(wc.getBound())) {
+            constraint = Optional.of(
+                new TypeCompatibilityConstraint(modifiedBound, targetType)
+            );
+          }
+          else if (SymTypeRelations.isTop(modifiedBound)) {
+            constraint = Optional.of(
+                new TypeCompatibilityConstraint(wc.getBound(), targetType)
+            );
+          }
+          else {
+            // deliberate no-op (s. subtyping version)
+          }
+        }
+      }
+    }
+
+    return constraint.stream().collect(Collectors.toList());
+  }
+
+  protected List<Constraint> incorporate(CaptureBound bCap, TypeEqualityBound bE) {
     List<Constraint> constraints = new ArrayList<>();
-    incorporateNonSymmetrical(bC, bE).ifPresent(constraints::add);
+    incorporateNonSymmetrical(bCap, bE).ifPresent(constraints::add);
     if (bE.getFlipped().isPresent()) {
-      incorporateNonSymmetrical(bC, bE.getFlipped().get()).ifPresent(constraints::add);
+      incorporateNonSymmetrical(bCap, bE.getFlipped().get()).ifPresent(constraints::add);
     }
     return constraints;
   }
 
-  protected Optional<Constraint> incorporateNonSymmetrical(CaptureBound bC, TypeEqualityBound bE) {
+  protected Optional<Constraint> incorporateNonSymmetrical(CaptureBound bCap, TypeEqualityBound bE) {
     // s. Java Spec 21 18.3.2
     Optional<Constraint> constraint = Optional.empty();
 
     if (!TypeParameterRelations.isInferenceVariable(bE.getSecondType())) {
       SymTypeExpression typeArg = null;
-      List<SymTypeVariable> infVars = bC.getInferenceVariables();
+      List<SymTypeVariable> infVars = bCap.getInferenceVariables();
       for (int i = 0; i < infVars.size(); i++) {
         if (infVars.get(i).denotesSameVar(bE.getFirstType())
         ) {
-          typeArg = bC.getTypeArguments().get(i);
+          typeArg = bCap.getTypeArguments().get(i);
         }
       }
 

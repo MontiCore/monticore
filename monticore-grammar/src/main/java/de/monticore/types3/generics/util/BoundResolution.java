@@ -9,6 +9,7 @@ import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.bounds.CaptureBound;
 import de.monticore.types3.generics.bounds.SubTypingBound;
+import de.monticore.types3.generics.bounds.TypeCompatibilityBound;
 import de.monticore.types3.generics.bounds.TypeEqualityBound;
 import de.monticore.types3.generics.constraints.Constraint;
 import de.monticore.types3.util.SymTypeExpressionComparator;
@@ -24,7 +25,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static de.monticore.types3.SymTypeRelations.isCompatible;
+import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
 
 public class BoundResolution {
 
@@ -99,15 +104,21 @@ public class BoundResolution {
     Map<SymTypeVariable, List<Bound>> var2Bounds =
         completeVarBoundDependencies(var2BoundsIncomplete);
 
+    // bounds listed in order of priority which is used to find new instantiations
+    // a = T, T <: a, a <: T, T --> a, a --> T
     Map<SymTypeVariable, List<SymTypeExpression>> var2Equal = createSymTypeExprMap();
     Map<SymTypeVariable, List<SymTypeExpression>> var2LowerBounds = createSymTypeExprMap();
     Map<SymTypeVariable, List<SymTypeExpression>> var2UpperBounds = createSymTypeExprMap();
+    Map<SymTypeVariable, List<SymTypeExpression>> var2SourceBounds = createSymTypeExprMap();
+    Map<SymTypeVariable, List<SymTypeExpression>> var2TargetBounds = createSymTypeExprMap();
     Map<SymTypeVariable, CaptureBound> var2CaptureBound = createSymTypeExprMap();
     for (Map.Entry<SymTypeVariable, List<Bound>> varBounds : var2Bounds.entrySet()) {
       SymTypeVariable var = varBounds.getKey();
       var2Equal.put(var, new ArrayList<>());
       var2LowerBounds.put(var, new ArrayList<>());
       var2UpperBounds.put(var, new ArrayList<>());
+      var2SourceBounds.put(var, new ArrayList<>());
+      var2TargetBounds.put(var, new ArrayList<>());
     }
     for (Map.Entry<SymTypeVariable, List<Bound>> varBounds : var2Bounds.entrySet()) {
       for (Bound bound : varBounds.getValue()) {
@@ -120,6 +131,17 @@ public class BoundResolution {
           if (TypeParameterRelations.isInferenceVariable(subTypingBound.getSuperType())) {
             var2LowerBounds.get(subTypingBound.getSuperType().asTypeVariable())
                 .add(subTypingBound.getSubType());
+          }
+        }
+        if (bound.isTypeCompatibilityBound()) {
+          TypeCompatibilityBound typeCompatibilityBound = (TypeCompatibilityBound) bound;
+          if (TypeParameterRelations.isInferenceVariable(typeCompatibilityBound.getSourceType())) {
+            var2TargetBounds.get(typeCompatibilityBound.getSourceType().asTypeVariable())
+                .add(typeCompatibilityBound.getTargetType());
+          }
+          if (TypeParameterRelations.isInferenceVariable(typeCompatibilityBound.getTargetType())) {
+            var2SourceBounds.get(typeCompatibilityBound.getTargetType().asTypeVariable())
+                .add(typeCompatibilityBound.getSourceType());
           }
         }
         else if (bound.isTypeEqualityBound()) {
@@ -156,6 +178,8 @@ public class BoundResolution {
       allTypes.addAll(var2Equal.get(var));
       allTypes.addAll(var2LowerBounds.get(var));
       allTypes.addAll(var2UpperBounds.get(var));
+      allTypes.addAll(var2SourceBounds.get(var));
+      allTypes.addAll(var2TargetBounds.get(var));
       List<SymTypeVariable> relatedInfVars =
           TypeParameterRelations.getIncludedInferenceVariables(allTypes);
       // if the inference variable is on the left side of a capture bound,
@@ -242,7 +266,7 @@ public class BoundResolution {
       // Simple method based on LuBs/GlBs
       if (varsToResolveNext.stream().noneMatch(var2CaptureBound::containsKey)) {
         List<TypeEqualityBound> newEqualityBounds = findInstantiationsSimple(
-            varsToResolveNext, var2LowerBounds, var2UpperBounds
+            varsToResolveNext, var2LowerBounds, var2UpperBounds, var2SourceBounds, var2TargetBounds
         );
         // use the new-found instantiations to reiterate
         result = calculateResolve(
@@ -254,7 +278,7 @@ public class BoundResolution {
       // (s. JLS 21 18.4, lower part)
       if (result.isEmpty()) {
         List<SymTypeVariable> newInfVars = new ArrayList<>();
-        List<SubTypingBound> newInfVarsBounds = new ArrayList<>();
+        List<Bound> newInfVarsBounds = new ArrayList<>();
         Map<SymTypeVariable, SymTypeVariable> origVar2NewInfVar =
             createSymTypeExprMap();
         for (SymTypeVariable var : varsToResolveNext) {
@@ -283,9 +307,25 @@ public class BoundResolution {
           if (upperBound.isPresent()) {
             newInfVarsBounds.add(new SubTypingBound(newInfVar, upperBound.get()));
           }
+          Optional<SymTypeExpression> sourceBound =
+              getLubOfProperLowerBounds(var2SourceBounds.get(origVar));
+          if (sourceBound.isPresent()) {
+            newInfVarsBounds.add(new TypeCompatibilityBound(sourceBound.get(), newInfVar));
+          }
+          // FDr: need to check if this replacement is fine
+          // currently no reason to assume otherwise
+          List<SymTypeExpression> replacedTargetBounds =
+              var2TargetBounds.get(origVar).stream()
+                  .map(t -> TypeParameterRelations.replaceTypeVariables(t, origVar2NewInfVar))
+                  .collect(Collectors.toList());
+          Optional<SymTypeExpression> targetBound =
+              getGlbOfProperUpperBounds(replacedTargetBounds);
+          if (targetBound.isPresent()) {
+            newInfVarsBounds.add(new TypeCompatibilityBound(newInfVar, targetBound.get()));
+          }
           // check for bound consistency
           if (lowerBound.isPresent() && upperBound.isPresent()) {
-            if (!SymTypeRelations.isSubTypeOf(lowerBound.get(), upperBound.get())) {
+            if (!isSubTypeOf(lowerBound.get(), upperBound.get())) {
               Log.info("inconsistent bounds for fresh inference variable: "
                       + lowerBound.get().printFullName() + " is not a subtype of "
                       + upperBound.get().printFullName() + "."
@@ -404,30 +444,154 @@ public class BoundResolution {
   protected List<TypeEqualityBound> findInstantiationsSimple(
       List<SymTypeVariable> varsToResolve,
       Map<SymTypeVariable, List<SymTypeExpression>> var2LowerBounds,
-      Map<SymTypeVariable, List<SymTypeExpression>> var2UpperBounds
+      Map<SymTypeVariable, List<SymTypeExpression>> var2UpperBounds,
+      Map<SymTypeVariable, List<SymTypeExpression>> var2SourceBounds,
+      Map<SymTypeVariable, List<SymTypeExpression>> var2TargetBounds
   ) {
     List<TypeEqualityBound> newEqualityBounds = new ArrayList<>();
     for (SymTypeVariable var : varsToResolve) {
+      final String logBoundInfo = "Subtypes: "
+          + var2LowerBounds.get(var).stream()
+          .map(SymTypeExpression::printFullName)
+          .collect(Collectors.joining(", "))
+          + System.lineSeparator() + "Types compatible to it: "
+          + var2SourceBounds.get(var).stream()
+          .map(SymTypeExpression::printFullName)
+          .collect(Collectors.joining(", "))
+          + System.lineSeparator() + "Supertypes: "
+          + var2UpperBounds.get(var).stream()
+          .map(SymTypeExpression::printFullName)
+          .collect(Collectors.joining(", "))
+          + System.lineSeparator() + "It is compatible to these types: "
+          + var2UpperBounds.get(var).stream()
+          .map(SymTypeExpression::printFullName)
+          .collect(Collectors.joining(", "));
+      Log.trace("START finding instantiation for " + var.printFullName()
+              + "." + System.lineSeparator() + logBoundInfo,
+          LOG_NAME
+      );
       TypeEqualityBound newBound;
-      Optional<SymTypeExpression> lub =
+      Optional<SymTypeExpression> lubSubtyping =
           getLubOfProperLowerBounds(var2LowerBounds.get(var));
-      Optional<SymTypeExpression> glb =
+      Optional<SymTypeExpression> glbSubtyping =
           getGlbOfProperUpperBounds(var2UpperBounds.get(var));
-      if (lub.isPresent()) {
-        newBound = new TypeEqualityBound(var, lub.get());
+
+      List<SymTypeExpression> properSources = var2SourceBounds.get(var).stream()
+          .filter(Predicate.not(TypeParameterRelations::hasInferenceVariables))
+          .collect(Collectors.toList());
+      List<SymTypeExpression> properTargets = var2TargetBounds.get(var).stream()
+          .filter(Predicate.not(TypeParameterRelations::hasInferenceVariables))
+          .collect(Collectors.toList());
+
+      // search for better lower bound in the source bounds
+      List<SymTypeExpression> sourcesThatAreInSubTypingRelation = new ArrayList<>();
+      for (SymTypeExpression source : properSources) {
+        if (lubSubtyping.isEmpty() || isSubTypeOf(lubSubtyping.get(), source)) {
+          if (glbSubtyping.isEmpty() || isSubTypeOf(source, glbSubtyping.get())) {
+            sourcesThatAreInSubTypingRelation.add(source);
+          }
+        }
       }
-      else if (glb.isPresent()) {
-        newBound = new TypeEqualityBound(var, glb.get());
+      // This ought to be a better lower bound,
+      // as they are supertypes of the current lower bound
+      // Alternative: create a Lub using these sources
+      // and the current lower bound? -> This should not change anything
+      Optional<SymTypeExpression> newLubSubtyping =
+          getLubOfProperLowerBounds(sourcesThatAreInSubTypingRelation);
+      if (newLubSubtyping.isPresent()) {
+        Log.trace("Using source bounds to replace lower bound "
+                + lubSubtyping.map(SymTypeExpression::printFullName)
+                .orElse("[none]")
+                + " with " + newLubSubtyping.get().printFullName(),
+            LOG_NAME
+        );
+        lubSubtyping = newLubSubtyping;
+      }
+
+      // need to check other sources,
+      // as this is something not done during bound incorporation;
+      // E.g., short <: a, Integer --> a:
+      // here, it has to be checked that the LuB short is an actual lower bound,
+      // it is not, as the source Integer is not compatible to it.
+      // As Integer is not a superType of short, the LuB has not been replaced above.
+      // The solution would have been int, but int cannot be found in the types given,
+      // (one could add special cases for boxing, unboxing, but this is a general problem)
+      // as such, we fail to find a lower bound.
+      if (lubSubtyping.isPresent()) {
+        for (SymTypeExpression source : properSources) {
+          if (!isCompatible(lubSubtyping.get(), source)) {
+            Log.trace("source bound " + source.printFullName()
+                    + " is not compatible to (assumed) lower bound "
+                    + lubSubtyping.get()
+                    + ". Thus the lower bound is not valid and cannot be used.",
+                LOG_NAME
+            );
+            lubSubtyping = Optional.empty();
+          }
+        }
+      }
+
+      // search for better upper bound in the target bounds
+      // more often than not, the current upper bound is just Top
+      List<SymTypeExpression> targetsThatAreInSubTypingRelation = new ArrayList<>();
+      for (SymTypeExpression target : properTargets) {
+        if (glbSubtyping.isEmpty() || isSubTypeOf(target, glbSubtyping.get())) {
+          if (lubSubtyping.isEmpty() || isSubTypeOf(lubSubtyping.get(), target)) {
+            targetsThatAreInSubTypingRelation.add(target);
+          }
+        }
+      }
+      // find better upper bound using applicable targets
+      Optional<SymTypeExpression> newGlbSubtyping =
+          getGlbOfProperUpperBounds(targetsThatAreInSubTypingRelation);
+      if (newGlbSubtyping.isPresent()) {
+        Log.trace("Using source bounds to replace upper bound "
+                + glbSubtyping.map(SymTypeExpression::printFullName)
+                .orElse("[none]")
+                + " with " + newGlbSubtyping.get().printFullName(),
+            LOG_NAME
+        );
+        glbSubtyping = newGlbSubtyping;
+      }
+      // check other targets
+      if (glbSubtyping.isPresent()) {
+        for (SymTypeExpression target : properTargets) {
+          if (!isCompatible(target, glbSubtyping.get())) {
+            Log.trace("(Assumed) upper bound"
+                    + glbSubtyping.get().printFullName()
+                    + " is not compatible to target bound "
+                    + target.printFullName()
+                    + ". Thus the upper bound is not valid and cannot be used.",
+                LOG_NAME
+            );
+            glbSubtyping = Optional.empty();
+          }
+        }
+      }
+
+      if (lubSubtyping.isPresent()) {
+        newBound = new TypeEqualityBound(var, lubSubtyping.get());
+      }
+      else if (glbSubtyping.isPresent()) {
+        newBound = new TypeEqualityBound(var, glbSubtyping.get());
       }
       else {
-        Log.error("0xFD319 internal error: "
-            + var.printFullName() + " has no proper bounds");
+        Log.error("0xFD319 error: For " + var.printFullName()
+            + " no type fulfilling the bounds can be found."
+            + " This usually occurs if the type"
+            + " that would be fulfill the bounds cannot be found"
+            + " within the bounds itself."
+            + " Your expression is probably too complex wrt. bounds."
+            + " Recommended solution: add type-casts to the expected type."
+            + " Bounds:" + System.lineSeparator()
+            + logBoundInfo
+        );
         return Collections.emptyList();
       }
       newEqualityBounds.add(newBound);
     }
     Log.trace("resolved new instantiations:" + System.lineSeparator()
-        + printBounds(new ArrayList<>(newEqualityBounds)), LOG_NAME);
+        + printBounds(newEqualityBounds), LOG_NAME);
     return newEqualityBounds;
   }
 
@@ -475,6 +639,15 @@ public class BoundResolution {
           varsToBeAdded.add(subTypingBound.getSuperType().asTypeVariable());
         }
       }
+      if (bound.isTypeCompatibilityBound()) {
+        TypeCompatibilityBound compatibilityBound = (TypeCompatibilityBound) bound;
+        if (TypeParameterRelations.isInferenceVariable(compatibilityBound.getSourceType())) {
+          varsToBeAdded.add(compatibilityBound.getSourceType().asTypeVariable());
+        }
+        if (TypeParameterRelations.isInferenceVariable(compatibilityBound.getTargetType())) {
+          varsToBeAdded.add(compatibilityBound.getTargetType().asTypeVariable());
+        }
+      }
       else if (bound.isTypeEqualityBound()) {
         TypeEqualityBound typeEqualityBound = (TypeEqualityBound) bound;
         varsToBeAdded.add(typeEqualityBound.getFirstType());
@@ -520,6 +693,17 @@ public class BoundResolution {
         if (TypeParameterRelations.isInferenceVariable(subTypingBound.getSuperType())) {
           dependencies.get(subTypingBound.getSuperType().asTypeVariable())
               .add(subTypingBound);
+        }
+      }
+      if (bound.isTypeCompatibilityBound()) {
+        TypeCompatibilityBound compatibilityBound = (TypeCompatibilityBound) bound;
+        if (TypeParameterRelations.isInferenceVariable(compatibilityBound.getSourceType())) {
+          dependencies.get(compatibilityBound.getSourceType().asTypeVariable())
+              .add(compatibilityBound);
+        }
+        if (TypeParameterRelations.isInferenceVariable(compatibilityBound.getTargetType())) {
+          dependencies.get(compatibilityBound.getTargetType().asTypeVariable())
+              .add(compatibilityBound);
         }
       }
       else if (bound.isTypeEqualityBound()) {
@@ -652,7 +836,7 @@ public class BoundResolution {
     }
   }
 
-  protected String printBounds(List<Bound> constraints) {
+  protected String printBounds(List<? extends Bound> constraints) {
     return constraints.stream()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));

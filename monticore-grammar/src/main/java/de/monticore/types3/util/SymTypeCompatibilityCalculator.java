@@ -6,6 +6,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfSIUnit;
@@ -18,6 +19,7 @@ import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.bounds.SubTypingBound;
+import de.monticore.types3.generics.bounds.TypeCompatibilityBound;
 import de.monticore.types3.generics.bounds.TypeEqualityBound;
 import de.monticore.types3.generics.bounds.UnsatisfiableBound;
 import de.monticore.types3.generics.constraints.TypeEqualityConstraint;
@@ -43,9 +45,10 @@ public class SymTypeCompatibilityCalculator {
   // Standard interface returning booleans
 
   public boolean isCompatible(
-      SymTypeExpression assignee,
-      SymTypeExpression assigner) {
-    return constrainCompatible(assignee, assigner).isEmpty();
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    return constrainCompatible(target, source).isEmpty();
   }
 
   public boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression superType) {
@@ -81,13 +84,24 @@ public class SymTypeCompatibilityCalculator {
   public List<Bound> constrainCompatible(
       SymTypeExpression target,
       SymTypeExpression source) {
+    return constrainCompatiblePreNormalized(
+        SymTypeRelations.normalize(target),
+        SymTypeRelations.normalize(source)
+    );
+  }
+
+  protected List<Bound> constrainCompatiblePreNormalized(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
     List<Bound> result;
-    // null is compatible to any non-primitive type
-    if (!target.isPrimitive()
-        && !target.isNumericWithSIUnitType()
-        && !target.isSIUnitType()
-        && source.isNullType()) {
-      result = Collections.emptyList();
+    if (target.isTypeVariable() || source.isTypeVariable()) {
+      result = typeVarConstrainCompatible(target, source);
+    }
+    //todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4362
+    // need more (e.g. tuple) (function???)
+    else if (source.isNullType()) {
+      result = nullConstrainCompatible(target, source.asNullType());
     }
     // subtypes are assignable to their supertypes
     // in addition, we allow boxing
@@ -118,6 +132,99 @@ public class SymTypeCompatibilityCalculator {
       }
     }
     return result;
+  }
+
+  /**
+   * s.a. {@link #typeVarConstrainSubTypeOf(SymTypeExpression, SymTypeExpression)}
+   */
+  protected List<Bound> typeVarConstrainCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    List<Bound> result;
+    // T is compatible to T
+    // this has to be checked specifically,
+    // as two unbounded type variable are not subTypes of each other otherwise
+    if (source.isTypeVariable() &&
+        target.isTypeVariable() &&
+        source.asTypeVariable().denotesSameVar(target)
+    ) {
+      result = Collections.emptyList();
+    }
+    // check upper and lower bound
+    // todo check if tested FDr!
+    else if (source.isTypeVariable() || target.isTypeVariable()) {
+      SymTypeExpression sourceUpperBound;
+      boolean sourceTypeIsInfVar;
+      if (source.isTypeVariable()) {
+        SymTypeVariable tv = source.asTypeVariable();
+        sourceUpperBound = tv.getUpperBound();
+        sourceTypeIsInfVar = TypeParameterRelations.isInferenceVariable(tv);
+      }
+      else {
+        sourceUpperBound = source;
+        sourceTypeIsInfVar = false;
+      }
+      SymTypeExpression targetLowerBound;
+      boolean targetTypeIsInfVar;
+      if (target.isTypeVariable()) {
+        SymTypeVariable tv = target.asTypeVariable();
+        targetLowerBound = tv.getLowerBound();
+        targetTypeIsInfVar = TypeParameterRelations.isInferenceVariable(tv);
+      }
+      else {
+        targetLowerBound = target;
+        targetTypeIsInfVar = false;
+      }
+      // small check that can safe us further calculations:
+      // a <: A, B <: b, so if A <: B, then a <: b and thus a --> b
+      // This might be generalized to
+      // a <: A, B <: b, so if A --> B, we can assume that a --> b,
+      // but that rule would need to hold, which it should,
+      // but exceptions may exist(?), thus currently being conservative
+      if (isSubTypeOf(sourceUpperBound, targetLowerBound)) {
+        result = Collections.emptyList();
+      }
+      else if (!sourceTypeIsInfVar && !targetTypeIsInfVar) {
+        // check supertypes (for compatiblity)
+        // note, this needs to be extended, e.g., a <: A, b <: B
+        // with A </: B and A --> B is currently not supported.
+        // But this case should be VERY rare
+        // todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4362
+        result = constrainSubTypeOf(source, target);
+      }
+      else {
+        result = Collections.singletonList(
+            new TypeCompatibilityBound(target, source)
+        );
+      }
+    }
+    else {
+      Log.error("0xFDB33 internal error, expected an type variable");
+      result = Collections.singletonList(
+          getUnsatisfiableBoundForCompatibilty(target, source)
+      );
+    }
+    return result;
+  }
+
+  protected List<Bound> nullConstrainCompatible(
+      SymTypeExpression target,
+      SymTypeOfNull source
+
+  ) {
+    // null is compatible to any object type
+    // including arrays for java-compatibility
+    // deliberately, null is not directly compatible with type-variables!
+    if ((target.isObjectType() ||
+        target.isGenericType() ||
+        target.isArrayType())
+        && source.isNullType()) {
+      return Collections.emptyList();
+    }
+    else {
+      return List.of(getUnsatisfiableBoundForCompatibilty(target, source));
+    }
   }
 
   /**
@@ -488,7 +595,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression superType
   ) {
     List<Bound> result;
-    // T is compatible to T
+    // T is subType of T
     // this has to be checked specifically,
     // as two unbounded type variable are not subTypes of each other otherwise
     if (subType.isTypeVariable() &&
@@ -796,7 +903,8 @@ public class SymTypeCompatibilityCalculator {
       boolean isSatisfiable = false;
       result = new ArrayList<>();
       List<Bound> unsatisfiableResult = new ArrayList<>();
-      List<SymTypeExpression> subSuperTypes = getSuperTypes(subType);
+      List<SymTypeExpression> subSuperTypes =
+          SymTypeRelations.getNominalSuperTypes(subType);
       for (SymTypeExpression subSuperExpr : subSuperTypes) {
         // here we do not box the symTypes(, as we did not before)
         // this would make List<int> be a subtype of java.util.List<Integer>,
@@ -1220,6 +1328,16 @@ public class SymTypeCompatibilityCalculator {
     return result;
   }
 
+  protected UnsatisfiableBound getUnsatisfiableBoundForCompatibilty(
+      SymTypeExpression targetType,
+      SymTypeExpression sourceType
+  ) {
+    return new UnsatisfiableBound(
+        sourceType.printFullName() + " is not compatible to "
+            + targetType.printFullName() + "."
+    );
+  }
+
   protected UnsatisfiableBound getUnsatisfiableBoundForSubTyping(
       SymTypeExpression subType,
       SymTypeExpression superType
@@ -1251,6 +1369,8 @@ public class SymTypeCompatibilityCalculator {
     );
   }
 
+  // not needed anymore
+  @Deprecated
   protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
     return SymTypeRelations.getNominalSuperTypes(thisType);
   }

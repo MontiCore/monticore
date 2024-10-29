@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashSet;
@@ -134,7 +135,11 @@ public class SymTypeVariable extends SymTypeExpression {
     if (hasTypeVarSymbol() && !getTypeVarSymbol().isEmptySuperTypes()) {
       Set<SymTypeExpression> intersectedTypes =
           new HashSet<>(getTypeVarSymbol().getSuperTypesList());
-      intersectedTypes.add(getStoredUpperBound());
+      if (!SymTypeRelations.isTop(getStoredUpperBound())) {
+        // adding Top would not change the meaning of the type,
+        // but it is uglier during printing
+        intersectedTypes.add(getStoredUpperBound());
+      }
       result = SymTypeExpressionFactory.createIntersection(intersectedTypes);
     }
     else {

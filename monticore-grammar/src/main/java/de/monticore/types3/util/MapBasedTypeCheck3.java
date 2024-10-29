@@ -80,7 +80,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
   //-----------TypeCheck3 static delegate implementation----------//
 
   @Override
-  public SymTypeExpression _symTypeFromAST(ASTMCType mcType) {
+  protected SymTypeExpression _symTypeFromAST(ASTMCType mcType) {
     if (!getType4Ast().hasTypeOfTypeIdentifier(mcType)) {
       mcType.accept(getTypeTraverser());
     }
@@ -88,12 +88,12 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
   }
 
   @Override
-  public SymTypeExpression _symTypeFromAST(ASTMCVoidType mcVoidType) {
+  protected SymTypeExpression _symTypeFromAST(ASTMCVoidType mcVoidType) {
     return SymTypeExpressionFactory.createTypeVoid();
   }
 
   @Override
-  public SymTypeExpression _symTypeFromAST(ASTMCReturnType mcReturnType) {
+  protected SymTypeExpression _symTypeFromAST(ASTMCReturnType mcReturnType) {
     if (!getType4Ast().hasTypeOfTypeIdentifier(mcReturnType)) {
       mcReturnType.accept(getTypeTraverser());
     }
@@ -101,7 +101,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
   }
 
   @Override
-  public SymTypeExpression _symTypeFromAST(ASTMCQualifiedName mcQualifiedName) {
+  protected SymTypeExpression _symTypeFromAST(ASTMCQualifiedName mcQualifiedName) {
     if (!getType4Ast().hasTypeOfTypeIdentifier(mcQualifiedName)) {
       mcQualifiedName.accept(getTypeTraverser());
     }
@@ -109,7 +109,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
   }
 
   @Override
-  public SymTypeExpression _typeOf(ASTExpression expr) {
+  protected SymTypeExpression _typeOf(ASTExpression expr) {
     // do not reset if target typing had been used, as currently,
     // there is no target type
     if (getCtx4Ast().getContextOfExpression(expr).hasTargetType() &&
@@ -131,7 +131,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
   }
 
   @Override
-  public SymTypeExpression _typeOf(
+  protected SymTypeExpression _typeOf(
       ASTExpression expr,
       SymTypeExpression targetType
   ) {
@@ -195,7 +195,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
   }
 
   @Override
-  public SymTypeExpression _typeOf(ASTLiteral lit) {
+  protected SymTypeExpression _typeOf(ASTLiteral lit) {
     if (!getType4Ast().hasTypeOfExpression(lit)) {
       lit.accept(getTypeTraverser());
     }

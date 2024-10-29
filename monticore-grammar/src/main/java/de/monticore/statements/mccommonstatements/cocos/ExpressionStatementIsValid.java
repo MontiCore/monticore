@@ -22,8 +22,7 @@ public class ExpressionStatementIsValid implements MCCommonStatementsASTExpressi
     this.typeCheck = typeCheck;
   }
 
-  public ExpressionStatementIsValid() {
-  }
+  public ExpressionStatementIsValid() { }
 
   @Deprecated
   protected TypeCalculator getTypeCheck() {
@@ -31,13 +30,14 @@ public class ExpressionStatementIsValid implements MCCommonStatementsASTExpressi
   }
 
   @Override
-  public void check(ASTExpressionStatement statement) {
-    Preconditions.checkNotNull(statement);
-    if(typeCheck != null) {
-    // support deprecated behavior
-    this.getTypeCheck().typeOf(statement.getExpression());
+  public void check(ASTExpressionStatement node) {
+    Preconditions.checkNotNull(node);
+
+    if (typeCheck != null) {
+      // support deprecated behavior
+      this.getTypeCheck().typeOf(node.getExpression());
     } else {
-    TypeCheck3.typeOf(statement.getExpression());
+      TypeCheck3.typeOf(node.getExpression());
     }
   }
 }

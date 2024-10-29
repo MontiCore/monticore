@@ -18,9 +18,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class AssertIsValidTest {
   
   protected TestMCAssertStatementsCoCoChecker checker;
@@ -45,7 +42,7 @@ public class AssertIsValidTest {
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
     Assertions.assertTrue(Log.getFindings().isEmpty());
-    
+
   }
   
   public void checkInvalid(String expressionString) throws IOException {
@@ -61,19 +58,15 @@ public class AssertIsValidTest {
   
   @Test
   public void testValid() throws IOException {
-    
     checkValid("assert 5 >= 0;");
     checkValid("assert !(true||false)&&(5<6);");
-    checkInvalid("assert 5 >= 0: 1+1;");
-    
+    checkValid("assert 5 >= 0: 1+1;");
   }
   
   @Test
   public void testInvalid() throws IOException {
-    
     checkInvalid("assert 4;");
     checkInvalid("assert 'c';");
-    
   }
   
 }
