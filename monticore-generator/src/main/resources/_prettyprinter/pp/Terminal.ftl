@@ -5,6 +5,12 @@ ${tc.signature("terminal", "hasNoSpace", "nonAlphabeticNoSpace")}
   In case of the noSpace directive no space-suffix is appended
   Special default handling for semicolons and curtly brackets included.
 -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="terminal" type="String" -->
+<#-- @ftlvariable name="hasNoSpace" type="boolean" -->
+<#-- @ftlvariable name="hasNoSpace" type="boolean" -->
+
 <#if terminal == ";">
 <#if hasNoSpace>
     getPrinter().print("${terminal}");

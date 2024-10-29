@@ -1,4 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="prodname" type="String" -->
+<#-- @ftlvariable name="t" type="de.monticore.codegen.parser.antlr.ParseVisitorEntry" -->
 ${tc.signature("prodname", "t")}
 <#assign withCondition=(t.getCondition())??>
 <#if t.isAlternative()>

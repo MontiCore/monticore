@@ -55,7 +55,9 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(JAVADOC, method,
             JavaDoc.of("Entry point for the Visitor pattern.",
-                    "Cf. MontiCore handbook chapter 8.").asHP());
+                    "Cf. MontiCore handbook chapter 8.")
+                    .param("visitor", "the visitor to dispatch to")
+                    .asHP());
     return method;
   }
 }

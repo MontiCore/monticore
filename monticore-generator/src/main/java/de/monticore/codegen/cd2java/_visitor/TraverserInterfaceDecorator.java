@@ -106,7 +106,9 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), traverse, false));
     this.replaceTemplate(JAVADOC, handleMethod,
             JavaDoc.of("NOTE: You are most likely looking for " +
-                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!").asHP());
+                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!")
+                    .param("node", "the ast node to handle")
+                    .asHP());
     return handleMethod;
   }
 
@@ -371,7 +373,9 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), true, true));
     this.replaceTemplate(JAVADOC, handleMethod,
             JavaDoc.of("NOTE: You are most likely looking for " +
-                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!").asHP());
+                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!")
+                    .param("node", "the ast node to handle")
+                    .asHP());
     visitorMethods.add(handleMethod);
     visitorMethods.add(visitorService.getVisitorMethod(TRAVERSE, symbolType));
     
@@ -432,7 +436,9 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(TRAVERSER_HANDLE_TEMPLATE, visitorService.getHandlerSimpleName(), true, true));
     this.replaceTemplate(JAVADOC, handleMethod,
             JavaDoc.of("NOTE: You are most likely looking for " +
-                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!").asHP());
+                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!")
+                    .param("node", "the ast node to handle")
+                    .asHP());
     visitorMethods.add(handleMethod);
     ASTCDMethod traverseMethod = visitorService.getVisitorMethod(TRAVERSE, scopeType);
     visitorMethods.add(traverseMethod);

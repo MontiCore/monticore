@@ -4,6 +4,12 @@ ${tc.signature("glex", "altData", "grammarName", "astPackage")}
   Build the pretty print behaviour for an Alt
   Differentiate between the various types of RuleComponent
 -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="altData" type="de.monticore.codegen.prettyprint.data.AltData" -->
+<#-- @ftlvariable name="grammarName" type="String" -->
+<#-- @ftlvariable name="astPackage" type="String" -->
+
 <@alt glex altData grammarName astPackage/>
 <#macro alt glex altData grammarName astPackage>
 
