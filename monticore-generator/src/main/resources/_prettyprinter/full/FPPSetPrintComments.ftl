@@ -2,6 +2,11 @@
 <#--
   set the printComments flag
 -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="grammarName" type="String" -->
+<#-- @ftlvariable name="superGrammars" type="java.util.List<de.monticore.grammar.grammar._symboltable.MCGrammarSymbol>" -->
+
 ${tc.signature("grammarName", "superGrammars")}
 
 

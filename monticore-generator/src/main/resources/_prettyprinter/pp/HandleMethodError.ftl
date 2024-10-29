@@ -2,6 +2,13 @@
 <#--
   Handle method for pretty printing, where automatic printer generation fails
 -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="errorMessage" type="String" -->
+<#-- @ftlvariable name="astName" type="String" -->
+<#-- @ftlvariable name="node" type="de.monticore.ast.ASTNode" -->
+<#-- @ftlvariable name="blockData" type="String" -->
+
 ${tc.signature("errorMessage", "astName", "node", "blockData")}
 <#assign service = glex.getGlobalVar("service")>
 
