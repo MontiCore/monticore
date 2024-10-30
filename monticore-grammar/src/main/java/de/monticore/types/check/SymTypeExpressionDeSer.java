@@ -36,9 +36,13 @@ public class SymTypeExpressionDeSer {
 
   protected SymTypeOfIntersectionDeSer symTypeOfIntersectionDeSer;
 
+  protected SymTypeOfNumericWithSIUnitDeSer symTypeOfNumericWithSIUnitDeSer;
+
   protected SymTypeOfObjectDeSer symTypeOfObjectDeSer;
 
   protected SymTypeOfRegExDeSer symTypeOfRegExDeSer;
+
+  protected SymTypeOfSIUnitDeSer symTypeOfSIUnitDeSer;
 
   protected SymTypeOfTupleDeSer symTypeOfTupleDeSer;
 
@@ -56,8 +60,10 @@ public class SymTypeExpressionDeSer {
     this.symTypePrimitiveDeSer = new SymTypePrimitiveDeSer();
     this.symTypeOfGenericsDeSer = new SymTypeOfGenericsDeSer();
     this.symTypeOfIntersectionDeSer = new SymTypeOfIntersectionDeSer();
+    this.symTypeOfNumericWithSIUnitDeSer = new SymTypeOfNumericWithSIUnitDeSer();
     this.symTypeOfObjectDeSer = new SymTypeOfObjectDeSer();
     this.symTypeOfRegExDeSer = new SymTypeOfRegExDeSer();
+    this.symTypeOfSIUnitDeSer = new SymTypeOfSIUnitDeSer();
     this.symTypeOfTupleDeSer = new SymTypeOfTupleDeSer();
     this.symTypeOfUnionDeSer = new SymTypeOfUnionDeSer();
     this.symTypeVariableDeSer = new SymTypeVariableDeSer();
@@ -174,11 +180,17 @@ public class SymTypeExpressionDeSer {
     if(toSerialize.isIntersectionType()) {
       return symTypeOfIntersectionDeSer.serialize((SymTypeOfIntersection) toSerialize);
     }
+    if(toSerialize.isNumericWithSIUnitType()) {
+      return symTypeOfNumericWithSIUnitDeSer.serialize(toSerialize.asNumericWithSIUnitType());
+    }
     if(toSerialize.isObjectType()) {
       return symTypeOfObjectDeSer.serialize((SymTypeOfObject) toSerialize);
     }
     if(toSerialize.isRegExType()) {
       return symTypeOfRegExDeSer.serialize((SymTypeOfRegEx) toSerialize);
+    }
+    if(toSerialize.isSIUnitType()) {
+      return symTypeOfSIUnitDeSer.serialize(toSerialize.asSIUnitType());
     }
     if(toSerialize.isTupleType()) {
       return symTypeOfTupleDeSer.serialize((SymTypeOfTuple) toSerialize);
@@ -250,10 +262,14 @@ public class SymTypeExpressionDeSer {
           return symTypeOfGenericsDeSer.deserialize(o, enclosingScope);
         case SymTypeOfIntersectionDeSer.SERIALIZED_KIND:
           return symTypeOfIntersectionDeSer.deserialize(o, enclosingScope);
+        case SymTypeOfNumericWithSIUnitDeSer.SERIALIZED_KIND:
+          return symTypeOfNumericWithSIUnitDeSer.deserialize(o, enclosingScope);
         case SymTypeOfObjectDeSer.SERIALIZED_KIND:
           return symTypeOfObjectDeSer.deserialize(o, enclosingScope);
         case SymTypeOfRegExDeSer.SERIALIZED_KIND:
           return symTypeOfRegExDeSer.deserialize(o);
+        case SymTypeOfSIUnitDeSer.SERIALIZED_KIND:
+          return symTypeOfSIUnitDeSer.deserialize(o);
         case SymTypeOfTupleDeSer.SERIALIZED_KIND:
           return symTypeOfTupleDeSer.deserialize(o);
         case SymTypeOfUnionDeSer.SERIALIZED_KIND:
