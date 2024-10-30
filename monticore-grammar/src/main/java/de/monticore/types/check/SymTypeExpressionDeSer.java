@@ -271,7 +271,7 @@ public class SymTypeExpressionDeSer {
         case SymTypeOfSIUnitDeSer.SERIALIZED_KIND:
           return symTypeOfSIUnitDeSer.deserialize(o);
         case SymTypeOfTupleDeSer.SERIALIZED_KIND:
-          return symTypeOfTupleDeSer.deserialize(o);
+          return symTypeOfTupleDeSer.deserialize(o, enclosingScope);
         case SymTypeOfUnionDeSer.SERIALIZED_KIND:
           return symTypeOfUnionDeSer.deserialize(o, enclosingScope);
         case SymTypeVariableDeSer.SERIALIZED_KIND:

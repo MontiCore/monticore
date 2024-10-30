@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -31,13 +32,13 @@ public class SymTypeOfTupleDeSer {
   }
 
   public SymTypeOfTuple deserialize(String serialized) {
-    return deserialize(JsonParser.parseJsonObject(serialized));
+    return deserialize(JsonParser.parseJsonObject(serialized), null);
   }
 
-  public SymTypeOfTuple deserialize(JsonObject serialized) {
+  public SymTypeOfTuple deserialize(JsonObject serialized, IBasicSymbolsScope enclosingScope) {
     if (serialized.hasMember(SERIALIZED_TYPES)) {
-      List<SymTypeExpression> typesList =
-          SymTypeExpressionDeSer.deserializeListMember(SERIALIZED_TYPES, serialized);
+      List<SymTypeExpression> typesList = SymTypeExpressionDeSer
+          .deserializeListMember(SERIALIZED_TYPES, serialized, enclosingScope);
       return SymTypeExpressionFactory.createTuple(typesList);
     }
     Log.error(
