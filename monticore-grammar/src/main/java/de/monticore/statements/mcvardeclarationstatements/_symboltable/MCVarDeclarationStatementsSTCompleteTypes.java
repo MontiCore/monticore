@@ -12,6 +12,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
 
+/**
+ * @deprecated Use {@link MCVarDeclarationStatementsSymTabCompletion} instead
+ */
+@Deprecated
 public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor2 {
 
   protected ISynthesize typeSynthesizer;
