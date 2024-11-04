@@ -5,9 +5,9 @@
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
 <#-- @ftlvariable name="blockData" type="de.monticore.codegen.prettyprint.data.BlockData" -->
-<#-- @ftlvariable name="astName" type="String" -->
-<#-- @ftlvariable name="grammarName" type="String" -->
-<#-- @ftlvariable name="astPackage" type="String" -->
+<#-- @ftlvariable name="astName" type="java.lang.String" -->
+<#-- @ftlvariable name="grammarName" type="java.lang.String" -->
+<#-- @ftlvariable name="astPackage" type="java.lang.String" -->
 <#-- @ftlvariable name="iterators" type="java.util.Set<java.util.Map.Entry<String, de.monticore.codegen.prettyprint.PrettyPrinterGenerationVisitor.IteratorData>>" -->
 ${tc.signature("blockData", "astName", "grammarName", "astPackage", "iterators")}
 if (this.isPrintComments()) {

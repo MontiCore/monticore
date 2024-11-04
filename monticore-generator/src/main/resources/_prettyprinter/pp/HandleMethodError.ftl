@@ -4,10 +4,10 @@
 -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
-<#-- @ftlvariable name="errorMessage" type="String" -->
-<#-- @ftlvariable name="astName" type="String" -->
+<#-- @ftlvariable name="errorMessage" type="java.lang.String" -->
+<#-- @ftlvariable name="astName" type="java.lang.String" -->
 <#-- @ftlvariable name="node" type="de.monticore.ast.ASTNode" -->
-<#-- @ftlvariable name="blockData" type="String" -->
+<#-- @ftlvariable name="blockData" type="java.lang.String" -->
 
 ${tc.signature("errorMessage", "astName", "node", "blockData")}
 <#assign service = glex.getGlobalVar("service")>
