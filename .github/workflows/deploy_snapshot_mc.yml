@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: [ "MontiCore/statecharts" ]
+        project: [ "MontiCore/cd4analysis", "MontiCore/fd", "MontiCore/xml", "MontiCore/json", "MontiCore/ucd", "MontiCore/automaton" ]
     steps:
       - name: Trigger ${{ matrix.project }}
         uses: peter-evans/repository-dispatch@v3
@@ -53,6 +53,3 @@ jobs:
           event-type: trigger_after_upstream_deploy
 
   # We do not trigger (internal) GitLab downstream projects
-
-
-  # TODO: Trigger correct Downstream Projects (both on GitHub and GitLab)

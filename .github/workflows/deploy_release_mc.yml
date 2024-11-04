@@ -30,3 +30,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # TODO: Create and publish the monticore.tar.gz
+      # TODO: Create PRs in the various downstream projects to update the version & prepare releases
