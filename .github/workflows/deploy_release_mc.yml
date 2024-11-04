@@ -1,0 +1,32 @@
+# (c) https://github.com/MontiCore/monticore
+name: Publish a Release
+
+on:
+  release:
+    types:
+      - created
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  GRADLE_VERSION: 7.4 # Gradle version used
+  GRADLE_CLI_OPTS: "-Pci" # CLI option passed to Gradle
+
+jobs:
+  # Deploy the current tag as a release
+  deploy-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Gradle DeployMC
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          # pass the tag as the version property (${{ github.ref_name }})
+          arguments: deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{env.MAVEN_PASSWORD}} -PmavenUser=${{env.MAVEN_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true -Pversion=${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # TODO: Create and publish the monticore.tar.gz

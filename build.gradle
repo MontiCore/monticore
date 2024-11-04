@@ -85,8 +85,6 @@ subprojects {
     options.deprecation false
     options.warnings = false
     options.forkOptions.jvmArgs += ["-Xmx4G"]
-    // TODO: reevaluate with new ecj plugin
-    outputs.cacheIf {false} // ECJ has problem with caching
   }
   java {
     withSourcesJar()
@@ -256,12 +254,26 @@ configure(projectsToConfigure){
         from(components.java)
       }
     }
-    repositories.maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-      url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    repositories {
+      maven {
+        name = "SE-Nexus"
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+        url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+      }
+      // Also publish to the github repository, if run on a github action
+      if (System.getenv("GITHUB_REPOSITORY") != null) {
+        maven {
+          name = "GitHubPackages"
+          url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
+          credentials {
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
+          }
+        }
+      }
     }
   }
 }
