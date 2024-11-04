@@ -33,7 +33,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
-          arguments: deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{env.MAVEN_PASSWORD}} -PmavenUser=${{env.MAVEN_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true
+          arguments: deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{env.SE_NEXUS_PASSWORD}} -PmavenUser=${{env.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
