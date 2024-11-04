@@ -4,7 +4,7 @@
 -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
-<#-- @ftlvariable name="astclassname" type="String" -->
+<#-- @ftlvariable name="astclassname" type="java.lang.String" -->
 
 ${tc.signature("astclassname")}
 getTraverser().handle( (${astclassname}) node );

@@ -7,8 +7,8 @@ ${tc.signature("glex", "altData", "grammarName", "astPackage")}
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
 <#-- @ftlvariable name="altData" type="de.monticore.codegen.prettyprint.data.AltData" -->
-<#-- @ftlvariable name="grammarName" type="String" -->
-<#-- @ftlvariable name="astPackage" type="String" -->
+<#-- @ftlvariable name="grammarName" type="java.lang.String" -->
+<#-- @ftlvariable name="astPackage" type="java.lang.String" -->
 
 <@alt glex altData grammarName astPackage/>
 <#macro alt glex altData grammarName astPackage>

@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
-<#-- @ftlvariable name="prodname" type="String" -->
-<#-- @ftlvariable name="mill" type="String" -->
+<#-- @ftlvariable name="prodname" type="java.lang.String" -->
+<#-- @ftlvariable name="mill" type="java.lang.String" -->
 <#-- @ftlvariable name="alts" type="java.util.List<de.monticore.codegen.parser.antlr.Grammar2ParseVisitor.AltEntry>" -->
 ${tc.signature("prodname", "mill", "alts")}
 String prefix = com.google.common.base.Strings.repeat("| ", depth++);

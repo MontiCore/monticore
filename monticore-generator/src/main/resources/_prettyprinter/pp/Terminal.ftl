@@ -7,7 +7,7 @@ ${tc.signature("terminal", "hasNoSpace", "nonAlphabeticNoSpace")}
 -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
 <#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
-<#-- @ftlvariable name="terminal" type="String" -->
+<#-- @ftlvariable name="terminal" type="java.lang.String" -->
 <#-- @ftlvariable name="hasNoSpace" type="boolean" -->
 <#-- @ftlvariable name="hasNoSpace" type="boolean" -->
 
