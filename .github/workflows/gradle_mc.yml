@@ -137,7 +137,6 @@ jobs:
   trigger-montiverse:
     if: github.event_name == 'pull_request' # only run on PRs
     runs-on: ubuntu-latest
-    needs: [ build-mc ]
     steps:
       - name: Trigger MontiVerse
         uses: digital-blueprint/gitlab-pipeline-trigger-action@v1
