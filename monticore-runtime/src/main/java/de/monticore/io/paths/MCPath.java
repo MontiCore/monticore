@@ -13,7 +13,9 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import javax.annotation.Nonnull;
-import java.io.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.net.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -91,6 +93,14 @@ public final class MCPath {
             }
           });
 
+  final LoadingCache<String, List<URL>> resolvedUrlsCache = CacheBuilder.newBuilder()
+      .build(new CacheLoader<>() {
+        @Override
+        public List<URL> load(String key) {
+          return do_findResolvedUrls(key);
+        }
+      });
+
   /**
    * Method for calculating a list of files located in an entry of the passed model path,
    * with the passed qualified model name, and the passed regular expression over the file extension.
@@ -156,7 +166,7 @@ public final class MCPath {
     // iterate MCPath entries and check whether folder path exists within these
     for (Path p : getEntries()) {
       if(p.toString().endsWith(".jar")){
-        String path = "/" + folderPath.replaceAll("\\\\", "/") + "/" + fileNameRegEx;
+        String path = "/" + folderPath.replace('\\', '/') + "/" + fileNameRegEx;
         if (k.fileExtRegEx.equals(".*sym")) {
           // For .jar entries with a *.sym file extension regex, we cache the jar entries
           jarSymCache.getUnchecked(p).getCandidates(path).map(uri -> {
@@ -180,7 +190,7 @@ public final class MCPath {
         }
       }
       File folder = p.resolve(folderPath).toFile(); //e.g., "src/test/resources/foo/bar"
-      if (folder.exists() && folder.isDirectory()) {
+      if (folder.isDirectory()) {
         // perform the actual file filter on the folder and collect result
         Arrays.stream(folder.listFiles(filter))
             .map(f -> toURL(folder.toPath().resolve(f.getName())))
@@ -210,14 +220,8 @@ public final class MCPath {
    *                            matching models
    */
   public Optional<URL> find(String path) {
-    String fixedPath = path.replaceAll("\\" + File.separator, "/");
-
-    List<URL> resolvedURLs = classloaderMap.keySet().stream()
-        .map(classloader -> FileReaderWriter.getResource(classloader, fixedPath))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .distinct()
-        .collect(Collectors.toList());
+    String fixedPath = path.replace(File.separatorChar, '/');
+    List<URL> resolvedURLs = findResolvedUrls(fixedPath);
 
     if (1 == resolvedURLs.size()) {
       File resolvedFile = new File(resolvedURLs.get(0).getFile());
@@ -235,6 +239,19 @@ public final class MCPath {
       reportAmbiguity(resolvedURLs, fixedPath);
     }
     return Optional.empty();
+  }
+
+  protected List<URL> findResolvedUrls(String fixedPath){
+    return resolvedUrlsCache.getUnchecked(fixedPath);
+  }
+
+  protected List<URL> do_findResolvedUrls(String fixedPath) {
+    return classloaderMap.keySet().stream()
+        .map(classloader -> FileReaderWriter.getResource(classloader, fixedPath))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .distinct()
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -295,6 +312,7 @@ public final class MCPath {
   void invalidateCaches() {
     jarSymCache.invalidateAll();
     findCache.invalidateAll();
+    resolvedUrlsCache.invalidateAll();
   }
 
   // A List of all file systems opened for jars.
@@ -370,9 +388,11 @@ public final class MCPath {
     final Set<Path> absolutePaths = new HashSet<>();
     // path of the filesystem, which will be removed in the filter
     final String replacedFS;
+    final Pattern removeFsPattern;
 
     public CachedPath(String replacedFS) {
-      this.replacedFS = replacedFS;
+      this.replacedFS = replacedFS.replace('\\', '/');
+      removeFsPattern = Pattern.compile(Pattern.quote(replacedFS));
     }
 
     /**
@@ -380,8 +400,7 @@ public final class MCPath {
      * @return a stream of URIs matching against this path
      */
     Stream<URI> getCandidates(String path) {
-      path = path.replaceAll(Pattern.quote(replacedFS.replaceAll("\\\\", "/")), "");
-
+      path = removeFsPattern.matcher(path).replaceAll("");
       Pattern pattern = Pattern.compile(path);
 
       return absolutePaths.stream().filter(p -> pattern.matcher(p.toString()).matches()).map(this::toURL);
@@ -391,7 +410,7 @@ public final class MCPath {
       URI uri = path.toUri();
       // this takes care of white spaces in files, especially jars, if they are double encoded
       if (uri.toString().contains("%2520")) {
-        uri = URI.create(uri.toString().replaceAll("%2520", "%20"));
+        uri = URI.create(uri.toString().replace("%2520", "%20"));
       }
       return uri;
     }
