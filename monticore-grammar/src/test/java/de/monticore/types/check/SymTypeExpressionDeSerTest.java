@@ -30,6 +30,14 @@ public class SymTypeExpressionDeSerTest {
 
   SymTypePrimitive teInt;
 
+  SymTypeOfSIUnit teSI1;
+
+  SymTypeOfSIUnit teSI2;
+
+  SymTypeOfSIUnit teSI3;
+
+  SymTypeOfNumericWithSIUnit teNumSI1;
+
   SymTypeVariable teVarA;
 
   SymTypeVariable teVarB;
@@ -93,6 +101,20 @@ public class SymTypeExpressionDeSerTest {
     teDouble = createPrimitive("double");
 
     teInt = createPrimitive("int");
+
+    teSI1 = createSIUnit(
+        List.of(createSIUnitBasic("m"), createSIUnitBasic("s", "d", 1)),
+        List.of()
+    );
+
+    teSI2 = createSIUnit(
+        List.of(),
+        List.of(createSIUnitBasic("g", 4))
+    );
+
+    teSI3 = createSIUnit(teSI1.getNumerator(), teSI2.getDenominator());
+
+    teNumSI1 = createNumericWithSIUnit(teSI3, teInt);
 
     teVarA = createTypeVariable("A", scope);
 
@@ -168,6 +190,10 @@ public class SymTypeExpressionDeSerTest {
   public void testRoundtripSerialization() {
     performRoundTripSerialization(teDouble);
     performRoundTripSerialization(teInt);
+    performRoundTripSerialization(teSI1);
+    performRoundTripSerialization(teSI2);
+    performRoundTripSerialization(teSI3);
+    performRoundTripSerialization(teNumSI1);
     performRoundTripSerialization(teVarA);
     performRoundTripSerialization(teVarB);
     performRoundTripSerialization(teP);
@@ -195,6 +221,10 @@ public class SymTypeExpressionDeSerTest {
 
     performRoundTripSerializationSymTypePrimitive(teDouble);
     performRoundTripSerializationSymTypePrimitive(teInt);
+    performRoundTripSerializationSymTypeOfSIUnit(teSI1);
+    performRoundTripSerializationSymTypeOfSIUnit(teSI2);
+    performRoundTripSerializationSymTypeOfSIUnit(teSI3);
+    performRoundTripSerializationSymTypeOfNumericWithSIUnit(teNumSI1);
     performRoundTripSerializationSymTypeVariable(teVarA);
     performRoundTripSerializationSymTypeVariable(teVarB);
     performRoundTripSerializationSymTypeOfObject(teP);
@@ -226,8 +256,11 @@ public class SymTypeExpressionDeSerTest {
     // and assert that the serialized and deserialized symtype expression equals the one before
     Assertions.assertEquals(expr.print(), deserialized.print());
     Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
-    if (!(deserialized instanceof SymTypeOfWildcard)
-        && !(deserialized instanceof SymTypeOfRegEx)) {
+    if (!deserialized.isWildcard() &&
+        !deserialized.isRegExType() &&
+        !deserialized.isSIUnitType() &&
+        !deserialized.isNumericWithSIUnitType()
+    ) {
       TypeSymbol expectedTS = deserialized.getTypeInfo();
       TypeSymbol actualTS = expr.getTypeInfo();
       Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
@@ -326,6 +359,32 @@ public class SymTypeExpressionDeSerTest {
     Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
   }
 
+  protected void performRoundTripSerializationSymTypeOfSIUnit(SymTypeOfSIUnit expr) {
+    SymTypeOfSIUnitDeSer deser = new SymTypeOfSIUnitDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized);
+    Assertions.assertNotNull(deserialized);
+
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
+  }
+
+  protected void performRoundTripSerializationSymTypeOfNumericWithSIUnit(
+      SymTypeOfNumericWithSIUnit expr
+  ) {
+    SymTypeOfNumericWithSIUnitDeSer deser = new SymTypeOfNumericWithSIUnitDeSer();
+
+    String serialized = deser.serialize(expr);
+
+    SymTypeExpression deserialized = deser.deserialize(serialized);
+    Assertions.assertNotNull(deserialized);
+
+    Assertions.assertEquals(expr.print(), deserialized.print());
+    Assertions.assertEquals(expr.printAsJson(), deserialized.printAsJson());
+  }
+
   protected void performRoundTripSerializationSymTypeOfUnion(SymTypeOfUnion expr) {
     SymTypeOfUnionDeSer deser = new SymTypeOfUnionDeSer();
 
@@ -357,6 +416,10 @@ public class SymTypeExpressionDeSerTest {
   public void testRoundtrip2() {
     performRoundtrip2(teDouble);
     performRoundtrip2(teInt);
+    performRoundtrip2(teSI1);
+    performRoundtrip2(teSI2);
+    performRoundtrip2(teSI3);
+    performRoundtrip2(teNumSI1);
     performRoundtrip2(teVarA);
     performRoundtrip2(teVarB);
     performRoundtrip2(teP);
@@ -394,8 +457,11 @@ public class SymTypeExpressionDeSerTest {
     // and assert that the serialized and deserialized symtype expression equals the one before
     Assertions.assertEquals(expr.print(), loaded.print());
     Assertions.assertEquals(expr.printAsJson(), loaded.printAsJson());
-    if (!(loaded instanceof SymTypeOfWildcard)
-        && !(loaded instanceof SymTypeOfRegEx)) {
+    if (!loaded.isWildcard() &&
+        !loaded.isRegExType() &&
+        !loaded.isSIUnitType() &&
+        !loaded.isNumericWithSIUnitType()
+    ) {
       TypeSymbol expectedTS = loaded.getTypeInfo();
       TypeSymbol actualTS = expr.getTypeInfo();
       Assertions.assertEquals(expectedTS.getName(), actualTS.getName());
