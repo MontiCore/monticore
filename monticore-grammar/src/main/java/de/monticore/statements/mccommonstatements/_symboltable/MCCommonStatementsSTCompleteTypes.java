@@ -10,6 +10,10 @@ import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+/**
+ * @deprecated Use {@link MCCommonStatementsSymTabCompletion} instead
+ */
+@Deprecated
 public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisitor2 {
 
   @Override

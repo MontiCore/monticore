@@ -7,7 +7,7 @@ integrate literals enriched with an SI unit to their language. Furthermore,
 this language provides functionality for unit compatibility and type
 checking.
 
-[[_TOC_]]
+
 
 ## The grammar files are (see details below):
 

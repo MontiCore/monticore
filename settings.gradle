@@ -1,6 +1,4 @@
 // (c) https://github.com/MontiCore/monticore
-
-/* (c) https://github.com/MontiCore/monticore */
 pluginManagement {
   repositories {
     mavenCentral()
@@ -25,7 +23,7 @@ String myGetProperty(String key){
 
 buildCache {
   local {
-    enabled = !isCi // CI has no (persistent) local storage
+    enabled = true
   }
   remote(HttpBuildCache) {
     enabled = myGetProperty("buildCacheURL") != null
