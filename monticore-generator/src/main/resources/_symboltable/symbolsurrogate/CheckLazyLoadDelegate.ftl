@@ -12,5 +12,9 @@ ${tc.signature("symbolReferenceName", "symbolName", "simpelName", "scopeName", "
       ${symbolReferenceName}.class.getSimpleName());
       delegate = Optional.of(resolvedSymbol.get());
     }
+	else {
+	  Log.warn("0xA0310${generatedError} " + ${symbolReferenceName}.class.getSimpleName()
+	  + ": Unable to load full information of '" + name + ". Please check the symbol table.");
+	}
   }
   return delegate.isPresent();
