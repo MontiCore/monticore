@@ -164,7 +164,7 @@ public class CommonExpressionsCTTIVisitor
         getInferenceContext4Ast().hasResolvedOfExpression(expr)
     ) {
       resolved = getInferenceContext4Ast().getResolvedOfExpression(expr);
-      Log.info("FieldAccessExpression - deliberately ignoring"
+      Log.trace("FieldAccessExpression - deliberately ignoring"
               + " resolved type " + resolvedType.printFullName()
               + " (using " + resolved.printFullName() + " instead)"
               + " to use the same inference variables as last time.",
