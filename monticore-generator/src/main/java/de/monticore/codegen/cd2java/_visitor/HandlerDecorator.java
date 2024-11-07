@@ -104,7 +104,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLER_HANDLE_TEMPLATE, traverse));
     this.replaceTemplate(JAVADOC, handleMethod,
             JavaDoc.of("NOTE: You are most likely looking for " +
-                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!").asHP());
+                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!")
+                    .param("node", "the ast node to handle")
+                    .asHP());
     return handleMethod;
   }
 

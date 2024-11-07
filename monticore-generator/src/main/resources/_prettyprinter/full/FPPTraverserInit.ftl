@@ -3,6 +3,11 @@
   traverse initialization for a FullPrettyPrinter
   This method is overrideable
 -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="grammarSymbol" type="de.monticore.grammar.grammar._symboltable.MCGrammarSymbol" -->
+<#-- @ftlvariable name="superGrammars" type="java.util.List<String>" -->
+<#-- @ftlvariable name="replacedKeywordGrammars" type="java.util.Map<String, java.util.Map<de.monticore.grammar.grammar._symboltable.ProdSymbol, java.util.Map<String, java.util.Collection<String>>>>" -->
 ${tc.signature("grammarSymbol", "superGrammars", "replacedKeywordGrammars")}
 
 <#assign grammarName=grammarSymbol.getName()>

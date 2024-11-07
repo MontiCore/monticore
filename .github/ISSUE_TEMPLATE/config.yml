@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: MontiCore handbook
+    url: https://www.monticore.de/handbook.pdf
+    about: The handbook gives an in-detail overview over a number of core mechanisms of MontiCore
+  - name: Teaching
+    url: https://www.se-rwth.de/teaching/
+    about: In case you are a student using MontiCore within a lecture, contact your teaching assistant in regards to exercises.
+  - name: More Information
+    url: https://monticore.github.io/monticore/#more-information-about-monticore
+    about: A list of additional resources about MontiCore

@@ -131,7 +131,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
     this.replaceTemplate(EMPTY_BODY, acceptMethod, new TemplateHookPoint("_ast.ast_class.Accept", astClass));
     this.replaceTemplate(JAVADOC, acceptMethod,
             JavaDoc.of("Entry point for the Visitor pattern.",
-                    "Cf. MontiCore handbook chapter 8.").asHP());
+                    "Cf. MontiCore handbook chapter 8.")
+                    .param("visitor", "the visitor to dispatch to")
+                    .asHP());
     return acceptMethod;
   }
 
@@ -151,7 +153,9 @@ public class ASTDecorator extends AbstractTransformer<ASTCDClass> {
           CD4CodeMill.prettyPrint(superVisitorType, false), "AST node"));
       this.replaceTemplate(JAVADOC, superAccept,
               JavaDoc.of("Entry point for the Visitor pattern.",
-                      "Cf. MontiCore handbook chapter 8.").asHP());
+                      "Cf. MontiCore handbook chapter 8.")
+                      .param("visitor", "the visitor to dispatch to")
+                      .asHP());
       result.add(superAccept);
     }
     return result;

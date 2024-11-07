@@ -3,6 +3,10 @@
   traverse initialization for a FullPrettyPrinter
   This method is overrideable
 -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="grammarSymbol" type="java.lang.String" -->
+<#-- @ftlvariable name="replacedKeywordCurrentGrammar" type="java.util.Map<de.monticore.grammar.grammar._symboltable.ProdSymbol, java.util.Map<String, java.util.Collection<String>>>" -->
 ${tc.signature("grammarSymbol", "replacedKeywordCurrentGrammar")}
 <#assign service = glex.getGlobalVar("service")>
 <#assign doGenerateReplKeywordError=false>

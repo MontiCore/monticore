@@ -14,11 +14,12 @@ variables:
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
-#cache:
-#  paths:
-#    - .m2/
-#    - .gradle/wrapper
-#  key: ${CI_COMMIT_REF_SLUG} # Cache per branch
+# Cache the gradle build cache
+cache:
+  key: gradle-cache-key
+  paths:
+    - .gradle/caches
+  policy: pull-push
 
 stages:
   - build

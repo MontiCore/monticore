@@ -1,0 +1,158 @@
+# (c) https://github.com/MontiCore/monticore
+name: Gradle Test & Build
+
+
+concurrency: # run this test workflow only once per "branch"
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push: # run this test pipeline on every push
+    paths-ignore:
+      - "*.md"
+  pull_request: # and pull request  (Note: We can skip pull request events IFF the PR is not done from a fork)
+    paths-ignore:
+      - "*.md"
+  repository_dispatch: # and on request of upstream projects
+    types: [ trigger_after_upstream_deploy ]
+
+
+env:
+  GRADLE_VERSION: 7.4 # Gradle version used
+  GRADLE_CLI_OPTS: "-Pci --build-cache " # CLI option passed to Gradle
+  GRADLE_BUILD_ACTION_CACHE_KEY_JOB: "test-cache-${{ github.head_ref }}.${{ github.sha }}"
+
+permissions:
+  contents: read # This action may run somewhat unsafe code
+
+
+jobs:
+  build-generator: # Note: Build-Cache may not work yet
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name # do not run duplicate jobs on PRs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Build the monticore-generator
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: build -p monticore-generator ${{env.GRADLE_CLI_OPTS}}
+
+  build-mc:
+    runs-on: ubuntu-latest
+    needs: build-generator
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Build monticore (buildMC)
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: buildMC ${{env.GRADLE_CLI_OPTS}} -PgenTR=true -PgenEMF=true -PgenTagging=true
+
+  # first set of experiments from the handbook
+  test-01-experiments:
+    runs-on: ubuntu-latest
+    needs: build-mc
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Test 01.experiments
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: build test -p monticore-test/01.experiments ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
+
+  # second set of experiments from the handbook
+  test-02-experiments:
+    runs-on: ubuntu-latest
+    needs: build-mc
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Test 02.experiments
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: build test -p monticore-test/02.experiments ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
+
+  # test integration tests from the it project
+  test-it:
+    runs-on: ubuntu-latest
+    needs: build-mc
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Test monticore-test/it
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: build test -p monticore-test/it ${{env.GRADLE_CLI_OPTS}}
+      - name: Checking that all file handles in the target folder are closed
+        run: if pgrep java | xargs -i ls -la /proc/{}/fd | grep "monticore-test/it/target/"; then echo "Found open file handles!"; exit 1; else echo "No open file handles."; exit 0; fi
+
+  # test integration tests from the it project, using the emf profile
+  test-it-emf:
+    runs-on: ubuntu-latest
+    needs: build-mc
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Test monticore-test/it with emf profile
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: build test -p monticore-test/it ${{env.GRADLE_CLI_OPTS}} -PbuildProfile=emf -PgenEMF=true
+
+  # Grammar integration tests
+  test-grammar-it:
+    runs-on: ubuntu-latest
+    needs: build-mc
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Test monticore-grammar-it
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: build test -p monticore-test/monticore-grammar-it ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
+
+  # Transformation tests
+  test-montitrans:
+    runs-on: ubuntu-latest
+    needs: build-mc
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v3
+      - name: Test monticore-grammar-it
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: build test -p monticore-test/montitrans ${{env.GRADLE_CLI_OPTS}} -PgenTR=true
+
+
+
+  # Run the MontiVerse pipeline (tests this change on a suite of projects)
+  trigger-montiverse:
+    if: github.event_name == 'pull_request' # only run on PRs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger MontiVerse
+        uses: digital-blueprint/gitlab-pipeline-trigger-action@v1
+        with:
+          host: 'git.rwth-aachen.de'
+          trigger_token: ${{ secrets.MONTIVERSE_TRIGGER_TOKEN }}
+          access_token: ${{ secrets.MONTIVERSE_ACCESS_TOKEN }}  # Access is required to show the status
+          id: '91803'  # montiverseci project id
+          ref: 'main'
+          # TODO: Include entire git path here instead (due to PRs)
+          variables: '{"MONTICORE_BRANCH":"${{github.event.pull_request.head.ref }}", "MONTICORE_PROJECT":"${{ github.event.pull_request.head.repo.full_name }}"}'
+
+        # TODO: Proper message in PRs (turn the MontiVerse into a GitHub Action?)?
+
+# TODO: FIX to specific version instead of @v3
+
+# TODO: check-links
+
+# TODO: checkMLCs
