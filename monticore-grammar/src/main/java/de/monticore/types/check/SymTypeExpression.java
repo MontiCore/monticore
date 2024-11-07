@@ -8,6 +8,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
@@ -634,6 +635,37 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
     Log.error("0xFDFDF internal error: getTypeInfo called,"
         + "but no typeinfo available");
     return null;
+  }
+
+  protected Optional<ISymbol> sourceSymbol = Optional.empty();
+
+  /**
+   * Whether {@link #getSourceSymbol()} may be called.
+   */
+  public boolean hasSourceSymbol() {
+    return sourceSymbol.isPresent();
+  }
+
+  /**
+   * source of the SymTypeExpression, e.g.,
+   * if a variable int x is resolved, the type symbol will be int,
+   * but the source symbol will be the variable symbol x.
+   * <p>
+   * This information can be used for CoCos, code generators, etc.
+   * <p>
+   * This replaces getDefiningSymbol() on ASTNodes.
+   */
+  public ISymbol getSourceSymbol() {
+    if (!hasSourceSymbol()) {
+      Log.error("0xFDFDE internal error: getSourceSymbol called,"
+          + " but no symbol available.");
+      return null;
+    }
+    return sourceSymbol.get();
+  }
+
+  public void setSourceSymbol(ISymbol source) {
+    this.sourceSymbol = Optional.of(source);
   }
 
   public void accept(ISymTypeVisitor visitor) {

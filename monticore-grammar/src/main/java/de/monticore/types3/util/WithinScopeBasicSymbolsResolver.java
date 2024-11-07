@@ -179,20 +179,27 @@ public class WithinScopeBasicSymbolsResolver {
   ) {
     Log.errorIfNull(enclosingScope);
     Log.errorIfNull(name);
+    Optional<SymTypeExpression> result;
     Optional<VariableSymbol> optVarSym = resolverHotfix(
         () -> enclosingScope.resolveVariable(
             name, AccessModifier.ALL_INCLUSION, getVariablePredicate()
         ));
-    if (optVarSym.isPresent() && optVarSym.get().getType() == null) {
+    if (optVarSym.isEmpty()) {
+      result = Optional.empty();
+    }
+    else if (optVarSym.get().getType() == null) {
       Log.error("0xFD489 internal error: incorrect symbol table, "
           + "variable symbol " + optVarSym.get().getFullName()
           + " has no type set.");
       return Optional.empty();
     }
-    Optional<SymTypeExpression> optVar = optVarSym.map(vs -> vs.getType());
-    Optional<SymTypeExpression> optVarReplacedVariables = optVar
-        .map(t -> TypeParameterRelations.replaceFreeTypeVariables(t, enclosingScope));
-    return optVarReplacedVariables;
+    else {
+      SymTypeExpression varType = optVarSym.get().getType();
+      SymTypeExpression varTypeReplacedVariables = TypeParameterRelations
+          .replaceFreeTypeVariables(varType, enclosingScope);
+      result = Optional.of(varTypeReplacedVariables);
+    }
+    return result;
   }
 
   /**
