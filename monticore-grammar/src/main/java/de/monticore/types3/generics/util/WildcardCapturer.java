@@ -257,7 +257,9 @@ public class WildcardCapturer {
       SymTypeExpression upperBound
   ) {
     return SymTypeExpressionFactory.createTypeVariable(
-        "CAP#" + captureVarNextID++, lowerBound, upperBound
+        // s.a. https://git.rwth-aachen.de/monticore/monticore/-/issues/4296
+        "CAP#" + String.format("%05d", captureVarNextID++)
+        , lowerBound, upperBound
     );
   }
 

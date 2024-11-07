@@ -161,6 +161,21 @@ public class CallGenericFunctionsTest
     maxOfIntegerSym.getSpannedScope().add(maxOfIntegerVar);
   }
 
+  @ParameterizedTest
+  @MethodSource
+  public void deriveFromGenericsNoTargetType(
+      String expr, String expectedType
+  ) throws IOException {
+    checkExpr(expr, expectedType);
+    assertNoFindings();
+  }
+
+  public static Stream<Arguments> deriveFromGenericsNoTargetType() {
+    return Stream.of(
+        Arguments.of("id(varint)", "int")
+    );
+  }
+
   @Test
   public void deriveFromGenericsPerReturnType() throws IOException {
     checkExpr("getTarget", "() -> int", "() -> int");
@@ -191,21 +206,29 @@ public class CallGenericFunctionsTest
     checkErrorExpr("getSuperTargetList()", "List<? extends int>", "0xFD451");
   }
 
-  @Test
-  public void deriveFromGenericsPerIndirectReturnType() throws IOException {
-    checkExpr("id(varint)", "int", "int");
-    checkExpr("id(varshort)", "int", "short");
-    checkExpr("id(varint)", "int"); // ?
-    // getTarget with 1 id
-    checkExpr("id(getTarget)", "() -> int", "() -> int");
-    checkExpr("id(getTarget())", "int", "int");
-    checkExpr("id(getTarget)()", "int", "int");
-    // getTarget with 2 ids
-    checkExpr("id(id(getTarget))", "() -> int", "() -> int");
-    checkExpr("id(id(getTarget()))", "int", "int");
-    checkExpr("id(id(getTarget)())", "int", "int");
-    checkExpr("id(id(getTarget))()", "int", "int");
+  @ParameterizedTest
+  @MethodSource
+  public void deriveFromGenericsPerIndirectReturnType(
+      String expr, String targetType, String expectedType
+  ) throws IOException {
+    checkExpr(expr, targetType, expectedType);
     assertNoFindings();
+  }
+
+  public static Stream<Arguments> deriveFromGenericsPerIndirectReturnType() {
+    return Stream.of(
+        Arguments.of("id(varint)", "int", "int"),
+        Arguments.of("id(varshort)", "int", "short"),
+        // getTarget with 1 id
+        Arguments.of("id(getTarget)", "() -> int", "() -> int"),
+        Arguments.of("id(getTarget())", "int", "int"),
+        Arguments.of("id(getTarget)()", "int", "int"),
+        // getTarget with 2 ids
+        Arguments.of("id(id(getTarget))", "() -> int", "() -> int"),
+        Arguments.of("id(id(getTarget()))", "int", "int"),
+        Arguments.of("id(id(getTarget)())", "int", "int"),
+        Arguments.of("id(id(getTarget))()", "int", "int")
+    );
   }
 
   @Test

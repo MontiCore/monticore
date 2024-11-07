@@ -40,18 +40,29 @@ public class ExpressionBasisCTTIVisitor
     if (getType4Ast().hasPartialTypeOfExpression(expr)) {
       return;
     }
-    Optional<SymTypeExpression> potentialType = calculateNameExpressionOrLogError(expr);
-    if (potentialType.isEmpty()) {
-      getType4Ast().setTypeOfExpression(expr,
-          SymTypeExpressionFactory.createObscureType()
-      );
+
+    SymTypeExpression resolved;
+    if (getInferenceContext4Ast().hasResolvedOfExpression(expr)) {
+      resolved = getInferenceContext4Ast().getResolvedOfExpression(expr);
     }
     else {
-      CompileTimeTypeCalculator.handleResolvedType(
-          expr, potentialType.get(),
-          getTraverser(), getType4Ast(), getInferenceContext4Ast()
-      );
+      Optional<SymTypeExpression> potentialType =
+          calculateNameExpressionOrLogError(expr);
+      if (potentialType.isEmpty()) {
+        // error already logged
+        getType4Ast().setTypeOfExpression(expr,
+            SymTypeExpressionFactory.createObscureType()
+        );
+        return;
+      }
+      resolved = potentialType.get();
+      getInferenceContext4Ast().setResolvedOfExpression(expr, resolved);
     }
+
+    CompileTimeTypeCalculator.handleResolvedType(
+        expr, resolved,
+        getTraverser(), getType4Ast(), getInferenceContext4Ast()
+    );
   }
 
 }

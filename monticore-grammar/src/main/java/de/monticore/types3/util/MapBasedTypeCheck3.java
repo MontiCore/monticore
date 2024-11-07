@@ -162,7 +162,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
       );
       // need to reset in case the target type changes the typing in the AST
       getType4Ast().reset(expr);
-      getCtx4Ast().reset(expr);
+      getCtx4Ast().resetContexts(expr);
     }
     else if (getType4Ast().hasPartialTypeOfExpression(expr) &&
         targetTypeOld.isPresent() &&
@@ -185,7 +185,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
       );
       // need to reset in case the target type changes the typing in the AST
       getType4Ast().reset(expr);
-      getCtx4Ast().reset(expr);
+      getCtx4Ast().resetContexts(expr);
     }
     if (!getType4Ast().hasPartialTypeOfExpression(expr)) {
       getCtx4Ast().setTargetTypeOfExpression(expr, targetType);

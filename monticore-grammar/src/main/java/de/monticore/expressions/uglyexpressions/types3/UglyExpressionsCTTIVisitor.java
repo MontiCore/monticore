@@ -15,7 +15,6 @@ import de.monticore.types3.generics.util.CompileTimeTypeCalculator;
 import de.monticore.types3.generics.util.PartialFunctionInfo;
 
 import java.util.List;
-import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 
@@ -72,16 +71,26 @@ public class UglyExpressionsCTTIVisitor
   ) {
     ASTClassCreator creator = UglyExpressionsMill.typeDispatcher()
         .asUglyExpressionsASTClassCreator(expr.getCreator());
-    if (!getType4Ast().hasPartialTypeOfTypeIdentifier(creator.getMCType())) {
-      creator.getMCType().accept(getTraverser());
+    SymTypeExpression resolved;
+    if (getInferenceContext4Ast().hasResolvedOfExpression(expr)) {
+      resolved = getInferenceContext4Ast().getResolvedOfExpression(expr);
     }
-    List<SymTypeOfFunction> constructors =
-        getConstructors(creator);
-    Optional<SymTypeExpression> resolved = constructors.isEmpty() ?
-        Optional.empty() :
-        Optional.of(SymTypeExpressionFactory.createIntersectionOrDefault(
-            createObscureType(), constructors
-        ));
+    else {
+      if (!getType4Ast().hasPartialTypeOfTypeIdentifier(creator.getMCType())) {
+        creator.getMCType().accept(getTraverser());
+      }
+      List<SymTypeOfFunction> constructors = getConstructors(creator);
+      if (constructors.isEmpty()) {
+        // error already logged
+        getType4Ast().setTypeOfExpression(expr, createObscureType());
+        return;
+      }
+      resolved = SymTypeExpressionFactory.createIntersectionOrDefault(
+          createObscureType(), constructors
+      );
+      getInferenceContext4Ast().setResolvedOfExpression(expr, resolved);
+    }
+
     // a "fake" ASTExpression to store the calculated function type in,
     // as there is only one expr but two calculations;
     // calculating the function type and calculating the type of the call
@@ -92,22 +101,17 @@ public class UglyExpressionsCTTIVisitor
       funcInfo.setReturnTargetType(infCtx.getTargetType());
     }
     funcInfo.setArgumentExprs(creator.getArguments().getExpressionList());
-    if (resolved.isEmpty()) {
-      getType4Ast().setTypeOfExpression(tmpFuncExpr, createObscureType());
-    }
-    else {
-      CompileTimeTypeCalculator.handleResolvedType(
-          tmpFuncExpr, resolved.get(),
-          getTraverser(), getType4Ast(), getInferenceContext4Ast()
-      );
-    }
+    CompileTimeTypeCalculator.handleResolvedType(
+        tmpFuncExpr, resolved,
+        getTraverser(), getType4Ast(), getInferenceContext4Ast()
+    );
     CompileTimeTypeCalculator.handleCall(
         expr, tmpFuncExpr, creator.getArguments().getExpressionList(),
         getTraverser(), getType4Ast(), getInferenceContext4Ast()
     );
     // clean the map by removing the temporary ASTExpression
     getType4Ast().reset(tmpFuncExpr);
-    getInferenceContext4Ast().reset(tmpFuncExpr);
+    getInferenceContext4Ast().resetContexts(tmpFuncExpr);
 
     if (getType4Ast().hasPartialTypeOfExpression(expr)) {
       if (!getType4Ast().getPartialTypeOfExpr(expr).isObscureType()) {
