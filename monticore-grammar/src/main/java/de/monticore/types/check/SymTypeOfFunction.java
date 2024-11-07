@@ -229,9 +229,10 @@ public class SymTypeOfFunction extends SymTypeExpression {
           new TreeMap<>(new SymTypeExpressionComparator());
       for (SymTypeVariable infVar : infVars) {
         infVar2Skolem.put(infVar,
-            SymTypeExpressionFactory.createTypeObject(
+            SymTypeExpressionFactory.createTypeVariable(
                 "Skolem#" + infVar.getFreeVarIdentifier(),
-                BasicSymbolsMill.scope()
+                infVar.getLowerBound(),
+                infVar.getUpperBound()
             )
         );
       }
