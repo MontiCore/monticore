@@ -637,35 +637,23 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
     return null;
   }
 
-  protected Optional<ISymbol> sourceSymbol = Optional.empty();
+  protected SymTypeSourceInfo sourceInfo = new SymTypeSourceInfo();
 
   /**
-   * Whether {@link #getSourceSymbol()} may be called.
+   * Contains information where this SymTypeExpression comes from.
+   * Used in CoCos, code-generation, etc.
+   * <p>
+   * not considered during {@link #deepEquals(SymTypeExpression)}.
    */
-  public boolean hasSourceSymbol() {
-    return sourceSymbol.isPresent();
+  public SymTypeSourceInfo getSourceInfo() {
+    return this.sourceInfo;
   }
 
   /**
-   * source of the SymTypeExpression, e.g.,
-   * if a variable int x is resolved, the type symbol will be int,
-   * but the source symbol will be the variable symbol x.
-   * <p>
-   * This information can be used for CoCos, code generators, etc.
-   * <p>
-   * This replaces getDefiningSymbol() on ASTNodes.
+   * used during deep-cloning, clones the SymTypeSourceInfo
    */
-  public ISymbol getSourceSymbol() {
-    if (!hasSourceSymbol()) {
-      Log.error("0xFDFDE internal error: getSourceSymbol called,"
-          + " but no symbol available.");
-      return null;
-    }
-    return sourceSymbol.get();
-  }
-
-  public void setSourceSymbol(ISymbol source) {
-    this.sourceSymbol = Optional.of(source);
+  public void _internal_setSourceInfo(SymTypeSourceInfo sourceInfo) {
+    this.sourceInfo = new SymTypeSourceInfo(sourceInfo);
   }
 
   public void accept(ISymTypeVisitor visitor) {
