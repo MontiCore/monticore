@@ -268,7 +268,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     int index = 0;
     for (ASTConstant c : ast.getConstantList()) {
       addToCodeSection(sep);
-      addToCodeSection("\n", "e_" + index++ + "=" + parserHelper.getLexSymbolName(c.getName()));
+      addToCodeSection("\n", "e_" + index++ + "=" + parserHelper.getOrComputeLexSymbolName(c.getName()));
 
       if (embeddedJavaCode) {
         String temp1 = "";
@@ -319,11 +319,11 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       if (x.isPresentKeyConstant()) {
         addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList(), tmpName + label));
       } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
-        addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getName()));
+        addToCodeSection(tmpName + label + parserHelper.getOrComputeLexSymbolName(x.getName()));
       } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
         addToCodeSection(tmpName + label + parserHelper.getKeyRuleName(x.getName()));
       } else {
-        addToCodeSection(tmpName + label + parserHelper.getLexSymbolName(x.getName()));
+        addToCodeSection(tmpName + label + parserHelper.getOrComputeLexSymbolName(x.getName()));
       }
 
       del = "|\n";
@@ -464,7 +464,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     } else if (grammarInfo.isKeyword(ast.getName(), grammarEntry) && grammarInfo.getKeywordRules().contains(ast.getName())) {
       rulename = parserHelper.getKeyRuleName(ast.getName());
     } else {
-      rulename = parserHelper.getLexSymbolName(ast.getName().intern());
+      rulename = parserHelper.getOrComputeLexSymbolName(ast.getName().intern());
     }
 
     // No actions in predicates
@@ -487,7 +487,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         if (grammarInfo.getKeywordRules().contains(replaceString)) {
           addToCodeSection(parserHelper.getKeyRuleName(replaceString));
         } else {
-          addToCodeSection(parserHelper.getLexSymbolName(replaceString));
+          addToCodeSection(parserHelper.getOrComputeLexSymbolName(replaceString));
         }
         seperator = " | ";
       }
@@ -568,7 +568,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       if (grammarInfo.getKeywordRules().contains(replaceString)) {
         addToCodeSection(parserHelper.getKeyRuleName(replaceString));
       } else {
-        addToCodeSection(parserHelper.getLexSymbolName(replaceString));
+        addToCodeSection(parserHelper.getOrComputeLexSymbolName(replaceString));
       }
       seperator = " | ";
     }
@@ -586,7 +586,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     if (replacedAdditionalKeywords.containsKey(ast.getName())) {
       handleTerminal(labelAssignment, tmpVarName, replacedAdditionalKeywords, ast.getName());
     } else {
-      addToCodeSection(tmpVarName + labelAssignment + parserHelper.getLexSymbolName(ast.getTokenConstant().getString()));
+      addToCodeSection(tmpVarName + labelAssignment + parserHelper.getOrComputeLexSymbolName(ast.getTokenConstant().getString()));
     }
 
     addActionToCodeSection();
@@ -1056,7 +1056,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addToCodeSection("(");
     String rulename = "";
     if (grammarInfo.isKeyword(keyword.getName(), grammarEntry)) {
-      rulename = parserHelper.getLexSymbolName(keyword.getName());
+      rulename = parserHelper.getOrComputeLexSymbolName(keyword.getName());
     }
 
     // No actions in predicates

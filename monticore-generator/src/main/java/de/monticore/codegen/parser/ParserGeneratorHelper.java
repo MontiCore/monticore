@@ -146,12 +146,30 @@ public class ParserGeneratorHelper {
   /**
    * @return the name for a lexsymbol that should be used in an Antlr-File
    */
-  public String getLexSymbolName(String constName) {
+  public String getOrComputeLexSymbolName(String constName) {
     Log.errorIfNull(constName);
     if (grammarInfo.getSplitRules().containsKey(constName)) {
       return grammarInfo.getSplitRules().get(constName);
     } else {
       return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+    }
+  }
+
+  /**
+   * Does not
+   * @return the name for a lexsymbol that was used in an Antlr-File
+   */
+  public Optional<String> getCachedLexSymbolName(String constName) {
+    Log.errorIfNull(constName);
+    if (grammarInfo.getSplitRules().containsKey(constName)) {
+      return Optional.of(grammarInfo.getSplitRules().get(constName));
+    } else {
+      // Optimally we would call Map#get directly on the LexNamer
+      // (which is only available with the next release)
+      if (grammarInfo.getLexNamer().getLexnames().contains(constName)) {
+        return Optional.of(grammarInfo.getLexNamer().getLexName(grammarSymbol, constName));
+      }
+      return Optional.empty();
     }
   }
 

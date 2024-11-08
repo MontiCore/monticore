@@ -12,7 +12,7 @@ options {
 ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarSymbol().getName()])}
 
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
-  ${genHelper.getLexSymbolName(lexSymbol)} : '${lexSymbol}';
+  ${genHelper.getOrComputeLexSymbolName(lexSymbol)} : '${lexSymbol}';
 </#list>
  
 <#list genHelper.getLexerRulesToGenerate() as lexProd>

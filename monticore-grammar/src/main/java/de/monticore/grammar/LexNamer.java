@@ -4,6 +4,7 @@ package de.monticore.grammar;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -119,14 +120,23 @@ public class LexNamer {
 
   }
 
+  @Deprecated
+  public String getLexName(MCGrammarSymbol grammarSymbol, String sym) {
+    return this.getOrComputeLexName(grammarSymbol, sym);
+  }
+
+  public Optional<String> getComputedLexName(String sym) {
+    return Optional.ofNullable(this.usedLex.get(sym));
+  }
+
   /**
    * Returns Human-Readable, antlr conformed name for a lexsymbols nice names for common tokens
    * (change constructor to add tokenes) LEXi where i is number for unknown ones
-   * 
+   *
    * @param sym lexer symbol
    * @return Human-Readable, antlr conformed name for a lexsymbols
    */
-  public String getLexName(MCGrammarSymbol grammarSymbol, String sym) {
+  public String getOrComputeLexName(MCGrammarSymbol grammarSymbol, String sym) {
     if (usedLex.containsKey(sym)) {
       return usedLex.get(sym);
     }
@@ -139,8 +149,17 @@ public class LexNamer {
     Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
     return goodName;
   }
-  
+
+  @Deprecated
   public String getConstantName(String sym) {
+    return this.getOrComputeConstantName(sym);
+  }
+
+  public Optional<String> getComputedConstantName(String sym) {
+    return Optional.ofNullable(this.usedConstants.get(sym));
+  }
+
+  public String getOrComputeConstantName(String sym) {
     String s = sym.intern();
     
     if (!usedConstants.containsKey(s)) {
@@ -165,8 +184,11 @@ public class LexNamer {
     return key;
   }
 
-
   public Set<String> getLexnames() {
-    return usedLex.keySet();
+    return this.usedLex.keySet();
+  }
+
+  public Set<String> getUsedConstants() {
+    return this.usedConstants.keySet();
   }
 }
