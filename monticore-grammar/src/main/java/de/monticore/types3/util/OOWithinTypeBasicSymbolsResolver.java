@@ -12,11 +12,11 @@ import de.monticore.types.check.SymTypeOfFunction;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * resolves within a type,
@@ -34,7 +34,7 @@ public class OOWithinTypeBasicSymbolsResolver
       SymTypeExpression thisType,
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
-    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
+    List<SymTypeOfFunction> resolvedSymTypes;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
       resolvedSymTypes = new ArrayList<>();
@@ -47,26 +47,26 @@ public class OOWithinTypeBasicSymbolsResolver
           accessModifier,
           predicate
       );
-      List<SymTypeOfFunction> resolvedTypesUnmodified = resolvedSymbols.stream()
-          .map(FunctionSymbol::getFunctionType)
-          .collect(Collectors.toList());
-      // checking for broken symbol table
-      if (resolvedTypesUnmodified.stream().anyMatch(f ->
-          !f.getType().hasTypeInfo() ||
-              !f.getType().getTypeInfo().getFullName()
-                  .equals(thisType.getTypeInfo().getFullName())
-      )) {
-        Log.error("0xFDCC2 unexpected constructor return type(s) of type "
-            + thisType.printFullName()
-            + ", constructors are " + System.lineSeparator()
-            + resolvedTypesUnmodified.stream()
-            .map(SymTypeOfFunction::printFullName)
-            .collect(Collectors.joining(System.lineSeparator()))
-        );
+      resolvedSymTypes = new ArrayList<>(resolvedSymbols.size());
+      for (FunctionSymbol funcSym : resolvedSymbols) {
+        SymTypeOfFunction funcTypeUnmodified = funcSym.getFunctionType();
+        // checking for broken symbol table
+        if (!funcTypeUnmodified.getType().hasTypeInfo() ||
+            !funcTypeUnmodified.getType().getTypeInfo().getFullName().equals(
+                thisType.getTypeInfo().getFullName()
+            )) {
+          Log.error("0xFDCC2 unexpected constructor return type(s) of type "
+              + thisType.printFullName()
+              + ", constructor is " + System.lineSeparator()
+              + funcTypeUnmodified.printFullName()
+          );
+        }
+        SymTypeOfFunction funcType = replaceVariablesIfNecessary(
+            thisType, funcTypeUnmodified
+        ).asFunctionType();
+        funcType.getSourceInfo().setSourceSymbol(funcSym);
+        resolvedSymTypes.add(funcType);
       }
-      resolvedSymTypes = resolvedTypesUnmodified.stream()
-          .map(f -> (SymTypeOfFunction) replaceVariablesIfNecessary(thisType, f))
-          .collect(Collectors.toList());
     }
 
     // do not search super types for constructors
