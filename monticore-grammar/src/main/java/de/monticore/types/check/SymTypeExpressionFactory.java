@@ -8,7 +8,6 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
 import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.se_rwth.commons.logging.Log;
 
@@ -167,6 +166,7 @@ public class SymTypeExpressionFactory {
    * @param dim        the dimension of the array
    * @param argument   the argument type (of the elements)
    * @return
+   * @deprecated arrays do not have a type symbol
    */
   @Deprecated
   public static SymTypeArray createTypeArray(TypeSymbol typeSymbol, int dim,
@@ -542,7 +542,8 @@ public class SymTypeExpressionFactory {
    */
   protected static String getUniqueFreeTypeVarName() {
     // naming inspired by JDK
-    return "FV#" + typeVarIDCounter++;
+    // s.a. https://git.rwth-aachen.de/monticore/monticore/-/issues/4296
+    return "FV#" + String.format("%05d", typeVarIDCounter++);
   }
   protected static int typeVarIDCounter = 0;
 

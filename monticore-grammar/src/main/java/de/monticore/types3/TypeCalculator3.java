@@ -90,7 +90,7 @@ public class TypeCalculator3 implements ITypeCalculator {
   ) {
     // need to reset in case the target type changes the typing in the AST
     getType4Ast().reset(expr);
-    getCtx4Ast().reset(expr);
+    getCtx4Ast().resetContexts(expr);
     getCtx4Ast().setTargetTypeOfExpression(expr, targetType);
     expr.accept(getTypeTraverser());
     return getType4Ast().getPartialTypeOfExpr(expr);
@@ -102,7 +102,7 @@ public class TypeCalculator3 implements ITypeCalculator {
     // there is no target type
     if (getCtx4Ast().getContextOfExpression(expr).hasTargetType()) {
       getType4Ast().reset(expr);
-      getCtx4Ast().reset(expr);
+      getCtx4Ast().resetContexts(expr);
     }
     if (!getType4Ast().hasTypeOfExpression(expr)) {
       expr.accept(getTypeTraverser());

@@ -737,7 +737,7 @@ public class BoundIncorporation {
       );
     }
     // S --> a and a <: T implies <S --> T>
-    if (TypeParameterRelations.isInferenceVariable(bS.getSubType()) &&
+    else if (TypeParameterRelations.isInferenceVariable(bS.getSubType()) &&
         bS.getSubType().asTypeVariable().denotesSameVar(bComp.getTargetType())
     ) {
       result = Collections.singletonList(
