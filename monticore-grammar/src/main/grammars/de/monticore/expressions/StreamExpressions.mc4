@@ -42,12 +42,18 @@ component grammar StreamExpressions extends CommonExpressions {
    * <> denotes the empty stream
    * <a> is equal to a:<>
    * <a,b> is equal to a:<b> and transitively a:b:<>
-   * the default timing is (timed) event
+   * ";" are added to the allowed separators to represent the end of a timeslice
+   * the default timing stream-type is (timed) event
    * Stream constructor has to bind harder than name expressions to avoid
    * the scanner recognizing timing keywords as names
    */
   StreamConstructorExpression implements Expression <360> =
-    timing:[key("event") | key("sync") | key("topt") | key("untimed")]? "<" (Expression || ",")* ">";
+    ({noSpace(2)}? streamType:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
+    "<" (Expression ","| Expression? tick:";")* Expression? tick:";"? ">";
+
+  StreamConstructorExpressionRaw implements Expression <360> = "<" (StreamC_E | StreamC_T)? ">";
+  StreamC_E = Expression | Expression "," StreamC_E | Expression StreamC_T;
+  StreamC_T = ";" | ";" StreamC_T | ";" StreamC_E;
 
   /* 
    * Append first element 

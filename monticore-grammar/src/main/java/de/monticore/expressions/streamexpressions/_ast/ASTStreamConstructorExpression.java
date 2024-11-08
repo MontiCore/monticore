@@ -2,18 +2,18 @@ package de.monticore.expressions.streamexpressions._ast;
 
 public class ASTStreamConstructorExpression extends ASTStreamConstructorExpressionTOP {
   public boolean isEventTimed() {
-    return getTiming() == ASTConstantsStreamExpressions.EVENT;
+    return getStreamType() == ASTConstantsStreamExpressions.EVENT;
   }
 
   public boolean isSyncTimed() {
-    return getTiming() == ASTConstantsStreamExpressions.SYNC;
+    return getStreamType() == ASTConstantsStreamExpressions.SYNC;
   }
 
   public boolean isToptTimed() {
-    return getTiming() == ASTConstantsStreamExpressions.TOPT;
+    return getStreamType() == ASTConstantsStreamExpressions.TOPT;
   }
 
   public boolean isUntimed() {
-    return getTiming() == ASTConstantsStreamExpressions.UNTIMED;
+    return getStreamType() == ASTConstantsStreamExpressions.UNTIMED;
   }
 }
