@@ -166,7 +166,10 @@ public final class MCPath {
     // iterate MCPath entries and check whether folder path exists within these
     for (Path p : getEntries()) {
       if(p.toString().endsWith(".jar")){
-        String path = "/" + folderPath.replace('\\', '/') + "/" + fileNameRegEx;
+        String path = "";
+        if (!folderPath.isEmpty()) // Only prepend the folderPath if present
+          path = "/" + folderPath.replace('\\', '/');
+        path += "/" + fileNameRegEx;
         if (k.fileExtRegEx.equals(".*sym")) {
           // For .jar entries with a *.sym file extension regex, we cache the jar entries
           jarSymCache.getUnchecked(p).getCandidates(path).map(uri -> {
