@@ -625,7 +625,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
 
   /**
    * Returns an TypeSymbol representing the type
-   * Only to be called according to {@link SymTypeExpression::hasTypeInfo}
+   * Only to be called according to {@link #hasTypeInfo()}
    */
   public TypeSymbol getTypeInfo() {
     //support deprecated behaviour
