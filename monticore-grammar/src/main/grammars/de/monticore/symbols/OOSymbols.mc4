@@ -89,7 +89,7 @@ component grammar OOSymbols extends BasicSymbols {
    * The new symbol MethodSymbol inherits from FunctionSymbol and 
    * mainly adds OO specific properties.
    */
-  interface symbol Method extends Function = Name ;
+  interface scope symbol Method extends Function = Name ;
   
   symbolrule Method =
     isConstructor: boolean
