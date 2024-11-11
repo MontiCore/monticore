@@ -27,7 +27,10 @@ public class MCGeneratorBasePlugin implements Plugin<Project> {
     project.getExtensions().getExtraProperties().set("MCGenTask", MCGenTask.class);
 
     // Add a task which writes the buildInfo.properties file
-    TaskProvider<?> writeMCBuildInfo = project.getTasks().register("writeMCBuildInfo", MCBuildInfoTask.class);
+    TaskProvider<?> writeMCBuildInfo = project.getTasks().register("writeMCBuildInfo", MCBuildInfoTask.class, mcBuildInfoTask -> {
+      // With an input property ensuring UP-TO-DATE checks consider the version
+      mcBuildInfoTask.getVersion().set(project.provider(() -> project.getVersion().toString()));
+    });
 
     // writeMCBuildInfo should always be performed before processing resources
     project.getTasks().withType(ProcessResources.class).configureEach(t -> {

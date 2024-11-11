@@ -123,7 +123,10 @@ shadowJar { // all in one jar
     zip64 true
 }
 
-tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {}
+tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {
+    // With an input property ensuring UP-TO-DATE checks consider the version property
+    version = project.version
+}
 
 processResources.dependsOn("buildInfo")
 
