@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.types;
+
+grammar MCBasicTypesWithBasicSymbolsTest extends
+        de.monticore.types.MCBasicTypes,
+        de.monticore.symbols.BasicSymbols {
+  start MCType;
+}

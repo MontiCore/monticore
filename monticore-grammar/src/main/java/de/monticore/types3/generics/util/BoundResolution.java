@@ -68,13 +68,23 @@ public class BoundResolution {
 
   /**
    * s. {@link #resolve(List)}
+   *
+   * @param toBeResolved only resolves the listed variables, or all if empty
    */
   public static Optional<Map<SymTypeVariable, SymTypeExpression>> resolve(
+      List<Bound> bounds,
+      List<SymTypeVariable> toBeResolved
+  ) {
+    return resolve(bounds, Collections.emptyList(), toBeResolved);
+  }
+
+  protected static Optional<Map<SymTypeVariable, SymTypeExpression>> resolve(
       List<Bound> newBounds,
-      List<Bound> oldBounds
+      List<Bound> oldBounds,
+      List<SymTypeVariable> toBeResolved
   ) {
     return getDelegate().calculateResolve(
-        newBounds, oldBounds, Collections.emptySet()
+        newBounds, oldBounds, toBeResolved, Collections.emptySet()
     );
   }
 
@@ -84,6 +94,7 @@ public class BoundResolution {
   protected Optional<Map<SymTypeVariable, SymTypeExpression>> calculateResolve(
       List<Bound> newBounds,
       List<Bound> oldBounds,
+      List<SymTypeVariable> toBeResolved,
       Collection<SymTypeVariable> lastSetOfUninstantiated
   ) {
     // shortcut reducing log
@@ -240,8 +251,16 @@ public class BoundResolution {
     // s.a. org.eclipse.jdt.internal.compiler.lookupInferenceContext18
     // ::getSmallestVariableSet
     List<SymTypeVariable> varsToResolveNext;
-    List<SymTypeVariable> varsToResolveNextNotFinal =
-        varsWithoutInstantiation;
+    List<SymTypeVariable> varsToResolveNextNotFinal;
+    // do not consider vars that should not be instantiated (yet)
+    if (toBeResolved.isEmpty()) {
+      varsToResolveNextNotFinal = varsWithoutInstantiation;
+    }
+    else {
+      varsToResolveNextNotFinal = varsWithoutInstantiation.stream()
+          .filter(toBeResolved::contains)
+          .collect(Collectors.toList());
+    }
     for (SymTypeVariable var : varsWithoutInstantiation) {
       Set<SymTypeVariable> deps =
           new TreeSet<>(new SymTypeExpressionComparator());
@@ -270,7 +289,7 @@ public class BoundResolution {
         );
         // use the new-found instantiations to reiterate
         result = calculateResolve(
-            new ArrayList<>(newEqualityBounds), reducedBounds,
+            new ArrayList<>(newEqualityBounds), reducedBounds, toBeResolved,
             varsWithoutInstantiation
         );
       }
@@ -353,7 +372,12 @@ public class BoundResolution {
           }
         }
         Optional<Map<SymTypeVariable, SymTypeExpression>> potentialResult =
-            calculateResolve(new ArrayList<>(newInfVarsBounds), reducedBoundsFiltered, varsWithoutInstantiation);
+            calculateResolve(
+                new ArrayList<>(newInfVarsBounds),
+                reducedBoundsFiltered,
+                toBeResolved,
+                varsWithoutInstantiation
+            );
         // remove the temporary inference variables from the result
         if (potentialResult.isPresent()) {
           result = Optional.of(createSymTypeExprMap());

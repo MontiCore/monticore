@@ -34,45 +34,6 @@ public class SetExpressionsCTTIVisitor extends SetExpressionsTypeVisitor
     this.traverser = traverser;
   }
 
-  // these functions types are used for the CTTI in SetEnumerations
-  // they are initialized on demand, as they require symbols for Set, List
-
-  /** {@code <T> (T...) -> Set<T>} */
-  protected SymTypeOfFunction setEnumerationFunc;
-
-  /** {@code <T> (T...) -> List<T>} */
-  protected SymTypeOfFunction listEnumerationFunc;
-
-  protected SymTypeOfFunction getSetEnumerationFunc() {
-    if (setEnumerationFunc == null) {
-      SymTypeVariable typeVar = createTypeVariable(
-          createBottomType(),
-          createTopType()
-      );
-      setEnumerationFunc = createFunction(
-          MCCollectionSymTypeFactory.createSet(typeVar),
-          List.of(typeVar),
-          true
-      );
-    }
-    return setEnumerationFunc;
-  }
-
-  protected SymTypeOfFunction getListEnumerationFunc() {
-    if (listEnumerationFunc == null) {
-      SymTypeVariable typeVar = createTypeVariable(
-          createBottomType(),
-          createTopType()
-      );
-      listEnumerationFunc = createFunction(
-          MCCollectionSymTypeFactory.createList(typeVar),
-          List.of(typeVar),
-          true
-      );
-    }
-    return listEnumerationFunc;
-  }
-
   @Override
   public void handle(ASTSetEnumeration expr) {
     Optional<List<ASTExpression>> containedExprs =
@@ -83,11 +44,18 @@ public class SetExpressionsCTTIVisitor extends SetExpressionsTypeVisitor
     }
     else {
       SymTypeOfFunction exprFunc;
-      if (expr.isSet()) {
-        exprFunc = getSetEnumerationFunc();
+      if (getInferenceContext4Ast().hasResolvedOfExpression(expr)) {
+        exprFunc = getInferenceContext4Ast().getResolvedOfExpression(expr)
+            .asFunctionType();
       }
       else {
-        exprFunc = getListEnumerationFunc();
+        if (expr.isSet()) {
+          exprFunc = getSetEnumerationFunc();
+        }
+        else {
+          exprFunc = getListEnumerationFunc();
+        }
+        getInferenceContext4Ast().setResolvedOfExpression(expr, exprFunc);
       }
       CompileTimeTypeCalculator.handleCall(
           expr,
@@ -103,6 +71,36 @@ public class SetExpressionsCTTIVisitor extends SetExpressionsTypeVisitor
       traverse(expr);
       endVisit(expr);
     }
+  }
+
+  // Helper
+
+  /** {@code <T> (T...) -> Set<T>} */
+  protected SymTypeOfFunction getSetEnumerationFunc() {
+    SymTypeVariable typeVar = createTypeVariable(
+        createBottomType(),
+        createTopType()
+    );
+    SymTypeOfFunction setEnumerationFunc = createFunction(
+        MCCollectionSymTypeFactory.createSet(typeVar),
+        List.of(typeVar),
+        true
+    );
+    return setEnumerationFunc;
+  }
+
+  /** {@code <T> (T...) -> List<T>} */
+  protected SymTypeOfFunction getListEnumerationFunc() {
+    SymTypeVariable typeVar = createTypeVariable(
+        createBottomType(),
+        createTopType()
+    );
+    SymTypeOfFunction listEnumerationFunc = createFunction(
+        MCCollectionSymTypeFactory.createList(typeVar),
+        List.of(typeVar),
+        true
+    );
+    return listEnumerationFunc;
   }
 
 }

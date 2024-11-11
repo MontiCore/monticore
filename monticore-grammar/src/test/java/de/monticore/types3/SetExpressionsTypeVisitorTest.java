@@ -336,7 +336,9 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("[(char)1, (byte)1, (short)1, (int)1, (float)1]", "List<float>"),
         // examples combining non-numeric types
         arguments("{\"1\", 1}", "Set<(String | int)>"),
-        arguments("{\"1\", varPerson}", "Set<(Person | String)>")
+        arguments("{\"1\", varPerson}", "Set<(Person | String)>"),
+        // complex
+        arguments("{{1}}", "Set<Set<int>>")
     );
   }
 
@@ -349,7 +351,9 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   }
 
   @Test
-  public void deriveFromSetEnumerationWithTargetType() throws IOException {
+  public void deriveFormSetEnumerationCTTI() throws IOException {
+    // without values
+    checkExpr("{}", "Set<Person>", "Set<Person>");
     checkExpr("{}", "Set<int>", "Set<int>");
     checkExpr("{}", "Set<? extends Person>", "Set<Person>");
     checkExpr("{}", "Set<? super Person>", "Set<Person>");
@@ -361,6 +365,15 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         "List<List<Set<List<Set<int>>>>>",
         "List<List<Set<List<Set<int>>>>>"
     );
+    // with values
+    checkExpr("{1}", "Set<int>", "Set<int>");
+    checkExpr("{1}", "Set<float>", "Set<float>");
+    checkExpr("{{1}}", "Set<Set<float>>", "Set<Set<float>>");
+    checkExpr("{[[{1},{}],[]], [[{2.0f}]]}",
+        "Set<List<List<Set<double>>>>",
+        "Set<List<List<Set<double>>>>"
+    );
+    checkExpr("[[],[1,2]]", "List<List<int>>", "List<List<int>>");
   }
 
 }

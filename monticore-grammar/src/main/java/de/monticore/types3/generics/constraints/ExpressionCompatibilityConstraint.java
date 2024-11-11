@@ -48,7 +48,9 @@ public class ExpressionCompatibilityConstraint extends Constraint {
 
   @Override
   public String print() {
-    return "<Expression --> " + targetType.printFullName() + ">";
+    return "<Expression["
+        + expr.get_SourcePositionStart() + "-" + expr.get_SourcePositionEnd()
+        + "] --> " + targetType.printFullName() + ">";
   }
 
   @Override

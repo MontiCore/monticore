@@ -84,6 +84,8 @@ public class WithinScopeBasicSymbolsResolver {
   public Optional<SymTypeExpression> resolveNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name) {
+    Log.errorIfNull(enclosingScope);
+    Log.errorIfNull(name);
     // collect all (potential) types
     Set<SymTypeExpression> types = new HashSet<>();
 
@@ -175,6 +177,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
+    Log.errorIfNull(enclosingScope);
+    Log.errorIfNull(name);
     Optional<VariableSymbol> optVarSym = resolverHotfix(
         () -> enclosingScope.resolveVariable(
             name, AccessModifier.ALL_INCLUSION, getVariablePredicate()
@@ -200,6 +204,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
+    Log.errorIfNull(enclosingScope);
+    Log.errorIfNull(name);
     List<SymTypeOfFunction> funcs = enclosingScope
         .resolveFunctionMany(name, getFunctionPredicate()).stream()
         // todo remove creation of a set
@@ -236,6 +242,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
+    Log.errorIfNull(enclosingScope);
+    Log.errorIfNull(name);
     Optional<SymTypeExpression> type;
     // variable
     Optional<TypeVarSymbol> optTypeVar;

@@ -8,10 +8,12 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.context.InferenceContext;
 import de.monticore.types3.generics.context.InferenceResult;
 import de.monticore.types3.generics.context.InferenceVisitorMode;
 import de.monticore.types3.generics.util.CompileTimeTypeCalculator;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,7 +136,7 @@ public class CommonExpressionsCTTIVisitor
       funcCtx.getPartialFunctionInfo().setReturnTargetType(callCtx.getTargetType());
     }
     getType4Ast().reset(funcExpr);
-    getInferenceContext4Ast().reset(funcExpr);
+    getInferenceContext4Ast().resetContexts(funcExpr);
     getInferenceContext4Ast().setContextOfExpression(funcExpr, funcCtx);
     funcExpr.accept(getTraverser());
     funcCtx = getInferenceContext4Ast().getContextOfExpression(funcExpr);
@@ -148,7 +150,7 @@ public class CommonExpressionsCTTIVisitor
       getType4Ast().reset(funcExpr);
     }
     else {
-      getInferenceContext4Ast().reset(funcExpr);
+      getInferenceContext4Ast().resetContexts(funcExpr);
     }
   }
 
@@ -157,8 +159,23 @@ public class CommonExpressionsCTTIVisitor
       ASTFieldAccessExpression expr,
       SymTypeExpression resolvedType
   ) {
+    SymTypeExpression resolved;
+    if (TypeParameterRelations.hasInferenceVariables(resolvedType) &&
+        getInferenceContext4Ast().hasResolvedOfExpression(expr)
+    ) {
+      resolved = getInferenceContext4Ast().getResolvedOfExpression(expr);
+      Log.trace("FieldAccessExpression - deliberately ignoring"
+              + " resolved type " + resolvedType.printFullName()
+              + " (using " + resolved.printFullName() + " instead)"
+              + " to use the same inference variables as last time.",
+          LOG_NAME
+      );
+    }
+    else {
+      resolved = resolvedType;
+    }
     CompileTimeTypeCalculator.handleResolvedType(
-        expr, resolvedType,
+        expr, resolved,
         getTraverser(), getType4Ast(), getInferenceContext4Ast()
     );
   }
