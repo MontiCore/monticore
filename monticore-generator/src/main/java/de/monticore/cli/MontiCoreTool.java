@@ -79,9 +79,9 @@ public class MontiCoreTool {
    * was released.
    */
   protected void runUpdateCheck() {
-    Runnable updateCheckerRunnable = new UpdateCheckerRunnable();
-    Thread updateCheckerThread = new Thread(updateCheckerRunnable);
-    updateCheckerThread.start();
+    //Runnable updateCheckerRunnable = new UpdateCheckerRunnable();
+    //Thread updateCheckerThread = new Thread(updateCheckerRunnable);
+    //updateCheckerThread.start();
   }
   
   /**

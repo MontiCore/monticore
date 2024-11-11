@@ -316,9 +316,9 @@ configurations {
 }
 dependencies {
   // resolve the grammars of myolddsl
-  legacyGrammar "de.monticore.languages:myolddsl:7.7.0-SNAPSHOT:grammars"
+  legacyGrammar "de.monticore.languages:myolddsl:7.7.0-teaching-ws2425:grammars"
   // we also have to add the implementation/java classes
-  implementation "de.monticore.languages:myolddsl:7.7.0-SNAPSHOT"
+  implementation "de.monticore.languages:myolddsl:7.7.0-teaching-ws2425"
 }
 tasks.generateMCGrammars.configure {
   // Add the legacy-grammars to the symbol/model path of the generation
