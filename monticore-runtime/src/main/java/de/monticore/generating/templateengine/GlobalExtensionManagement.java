@@ -775,7 +775,7 @@ public class GlobalExtensionManagement {
   public void addBeforeTemplate(String template, HookPoint beforeHp) {
     Reporting.reportAddBeforeTemplate(template, Optional.empty(), Lists.newArrayList(beforeHp));
 
-    this.after.put(template, beforeHp);
+    this.before.put(template, beforeHp);
   }
 
   /**
