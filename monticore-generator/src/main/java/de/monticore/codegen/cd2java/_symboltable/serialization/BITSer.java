@@ -3,6 +3,7 @@
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.types.check.SymTypeExpression;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -49,6 +50,9 @@ public class BITSer {
     bitsers.put("long", _long);
     bitsers.put("java.lang.Long", _long);
     bitsers.put("Long", _long);
+
+    BITSerStrategy symTypeExpression = new SymTypeExpressionSerStrategy();
+    bitsers.put(SymTypeExpression.class.getName(), symTypeExpression);
   }
 
   /**
