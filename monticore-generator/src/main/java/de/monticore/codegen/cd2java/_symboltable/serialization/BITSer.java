@@ -88,21 +88,22 @@ public class BITSer {
    * @param attrType
    * @param attrName
    * @param jsonName
+   * @param scopeName the name of the scope parameter, such as scope or enclosingScope
    * @return
    */
-  public Optional<HookPoint> getDeserialHook(String attrType, String attrName, String jsonName) {
+  public Optional<HookPoint> getDeserialHook(String attrType, String attrName, String jsonName, String scopeName) {
     if (bitsers.containsKey(attrType)) {
-      return Optional.of(bitsers.get(attrType).getDeserialHook(jsonName, attrName));
+      return Optional.of(bitsers.get(attrType).getDeserialHook(jsonName, attrName, scopeName));
     }
 
     Optional<String> listGenType = getListGenType(attrType);
     if (listGenType.isPresent() && bitsers.containsKey(listGenType.get())) {
-      return Optional.of(bitsers.get(listGenType.get()).getListDeserialHook(jsonName, attrName));
+      return Optional.of(bitsers.get(listGenType.get()).getListDeserialHook(jsonName, attrName, scopeName));
     }
 
     Optional<String> optGenType = getOptionalGenType(attrType);
     if (optGenType.isPresent() && bitsers.containsKey(optGenType.get())) {
-      return Optional.of(bitsers.get(optGenType.get()).getOptDeserialHook(jsonName, attrName));
+      return Optional.of(bitsers.get(optGenType.get()).getOptDeserialHook(jsonName, attrName, scopeName));
     }
 
     return Optional.empty();
