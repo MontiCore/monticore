@@ -5,6 +5,7 @@ package de.monticore.mcliterals;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
+import de.monticore.literals.testmccommonliterals._ast.ASTA;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +13,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StringLiteralsTest {
   
@@ -25,12 +29,31 @@ public class StringLiteralsTest {
   
   private void checkStringLiteral(String expected, String actual) throws IOException {
     ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(actual);
-    Assertions.assertTrue(lit instanceof ASTStringLiteral);
-    Assertions.assertEquals(expected, ((ASTStringLiteral) lit).getValue());
+    assertTrue(lit instanceof ASTStringLiteral);
+    assertEquals(expected, ((ASTStringLiteral) lit).getValue());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
-  
+
+  @Test
+  public void testName() throws IOException {
+    Optional<ASTA> ast = TestMCCommonLiteralsMill.parser().parse_StringA("Meier");
+    assertTrue(ast.isPresent());
+
+    ast = TestMCCommonLiteralsMill.parser().parse_StringA("Müller");
+    assertTrue(ast.isPresent());
+
+    ast = TestMCCommonLiteralsMill.parser().parse_StringA("Vπ");
+    assertTrue(ast.isPresent());
+    assertEquals("Vπ", ast.get().getName());
+
+    assertFalse(Character.isUnicodeIdentifierStart('1'));
+    assertTrue(Character.isUnicodeIdentifierPart('1'));
+
+    assertFalse(Character.isUnicodeIdentifierStart('.'));
+    assertFalse(Character.isUnicodeIdentifierPart('.'));
+  }
+
   @Test
   public void testStringLiterals() {
     try {

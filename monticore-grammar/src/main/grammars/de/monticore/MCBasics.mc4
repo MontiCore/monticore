@@ -17,10 +17,19 @@ component grammar MCBasics {
       This nonterminal is used as core reference mechanism e.g.
       for symbols.
   */
-  token Name =
-    ( 'a'..'z' | 'A'..'Z' | '_' | '$' )
-    ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
-  
+ token Name =
+
+               (
+              		~('\u0000')
+                   {Character.isUnicodeIdentifierStart(_input.LA(-1))}?
+              	)
+
+               (
+               		~('\u0000')
+                   {Character.isJavaIdentifierPart(_input.LA(-1))}?
+                )*
+               	;
+
   /*=================================================================*/
 
   fragment token NEWLINE =
