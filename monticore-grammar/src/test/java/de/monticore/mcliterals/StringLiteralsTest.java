@@ -48,9 +48,12 @@ public class StringLiteralsTest {
     assertTrue(ast.isPresent());
     assertEquals("Vπ", ast.get().getName());
 
-    ast = TestMCCommonLiteralsMill.parser().parse_StringA("f");
-    assertTrue(ast.isPresent());
-
+    List<String> souldParseName = List.of("a", "b", "c", "d", "e", "f", "g", "h");
+    for (String s : souldParseName) {
+      ast = TestMCCommonLiteralsMill.parser().parse_StringA(s);
+      assertTrue(ast.isPresent(), "Could not parse string '" + s + "'");
+      assertEquals(s, ast.get().getName());
+    }
 
     assertFalse(Character.isUnicodeIdentifierStart('1'));
     assertTrue(Character.isUnicodeIdentifierPart('1'));
