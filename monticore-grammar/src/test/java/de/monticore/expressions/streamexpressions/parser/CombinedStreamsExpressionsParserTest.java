@@ -53,7 +53,7 @@ public class CombinedStreamsExpressionsParserTest {
         Arguments.of("<A, B, C> foo()", ASTPrimaryGenericInvocationExpression.class),
         Arguments.of("Event < A > 1", ASTGreaterThanExpression.class),
         Arguments.of("Event< A > 1", ASTGreaterThanExpression.class),
-        Arguments.of("1: c + 3", ASTAppendStreamExpression.class),
+        Arguments.of("1: c + 3", ASTAppendStreamExpression.class)
     );
   }
 
