@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,11 +48,22 @@ public class StringLiteralsTest {
     assertTrue(ast.isPresent());
     assertEquals("Vπ", ast.get().getName());
 
+    ast = TestMCCommonLiteralsMill.parser().parse_StringA("f");
+    assertTrue(ast.isPresent());
+
+
     assertFalse(Character.isUnicodeIdentifierStart('1'));
     assertTrue(Character.isUnicodeIdentifierPart('1'));
 
     assertFalse(Character.isUnicodeIdentifierStart('.'));
     assertFalse(Character.isUnicodeIdentifierPart('.'));
+
+    List<Character> notAllowed = List.of('.', '(', ')', '+', ',', '/', ' ');
+    for (Character s : notAllowed) {
+      assertFalse(Character.isUnicodeIdentifierPart(s), "Character <"+s+"> is not allowed");
+      assertFalse(Character.isUnicodeIdentifierStart(s), "Character <"+s+"> is not allowed");
+    }
+
   }
 
   @Test
