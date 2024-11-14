@@ -46,7 +46,7 @@ component grammar StreamExpressions extends CommonExpressions {
    * Stream constructor has to bind harder than name expressions to avoid
    * the scanner recognizing timing keywords as names
    */
-  StreamConstructorExpression implements Expression <370> =
+  StreamConstructorExpression implements Expression <360> =
     ({noSpace(2)}? streamType:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
     "<" (Expression || ",")* ">";
 
