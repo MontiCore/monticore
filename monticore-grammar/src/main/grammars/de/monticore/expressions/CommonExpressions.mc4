@@ -93,7 +93,7 @@ component grammar CommonExpressions
   ModuloExpression implements Expression <180>, InfixExpression =
     left:Expression operator:"%" right:Expression;
 
-  PlusExpression implements Expression <170>, InfixExpression =
+  PlusExpression implements Expression <369>, InfixExpression =
     left:Expression operator:"+" right:Expression;
 
   MinusExpression implements Expression <170>, InfixExpression =

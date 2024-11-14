@@ -47,13 +47,36 @@ component grammar StreamExpressions extends CommonExpressions {
    * Stream constructor has to bind harder than name expressions to avoid
    * the scanner recognizing timing keywords as names
    */
-  StreamConstructorExpression implements Expression <360> =
-    ({noSpace(2)}? streamType:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
+  StreamConstructorExpression1 implements Expression <359> =
     "<" (Expression ","| Expression? tick:";")* Expression? tick:";"? ">";
 
-  StreamConstructorExpressionRaw implements Expression <360> = "<" (StreamC_E | StreamC_T)? ">";
+  StreamConstructorExpression2 implements Expression <362> =
+    "<" (StreamC_E | StreamC_T)? ">";
+
   StreamC_E = Expression | Expression "," StreamC_E | Expression StreamC_T;
   StreamC_T = ";" | ";" StreamC_T | ";" StreamC_E;
+
+
+  StreamConstructorExpression3 implements Expression <361> =
+    "<" Tick* (Expression ("," | (Tick+)))* Expression? ">";
+
+
+  StreamConstructorExpression4 implements Expression <363> =
+    "<" (Tick | SeparatedElement)* TerminalElement? ">";
+
+
+  StreamConstructorExpression implements Expression <370> =
+    "<" StreamElem* ">";
+
+  interface StreamElem;
+  Tick implements StreamElem = ";";
+  ExpressionElement implements StreamElem = (Expression || ",")+;
+
+  RepeatableElement = Tick | SeparatedElement;
+  SeparatedElement = ExpressionElement "," | TickedElement;
+  TerminalElement = ExpressionElement? Tick?; // you could use TickedElem here
+  TickedElement = ExpressionElement Tick;
+
 
   /* 
    * Append first element 
