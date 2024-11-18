@@ -18,18 +18,11 @@ group = "de.monticore"
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
-def symbolsDir = 'src/main/resources'
 
 sourceSets {
   // Add mlc files to grammars source set (resulting in them being included in the grammars-jar)
   main.grammars.include(["**/*.mlc", "**/*.mc4"])
 
-  symbols {
-    resources {
-      srcDirs(symbolsDir)
-      include "**/*.sym"
-    }
-  }
   // The following is required as we still publish a Feature-variant (with usingSourceSet(grammarsForVariant))
   grammarsForVariant {
     java.srcDirs = []

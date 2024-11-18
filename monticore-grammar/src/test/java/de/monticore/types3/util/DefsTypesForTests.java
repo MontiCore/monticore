@@ -591,6 +591,26 @@ public class DefsTypesForTests {
   /*********************************************************************/
 
   /*
+   * These are the predefined Symbol for unboxed Collections like "List"
+   */
+
+  public static SymTypeOfGenerics _StreamSymType;
+
+  public static SymTypeOfGenerics _EventStreamSymType;
+
+  public static SymTypeOfGenerics _SyncStreamSymType;
+  public static SymTypeOfGenerics _ToptStreamSymType;
+  public static SymTypeOfGenerics _UntimedStreamSymType;
+
+  public static void set_streams() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // todo FDr: add actual types to SymTab
+    //_StreamSymType =
+  }
+
+  /*********************************************************************/
+
+  /*
    * These are some predefined Symbols for recursively defined generic types
    */
 
