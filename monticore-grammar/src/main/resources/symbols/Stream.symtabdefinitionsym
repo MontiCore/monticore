@@ -1,0 +1,652 @@
+{
+  "generated-using": "www.MontiCore.de technology",
+  "name": "Stream",
+  "symbols": [
+    {
+      "kind": "de.monticore.cdbasis._symboltable.CDTypeSymbol",
+      "name": "Stream",
+      "fullName": "Stream.Stream",
+      "packageName": "Stream",
+      "isInterface": true,
+      "spannedScope": {
+        "symbols": [
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "len",
+            "fullName": "Stream.Stream.len",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypePrimitive",
+              "primitiveName": "long"
+            },
+            "isMethod": true,
+            "isAbstract": true
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "hasInfiniteLen",
+            "fullName": "Stream.Stream.hasInfiniteLen",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypePrimitive",
+              "primitiveName": "boolean"
+            },
+            "isMethod": true,
+            "isAbstract": true
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "repeat",
+            "fullName": "Stream.Stream.repeat",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.repeat.S"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "isStatic": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "elem",
+                  "fullName": "Stream.Stream.repeat.elem",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "Stream.Stream.repeat.S"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "n",
+                  "fullName": "Stream.Stream.repeat.n",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "Stream.Stream.repeat.S",
+                  "packageName": "Stream"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "iterate",
+            "fullName": "Stream.Stream.iterate",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.iterate.S"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "isStatic": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "elem",
+                  "fullName": "Stream.Stream.iterate.elem",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "Stream.Stream.iterate.S"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "elem",
+                  "fullName": "Stream.Stream.iterate.elem",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "Stream.Stream.iterate.S"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "Stream.Stream.iterate.S",
+                  "packageName": "Stream"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "projFst",
+            "fullName": "Stream.Stream.projFst",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.projFst.S"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "isStatic": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "list",
+                  "fullName": "Stream.Stream.projFst.list",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "Stream.Stream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "Stream.Stream.projFst.U"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "Stream.Stream.projFst.S",
+                  "packageName": "Stream"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "Stream.Stream.projFst.U",
+                  "packageName": "Stream"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "projSnd",
+            "fullName": "Stream.Stream.projSnd",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.projSnd.U"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "isStatic": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "list",
+                  "fullName": "Stream.Stream.projSnd.list",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "Stream.Stream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "Stream.Stream.projSnd.U"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "S",
+                  "fullName": "Stream.Stream.projSnd.S",
+                  "packageName": "Stream"
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "Stream.Stream.projSnd.U",
+                  "packageName": "Stream"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "dropFirst",
+            "fullName": "Stream.Stream.dropFirst",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Optional",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                  "typeConstructorFullName": "Stream.Stream",
+                  "arguments": [
+                    {
+                      "kind": "de.monticore.types.check.SymTypeVariable",
+                      "varName": "Stream.Stream.T"
+                    }
+                  ]
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "take",
+            "fullName": "Stream.Stream.take",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "n",
+                  "fullName": "Stream.Stream.take.n",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "dropMultiple",
+            "fullName": "Stream.Stream.dropMultiple",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "n",
+                  "fullName": "Stream.Stream.dropMultiple.n",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "times",
+            "fullName": "Stream.Stream.times",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "n",
+                  "fullName": "Stream.Stream.times.n",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "long"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "infTimes",
+            "fullName": "Stream.Stream.infTimes",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "map",
+            "fullName": "Stream.Stream.map",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.map.U"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "f",
+                  "fullName": "Stream.Stream.map.f",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "Stream.Stream.map.U"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "Stream.Stream.map.U",
+                  "packageName": "Stream"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "filter",
+            "fullName": "Stream.Stream.filter",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "predicate",
+                  "fullName": "Stream.Stream.filter.predicate",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "boolean"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "takeWhile",
+            "fullName": "Stream.Stream.takeWhile",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "predicate",
+                  "fullName": "Stream.Stream.takeWhile.predicate",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "boolean"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "dropWhile",
+            "fullName": "Stream.Stream.dropWhile",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "predicate",
+                  "fullName": "Stream.Stream.dropWhile.predicate",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypePrimitive",
+                    "primitiveName": "boolean"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "rcDups",
+            "fullName": "Stream.Stream.rcDups",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "zip",
+            "fullName": "Stream.Stream.zip",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.zip.U"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "second",
+                  "fullName": "Stream.Stream.zip.second",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeOfGenerics",
+                    "typeConstructorFullName": "Stream.Stream",
+                    "arguments": [
+                      {
+                        "kind": "de.monticore.types.check.SymTypeVariable",
+                        "varName": "Stream.Stream.zip.U"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "Stream.Stream.zip.U",
+                  "packageName": "Stream"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "values",
+            "fullName": "Stream.Stream.values",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Set",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.T"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true
+          },
+          {
+            "kind": "de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol",
+            "name": "scanl",
+            "fullName": "Stream.Stream.scanl",
+            "packageName": "Stream",
+            "type": {
+              "kind": "de.monticore.types.check.SymTypeOfGenerics",
+              "typeConstructorFullName": "Stream.Stream",
+              "arguments": [
+                {
+                  "kind": "de.monticore.types.check.SymTypeVariable",
+                  "varName": "Stream.Stream.scanl.U"
+                }
+              ]
+            },
+            "isMethod": true,
+            "isAbstract": true,
+            "spannedScope": {
+              "symbols": [
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "f",
+                  "fullName": "Stream.Stream.scanl.f",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "Stream.Stream.scanl.U"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name": "acc",
+                  "fullName": "Stream.Stream.scanl.acc",
+                  "packageName": "Stream",
+                  "type": {
+                    "kind": "de.monticore.types.check.SymTypeVariable",
+                    "varName": "Stream.Stream.scanl.U"
+                  }
+                },
+                {
+                  "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+                  "name": "U",
+                  "fullName": "Stream.Stream.scanl.U",
+                  "packageName": "Stream"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+            "name": "T",
+            "fullName": "Stream.Stream.T",
+            "packageName": "Stream"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol",
+      "name": "Stream",
+      "fullName": "Stream"
+    }
+  ]
+}
