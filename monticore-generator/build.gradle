@@ -53,6 +53,9 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.0'
     implementation 'ch.qos.logback:logback-core:1.2.0'
 
+    // Remove after 7.7.0 release
+    compileOnly 'org.reflections:reflections:0.9.9'
+
     implementation "de.monticore.lang:cd4analysis:$cd4a_version"
     implementation "org.antlr:antlr4:$antlr_version"
     implementation 'org.apache.groovy:groovy:4.0.23'

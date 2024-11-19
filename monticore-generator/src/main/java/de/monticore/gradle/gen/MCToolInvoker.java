@@ -51,11 +51,23 @@ public class MCToolInvoker {
       MCBasicsMill.globalScope().clear();
       MCBasicsMill.globalScope().clearLoadedFiles();
       MCBasicsMill.globalScope().getSymbolPath().close();
-      CD4C.reset();
+      Reporting.off();
+      if (Reporting.isEnabled())
+        throw new IllegalStateException("Reporting should be disabled, as we otherwise leak a file handle!");
+      CD4C.reset(); // Reporting should be disabled for this, as we otherwise report on the "cd4c" global variable being changed
       Grammar_WithConceptsMill.reset();
       Reporting.resetInitializedFlagFix();
       Reporting.clearReportHooks();
       Log.internalRemove();
+      try {
+        // Remove after 7.7.0 release
+        // the runtimes ReportingHelper (up to & including 7.6.0) requires the following clean up
+        // https://github.com/MontiCore/monticore/commit/3bcfd5c16a790e2c3411e654769ec950b0d681ff#diff-bcc6fda934d6efd7c418c781027b161edd98f5ccd48b6c9106d3e23981b0d7ffL17
+        org.reflections.Reflections.log = null;
+      } catch (NoClassDefFoundError ignored) {
+        // The Reflections library is no longer in the classpath -> ignore
+        ignored.printStackTrace();
+      }
     }
   }
 }
