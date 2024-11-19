@@ -49,7 +49,7 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
   }
 
   protected SymTypeExpression popTransformedSubSymType() {
-    if (getTransformedSymTypes().size() < 1) {
+    if (getTransformedSymTypes().isEmpty()) {
       Log.error("0xFD824 internal error: getting partial result"
           + " while partial results are not present");
     }
@@ -63,13 +63,17 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
   @Override
   public void visit(SymTypeArray symType) {
     symType.getArgument().accept(this);
-    pushTransformedSymType(SymTypeExpressionFactory
-        .createTypeArray(popTransformedSubSymType(), symType.getDim()));
+    SymTypeArray clone = SymTypeExpressionFactory
+        .createTypeArray(popTransformedSubSymType(), symType.getDim());
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeObscure symType) {
-    pushTransformedSymType(SymTypeExpressionFactory.createObscureType());
+    SymTypeObscure clone = SymTypeExpressionFactory.createObscureType();
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
@@ -82,74 +86,85 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
     SymTypeExpression transformedReturnType = popTransformedSubSymType();
     List<SymTypeExpression> transformedArgumentsTypes =
         applyToCollection(symType.getArgumentTypeList());
-    pushTransformedSymType(SymTypeExpressionFactory.createFunction(
+    SymTypeOfFunction clone = SymTypeExpressionFactory.createFunction(
         symbol,
         transformedReturnType,
         transformedArgumentsTypes,
         symType.isElliptic()
-    ));
+    );
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeOfGenerics symType) {
     List<SymTypeExpression> clonedArguments =
         applyToCollection(symType.getArgumentList());
-    pushTransformedSymType(
-        SymTypeExpressionFactory.createGenerics(symType.getTypeInfo(), clonedArguments)
-    );
+    SymTypeOfGenerics clone = SymTypeExpressionFactory
+        .createGenerics(symType.getTypeInfo(), clonedArguments);
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeOfIntersection symType) {
     Set<SymTypeExpression> clonedIntersectedTypes =
         applyToCollection(symType.getIntersectedTypeSet());
-    pushTransformedSymType(
-        SymTypeExpressionFactory.createIntersection(clonedIntersectedTypes)
-    );
+    SymTypeOfIntersection clone =
+        SymTypeExpressionFactory.createIntersection(clonedIntersectedTypes);
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeOfNull symType) {
-    pushTransformedSymType(SymTypeExpressionFactory.createTypeOfNull());
+    SymTypeOfNull clone = SymTypeExpressionFactory.createTypeOfNull();
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeOfObject symType) {
-    pushTransformedSymType(
-        SymTypeExpressionFactory.createTypeObject(symType.getTypeInfo())
-    );
+    SymTypeOfObject clone =
+        SymTypeExpressionFactory.createTypeObject(symType.getTypeInfo());
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeOfRegEx symType) {
-    pushTransformedSymType(
-        SymTypeExpressionFactory.createTypeRegEx((symType.getRegExString()))
-    );
+    SymTypeOfRegEx clone =
+        SymTypeExpressionFactory.createTypeRegEx((symType.getRegExString()));
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeOfTuple symType) {
     List<SymTypeExpression> clonedListedTypes =
         applyToCollection(symType.getTypeList());
-    pushTransformedSymType(
-        SymTypeExpressionFactory.createTuple(clonedListedTypes)
-    );
+    SymTypeOfTuple clone =
+        SymTypeExpressionFactory.createTuple(clonedListedTypes);
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeOfUnion symType) {
     Set<SymTypeExpression> clonedUnionizedTypes =
         applyToCollection(symType.getUnionizedTypeSet());
-    pushTransformedSymType(
-        SymTypeExpressionFactory.createUnion(clonedUnionizedTypes)
-    );
+    SymTypeOfUnion clone =
+        SymTypeExpressionFactory.createUnion(clonedUnionizedTypes);
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypePrimitive symType) {
-    pushTransformedSymType(
-        SymTypeExpressionFactory.createPrimitive(symType.getTypeInfo())
-    );
+    SymTypePrimitive clone =
+        SymTypeExpressionFactory.createPrimitive(symType.getTypeInfo());
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
@@ -160,9 +175,10 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
     List<SIUnitBasic> denominator = siUnit.getDenominator().stream()
         .map(SIUnitBasic::deepClone)
         .collect(Collectors.toList());
-    pushTransformedSymType(
-        SymTypeExpressionFactory.createSIUnit(numerator, denominator)
-    );
+    SymTypeOfSIUnit clone =
+        SymTypeExpressionFactory.createSIUnit(numerator, denominator);
+    clone._internal_setSourceInfo(siUnit.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
@@ -171,34 +187,38 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
     SymTypeExpression numericType = popTransformedSubSymType();
     numericWithSIUnit.getSIUnitType().accept(this);
     SymTypeOfSIUnit siUnitType = (SymTypeOfSIUnit) popTransformedSubSymType();
-    pushTransformedSymType(SymTypeExpressionFactory.
-        createNumericWithSIUnit(siUnitType, numericType)
-    );
+    SymTypeOfNumericWithSIUnit clone = SymTypeExpressionFactory.
+        createNumericWithSIUnit(siUnitType, numericType);
+    clone._internal_setSourceInfo(numericWithSIUnit.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeVariable symType) {
-    SymTypeVariable result;
+    SymTypeVariable clone;
     if (symType.hasTypeVarSymbol()) {
-      result = SymTypeExpressionFactory.createTypeVariable(
+      clone = SymTypeExpressionFactory.createTypeVariable(
           symType.getTypeVarSymbol(),
           symType.getStoredLowerBound(),
           symType.getStoredUpperBound()
       );
     }
     else {
-      result = SymTypeExpressionFactory.createTypeVariable(
+      clone = SymTypeExpressionFactory.createTypeVariable(
           symType.getFreeVarIdentifier(),
           symType.getStoredLowerBound(),
           symType.getStoredUpperBound()
       );
     }
-    pushTransformedSymType(result);
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
   public void visit(SymTypeVoid symType) {
-    pushTransformedSymType(SymTypeExpressionFactory.createTypeVoid());
+    SymTypeVoid clone = SymTypeExpressionFactory.createTypeVoid();
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
   }
 
   @Override
@@ -213,6 +233,7 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
     else {
       clone = SymTypeExpressionFactory.createWildcard();
     }
+    clone._internal_setSourceInfo(symType.getSourceInfo());
     pushTransformedSymType(clone);
   }
 

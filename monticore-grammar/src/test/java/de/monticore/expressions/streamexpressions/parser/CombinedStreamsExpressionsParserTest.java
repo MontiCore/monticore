@@ -1,8 +1,6 @@
 package de.monticore.expressions.streamexpressions.parser;
 
-import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTGreaterThanExpression;
+import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTSuperExpression;
@@ -39,6 +37,12 @@ public class CombinedStreamsExpressionsParserTest {
 
   public static Stream<Arguments> createInputs() {
     return Stream.of(
+        Arguments.of("< foo (1,2) >", ASTStreamConstructorExpression.class),
+        Arguments.of("<1,2>3,3>", ASTStreamConstructorExpression.class),
+        Arguments.of("<2>3>", ASTStreamConstructorExpression.class),
+        Arguments.of("Event< 1", ASTLessThanExpression.class),
+        Arguments.of("Event < 1", ASTLessThanExpression.class),
+        Arguments.of("Event <= 1", ASTLessEqualExpression.class),
         Arguments.of("<A> this()", ASTPrimaryGenericInvocationExpression.class),
         Arguments.of("<A> super()", ASTPrimaryGenericInvocationExpression.class),
         Arguments.of("<A> super.foo", ASTPrimaryGenericInvocationExpression.class),
@@ -47,8 +51,8 @@ public class CombinedStreamsExpressionsParserTest {
         Arguments.of("<A, B, C> super()", ASTPrimaryGenericInvocationExpression.class),
         Arguments.of("<A, B, C> super.foo", ASTPrimaryGenericInvocationExpression.class),
         Arguments.of("<A, B, C> foo()", ASTPrimaryGenericInvocationExpression.class),
-        Arguments.of("event < A > 1", ASTGreaterThanExpression.class),
-        Arguments.of("event<A> 1", ASTGreaterThanExpression.class),
+        Arguments.of("Event < A > 1", ASTGreaterThanExpression.class),
+        Arguments.of("Event< A > 1", ASTGreaterThanExpression.class),
         Arguments.of("1: c + 3", ASTAppendStreamExpression.class)
     );
   }
@@ -103,14 +107,31 @@ public class CombinedStreamsExpressionsParserTest {
   @Test
   public void testWithIdentifierWhitespace() throws IOException {
     // should not parse
-    Optional<ASTExpression> expr = p.parse_StringExpression("event <A>");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTStreamConstructorExpression.class, expr.get());
+    Optional<ASTExpression> expr = p.parse_StringExpression("Event <A>");
+    assertFalse(expr.isPresent());
   }
 
   @Test
   public void testFalseBitshiftInteraction() throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression("event < A > > 1");
+    Optional<ASTExpression> expr = p.parse_StringExpression("Event< A > > 1");
+    assertTrue(expr.isPresent());
+    assertInstanceOf(ASTGreaterThanExpression.class, expr.get());
+    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr.get();
+    assertInstanceOf(ASTStreamConstructorExpression.class, greater.getLeft());
+  }
+
+  @Test
+  public void testFalseBitshiftInteraction1() throws IOException {
+    Optional<ASTExpression> expr = p.parse_StringExpression("< A > > 1");
+    assertTrue(expr.isPresent());
+    assertInstanceOf(ASTGreaterThanExpression.class, expr.get());
+    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr.get();
+    assertInstanceOf(ASTStreamConstructorExpression.class, greater.getLeft());
+  }
+
+  @Test
+  public void testFalseBitshiftInteraction2() throws IOException {
+    Optional<ASTExpression> expr = p.parse_StringExpression("<A> > 1");
     assertTrue(expr.isPresent());
     assertInstanceOf(ASTGreaterThanExpression.class, expr.get());
     ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr.get();

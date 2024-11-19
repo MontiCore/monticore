@@ -8,6 +8,7 @@ import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.SourcePositionBuilder;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.Tool;
@@ -59,7 +60,7 @@ public class AntlrTool extends Tool {
     
     ST msgST = errMgr.getMessageTemplate(message);
     String origMessage = msgST.render();
-    Log.debug(origMessage, "AnltrTool");
+    Log.debug(origMessage, "AntlrTool");
     
     // Change arguments corresponding to names in MC grammar
     Object[] args = message.getArgs();
@@ -84,7 +85,11 @@ public class AntlrTool extends Tool {
       String output = "0xA1129 " + "Error from Antlr subsystem: "
               + messageST.render() + " (see e.g. www.antlr.org)";
       if (position.equals(SourcePosition.getDefaultSourcePosition())) {
-        Log.error(output);
+        SourcePosition sourcePosition = new SourcePositionBuilder().
+            setFileName(message.fileName).
+            setLine(message.line).
+            setColumn(message.charPosition).build();
+        Log.error(output, sourcePosition);
       }
       else {
         Log.error(output, position);

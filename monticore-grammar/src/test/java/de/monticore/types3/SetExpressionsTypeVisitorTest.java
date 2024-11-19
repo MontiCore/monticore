@@ -376,4 +376,19 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("[[],[1,2]]", "List<List<int>>", "List<List<int>>");
   }
 
+  @ParameterizedTest
+  @MethodSource
+  public void invalidSetEnumerationCTTI(
+      String exprStr, String targetTypeStr, String expectedError
+  ) throws IOException {
+    checkErrorExpr(exprStr, targetTypeStr, expectedError);
+  }
+
+  protected static Stream<Arguments> invalidSetEnumerationCTTI() {
+    return Stream.of(
+        // examples with int
+        arguments("{1}", "Set<Person>", "0xFD451")
+    );
+  }
+
 }

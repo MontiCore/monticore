@@ -8,6 +8,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
@@ -624,7 +625,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
 
   /**
    * Returns an TypeSymbol representing the type
-   * Only to be called according to {@link SymTypeExpression::hasTypeInfo}
+   * Only to be called according to {@link #hasTypeInfo()}
    */
   public TypeSymbol getTypeInfo() {
     //support deprecated behaviour
@@ -634,6 +635,25 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
     Log.error("0xFDFDF internal error: getTypeInfo called,"
         + "but no typeinfo available");
     return null;
+  }
+
+  protected SymTypeSourceInfo sourceInfo = new SymTypeSourceInfo();
+
+  /**
+   * Contains information where this SymTypeExpression comes from.
+   * Used in CoCos, code-generation, etc.
+   * <p>
+   * not considered during {@link #deepEquals(SymTypeExpression)}.
+   */
+  public SymTypeSourceInfo getSourceInfo() {
+    return this.sourceInfo;
+  }
+
+  /**
+   * used during deep-cloning, clones the SymTypeSourceInfo
+   */
+  public void _internal_setSourceInfo(SymTypeSourceInfo sourceInfo) {
+    this.sourceInfo = new SymTypeSourceInfo(sourceInfo);
   }
 
   public void accept(ISymTypeVisitor visitor) {

@@ -11,10 +11,12 @@ options {
 
 ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarSymbol().getName()])}
 
+// Implicit token
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
   ${genHelper.getLexSymbolName(lexSymbol)} : '${lexSymbol}';
 </#list>
- 
+
+// Explicit token
 <#list genHelper.getLexerRulesToGenerate() as lexProd>
   <#list antlrGenerator.createAntlrCode(lexProd) as lexerRule>
   ${lexerRule}
