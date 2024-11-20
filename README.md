@@ -127,7 +127,7 @@ no other restriction. (BSD 3 Clause license)
 (3) Adaptations of the MontiCore language workbench itself
 should mention MontiCore and
 results are published back into the MontiCore repository (LGPL license)
--- unles you have asked for an individually available Dual License.
+-- for other purposes an individual Dual License is available.
 
 For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 
