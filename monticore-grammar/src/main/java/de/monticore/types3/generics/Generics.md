@@ -164,7 +164,7 @@ the lack of a more specific lower bound.
 `#Bottom` has no values.
 Inference variables are never instantiated to `#BOTTOM`.
 
-### How to get the type of an ASTNode with generics?
+## How to get the type of an ASTNode with generics?
 
 Note: This is an extension of the
 [general documentation](../TypeSystem3.md#how-to-get-the-type-of-an-astnode),
