@@ -162,4 +162,17 @@ public class AntlrTool extends Tool {
 
     return res;
   }
+
+  /**
+   * Unfortunately {@link org.antlr.v4.codegen.Target} retains a static
+   * reference to a targets {@link Tool}.
+   * In combination with Groovy and
+   * <a href="https://bugs.openjdk.org/browse/JDK-8078641">JDK-8078641</a>
+   * we have to clean up after static references.
+   */
+  public void cleanUp() {
+    this.grammarSymbol = null;
+    this.tmpNameDict = null;
+    this.nonTerminalToParserStates = null;
+  }
 }
