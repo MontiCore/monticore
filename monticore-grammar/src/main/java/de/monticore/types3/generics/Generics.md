@@ -161,7 +161,7 @@ has not been used "to their full potential":
 the type that is the subtype of all types.
 Analogue to `#TOP`, `#BOTTOM` represents
 the lack of a more specific lower bound.
-`#Bottom` has no values.
+`#BOTTOM` has no values.
 Inference variables are never instantiated to `#BOTTOM`.
 
 ## How to get the type of an ASTNode with generics?
