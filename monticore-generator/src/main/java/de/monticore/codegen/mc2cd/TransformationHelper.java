@@ -14,7 +14,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.RegExpBuilder;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
@@ -38,18 +37,17 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 public final class TransformationHelper {
-
-  public static final String DEFAULT_FILE_EXTENSION = ".java";
 
   public static final String AST_PREFIX = "AST";
 
   public static final String LIST_SUFFIX = "s";
 
   public static final int STAR = -1;
+
+  public static final Pattern NAME_PATTERN = Pattern.compile("([a-z]|[A-Z]|[_]|[$])([a-z]|[A-Z]|[_]|[0-9]|[$])*");
 
   protected static List<String> reservedCdNames = Arrays.asList(
       // CD4A
@@ -609,38 +607,5 @@ public final class TransformationHelper {
     }
     return Optional.empty();
   }
-  
-  public static boolean isFragment(ASTProd astNode) {
-    return !(astNode instanceof ASTLexProd)
-        || ((ASTLexProd) astNode).isFragment();
-  }
-  
-  public static Optional<Pattern> calculateLexPattern(MCGrammarSymbol grammar,
-      ASTLexProd lexNode) {
-    Optional<Pattern> ret = Optional.empty();
-    
-    final String lexString = getLexString(grammar, lexNode);
-    try {
-      if ("[[]".equals(lexString)) {
-        return Optional.ofNullable(Pattern.compile("[\\[]"));
-      } else {
-        return Optional.ofNullable(Pattern.compile(lexString));
-      }
-    } catch (PatternSyntaxException e) {
-      Log.error("0xA0913 Internal error with pattern handling for lex rules. Pattern: " + lexString
-          + "\n", e);
-    }
-    return ret;
-  }
-  
-  protected static String getLexString(MCGrammarSymbol grammar, ASTLexProd lexNode) {
-    StringBuilder builder = new StringBuilder();
-    RegExpBuilder regExp = new RegExpBuilder(builder, grammar);
-    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
-    traverser.add4Grammar(regExp);
-    traverser.setGrammarHandler(regExp);
-    lexNode.accept(traverser);
-    return builder.toString();
-  }
-  
+
 }
