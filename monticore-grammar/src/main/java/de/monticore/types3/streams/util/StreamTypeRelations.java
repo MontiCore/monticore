@@ -4,6 +4,7 @@ package de.monticore.types3.streams.util;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types3.streams.StreamSymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -17,7 +18,7 @@ public class StreamTypeRelations {
    * whether the type is a Stream
    */
   public boolean isStream(SymTypeExpression type) {
-    return isSpecificStream(type, "Stream") ||
+    return isStreamOfUnknownSubType(type) ||
         isEventStream(type) ||
         isSyncStream(type) ||
         isToptStream(type) ||
@@ -25,19 +26,23 @@ public class StreamTypeRelations {
   }
 
   public boolean isEventStream(SymTypeExpression type) {
-    return isSpecificStream(type, "EventStream");
+    return isSpecificStream(type, StreamSymTypeRelations.EVENT_STREAM);
   }
 
   public boolean isSyncStream(SymTypeExpression type) {
-    return isSpecificStream(type, "SyncStream");
+    return isSpecificStream(type, StreamSymTypeRelations.SYNC_STREAM);
   }
 
   public boolean isToptStream(SymTypeExpression type) {
-    return isSpecificStream(type, "ToptStream");
+    return isSpecificStream(type, StreamSymTypeRelations.TOPT_STREAM);
   }
 
   public boolean isUntimedStream(SymTypeExpression type) {
-    return isSpecificStream(type, "UntimedStream");
+    return isSpecificStream(type, StreamSymTypeRelations.UNTIMED_STREAM);
+  }
+
+  public boolean isStreamOfUnknownSubType(SymTypeExpression type) {
+    return isSpecificStream(type, StreamSymTypeRelations.STREAM);
   }
 
   /**
