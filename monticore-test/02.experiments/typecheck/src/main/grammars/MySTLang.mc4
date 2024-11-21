@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.*;
+import de.monticore.types.*;
+import de.monticore.literals.*;
+import de.monticore.expressions.*;
+import de.monticore.symbols.*;
+
+grammar MySTLang extends MCBasicTypes, MCArrayTypes,
+                       MCCommonLiterals, 
+                       CommonExpressions, BasicSymbols, OOSymbols {
+
+  MyClass implements Type = "class" Name "{" MyFunction* "}";
+                       
+  MyFunction implements Function = "public" MCReturnType Name "(" ")";
+
+}
