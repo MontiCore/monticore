@@ -168,9 +168,13 @@ public class DefsVariablesForTests {
    */
 
   public static VariableSymbol _intStreamVarSym;
+
   public static VariableSymbol _intEventStreamVarSym;
+
   public static VariableSymbol _intSyncStreamVarSym;
+
   public static VariableSymbol _intToptStreamVarSym;
+
   public static VariableSymbol _intUntimedStreamVarSym;
 
   public static void set_Streams(IBasicSymbolsScope scope) {

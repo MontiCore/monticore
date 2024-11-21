@@ -281,9 +281,13 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
    * returns whether the type is printed as TypeA 'operator' TypeB
    */
   protected boolean isTypePrintedAsInfix(SymTypeExpression symType) {
+    boolean isUnionNotEmpty = symType.isUnionType() &&
+        !symType.asUnionType().isEmptyUnionizedTypes();
+    boolean isIntersectionNotEmpty = symType.isIntersectionType() &&
+        !symType.asIntersectionType().isEmptyIntersectedTypes();
     return symType.isFunctionType() ||
-        symType.isUnionType() ||
-        symType.isIntersectionType();
+        isUnionNotEmpty ||
+        isIntersectionNotEmpty;
   }
 
 }

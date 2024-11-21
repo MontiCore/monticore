@@ -15,6 +15,12 @@ public class StreamSymTypeRelations extends SymTypeRelations {
 
   protected static StreamTypeRelations streamTypeRelations;
 
+  public static final String STREAM = "Stream";
+  public static final String EVENT_STREAM = "EventStream";
+  public static final String SYNC_STREAM = "SyncStream";
+  public static final String TOPT_STREAM = "ToptStream";
+  public static final String UNTIMED_STREAM = "SyncStream";
+
   public static void init() {
     Log.trace("init StreamTypeRelations", "TypeCheck setup");
     SymTypeRelations.init();
@@ -39,6 +45,10 @@ public class StreamSymTypeRelations extends SymTypeRelations {
 
   public static boolean isUntimedStream(SymTypeExpression type) {
     return getStreamTypeRelations().isUntimedStream(type);
+  }
+
+  public static boolean isStreamOfUnknownSubType(SymTypeExpression type) {
+    return getStreamTypeRelations().isStreamOfUnknownSubType(type);
   }
 
   /**

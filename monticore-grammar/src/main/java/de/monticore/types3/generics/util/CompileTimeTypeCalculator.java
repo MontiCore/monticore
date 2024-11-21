@@ -889,13 +889,14 @@ public class CompileTimeTypeCalculator {
     }
     else {
       // no symbol => no restrictive parameter bounds,
-      // but, the bound typeVar <: Top is required, thus added here.
+      // unless given as explicitly,
+      // but, at least the bound typeVar <: Top is required, thus added here.
       // this function type most likely has been created
       // as a stand-in for e.g., an operator.
       List<SymTypeVariable> typeVars = TypeParameterRelations
           .getIncludedInferenceVariables(func);
       for (SymTypeVariable typeVar : typeVars) {
-        bounds.add(new SubTypingBound(typeVar, createTopType()));
+        bounds.add(new SubTypingBound(typeVar, typeVar.getUpperBound()));
       }
     }
     // can always calculate B0 (assuming no internal error)

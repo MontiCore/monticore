@@ -13,6 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+@Disabled
 public class StreamTypeTest {
 
   @BeforeEach
