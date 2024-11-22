@@ -35,7 +35,7 @@ public class StreamTypeTest {
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
     // workaround to get library path working in emf
-    Path symbolsPath = new File(FileReaderWriter.getResource(getClass().getClassLoader(), "symbols/Stream.symtabdefinitionsym").get().toURI()).toPath().getParent();
+    Path symbolsPath = new File(FileReaderWriter.getResource(getClass().getClassLoader(), "symbols/streams/Stream.symtabdefinitionsym").get().toURI()).toPath().getParent();
     BasicSymbolsMill.globalScope().getSymbolPath().addEntry(symbolsPath);
     // workaround as CDs not known
     BasicSymbolsMill.globalScope().putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new OOTypeSymbolDeSer());
