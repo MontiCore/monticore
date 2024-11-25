@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersectionOrDefault;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnionOrDefault;
 
 public class CompileTimeTypeCalculator {
@@ -548,11 +547,12 @@ public class CompileTimeTypeCalculator {
         getFunctionsOfResolvedType(resolvedType);
     List<SymTypeOfFunction> fixArityFuncs =
         fixArities(resolvedFuncs, funcInfo.getParameterCount());
-    List<SymTypeOfFunction> potentiallyApplicableFuncs = new ArrayList<>();
-    for (SymTypeOfFunction func : fixArityFuncs) {
-      if (FunctionRelations.internal_canPotentiallyBeCalledWith(func, funcInfo)) {
-        potentiallyApplicableFuncs.add(func);
-      }
+    List<SymTypeOfFunction> potentiallyApplicableFuncs =
+        getPotentiallyApplicableFunctionsOrLogError(fixArityFuncs, funcInfo);
+    if (potentiallyApplicableFuncs.isEmpty()) {
+      InferenceResult result = new InferenceResult();
+      result.setHasErrorOccurred();
+      return result;
     }
 
     // Note: this MUST(!) be Map that uses object identity;
@@ -802,6 +802,38 @@ public class CompileTimeTypeCalculator {
   }
 
   /**
+   * Gets functions with fixed arity and filters them for
+   * potential applicability (s. FunctionRelations).
+   *
+   * @return Empty on Error.
+   *     A non-empty list of potentially applicable functions otherwise.
+   */
+  protected List<SymTypeOfFunction> getPotentiallyApplicableFunctionsOrLogError(
+      List<SymTypeOfFunction> funcsWithFixedArity,
+      PartialFunctionInfo funcInfo
+  ) {
+    List<SymTypeOfFunction> potentiallyApplicableFuncs = new ArrayList<>();
+    for (SymTypeOfFunction func : funcsWithFixedArity) {
+      if (FunctionRelations.internal_canPotentiallyBeCalledWith(func, funcInfo)) {
+        potentiallyApplicableFuncs.add(func);
+      }
+    }
+    if (potentiallyApplicableFuncs.isEmpty()) {
+      Log.error("0xFD44A no potentially applicable function found!"
+          + System.lineSeparator()
+          + printArgumentsPertinentToApplicability(funcInfo)
+          + System.lineSeparator()
+          + " resolved functions (with fixed arity): "
+          + System.lineSeparator() + funcsWithFixedArity.stream()
+          .map(SymTypeExpression::printFullName)
+          .collect(Collectors.joining(System.lineSeparator()))
+      );
+      return Collections.emptyList();
+    }
+    return potentiallyApplicableFuncs;
+  }
+
+  /**
    * takes potentially applicable functions (s. FunctionRelations)
    * and returns applicable functions and their inference results.
    *
@@ -830,19 +862,10 @@ public class CompileTimeTypeCalculator {
       }
     }
     if (func2InferenceResult.isEmpty()) {
-      StringBuilder argInfo = new StringBuilder();
-      for (int i = 0; i < funcInfo.getParameterCount(); i++) {
-        if (funcInfo.hasArgumentType(i)) {
-          argInfo
-              .append(System.lineSeparator())
-              .append(i)
-              .append(": ")
-              .append(funcInfo.getArgumentType(i).printFullName());
-        }
-      }
       Log.error("0xFD444 no applicable function found!"
-          + System.lineSeparator() + "Arguments pertinent to applicability:"
-          + argInfo + System.lineSeparator()
+          + System.lineSeparator()
+          + printArgumentsPertinentToApplicability(funcInfo)
+          + System.lineSeparator()
           + " potentially applicable functions (before inference): "
           + System.lineSeparator() + potentiallyApplicableFuncs.stream()
           .map(SymTypeExpression::printFullName)
@@ -1333,6 +1356,22 @@ public class CompileTimeTypeCalculator {
     return constraints.stream()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
+  }
+
+  protected String printArgumentsPertinentToApplicability(PartialFunctionInfo funcInfo) {
+    // take care on when to call this method!
+    StringBuilder argInfo = new StringBuilder();
+    argInfo.append("Arguments pertinent to applicability:");
+    for (int i = 0; i < funcInfo.getParameterCount(); i++) {
+      if (funcInfo.hasArgumentType(i)) {
+        argInfo
+            .append(System.lineSeparator())
+            .append(i)
+            .append(": ")
+            .append(funcInfo.getArgumentType(i).printFullName());
+      }
+    }
+    return argInfo.toString();
   }
 
 }
