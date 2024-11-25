@@ -2733,8 +2733,8 @@ public class CommonExpressionTypeVisitorTest
 
     checkErrorExpr("foo2(c, c, c)", "0xFD446");
 
-    checkErrorExpr("foo2(a, a)", "0xFD444");
-    checkErrorExpr("foo2(b, a)", "0xFD444");
+    checkErrorExpr("foo2(a, a)", "0xFD44A");
+    checkErrorExpr("foo2(b, a)", "0xFD44A");
     checkErrorExpr("foo2(c, b)", "0xFD446");
     checkErrorExpr("foo2(c, c)", "0xFD446");
 
