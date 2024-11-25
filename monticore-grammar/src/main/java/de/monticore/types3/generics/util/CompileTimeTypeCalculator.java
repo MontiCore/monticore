@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersectionOrDefault;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnionOrDefault;
 
 public class CompileTimeTypeCalculator {
