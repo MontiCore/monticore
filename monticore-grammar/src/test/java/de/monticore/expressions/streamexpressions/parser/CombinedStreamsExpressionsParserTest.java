@@ -153,8 +153,8 @@ public class CombinedStreamsExpressionsParserTest {
     Optional<ASTStreamConstructorExpression> expr = p.parse_StringStreamConstructorExpression("<A>");
     assertTrue(expr.isPresent());
     ASTStreamConstructorExpression ast = expr.get();
-    assertEquals(ASTConstantsStreamExpressions.EVENT, ast.getTiming());
-    assertTrue(ast.isEventTimed());
+    assertTrue(ast.isDefaultTimed());
+    assertFalse(ast.isEventTimed());
     assertFalse(ast.isSyncTimed());
     assertFalse(ast.isToptTimed());
     assertFalse(ast.isUntimed());
