@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.prettyprint;
 
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
-import de.monticore.statements.mcassertstatements._prettyprint.MCAssertStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcassertstatements.TestMCAssertStatementsMill;
 import de.monticore.statements.testmcassertstatements._parser.TestMCAssertStatementsParser;
 import de.se_rwth.commons.logging.Log;
@@ -15,14 +13,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class MCAssertStatementsPrettyPrinterTest {
 
   private TestMCAssertStatementsParser parser = new TestMCAssertStatementsParser();
-
-  private MCAssertStatementsFullPrettyPrinter prettyPrinter= new MCAssertStatementsFullPrettyPrinter(new IndentPrinter());
 
   @BeforeEach
   public void init() {
@@ -30,7 +23,7 @@ public class MCAssertStatementsPrettyPrinterTest {
     Log.enableFailQuick(false);
     TestMCAssertStatementsMill.reset();
     TestMCAssertStatementsMill.init();
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestMCAssertStatementsMill.parser();
   }
 
   @Test
@@ -40,7 +33,7 @@ public class MCAssertStatementsPrettyPrinterTest {
     Assertions.assertTrue(result.isPresent());
     ASTAssertStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCAssertStatementsMill.prettyPrint(ast, true);
 
     result = parser.parse_StringAssertStatement(output);
     Assertions.assertFalse(parser.hasErrors());
