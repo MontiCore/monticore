@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * This example grammar demonstrates a problematic ambiguity when it comes to no-keyword usages.
+ * We define two
+ */
+grammar KeywordExpression extends de.monticore.MCBasics {
+  StartProd = Expression ";";
+
+  interface Expression;
+  NameExpr  implements Expression <350> = Name;
+  LitExpr   implements Expression <340> = "(" ")"; // simplified form of the SysML-null-literal as a LiteralExpression
+
+  NewExp    implements Expression <235> = key("new") MCType Arguments;
+  UnionExp  implements Expression <180> = Expression key("union") Expression;
+
+  Arguments = "(" (Expression || ",")* ")";
+  MCType = Name;
+}

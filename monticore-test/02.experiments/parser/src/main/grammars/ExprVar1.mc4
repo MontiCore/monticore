@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * A grammar re-using a left-recursive, non-terminated expression production
+ * and embedding it within another production (TestE), which results in an outgoing ATN-transition.
+ */
+grammar ExprVar1 extends ExprVars {
+  EmptyE = "<empty>";
+  TestE = Expression ";";
+}

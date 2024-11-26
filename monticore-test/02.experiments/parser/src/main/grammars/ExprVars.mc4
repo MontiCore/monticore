@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * A left-recursive Expression production
+ */
+grammar ExprVars extends de.monticore.MCBasics {
+  interface Expression;
+  NameExpression implements Expression <100> = Name;
+  PlusExpression implements Expression <80> = Expression "+" Expression; // left-recursive
+  NewExpression implements Expression <50> = "new" Name;
+}
