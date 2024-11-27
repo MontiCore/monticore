@@ -156,7 +156,7 @@ public class ParserGeneratorHelper {
   }
 
   /**
-   * Does not
+   * Side effect free.
    * @return the name for a lexsymbol that was used in an Antlr-File
    */
   public Optional<String> getCachedLexSymbolName(String constName) {

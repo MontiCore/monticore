@@ -120,6 +120,13 @@ public class LexNamer {
 
   }
 
+  /**
+   * Computes a new name for the lexical production or returns the previously
+   * computed one.
+   *
+   * @deprecated Use {@link LexNamer#getComputedLexName(String)}
+   * or {@link LexNamer#getOrComputeLexName(MCGrammarSymbol, String)} instead
+   */
   @Deprecated
   public String getLexName(MCGrammarSymbol grammarSymbol, String sym) {
     return this.getOrComputeLexName(grammarSymbol, sym);
