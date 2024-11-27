@@ -101,4 +101,40 @@ component grammar OOSymbols extends BasicSymbols {
     isStatic: boolean
     isFinal: boolean ;
 
+  /*=================================================================*/
+
+  /**
+   * A role symbol is a simple name. It is embedded in the association.
+   */
+  interface symbol AssocRole = Name;
+
+  /** The symbol for AssocRole contains all the information of one side of an association.
+      It contains the link to the type and the SymAssociation, which contains the
+      basic information of an association.
+  */
+  symbolrule AssocRole =
+    isDefinitiveNavigable: boolean
+    cardinality: Optional<de.monticore.cardinality._ast.ASTCardinality>
+    field: Optional<de.monticore.symbols.oosymbols._symboltable.FieldSymbol>
+    assocSide: Optional<de.monticore.cdassociation._ast.ASTCDAssocSide>
+
+    // Defined exactly if a qualifier is given:
+    attributeQualifier: Optional<de.monticore.symbols.basicsymbols._symboltable.VariableSymbol>
+    typeQualifier: Optional<de.monticore.types.check.SymTypeExpression>
+
+    // the AssocRole symbol only links to a SymAssociation if the other role also has a Symbol
+    assoc: Optional<de.monticore.symbols.oosymbols._symboltable.SymAssociation>
+    isOrdered: boolean
+    isLeft: boolean
+
+    type: de.monticore.types.check.SymTypeExpression
+    isReadOnly: boolean
+    isPrivate: boolean
+    isProtected: boolean
+    isPublic: boolean
+    isStatic:boolean
+    isFinal: boolean
+    isDerived: boolean
+  ;
+
 }
