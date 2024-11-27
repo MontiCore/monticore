@@ -59,15 +59,23 @@ public class WithinTypeBasicSymbolsResolver {
     }
     // search in this scope
     else {
-      Optional<VariableSymbol> resolvedSymbol = resolveVariableLocally(
+      Optional<VariableSymbol> resolvedSymbolOpt = resolveVariableLocally(
           spannedScopeOpt.get(),
           name,
           accessModifier,
           predicate
       );
-      resolvedSymType = resolvedSymbol.map(
-          s -> replaceVariablesIfNecessary(thisType, s.getType())
-      );
+      if (resolvedSymbolOpt.isPresent()) {
+        VariableSymbol resolvedSymbol = resolvedSymbolOpt.get();
+        SymTypeExpression varType = replaceVariablesIfNecessary(
+            thisType, resolvedSymbol.getType()
+        );
+        varType.getSourceInfo().setSourceSymbol(resolvedSymbol);
+        resolvedSymType = Optional.of(varType);
+      }
+      else {
+        resolvedSymType = Optional.empty();
+      }
     }
     // search in super types
     if (resolvedSymType.isEmpty()) {
@@ -113,7 +121,7 @@ public class WithinTypeBasicSymbolsResolver {
       String name,
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
-    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
+    List<SymTypeOfFunction> resolvedSymTypes;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
       resolvedSymTypes = new ArrayList<>();
@@ -127,12 +135,15 @@ public class WithinTypeBasicSymbolsResolver {
           accessModifier,
           predicate
       );
-      List<SymTypeOfFunction> resolvedTypesUnmodified = resolvedSymbols.stream()
-          .map(FunctionSymbol::getFunctionType)
-          .collect(Collectors.toList());
-      resolvedSymTypes = resolvedTypesUnmodified.stream()
-          .map(f -> (SymTypeOfFunction) replaceVariablesIfNecessary(thisType, f))
-          .collect(Collectors.toList());
+      resolvedSymTypes = new ArrayList<>(resolvedSymbols.size());
+      for (FunctionSymbol funcSym : resolvedSymbols) {
+        SymTypeOfFunction funcTypeUnmodified = funcSym.getFunctionType();
+        SymTypeOfFunction funcType = replaceVariablesIfNecessary(
+            thisType, funcTypeUnmodified
+        ).asFunctionType();
+        funcType.getSourceInfo().setSourceSymbol(funcSym);
+        resolvedSymTypes.add(funcType);
+      }
     }
     // search in super types
     // private -> protected while searching in super types
@@ -208,9 +219,10 @@ public class WithinTypeBasicSymbolsResolver {
       if (resolvedSymbol.isPresent()) {
         SymTypeExpression resolvedTypeUnmodified =
             SymTypeExpressionFactory.createFromSymbol(resolvedSymbol.get());
-        resolvedSymType = Optional.of(
-            replaceVariablesIfNecessary(thisType, resolvedTypeUnmodified)
-        );
+        SymTypeExpression objectType =
+            replaceVariablesIfNecessary(thisType, resolvedTypeUnmodified);
+        objectType.getSourceInfo().setSourceSymbol(resolvedSymbol.get());
+        resolvedSymType = Optional.of(objectType);
       }
       else {
         resolvedSymType = Optional.empty();

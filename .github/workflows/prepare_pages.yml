@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-    if: false # TODO: RE-ENABLE
     runs-on: ubuntu-latest
     env:
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}

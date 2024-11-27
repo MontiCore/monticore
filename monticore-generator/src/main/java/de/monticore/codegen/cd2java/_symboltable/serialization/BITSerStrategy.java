@@ -41,17 +41,17 @@ public class BITSerStrategy {
     return new TemplateHookPoint(PRINT_LIST_TEMPLATE, attrParam);
   }
 
-  public HookPoint getDeserialHook(String jsonParam, String attrParam) {
+  public HookPoint getDeserialHook(String jsonParam, String attrParam, String scopeName) {
     String typeMap = ".get" + type + "MemberOpt(\"" + attrParam + "\").orElse("+defaultValue+");";
     return new StringHookPoint("return " + jsonParam + typeMap);
   }
 
-  public HookPoint getOptDeserialHook(String jsonParam, String attrParam) {
+  public HookPoint getOptDeserialHook(String jsonParam, String attrParam, String scopeName) {
     String typeMap = "get" + type + "Member(\"" + attrParam + "\")";
     return new TemplateHookPoint(READ_OPT_TEMPLATE, jsonParam, attrParam, typeMap);
   }
 
-  public HookPoint getListDeserialHook(String jsonParam, String attrParam) {
+  public HookPoint getListDeserialHook(String jsonParam, String attrParam, String scopeName) {
     String typeMap;
     if(type.equals("String") || type.equals("Boolean")){
       typeMap = "getAsJson" + type + "().getValue()";

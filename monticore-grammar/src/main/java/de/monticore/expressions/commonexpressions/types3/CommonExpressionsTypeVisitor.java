@@ -515,79 +515,85 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     // (in Java, we would need `::` instead of `.` to select a method)
     // but as we support function types, the difference is nigh existent
     SymTypeExpression type;
-    List<SymTypeExpression> args = new ArrayList<>();
-    for (int i = 0; i < expr.getArguments().sizeExpressions(); i++) {
-      args.add(getType4Ast().getPartialTypeOfExpr(expr.getArguments().getExpression(i)));
-    }
     Set<SymTypeExpression> inner;
     SymTypeExpression calculatedInner = SymTypeRelations.normalize(
         getType4Ast().getPartialTypeOfExpr(expr.getExpression())
     );
     if (calculatedInner.isIntersectionType()) {
       inner = new HashSet<>(
-          ((SymTypeOfIntersection)calculatedInner).getIntersectedTypeSet()
+          ((SymTypeOfIntersection) calculatedInner).getIntersectedTypeSet()
       );
     }
     else {
       inner = new HashSet<>();
       inner.add(calculatedInner);
     }
-
-    // error already logged if Obscure
     if (inner.stream().allMatch(SymTypeExpression::isObscureType)) {
-      type = SymTypeExpressionFactory.createObscureType();
-    }
-    else if (args.stream().anyMatch(SymTypeExpression::isObscureType)) {
-      type = SymTypeExpressionFactory.createObscureType();
-    }
-    // as we call, we require a function type
-    else if (inner.stream().noneMatch(SymTypeExpression::isFunctionType)) {
-      Log.error("0xFDABC expression does not seem to be a function, "
-              + "instead the (potential) type(s) are: "
-              + inner.stream()
-              .map(SymTypeExpression::printFullName)
-              .collect(Collectors.joining(", ")),
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd()
-      );
+      // error already logged if Obscure
       type = SymTypeExpressionFactory.createObscureType();
     }
     else {
-      Set<SymTypeOfFunction> funcs = inner.stream()
-          .filter(SymTypeExpression::isFunctionType)
-          .map(t -> (SymTypeOfFunction) t)
-          .collect(Collectors.toSet());
-      // filter out all function that do not fit the arguments
-      Set<SymTypeOfFunction> callableFuncs = funcs.stream()
-          .filter(f -> FunctionRelations.canBeCalledWith(f, args))
-          .collect(Collectors.toSet());
-      if (callableFuncs.isEmpty()) {
-        Log.error("0xFDABE with " + args.size() + " argument ("
-                + args.stream()
-                .map(SymTypeExpression::printFullName)
-                .collect(Collectors.joining(", "))
-                + "), no potential function can be invoked:"
-                + System.lineSeparator()
-                + funcs.stream()
-                .map(this::printFunctionForLog)
-                .collect(Collectors.joining(System.lineSeparator())),
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd()
-        );
+      List<SymTypeExpression> args = new ArrayList<>();
+      for (int i = 0; i < expr.getArguments().sizeExpressions(); i++) {
+        ASTExpression argExpr = expr.getArguments().getExpression(i);
+        args.add(getType4Ast().getPartialTypeOfExpr(argExpr));
+      }
+
+      if (args.stream().anyMatch(SymTypeExpression::isObscureType)) {
+        // error already logged if Obscure
         type = SymTypeExpressionFactory.createObscureType();
       }
       else {
-        // fix arity according to the arguments
-        callableFuncs = callableFuncs.stream()
-            .map(f -> f.getWithFixedArity(args.size()))
-            .collect(Collectors.toSet());
-        Optional<SymTypeOfFunction> mostSpecificFunction =
-            FunctionRelations.getMostSpecificFunctionOrLogError(callableFuncs);
-        if (mostSpecificFunction.isPresent()) {
-          type = mostSpecificFunction.get().getType().deepClone();
+        // as we call, we require a function type
+        if (inner.stream().noneMatch(SymTypeExpression::isFunctionType)) {
+          Log.error("0xFDABC expression does not seem to be a function, "
+                  + "instead the (potential) type(s) are: "
+                  + inner.stream()
+                  .map(SymTypeExpression::printFullName)
+                  .collect(Collectors.joining(", ")),
+              expr.get_SourcePositionStart(),
+              expr.get_SourcePositionEnd()
+          );
+          type = SymTypeExpressionFactory.createObscureType();
         }
         else {
-          type = createObscureType();
+          Set<SymTypeOfFunction> funcs = inner.stream()
+              .filter(SymTypeExpression::isFunctionType)
+              .map(t -> (SymTypeOfFunction) t)
+              .collect(Collectors.toSet());
+          // filter out all function that do not fit the arguments
+          Set<SymTypeOfFunction> callableFuncs = funcs.stream()
+              .filter(f -> FunctionRelations.canBeCalledWith(f, args))
+              .collect(Collectors.toSet());
+          if (callableFuncs.isEmpty()) {
+            Log.error("0xFDABE with " + args.size() + " argument ("
+                    + args.stream()
+                    .map(SymTypeExpression::printFullName)
+                    .collect(Collectors.joining(", "))
+                    + "), no potential function can be invoked:"
+                    + System.lineSeparator()
+                    + funcs.stream()
+                    .map(this::printFunctionForLog)
+                    .collect(Collectors.joining(System.lineSeparator())),
+                expr.get_SourcePositionStart(),
+                expr.get_SourcePositionEnd()
+            );
+            type = SymTypeExpressionFactory.createObscureType();
+          }
+          else {
+            // fix arity according to the arguments
+            callableFuncs = callableFuncs.stream()
+                .map(f -> f.getWithFixedArity(args.size()))
+                .collect(Collectors.toSet());
+            Optional<SymTypeOfFunction> mostSpecificFunction =
+                FunctionRelations.getMostSpecificFunctionOrLogError(callableFuncs);
+            if (mostSpecificFunction.isPresent()) {
+              type = mostSpecificFunction.get().getType().deepClone();
+            }
+            else {
+              type = createObscureType();
+            }
+          }
         }
       }
     }
