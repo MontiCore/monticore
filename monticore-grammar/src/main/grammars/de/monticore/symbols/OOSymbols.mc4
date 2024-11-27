@@ -114,9 +114,9 @@ component grammar OOSymbols extends BasicSymbols {
   */
   symbolrule AssocRole =
     isDefinitiveNavigable: boolean
-    cardinality: Optional<de.monticore.cardinality._ast.ASTCardinality>
+    cardinality: Optional<de.monticore.symbols.oosymbols._symboltable.AssocCardinality>
     field: Optional<de.monticore.symbols.oosymbols._symboltable.FieldSymbol>
-    assocSide: Optional<de.monticore.cdassociation._ast.ASTCDAssocSide>
+    //assocSide: Optional<de.monticore.cdassociation._ast.ASTCDAssocSide>
 
     // Defined exactly if a qualifier is given:
     attributeQualifier: Optional<de.monticore.symbols.basicsymbols._symboltable.VariableSymbol>
