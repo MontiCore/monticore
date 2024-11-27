@@ -99,6 +99,10 @@ public class MCGrammarInfo {
     return splitRules;
   }
 
+  /**
+   * The tokens considered by a nokeyword/key modifier.
+   * They will behave like normal identifiers/names
+   */
   public List<String> getKeywordRules() {
     return keywordRules;
   }

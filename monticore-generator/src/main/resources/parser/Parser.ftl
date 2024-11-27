@@ -10,7 +10,7 @@ ${tc.includeArgs("parser.ParserHeader",suffix)}
 
 <#list genHelper.getIdentsToGenerate() as ident>
   ${genHelper.getConvertFunction(ident)}
-</#list>  
+</#list>
 }
 
 <#list genHelper.getParserRulesToGenerate() as parserProd>
@@ -24,6 +24,24 @@ ${tc.includeArgs("parser.ParserHeader",suffix)}
   ${interfaceRule}
   </#list>
 </#list>
+
+name__including_no_keywords: r__mc__identifier=Name
+<#list genHelper.getNoKeywordNameAlts() as a>
+  | r__mc__identifier=${genHelper.getLexSymbolName(a)}
+</#list>
+;
+
+name__including_all_keywords: r__mc__identifier=Name
+<#list genHelper.getNoKeywordNameAlts() as a>
+  | r__mc__identifier=${genHelper.getLexSymbolName(a)}
+</#list>
+// and now inherited, implicit tokens (real keywords) as well
+<#list genHelper.getLexSymbolsWithInherited() as a>
+  <#if genHelper.isIdentifier('Name', a)>
+  | r__mc__identifier=${genHelper.getLexSymbolName(a)}
+  </#if>
+</#list>
+;
 
 <#list genHelper.getNoKeyordsWithInherited() as noKeyword>
   ${noKeyword}

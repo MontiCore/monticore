@@ -930,7 +930,13 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     boolean isRuleIterated = getASTMax(ast);
 
     String tmpName = parserHelper.getTmpVarName(ast);
-    addToCodeSection(tmpName, isRuleIterated ? "+=" : "=", ast.getName());
+    if (ast.getName().equals("Name")) { // TODO: store identifier-names elsewhere?
+      if (ast.isPlusKeywords())
+        addToCodeSection(tmpName, isRuleIterated ? "+=" : "=", "name__including_all_keywords");
+      else
+        addToCodeSection(tmpName, isRuleIterated ? "+=" : "=", "name__including_no_keywords");
+    } else
+      addToCodeSection(tmpName, isRuleIterated ? "+=" : "=", ast.getName());
 
     if (embeddedJavaCode) {
       // Add Actions
@@ -949,29 +955,29 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     endCodeSection();
 
-    if (ast.isPlusKeywords()) {
-      addToAntlrCode("/* Automatically added keywords " + grammarInfo.getKeywords()
-          + " */");
-
-      ArrayList<String> keys = Lists.newArrayList(grammarInfo.getKeywords());
-      keys.removeAll(grammarInfo.getKeywordRules());
-      for (String y : keys) {
-        addToAntlrCode(" | ");
-        ASTTerminal term = Grammar_WithConceptsMill.terminalBuilder()
-            .setName(y).build();
-
-        if (ast.isPresentSymbol()) {
-          RuleComponentSymbol componentSymbol = ast.getSymbol();
-          Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
-              .getEnclosingRule(componentSymbol);
-          term.setUsageName(ParserGeneratorHelper.getUsageName(ast));
-
-          if (rule.isPresent()) {
-            addActionForKeyword(term, rule.get(), componentSymbol.isIsList(), tmpName + (isRuleIterated?"+=":"="));
-          }
-        }
-      }
-    }
+//    if (ast.isPlusKeywords()) {
+//      addToAntlrCode("/* Automatically added keywords " + grammarInfo.getKeywords()
+//          + " */");
+//
+//      ArrayList<String> keys = Lists.newArrayList(grammarInfo.getKeywords());
+//      keys.removeAll(grammarInfo.getKeywordRules());
+//      for (String y : keys) {
+//        addToAntlrCode(" | ");
+//        ASTTerminal term = Grammar_WithConceptsMill.terminalBuilder()
+//            .setName(y).build();
+//
+//        if (ast.isPresentSymbol()) {
+//          RuleComponentSymbol componentSymbol = ast.getSymbol();
+//          Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
+//              .getEnclosingRule(componentSymbol);
+//          term.setUsageName(ParserGeneratorHelper.getUsageName(ast));
+//
+//          if (rule.isPresent()) {
+//            addActionForKeyword(term, rule.get(), componentSymbol.isIsList(), tmpName + (isRuleIterated?"+=":"="));
+//          }
+//        }
+//      }
+//    }
 
     addToAntlrCode(") " + printIteration(ast.getIteration()));
   }

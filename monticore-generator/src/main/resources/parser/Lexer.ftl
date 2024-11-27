@@ -23,6 +23,14 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarS
   </#list>
 </#list>
 
+// nokeyword rules (will be added to the name__including_all_keywords)
+<#assign alreadyAddedImplicit=genHelper.getLexSymbolsWithInherited()>
+<#list genHelper.getNoKeywordNameAlts() as t>
+    <#if !alreadyAddedImplicit?seq_contains(t)>
+      ${genHelper.getLexSymbolName(t)}: '${t}';
+    </#if>
+</#list>
+
 <#assign modeMap=genHelper.getLexerRulesForMode()>
 <#list modeMap as modeName, lexProdList>
   <#if modeMap?size != 1 || modeName != "DEFAULT_MODE">

@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -216,8 +217,16 @@ public class ParserGeneratorHelper {
   public List<String> getNoKeyordsWithInherited() {
     List<String> retList = Lists.newArrayList();
     for (String s: grammarSymbol.getKeywordRulesWithInherited()) {
-      String r = getKeyRuleName(s) + " : {next(\"" + s + "\")}? Name;";
+      String r = getKeyRuleName(s) + " : '" + s + "';";
       retList.add(r);
+    }
+    return retList;
+  }
+
+  public List<String> getNoKeywordNameAlts() {
+    List<String> retList = Lists.newArrayList();
+    for (String s: grammarSymbol.getKeywordRulesWithInherited()) {
+      retList.add(s);
     }
     return retList;
   }
@@ -661,6 +670,12 @@ public class ParserGeneratorHelper {
             .filter(ASTAntlrOption::isPresentValue)
             .filter(a -> a.getName().equals("ParserSuperClass")).map(ASTAntlrOption::getValue)
             .findFirst().orElse("MCParser");
+  }
+
+  final Pattern name = Pattern.compile("[a-zA-Z_$][a-zA-Z0-9_$]*");
+  public boolean isIdentifier(String identifier, String token) {
+    // TODO: limit identifier to not only 'Name'?
+    return name.matcher(token).matches();
   }
 
 }

@@ -151,6 +151,12 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     // add visitTerminal
     visitorClass.addCDMember((m = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(), astNodeType, "visitTerminal", cdParameterFacade.createParameter(TerminalNode.class, "node"))));
     glex.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_parser.visitor.NotImplemented"));
+    // unused visit methods for (name) identifiers
+    visitorClass.addCDMember((m = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(), astNodeType, "visitName__including_no_keywords", cdParameterFacade.createParameter(antlrParserName + ".Name__including_no_keywordsContext", "node"))));
+    glex.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_parser.visitor.NotImplemented"));
+    visitorClass.addCDMember((m = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(), astNodeType, "visitName__including_all_keywords", cdParameterFacade.createParameter(antlrParserName + ".Name__including_all_keywordsContext", "node"))));
+    glex.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_parser.visitor.NotImplemented"));
+
 
     // noKeyword and splittoken introduces terminals, which require a visit method
     List<String> pseudoProductions = new ArrayList<>(grammarInfo.getSplitRules().values());
@@ -471,6 +477,25 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     );
     glex.replaceTemplate(EMPTY_BODY, method, hookPoint);
     visitorClass.addCDMember(method);
+
+    // Add convert methods for identifiers (both with noKeywords-tokens and will all tokens)
+    if (node.getName().equals("Name")) { // TODO: Otherwise
+      method = cdMethodFacade.createMethod(CDModifier.PROTECTED.build(),
+                                                       retType,
+                                                       "convert" + StringTransformations.capitalize(node.getName()),
+                                                       cdParameterFacade.createParameter(antlrParserName + ".Name__including_no_keywordsContext", tokenParamName)
+                                                      );
+      glex.replaceTemplate(EMPTY_BODY, method, hookPoint);
+      visitorClass.addCDMember(method);
+      // 2nd: plusKeywords
+      method = cdMethodFacade.createMethod(CDModifier.PROTECTED.build(),
+                                           retType,
+                                           "convert" + StringTransformations.capitalize(node.getName()),
+                                           cdParameterFacade.createParameter(antlrParserName + ".Name__including_all_keywordsContext", tokenParamName)
+                                          );
+      glex.replaceTemplate(EMPTY_BODY, method, hookPoint);
+      visitorClass.addCDMember(method);
+    }
 
   }
 
