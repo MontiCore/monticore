@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types3.ISymTypeVisitor;
 
@@ -15,6 +16,10 @@ public class SymTypeVoid extends SymTypeExpression {
   public SymTypeVoid() {
     typeSymbol = new TypeSymbolSurrogate(BasicSymbolsMill.VOID);
     typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
+  }
+
+  protected SymTypeVoid(TypeSymbol symbol) {
+    this.typeSymbol = symbol;
   }
   
   @Override
