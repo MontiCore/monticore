@@ -89,14 +89,13 @@ public class SymTypeVariable extends SymTypeExpression {
   }
 
   @Override
-  public boolean hasTypeInfo() {
-    // support deprecated behavior
-    return hasTypeVarSymbol() || typeSymbol != null;
-  }
-
-  @Override
   @Deprecated
   public TypeSymbol getTypeInfo() {
+    Log.warn("0xFDFDC internal error: getTypeInfo called"
+        + ", but the current SymTypeExpression should never have" +
+        " a TypeSymbol in the first place."
+        + " (This will be an error in the future)"
+    );
     //support deprecated behavior
     if (typeSymbol != null) {
       return typeSymbol;

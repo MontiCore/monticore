@@ -527,8 +527,8 @@ public class SymTypeExpressionTest {
   public void testHasTypeInfo() {
     Assertions.assertTrue(teInt.hasTypeInfo());
     Assertions.assertFalse(createPrimitive((TypeSymbol) null).hasTypeInfo());
-    Assertions.assertTrue(teVarA.hasTypeInfo());
-    Assertions.assertTrue(teVarB.hasTypeInfo());
+    Assertions.assertFalse(teVarA.hasTypeInfo());
+    Assertions.assertFalse(teVarB.hasTypeInfo());
     Assertions.assertFalse(teVarUpper.hasTypeInfo());
     Assertions.assertFalse(teVarLower.hasTypeInfo());
     Assertions.assertTrue(teIntA.hasTypeInfo());
