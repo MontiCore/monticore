@@ -220,7 +220,7 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
       Optional<HookPoint> impl = bitser
-          .getDeserialHook(attr.printType(), attr.getName(), "symbolJson");
+          .getDeserialHook(attr.printType(), attr.getName(), "symbolJson", scopeParam.getName());
       if (impl.isPresent()) {
         this.replaceTemplate(EMPTY_BODY, method, impl.get());
         String deprecatedWrapperImpl = "return this." + methodName +

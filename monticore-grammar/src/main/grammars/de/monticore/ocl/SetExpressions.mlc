@@ -1,4 +1,4 @@
-package de.monticore.expressions;
+package de.monticore.ocl;
 
 mlc SetExpressions {
 

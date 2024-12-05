@@ -124,8 +124,10 @@ including commercial use without any license restriction.
 (2) *Tool derivates* created using the MontiCore language 
 workbench mention that it is built using MontiCore. There is 
 no other restriction. (BSD 3 Clause license) 
-(3) Adaptations of MontiCore should mention MontiCore and 
-results published back into this repository (LGPL license). 
+(3) Adaptations of the MontiCore language workbench itself
+should mention MontiCore and
+results are published back into the MontiCore repository (LGPL license)
+-- for other purposes an individual Dual License is available.
 
 For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 

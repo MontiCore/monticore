@@ -166,10 +166,14 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     // decorate for traverser
     List<ASTCDMethod> traverserMethods = getAttributeMethods(visitorService.getTraverserSimpleName(),
         visitorService.getTraverserFullName(), TRAVERSER, visitorService.getTraverserInterfaceFullName());
-    this.replaceTemplate(JAVADOC, traverserMethods.get(0), JavaDoc.of("The traverser is the conceptual entry point for every action within the visitor infrastructure.",
+    this.replaceTemplate(JAVADOC, traverserMethods.get(0), JavaDoc.of("A traverser is the conceptual entry point for every action within the visitor infrastructure.",
             "Visitors may be added, which contain the implementations for the visit and endVisit methods.",
             "Handlers may be added to modify the default traversal strategy.",
-            "{@link #inheritanceTraverser()} should be preferred over normal traverser, as they further enable language composition.").asHP());
+            "Each traverser retains their traversed elements to avoid duplicate traversal, ",
+            "possibly requiring {@link de.monticore.visitor.ITraverser#clearTraversedElements()} to be called in case of re-use",
+            "{@link #inheritanceTraverser()} should be preferred over normal traverser, as they further enable language composition.")
+            .block("return", "a new instance of this language's traverser")
+            .asHP());
     millClass.addAllCDMembers(traverserMethods);
 
     // decorate for traverser with InheritanceHandler
@@ -583,10 +587,14 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     // static accessor method
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), returnType, methodName);
     this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), methodName));
-    this.replaceTemplate(JAVADOC, staticMethod, JavaDoc.of("The traverser is the conceptual entry point for every action within the visitor infrastructure.",
+    this.replaceTemplate(JAVADOC, staticMethod, JavaDoc.of("A traverser is the conceptual entry point for every action within the visitor infrastructure.",
             "Visitors may be added, which contain the implementations for the visit and endVisit methods.",
             "Handlers may be added to modify the default traversal strategy.",
-            "Inheritance Traverser should be preferred over default ones, as they further enable language composition.").asHP());
+            "Each traverser retains their traversed elements to avoid duplicate traversal, ",
+            "possibly requiring {@link de.monticore.visitor.ITraverser#clearTraversedElements()} to be called in case of re-use",
+            "Inheritance Traverser should be preferred over default ones, as they further enable language composition.")
+            .block("return", "a new instance of this language's inheritance traverser")
+            .asHP());
     attributeMethods.add(staticMethod);
 
     // protected internal method

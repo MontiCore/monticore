@@ -39,7 +39,7 @@ public class StreamExpressionsPrettyPrinterTest {
       "<>",
       "<A>",
       "<A, B, C>",
-      "event<A>",
+      "Event<A>",
       "A:<B,C>",
       "stream1 : stream2",
       "stream1 ^^ stream2",
