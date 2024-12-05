@@ -138,6 +138,54 @@ public class CombinedStreamsExpressionsParserTest {
     assertInstanceOf(ASTStreamConstructorExpression.class, greater.getLeft());
   }
 
+  @ParameterizedTest
+  @MethodSource
+  public void testConstructorWithTick(String model) throws IOException {
+    Optional<ASTExpression> expr = p.parse_StringExpression(model);
+    assertFalse(p.hasErrors());
+    assertTrue(expr.isPresent());
+    assertInstanceOf(ASTStreamConstructorExpression.class, expr.get());
+  }
+
+  protected static Stream<Arguments> testConstructorWithTick() {
+    return Stream.of(
+        Arguments.of("<>"),
+        Arguments.of("<;>"),
+        Arguments.of("<;;>"),
+        Arguments.of("<1>"),
+        Arguments.of("<;1>"),
+        Arguments.of("<;;1>"),
+        Arguments.of("<1;>"),
+        Arguments.of("<1;;>"),
+        Arguments.of("<;;1;;>"),
+        Arguments.of("<1,1>"),
+        Arguments.of("<1;1>"),
+        Arguments.of("<1;;1>"),
+        Arguments.of("<;1,1;1;1,1;;1>"),
+        Arguments.of("<true ; 1>2 ;>"),
+        Arguments.of("<true ; 1<2 ;>")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  public void testInvalidConstructor(String model) throws IOException {
+    Optional<ASTExpression> expr = p.parse_StringExpression(model);
+    assertFalse(expr.isPresent());
+  }
+
+  protected static Stream<Arguments> testInvalidConstructor() {
+    return Stream.of(
+        Arguments.of("<,>"),
+        Arguments.of("<1,>"),
+        Arguments.of("<,1>"),
+        Arguments.of("<1,,1>"),
+        Arguments.of("<;,1>"),
+        Arguments.of("<1,;>"),
+        Arguments.of("<;,;>")
+    );
+  }
+
   @Test
   public void testBitshiftInteraction() throws IOException {
     // should still parse to "stream > 1"
