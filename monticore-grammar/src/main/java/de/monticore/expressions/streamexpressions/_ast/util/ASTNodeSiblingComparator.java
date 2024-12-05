@@ -29,7 +29,7 @@ public class ASTNodeSiblingComparator implements Comparator<ASTNode> {
 
   protected int compare(SourcePosition o1, SourcePosition o2) {
     // check if we are indeed sorting siblings or similar
-    if (o1.getFileName() != o2.getFileName()) {
+    if (!o1.getFileName().equals(o2.getFileName())) {
       Log.error("0xFD54D internal error: unexpected ASTNodes compared");
     }
     return o1.compareTo(o2);
