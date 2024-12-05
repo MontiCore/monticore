@@ -1,28 +1,34 @@
 package de.monticore.expressions.streamexpressions._ast;
 
-public class ASTStreamConstructorExpression extends ASTStreamConstructorExpressionTOP {
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+
+import java.util.List;
+
+public interface ASTStreamConstructorExpression extends ASTStreamConstructorExpressionTOP {
 
   /**
    * If default and not specified otherwise, Event should be chosen.
    */
-  public boolean isDefaultTimed() {
-    return getTiming() == ASTConstantsStreamExpressions.DEFAULT;
+  default boolean isDefaultTimed() {
+    return false;
   }
 
-  public boolean isEventTimed() {
-    return getTiming() == ASTConstantsStreamExpressions.EVENT;
+  default boolean isEventTimed() {
+    return false;
   }
 
-  public boolean isSyncTimed() {
-    return getTiming() == ASTConstantsStreamExpressions.SYNC;
+  default boolean isSyncTimed() {
+    return false;
   }
 
-  public boolean isToptTimed() {
-    return getTiming() == ASTConstantsStreamExpressions.TOPT;
+  default boolean isToptTimed() {
+    return false;
   }
 
-  public boolean isUntimed() {
-    return getTiming() == ASTConstantsStreamExpressions.UNTIMED;
+  default boolean isUntimed() {
+    return false;
   }
+
+  List<ASTExpression> getExpressionList();
 
 }

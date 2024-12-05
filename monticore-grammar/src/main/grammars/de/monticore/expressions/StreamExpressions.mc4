@@ -49,14 +49,28 @@ component grammar StreamExpressions extends CommonExpressions {
    * Stream constructor has to bind harder than name expressions to avoid
    * the scanner recognizing timing keywords as names
    */
-  StreamConstructorExpression implements Expression <360> =
+  interface StreamConstructorExpression extends Expression <360>;
+
+  SimpleStreamConstructorExpression implements StreamConstructorExpression <360> =
+    ({noSpace(2)}?
+    timing:[key("Sync") | key("Untimed")])?
+    "<" (Expression || ",")* ">";
+
+  ToptStreamConstructorExpression implements StreamConstructorExpression <360> =
     ({noSpace(2)}? 
-    timing:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
+    timing:[key("Topt")])?
     "<"
-    (TickInStreamConstructor* (Expression (
+    ((Expression | AbsentInStreamConstructor) ("," (Expression | AbsentInStreamConstructor))*)
+    ">";
+
+  EventStreamConstructorExpression implements StreamConstructorExpression <360> =
+    ({noSpace(2)}?
+    timing:[key("Event")])?
+    "<"
+    TickInStreamConstructor* (Expression (
       ("," | TickInStreamConstructor+) Expression | TickInStreamConstructor)*
     )?
-    ) ">";
+    ">";
 
   TickInStreamConstructor = ";";
   AbsentInStreamConstructor = "~";

@@ -140,6 +140,27 @@ public class CombinedStreamsExpressionsParserTest {
 
   @ParameterizedTest
   @MethodSource
+  public void testConstructorWithAbsent(String model) throws IOException {
+    Optional<ASTExpression> expr = p.parse_StringExpression(model);
+    assertFalse(p.hasErrors());
+    assertTrue(expr.isPresent());
+    assertInstanceOf(ASTStreamConstructorExpression.class, expr.get());
+  }
+
+  protected static Stream<Arguments> testConstructorWithAbsent() {
+    return Stream.of(
+        Arguments.of("<>"),
+        Arguments.of("<~>"),
+        Arguments.of("<~,~>"),
+        Arguments.of("<1,~>"),
+        Arguments.of("<~,1>"),
+        Arguments.of("<1,1>"),
+        Arguments.of("<~, ~, ~, ~>")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource
   public void testConstructorWithTick(String model) throws IOException {
     Optional<ASTExpression> expr = p.parse_StringExpression(model);
     assertFalse(p.hasErrors());
@@ -182,7 +203,11 @@ public class CombinedStreamsExpressionsParserTest {
         Arguments.of("<1,,1>"),
         Arguments.of("<;,1>"),
         Arguments.of("<1,;>"),
-        Arguments.of("<;,;>")
+        Arguments.of("<;,;>"),
+        Arguments.of("<;,~>"),
+        Arguments.of("<~,;>"),
+        Arguments.of("<;~>"),
+        Arguments.of("<~;>")
     );
   }
 

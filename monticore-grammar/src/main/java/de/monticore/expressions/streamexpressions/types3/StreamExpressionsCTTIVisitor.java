@@ -74,7 +74,8 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
         !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
     ) {
       visit(expr);
-      traverse(expr);
+      // todo FDr
+      //traverse(expr);
       endVisit(expr);
     }
   }
