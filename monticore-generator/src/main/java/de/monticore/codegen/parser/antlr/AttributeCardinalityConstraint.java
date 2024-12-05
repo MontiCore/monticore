@@ -36,7 +36,7 @@ public class AttributeCardinalityConstraint {
       String usageName = att.getName();
       if (TransformationHelper.getMax(att).isPresent()
           || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
-        ret.append("\n" + "int " + getCounterName(usageName) + "=0;");
+        ret.append("int " + getCounterName(usageName) + "=0;\n");
       }
     }
     return ret.toString();
