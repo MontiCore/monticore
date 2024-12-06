@@ -64,6 +64,8 @@ and combining their information to the SymTypeExpression currently calculated.
   (factory for creating instances of the subclasses of SymTypeExpression) 
     * [MCCollectionSymTypeFactory](../types/mccollectiontypes/types3/util/MCCollectionSymTypeFactory.java)
       (factory for CollectionTypes, convenience methods)
+    * [StreamSymTypeFactory](streams/StreamSymTypeFactory.java)
+      (factory for Stream types, convenience methods)
 * Functionality to work with SymTypeExpressions, Expressions
     * [SymTypeRelations](SymTypeRelations.java)
       (relations over SymTypeExpressions, e.g., `isSubTypeOf`, `isCompatible`)
@@ -73,6 +75,8 @@ and combining their information to the SymTypeExpression currently calculated.
           (relations regarding functions, e.g, `canBeCalledWith`)
         * [SIUnitTypeRelations](util/SIUnitTypeRelations.java)
           (SIUnit relations, e.g., `multiply`, `isOfDimensionOne`)
+        * [StreamSymTypeRelations](streams/StreamSymTypeRelations.java)
+          (relations over Stream SymTypeExpressions, e.g., isEventStream)
     * [WithinScopeBasicSymbolsResolver](util/WithinScopeBasicSymbolsResolver.java)
       (resolves contained variables, functions, ect. within a given scope;
       unlike symbol resolving this returns SymTypeExpressions)
@@ -115,6 +119,9 @@ and combining their information to the SymTypeExpression currently calculated.
         * [SetExpressionsTypeVisitor](../ocl/setexpressions/types3/SetExpressionsTypeVisitor.java)
           (calculates the SymTypeExpressions for the expressions
           in the grammar SetExpressions)
+        * [StreamExpressionsTypeVisitor](../expressions/streamexpressions/types3/StreamExpressionsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the expressions
+          in the grammar StreamExpressions)
         * [TupleExpressionsTypeVisitor](../expressions/tupleexpressions/types3/TupleExpressionsTypeVisitor.java)
           (calculates the SymTypeExpressions for the expressions
           in the grammar TupleExpressions)
