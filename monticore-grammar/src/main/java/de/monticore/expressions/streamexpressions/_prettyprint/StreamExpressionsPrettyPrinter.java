@@ -9,9 +9,13 @@ import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.List;
 
-public class StreamExpressionsPrettyPrinter extends StreamExpressionsPrettyPrinterTOP {
+public class StreamExpressionsPrettyPrinter
+    extends StreamExpressionsPrettyPrinterTOP {
 
-  public StreamExpressionsPrettyPrinter(IndentPrinter printer, boolean printComments) {
+  public StreamExpressionsPrettyPrinter(
+      IndentPrinter printer,
+      boolean printComments
+  ) {
     super(printer, printComments);
   }
 
@@ -31,11 +35,12 @@ public class StreamExpressionsPrettyPrinter extends StreamExpressionsPrettyPrint
       }
       for (int j = 0; j < expressionsPerTimeSlice.get(i).size(); j++) {
         if (j != 0) {
-          getPrinter().print(",");
+          getPrinter().print(", ");
         }
         expressionsPerTimeSlice.get(i).get(j).accept(getTraverser());
       }
     }
+    getPrinter().stripTrailing();
     getPrinter().print(">");
     if (this.isPrintComments()) {
       CommentPrettyPrinter.printPostComments(node, getPrinter());
