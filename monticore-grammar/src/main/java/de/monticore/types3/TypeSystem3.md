@@ -62,10 +62,14 @@ and combining their information to the SymTypeExpression currently calculated.
   (factory for creating instances of the subclasses of SymTypeExpression) 
     * [MCCollectionSymTypeFactory](../types/mccollectiontypes/types3/util/MCCollectionSymTypeFactory.java)
       (factory for CollectionTypes, convenience methods)
+    * [StreamSymTypeFactory](streams/StreamSymTypeFactory.java)
+      (factory for Stream types, convenience methods)
 * [SymTypeRelations](SymTypeRelations.java)
   (relations over SymTypeExpressions, e.g., isSubTypeOf)
     * [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java)
       (relations over MCCollection SymTypeExpressions, e.g., isList)
+    * [StreamSymTypeRelations](streams/StreamSymTypeRelations.java)
+      (relations over Stream SymTypeExpressions, e.g., isEventStream)
 * [WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java)
   (resolves contained fields, methods, etc. within a given type)
 * TypeVisitors traverse the AST and
@@ -95,6 +99,9 @@ and combining their information to the SymTypeExpression currently calculated.
         * [SetExpressionsTypeVisitor](../ocl/setexpressions/types3/SetExpressionsTypeVisitor.java)
           (calculates the SymTypeExpressions for the expressions
           in the grammar SetExpressions)
+        * [StreamExpressionsTypeVisitor](../expressions/streamexpressions/types3/StreamExpressionsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the expressions
+          in the grammar StreamExpressions)
         * [TupleExpressionsTypeVisitor](../expressions/tupleexpressions/types3/TupleExpressionsTypeVisitor.java)
           (calculates the SymTypeExpressions for the expressions
           in the grammar TupleExpressions)
