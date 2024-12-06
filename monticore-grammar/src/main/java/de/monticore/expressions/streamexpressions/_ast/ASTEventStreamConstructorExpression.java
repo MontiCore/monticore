@@ -9,7 +9,8 @@ import de.monticore.expressions.streamexpressions._util.IStreamExpressionsTypeDi
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASTEventStreamConstructorExpression extends ASTEventStreamConstructorExpressionTOP {
+public class ASTEventStreamConstructorExpression
+    extends ASTEventStreamConstructorExpressionTOP {
 
   @Override
   public boolean isEventTimed() {

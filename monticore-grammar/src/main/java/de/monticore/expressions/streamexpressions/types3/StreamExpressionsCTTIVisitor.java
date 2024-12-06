@@ -1,9 +1,14 @@
 package de.monticore.expressions.streamexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.streamexpressions._ast.ASTAppendAbsentStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTAppendStreamExpression;
+import de.monticore.expressions.streamexpressions._ast.ASTAppendTickStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTConcatStreamExpression;
+import de.monticore.expressions.streamexpressions._ast.ASTEventStreamConstructorExpression;
+import de.monticore.expressions.streamexpressions._ast.ASTSimpleStreamConstructorExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTStreamConstructorExpression;
+import de.monticore.expressions.streamexpressions._ast.ASTToptStreamConstructorExpression;
 import de.monticore.expressions.streamexpressions._visitor.StreamExpressionsHandler;
 import de.monticore.expressions.streamexpressions._visitor.StreamExpressionsTraverser;
 import de.monticore.types.check.SymTypeExpression;
@@ -37,23 +42,8 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
   }
 
   @Override
-  public void handle(ASTStreamConstructorExpression expr) {
-    SymTypeOfFunction exprFunc;
-    List<ASTExpression> containedExprs = expr.getExpressionList();
-    if (getInferenceContext4Ast().hasResolvedOfExpression(expr)) {
-      exprFunc = getInferenceContext4Ast().getResolvedOfExpression(expr)
-          .asFunctionType();
-    }
-    else {
-      exprFunc = getStreamConstructorFunc(expr);
-      getInferenceContext4Ast().setResolvedOfExpression(expr, exprFunc);
-    }
-    CompileTimeTypeCalculator.handleCall(
-        expr,
-        exprFunc.getWithFixedArity(containedExprs.size()),
-        containedExprs,
-        getTraverser(), getType4Ast(), getInferenceContext4Ast()
-    );
+  public void handle(ASTSimpleStreamConstructorExpression expr) {
+    handleCTTIFuncCall(expr);
     // default Timing is Event -> never create a Stream without Timing
     // replace any Stream with EventStream after inference is done,
     // as default types are not a feature the inference algorithm can handle,
@@ -74,10 +64,52 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
         !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
     ) {
       visit(expr);
-      // todo FDr
-      //traverse(expr);
+      traverse(expr);
       endVisit(expr);
     }
+  }
+
+  @Override
+  public void handle(ASTToptStreamConstructorExpression expr) {
+    handleCTTIFuncCall(expr);
+    if (getType4Ast().hasPartialTypeOfExpression(expr) &&
+        !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
+    ) {
+      visit(expr);
+      traverse(expr);
+      endVisit(expr);
+    }
+  }
+
+  @Override
+  public void handle(ASTEventStreamConstructorExpression expr) {
+    handleCTTIFuncCall(expr);
+    if (getType4Ast().hasPartialTypeOfExpression(expr) &&
+        !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
+    ) {
+      visit(expr);
+      traverse(expr);
+      endVisit(expr);
+    }
+  }
+
+  protected void handleCTTIFuncCall(ASTStreamConstructorExpression expr) {
+    SymTypeOfFunction exprFunc;
+    List<ASTExpression> containedExprs = expr.getExpressionList();
+    if (getInferenceContext4Ast().hasResolvedOfExpression(expr)) {
+      exprFunc = getInferenceContext4Ast().getResolvedOfExpression(expr)
+          .asFunctionType();
+    }
+    else {
+      exprFunc = getStreamConstructorFunc(expr);
+      getInferenceContext4Ast().setResolvedOfExpression(expr, exprFunc);
+    }
+    CompileTimeTypeCalculator.handleCall(
+        expr,
+        exprFunc.getWithFixedArity(containedExprs.size()),
+        containedExprs,
+        getTraverser(), getType4Ast(), getInferenceContext4Ast()
+    );
   }
 
   @Override
@@ -95,6 +127,58 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
         expr,
         exprFunc,
         List.of(expr.getLeft(), expr.getRight()),
+        getTraverser(), getType4Ast(), getInferenceContext4Ast()
+    );
+    if (getType4Ast().hasPartialTypeOfExpression(expr) &&
+        !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
+    ) {
+      visit(expr);
+      traverse(expr);
+      endVisit(expr);
+    }
+  }
+
+  @Override
+  public void handle(ASTAppendAbsentStreamExpression expr) {
+    SymTypeOfFunction exprFunc;
+    if (getInferenceContext4Ast().hasResolvedOfExpression(expr)) {
+      exprFunc = getInferenceContext4Ast().getResolvedOfExpression(expr)
+          .asFunctionType();
+    }
+    else {
+      exprFunc = getAppendAbsentStreamFunc();
+      getInferenceContext4Ast().setResolvedOfExpression(expr, exprFunc);
+    }
+    CompileTimeTypeCalculator.handleCall(
+        expr,
+        exprFunc,
+        List.of(expr.getStream()),
+        getTraverser(), getType4Ast(), getInferenceContext4Ast()
+    );
+    if (getType4Ast().hasPartialTypeOfExpression(expr) &&
+        !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
+    ) {
+      visit(expr);
+      traverse(expr);
+      endVisit(expr);
+    }
+  }
+
+  @Override
+  public void handle(ASTAppendTickStreamExpression expr) {
+    SymTypeOfFunction exprFunc;
+    if (getInferenceContext4Ast().hasResolvedOfExpression(expr)) {
+      exprFunc = getInferenceContext4Ast().getResolvedOfExpression(expr)
+          .asFunctionType();
+    }
+    else {
+      exprFunc = getAppendTickStreamFunc();
+      getInferenceContext4Ast().setResolvedOfExpression(expr, exprFunc);
+    }
+    CompileTimeTypeCalculator.handleCall(
+        expr,
+        exprFunc,
+        List.of(expr.getStream()),
         getTraverser(), getType4Ast(), getInferenceContext4Ast()
     );
     if (getType4Ast().hasPartialTypeOfExpression(expr) &&
@@ -167,6 +251,36 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
     SymTypeOfFunction streamConstructorFunc =
         createFunction(resultType, List.of(typeVarT), true);
     return streamConstructorFunc;
+  }
+
+  /**
+   * {@code <T> ToptStream<T> -> ToptStream<T>}
+   */
+  protected SymTypeOfFunction getAppendAbsentStreamFunc() {
+    SymTypeVariable typeVarT = createTypeVariable(
+        createBottomType(),
+        createTopType()
+    );
+    SymTypeExpression argType =
+        StreamSymTypeFactory.createToptStream(typeVarT);
+    SymTypeOfFunction appendAbsentStreamFunc =
+        createFunction(argType, List.of(argType));
+    return appendAbsentStreamFunc;
+  }
+
+  /**
+   * {@code <T> EventStream<T> -> EventStream<T>}
+   */
+  protected SymTypeOfFunction getAppendTickStreamFunc() {
+    SymTypeVariable typeVarT = createTypeVariable(
+        createBottomType(),
+        createTopType()
+    );
+    SymTypeExpression argType =
+        StreamSymTypeFactory.createEventStream(typeVarT);
+    SymTypeOfFunction appendTickStreamFunc =
+        createFunction(argType, List.of(argType));
+    return appendTickStreamFunc;
   }
 
   /**

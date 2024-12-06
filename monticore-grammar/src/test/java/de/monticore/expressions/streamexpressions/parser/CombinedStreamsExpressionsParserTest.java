@@ -1,41 +1,60 @@
 package de.monticore.expressions.streamexpressions.parser;
 
-import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTGreaterThanExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTLessEqualExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTLessThanExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTSuperExpression;
+import de.monticore.expressions.streamexpressions._ast.ASTAppendAbsentStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTAppendStreamExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTConstantsStreamExpressions;
+import de.monticore.expressions.streamexpressions._ast.ASTAppendTickStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTStreamConstructorExpression;
 import de.monticore.expressions.teststreamexpressions.TestStreamExpressionsMill;
-import de.monticore.expressions.teststreamexpressions._parser.TestStreamExpressionsParser;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This test checks for parser clashes of stream expressions with the expression universe. Additionally, it checks if
  * parsed expressions are conforming to the priorities set by the grammar
  */
 public class CombinedStreamsExpressionsParserTest {
-  private final TestStreamExpressionsParser p = TestStreamExpressionsMill.parser();
 
-  @BeforeAll
-  public static void setup() {
+  @BeforeEach
+  public void setup() {
     LogStub.init();
     TestStreamExpressionsMill.init();
   }
 
-  public static Stream<Arguments> createInputs() {
+  @ParameterizedTest
+  @MethodSource
+  public void testStreamExprParsing(String input, Class<?> expectedExpression) throws IOException {
+    // tests most relevant parser clashes + priority interaction
+    ASTExpression expr = parseExpression(input);
+    assertInstanceOf(expectedExpression, expr);
+  }
+
+  public static Stream<Arguments> testStreamExprParsing() {
     return Stream.of(
         Arguments.of("< foo (1,2) >", ASTStreamConstructorExpression.class),
         Arguments.of("<1,2>3,3>", ASTStreamConstructorExpression.class),
@@ -53,98 +72,82 @@ public class CombinedStreamsExpressionsParserTest {
         Arguments.of("<A, B, C> foo()", ASTPrimaryGenericInvocationExpression.class),
         Arguments.of("Event < A > 1", ASTGreaterThanExpression.class),
         Arguments.of("Event< A > 1", ASTGreaterThanExpression.class),
-        Arguments.of("1: c + 3", ASTAppendStreamExpression.class)
+        Arguments.of("1: c + 3", ASTAppendStreamExpression.class),
+        Arguments.of("Tick", ASTNameExpression.class),
+        Arguments.of("Abs", ASTNameExpression.class),
+        Arguments.of("Tick : a", ASTAppendTickStreamExpression.class),
+        Arguments.of("Abs : a", ASTAppendAbsentStreamExpression.class)
     );
-  }
-
-  @ParameterizedTest
-  @MethodSource(value = "createInputs")
-  public void testStreamExprParsing(String input, Class<?> expectedExpression) throws IOException {
-    // tests most relevant parser clashes + priority interaction
-    Optional<ASTExpression> expr = p.parse_StringExpression(input);
-    assertTrue(expr.isPresent());
-    assertInstanceOf(expectedExpression, expr.get());
   }
 
   @Test
   public void testCallExprSingle() throws IOException {
     // should parse to a call expression on a stream expression
-    Optional<ASTExpression> expr = p.parse_StringExpression("<A>.foo()");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTCallExpression.class, expr.get());
-    assertInstanceOf(ASTFieldAccessExpression.class, ((ASTCallExpression) expr.get()).getExpression());
-    ASTFieldAccessExpression fieldAccessExpr = ((ASTFieldAccessExpression)((ASTCallExpression) expr.get()).getExpression());
+    ASTExpression expr = parseExpression("<A>.foo()");
+    assertInstanceOf(ASTCallExpression.class, expr);
+    assertInstanceOf(ASTFieldAccessExpression.class, ((ASTCallExpression) expr).getExpression());
+    ASTFieldAccessExpression fieldAccessExpr = ((ASTFieldAccessExpression) ((ASTCallExpression) expr).getExpression());
     assertInstanceOf(ASTStreamConstructorExpression.class, fieldAccessExpr.getExpression());
   }
 
   @Test
   public void testCallExprMultiple() throws IOException {
     // should parse to a call expression on a stream expression
-    Optional<ASTExpression> expr = p.parse_StringExpression("<A, B, C>.foo()");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTCallExpression.class, expr.get());
-    assertInstanceOf(ASTFieldAccessExpression.class, ((ASTCallExpression) expr.get()).getExpression());
-    ASTFieldAccessExpression fieldAccessExpr = ((ASTFieldAccessExpression)((ASTCallExpression) expr.get()).getExpression());
+    ASTExpression expr = parseExpression("<A, B, C>.foo()");
+    assertInstanceOf(ASTCallExpression.class, expr);
+    assertInstanceOf(ASTFieldAccessExpression.class, ((ASTCallExpression) expr).getExpression());
+    ASTFieldAccessExpression fieldAccessExpr = ((ASTFieldAccessExpression) ((ASTCallExpression) expr).getExpression());
     assertInstanceOf(ASTStreamConstructorExpression.class, fieldAccessExpr.getExpression());
   }
 
   @Test
   public void testSuperSingle() throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression("<A>.super(p)");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTSuperExpression.class, expr.get());
-    assertInstanceOf(ASTStreamConstructorExpression.class, ((ASTSuperExpression) expr.get()).getExpression());
+    ASTExpression expr = parseExpression("<A>.super(p)");
+    assertInstanceOf(ASTSuperExpression.class, expr);
+    assertInstanceOf(ASTStreamConstructorExpression.class, ((ASTSuperExpression) expr).getExpression());
   }
 
   @Test
   public void testSuperMultiple() throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression("<A, B, C>.super()");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTSuperExpression.class, expr.get());
-    assertInstanceOf(ASTStreamConstructorExpression.class, ((ASTSuperExpression) expr.get()).getExpression());
+    ASTExpression expr = parseExpression("<A, B, C>.super()");
+    assertInstanceOf(ASTSuperExpression.class, expr);
+    assertInstanceOf(ASTStreamConstructorExpression.class, ((ASTSuperExpression) expr).getExpression());
   }
 
   @Test
   public void testWithIdentifierWhitespace() throws IOException {
-    // should not parse
-    Optional<ASTExpression> expr = p.parse_StringExpression("Event <A>");
-    assertFalse(expr.isPresent());
+    assertNotAnExpression("Event <A>");
   }
 
   @Test
   public void testFalseBitshiftInteraction() throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression("Event< A > > 1");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTGreaterThanExpression.class, expr.get());
-    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr.get();
+    ASTExpression expr = parseExpression("Event< A > > 1");
+    assertInstanceOf(ASTGreaterThanExpression.class, expr);
+    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr;
     assertInstanceOf(ASTStreamConstructorExpression.class, greater.getLeft());
   }
 
   @Test
   public void testFalseBitshiftInteraction1() throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression("< A > > 1");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTGreaterThanExpression.class, expr.get());
-    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr.get();
+    ASTExpression expr = parseExpression("< A > > 1");
+    assertInstanceOf(ASTGreaterThanExpression.class, expr);
+    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr;
     assertInstanceOf(ASTStreamConstructorExpression.class, greater.getLeft());
   }
 
   @Test
   public void testFalseBitshiftInteraction2() throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression("<A> > 1");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTGreaterThanExpression.class, expr.get());
-    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr.get();
+    ASTExpression expr = parseExpression("<A> > 1");
+    assertInstanceOf(ASTGreaterThanExpression.class, expr);
+    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr;
     assertInstanceOf(ASTStreamConstructorExpression.class, greater.getLeft());
   }
 
   @ParameterizedTest
   @MethodSource
   public void testConstructorWithAbsent(String model) throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression(model);
-    assertFalse(p.hasErrors());
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTStreamConstructorExpression.class, expr.get());
+    ASTExpression expr = parseExpression(model);
+    assertInstanceOf(ASTStreamConstructorExpression.class, expr);
   }
 
   protected static Stream<Arguments> testConstructorWithAbsent() {
@@ -162,10 +165,8 @@ public class CombinedStreamsExpressionsParserTest {
   @ParameterizedTest
   @MethodSource
   public void testConstructorWithTick(String model) throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression(model);
-    assertFalse(p.hasErrors());
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTStreamConstructorExpression.class, expr.get());
+    ASTExpression expr = parseExpression(model);
+    assertInstanceOf(ASTStreamConstructorExpression.class, expr);
   }
 
   protected static Stream<Arguments> testConstructorWithTick() {
@@ -184,15 +185,17 @@ public class CombinedStreamsExpressionsParserTest {
         Arguments.of("<1;;1>"),
         Arguments.of("<;1,1;1;1,1;;1>"),
         Arguments.of("<true ; 1>2 ;>"),
-        Arguments.of("<true ; 1<2 ;>")
+        Arguments.of("<true ; 1<2 ;>"),
+        // with "~"-expression
+        Arguments.of("<~1;>"),
+        Arguments.of("<;~1>")
     );
   }
 
   @ParameterizedTest
   @MethodSource
   public void testInvalidConstructor(String model) throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression(model);
-    assertFalse(expr.isPresent());
+    assertNotAnExpression(model);
   }
 
   protected static Stream<Arguments> testInvalidConstructor() {
@@ -214,18 +217,17 @@ public class CombinedStreamsExpressionsParserTest {
   @Test
   public void testBitshiftInteraction() throws IOException {
     // should still parse to "stream > 1"
-    Optional<ASTExpression> expr = p.parse_StringExpression("< A >> 1");
-    assertTrue(expr.isPresent());
-    assertInstanceOf(ASTGreaterThanExpression.class, expr.get());
-    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr.get();
+    ASTExpression expr = parseExpression("< A >> 1");
+    assertInstanceOf(ASTGreaterThanExpression.class, expr);
+    ASTGreaterThanExpression greater = (ASTGreaterThanExpression) expr;
     assertInstanceOf(ASTStreamConstructorExpression.class, greater.getLeft());
   }
 
   @Test
   public void testDefaultTiming() throws IOException {
-    Optional<ASTStreamConstructorExpression> expr = p.parse_StringStreamConstructorExpression("<A>");
-    assertTrue(expr.isPresent());
-    ASTStreamConstructorExpression ast = expr.get();
+    ASTExpression expr = parseExpression("<A>");
+    assertInstanceOf(ASTStreamConstructorExpression.class, expr);
+    ASTStreamConstructorExpression ast = (ASTStreamConstructorExpression) expr;
     assertTrue(ast.isDefaultTimed());
     assertFalse(ast.isEventTimed());
     assertFalse(ast.isSyncTimed());
@@ -236,6 +238,38 @@ public class CombinedStreamsExpressionsParserTest {
   @AfterAll
   public static void cleanUp() {
     TestStreamExpressionsMill.reset();
+  }
+
+  // Helpers, could in part be generalized?
+
+  protected static void assertNoFindings() {
+    Assertions.assertTrue(Log.getFindings().isEmpty(), "Expected no Log findings, but got:"
+        + System.lineSeparator() + getAllFindingsAsString());
+  }
+
+  /**
+   * @return all findings as one String
+   */
+  protected static String getAllFindingsAsString() {
+    return Log.getFindings().stream()
+        .map(Finding::buildMsg)
+        .collect(Collectors.joining(System.lineSeparator()))
+        ;
+  }
+
+  protected ASTExpression parseExpression(String exprStr) throws IOException {
+    Optional<ASTExpression> exprOpt = TestStreamExpressionsMill.parser()
+        .parse_StringExpression(exprStr);
+    assertNoFindings();
+    assertTrue(exprOpt.isPresent());
+    return exprOpt.get();
+  }
+
+  protected void assertNotAnExpression(String exprStr) throws IOException {
+    Optional<ASTExpression> exprOpt = TestStreamExpressionsMill.parser()
+        .parse_StringExpression(exprStr);
+    assertTrue(exprOpt.isEmpty());
+    Log.clearFindings();
   }
 
 }

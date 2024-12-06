@@ -56,13 +56,28 @@ component grammar StreamExpressions extends CommonExpressions {
     timing:[key("Sync") | key("Untimed")])?
     "<" (Expression || ",")* ">";
 
+  /*
+   * Stream constructor for Topt streams.
+   * Some event streams are parsed as ASTSimpleStreamConstructor expression
+   * instead.
+   * ~ denotes the absence of a value
+   * <a,~> is equal to a:Abs:<>
+   * <~,~,a,b> is equal to Abs:Abs:a:b:<>
+   */
   ToptStreamConstructorExpression implements StreamConstructorExpression <360> =
     ({noSpace(2)}? 
     timing:[key("Topt")])?
-    "<"
-    ((Expression | AbsentInStreamConstructor) ("," (Expression | AbsentInStreamConstructor))*)
-    ">";
+    "<" (ExpressionOrAbsent || ",")* ">";
+    ExpressionOrAbsent = Expression | absent:"~";
 
+  /*
+   * Stream constructor for event streams.
+   * Some event streams are parsed as ASTSimpleStreamConstructor expression
+   * instead.
+   * ; delimits time slices
+   * <;a> is equal to Tick:a:<>
+   * <a;;b> is equal to a:Tick:Tick:b:<>
+   */
   EventStreamConstructorExpression implements StreamConstructorExpression <360> =
     ({noSpace(2)}?
     timing:[key("Event")])?
@@ -71,11 +86,10 @@ component grammar StreamExpressions extends CommonExpressions {
       ("," | TickInStreamConstructor+) Expression | TickInStreamConstructor)*
     )?
     ">";
-
   TickInStreamConstructor = ";";
-  AbsentInStreamConstructor = "~";
 
-  /* 
+
+  /*
    * Append first element 
    * a:b:c  is equal to  a:(b:c), hence <rightassoc>
    * a:b^^c  is equal to  a:(b^^c)
@@ -83,9 +97,25 @@ component grammar StreamExpressions extends CommonExpressions {
    * (even so they are semantically associative)
    * a <= b:c  is equal to  a <= (b:c), hence the priority 154, 156
    */
-  AppendStreamExpression implements Expression <154>, InfixExpression = 
+  AppendStreamExpression implements Expression <154>, InfixExpression =
     <rightassoc>
     left:Expression operator:":" right:Expression;
+
+  /*
+   * Appends the absence of an element to the front of a Topt stream.
+   * Priority must be higher than NameExpression, thus 360
+   */
+  AppendAbsentStreamExpression implements Expression <360> =
+  <rightassoc>
+  key("Abs") operator:":" stream:Expression;
+
+  /*
+   * Appends a tick to the front of an event stream.
+   * Priority must be higher than NameExpression, thus 360
+   */
+  AppendTickStreamExpression implements Expression <360> =
+  <rightassoc>
+  key("Tick") operator:":" stream:Expression;
 
   /*
    * Concatenation of two streams 
