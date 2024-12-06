@@ -1,7 +1,9 @@
 package de.monticore.expressions.streamexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.streamexpressions._ast.ASTAppendAbsentStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTAppendStreamExpression;
+import de.monticore.expressions.streamexpressions._ast.ASTAppendTickStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTConcatStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTLengthStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTStreamConstructorExpression;
@@ -100,6 +102,64 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
       else {
         result = StreamSymTypeFactory.createStream(fusedElementType);
       }
+    }
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  @Override
+  public void endVisit(ASTAppendAbsentStreamExpression expr) {
+    if (type4Ast.hasTypeOfExpression(expr)) {
+      // already calculated
+      return;
+    }
+    SymTypeExpression result;
+    SymTypeExpression streamType =
+        normalize(getType4Ast().getPartialTypeOfExpr(expr.getStream()));
+    if (streamType.isObscureType()) {
+      result = SymTypeExpressionFactory.createObscureType();
+    }
+    else if (!assertIsStream(expr.getStream(), streamType)) {
+      result = SymTypeExpressionFactory.createObscureType();
+    }
+    else if (StreamSymTypeRelations.isToptStream(streamType)) {
+      Log.error("0xFD573 expected a ToptStream, but got "
+              + streamType.printFullName(),
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+      result = createObscureType();
+    }
+    else {
+      result = streamType.deepClone();
+    }
+    getType4Ast().setTypeOfExpression(expr, result);
+  }
+
+  @Override
+  public void endVisit(ASTAppendTickStreamExpression expr) {
+    if (type4Ast.hasTypeOfExpression(expr)) {
+      // already calculated
+      return;
+    }
+    SymTypeExpression result;
+    SymTypeExpression streamType =
+        normalize(getType4Ast().getPartialTypeOfExpr(expr.getStream()));
+    if (streamType.isObscureType()) {
+      result = SymTypeExpressionFactory.createObscureType();
+    }
+    else if (!assertIsStream(expr.getStream(), streamType)) {
+      result = SymTypeExpressionFactory.createObscureType();
+    }
+    else if (StreamSymTypeRelations.isEventStream(streamType)) {
+      Log.error("0xFD573 expected an EventStream, but got "
+              + streamType.printFullName(),
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+      result = createObscureType();
+    }
+    else {
+      result = streamType.deepClone();
     }
     getType4Ast().setTypeOfExpression(expr, result);
   }

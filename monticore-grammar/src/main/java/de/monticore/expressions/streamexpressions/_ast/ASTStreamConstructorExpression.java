@@ -4,7 +4,8 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 
 import java.util.List;
 
-public interface ASTStreamConstructorExpression extends ASTStreamConstructorExpressionTOP {
+public interface ASTStreamConstructorExpression
+    extends ASTStreamConstructorExpressionTOP {
 
   /**
    * If default and not specified otherwise, Event should be chosen.
@@ -29,6 +30,9 @@ public interface ASTStreamConstructorExpression extends ASTStreamConstructorExpr
     return false;
   }
 
+  /**
+   * @return all ASTExpressions directly found in the constructor.
+   */
   List<ASTExpression> getExpressionList();
 
 }
