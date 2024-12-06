@@ -22,6 +22,8 @@ with common expressions like `+` and `-`.
 with bit expressions like `&` or `<<`.
 * [SetExpressions](../ocl/SetExpressions.mc4): Extends `ExpressionBasis`
 with set expressions like `{a * a | a in b, a < 10}`.
+* [StreamExpressions](../expressions/StreamExpressions.mc4):
+Extends `CommonExpressions` with stream expressions like `1:Abs:<2,~,3>`.
 * [LambdaExpressions](LambdaExpressions.mc4): Extends `ExpressionBasis` 
 with lambda expressions like `a -> a + 2`.
 * [TupleExpressions](TupleExpressions.mc4): Extends `ExpressionBasis`
