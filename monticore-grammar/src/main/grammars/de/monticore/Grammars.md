@@ -244,6 +244,7 @@ Some snipets for operators defined in expressions:
                    Set{.|.}
     SetExp:        .isin.  .in.  union  intersect  setand  setor
                    { item | specifier }
+    StreamExp:     <.>  .:.  Tick:.  Abs:.
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
     LambdaExp:     i->2*i   (a,b)->a+b
     TupleExp:      (.,.)  (.,.,.,.)
@@ -299,6 +300,11 @@ as they allow math oriented style of specification.
   so it might be interesting to include them in a high level programming 
   language (see e.g. Haskell)
 
+### [SetExpressions.mc4](expressions/StreamExpressions.mc4) (stable)
+* This grammar defines stream expressions like to create and concat streams,
+  as well as append elements to the front of the stream.
+* Further operations on streams are offered by inclusion of
+  corresponding symbols.
 
 ### [OptionalOperators.mc4](ocl/OptionalOperators.mc4) (stable)
 * This grammar defines nine operators dealing with optional values, e.g.
