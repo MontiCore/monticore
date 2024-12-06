@@ -5,6 +5,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTGreaterThanExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTLessEqualExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTLessThanExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpression;
@@ -72,7 +73,7 @@ public class CombinedStreamsExpressionsParserTest {
         Arguments.of("<A, B, C> foo()", ASTPrimaryGenericInvocationExpression.class),
         Arguments.of("Event < A > 1", ASTGreaterThanExpression.class),
         Arguments.of("Event< A > 1", ASTGreaterThanExpression.class),
-        Arguments.of("1: c + 3", ASTAppendStreamExpression.class),
+        Arguments.of("1: c + 3", ASTPlusExpression.class),
         Arguments.of("Tick", ASTNameExpression.class),
         Arguments.of("Abs", ASTNameExpression.class),
         Arguments.of("Tick : a", ASTAppendTickStreamExpression.class),

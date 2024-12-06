@@ -95,9 +95,9 @@ component grammar StreamExpressions extends CommonExpressions {
    * a:b^^c  is equal to  a:(b^^c)
    * a+b:c  is equal to  (a+b):c, and
    * (even so they are semantically associative)
-   * a <= b:c  is equal to  a <= (b:c), hence the priority 154, 156
+   * a <= b:c  is equal to  a <= (b:c), hence the priority 360, 370
    */
-  AppendStreamExpression implements Expression <154>, InfixExpression =
+  AppendStreamExpression implements Expression <360>, InfixExpression =
     <rightassoc>
     left:Expression operator:":" right:Expression;
 
@@ -122,7 +122,7 @@ component grammar StreamExpressions extends CommonExpressions {
    * a^^b^^c  is equal to  a^^(b^^c),  hence <rightassoc>
    * (even so it is semantically associative)
    */
-  ConcatStreamExpression implements Expression <156>, InfixExpression = 
+  ConcatStreamExpression implements Expression <370>, InfixExpression =
     <rightassoc>
     left:Expression operator:"^^" right:Expression;
 

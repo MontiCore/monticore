@@ -48,7 +48,6 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
     // replace any Stream with EventStream after inference is done,
     // as default types are not a feature the inference algorithm can handle,
     // or needs to handle -> just override the result.
-    // todo FDr test
     if (getType4Ast().hasTypeOfExpression(expr)) {
       SymTypeOfGenerics streamType = getType4Ast()
           .getTypeOfExpression(expr).asGenericType();
@@ -254,6 +253,24 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
   }
 
   /**
+   * {@code <T, S extends Stream<T>> (T, S) -> S}
+   */
+  protected SymTypeOfFunction getAppendStreamFunc() {
+    SymTypeVariable typeVarT = createTypeVariable(
+        createBottomType(),
+        createTopType()
+    );
+    SymTypeVariable typeVarS = createTypeVariable(
+        createBottomType(),
+        StreamSymTypeFactory.createStream(typeVarT)
+    );
+    SymTypeOfFunction appendStreamFunc = createFunction(
+        typeVarS, List.of(typeVarT, typeVarS)
+    );
+    return appendStreamFunc;
+  }
+
+  /**
    * {@code <T> ToptStream<T> -> ToptStream<T>}
    */
   protected SymTypeOfFunction getAppendAbsentStreamFunc() {
@@ -281,24 +298,6 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
     SymTypeOfFunction appendTickStreamFunc =
         createFunction(argType, List.of(argType));
     return appendTickStreamFunc;
-  }
-
-  /**
-   * {@code <T, S extends Stream<T>> (T, S) -> S}
-   */
-  protected SymTypeOfFunction getAppendStreamFunc() {
-    SymTypeVariable typeVarT = createTypeVariable(
-        createBottomType(),
-        createTopType()
-    );
-    SymTypeVariable typeVarS = createTypeVariable(
-        createBottomType(),
-        StreamSymTypeFactory.createStream(typeVarT)
-    );
-    SymTypeOfFunction appendStreamFunc = createFunction(
-        typeVarS, List.of(typeVarT, typeVarS)
-    );
-    return appendStreamFunc;
   }
 
   /**
