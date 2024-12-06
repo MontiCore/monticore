@@ -43,7 +43,9 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("Event<1, 1.2f>", "EventStream<float>"),
         arguments("Sync<1, 1.2f>", "SyncStream<float>"),
         arguments("Topt<1, 1.2f>", "ToptStream<float>"),
-        arguments("Untimed<1, 1.2f>", "UntimedStream<float>")
+        arguments("Untimed<1, 1.2f>", "UntimedStream<float>"),
+        arguments("<1;;1.2f>", "EventStream<float>"),
+        arguments("<1,~,~,1.2f>", "ToptStream<float>")
     );
   }
 
@@ -71,6 +73,7 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("<1>", "UntimedStream<int>", "UntimedStream<int>")
     );
   }
+
   @ParameterizedTest
   @MethodSource
   public void streamConstructorInvalidCTTITest(
@@ -108,7 +111,13 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("1.2f:Untimed<1>", "UntimedStream<float>"),
         // longer chains
         arguments("1:2:3:4:5:Event<6>", "EventStream<int>"),
-        arguments("1:2:3.5f:4:5:Event<6>", "EventStream<float>")
+        arguments("1:2:3.5f:4:5:Event<6>", "EventStream<float>"),
+        // Tick
+        arguments("Tick:<6>", "EventStream<int>"),
+        arguments("Tick:Tick:2:<6>", "EventStream<int>"),
+        // Abs
+        arguments("Abs:<6>", "ToptStream<int>"),
+        arguments("Abs:Abs:2:<6>", "ToptStream<int>")
     );
   }
 
@@ -129,7 +138,29 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("1:2:<>", "EventStream<float>", "EventStream<float>"),
         arguments("1:2:<>", "SyncStream<float>", "SyncStream<float>"),
         arguments("1:2:<>", "ToptStream<float>", "ToptStream<float>"),
-        arguments("1:2:<>", "UntimedStream<float>", "UntimedStream<float>")
+        arguments("1:2:<>", "UntimedStream<float>", "UntimedStream<float>"),
+        // Tick
+        arguments("Tick:Tick:3.5f:Tick:5:<6>", "Stream<float>", "EventStream<float>"),
+        // Abs
+        arguments("Abs:Abs:3.5f:Abs:5:<6>", "Stream<float>", "ToptStream<float>")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  public void appendStreamInvalidTest(
+      String exprStr,
+      String expectedErrorStr
+  ) throws IOException {
+    checkErrorExpr(exprStr, expectedErrorStr);
+  }
+
+  public static Stream<Arguments> appendStreamInvalidTest() {
+    return Stream.of(
+        arguments("Abs:1:Tick:1:<1>", "0xFD447"),
+        arguments("Tick:1:Abs:1:<1>", "0xFD447"),
+        arguments("Tick:<~,1>", "0xFD451"),
+        arguments("Abs:<;1>", "0xFD451")
     );
   }
 
@@ -188,9 +219,9 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   public static Stream<Arguments> concatStreamCTTITest() {
     return Stream.of(
         arguments("<1>^^<1>", "EventStream<int>", "EventStream<int>"),
-        arguments("<>^^<1>", "EventStream<int>","EventStream<int>"),
-        arguments("Event<1>^^<>", "EventStream<int>","EventStream<int>"),
-        arguments("<1>^^<1.2f>", "EventStream<float>","EventStream<float>")
+        arguments("<>^^<1>", "EventStream<int>", "EventStream<int>"),
+        arguments("Event<1>^^<>", "EventStream<int>", "EventStream<int>"),
+        arguments("<1>^^<1.2f>", "EventStream<float>", "EventStream<float>")
     );
   }
 
