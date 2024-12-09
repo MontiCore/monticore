@@ -213,7 +213,7 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfTuple asTupleType() {
-    Log.error("0xFDAAD internal error: "
+    Log.error("0xFDAAE internal error: "
         + "tried to convert non-tuple-type to a tuple type");
     return null;
   }
