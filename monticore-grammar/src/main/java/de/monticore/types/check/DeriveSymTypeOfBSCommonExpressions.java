@@ -11,13 +11,10 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
-import de.monticore.expressions.javaclassexpressions._ast.ASTInstanceofPatternExpression;
-import de.monticore.expressions.javaclassexpressions._ast.ASTTypePattern;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.helpers.*;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 

@@ -11,6 +11,8 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfObject;
@@ -552,20 +554,20 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         inScope(someScope, typeVariable("unbounded2"))
     );
     // upper bound Student, e.g., E in List<E extends Student>
-    SymTypeVariable subStudentTVar =
-        createTypeVariable(_bottomType, _studentSymType);
+    SymTypeInferenceVariable subStudentTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_bottomType, _studentSymType);
     // upper bound Person
-    SymTypeVariable subPersonTVar =
-        createTypeVariable(_bottomType, _personSymType);
+    SymTypeInferenceVariable subPersonTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_bottomType, _personSymType);
     // lower bound Student, no direct Java representation available
-    SymTypeVariable superStudentTVar =
-        createTypeVariable(_studentSymType, _topType);
+    SymTypeInferenceVariable superStudentTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_studentSymType, _topType);
     // lower bound Person
-    SymTypeVariable superPersonTVar =
-        createTypeVariable(_personSymType, _topType);
+    SymTypeInferenceVariable superPersonTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_personSymType, _topType);
     // lower and upper Bound
-    SymTypeVariable superSSubCsSTVar =
-        createTypeVariable(_csStudentSymType, _studentSymType);
+    SymTypeInferenceVariable superSSubCsSTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_csStudentSymType, _studentSymType);
 
     // unbounded type variable are like existential types:
     // we don't know enough to do pretty much anything with it

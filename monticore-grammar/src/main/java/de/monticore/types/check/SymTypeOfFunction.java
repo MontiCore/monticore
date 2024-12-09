@@ -224,30 +224,33 @@ public class SymTypeOfFunction extends SymTypeExpression {
         new TreeMap<>(new SymTypeExpressionComparator());
     if (hasSymbol()) {
       // skolem variables:
-      List<SymTypeVariable> infVars = TypeParameterRelations.getIncludedInferenceVariables(this);
-      Map<SymTypeVariable, SymTypeExpression> infVar2Skolem =
+      List<SymTypeInferenceVariable> infVars =
+          TypeParameterRelations.getIncludedInferenceVariables(this);
+      Map<SymTypeInferenceVariable, SymTypeExpression> infVar2Skolem =
           new TreeMap<>(new SymTypeExpressionComparator());
-      for (SymTypeVariable infVar : infVars) {
+      for (SymTypeInferenceVariable infVar : infVars) {
         infVar2Skolem.put(infVar,
             SymTypeExpressionFactory.createTypeObject(
-                "Skolem#" + infVar.getFreeVarIdentifier(),
+                "Skolem#" + infVar.print(),
                 BasicSymbolsMill.scope()
             )
         );
       }
-      Map<SymTypeExpression, SymTypeVariable> skolem2infVar =
+      Map<SymTypeExpression, SymTypeInferenceVariable> skolem2infVar =
           new TreeMap<>(new SymTypeExpressionComparator());
       infVar2Skolem.forEach((k, v) -> skolem2infVar.put(v, k));
-      SymTypeOfFunction thisWithSkolems = TypeParameterRelations.replaceTypeVariables(this, infVar2Skolem).asFunctionType();
+      SymTypeOfFunction thisWithSkolems = TypeParameterRelations
+          .replaceInferenceVariables(this, infVar2Skolem)
+          .asFunctionType();
 
       SymTypeOfFunction declType = isElliptic() ?
           getDeclaredType() :
           getDeclaredType().getWithFixedArity(sizeArgumentTypes());
-      Map<SymTypeVariable, SymTypeVariable> typePar2FreeVar
+      Map<SymTypeVariable, SymTypeInferenceVariable> typePar2FreeVar
           = TypeParameterRelations.getFreeVariableReplaceMap(
           declType, BasicSymbolsMill.scope()
       );
-      Map<SymTypeVariable, SymTypeVariable> freeVar2TypePar =
+      Map<SymTypeInferenceVariable, SymTypeVariable> freeVar2TypePar =
           new TreeMap<>(new SymTypeExpressionComparator());
       typePar2FreeVar.forEach((k, v) -> freeVar2TypePar.put(v, k));
       SymTypeOfFunction declTypeWithFreeVars = TypeParameterRelations
@@ -256,12 +259,12 @@ public class SymTypeOfFunction extends SymTypeExpression {
       List<Bound> boundsOnDeclType = SymTypeRelations.constrainSameType(
           declTypeWithFreeVars, thisWithSkolems
       );
-      Optional<Map<SymTypeVariable, SymTypeExpression>> freeVar2InstTypeOpt =
+      Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> freeVar2InstTypeOpt =
           BoundResolution.resolve(boundsOnDeclType);
       if (freeVar2InstTypeOpt.isPresent()) {
-        Map<SymTypeVariable, SymTypeExpression> freeVar2InstType =
+        Map<SymTypeInferenceVariable, SymTypeExpression> freeVar2InstType =
             freeVar2InstTypeOpt.get();
-        for (SymTypeVariable freeVar : typePar2FreeVar.values()) {
+        for (SymTypeInferenceVariable freeVar : typePar2FreeVar.values()) {
           SymTypeExpression calculatedReplacement = freeVar2InstType.get(freeVar);
           SymTypeExpression replacement =
               skolem2infVar.containsKey(calculatedReplacement) ?

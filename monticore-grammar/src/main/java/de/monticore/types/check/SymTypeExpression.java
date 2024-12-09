@@ -91,7 +91,7 @@ public abstract class SymTypeExpression {
   }
 
   /**
-   * Am I a type variable?
+   * Am I a bound type variable?
    */
   public boolean isTypeVariable() {
     return false;
@@ -99,7 +99,20 @@ public abstract class SymTypeExpression {
 
   public SymTypeVariable asTypeVariable() {
     Log.error("0xFDAA2 internal error: "
-        + "tried to convert non-type-variable to a type-variable");
+        + "tried to convert non-bound-type-variable to a bound-type-variable");
+    return null;
+  }
+
+  /**
+   * Am I a free type variable?
+   */
+  public boolean isInferenceVariable() {
+    return false;
+  }
+
+  public SymTypeInferenceVariable asInferenceVariable() {
+    Log.error("0xFDAAF internal error: "
+        + "tried to convert non-inference-variable to an inference-variable");
     return null;
   }
 

@@ -51,6 +51,13 @@ public class SymTypeCollectionVisitor implements ISymTypeVisitor {
   }
 
   @Override
+  public void visit(SymTypeInferenceVariable infVar) {
+    if (filter.test(infVar)) {
+      addType(infVar);
+    }
+  }
+
+  @Override
   public void visit(SymTypeObscure obscure) {
     if (filter.test(obscure)) {
       addType(obscure);
