@@ -212,8 +212,10 @@ public class SymTypeExpressionFactory {
    *
    * @param name
    * @param scope
-   * @return
+   * @deprecated use TypeCheck to get SymTypeExpressions from MCTypes,
+   *     this method is rather incorrect/incomplete
    */
+  @Deprecated
   public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
     if ("void".equals(name)) {
