@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
  */
 public abstract class SymTypeExpression {
 
+  protected static final String LOG_NAME = "SymTypeExpression";
+
   /**
    * print: Conversion to a compact string, such as "int", "Person", "List< A >"
    */
@@ -626,8 +628,18 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
   /**
    * Returns an TypeSymbol representing the type
    * Only to be called according to {@link #hasTypeInfo()}
+   * <p>
+   * As most SymTypeExpressions do not have a TypeSymbol (this is legacy),
+   * this method will log a warning and is expected to be overridden,
+   * if a TypeSymbol exists.
    */
   public TypeSymbol getTypeInfo() {
+    Log.debug("0xFDFDE internal error: getTypeInfo called"
+            + ", but the current SymTypeExpression should never have"
+            + " a TypeSymbol in the first place."
+            + " (This will be an error in the future)",
+        LOG_NAME
+    );
     //support deprecated behaviour
     if(typeSymbol != null) {
       return typeSymbol;

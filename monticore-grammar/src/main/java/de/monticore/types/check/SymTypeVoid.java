@@ -10,6 +10,7 @@ public class SymTypeVoid extends SymTypeExpression {
 
   /**
    * @deprecated no logic that is not deprecated
+   * this is to be replaced by the default constructor
    */
   @Deprecated
   public SymTypeVoid() {
