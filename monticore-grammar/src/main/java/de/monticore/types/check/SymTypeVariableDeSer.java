@@ -28,7 +28,7 @@ public class SymTypeVariableDeSer {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     jp.member(JsonDeSers.KIND, SERIALIZED_KIND);
-    jp.member(SERIALIZED_NAME, toSerialize.getVarName());
+    jp.member(SERIALIZED_NAME, toSerialize.getTypeVarSymbol().getFullName());
     jp.endObject();
     return jp.getContent();
   }
