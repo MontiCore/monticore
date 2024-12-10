@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._ast_emf;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code._symboltable.ICD4CodeArtifactScope;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
@@ -9,10 +10,8 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.LinkedHashSet;
@@ -123,8 +122,8 @@ public class EmfService extends AbstractService<EmfService> {
   public boolean isEDataType(ASTCDAttribute astcdAttribute) {
     return !getDecorationHelper().isSimpleAstNode(astcdAttribute) && !getDecorationHelper().isListAstNode(astcdAttribute) &&
         !getDecorationHelper().isOptionalAstNode(astcdAttribute) && !getDecorationHelper().isPrimitive(astcdAttribute.getMCType())
-        && !getDecorationHelper().isString(astcdAttribute.printType()) && !isObjectType(astcdAttribute.getMCType())
-        && !getDecorationHelper().isMapType(astcdAttribute.printType());
+        && !getDecorationHelper().isString(CD4CodeMill.prettyPrint(astcdAttribute.getMCType(), false)) && !isObjectType(astcdAttribute.getMCType())
+        && !getDecorationHelper().isMapType(CD4CodeMill.prettyPrint(astcdAttribute.getMCType(), false));
   }
 
   /**
@@ -201,7 +200,7 @@ public class EmfService extends AbstractService<EmfService> {
 
   //for InitializePackageContents template
   public String determineListInteger(ASTMCType astType) {
-    if (getDecorationHelper().isListType(astType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
+    if (getDecorationHelper().isListType(CD4CodeMill.prettyPrint(astType, false))) {
       return "-1";
     } else {
       return "1";
@@ -221,7 +220,7 @@ public class EmfService extends AbstractService<EmfService> {
   public String determineGetEmfMethod(ASTCDAttribute attribute, ASTCDDefinition astcdDefinition) {
     if (isExternal(attribute)) {
       return "theASTENodePackage.getENode";
-    } else if (getDecorationHelper().isPrimitive(attribute.getMCType()) || getDecorationHelper().isString(attribute.printType())) {
+    } else if (getDecorationHelper().isPrimitive(attribute.getMCType()) || getDecorationHelper().isString(CD4CodeMill.prettyPrint(attribute, false))) {
       return "ecorePackage.getE" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType()));
     } else if (isObjectType(attribute.getMCType())) {
       return "ecorePackage.getE" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType())) + "Object";
@@ -229,7 +228,7 @@ public class EmfService extends AbstractService<EmfService> {
         || getDecorationHelper().isOptionalAstNode(attribute)) {
       String grammarName = StringTransformations.uncapitalize(getGrammarFromClass(astcdDefinition, attribute));
       return grammarName + ".get" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType()));
-    } else if (getDecorationHelper().isMapType(attribute.printType())) {
+    } else if (getDecorationHelper().isMapType(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
       return "ecorePackage.getEMap";
     } else {
       return "this.get" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType()));
@@ -278,7 +277,7 @@ public class EmfService extends AbstractService<EmfService> {
     if (getDecorationHelper().isOptional(attribute.getMCType())) {
       return "Optional.empty()";
     }
-    String typeName = attribute.printType();
+    String typeName = CD4CodeMill.prettyPrint(attribute.getMCType(), false);
     switch (typeName) {
       case "boolean":
         return "false";

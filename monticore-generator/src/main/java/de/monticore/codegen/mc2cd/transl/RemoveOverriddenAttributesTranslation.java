@@ -4,14 +4,17 @@ package de.monticore.codegen.mc2cd.transl;
 
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.ASTAdditionalAttribute;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.utils.Link;
@@ -77,7 +80,7 @@ public class RemoveOverriddenAttributesTranslation implements
     if (!matchByUsageName && !usageName.isPresent()) {
       for (ASTAdditionalAttribute attributeInAST : attributesInASTLinkingToSameClass) {
         if (!attributeInAST.isPresentName()) {
-          String name = attributeInAST.getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter());
+          String name = Grammar_WithConceptsMill.prettyPrint(attributeInAST.getMCType(), false);
           if (getName(source).orElse("").equals(name)) {
             attributes = Lists.newArrayList(attributeInAST);
             matchByTypeName = true;
@@ -89,7 +92,7 @@ public class RemoveOverriddenAttributesTranslation implements
 
     // add derived stereotype if needed
     if (hasDerivedStereotype(link.target().getModifier()) &&
-        DecorationHelper.getInstance().isListType(link.target().printType())) {
+        DecorationHelper.getInstance().isListType(CD4CodeMill.prettyPrint(link.target(), false))) {
       for (Link<ASTAdditionalAttribute, ASTCDAttribute> attributeLink :
           classLink.rootLink().getLinks(ASTAdditionalAttribute.class, ASTCDAttribute.class)) {
         if(attributes.contains(attributeLink.source())){

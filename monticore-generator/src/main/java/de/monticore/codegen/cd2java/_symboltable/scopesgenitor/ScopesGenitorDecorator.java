@@ -20,7 +20,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
@@ -29,9 +28,9 @@ import de.se_rwth.commons.Names;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
@@ -170,7 +169,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
         "setScopeStack", dequeParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new StringHookPoint(
         "this." + SCOPE_STACK_VAR + " = Log.errorIfNull(("
-      + dequeType.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ")" + SCOPE_STACK_VAR + ");"));
+      + CD4CodeMill.prettyPrint(dequeType, false) + ")" + SCOPE_STACK_VAR + ");"));
     return createFromAST;
   }
 
