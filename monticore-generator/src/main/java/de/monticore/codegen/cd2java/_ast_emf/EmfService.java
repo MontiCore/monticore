@@ -220,7 +220,7 @@ public class EmfService extends AbstractService<EmfService> {
   public String determineGetEmfMethod(ASTCDAttribute attribute, ASTCDDefinition astcdDefinition) {
     if (isExternal(attribute)) {
       return "theASTENodePackage.getENode";
-    } else if (getDecorationHelper().isPrimitive(attribute.getMCType()) || getDecorationHelper().isString(CD4CodeMill.prettyPrint(attribute, false))) {
+    } else if (getDecorationHelper().isPrimitive(attribute.getMCType()) || getDecorationHelper().isString(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
       return "ecorePackage.getE" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType()));
     } else if (isObjectType(attribute.getMCType())) {
       return "ecorePackage.getE" + StringTransformations.capitalize(getDecorationHelper().getSimpleNativeType(attribute.getMCType())) + "Object";
