@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.regex.regularexpressions._ast;
 
 import org.apache.commons.lang3.tuple.Pair;
