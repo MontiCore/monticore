@@ -13,6 +13,8 @@ import java.util.Set;
 
 public class SymTypeVariable extends SymTypeExpression {
 
+  protected static final String LOG_NAME = "SymTypeVariable";
+
   /**
    * may be empty, as some type variables are created
    * DURING the type checking process and thus have no symbols
@@ -89,14 +91,14 @@ public class SymTypeVariable extends SymTypeExpression {
   }
 
   @Override
-  public boolean hasTypeInfo() {
-    // support deprecated behavior
-    return hasTypeVarSymbol() || typeSymbol != null;
-  }
-
-  @Override
   @Deprecated
   public TypeSymbol getTypeInfo() {
+    Log.debug("0xFDFDC internal error: getTypeInfo called"
+            + ", but the current SymTypeExpression should never have"
+            + " a TypeSymbol in the first place."
+            + " (This will be an error in the future)",
+        LOG_NAME
+    );
     //support deprecated behavior
     if (typeSymbol != null) {
       return typeSymbol;
