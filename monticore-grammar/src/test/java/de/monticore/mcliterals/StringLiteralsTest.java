@@ -41,15 +41,9 @@ public class StringLiteralsTest {
     Optional<ASTA> ast = TestMCCommonLiteralsMill.parser().parse_StringA("Meier");
     assertTrue(ast.isPresent());
 
-    ast = TestMCCommonLiteralsMill.parser().parse_StringA("Müller");
-    assertTrue(ast.isPresent());
-
-    ast = TestMCCommonLiteralsMill.parser().parse_StringA("Vπ");
-    assertTrue(ast.isPresent());
-    assertEquals("Vπ", ast.get().getName());
-
-    List<String> souldParseName = List.of("a", "b", "c", "d", "e", "f", "g", "h");
-    for (String s : souldParseName) {
+    List<String> shouldParseName = List.of("Müller", "Vπ", "a", "b", "c"
+        , "d", "e", "f", "g", "h");
+    for (String s : shouldParseName) {
       ast = TestMCCommonLiteralsMill.parser().parse_StringA(s);
       assertTrue(ast.isPresent(), "Could not parse string '" + s + "'");
       assertEquals(s, ast.get().getName());
