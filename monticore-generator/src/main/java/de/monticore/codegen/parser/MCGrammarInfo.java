@@ -221,33 +221,15 @@ public class MCGrammarInfo {
   }
   
   /**
-   * Checks if the terminal or constant <code>name</code> is a and has to be
-   * defined in the parser.
+   * Checks if the terminal or constant <code>name</code> is a keyword and could
+   * be replaced by a name
    * 
    * @param name - rule to check
-   * @return true, if the terminal or constant <code>name</code> is a and has to
-   * be defined in the parser.
+   * @return true, if the terminal or constant <code>name</code> is a keyword and could
+   * be replaced by a name
    */
-  public boolean isKeyword(String name, MCGrammarSymbol grammar) {
-    boolean matches = false;
-    boolean found = false;
-    
-    // Check with options
-    if (mustBeKeyword(name)) {
-      matches = true;
-      found = true;
-    }
-
-    // Automatically detect if not specified
-    if (!found) {
-      if (NAME_PATTERN.matcher(name).matches()) {
-        matches = true;
-        Log.debug(name + " is considered as a keyword because it matches " + NAME_PATTERN + " "
-            + "(grammarsymtab)", MCGrammarSymbol.class.getSimpleName());
-      }
-    }
-
-    return matches;
+  public boolean isKeyword(String name) {
+    return keywords.contains(name);
   }
 
   public List<PredicatePair> getSubRulesForParsing(String ruleName) {
@@ -292,9 +274,7 @@ public class MCGrammarInfo {
               }
             }
           }
-          Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
-              .getMCGrammarSymbol(astProd.getEnclosingScope());
-          TerminalVisitor tv = new TerminalVisitor(refGrammarSymbol);
+          TerminalVisitor tv = new TerminalVisitor();
           Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
           traverser.add4Grammar(tv);
           astProd.accept(traverser);
@@ -304,17 +284,7 @@ public class MCGrammarInfo {
     
   }
 
-  protected boolean mustBeKeyword(String rule) {
-    return keywords.contains(rule);
-  }
-
   protected class TerminalVisitor implements GrammarVisitor2 {
-
-    TerminalVisitor(Optional<MCGrammarSymbol> refGrammarSymbol) {
-      this.refGrammarSymbol = refGrammarSymbol;
-    }
-
-    Optional<MCGrammarSymbol> refGrammarSymbol;
 
     public GrammarTraverser getTraverser() {
       return traverser;
@@ -328,16 +298,14 @@ public class MCGrammarInfo {
 
     @Override
     public void visit(ASTTerminal keyword) {
-      if (isKeyword(keyword.getName(), grammarSymbol)
-              || (refGrammarSymbol.isPresent() && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
+      if (NAME_PATTERN.matcher(keyword.getName()).matches()) {
         keywords.add(keyword.getName());
       }
     }
 
     @Override
     public void visit(ASTConstant keyword) {
-      if (isKeyword(keyword.getName(), grammarSymbol)
-              || (refGrammarSymbol.isPresent() && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
+      if (NAME_PATTERN.matcher(keyword.getName()).matches()) {
         keywords.add(keyword.getName());
       }
     }

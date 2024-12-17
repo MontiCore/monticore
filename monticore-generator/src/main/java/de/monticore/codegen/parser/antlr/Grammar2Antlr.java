@@ -258,7 +258,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
       if (x.isPresentKeyConstant()) {
         addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList(), tmpName + label));
-      } else if (!grammarInfo.isKeyword(x.getName(), grammarEntry)) {
+      } else if (!grammarInfo.isKeyword(x.getName())) {
         addToCodeSection(tmpName + label + parserHelper.getOrComputeLexSymbolName(x.getName()));
       } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
         addToCodeSection(tmpName + label + parserHelper.getKeyRuleName(x.getName()));
@@ -378,7 +378,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     String rulename;
     if (ast.getName().isEmpty()) {
       rulename = "";
-    } else if (grammarInfo.isKeyword(ast.getName(), grammarEntry) && grammarInfo.getKeywordRules().contains(ast.getName())) {
+    } else if (grammarInfo.isKeyword(ast.getName()) && grammarInfo.getKeywordRules().contains(ast.getName())) {
       rulename = parserHelper.getKeyRuleName(ast.getName());
     } else {
       rulename = parserHelper.getOrComputeLexSymbolName(ast.getName().intern());
@@ -890,7 +890,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   protected void addActionForKeyword(ASTTerminal keyword, ProdSymbol rule, boolean isList, String tmpNamePlusLbl) {
     addToCodeSection("(");
     String rulename = "";
-    if (grammarInfo.isKeyword(keyword.getName(), grammarEntry)) {
+    if (grammarInfo.isKeyword(keyword.getName())) {
       rulename = parserHelper.getOrComputeLexSymbolName(keyword.getName());
     }
 
