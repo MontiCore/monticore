@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A0145;
+
+grammar A0145 {
+
+  Foo = key("foo&");
+
+}

@@ -47,6 +47,7 @@ public final class TransformationHelper {
 
   public static final int STAR = -1;
 
+  @Deprecated // Use LexNamer.NAME_PATTERN after release 7.7.0
   public static final Pattern NAME_PATTERN = Pattern.compile("([a-z]|[A-Z]|[_]|[$])([a-z]|[A-Z]|[_]|[0-9]|[$])*");
 
   protected static List<String> reservedCdNames = Arrays.asList(
