@@ -37,33 +37,6 @@ public class StringLiteralsTest {
   }
 
   @Test
-  public void testName() throws IOException {
-    Optional<ASTA> ast = TestMCCommonLiteralsMill.parser().parse_StringA("Meier");
-    assertTrue(ast.isPresent());
-
-    List<String> shouldParseName = List.of("Müller", "Vπ", "a", "b", "c"
-        , "d", "e", "f", "g", "h");
-    for (String s : shouldParseName) {
-      ast = TestMCCommonLiteralsMill.parser().parse_StringA(s);
-      assertTrue(ast.isPresent(), "Could not parse string '" + s + "'");
-      assertEquals(s, ast.get().getName());
-    }
-
-    assertFalse(Character.isUnicodeIdentifierStart('1'));
-    assertTrue(Character.isUnicodeIdentifierPart('1'));
-
-    assertFalse(Character.isUnicodeIdentifierStart('.'));
-    assertFalse(Character.isUnicodeIdentifierPart('.'));
-
-    List<Character> notAllowed = List.of('.', '(', ')', '+', ',', '/', ' ');
-    for (Character s : notAllowed) {
-      assertFalse(Character.isUnicodeIdentifierPart(s), "Character <"+s+"> is not allowed");
-      assertFalse(Character.isUnicodeIdentifierStart(s), "Character <"+s+"> is not allowed");
-    }
-
-  }
-
-  @Test
   public void testStringLiterals() {
     try {
       checkStringLiteral("abc ABC", "\"abc ABC\"");

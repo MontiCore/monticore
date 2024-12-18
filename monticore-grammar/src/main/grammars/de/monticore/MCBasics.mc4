@@ -17,26 +17,9 @@ component grammar MCBasics {
       This nonterminal is used as core reference mechanism e.g.
       for symbols.
   */
- token Name =
-
-              (	('a'..'z' | 'A'..'Z' | '$' | '_') // these are the "java letters" below 0x7F
-              	|	// covers all characters above 0x7F which are not a surrogate
-              		~('\u0000'..'\u007F' | '\uD800'..'\uDBFF')
-                   {Character.isUnicodeIdentifierStart(_input.LA(-1))}?
-              	|	// covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
-              		('\uD800'..'\uDBFF') ('\uDC00'..'\uDFFF')
-                    {Character.isUnicodeIdentifierStart(Character.toCodePoint((char)_input.LA(-2), (char)_input.LA(-1)))}?
-              	)
-
-               (('a'..'z' | 'A'..'Z' | '0'..'9' | '$' | '_') // these are the "java letters" below 0x7F
-               	|	// covers all characters above 0x7F which are not a surrogate
-               		~('\u0000'..'\u007F' | '\uD800'..'\uDBFF')
-                   {Character.isUnicodeIdentifierPart(_input.LA(-1))}?
-               	|	// covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
-               		('\uD800'..'\uDBFF') ('\uDC00'..'\uDFFF')
-                   {  Character.isUnicodeIdentifierPart(Character.toCodePoint((char)_input.LA(-2), (char)_input.LA(-1)))}?
-                )*
-               	;
+  token Name =
+    ( 'a'..'z' | 'A'..'Z' | '_' | '$' )
+    ( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
 
   /*=================================================================*/
 
