@@ -104,7 +104,6 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
   public void visit(ASTKeyTerminal node) {
     // only create a symbol for ASTKeyTerminals that have a usage name
     // only with usage name is shown in AST
-    grammarSymbol.noKeywords.addAll(node.getKeyConstant().getStringList());
     if(node.isPresentUsageName()){
       RuleComponentSymbolBuilder symbolBuilder = GrammarMill.ruleComponentSymbolBuilder().setName(node.getName());
       symbolBuilder.setName(node.isPresentUsageName()?node.getUsageName():"");
