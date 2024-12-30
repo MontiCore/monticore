@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -16,7 +17,9 @@ import org.apache.commons.lang3.StringUtils;
  * 
  */
 public class LexNamer {
-  
+
+  public static final Pattern NAME_PATTERN = Pattern.compile("([a-z]|[A-Z]|[_]|[$])([a-z]|[A-Z]|[_]|[0-9]|[$])*");
+
   protected int constantCounter = 0;
 
   protected int lexCounter = 0;
