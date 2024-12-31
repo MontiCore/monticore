@@ -152,12 +152,8 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     visitorClass.addCDMember((m = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(), astNodeType, "visitTerminal", cdParameterFacade.createParameter(TerminalNode.class, "node"))));
     glex.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_parser.visitor.NotImplemented"));
 
-    // noKeyword and splittoken introduces terminals, which require a visit method
-    List<String> pseudoProductions = new ArrayList<>(grammarInfo.getSplitRules().values());
-    for (String s : grammarInfo.getGrammarSymbol().getKeywordRulesWithInherited()) {
-      pseudoProductions.add(parserGeneratorHelper.getKeyRuleName(s));
-    }
-    for (String s : pseudoProductions) {
+    // splittoken introduces terminals, which require a visit method
+    for (String s : grammarInfo.getSplitRules().values()) {
 
       String ruleNameCap = StringTransformations.capitalize(s);
 
@@ -472,6 +468,26 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     glex.replaceTemplate(EMPTY_BODY, method, hookPoint);
     visitorClass.addCDMember(method);
 
+    if (node.getName().equals("Name")) {
+      addKeywordRuleMethod(StringTransformations.capitalize(node.getName()), ParserGeneratorHelper.WITH_KEYWORDS_RULE_SUFFIX);
+      addKeywordRuleMethod(StringTransformations.capitalize(node.getName()), ParserGeneratorHelper.INCL_NO_KEYWORDS_RULE_SUFFIX);
+    }
+
+  }
+
+  /**
+   * Special rules for (no/plus)keywords
+   * @param name the rule-name, such as "Name"
+   * @param ruleSuffix the specific suffic
+   */
+  protected void addKeywordRuleMethod(String name, String ruleSuffix) {
+    ASTCDMethod method = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(),
+                                                     mcTypeFacade.createStringType(),
+                                                     "visit" + name + ruleSuffix,
+                                                     cdParameterFacade.createParameter(antlrParserName + "." + name + ruleSuffix + "Context", "ctx")
+                                                    );
+    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_parser.visitor.VisitKeywordRule", name));
+    visitorClass.addCDMember(method);
   }
 
 
@@ -604,7 +620,12 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     e.isLexNT = ps.isIsLexerProd();
 
     if (e.isLexNT) {
-      e.convert = "convert" + StringTransformations.capitalize(node.getName());
+      if (node.getName().equals("Name") && node.isPlusKeywords())
+        e.convert = "visitName" + ParserGeneratorHelper.WITH_KEYWORDS_RULE_SUFFIX;
+      else if (node.getName().equals("Name"))
+        e.convert = "visitName" + ParserGeneratorHelper.INCL_NO_KEYWORDS_RULE_SUFFIX;
+      else
+        e.convert = "convert" + StringTransformations.capitalize(node.getName());
     }
 
     if (e.ruleList)
@@ -636,8 +657,6 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
   protected String getRuleName(String name) {
     if (name.isEmpty()) {
       return "";
-    } else if (grammarInfo.isKeyword(name) && grammarInfo.getKeywordRules().contains(name)) {
-      return parserGeneratorHelper.getKeyRuleName(name);
     } else {
       return parserGeneratorHelper.getCachedLexSymbolName(name.intern()).orElse("##no-usagename-for-rulename");
     }
@@ -777,7 +796,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
         Log.error("0xA0394 Unexpected key constant string list: " + constant.getKeyConstant().getStringList(), constant.get_SourcePositionStart());
         return "invalid getruleName";
       }
-      return parserGeneratorHelper.getKeyRuleName(constant.getKeyConstant().getString(0));
+      return parserGeneratorHelper.getCachedLexSymbolName(constant.getKeyConstant().getString(0)).get();
     } else if (constant.isPresentTokenConstant()) {
       return parserGeneratorHelper.getCachedLexSymbolName(constant.getTokenConstant().getString())
               .orElse("##no-usagename-rulename-tc");
@@ -785,7 +804,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
       return parserGeneratorHelper.getCachedLexSymbolName(constant.getName())
               .orElse("##no-usagename-rulename-k");
     } else if (grammarInfo.getKeywordRules().contains(constant.getName())) {
-      return parserGeneratorHelper.getKeyRuleName(constant.getName());
+      return parserGeneratorHelper.getCachedLexSymbolName(constant.getName()).get();
     } else {
       return parserGeneratorHelper.getCachedLexSymbolName(constant.getName())
               .orElse("##no-usagename-rulename");

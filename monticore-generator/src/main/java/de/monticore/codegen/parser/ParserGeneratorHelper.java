@@ -14,6 +14,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
@@ -32,7 +33,9 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkState;
+import static de.monticore.codegen.mc2cd.TransformationHelper.NAME_PATTERN;
 import static de.monticore.codegen.mc2cd.TransformationHelper.getQualifiedName;
+import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
 
 /**
  * This is a helper class for the parser generation
@@ -40,6 +43,8 @@ import static de.monticore.codegen.mc2cd.TransformationHelper.getQualifiedName;
 public class ParserGeneratorHelper {
 
   public static final String MONTICOREANYTHING = "MONTICOREANYTHING";
+  public static final String WITH_KEYWORDS_RULE_SUFFIX = "__mc_plus_keywords";
+  public static final String INCL_NO_KEYWORDS_RULE_SUFFIX = "__mc_incl_nokeywords";
 
   public static final String RIGHTASSOC = "<assoc=right>";
 
@@ -174,13 +179,6 @@ public class ParserGeneratorHelper {
   }
 
   /**
-   * @return the name for a rule replacing a keyword
-   */
-  public String getKeyRuleName(String key) {
-    return NOKEYWORD + key + "_" + Integer.toUnsignedString(key.hashCode());
-  }
-
-  /**
    * Get all used LexSymbols, different form information in AST, as inherited
    * ones are integrated as well
    *
@@ -222,20 +220,6 @@ public class ParserGeneratorHelper {
       }
       sb.append(";");
       retList.add(sb.toString());
-    }
-    return retList;
-  }
-
-  /**
-   * Get all keyords replaced by name
-   *
-   * @return list of keywords
-   */
-  public List<String> getNoKeyordsWithInherited() {
-    List<String> retList = Lists.newArrayList();
-    for (String s: grammarSymbol.getKeywordRulesWithInherited()) {
-      String r = getKeyRuleName(s) + " : {next(\"" + s + "\")}? Name;";
-      retList.add(r);
     }
     return retList;
   }
@@ -679,6 +663,47 @@ public class ParserGeneratorHelper {
             .filter(ASTAntlrOption::isPresentValue)
             .filter(a -> a.getName().equals("ParserSuperClass")).map(ASTAntlrOption::getValue)
             .findFirst().orElse("MCParser");
+  }
+
+  /**
+   * This method returns all rules which should support plusKeyword (Name&)
+   * As of now, only "Name" is supported, but the signature is designed to be future-proof
+   * @return a mapping RuleName -> [Tokens], such as "Name__mc_plus_keywords" -> ["Name", "CLASS1", "PRIVATE2"]
+   */
+  public Map<String, List<String>> getPlusKeywordRules() {
+    Map<String, List<String>> ret = new HashMap<>();
+    if (grammarSymbol.getSpannedScope().resolveProdImported("Name", ALL_INCLUSION).stream().anyMatch(ProdSymbolTOP::isIsLexerProd)) {
+      List<String> tokens = new ArrayList<>();
+      tokens.add("Name");
+      for (String keyword : grammarInfo.getKeywords())
+        tokens.add(this.getCachedLexSymbolName(keyword).get());
+      for (String notAKeyword : grammarInfo.getGrammarSymbol().getKeywordRulesWithInherited())
+        tokens.add(this.getOrComputeLexSymbolName(notAKeyword));
+      ret.put("Name".toLowerCase() + WITH_KEYWORDS_RULE_SUFFIX, tokens);
+    }
+
+    return ret;
+  }
+
+  /**
+   * This method returns all rules which should support no-keyword, such as Name
+   * As of now, only "Name" is supported, but the signature is designed to be future-proof
+   * @return a mapping RuleName -> [Tokens], such as "__mc_incl_nokeywords" -> ["Name", "ASSOCIATION12", "PLUS42"]
+   */
+  public Map<String, List<String>> getPlusNoKeywordRules() {
+    Map<String, List<String>> ret = new HashMap<>();
+    if (grammarSymbol.getSpannedScope().resolveProdImported("Name", ALL_INCLUSION).stream().anyMatch(ProdSymbolTOP::isIsLexerProd)) {
+      List<String> tokens = new ArrayList<>();
+      tokens.add("Name");
+      for (String notAKeyword : grammarInfo.getGrammarSymbol().getKeywordRulesWithInherited()) {
+        if (NAME_PATTERN.matcher(notAKeyword).matches()) { // Only add the alternative if it really would match the lex-rule
+          tokens.add(this.getOrComputeLexSymbolName(notAKeyword));
+        }
+      }
+      ret.put("Name".toLowerCase() + INCL_NO_KEYWORDS_RULE_SUFFIX, tokens);
+    }
+
+    return ret;
   }
 
 }

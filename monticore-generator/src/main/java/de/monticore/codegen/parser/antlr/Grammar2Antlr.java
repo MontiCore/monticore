@@ -260,8 +260,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         addToCodeSection(createKeyPredicate(x.getKeyConstant().getStringList(), tmpName + label));
       } else if (!grammarInfo.isKeyword(x.getName())) {
         addToCodeSection(tmpName + label + parserHelper.getOrComputeLexSymbolName(x.getName()));
-      } else if (grammarInfo.getKeywordRules().contains(x.getName())) {
-        addToCodeSection(tmpName + label + parserHelper.getKeyRuleName(x.getName()));
       } else {
         addToCodeSection(tmpName + label + parserHelper.getOrComputeLexSymbolName(x.getName()));
       }
@@ -378,8 +376,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     String rulename;
     if (ast.getName().isEmpty()) {
       rulename = "";
-    } else if (grammarInfo.isKeyword(ast.getName()) && grammarInfo.getKeywordRules().contains(ast.getName())) {
-      rulename = parserHelper.getKeyRuleName(ast.getName());
     } else {
       rulename = parserHelper.getOrComputeLexSymbolName(ast.getName().intern());
     }
@@ -401,11 +397,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         addToCodeSection(parserHelper.getTmpVarName(ast) + "_nk" + nokeywordindex++);
         addToCodeSection(ast.isPresentSymbol() && ast.getSymbol().isIsList() ? "+=" : "=");
 
-        if (grammarInfo.getKeywordRules().contains(replaceString)) {
-          addToCodeSection(parserHelper.getKeyRuleName(replaceString));
-        } else {
-          addToCodeSection(parserHelper.getOrComputeLexSymbolName(replaceString));
-        }
+        addToCodeSection(parserHelper.getOrComputeLexSymbolName(replaceString));
         seperator = " | ";
       }
       addToCodeSection(")");
@@ -429,7 +421,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     for (String key : stringList) {
       rulename += sep;
       sep = " | ";
-      rulename += tmpNamePlusLbl + parserHelper.getKeyRuleName(key);
+      rulename += tmpNamePlusLbl + parserHelper.getOrComputeLexSymbolName(key);
 
     }
     rulename += ")";
@@ -449,7 +441,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       handleTerminal(labelAssignment, tmpVarName, replacedAdditionalKeywords, ast.getName());
     } else if (ast.getKeyConstant().sizeStrings() == 1) {
       // Extra case for one-long strings
-      addToCodeSection(tmpVarName + labelAssignment + parserHelper.getKeyRuleName(ast.getKeyConstant().getString(0)));
+      addToCodeSection(tmpVarName + labelAssignment + parserHelper.getOrComputeLexSymbolName(ast.getKeyConstant().getString(0)));
     } else {
       // replace keyword is currently not implemented for multiple key
       addToCodeSection("(");
@@ -457,7 +449,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       int nkIndex = 0;
       for (String keyString : ast.getKeyConstant().getStringList()) {
         addToCodeSection(seperator);
-        addToCodeSection(tmpVarName + "_key" + nkIndex++ + labelAssignment + parserHelper.getKeyRuleName(keyString));
+        addToCodeSection(tmpVarName + "_key" + nkIndex++ + labelAssignment + parserHelper.getOrComputeLexSymbolName(keyString));
         seperator = "|";
       }
       addToCodeSection(")");
@@ -476,11 +468,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       addToCodeSection(seperator);
       addToCodeSection(tmpVarName + "_nk" + nokeywordindex++);
       addToCodeSection(labelAssignment);
-      if (grammarInfo.getKeywordRules().contains(replaceString)) {
-        addToCodeSection(parserHelper.getKeyRuleName(replaceString));
-      } else {
-        addToCodeSection(parserHelper.getOrComputeLexSymbolName(replaceString));
-      }
+      addToCodeSection(parserHelper.getOrComputeLexSymbolName(replaceString));
       seperator = " | ";
     }
     addToCodeSection(")");
@@ -789,7 +777,14 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     boolean isRuleIterated = getASTMax(ast);
 
     String tmpName = parserHelper.getTmpVarName(ast);
-    addToCodeSection(tmpName, isRuleIterated ? "+=" : "=", ast.getName());
+    if ("Name".equals(ast.getName())) {
+      // Due to special no-keyword handling, Name lexer-rules might be substituted with an intermediate rule
+      // This (sh/c)ould be extended to other lexer rules
+      String nameRule = ast.isPlusKeywords() ? "name" + ParserGeneratorHelper.WITH_KEYWORDS_RULE_SUFFIX : "name" + ParserGeneratorHelper.INCL_NO_KEYWORDS_RULE_SUFFIX;
+      addToCodeSection(tmpName, isRuleIterated ? "+=" : "=", nameRule);
+    } else {
+      addToCodeSection(tmpName, isRuleIterated ? "+=" : "=", ast.getName());
+    }
 
     if (embeddedJavaCode) {
       // Add Actions
@@ -803,29 +798,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       }
     }
 
-    if (ast.isPlusKeywords()) {
-      addToCodeSection("/* Automatically added keywords " + grammarInfo.getKeywords()
-          + " */\n");
-
-      ArrayList<String> keys = Lists.newArrayList(grammarInfo.getKeywords());
-      keys.removeAll(grammarInfo.getKeywordRules());
-      for (String y : keys) {
-        addToCodeSection(" | ");
-        ASTTerminal term = Grammar_WithConceptsMill.terminalBuilder()
-            .setName(y).build();
-
-        if (ast.isPresentSymbol()) {
-          RuleComponentSymbol componentSymbol = ast.getSymbol();
-          Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
-              .getEnclosingRule(componentSymbol);
-          term.setUsageName(ParserGeneratorHelper.getUsageName(ast));
-
-          if (rule.isPresent()) {
-            addActionForKeyword(term, rule.get(), componentSymbol.isIsList(), tmpName + (isRuleIterated?"+=":"="));
-          }
-        }
-      }
-    }
     addToCodeSection(") " + printIteration(ast.getIteration()));
   }
 
