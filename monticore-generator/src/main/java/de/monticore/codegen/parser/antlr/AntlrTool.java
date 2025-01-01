@@ -155,12 +155,27 @@ public class AntlrTool extends Tool {
     Set<Integer> res = new LinkedHashSet<>();
 
     for (LabelElementPair pair : elementLabelDefs.get(tmpName)) {
-      if(pair.type == LabelType.TOKEN_LABEL || pair.type == LabelType.TOKEN_LIST_LABEL){
+      if (pair.type == LabelType.TOKEN_LABEL || pair.type == LabelType.TOKEN_LIST_LABEL) {
+        res.add(pair.element.atnState.stateNumber);
+      } else if ((pair.type == LabelType.RULE_LABEL || pair.type == LabelType.RULE_LIST_LABEL) && pair.element.token != null && isNoKeywordTokenSubstitute(
+              pair.element.token.getText())) {
+        // In case the token is actually substituted by a no-keyword rule (__mc_incl_nokeywords/__mc_plus_keywords)
         res.add(pair.element.atnState.stateNumber);
       }
     }
 
     return res;
+  }
+
+  /**
+   * We might replace myname=name with myname=name__mc_incl_nokeywords and a rule
+   * name__mc_incl_nokeywords: name | "notakeyword" | ...
+   * @param ruleName the name of the referenced Rule
+   * @return true, if a token-rule-substitution occurred
+   */
+  protected boolean isNoKeywordTokenSubstitute(String ruleName) {
+    // For now, only the Name rule is supported
+    return "name__mc_incl_nokeywords".equals(ruleName) || "name__mc_plus_keywords".equals(ruleName);
   }
 
   /**
