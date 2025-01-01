@@ -798,6 +798,31 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       }
     }
 
+    // Legacy-workaround AddKeywordsTest: B = INT& ;
+    if (ast.isPlusKeywords() && !ast.getName().equals("Name")) {
+      addToCodeSection("/* Automatically added keywords " + grammarInfo.getKeywords()
+                               + " */\n");
+
+      ArrayList<String> keys = Lists.newArrayList(grammarInfo.getKeywords());
+      keys.removeAll(grammarInfo.getKeywordRules());
+      for (String y : keys) {
+        addToCodeSection(" | ");
+        ASTTerminal term = Grammar_WithConceptsMill.terminalBuilder()
+                .setName(y).build();
+
+        if (ast.isPresentSymbol()) {
+          RuleComponentSymbol componentSymbol = ast.getSymbol();
+          Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
+                  .getEnclosingRule(componentSymbol);
+          term.setUsageName(ParserGeneratorHelper.getUsageName(ast));
+
+          if (rule.isPresent()) {
+            addActionForKeyword(term, rule.get(), componentSymbol.isIsList(), tmpName + (isRuleIterated?"+=":"="));
+          }
+        }
+      }
+    }
+
     addToCodeSection(") " + printIteration(ast.getIteration()));
   }
 
