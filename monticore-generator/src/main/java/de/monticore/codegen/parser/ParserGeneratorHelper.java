@@ -707,24 +707,4 @@ public class ParserGeneratorHelper {
     return ret;
   }
 
-  /**
-   * To motivate ANTLR to fully consume the input string,
-   * by requiring an EOF token at the end of every input
-   * @return said rule-names
-   */
-  public List<String> getStartRules() {
-    // Iterate over all Rules
-    List<String> l = new ArrayList<>();
-    for (ProdSymbol prod : grammarSymbol.getProdsWithInherited().values()) {
-      if ((prod.isParserProd() || prod.isIsEnum())
-              && prod.isPresentAstNode() && !prod.isIsIndirectLeftRecursive()) {
-        l.add(Grammar2Antlr.getRuleNameForAntlr(prod.getAstNode().getName()));
-      } else if ((prod.isIsAbstract() || prod.isIsInterface())
-              && prod.isPresentAstNode()) {
-        l.add(Grammar2Antlr.getRuleNameForAntlr(prod.getAstNode().getName()));
-      }
-    }
-    return l;
-  }
-
 }

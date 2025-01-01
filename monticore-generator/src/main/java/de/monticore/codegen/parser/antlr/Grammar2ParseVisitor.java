@@ -165,11 +165,6 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
 
       visitorClass.addCDMember(method);
     }
-    // add visitMc__internal__start_rule(...AntlrParser.Mc__internal__start_ruleContext) -> EXC
-    visitorClass.addCDMember((m = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(), astNodeType, "visitMc__internal__start_rule",
-                                                              cdParameterFacade.createParameter(antlrParserName + ".Mc__internal__start_ruleContext", "ctx"))));
-    glex.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_parser.visitor.NotImplemented"));
-
 
   }
 

@@ -53,6 +53,9 @@ grammar ParseErrors extends de.monticore.MCBasics {
   // Example productions based on CDs
   CDLike = "cd" CDLikeElement*;
 
+  // Example productions based on CDs without an easy EOF
+  CDLikeB = "cd" "{" CDLikeElement* "}";
+
   interface CDLikeElement;
 
   CDLikeTerm implements CDLikeElement = Modifier "class" Name "{" "}";

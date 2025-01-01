@@ -40,16 +40,34 @@ public class MCErrorListener extends BaseErrorListener {
     // Improve error message
     if (recognizer instanceof Parser) {
       if ((e instanceof org.antlr.v4.runtime.InputMismatchException) && (offendingSymbol instanceof CommonToken)) {
-        // add the found token type to the message
-        String s = parser.getVocabulary().getSymbolicName(((CommonToken) offendingSymbol).getType());
-        if (s != null && !s.isEmpty()) {
-          msg += " (found: " + s + ")";
+        if (recognizer.getState() != ATNState.INVALID_STATE_NUMBER) {
+          boolean nameExpected = containsRule(((Parser) recognizer).getExpectedTokens(), recognizer.getVocabulary(),
+                                              "Name");
+          if (nameExpected) {
+            // We have received an unwanted token (msg: mismatched input), but also expect a Name
+            // (Keywords are excluded from the Name production - to include them, Name& (plus keywords) should be used)
+            msg = msg.replace("mismatched input", "mismatched keyword");
+          }
+
+          // Due to our substitute-no-keyword handling, we remove no-keywords from the expected list (as they are included within Name)
+          if (parser.getNoKeywordRuleNames() != null) {
+            int index = msg.indexOf("' expecting "); // We strip everything after the expecting
+            msg = msg.substring(0, index) + "', expecting ";
+
+            // Check for the rules which the ATN would change into using epsilon transitions (to find nokeywor rules)
+            Set<Map.Entry<Integer, String>> epsilonRules = new HashSet<>();
+            getExpectedRulesWithTokens(recognizer.getATN(), recognizer.getState(), recognizer.getVocabulary(),
+                                       new HashMap<>(), epsilonRules);
+
+            List<String> noKeywordRules = extractNoKeywordTokens(recognizer, epsilonRules);
+
+            msg += String.join(", ", noKeywordRules);
+          }
         }
-        if (containsRule(((Parser) recognizer).getExpectedTokens(), recognizer.getVocabulary(), "Name")) {
-          // We have received an unwanted token (msg: mismatched input), but also expect a Name
-          // (Keywords are excluded from the Name production - to include them, Name& (plus keywords) should be used)
-          msg = msg.replace("mismatched input", "mismatched keyword");
-          msg = msg.replaceFirst("' expecting", "', expecting");
+        // add the found token type to the message
+        String foundSymbolName = parser.getVocabulary().getSymbolicName(((CommonToken) offendingSymbol).getType());
+        if (foundSymbolName != null && !foundSymbolName.isEmpty()) {
+          msg += " (found: " + foundSymbolName + ")";
         }
       } else if (e == null && msg.startsWith("extraneous input '")
               && containsRule(((Parser) recognizer).getExpectedTokens(), recognizer.getVocabulary(), "Name")) {
@@ -75,20 +93,10 @@ public class MCErrorListener extends BaseErrorListener {
                                        noKeywordRules.get(noKeywordRules.size() - 1)
                                       );
         }
-      } else if (e instanceof FailedPredicateException
-              && offendingSymbol instanceof CommonToken
-              && msg.startsWith("rule nokeyword_")
-              && ((FailedPredicateException) e).getPredicate().matches("next\\(\".*\"\\)")) {
-        // mismatched keyword 'keyword', expecting Name
-        Matcher m = Pattern.compile("next\\(\"(.*)\"\\)").matcher(((FailedPredicateException) e).getPredicate());
-        if (m.matches()) {
-          msg = "mismatched input '" + ((CommonToken) offendingSymbol).getText() + "', " +
-                  "expecting '" + m.group(1) + "'";
-        }
       } else if (e instanceof NoViableAltException) {
         // This case is most likely when the ATN found correct tokens (such as Name),
         // but a predicate (such as nokeyword) prevented it
-        String expectedTokens = e.getExpectedTokens().toString(recognizer.getVocabulary());
+        String expectedTokens = getExpectedTokensWithoutNoKeywords(recognizer, e.getExpectedTokens(), List.of("Name"));
 
         // Check for the rules which the ATN would change into using epsilon transitions
         Set<Map.Entry<Integer, String>> epsilonRules = new HashSet<>();
@@ -113,6 +121,9 @@ public class MCErrorListener extends BaseErrorListener {
           rules.add(StringTransformations.capitalize(stack.get(i)));
         }
       }
+      // Remove our substitute-names-rule from the stack, as they are not visible to the outside
+      rules.remove("Name__mc_incl_nokeywords");
+      rules.remove("Name__mc_plus_keywords");
       msg += " in rule stack: " + rules;
 
       // Give additional context: Output the offending line and mark the error position
@@ -128,8 +139,18 @@ public class MCErrorListener extends BaseErrorListener {
     parser.setErrors(true);
   }
 
+  protected String getExpectedTokensWithoutNoKeywords(Recognizer<?, ?> recognizer, IntervalSet expectedTokens, Collection<String> excludedSymbolicNames) {
+    IntervalSet toOutput = new IntervalSet();
+    List<String> noKeywordSymbolicNames = new ArrayList<>(Arrays.asList(parser.getNoKeywordRuleNames()));
+    noKeywordSymbolicNames.removeAll(excludedSymbolicNames);
+    for (var t : expectedTokens.toSet()) {
+      if (!noKeywordSymbolicNames.contains(recognizer.getVocabulary().getSymbolicName(t)))
+        toOutput.add(t);
+    }
+    return toOutput.toString(recognizer.getVocabulary());
+  }
+
   private static List<String> extractNoKeywordTokens(Recognizer<?, ?> recognizer, Set<Map.Entry<Integer, String>> epsilonRules) {
-    Pattern nokeywordPattern = Pattern.compile("nokeyword_(.*)_[0-9]*");
     // Turn the next expected rules into a human readable format:
     List<String> noKeywordRules = epsilonRules.stream().map(r -> {
       // r.key = ruleIndex, r.value=next tokens of the transition(s)
@@ -138,11 +159,10 @@ public class MCErrorListener extends BaseErrorListener {
       // Check if the rule is a noKeyword rule (added by the MC generator)
       // the expected token (r.value) is most likely a Name (but constrained by a predicate)
       String rulename = recognizer.getRuleNames()[r.getKey()];
-      Matcher m = nokeywordPattern.matcher(rulename);
-      if (m.matches()) // if it is a nokeyword rule, we are able to extract the no-keyword from the rule name
-        return "'" + m.group(1) + "'";
       // Another rule would have been possible, but the predicate did not allow it
       // We just output the expected token with a hint in that case
+      if (rulename.equals("name__mc_incl_nokeywords")) // internal substitute => no additional constraints
+        return r.getValue();
       return r.getValue() + " (with additional constraints from " + rulename + ")";
     }).collect(Collectors.toList());
     return noKeywordRules;
@@ -191,7 +211,8 @@ public class MCErrorListener extends BaseErrorListener {
 
   /**
    * Similiar to {@link ATN#getExpectedTokens(int, RuleContext)},
-   * but we also return the rule numbers
+   * but we also return the rule numbers.
+   * We also only return the "Name" transition of the all name-including-no-keywords states
    * @param expected a set of ruleIndex -> expected token(s) entries
    * @return whether an empty input is accepted
    */
@@ -211,6 +232,11 @@ public class MCErrorListener extends BaseErrorListener {
     boolean mightBeEmptyA = false;
     for (Transition t : state.getTransitions()) {
       if (t.isEpsilon() && t.target.stateNumber != ATNState.INVALID_STATE_NUMBER) {
+        if (parser.getRuleNames()[t.target.ruleIndex].equals("name__mc_incl_nokeywords")) {
+          // We do not show all non-keywords, instead only return Name
+          expected.add(Map.entry(t.target.ruleIndex, "Name"));
+          break;
+        }
         // Follow the epsilon transition
         boolean mightBeEmpty = getExpectedRulesWithTokens(atn, t.target.stateNumber, vocabulary, visitedStates, expected);
         if (mightBeEmpty) {

@@ -10,7 +10,16 @@ ${tc.includeArgs("parser.ParserHeader",suffix)}
 
 <#list genHelper.getIdentsToGenerate() as ident>
   ${genHelper.getConvertFunction(ident)}
-</#list>  
+</#list>
+// An array of non-keywords, used to clean up error messages
+private final static String[] NOKEYWORD_RULES = new String[]{ "__obsolete_in_case_of_no_nokeywords"
+<#list genHelper.getPlusNoKeywordRules() as ruleName, tokens>
+   <#list tokens as token>,"${token}"</#list>
+</#list>};
+@Override
+protected java.lang.String[] getNoKeywordRuleNames() {
+  return NOKEYWORD_RULES;
+}
 }
 
 // Parser-Productions
@@ -41,13 +50,3 @@ ${tc.includeArgs("parser.ParserHeader",suffix)}
 <#list genHelper.getPlusNoKeywordRules() as ruleName, tokens>
     ${ruleName} : <#list tokens as token>mc__internal__token=${token}<#sep>|</#list>;
 </#list>
-
-// an indirect start-rule which enforces EOF as the final token of the input, enforcing fully consumed inputs
-mc__internal__start_rule [String rule]:
-  (
-    <#list genHelper.getStartRules() as ruleName>
-      {$rule.equals("${ruleName}")}? ${ruleName} <#sep>|
-    </#list>
-<#--  The empty, error-throwing alternative unfortunatly causes duplicate sempred prediction (cf. the sempred in SuperParserTest) -->
-<#-- | {notifyErrorListeners("Unknown requested start-rule " + $rule);}-->
-) EOF;
