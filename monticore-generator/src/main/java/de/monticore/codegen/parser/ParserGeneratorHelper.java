@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.parser.antlr.Grammar2Antlr;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
@@ -704,6 +705,26 @@ public class ParserGeneratorHelper {
     }
 
     return ret;
+  }
+
+  /**
+   * To motivate ANTLR to fully consume the input string,
+   * by requiring an EOF token at the end of every input
+   * @return said rule-names
+   */
+  public List<String> getStartRules() {
+    // Iterate over all Rules
+    List<String> l = new ArrayList<>();
+    for (ProdSymbol prod : grammarSymbol.getProdsWithInherited().values()) {
+      if ((prod.isParserProd() || prod.isIsEnum())
+              && prod.isPresentAstNode() && !prod.isIsIndirectLeftRecursive()) {
+        l.add(Grammar2Antlr.getRuleNameForAntlr(prod.getAstNode().getName()));
+      } else if ((prod.isIsAbstract() || prod.isIsInterface())
+              && prod.isPresentAstNode()) {
+        l.add(Grammar2Antlr.getRuleNameForAntlr(prod.getAstNode().getName()));
+      }
+    }
+    return l;
   }
 
 }
