@@ -52,7 +52,9 @@ public class MCErrorListener extends BaseErrorListener {
           // Due to our substitute-no-keyword handling, we remove no-keywords from the expected list (as they are included within Name)
           if (parser.getNoKeywordRuleNames() != null) {
             int index = msg.indexOf("' expecting "); // We strip everything after the expecting
-            msg = msg.substring(0, index) + "', expecting ";
+            if (index >= 0) {
+              msg = msg.substring(0, index) + "', expecting ";
+            }
 
             // Check for the rules which the ATN would change into using epsilon transitions (to find nokeywor rules)
             Set<Map.Entry<Integer, String>> epsilonRules = new HashSet<>();
