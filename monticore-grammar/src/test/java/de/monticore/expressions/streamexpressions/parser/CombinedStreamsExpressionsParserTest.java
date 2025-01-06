@@ -153,13 +153,13 @@ public class CombinedStreamsExpressionsParserTest {
 
   protected static Stream<Arguments> testConstructorWithAbsent() {
     return Stream.of(
-        Arguments.of("<>"),
-        Arguments.of("<~>"),
-        Arguments.of("<~,~>"),
-        Arguments.of("<1,~>"),
-        Arguments.of("<~,1>"),
-        Arguments.of("<1,1>"),
-        Arguments.of("<~, ~, ~, ~>")
+        Arguments.of("Topt<>"),
+        Arguments.of("Topt<~>"),
+        Arguments.of("Topt<~,~>"),
+        Arguments.of("Topt<1,~>"),
+        Arguments.of("Topt<~,1>"),
+        Arguments.of("Topt<1,1>"),
+        Arguments.of("Topt<~, ~, ~, ~>")
     );
   }
 
@@ -229,8 +229,7 @@ public class CombinedStreamsExpressionsParserTest {
     ASTExpression expr = parseExpression("<A>");
     assertInstanceOf(ASTStreamConstructorExpression.class, expr);
     ASTStreamConstructorExpression ast = (ASTStreamConstructorExpression) expr;
-    assertTrue(ast.isDefaultTimed());
-    assertFalse(ast.isEventTimed());
+    assertTrue(ast.isEventTimed());
     assertFalse(ast.isSyncTimed());
     assertFalse(ast.isToptTimed());
     assertFalse(ast.isUntimed());

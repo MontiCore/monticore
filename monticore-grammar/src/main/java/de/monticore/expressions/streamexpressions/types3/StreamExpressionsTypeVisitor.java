@@ -55,11 +55,8 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
       else if (expr.isToptTimed()) {
         result = StreamSymTypeFactory.createToptStream(elementType);
       }
-      else if (expr.isUntimed()) {
-        result = StreamSymTypeFactory.createUntimedStream(elementType);
-      }
       else {
-        result = StreamSymTypeFactory.createStream(elementType);
+        result = StreamSymTypeFactory.createUntimedStream(elementType);
       }
     }
     getType4Ast().setTypeOfExpression(expr, result);
@@ -151,7 +148,7 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
       result = SymTypeExpressionFactory.createObscureType();
     }
     else if (StreamSymTypeRelations.isEventStream(streamType)) {
-      Log.error("0xFD573 expected an EventStream, but got "
+      Log.error("0xFD574 expected an EventStream, but got "
               + streamType.printFullName(),
           expr.get_SourcePositionStart(),
           expr.get_SourcePositionEnd()
@@ -167,6 +164,7 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTConcatStreamExpression expr) {
     if (type4Ast.hasTypeOfExpression(expr)) {
+      // todo FDr: check that inference did not calculate Stream, but a specific subtype. otherwise error
       // already calculated
       return;
     }
@@ -191,11 +189,7 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
           SymTypeExpressionFactory.createUnion(
               leftElementType, rightElementType
           );
-      if (StreamSymTypeRelations.isStreamOfUnknownSubType(leftType) ||
-          StreamSymTypeRelations.isStreamOfUnknownSubType(rightType)) {
-        result = StreamSymTypeFactory.createStream(fusedElementType);
-      }
-      else if (StreamSymTypeRelations.isEventStream(leftType) &&
+      if (StreamSymTypeRelations.isEventStream(leftType) &&
           StreamSymTypeRelations.isEventStream(rightType)
       ) {
         result = StreamSymTypeFactory.createEventStream(fusedElementType);
@@ -219,9 +213,10 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
         // alternatively, one could return Stream, but the question is,
         // whether the user wants this.
         // -> can be extended conservatively if required
-        Log.error("0xFD571 got two incompatible stream types" +
-                " for concatenation: " + leftType.printFullName()
-                + " and " + rightType.printFullName(),
+        Log.error("0xFD571 got two (potentially) "
+                + "incompatible stream types for concatenation: "
+                + leftType.printFullName() + " and "
+                + rightType.printFullName(),
             expr.get_SourcePositionStart(),
             expr.get_SourcePositionEnd()
         );

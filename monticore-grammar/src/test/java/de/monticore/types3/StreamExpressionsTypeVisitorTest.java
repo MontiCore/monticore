@@ -45,7 +45,7 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("Topt<1, 1.2f>", "ToptStream<float>"),
         arguments("Untimed<1, 1.2f>", "UntimedStream<float>"),
         arguments("<1;;1.2f>", "EventStream<float>"),
-        arguments("<1,~,~,1.2f>", "ToptStream<float>")
+        arguments("Topt<1,~,~,1.2f>", "ToptStream<float>")
     );
   }
 
@@ -159,7 +159,7 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     return Stream.of(
         arguments("Abs:1:Tick:1:<1>", "0xFD447"),
         arguments("Tick:1:Abs:1:<1>", "0xFD447"),
-        arguments("Tick:<~,1>", "0xFD451"),
+        arguments("Tick:Topt<~,1>", "0xFD451"),
         arguments("Abs:<;1>", "0xFD451")
     );
   }
