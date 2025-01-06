@@ -5,6 +5,7 @@ package de.monticore.expressions;
  * Adaptations -- if any -- are conservative. */
 
 import de.monticore.expressions.ExpressionsBasis;
+import de.monticore.types.MCCollectionTypes;
 
 /**
  * This grammar extends the available expressions with
@@ -36,7 +37,9 @@ import de.monticore.expressions.ExpressionsBasis;
  *
 */
 
-component grammar StreamExpressions extends CommonExpressions {
+component grammar StreamExpressions
+                  extends CommonExpressions,
+                          MCCollectionTypes {
 
   /* ------ Special Syntax for Functions on Streams ---------------- */
 
@@ -45,49 +48,21 @@ component grammar StreamExpressions extends CommonExpressions {
    * <> denotes the empty stream
    * <a> is equal to a:<>
    * <a,b> is equal to a:<b> and transitively a:b:<>
+   * ~ denotes the absence of a value (Topt streams only)
+   * <a,~> is equal to a:Abs:<>
+   * <~,~,a,b> is equal to Abs:Abs:a:b:<>
+   * Tick denotes the end of a time slice (Event streams only)
+   * <Tick,a> is equal to Tick:a:<>
    * the default stream timing is (timed) event
    * Stream constructor has to bind harder than name expressions to avoid
    * the scanner recognizing timing keywords as names
    */
-  interface StreamConstructorExpression extends Expression <360>;
-
-  SimpleStreamConstructorExpression implements StreamConstructorExpression <360> =
-    ({noSpace(2)}?
-    timing:[key("Sync") | key("Untimed")])?
-    "<" (Expression || ",")* ">";
-
-  /*
-   * Stream constructor for Topt streams.
-   * Some event streams are parsed as ASTSimpleStreamConstructor expression
-   * instead.
-   * ~ denotes the absence of a value
-   * <a,~> is equal to a:Abs:<>
-   * <~,~,a,b> is equal to Abs:Abs:a:b:<>
-   */
-  ToptStreamConstructorExpression implements StreamConstructorExpression <360> =
-    ({noSpace(2)}? 
-    timing:[key("Topt")])?
-    "<" (ExpressionOrAbsent || ",")* ">";
-    ExpressionOrAbsent = Expression | absent:"~";
-
-  /*
-   * Stream constructor for event streams.
-   * Some event streams are parsed as ASTSimpleStreamConstructor expression
-   * instead.
-   * ; delimits time slices
-   * <;a> is equal to Tick:a:<>
-   * <a;;b> is equal to a:Tick:Tick:b:<>
-   */
-  EventStreamConstructorExpression implements StreamConstructorExpression <360> =
-    ({noSpace(2)}?
-    timing:[key("Event")])?
-    "<"
-    TickInStreamConstructor* (Expression (
-      ("," | TickInStreamConstructor+) Expression | TickInStreamConstructor)*
-    )?
-    ">";
-  TickInStreamConstructor = ";";
-
+  StreamConstructorExpression implements Expression <360> =
+    ({noSpace(2)}? timing:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
+    ("<" MCTypeArgument ">")?
+    "<" (StreamConstructorElement || ",")* ">";
+  StreamConstructorElement =
+    Expression | absent:"~" | tick:key("Tick");
 
   /*
    * Append first element 

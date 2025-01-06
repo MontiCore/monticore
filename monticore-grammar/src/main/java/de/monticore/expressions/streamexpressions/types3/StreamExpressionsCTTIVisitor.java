@@ -5,19 +5,14 @@ import de.monticore.expressions.streamexpressions._ast.ASTAppendAbsentStreamExpr
 import de.monticore.expressions.streamexpressions._ast.ASTAppendStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTAppendTickStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTConcatStreamExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTEventStreamConstructorExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTSimpleStreamConstructorExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTStreamConstructorExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTToptStreamConstructorExpression;
 import de.monticore.expressions.streamexpressions._visitor.StreamExpressionsHandler;
 import de.monticore.expressions.streamexpressions._visitor.StreamExpressionsTraverser;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.generics.util.CompileTimeTypeCalculator;
 import de.monticore.types3.streams.StreamSymTypeFactory;
-import de.monticore.types3.streams.StreamSymTypeRelations;
 
 import java.util.List;
 
@@ -42,46 +37,7 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
   }
 
   @Override
-  public void handle(ASTSimpleStreamConstructorExpression expr) {
-    handleCTTIFuncCall(expr);
-    // default Timing is Event -> never create a Stream without Timing
-    // replace any Stream with EventStream after inference is done,
-    // as default types are not a feature the inference algorithm can handle,
-    // or needs to handle -> just override the result.
-    if (getType4Ast().hasTypeOfExpression(expr)) {
-      SymTypeOfGenerics streamType = getType4Ast()
-          .getTypeOfExpression(expr).asGenericType();
-      if (StreamSymTypeRelations.isStreamOfUnknownSubType(streamType)) {
-        SymTypeOfGenerics eventStreamType =
-            StreamSymTypeFactory.createEventStream(
-                StreamSymTypeRelations.getStreamElementType(streamType)
-            );
-        getType4Ast().setTypeOfExpression(expr, eventStreamType);
-      }
-    }
-    if (getType4Ast().hasPartialTypeOfExpression(expr) &&
-        !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
-    ) {
-      visit(expr);
-      traverse(expr);
-      endVisit(expr);
-    }
-  }
-
-  @Override
-  public void handle(ASTToptStreamConstructorExpression expr) {
-    handleCTTIFuncCall(expr);
-    if (getType4Ast().hasPartialTypeOfExpression(expr) &&
-        !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
-    ) {
-      visit(expr);
-      traverse(expr);
-      endVisit(expr);
-    }
-  }
-
-  @Override
-  public void handle(ASTEventStreamConstructorExpression expr) {
+  public void handle(ASTStreamConstructorExpression expr) {
     handleCTTIFuncCall(expr);
     if (getType4Ast().hasPartialTypeOfExpression(expr) &&
         !getType4Ast().getPartialTypeOfExpr(expr).isObscureType()
@@ -218,8 +174,8 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
   // Helper
 
   /**
-   * {@code <T> (T...) -> StreamType<T>} for subtypes of Stream or
-   * {@code <T, S extends Stream<T>> (T...) -> S} for Stream
+   * {@code <T> (T...) -> StreamType<T>}
+   * for the subtype of Stream corresponding to the constructor
    */
   protected SymTypeOfFunction getStreamConstructorFunc(
       ASTStreamConstructorExpression expr
@@ -238,14 +194,8 @@ public class StreamExpressionsCTTIVisitor extends StreamExpressionsTypeVisitor
     else if (expr.isToptTimed()) {
       resultType = StreamSymTypeFactory.createToptStream(typeVarT);
     }
-    else if (expr.isUntimed()) {
-      resultType = StreamSymTypeFactory.createUntimedStream(typeVarT);
-    }
     else {
-      resultType = createTypeVariable(
-          createBottomType(),
-          StreamSymTypeFactory.createStream(typeVarT)
-      );
+      resultType = StreamSymTypeFactory.createUntimedStream(typeVarT);
     }
     SymTypeOfFunction streamConstructorFunc =
         createFunction(resultType, List.of(typeVarT), true);
