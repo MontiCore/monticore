@@ -636,7 +636,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
   protected String getRuleName(String name) {
     if (name.isEmpty()) {
       return "";
-    } else if (grammarInfo.isKeyword(name, parserGeneratorHelper.getGrammarSymbol()) && grammarInfo.getKeywordRules().contains(name)) {
+    } else if (grammarInfo.isKeyword(name) && grammarInfo.getKeywordRules().contains(name)) {
       return parserGeneratorHelper.getKeyRuleName(name);
     } else {
       return parserGeneratorHelper.getCachedLexSymbolName(name.intern()).orElse("##no-usagename-for-rulename");
@@ -781,7 +781,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     } else if (constant.isPresentTokenConstant()) {
       return parserGeneratorHelper.getCachedLexSymbolName(constant.getTokenConstant().getString())
               .orElse("##no-usagename-rulename-tc");
-    } else if (!grammarInfo.isKeyword(constant.getName(), parserGeneratorHelper.getGrammarSymbol())) {
+    } else if (!grammarInfo.isKeyword(constant.getName())) {
       return parserGeneratorHelper.getCachedLexSymbolName(constant.getName())
               .orElse("##no-usagename-rulename-k");
     } else if (grammarInfo.getKeywordRules().contains(constant.getName())) {

@@ -124,7 +124,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache")
+            .withArguments("generateMCGrammars", "--build-cache", "--info")
             .build();
 
     // file MyTestGrammar is worked on
@@ -141,7 +141,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache")
+            .withArguments("generateMCGrammars", "--build-cache", "--info")
             .build();
     // and then check, that the build cache was used
     Assert.assertEquals("generateMCGrammars was not cached",
@@ -156,7 +156,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache")
+            .withArguments("generateMCGrammars", "--build-cache", "--info")
             .build();
     // and the task was successful
     Assert.assertEquals(SUCCESS, result.task(":generateMCGrammars").getOutcome());
@@ -172,7 +172,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache")
+            .withArguments("generateMCGrammars", "--build-cache", "--info")
             .build();
     // Nothing SHOULD not be up-to-date
     Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
