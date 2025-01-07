@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.streamexpressions.parser;
 
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
@@ -11,7 +12,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTSuperExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTAppendAbsentStreamExpression;
-import de.monticore.expressions.streamexpressions._ast.ASTAppendStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTAppendTickStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTStreamConstructorExpression;
 import de.monticore.expressions.teststreamexpressions.TestStreamExpressionsMill;
@@ -173,23 +173,20 @@ public class CombinedStreamsExpressionsParserTest {
   protected static Stream<Arguments> testConstructorWithTick() {
     return Stream.of(
         Arguments.of("<>"),
-        Arguments.of("<;>"),
-        Arguments.of("<;;>"),
+        Arguments.of("<Tick>"),
+        Arguments.of("<Tick,Tick>"),
         Arguments.of("<1>"),
-        Arguments.of("<;1>"),
-        Arguments.of("<;;1>"),
-        Arguments.of("<1;>"),
-        Arguments.of("<1;;>"),
-        Arguments.of("<;;1;;>"),
+        Arguments.of("<Tick,1>"),
+        Arguments.of("<Tick,Tick,1>"),
+        Arguments.of("<1,Tick>"),
+        Arguments.of("<1,Tick,Tick>"),
         Arguments.of("<1,1>"),
-        Arguments.of("<1;1>"),
-        Arguments.of("<1;;1>"),
-        Arguments.of("<;1,1;1;1,1;;1>"),
-        Arguments.of("<true ; 1>2 ;>"),
-        Arguments.of("<true ; 1<2 ;>"),
+        Arguments.of("<1,Tick,1>"),
+        Arguments.of("<true, Tick, 1>2, Tick>"),
+        Arguments.of("<true, Tick, 1<2, Tick>"),
         // with "~"-expression
-        Arguments.of("<~1;>"),
-        Arguments.of("<;~1>")
+        Arguments.of("<~1,Tick>"),
+        Arguments.of("<Tick,~1>")
     );
   }
 

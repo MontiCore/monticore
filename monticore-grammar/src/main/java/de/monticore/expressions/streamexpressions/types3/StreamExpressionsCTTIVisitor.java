@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.streamexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.streamexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -17,6 +18,7 @@ import de.monticore.types3.streams.StreamSymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,15 +31,16 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTStreamConstructorExpression expr) {
-    if (type4Ast.hasTypeOfExpression(expr)) {
-      // already calculated
-      return;
-    }
     SymTypeExpression result;
     List<SymTypeExpression> containedExprTypes = expr.getExpressionList().stream()
         .map(e -> getType4Ast().getPartialTypeOfExpr(e))
         .collect(Collectors.toList());
-    if (containedExprTypes.stream().anyMatch(SymTypeExpression::isObscureType)) {
+    Optional<SymTypeExpression> givenElementType =
+        expr.isPresentMCTypeArgument() ?
+            Optional.of(getType4Ast().getPartialTypeOfTypeId(expr.getMCTypeArgument())) :
+            Optional.empty();
+    if (containedExprTypes.stream().anyMatch(SymTypeExpression::isObscureType) ||
+        givenElementType.stream().anyMatch(SymTypeExpression::isObscureType)) {
       result = createObscureType();
     }
     else if (getType4Ast().hasTypeOfExpression(expr)) {
@@ -45,18 +48,51 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
       return;
     }
     else {
-      SymTypeExpression elementType = createUnion(Set.copyOf(containedExprTypes));
-      if (expr.isEventTimed()) {
-        result = StreamSymTypeFactory.createEventStream(elementType);
-      }
-      else if (expr.isSyncTimed()) {
-        result = StreamSymTypeFactory.createSyncStream(elementType);
-      }
-      else if (expr.isToptTimed()) {
-        result = StreamSymTypeFactory.createToptStream(elementType);
+      if (containedExprTypes.isEmpty() && givenElementType.isEmpty()) {
+        Log.error("0xFD577 empty stream without"
+                + " explicit element type argument is not supported."
+                + " Add a type argument (e.g., '<>' -> '<int><>')",
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd()
+        );
+        result = createObscureType();
       }
       else {
-        result = StreamSymTypeFactory.createUntimedStream(elementType);
+        boolean hasBadElem = false;
+        if (givenElementType.isPresent()) {
+          for (SymTypeExpression containedExprType : containedExprTypes) {
+            if (!StreamSymTypeRelations.isCompatible(givenElementType.get(), containedExprType)) {
+              Log.error("0xFD578 " +
+                      "stream with explicit element type "
+                      + givenElementType.get().printFullName()
+                      + " contains incompatible expression of type "
+                      + containedExprType.printFullName(),
+                  expr.get_SourcePositionStart(),
+                  expr.get_SourcePositionEnd()
+              );
+              hasBadElem = true;
+            }
+          }
+        }
+        if (hasBadElem) {
+          result = createObscureType();
+        }
+        else {
+          SymTypeExpression elementType = givenElementType
+              .orElseGet(() -> createUnion(Set.copyOf(containedExprTypes)));
+          if (expr.isEventTimed()) {
+            result = StreamSymTypeFactory.createEventStream(elementType);
+          }
+          else if (expr.isSyncTimed()) {
+            result = StreamSymTypeFactory.createSyncStream(elementType);
+          }
+          else if (expr.isToptTimed()) {
+            result = StreamSymTypeFactory.createToptStream(elementType);
+          }
+          else {
+            result = StreamSymTypeFactory.createUntimedStream(elementType);
+          }
+        }
       }
     }
     getType4Ast().setTypeOfExpression(expr, result);

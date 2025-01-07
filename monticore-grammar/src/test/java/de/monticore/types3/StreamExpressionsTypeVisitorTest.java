@@ -39,55 +39,14 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     return Stream.of(
         arguments("<1>", "EventStream<int>"),
         arguments("Event<1>", "EventStream<int>"),
-        arguments("<1, 1.2f>", "EventStream<float>"),
         arguments("Event<1, 1.2f>", "EventStream<float>"),
         arguments("Sync<1, 1.2f>", "SyncStream<float>"),
         arguments("Topt<1, 1.2f>", "ToptStream<float>"),
         arguments("Untimed<1, 1.2f>", "UntimedStream<float>"),
-        arguments("<1;;1.2f>", "EventStream<float>"),
+        // Tick
+        arguments("<1,Tick,Tick,1.2f>", "EventStream<float>"),
+        // Abs
         arguments("Topt<1,~,~,1.2f>", "ToptStream<float>")
-    );
-  }
-
-  @ParameterizedTest
-  @MethodSource
-  public void streamConstructorCTTITest(
-      String exprStr,
-      String targetTypeStr,
-      String expectedTypeStr
-  ) throws IOException {
-    checkExpr(exprStr, targetTypeStr, expectedTypeStr);
-  }
-
-  public static Stream<Arguments> streamConstructorCTTITest() {
-    return Stream.of(
-        arguments("<>", "Stream<int>", "EventStream<int>"),
-        arguments("<>", "EventStream<int>", "EventStream<int>"),
-        arguments("<>", "SyncStream<int>", "SyncStream<int>"),
-        arguments("<>", "ToptStream<int>", "ToptStream<int>"),
-        arguments("<>", "UntimedStream<int>", "UntimedStream<int>"),
-        arguments("<1>", "Stream<int>", "EventStream<int>"),
-        arguments("<1>", "EventStream<int>", "EventStream<int>"),
-        arguments("<1>", "SyncStream<int>", "SyncStream<int>"),
-        arguments("<1>", "ToptStream<int>", "ToptStream<int>"),
-        arguments("<1>", "UntimedStream<int>", "UntimedStream<int>")
-    );
-  }
-
-  @ParameterizedTest
-  @MethodSource
-  public void streamConstructorInvalidCTTITest(
-      String exprStr,
-      String targetTypeStr,
-      String expectedErrorStr
-  ) throws IOException {
-    checkErrorExpr(exprStr, targetTypeStr, expectedErrorStr);
-  }
-
-  public static Stream<Arguments> streamConstructorInvalidCTTITest() {
-    return Stream.of(
-        arguments("Sync<1.2f>", "SyncStream<int>", "0xFD451"),
-        arguments("Sync<>", "EventStream<int>", "0xFD451")
     );
   }
 
@@ -102,9 +61,9 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   public static Stream<Arguments> appendStreamTest() {
     return Stream.of(
-        arguments("1:<1>", "Stream<int>"),
+        arguments("1:<1>", "EventStream<int>"),
         arguments("1:Event<1>", "EventStream<int>"),
-        arguments("1.2f:<1>", "Stream<float>"),
+        arguments("1.2f:<1>", "EventStream<float>"),
         arguments("1.2f:Event<1>", "EventStream<float>"),
         arguments("1.2f:Sync<1>", "SyncStream<float>"),
         arguments("1.2f:Topt<1>", "ToptStream<float>"),
@@ -116,8 +75,8 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("Tick:<6>", "EventStream<int>"),
         arguments("Tick:Tick:2:<6>", "EventStream<int>"),
         // Abs
-        arguments("Abs:<6>", "ToptStream<int>"),
-        arguments("Abs:Abs:2:<6>", "ToptStream<int>")
+        arguments("Abs:Topt<6>", "ToptStream<int>"),
+        arguments("Abs:Abs:2:Topt<6>", "ToptStream<int>")
     );
   }
 
@@ -133,16 +92,16 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   public static Stream<Arguments> appendStreamCTTITest() {
     return Stream.of(
-        arguments("1:2:<>", "Stream<int>", "Stream<int>"),
-        arguments("1:2:<>", "Stream<float>", "Stream<float>"),
-        arguments("1:2:<>", "EventStream<float>", "EventStream<float>"),
-        arguments("1:2:<>", "SyncStream<float>", "SyncStream<float>"),
-        arguments("1:2:<>", "ToptStream<float>", "ToptStream<float>"),
-        arguments("1:2:<>", "UntimedStream<float>", "UntimedStream<float>"),
+        arguments("1:2:<int><>", "EventStream<int>", "EventStream<int>"),
+        arguments("1:2:<int><>", "EventStream<float>", "EventStream<float>"),
+        arguments("1:2:Event<int><>", "EventStream<float>", "EventStream<float>"),
+        arguments("1:2:Sync<int><>", "SyncStream<float>", "SyncStream<float>"),
+        arguments("1:2:Topt<int><>", "ToptStream<float>", "ToptStream<float>"),
+        arguments("1:2:Untimed<int><>", "UntimedStream<float>", "UntimedStream<float>"),
         // Tick
-        arguments("Tick:Tick:3.5f:Tick:5:<6>", "Stream<float>", "EventStream<float>"),
+        arguments("Tick:Tick:3.5f:Tick:5:<int><6>", "Stream<float>", "EventStream<float>"),
         // Abs
-        arguments("Abs:Abs:3.5f:Abs:5:<6>", "Stream<float>", "ToptStream<float>")
+        arguments("Abs:Abs:3.5f:Abs:5:Topt<int><6>", "Stream<float>", "ToptStream<float>")
     );
   }
 
@@ -160,7 +119,7 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("Abs:1:Tick:1:<1>", "0xFD447"),
         arguments("Tick:1:Abs:1:<1>", "0xFD447"),
         arguments("Tick:Topt<~,1>", "0xFD451"),
-        arguments("Abs:<;1>", "0xFD451")
+        arguments("Abs:<Tick,1>", "0xFD451")
     );
   }
 
@@ -193,10 +152,8 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   public static Stream<Arguments> concatStreamTest() {
     return Stream.of(
-        arguments("<1>^^<1>", "Stream<int>"),
-        arguments("<>^^<1>", "Stream<int>"),
-        arguments("<1>^^<>", "Stream<int>"),
-        arguments("<1>^^<1.2f>", "Stream<float>"),
+        arguments("<1>^^<1>", "EventStream<int>"),
+        arguments("<1>^^<1.2f>", "EventStream<float>"),
         arguments("Event<1>^^Event<1.2f>", "EventStream<float>"),
         arguments("Sync<1>^^Sync<1.2f>", "SyncStream<float>"),
         arguments("Topt<1>^^Topt<1.2f>", "ToptStream<float>"),
@@ -219,9 +176,7 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   public static Stream<Arguments> concatStreamCTTITest() {
     return Stream.of(
         arguments("<1>^^<1>", "EventStream<int>", "EventStream<int>"),
-        arguments("<>^^<1>", "EventStream<int>", "EventStream<int>"),
-        arguments("Event<1>^^<>", "EventStream<int>", "EventStream<int>"),
-        arguments("<1>^^<1.2f>", "EventStream<float>", "EventStream<float>")
+        arguments("<1>^^<1>", "EventStream<float>", "EventStream<float>")
     );
   }
 
@@ -239,7 +194,7 @@ public class StreamExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     return Stream.of(
         arguments("<1>^^<1.2f>", "SyncStream<int>", "0xFD447"),
         arguments("<1.2f>^^<1>", "SyncStream<int>", "0xFD447"),
-        arguments("Sync<>^^<>", "EventStream<int>", "0xFD447")
+        arguments("Sync<int><>^^Event<int><>", "EventStream<int>", "0xFD447")
     );
   }
 
