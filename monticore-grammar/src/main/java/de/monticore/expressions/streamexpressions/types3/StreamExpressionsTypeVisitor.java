@@ -29,7 +29,7 @@ import static de.monticore.types3.SymTypeRelations.normalize;
 /* Where is the StreamExpressionsCTTIVisitor?
 
    Where is none (anymore), and for good reason;
-   There are multiple Stream types (Event, Topt, etc.),
+   There are multiple Stream kinds (Event, Topt, etc.),
    optionally, there is a "Stream" supertype.
    While most expressions work well with type inference
    (constructor, appending), concatenation does not.
@@ -48,12 +48,18 @@ import static de.monticore.types3.SymTypeRelations.normalize;
    This function is not overloaded, but requires the common "Stream" SuperType.
    Thus, streams are concatenated that should not be,
    e.g., Event<1>^^Sync<2>,
-   then this case will not be an error, as simply the type
+   then this case will not be an error (from the TC), as simply the type
    (Stream<int>, Stream<int>) -> Stream<int> will be calculated.
    As Stream is a valid SuperType in Option B,
    one cannot simply log an error on calculating this type.
    As the sub-expressions of the concatenation can be arbitrarily complex,
    creation of a corresponding CoCo is not feasible.
+
+   Why is there a common Stream super-type?
+   * To create statements/constraints without specifying the timing
+   With this regard, the common interface is somewhat larger than
+   it might seem at first glance, as there are common operations
+   such as comparisons ("==").
 */
 
 public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
@@ -184,7 +190,7 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
     else if (!assertIsStream(expr.getStream(), streamType)) {
       result = SymTypeExpressionFactory.createObscureType();
     }
-    else if (StreamSymTypeRelations.isToptStream(streamType)) {
+    else if (!StreamSymTypeRelations.isToptStream(streamType)) {
       Log.error("0xFD573 expected a ToptStream, but got "
               + streamType.printFullName(),
           expr.get_SourcePositionStart(),
@@ -213,7 +219,7 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
     else if (!assertIsStream(expr.getStream(), streamType)) {
       result = SymTypeExpressionFactory.createObscureType();
     }
-    else if (StreamSymTypeRelations.isEventStream(streamType)) {
+    else if (!StreamSymTypeRelations.isEventStream(streamType)) {
       Log.error("0xFD574 expected an EventStream, but got "
               + streamType.printFullName(),
           expr.get_SourcePositionStart(),
