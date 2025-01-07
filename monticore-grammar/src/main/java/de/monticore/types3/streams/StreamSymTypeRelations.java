@@ -19,7 +19,7 @@ public class StreamSymTypeRelations extends SymTypeRelations {
   public static final String EVENT_STREAM = "EventStream";
   public static final String SYNC_STREAM = "SyncStream";
   public static final String TOPT_STREAM = "ToptStream";
-  public static final String UNTIMED_STREAM = "SyncStream";
+  public static final String UNTIMED_STREAM = "UntimedStream";
 
   public static void init() {
     Log.trace("init StreamTypeRelations", "TypeCheck setup");
