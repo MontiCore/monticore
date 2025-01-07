@@ -62,7 +62,7 @@ component grammar StreamExpressions
     ("<" MCTypeArgument ">")?
     "<" (StreamConstructorElement || ",")* ">";
   StreamConstructorElement =
-    Expression | absent:"~" | tick:key("Tick");
+    tick:key("Tick") | absent:"~" | Expression;
 
   /*
    * Append first element 
