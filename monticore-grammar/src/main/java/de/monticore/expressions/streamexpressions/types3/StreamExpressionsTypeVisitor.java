@@ -26,6 +26,36 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createObscureTyp
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types3.SymTypeRelations.normalize;
 
+/* Where is the StreamExpressionsCTTIVisitor?
+
+   Where is none (anymore), and for good reason;
+   There are multiple Stream types (Event, Topt, etc.),
+   optionally, there is a "Stream" supertype.
+   While most expressions work well with type inference
+   (constructor, appending), concatenation does not.
+   Imagine a^^b for two expressions a and b.
+   What is the function representing ^^?
+
+   Option A: It is an overloaded function
+   <T> (EventStream<T>, EventStream<T>) -> EventStream<T>,
+   <T> (SyncStream<T>, SyncStream<T>) -> SyncStream<T>, etc.
+   choosing the correct method depends on the argument types,
+   but the argument types, in this case, are not pertinent to applicability.
+   As such, the overload resolution cannot occur.
+   (Any attempt at this would presumably be exponentially complex in runtime)
+
+   Option B: <T, S extends Stream<T>> (S, S) -> S
+   This function is not overloaded, but requires the common "Stream" SuperType.
+   Thus, streams are concatenated that should not be,
+   e.g., Event<1>^^Sync<2>,
+   then this case will not be an error, as simply the type
+   (Stream<int>, Stream<int>) -> Stream<int> will be calculated.
+   As Stream is a valid SuperType in Option B,
+   one cannot simply log an error on calculating this type.
+   As the sub-expressions of the concatenation can be arbitrarily complex,
+   creation of a corresponding CoCo is not feasible.
+*/
+
 public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
     implements StreamExpressionsVisitor2 {
 
