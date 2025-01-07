@@ -172,7 +172,6 @@ def grammarDependencies = ext {
   MCSimpleGenericTypes = ["MCCollectionTypes"]
   MCCommonStatements = ["MCVarDeclarationStatements"]
   MCCollectionTypes = ["MCBasicTypes"]
-  StreamExpressions = ["CommonExpressions"]
   MCExceptionStatements = ["MCCommonStatements"]
   MCFunctionTypes = ["MCBasicTypes"]
   MCStructuralTypes = ["MCBasicTypes"]
@@ -198,6 +197,7 @@ def grammarDependencies = ext {
   SIUnitLiterals = ["MCCommonLiterals", "SIUnits"]
   SIUnitTypes4Math = ["MCBasicTypes", "SIUnits"]
   SIUnitTypes4Computing = ["MCBasicTypes", "SIUnitTypes4Math"]
+  StreamExpressions = ["CommonExpressions", "MCCollectionTypes"]
   TypeParameters = ["BasicSymbols", "MCBasicTypes"]
 
   // three dependencies
