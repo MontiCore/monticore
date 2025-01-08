@@ -57,9 +57,21 @@ public class CombinedStreamsExpressionsParserTest {
 
   public static Stream<Arguments> testStreamExprParsing() {
     return Stream.of(
+        Arguments.of("<1>", ASTStreamConstructorExpression.class),
+        Arguments.of("Event<1>", ASTStreamConstructorExpression.class),
+        Arguments.of("Sync<1>", ASTStreamConstructorExpression.class),
+        Arguments.of("Topt<1>", ASTStreamConstructorExpression.class),
+        Arguments.of("Untimed<1>", ASTStreamConstructorExpression.class),
+        Arguments.of("<int><1>", ASTStreamConstructorExpression.class),
+        Arguments.of("Event<int><1>", ASTStreamConstructorExpression.class),
+        Arguments.of("Sync<int><1>", ASTStreamConstructorExpression.class),
+        Arguments.of("Topt<int><1>", ASTStreamConstructorExpression.class),
+        Arguments.of("Untimed<int><1>", ASTStreamConstructorExpression.class),
+        Arguments.of("< int >< 1 >", ASTStreamConstructorExpression.class),
         Arguments.of("< foo (1,2) >", ASTStreamConstructorExpression.class),
         Arguments.of("<1,2>3,3>", ASTStreamConstructorExpression.class),
         Arguments.of("<2>3>", ASTStreamConstructorExpression.class),
+        Arguments.of("<int><>", ASTStreamConstructorExpression.class),
         Arguments.of("Event< 1", ASTLessThanExpression.class),
         Arguments.of("Event < 1", ASTLessThanExpression.class),
         Arguments.of("Event <= 1", ASTLessEqualExpression.class),
@@ -202,13 +214,9 @@ public class CombinedStreamsExpressionsParserTest {
         Arguments.of("<1,>"),
         Arguments.of("<,1>"),
         Arguments.of("<1,,1>"),
-        Arguments.of("<;,1>"),
-        Arguments.of("<1,;>"),
-        Arguments.of("<;,;>"),
-        Arguments.of("<;,~>"),
-        Arguments.of("<~,;>"),
-        Arguments.of("<;~>"),
-        Arguments.of("<~;>")
+        Arguments.of("<~~,1>"),
+        Arguments.of("<int> <1>"),
+        Arguments.of("Event<int> <1>")
     );
   }
 
