@@ -59,7 +59,7 @@ component grammar StreamExpressions
    */
   StreamConstructorExpression implements Expression <360> =
     ({noSpace(2)}? timing:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
-    ("<" MCTypeArgument ">")?
+    ("<" MCTypeArgument {noSpace(2)}? ">")?
     "<" (StreamConstructorElement || ",")* ">";
   StreamConstructorElement =
     tick:key("Tick") | absent:"~" | Expression;
