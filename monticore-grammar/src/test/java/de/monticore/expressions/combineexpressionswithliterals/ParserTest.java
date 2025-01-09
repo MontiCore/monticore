@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.combineexpressionswithliterals;
 
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import org.junit.Test;
 
@@ -40,6 +41,11 @@ public class ParserTest  {
     assertTrue(ast.isPresent());
   }
 
-
+  @Test
+  public void parseWithMode() throws IOException {
+    CombineExpressionsWithLiteralsParser parser = CombineExpressionsWithLiteralsMill.parser();
+    parser.setMode("REGEX");
+    parser.parse_StringCharRange("a-c").get();
+  }
 
 }
