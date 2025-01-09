@@ -39,7 +39,7 @@ bus transfer from Dusseldorf airport or Aachen and the venue.
 ### Submission
 
 Submissions must adhere to the ACM formatting instructions, which can 
-be found here. We ask for two types of contributions: 
+be found [here](https://www.acm.org/publications/proceedings-template). We ask for two types of contributions: 
 
  [1] Research papers: 8 pages,
  [2] Vision abstracts: 1 page.
