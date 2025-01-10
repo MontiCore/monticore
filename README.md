@@ -5,6 +5,12 @@
 
 # MontiCore - Language Workbench and Development Tool Framework 
 
+---
+
+NEWS: ISW Stuttgar organizes the third [MontiCore Symposium 2025](docs/MontiCoreSymposium.md) March 23 - March 26 in Gemünd, Germany
+
+---
+
 [MontiCore](https://www.monticore.de) is a language workbench for the efficient 
 development of domain-specific languages (DSLs). It processes an extended 
 grammar format which defines the DSL and generates Java components for processing 
