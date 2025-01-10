@@ -564,6 +564,11 @@ generateTestMCGrammars {
   dependsOn(tasks.grammarsForVariantJar)
 }
 
+// Ensure the grammars and GrammarsForVariant jars do not conflict
+tasks.grammarsForVariantJar {
+  archiveClassifier = "grammars-compat"
+}
+
 jar.dependsOn(shadowJar)
 
 if (findProperty('ci') == null) {
