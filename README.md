@@ -7,7 +7,7 @@
 
 ---
 
-NEWS: ISW Stuttgar organizes the third [MontiCore Symposium 2025](docs/MontiCoreSymposium.md) March 23 - March 26 in Gemünd, Germany
+**NEWS: ISW Stuttgar organizes the third [MontiCore Symposium 2025](docs/MontiCoreSymposium.md) March 23 - March 26 in Gemünd, Germany**
 
 ---
 
