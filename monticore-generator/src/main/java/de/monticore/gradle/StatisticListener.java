@@ -83,6 +83,12 @@ public abstract class StatisticListener
    */
   @Override
   public void onFinish(FinishEvent finishEvent) {
+    Log.trace(
+            "Finished task execution for Task `"
+                    + finishEvent.getDescriptor()
+                    + "`",
+            this.getClass().getName()
+             );
     if (this.data == null) { // Stats appear to be disabled
       return;
     }
