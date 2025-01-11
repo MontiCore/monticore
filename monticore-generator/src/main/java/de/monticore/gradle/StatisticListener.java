@@ -22,11 +22,13 @@ public abstract class StatisticListener
         implements BuildService<BuildServiceParameters.None>, OperationCompletionListener, AutoCloseable,
         BuildListener {
   public final static String enable_tracking = "de.monticore.gradle.performance_statistic";
+  public final static String show_report = "de.monticore.gradle.show_performance_statistic";
 
   @Nullable
   protected StatisticData data;
   @Nullable
   protected Instant projectStartTime;
+  protected boolean doShowReport;
 
 
   @Override
@@ -54,6 +56,7 @@ public abstract class StatisticListener
     this.data.setProject(gradle.getRootProject());
     this.data.setGradle(gradle);
     this.projectStartTime = Instant.now();
+    this.doShowReport = "true".equals(gradle.getRootProject().getProperties().get(show_report));
   }
 
 
@@ -68,6 +71,9 @@ public abstract class StatisticListener
       this.data.addTaskTypes();
       this.data.setExecutionTime(Duration.between(this.projectStartTime, Instant.now()));
 
+      if (doShowReport) {
+        System.out.println(this.data.toString());
+      }
       StatisticsHandler.storeReport(this.data.toString(), "MC_GRADLE_JSON");
     } else {
       Log.info("<projectStartTime> was null. ", this.getClass().getName());
