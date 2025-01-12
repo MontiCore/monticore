@@ -7,7 +7,9 @@
 
 ---
 
-**NEWS**: ISW Stuttgart organizes the third **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** March 23 - March 26 in Gemünd, Germany
+**NEWS**:
+* ISW Stuttgart iand RWTH Aachen organize the third **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** March 23 - March 26 in Gemünd, Germany
+* Deadline for Submissioni of papers or abstracts: January, 10th.
 
 ---
 
