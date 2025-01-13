@@ -35,8 +35,8 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
 
   public synchronized static void registerOnce(Project project) {
     if (alreadyRegistered.compareAndSet(false, true)
-        && (!project.hasProperty(StatisticListener.enable_tracking)
-            || "true".equals(project.getProperties().get(StatisticListener.enable_tracking)))) {
+      && (!project.hasProperty(StatisticListener.enable_tracking)
+      || "true".equals(project.getProperties().get(StatisticListener.enable_tracking)))) {
       project.getGradle().addListener(getSingleton());
     }
   }
@@ -47,7 +47,7 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
 
   }
 
-  public void beforeSettings(Settings settings){
+  public void beforeSettings(Settings settings) {
 
   }
 
@@ -76,7 +76,7 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
     Log.debug("buildFinished", this.getClass().getName());
     alreadyRegistered.set(false);   // Reset is necessary, otherwise Listener is not used in next build
 
-    if(projectStartTime != null) {
+    if (projectStartTime != null) {
       data.setExecutionTime(Duration.between(projectStartTime, Instant.now()));
 
 
@@ -84,21 +84,60 @@ public class StatisticListener implements BuildListener, TaskExecutionListener {
         System.out.println(data.toString());
       }
       StatisticsHandler.storeReport(data.toString(), "MC_GRADLE_JSON");
-    } else{
+    } else {
       Log.info("<projectStartTime> was null. ", this.getClass().getName());
     }
   }
 
   @Override
   public void beforeExecute(Task task) {
+    Log.trace(
+      "Start before task execution for Task `"
+        + task.getName()
+        + "`",
+      this.getClass().getName()
+    );
+
     startTime.put(task, Instant.now());
+
+    Log.trace(
+      "Finish before task execution for Task `"
+        + task.getName()
+        + "`",
+      this.getClass().getName()
+    );
   }
 
   @Override
   public void afterExecute(Task task, TaskState taskState) {
-    Duration duration = Duration.between(startTime.remove(task), Instant.now());
-    StatisticData.TaskData taskData = new StatisticData.TaskData(task, taskState, duration);
-    data.addTask(taskData);
+    Log.trace(
+      "Start after task execution for Task `"
+        + task.getName()
+        + "`",
+      this.getClass().getName()
+    );
+
+    Instant taskStartTime = startTime.remove(task);
+
+    if (taskStartTime != null) {
+      Duration duration = Duration.between(taskStartTime, Instant.now());
+      StatisticData.TaskData taskData = new StatisticData.TaskData(task, taskState, duration);
+      data.addTask(taskData);
+    } else {
+      Log.debug(
+        "The <taskStartTime> of Task `"
+          + task.getName()
+          + "` was null.",
+        this.getClass().getName()
+      );
+    }
+
+    Log.trace(
+      "Finish after task execution for Task `"
+        + task.getName()
+        + "`",
+      this.getClass().getName()
+    );
   }
 
 }
