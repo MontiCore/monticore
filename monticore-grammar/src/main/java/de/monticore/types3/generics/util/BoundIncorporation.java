@@ -3,12 +3,12 @@ package de.monticore.types3.generics.util;
 
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfTuple;
 import de.monticore.types.check.SymTypeOfWildcard;
-import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createInferenceVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 
 public class BoundIncorporation {
@@ -232,13 +233,13 @@ public class BoundIncorporation {
     }
     // a = U and b = T (with b != a) implies <b[a:=U] = T[a:=U]>
     else {
-      Map<SymTypeVariable, SymTypeExpression> replaceMap
+      Map<SymTypeInferenceVariable, SymTypeExpression> replaceMap
           = Map.of(b1.getFirstType(), b1.getSecondType());
-      SymTypeVariable typeVar =
-          TypeParameterRelations.replaceTypeVariables(b2.getFirstType(), replaceMap)
-              .asTypeVariable();
+      SymTypeInferenceVariable typeVar =
+          TypeParameterRelations.replaceInferenceVariables(b2.getFirstType(), replaceMap)
+              .asInferenceVariable();
       SymTypeExpression secondType =
-          TypeParameterRelations.replaceTypeVariables(b2.getSecondType(), replaceMap);
+          TypeParameterRelations.replaceInferenceVariables(b2.getSecondType(), replaceMap);
       if (
           !SymTypeRelations.normalize(typeVar)
               .deepEquals(SymTypeRelations.normalize(b2.getFirstType())) ||
@@ -266,10 +267,10 @@ public class BoundIncorporation {
   ) {
     List<Constraint> result;
     // S <: a and a <: T implies <S <: T>
-    if (TypeParameterRelations.isInferenceVariable(b1.getSubType()) &&
-        TypeParameterRelations.isInferenceVariable(b2.getSuperType()) &&
-        b1.getSubType().asTypeVariable()
-            .denotesSameVar(b2.getSuperType().asTypeVariable())
+    if (b1.getSubType().isInferenceVariable() &&
+        b2.getSuperType().isInferenceVariable() &&
+        b1.getSubType().asInferenceVariable()
+            .denotesSameVar(b2.getSuperType().asInferenceVariable())
     ) {
       result = Collections.singletonList(
           new SubTypingConstraint(b2.getSubType(), b1.getSuperType())
@@ -285,8 +286,8 @@ public class BoundIncorporation {
     // function types only ever have function types as supertypes
     // tuple types only ever have tuple types as supertypes
     // in union and intersection types, never combine any of the above(?) (-overloading, which has already been handled)
-    else if (TypeParameterRelations.isInferenceVariable(b1.getSubType()) &&
-        b1.getSubType().asTypeVariable().denotesSameVar(b2.getSubType()) &&
+    else if (b1.getSubType().isInferenceVariable() &&
+        b1.getSubType().asInferenceVariable().denotesSameVar(b2.getSubType()) &&
         // if S or T are inference variables,
         // their supertypes have been/will be added to the bounds of a,
         // thus, they don't need to be checked here.
@@ -296,7 +297,7 @@ public class BoundIncorporation {
         !hasTypeVariables(b1.getSuperType()) &&
         !hasTypeVariables(b2.getSuperType())
     ) {
-      SymTypeVariable infVar = b1.getSubType().asTypeVariable();
+      SymTypeInferenceVariable infVar = b1.getSubType().asInferenceVariable();
       // a <: A & B, a <: C is equivalent to a <: A & B & C
       // normalizing A & B & C filters out occurrences
       // which do not have a solution, e.g., (() -> int) & Person
@@ -390,8 +391,8 @@ public class BoundIncorporation {
     // S < a, T < a
     // not in Java Spec, this can be required for, e.g., functions
     else if (
-        TypeParameterRelations.isInferenceVariable(b1.getSuperType()) &&
-            b1.getSuperType().asTypeVariable().denotesSameVar(b2.getSuperType()) &&
+        b1.getSuperType().isInferenceVariable() &&
+            b1.getSuperType().asInferenceVariable().denotesSameVar(b2.getSuperType()) &&
             !hasTypeVariables(b1.getSubType()) &&
             !hasTypeVariables(b2.getSubType())
     ) {
@@ -431,7 +432,7 @@ public class BoundIncorporation {
    * @param commonSuperTypes may not contain any type variables
    */
   protected List<Constraint> getConstraintsFromFilteredCommonSuperTypes(
-      SymTypeVariable typeVar,
+      SymTypeInferenceVariable typeVar,
       List<? extends SymTypeExpression> commonSuperTypes
   ) {
     List<Constraint> constraints;
@@ -466,7 +467,7 @@ public class BoundIncorporation {
       SymTypeOfTuple freshVarTuple = SymTypeExpressionFactory.createTuple();
       constraints = new ArrayList<>();
       for (int i = 0; i < length; i++) {
-        SymTypeVariable freshVar = createFreshVariable();
+        SymTypeInferenceVariable freshVar = createFreshVariable();
         freshVarTuple.addType(freshVar);
         for (SymTypeOfTuple tuple : tuples) {
           constraints.add(new SubTypingConstraint(freshVar, tuple.getType(i)));
@@ -495,15 +496,15 @@ public class BoundIncorporation {
         return Collections.emptyList();
       }
       constraints = new ArrayList<>();
-      SymTypeVariable freshReturnVar = createFreshVariable();
+      SymTypeInferenceVariable freshReturnVar = createFreshVariable();
       // return types
       for (SymTypeOfFunction func : functions) {
         constraints.add(new SubTypingConstraint(freshReturnVar, func.getType()));
       }
       // parameter types
-      List<SymTypeVariable> freshParVars = new ArrayList<>(parLength);
+      List<SymTypeInferenceVariable> freshParVars = new ArrayList<>(parLength);
       for (int i = 0; i < parLength; i++) {
-        SymTypeVariable freshVar = createFreshVariable();
+        SymTypeInferenceVariable freshVar = createFreshVariable();
         freshParVars.add(freshVar);
         for (SymTypeOfFunction func : functions) {
           constraints.add(new SubTypingConstraint(func.getArgumentType(i), freshVar));
@@ -677,8 +678,8 @@ public class BoundIncorporation {
     // S --> a and a --> T implies <S --> T>
     // note that this implies that compatibility is transitive;
     // Forall types a,b,c. a-->b and b-->c implies a-->c.
-    if (TypeParameterRelations.isInferenceVariable(b1.getSourceType()) &&
-        b1.getSourceType().asTypeVariable().denotesSameVar(b2.getTargetType())
+    if (b1.getSourceType().isInferenceVariable() &&
+        b1.getSourceType().asInferenceVariable().denotesSameVar(b2.getTargetType())
     ) {
       result = Collections.singletonList(
           new TypeCompatibilityConstraint(b2.getSourceType(), b1.getTargetType())
@@ -694,8 +695,8 @@ public class BoundIncorporation {
     // B. or finding the instantiation of a.
     // Currently, we hope that this information is not required in some way,
     // which SHOULD hold true for any/most reasonable complex expressions?
-    else if (TypeParameterRelations.isInferenceVariable(b1.getSourceType()) &&
-        b1.getSourceType().asTypeVariable().denotesSameVar(b2.getSourceType()) &&
+    else if (b1.getSourceType().isInferenceVariable() &&
+        b1.getSourceType().asInferenceVariable().denotesSameVar(b2.getSourceType()) &&
         !hasTypeVariables(b1.getTargetType()) &&
         !hasTypeVariables(b2.getTargetType())
     ) {
@@ -708,8 +709,8 @@ public class BoundIncorporation {
     // S --> a, T --> a
     // compare S <: a, T <: a
     else if (
-        TypeParameterRelations.isInferenceVariable(b1.getTargetType()) &&
-            b1.getTargetType().asTypeVariable().denotesSameVar(b2.getTargetType()) &&
+        b1.getTargetType().isInferenceVariable() &&
+            b1.getTargetType().asInferenceVariable().denotesSameVar(b2.getTargetType()) &&
             !hasTypeVariables(b1.getSourceType()) &&
             !hasTypeVariables(b2.getSourceType())
     ) {
@@ -729,16 +730,16 @@ public class BoundIncorporation {
   protected List<Constraint> incorporate(SubTypingBound bS, TypeCompatibilityBound bComp) {
     List<Constraint> result;
     // S <: a and a --> T implies <S --> T>
-    if (TypeParameterRelations.isInferenceVariable(bS.getSuperType()) &&
-        bS.getSuperType().asTypeVariable().denotesSameVar(bComp.getSourceType())
+    if (bS.getSuperType().isInferenceVariable() &&
+        bS.getSuperType().asInferenceVariable().denotesSameVar(bComp.getSourceType())
     ) {
       result = Collections.singletonList(
           new TypeCompatibilityConstraint(bS.getSubType(), bComp.getTargetType())
       );
     }
     // S --> a and a <: T implies <S --> T>
-    else if (TypeParameterRelations.isInferenceVariable(bS.getSubType()) &&
-        bS.getSubType().asTypeVariable().denotesSameVar(bComp.getTargetType())
+    else if (bS.getSubType().isInferenceVariable() &&
+        bS.getSubType().asInferenceVariable().denotesSameVar(bComp.getTargetType())
     ) {
       result = Collections.singletonList(
           new TypeCompatibilityConstraint(bComp.getSourceType(), bS.getSuperType())
@@ -746,8 +747,8 @@ public class BoundIncorporation {
     }
     // a <: S and a --> T
     // compare a --> S and a <: T
-    else if (TypeParameterRelations.isInferenceVariable(bS.getSubType()) &&
-        bS.getSubType().asTypeVariable().denotesSameVar(bComp.getSourceType()) &&
+    else if (bS.getSubType().isInferenceVariable() &&
+        bS.getSubType().asInferenceVariable().denotesSameVar(bComp.getSourceType()) &&
         !hasTypeVariables(bS.getSuperType()) &&
         !hasTypeVariables(bComp.getTargetType())
     ) {
@@ -779,8 +780,8 @@ public class BoundIncorporation {
     // S <: a, T --> a
     // compare S <: a, T <: a
     else if (
-        TypeParameterRelations.isInferenceVariable(bS.getSuperType()) &&
-            bS.getSuperType().asTypeVariable().denotesSameVar(bComp.getTargetType()) &&
+        bS.getSuperType().isInferenceVariable() &&
+            bS.getSuperType().asInferenceVariable().denotesSameVar(bComp.getTargetType()) &&
             !hasTypeVariables(bS.getSubType()) &&
             !hasTypeVariables(bComp.getSourceType())
     ) {
@@ -822,12 +823,12 @@ public class BoundIncorporation {
     }
     // a = U and S <: T (with S != a and T != a) implies <S[a:=U] <: T[a:=U]>
     else if (!TypeParameterRelations.hasInferenceVariables(bE.getSecondType())) {
-      Map<SymTypeVariable, SymTypeExpression> replaceMap
+      Map<SymTypeInferenceVariable, SymTypeExpression> replaceMap
           = Map.of(bE.getFirstType(), bE.getSecondType());
       SymTypeExpression subType =
-          TypeParameterRelations.replaceTypeVariables(bS.getSubType(), replaceMap);
+          TypeParameterRelations.replaceInferenceVariables(bS.getSubType(), replaceMap);
       SymTypeExpression superType =
-          TypeParameterRelations.replaceTypeVariables(bS.getSuperType(), replaceMap);
+          TypeParameterRelations.replaceInferenceVariables(bS.getSuperType(), replaceMap);
       if (
           !SymTypeRelations.normalize(subType)
               .deepEquals(SymTypeRelations.normalize(bS.getSubType())) ||
@@ -875,12 +876,12 @@ public class BoundIncorporation {
     }
     // a = U and S --> T (with S != a and T != a) implies <S[a:=U] --> T[a:=U]>
     else if (!TypeParameterRelations.hasInferenceVariables(bE.getSecondType())) {
-      Map<SymTypeVariable, SymTypeExpression> replaceMap
+      Map<SymTypeInferenceVariable, SymTypeExpression> replaceMap
           = Map.of(bE.getFirstType(), bE.getSecondType());
       SymTypeExpression sourceType =
-          TypeParameterRelations.replaceTypeVariables(bComp.getSourceType(), replaceMap);
+          TypeParameterRelations.replaceInferenceVariables(bComp.getSourceType(), replaceMap);
       SymTypeExpression targetType =
-          TypeParameterRelations.replaceTypeVariables(bComp.getTargetType(), replaceMap);
+          TypeParameterRelations.replaceInferenceVariables(bComp.getTargetType(), replaceMap);
       if (
           !SymTypeRelations.normalize(sourceType)
               .deepEquals(SymTypeRelations.normalize(bComp.getSourceType())) ||
@@ -902,7 +903,7 @@ public class BoundIncorporation {
   protected List<Constraint> incorporate(CaptureBound bCap, SubTypingBound bS) {
     // s. Java Spec 21 18.3.2
     Optional<Constraint> constraint = Optional.empty();
-    List<SymTypeVariable> infVars = bCap.getInferenceVariables();
+    List<SymTypeInferenceVariable> infVars = bCap.getInferenceVariables();
 
     int argIdx = -1;
     for (int i = 0; i < infVars.size(); i++) {
@@ -917,7 +918,7 @@ public class BoundIncorporation {
       SymTypeOfWildcard wc = bCap.getTypeArguments().get(argIdx).asWildcard();
       // G<...,ai,...>  = capture(G<...,Ai,...>) and R <: ai
       // (with R is not an inference variable and Ai is a wildcard)
-      if (!TypeParameterRelations.isInferenceVariable(bS.getSubType())) {
+      if (!bS.getSubType().isInferenceVariable()) {
         SymTypeExpression subType = bS.getSubType();
         if (!wc.hasBound() || wc.isUpper()) {
           constraint = Optional.of(
@@ -935,7 +936,7 @@ public class BoundIncorporation {
       }
       // G<...,ai,...>  = capture(G<...,Ai,...>) and ai <: R
       // (with R is not an inference variable and Ai is a wildcard)
-      if (!TypeParameterRelations.isInferenceVariable(bS.getSuperType())) {
+      if (!bS.getSuperType().isInferenceVariable()) {
         SymTypeExpression superType = bS.getSuperType();
         SymTypeExpression modifiedBound =
             bCap.getModifiedDeclaredBounds().get(argIdx);
@@ -972,7 +973,7 @@ public class BoundIncorporation {
    */
   protected List<Constraint> incorporate(CaptureBound bCap, TypeCompatibilityBound bComp) {
     Optional<Constraint> constraint = Optional.empty();
-    List<SymTypeVariable> infVars = bCap.getInferenceVariables();
+    List<SymTypeInferenceVariable> infVars = bCap.getInferenceVariables();
 
     int argIdx = -1;
     for (int i = 0; i < infVars.size(); i++) {
@@ -987,7 +988,7 @@ public class BoundIncorporation {
       SymTypeOfWildcard wc = bCap.getTypeArguments().get(argIdx).asWildcard();
       // G<...,ai,...>  = capture(G<...,Ai,...>) and R  ai
       // (with R is not an inference variable and Ai is a wildcard)
-      if (!TypeParameterRelations.isInferenceVariable(bComp.getSourceType())) {
+      if (!bComp.getSourceType().isInferenceVariable()) {
         SymTypeExpression sourceType = bComp.getSourceType();
         if (!wc.hasBound() || wc.isUpper()) {
           constraint = Optional.of(
@@ -1005,7 +1006,7 @@ public class BoundIncorporation {
       }
       // G<...,ai,...>  = capture(G<...,Ai,...>) and ai --> R
       // (with R is not an inference variable and Ai is a wildcard)
-      if (!TypeParameterRelations.isInferenceVariable(bComp.getTargetType())) {
+      if (!bComp.getTargetType().isInferenceVariable()) {
         SymTypeExpression targetType = bComp.getTargetType();
         SymTypeExpression modifiedBound =
             bCap.getModifiedDeclaredBounds().get(argIdx);
@@ -1048,9 +1049,9 @@ public class BoundIncorporation {
     // s. Java Spec 21 18.3.2
     Optional<Constraint> constraint = Optional.empty();
 
-    if (!TypeParameterRelations.isInferenceVariable(bE.getSecondType())) {
+    if (!bE.getSecondType().isInferenceVariable()) {
       SymTypeExpression typeArg = null;
-      List<SymTypeVariable> infVars = bCap.getInferenceVariables();
+      List<SymTypeInferenceVariable> infVars = bCap.getInferenceVariables();
       for (int i = 0; i < infVars.size(); i++) {
         if (infVars.get(i).denotesSameVar(bE.getFirstType())
         ) {
@@ -1078,11 +1079,8 @@ public class BoundIncorporation {
         .isEmpty();
   }
 
-  protected SymTypeVariable createFreshVariable() {
-    return SymTypeExpressionFactory.createTypeVariable(
-        SymTypeExpressionFactory.createBottomType(),
-        SymTypeExpressionFactory.createTopType()
-    );
+  protected SymTypeInferenceVariable createFreshVariable() {
+    return createInferenceVariable();
   }
 
   protected String printConstraints(List<Constraint> constraints) {

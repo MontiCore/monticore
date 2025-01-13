@@ -3,6 +3,7 @@ package de.monticore.types3.generics.util;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
@@ -874,17 +875,17 @@ public class CompileTimeTypeCalculator {
     List<Bound> bounds = new ArrayList<>();
     SymTypeOfFunction func = inferenceResult.getResolvedFunction();
     if (func.hasSymbol()) {
-      Map<SymTypeVariable, SymTypeVariable> typeParamReplaceMap =
+      Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
           getParamReplaceMap(func);
-      for (Map.Entry<SymTypeVariable, SymTypeVariable> param2InfVar :
+      for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> param2InfVar :
           typeParamReplaceMap.entrySet()
       ) {
-        SymTypeVariable typeVar = param2InfVar.getValue();
+        SymTypeInferenceVariable infVar = param2InfVar.getValue();
         SymTypeVariable parameter = param2InfVar.getKey();
         SymTypeExpression upperBound = parameter.getUpperBound();
         SymTypeExpression upperBoundWithInfVars = TypeParameterRelations
             .replaceTypeVariables(upperBound, typeParamReplaceMap);
-        bounds.add(new SubTypingBound(typeVar, upperBoundWithInfVars));
+        bounds.add(new SubTypingBound(infVar, upperBoundWithInfVars));
       }
     }
     else {
@@ -892,9 +893,9 @@ public class CompileTimeTypeCalculator {
       // but, the bound typeVar <: Top is required, thus added here.
       // this function type most likely has been created
       // as a stand-in for e.g., an operator.
-      List<SymTypeVariable> typeVars = TypeParameterRelations
+      List<SymTypeInferenceVariable> typeVars = TypeParameterRelations
           .getIncludedInferenceVariables(func);
-      for (SymTypeVariable typeVar : typeVars) {
+      for (SymTypeInferenceVariable typeVar : typeVars) {
         bounds.add(new SubTypingBound(typeVar, createTopType()));
       }
     }
@@ -1294,28 +1295,27 @@ public class CompileTimeTypeCalculator {
    * with the inference variables.
    * In JLS 21 18.1.3: [P1:=α1,...,Pn:=αn]
    */
-  protected Map<SymTypeVariable, SymTypeVariable> getParamReplaceMap(
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> getParamReplaceMap(
       SymTypeOfFunction func
   ) {
-    List<SymTypeVariable> typeVars = func.getTypeArguments().stream()
-        .map(SymTypeExpression::asTypeVariable)
+    List<SymTypeInferenceVariable> infVars = func.getTypeArguments().stream()
+        .map(SymTypeExpression::asInferenceVariable)
         .collect(Collectors.toList());
     SymTypeOfFunction declaredFunc = func.getDeclaredType();
     List<SymTypeVariable> typeParams = declaredFunc.getTypeArguments().stream()
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
-    Map<SymTypeVariable, SymTypeVariable> typeParamReplaceMap =
+    Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
         new TreeMap<>(new SymTypeExpressionComparator());
     for (int i = 0; i < typeParams.size(); i++) {
-      typeParamReplaceMap.put(typeParams.get(i), typeVars.get(i));
+      typeParamReplaceMap.put(typeParams.get(i), infVars.get(i));
     }
-    for (int i = 0; i < typeVars.size(); i++) {
-      SymTypeVariable typeVar = typeVars.get(i);
+    for (int i = 0; i < infVars.size(); i++) {
+      SymTypeInferenceVariable infVar = infVars.get(i);
       SymTypeVariable parameter = typeParams.get(i);
       // small check asserting correct input
-      if (!TypeParameterRelations.isInferenceVariable(typeVar) ||
-          TypeParameterRelations.isInferenceVariable(parameter) ||
-          !SymTypeRelations.isBottom(parameter.getLowerBound())) {
+      if (!infVar.isInferenceVariable() ||
+          parameter.isInferenceVariable()) {
         Log.error("0xFD147 internal error: unexpected input to fill B0");
       }
     }

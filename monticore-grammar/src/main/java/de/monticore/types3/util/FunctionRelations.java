@@ -2,8 +2,8 @@
 package de.monticore.types3.util;
 
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
@@ -69,7 +69,7 @@ public class FunctionRelations {
         SymTypeExpression capArgType = TypeParameterRelations.getCaptureConverted(argType);
         if (!TypeParameterRelations.hasInferenceVariables(paramType)) {
           List<Bound> bounds = SymTypeRelations.constrainCompatible(paramType, capArgType);
-          Optional<Map<SymTypeVariable, SymTypeExpression>> resolution =
+          Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> resolution =
               BoundResolution.resolve(bounds);
           if (resolution.isEmpty()) {
             return false;
@@ -235,7 +235,7 @@ public class FunctionRelations {
         SymTypeExpression capArgType = TypeParameterRelations.getCaptureConverted(argType);
         if (!TypeParameterRelations.hasInferenceVariables(paramType)) {
           List<Bound> bounds = SymTypeRelations.constrainCompatible(paramType, capArgType);
-          Optional<Map<SymTypeVariable, SymTypeExpression>> resolution =
+          Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> resolution =
               BoundResolution.resolve(bounds);
           if (resolution.isEmpty()) {
             return false;

@@ -54,8 +54,10 @@ and combining their information to the SymTypeExpression currently calculated.
       (subclass of SymTypeExpression, represents primitive types,
       e.g., `int`)
     * [SymTypeVariable](../types/check/SymTypeVariable.java)
-      (subclass of SymTypeExpression, represents type variables,
+      (subclass of SymTypeExpression, represents bound type variables,
       e.g., `T` in `List<T>`)
+    * [SymTypeInferenceVariable](../types/check/SymTypeInferenceVariable.java)
+      (subclass of SymTypeExpression, represents free type variables)
     * [SymTypeVoid](../types/check/SymTypeVoid.java)
       (subclass of SymTypeExpression, pseudo-type corresponding to `void`)
 * [SymTypeExpressionFactory](../types/check/SymTypeExpressionFactory.java)
