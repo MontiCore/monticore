@@ -434,7 +434,7 @@ public class CallGenericFunctionsTest
     // in Java, this would be Object, not "?"
     // or a free type variable due to capture conversion
     checkExpr("box.get()", "?");
-    checkErrorExpr("box.put(box.get())", "0xFD444");
+    checkErrorExpr("box.put(box.get())", "0xFD44A");
     checkExpr("reboxHelper(box)", "void");
     checkExpr("strBox = make()", "Box<String>");
     checkExpr("box = make()", "Box<?>");

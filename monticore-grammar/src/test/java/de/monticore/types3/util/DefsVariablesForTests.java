@@ -45,6 +45,7 @@ public class DefsVariablesForTests {
     set_boxedObjects(scope);
     set_unboxedCollections(scope);
     set_boxedCollections(scope);
+    set_Streams(scope);
     set_objectTypes(scope);
     set_generics(scope);
     set_siUnitsWithNumerics(scope);
@@ -160,6 +161,33 @@ public class DefsVariablesForTests {
         createGenerics(_boxedListSymType.getTypeInfo(), _intSymType)));
     _boxedMapVarSym = inScope(scope, variable("varintBoxedMap",
         createGenerics(_boxedMapSymType.getTypeInfo(), _intSymType, _intSymType)));
+  }
+
+  /*
+   * These are the predefined Symbols for the Streams
+   */
+
+  public static VariableSymbol _intStreamVarSym;
+
+  public static VariableSymbol _intEventStreamVarSym;
+
+  public static VariableSymbol _intSyncStreamVarSym;
+
+  public static VariableSymbol _intToptStreamVarSym;
+
+  public static VariableSymbol _intUntimedStreamVarSym;
+
+  public static void set_Streams(IBasicSymbolsScope scope) {
+    _intStreamVarSym = inScope(scope, variable("varintStream",
+        createGenerics(_StreamSymType.getTypeInfo(), _intSymType)));
+    _intEventStreamVarSym = inScope(scope, variable("varintEventStream",
+        createGenerics(_EventStreamSymType.getTypeInfo(), _intSymType)));
+    _intSyncStreamVarSym = inScope(scope, variable("varintSyncStream",
+        createGenerics(_SyncStreamSymType.getTypeInfo(), _intSymType)));
+    _intToptStreamVarSym = inScope(scope, variable("varintToptStream",
+        createGenerics(_ToptStreamSymType.getTypeInfo(), _intSymType)));
+    _intUntimedStreamVarSym = inScope(scope, variable("varintUntimedStream",
+        createGenerics(_UntimedStreamSymType.getTypeInfo(), _intSymType)));
   }
 
   /*

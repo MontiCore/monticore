@@ -302,8 +302,9 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     assertFalse(type.isObscureType(), "No type calculated for expression " + exprStr);
     // usually, type normalization is expected and (basically) always allowed
     // for specific tests, however, it may be required to disable this
+    SymTypeExpression typeNormalized = SymTypeRelations.normalize(type);
     boolean equalsNormalized =
-        expectedType.equals(SymTypeRelations.normalize(type).printFullName());
+        expectedType.equals(typeNormalized.printFullName());
     if (!allowNormalization || !equalsNormalized) {
       Assertions.assertEquals(expectedType, type.printFullName(), "Wrong type for expression " + exprStr);
     }
