@@ -9,15 +9,16 @@ import de.monticore.symboltable.serialization.json.JsonNull;
 import de.monticore.symboltable.serialization.json.JsonNumber;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
+import de.se_rwth.commons.logging.Log;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.UnknownTaskException;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.tasks.TaskState;
-import org.gradle.tooling.events.FailureResult;
-import org.gradle.tooling.events.OperationResult;
-import org.gradle.tooling.events.SuccessResult;
+import org.gradle.tooling.events.task.TaskFailureResult;
 import org.gradle.tooling.events.task.TaskOperationDescriptor;
+import org.gradle.tooling.events.task.TaskOperationResult;
+import org.gradle.tooling.events.task.TaskSkippedResult;
 import org.gradle.tooling.events.task.TaskSuccessResult;
 
 import java.io.IOException;
@@ -140,23 +141,26 @@ public class StatisticData {
       }
     }
 
-    public TaskData(TaskOperationDescriptor taskOpDesc, OperationResult result) {
+    public TaskData(TaskOperationDescriptor taskOpDesc, TaskOperationResult result) {
       data = new JsonObject();
       String name = taskOpDesc.getName();
       int pathIndex = name.lastIndexOf(':');
       data.putMember("Name", new UserJsonString(pathIndex >= 0 ? name.substring(pathIndex + 1) : name));
       data.putMember("Path", new UserJsonString(taskOpDesc.getTaskPath()));
       data.putMember("Duration", new JsonNumber("" + (result.getEndTime() - result.getStartTime())));
-      if (result instanceof SuccessResult) {
-        data.putMember("UpToDate", new JsonBoolean(((TaskSuccessResult)result).isUpToDate()));
-        data.putMember("Cached", new JsonBoolean(((TaskSuccessResult)result).isFromCache()));
+      if (result instanceof TaskSuccessResult) {
+        data.putMember("UpToDate", new JsonBoolean(((TaskSuccessResult) result).isUpToDate()));
+        data.putMember("Cached", new JsonBoolean(((TaskSuccessResult) result).isFromCache()));
         data.putMember("hasError", new JsonBoolean(false));
-      } else if (result instanceof FailureResult){
+      } else if (result instanceof TaskFailureResult) {
         data.putMember("UpToDate", new JsonBoolean(false));
         data.putMember("Cached", new JsonBoolean(false));
         data.putMember("hasError", new JsonBoolean(true));
+      } else if (result instanceof TaskSkippedResult) {
+        data.putMember("Skipped", new JsonBoolean(true));
       } else {
-        throw new IllegalStateException("Unexpected result type: " + result.getClass());
+        // Only warn about unexpected types
+        Log.warn("Unexpected result type during collection of statistics: " + result.getClass());
       }
 
       data.putMember("TaskStatistik", new JsonNull());

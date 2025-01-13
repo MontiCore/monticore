@@ -8,8 +8,7 @@ import org.gradle.api.Action;
 import java.util.concurrent.Semaphore;
 
 /**
- * A unit of work, representing a single invocation of the MontiCore Tool,
- * which is
+ * A unit of work, representing a single invocation of the MontiCore Tool.
  */
 public abstract class MCToolAction extends AToolAction {
 
@@ -46,15 +45,12 @@ public abstract class MCToolAction extends AToolAction {
   }
 
   protected static int guessInitialMaxParallelMC() {
-    // We generously estimate 500MB of memory usage per grammar
+    // We generously estimate 500MB of memory usage per concurrent MCGen execution
+    // This memory footprint includes the runtime object, as well as overhead for loading classes, the jars
+    // within the classpath, etc.
     long leftOverMemory = Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory();
-    int maxParallel = (int) Math.max(4, leftOverMemory / 500000000d);
-    System.err.println("Guessing an initial of " + maxParallel);
-    System.err.println("  " + Runtime.getRuntime().freeMemory());
-    System.err.println("  " + Runtime.getRuntime().maxMemory());
-    System.err.println("  " + Runtime.getRuntime().totalMemory());
-    System.err.println("  " + leftOverMemory / 500000000d);
-    return maxParallel;
+    // We always allow 4 grammars by default (use CONCURRENT_MC_PROPERTY to increase this value)
+    return (int) Math.max(4, leftOverMemory / 500000000d);
   }
 
   @Override
