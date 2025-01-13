@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
@@ -229,12 +230,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
       Map<SymTypeInferenceVariable, SymTypeExpression> infVar2Skolem =
           new TreeMap<>(new SymTypeExpressionComparator());
       for (SymTypeInferenceVariable infVar : infVars) {
-        infVar2Skolem.put(infVar,
-            SymTypeExpressionFactory.createTypeObject(
-                "Skolem#" + infVar.print(),
-                BasicSymbolsMill.scope()
-            )
-        );
+        infVar2Skolem.put(infVar, createSkolemVar(infVar));
       }
       Map<SymTypeExpression, SymTypeInferenceVariable> skolem2infVar =
           new TreeMap<>(new SymTypeExpressionComparator());
@@ -327,6 +323,22 @@ public class SymTypeOfFunction extends SymTypeExpression {
   @Override
   public void accept(ISymTypeVisitor visitor) {
     visitor.visit(this);
+  }
+
+  // Helper
+  protected SymTypeExpression createSkolemVar(SymTypeInferenceVariable infVar) {
+    SymTypeExpression result;
+    String name = "Skolem#" + infVar.print();
+    // fake symbol, not part of SymTab
+    TypeSymbol skolemSymbol = new TypeSymbolSurrogate(name) {
+      @Override
+      public boolean checkLazyLoadDelegate() {
+        return false;
+      }
+    };
+    skolemSymbol.setEnclosingScope(BasicSymbolsMill.globalScope());
+    result = SymTypeExpressionFactory.createTypeObject(skolemSymbol);
+    return result;
   }
 
   // --------------------------------------------------------------------------
