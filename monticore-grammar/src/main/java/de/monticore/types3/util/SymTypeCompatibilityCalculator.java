@@ -82,15 +82,17 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression source
   ) {
     List<Bound> result;
-    if (source.deepEquals(target)) {
-      result = Collections.emptyList();
-    }
-    else if (target.isTypeVariable() ||
+    if (target.isTypeVariable() ||
         target.isInferenceVariable() ||
+        target.isWildcard() ||
         source.isTypeVariable() ||
-        source.isInferenceVariable()
+        source.isInferenceVariable() ||
+        source.isWildcard()
     ) {
-      result = typeVarConstrainCompatible(target, source);
+      result = typeSetConstrainCompatible(target, source);
+    }
+    else if (source.deepEquals(target)) {
+      result = Collections.emptyList();
     }
     //todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4362
     // need more (e.g. tuple) (function???)
@@ -129,9 +131,9 @@ public class SymTypeCompatibilityCalculator {
   }
 
   /**
-   * s.a. {@link #typeVarConstrainSubTypeOf(SymTypeExpression, SymTypeExpression)}
+   * s.a. {@link #typeSetConstrainSubTypeOf(SymTypeExpression, SymTypeExpression)}
    */
-  protected List<Bound> typeVarConstrainCompatible(
+  protected List<Bound> typeSetConstrainCompatible(
       SymTypeExpression target,
       SymTypeExpression source
   ) {
@@ -149,39 +151,36 @@ public class SymTypeCompatibilityCalculator {
     // todo check if tested FDr!
     else if (target.isTypeVariable() ||
         target.isInferenceVariable() ||
+        target.isWildcard() ||
         source.isTypeVariable() ||
-        source.isInferenceVariable()
+        source.isInferenceVariable() ||
+        source.isWildcard()
     ) {
       SymTypeExpression sourceUpperBound;
-      boolean sourceTypeIsInfVar;
       if (source.isInferenceVariable()) {
-        SymTypeInferenceVariable tv = source.asInferenceVariable();
-        sourceUpperBound = tv.getUpperBound();
-        sourceTypeIsInfVar = true;
+        sourceUpperBound = source.asInferenceVariable().getUpperBound();
       }
       else if (source.isTypeVariable()) {
-        SymTypeVariable tv = source.asTypeVariable();
-        sourceUpperBound = tv.getUpperBound();
-        sourceTypeIsInfVar = false;
+        sourceUpperBound = source.asTypeVariable().getUpperBound();
+      }
+      else if (source.isWildcard()) {
+        sourceUpperBound = source.asWildcard().getUpperBound();
       }
       else {
         sourceUpperBound = source;
-        sourceTypeIsInfVar = false;
       }
       SymTypeExpression targetLowerBound;
-      boolean targetTypeIsInfVar;
       if (target.isInferenceVariable()) {
-        SymTypeInferenceVariable tv = target.asInferenceVariable();
-        targetLowerBound = tv.getLowerBound();
-        targetTypeIsInfVar = true;
+        targetLowerBound = target.asInferenceVariable().getLowerBound();
+      }
+      else if (target.isWildcard()) {
+        targetLowerBound = target.asWildcard().getLowerBound();
       }
       else if (target.isTypeVariable()) {
         targetLowerBound = createBottomType();
-        targetTypeIsInfVar = false;
       }
       else {
         targetLowerBound = target;
-        targetTypeIsInfVar = false;
       }
       // small check that can safe us further calculations:
       // a <: A, B <: b, so if A <: B, then a <: b and thus a --> b
@@ -192,7 +191,7 @@ public class SymTypeCompatibilityCalculator {
       if (isSubTypeOf(sourceUpperBound, targetLowerBound)) {
         result = Collections.emptyList();
       }
-      else if (!sourceTypeIsInfVar && !targetTypeIsInfVar) {
+      else if (!source.isInferenceVariable() && !target.isInferenceVariable()) {
         // check supertypes (for compatiblity)
         // note, this needs to be extended, e.g., a <: A, b <: B
         // with A </: B and A --> B is currently not supported.
@@ -260,8 +259,8 @@ public class SymTypeCompatibilityCalculator {
   }
 
   public List<Bound> constrainSubTypeOf(SymTypeExpression subType, SymTypeExpression superType) {
-    SymTypeExpression normalizedSubType = de.monticore.types3.SymTypeRelations.normalize(subType);
-    SymTypeExpression normalizedSuperType = de.monticore.types3.SymTypeRelations.normalize(superType);
+    SymTypeExpression normalizedSubType = SymTypeRelations.normalize(subType);
+    SymTypeExpression normalizedSuperType = SymTypeRelations.normalize(superType);
     return internal_constrainSubTypeOfPreNormalized(normalizedSubType, normalizedSuperType);
   }
 
@@ -346,7 +345,7 @@ public class SymTypeCompatibilityCalculator {
     if (SymTypeRelations.isTop(subType) &&
         superType.isInferenceVariable()
     ) {
-      result = typeVarConstrainSubTypeOf(subType, superType);
+      result = typeSetConstrainSubTypeOf(subType, superType);
     }
     else {
       // the sub-lists are connected by 'or's
@@ -419,8 +418,14 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression typeA,
       SymTypeExpression typeB
   ) {
-    if (typeA.deepEquals(typeB)) {
-      return Collections.emptyList();
+    List<Bound> result;
+    // wildcards
+    if (typeA.isWildcard() && typeB.isWildcard()) {
+      result = wildcardConstrainSameType(typeA.asWildcard(), typeB.asWildcard());
+    }
+    // deepEquals for everything except wildcards
+    else if (typeA.deepEquals(typeB)) {
+      result = Collections.emptyList();
     }
     // This CANNOT be (completely) substituted with 2 subtyping constrainments,
     // e.g., given the constraint <G<a> --> G<b>> with a,b are inference vars,
@@ -429,9 +434,9 @@ public class SymTypeCompatibilityCalculator {
     // Additionally, a custom implementation is better wrt. unions/intersections,
     // as those cannot be calculated this well using subtyping constraints
     // (loss of information).
-    List<Bound> result;
-    if (typeA.isInferenceVariable() || typeB.isInferenceVariable()) {
-      result = typeVarConstrainSameType(typeA, typeB);
+    // Note: bound type variables are handled by deepEquals-check
+    else if (typeA.isInferenceVariable() || typeB.isInferenceVariable()) {
+      result = infVarConstrainSameType(typeA, typeB);
     }
     else if (typeA.isIntersectionType() || typeB.isIntersectionType()) {
       result = intersectionConstrainSameType(typeA, typeB);
@@ -491,10 +496,6 @@ public class SymTypeCompatibilityCalculator {
             (typeB.isObjectType() || typeB.isGenericType())) {
       result = objectConstrainSameType(typeA, typeB);
     }
-    // wildcards
-    else if (typeA.isWildcard() && typeB.isWildcard()) {
-      result = wildcardConstrainSameType(typeA.asWildcard(), typeB.asWildcard());
-    }
     // anything else,
     // includes two bound type variables that are different to each other
     else {
@@ -518,10 +519,12 @@ public class SymTypeCompatibilityCalculator {
     // variable
     if (superType.isTypeVariable() ||
         superType.isInferenceVariable() ||
+        superType.isWildcard() ||
         subType.isTypeVariable() ||
-        subType.isInferenceVariable()
+        subType.isInferenceVariable() ||
+        subType.isWildcard()
     ) {
-      result = typeVarConstrainSubTypeOf(subType, superType);
+      result = typeSetConstrainSubTypeOf(subType, superType);
     }
     // arrays
     else if (superType.isArrayType() && subType.isArrayType()) {
@@ -601,9 +604,10 @@ public class SymTypeCompatibilityCalculator {
 
   /**
    * whether one expression is the subType of another,
-   * with at least one of the types being a variable.
+   * with at least one of the types being a variable or wildcard,
+   * thus representing a set of types, rather than a single type.
    */
-  protected List<Bound> typeVarConstrainSubTypeOf(
+  protected List<Bound> typeSetConstrainSubTypeOf(
       SymTypeExpression subType,
       SymTypeExpression superType
   ) {
@@ -626,44 +630,42 @@ public class SymTypeCompatibilityCalculator {
     }
     else if (superType.isTypeVariable() ||
         superType.isInferenceVariable() ||
+        superType.isWildcard() ||
         subType.isTypeVariable() ||
-        subType.isInferenceVariable()
+        subType.isInferenceVariable() ||
+        subType.isWildcard()
     ) {
       SymTypeExpression subUpperBound;
-      boolean subTypeIsInfVar;
       if (subType.isInferenceVariable()) {
-        SymTypeInferenceVariable tv = subType.asInferenceVariable();
-        subUpperBound = tv.getUpperBound();
-        subTypeIsInfVar = true;
+        subUpperBound = subType.asInferenceVariable().getUpperBound();
       }
       else if (subType.isTypeVariable()) {
-        SymTypeVariable tv = subType.asTypeVariable();
-        subUpperBound = tv.getUpperBound();
-        subTypeIsInfVar = false;
+        subUpperBound = subType.asTypeVariable().getUpperBound();
+      }
+      else if (subType.isWildcard()) {
+        subUpperBound = subType.asWildcard().getUpperBound();
       }
       else {
         subUpperBound = subType;
-        subTypeIsInfVar = false;
       }
       SymTypeExpression superLowerBound;
-      boolean superTypeIsInfVar;
       if (superType.isInferenceVariable()) {
-        SymTypeInferenceVariable tv = superType.asInferenceVariable();
-        superLowerBound = tv.getLowerBound();
-        superTypeIsInfVar = true;
+        superLowerBound = superType.asInferenceVariable().getLowerBound();
       }
       else if (superType.isTypeVariable()) {
         superLowerBound = createBottomType();
-        superTypeIsInfVar = false;
+      }
+      else if (superType.isWildcard()) {
+        superLowerBound = superType.asWildcard().getLowerBound();
       }
       else {
         superLowerBound = superType;
-        superTypeIsInfVar = false;
       }
       if (isSubTypeOf(subUpperBound, superLowerBound)) {
         result = Collections.emptyList();
       }
-      else if (!subTypeIsInfVar && !superTypeIsInfVar) {
+      else if (!subType.isInferenceVariable()
+          && !superType.isInferenceVariable()) {
         result = Collections.singletonList(
             getUnsatisfiableBoundForSubTyping(subType, superType)
         );
@@ -1041,7 +1043,7 @@ public class SymTypeCompatibilityCalculator {
     return result;
   }
 
-  protected List<Bound> typeVarConstrainSameType(SymTypeExpression typeA, SymTypeExpression typeB) {
+  protected List<Bound> infVarConstrainSameType(SymTypeExpression typeA, SymTypeExpression typeB) {
     List<Bound> result;
     if (!typeA.isInferenceVariable() && !typeB.isInferenceVariable()) {
       Log.error("0xFDC32 internal error, expected an inference variable");
@@ -1158,7 +1160,7 @@ public class SymTypeCompatibilityCalculator {
   }
 
   protected List<Bound> regExConstrainSameType(SymTypeExpression regexA, SymTypeExpression regexB) {
-    return constrainContainsPreNormalized(regexA, regexB);
+    return constrainSameTypeUsingSubTypeOf(regexA, regexB);
   }
 
   protected List<Bound> objectConstrainSameType(SymTypeExpression typeA, SymTypeExpression typeB) {
@@ -1208,15 +1210,17 @@ public class SymTypeCompatibilityCalculator {
 
   protected List<Bound> wildcardConstrainSameType(SymTypeOfWildcard wcA, SymTypeOfWildcard wcB) {
     List<Bound> result;
-    if (wcA.hasBound() != wcB.hasBound() || wcA.isUpper() != wcB.isUpper()) {
+    // ? is different from another ?, as such, avoid deepEquals earlier on
+    if (!wcA.hasBound() && !wcB.hasBound()) {
+      result = Collections.singletonList(getUnsatisfiableBoundForSameType(wcA, wcB));
+    }
+    else if (wcA.hasBound() != wcB.hasBound() || wcA.isUpper() != wcB.isUpper()) {
       result = Collections.singletonList(new UnsatisfiableBound(
           wcA.printFullName() + " is not the same type as "
               + wcB.printFullName() + " as they have different types of bounds."
       ));
     }
     else {
-      // both habe bounds, as otherwise,
-      // the deepEquals check would have caught this case
       result = internal_constrainSameTypePreNormalized(wcA.getBound(), wcB.getBound());
     }
     return result;
@@ -1230,11 +1234,12 @@ public class SymTypeCompatibilityCalculator {
    * s. Java spec 20 4.5.1, 4.10.2
    * A type variable represents multiple Types,
    * in other cases, this is an identity check.
-   * s. a. {@link #typeVarConstrainSubTypeOf}
+   * s. a. {@link #typeSetConstrainSubTypeOf}
    * The arguments are expected to be normalized.
    * Additionally, type variables within other symTypes
    * are currently not supported,
    * this helper function (currently) is only to check subtyping of generics.
+   * Tuples could be extended in this regard (currently not needed).
    * <p>
    * Fundamentally, T1 "contains" T2 ("T2 <= T1")
    * if the set of types denoted by T1 is (provably) a superSet
