@@ -368,10 +368,13 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
           }
         }
 
-        // todo FDr do stuff
-        // handle type variables
+        // handle type variables,
+        // as both free and bound variables describe sets of potential types,
+        // they are handled the same for intersecting
         intersected = intersectedWithoutVars;
-        for (SymTypeVariable var : uniqueVars) {
+        Set<SymTypeExpression> vars = new HashSet<>(uniqueBoundVars);
+        vars.addAll(uniqueInfVars);
+        for (SymTypeExpression var : vars) {
           if (SymTypeRelations.isSubTypeOf(var, intersected)) {
             intersected = var.deepClone();
           }
