@@ -7,7 +7,8 @@ released: --to be determined--
 
 ### Additions
 * grammars
-  * SIUnits, SIUnitLiterals, SIUnitTypes4Math, SIUnitTypes4Computing (ported from SIUnit project)
+  * SIUnits, SIUnitLiterals, SIUnitTypes4Math, SIUnitTypes4Computing
+    (ported from SIUnit project)
   * TypeParameters for generics
 * Symbols
   * DeSer has access to outer scope while deserializing
@@ -23,7 +24,7 @@ released: --to be determined--
   * new class SymTypeCollectionVisitor to collect sub-SymTypeExpressions
   * new class SymTypeExpressionCalculator to sort SymTypeExpressions
   * new class SymTypePredicateVisitor to check predicates over STEs
-  * new internal class TypeVisitorOperatorCalculator to reuse operator calculations
+  * new class TypeVisitorOperatorCalculator to reuse operator calculations
 * Tests
   * Junit 5.10.3 for tests
 
