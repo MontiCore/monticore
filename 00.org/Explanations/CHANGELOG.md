@@ -2,6 +2,52 @@
 
 # Release Notes
 
+## MontiCore 7.7.0
+released: --to be determined--
+
+### Additions
+* grammars
+  * SIUnits, SIUnitLiterals, SIUnitTypes4Math, SIUnitTypes4Computing (ported from SIUnit project)
+  * TypeParameters for generics
+* Symbols
+  * DeSer has access to outer scope while deserializing
+* CoCos
+  * new CoCo QualifiedTypeHasNoTypeParameters
+  * new CoCo TypeParameterNoCyclicInheritance
+  * new CoCo TypeParametersHaveUniqueNames
+* TypeCheck
+  * initial support for generics/type inference
+  * TypeCheck3 static delegate with implementation MapBasedTypeCheck3
+  * new class SymTypeOf(NumericWith)SIUnit
+  * new class SymTypeSourceInfo to reference symbols
+  * new class SymTypeCollectionVisitor to collect sub-SymTypeExpressions
+  * new class SymTypeExpressionCalculator to sort SymTypeExpressions
+  * new class SymTypePredicateVisitor to check predicates over STEs
+  * new internal class TypeVisitorOperatorCalculator to reuse operator calculations
+* Tests
+  * Junit 5.10.3 for tests
+
+### Changes
+* grammars
+  * JavaLight uses TypeParameters
+* AST
+  * deprecated definingSymbol (TypeCheck1)
+* CoCos
+  * LiteralAssignmentMatchesRegExExpressionCoCo uses TypeCheck3
+  * ExpressionStatementIsValid uses TypeCheck3
+  * VarDeclarationInitializationHasCorrectType uses TypeCheck3
+* Updated Gradle version to 7.6.4
+* TypeCheck
+  * deprecated IDerive/ISynthesize
+  * deprecated TypeCheckResult
+  * deprecated ITypeCaculator
+  * better error messages
+
+### Fixes
+* Symbols
+  * Deserialization uses outer scope
+* MCPath don't throw PatternSyntaxException
+
 ## MontiCore 7.6.0
 released: --to be determined--
 
