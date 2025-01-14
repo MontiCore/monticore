@@ -34,6 +34,7 @@ released: --to be determined--
 ### Changes
 * grammars
   * JavaLight uses TypeParameters
+  * updated MLC models
 * AST
   * deprecated definingSymbol (TypeCheck1)
 * CoCos
@@ -51,7 +52,7 @@ released: --to be determined--
 * TypeCheck
   * deprecated IDerive/ISynthesize
   * deprecated TypeCheckResult
-  * deprecated ITypeCaculator
+  * deprecated ITypeCalculator
   * better error messages
 * Parser
   * Further improved readability of parse errors
@@ -59,6 +60,7 @@ released: --to be determined--
   * Usage of a two-phased parser approach (using ParseVisitors to create the AST)
 * Updated the Getting Started document
 * The development of MontiCore now occurs on GitHub
+* Exposition of internal objects of the DSTL-transformation generation 
 
 ### Fixes
 * Symbols
@@ -66,7 +68,7 @@ released: --to be determined--
 * MCPath don't throw PatternSyntaxException
 * Pretty Printer generation of constant groups with usage names
 * Memory exhaustion of the Gradle plugin
-* compatibility with Gradles build and configuration cache
+* compatibility with Gradle's build and configuration cache
 
 ## MontiCore 7.6.0
 released: --to be determined--
