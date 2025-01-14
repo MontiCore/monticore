@@ -5,13 +5,12 @@ import de.monticore.statements.mccommonstatements.cocos.ResourceInTryStatementCl
 import de.monticore.statements.mcexceptionstatements._ast.ASTMCExceptionStatementsNode;
 import de.monticore.statements.mcexceptionstatements._ast.ASTTryLocalVariableDeclaration;
 import de.monticore.statements.mcexceptionstatements._ast.ASTTryStatement3;
-import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
-import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommonStatementsScope;
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._cocos.TestMCExceptionStatementsCoCoChecker;
 import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.*;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Assertions;
@@ -21,8 +20,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.types3.util.DefsTypesForTests._autoCloseableSymType;
 
 public class ResourceInTryStatementCloseableTest {
 
@@ -36,34 +34,19 @@ public class ResourceInTryStatementCloseableTest {
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypesForTests.setup();
 
     checker = new TestMCExceptionStatementsCoCoChecker();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
     checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.io.Closeable", TestMCExceptionStatementsMill.globalScope());
     SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());
 
     TestMCExceptionStatementsMill.globalScope().add(
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("A")
-            .addSuperTypes(sType)
-            .build());
-
-    ITestMCCommonStatementsScope javaScope = TestMCCommonStatementsMill.scope();
-    javaScope.setName("java");
-
-    ITestMCCommonStatementsScope ioScope = TestMCCommonStatementsMill.scope();
-    ioScope.setName("io");
-
-    javaScope.addSubScope(ioScope);
-    TestMCCommonStatementsMill.globalScope().addSubScope(javaScope);
-
-    ioScope.add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("Closeable")
+            .addSuperTypes(_autoCloseableSymType)
             .build());
 
     TestMCExceptionStatementsMill.globalScope().add(

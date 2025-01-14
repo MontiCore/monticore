@@ -4,6 +4,7 @@ package de.monticore.statements;
 
 grammar TestMCCommonStatements extends de.monticore.statements.MCCommonStatements,
                                        de.monticore.expressions.CombineExpressionsWithLiterals,
-                                       de.monticore.types.MCArrayTypes {
+                                       de.monticore.types.MCArrayTypes,
+                                       de.monticore.symbols.BasicSymbols {
 start MCStatement;
 }
