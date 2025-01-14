@@ -27,6 +27,9 @@ released: --to be determined--
   * new class TypeVisitorOperatorCalculator to reuse operator calculations
 * Tests
   * Junit 5.10.3 for tests
+* Templates
+  * introduced scopes for template inclusion
+  * CD2Java support for Javadocs
 
 ### Changes
 * grammars
@@ -38,16 +41,32 @@ released: --to be determined--
   * ExpressionStatementIsValid uses TypeCheck3
   * VarDeclarationInitializationHasCorrectType uses TypeCheck3
 * Updated Gradle version to 7.6.4
+* Pretty Printers
+  * Removed (deprecated) handwritten pretty printers
+  * Replaced handwritten usage of pretty printers with the generated printers 
+* Logger has changed to a log-hook based logging infrastructure
+* Reporting
+  * Removed reporting of unused templates
+  * Adapted reporting to the new Logger
 * TypeCheck
   * deprecated IDerive/ISynthesize
   * deprecated TypeCheckResult
   * deprecated ITypeCaculator
   * better error messages
+* Parser
+  * Further improved readability of parse errors
+  * Refactored the parser generation to increase readability
+  * Usage of a two-phased parser approach (using ParseVisitors to create the AST)
+* Updated the Getting Started document
+* The development of MontiCore now occurs on GitHub
 
 ### Fixes
 * Symbols
   * Deserialization uses outer scope
 * MCPath don't throw PatternSyntaxException
+* Pretty Printer generation of constant groups with usage names
+* Memory exhaustion of the Gradle plugin
+* compatibility with Gradles build and configuration cache
 
 ## MontiCore 7.6.0
 released: --to be determined--
