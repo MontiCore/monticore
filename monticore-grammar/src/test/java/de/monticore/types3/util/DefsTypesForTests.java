@@ -668,6 +668,16 @@ public class DefsTypesForTests {
    * These are some predefined Symbols for Object Types
    */
 
+  // java types with special rules in the Java Spec
+
+  public static SymTypeOfObject _objectSymType;
+
+  public static SymTypeOfObject _throwableSymType;
+
+  public static SymTypeOfObject _autoCloseableSymType;
+
+  // School example
+
   public static SymTypeOfObject _personSymType;
 
   public static SymTypeOfObject _teachableSymType;
@@ -694,6 +704,17 @@ public class DefsTypesForTests {
 
   public static void set_objectTypes() {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    // add java scopes
+    IBasicSymbolsScope javaScope = inScope(gs, scope("java"));
+    IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
+
+    _objectSymType =
+        createTypeObject(inScope(langScope, type("Object")));
+    _throwableSymType =
+        createTypeObject(inScope(langScope, type("Throwable")));
+    _autoCloseableSymType =
+        createTypeObject(inScope(langScope, type("AutoCloseable")));
+
     _personSymType = createTypeObject(inScope(gs, type("Person")));
     _teachableSymType = createTypeObject(inScope(gs, type("Teachable")));
     _studentSymType = createTypeObject(inScope(gs,
