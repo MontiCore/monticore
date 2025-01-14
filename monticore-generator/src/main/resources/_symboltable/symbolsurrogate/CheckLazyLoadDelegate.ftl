@@ -13,8 +13,18 @@ ${tc.signature("symbolReferenceName", "symbolName", "simpelName", "scopeName", "
       delegate = Optional.of(resolvedSymbol.get());
     }
 	else {
-	  Log.warn("0xA0310${generatedError} " + ${symbolReferenceName}.class.getSimpleName()
-	  + ": Unable to load full information of '" + name + ". Please check the symbol table.");
+	  String symRefName = ${symbolReferenceName}.class.getSimpleName();
+	  // todo remove if-clause: https://git.rwth-aachen.de/monticore/monticore/-/issues/3998
+	  String warnStr = "0xA0310${generatedError} " + symRefName
+                     + ": Unable to load full information of '"
+                     + name + "'. Please check your symbol table";
+	  if (!symRefName.equals("ProdSymbolSurrogate") &&
+	      !symRefName.equals("OOTypeSymbolSurrogate")) {
+	    Log.warn(warnStr);
+	  }
+	  else {
+	    Log.info(warnStr + " This will be a warning in the future.", symRefName);
+	  }
 	}
   }
   return delegate.isPresent();
