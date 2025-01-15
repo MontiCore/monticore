@@ -71,7 +71,7 @@ public class SymTypeLubCalculator {
       }
       // todo after discussing (and implementing) type contexts,
       // check if var is bound
-      else if (type.isTypeVariable()) {
+      else if (type.isTypeVariable() || type.isInferenceVariable()) {
         // no-op
       }
       else {

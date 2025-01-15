@@ -15,6 +15,7 @@ import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfUnion;
@@ -489,7 +490,7 @@ public class WithinTypeBasicSymbolsResolver {
     // () -> C<#FV,T,R> where #FV is a free type variable
 
     // 1. find all variables
-    Map<SymTypeVariable, SymTypeVariable> allVarMap = TypeParameterRelations
+    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap = TypeParameterRelations
         .getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
     // 2. find all type variables already bound by the type resolved in
     List<SymTypeVariable> varsAlreadyBound = new SymTypeCollectionVisitor()
@@ -497,8 +498,8 @@ public class WithinTypeBasicSymbolsResolver {
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
     // 3. get variables that actually need to be replaced (unbound)
-    Map<SymTypeVariable, SymTypeVariable> freeVarMap = new HashMap<>();
-    for (Map.Entry<SymTypeVariable, SymTypeVariable> e : allVarMap.entrySet()) {
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
+    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
       if (varsAlreadyBound.stream().noneMatch(e.getKey()::deepEquals)) {
         freeVarMap.put(e.getKey(), e.getValue());
       }
