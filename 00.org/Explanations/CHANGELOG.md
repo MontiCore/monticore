@@ -3,7 +3,7 @@
 # Release Notes
 
 ## MontiCore 7.7.0
-released: --to be determined--
+released: 20.01.2025
 
 ### Additions
 * grammars
@@ -61,6 +61,10 @@ released: --to be determined--
 * Updated the Getting Started document
 * The development of MontiCore now occurs on GitHub
 * Exposition of internal objects of the DSTL-transformation generation 
+* GlobalExtensionManagement: extend template replacement
+* monticore-generator
+  * Removed GrammarFamily
+  * Removed dependencies to bootstrap-jars
 
 ### Fixes
 * Symbols
