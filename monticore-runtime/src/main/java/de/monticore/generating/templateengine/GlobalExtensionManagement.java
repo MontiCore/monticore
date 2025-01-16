@@ -2,7 +2,6 @@
 
 package de.monticore.generating.templateengine;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
@@ -18,6 +17,12 @@ import java.util.*;
 /**
  * Class for managing hook points, features and (global) variables in templates.
  *
+ * Order of template replacement:
+ *   - specific before hook points
+ *   - general before hook points
+ *   - specific replacement or general replacement
+ *   - specific after hook points
+ *   - general after hook points
  */
 public class GlobalExtensionManagement {
 
@@ -463,16 +468,17 @@ public class GlobalExtensionManagement {
     List<HookPoint> replacements = Lists.newArrayList();
 
     // Before replacement
-    List<HookPoint> beforeHooks;
+    List<HookPoint> beforeHooks = Lists.newArrayList();
     if (this.specificBefore.contains(templateName, ast)) {
-      beforeHooks = this.specificBefore.get(templateName, ast);
+      beforeHooks.addAll(this.specificBefore.get(templateName, ast));
       Reporting.reportAddBeforeTemplate(templateName, Optional.of(ast), beforeHooks);
-    } else {
-      beforeHooks = Lists.newArrayList(this.before.get(templateName));
-      if (!beforeHooks.isEmpty()) {
-        Reporting.reportCallBeforeHookPoint(templateName, beforeHooks, ast);
-      }
     }
+    List<HookPoint> hooks = Lists.newArrayList(this.before.get(templateName));
+    if (!hooks.isEmpty()) {
+      beforeHooks.addAll(hooks);
+      Reporting.reportCallBeforeHookPoint(templateName, hooks, ast);
+    }
+
     replacements.addAll(beforeHooks);
 
     // "normal" replacement
@@ -485,15 +491,16 @@ public class GlobalExtensionManagement {
     replacements.addAll(hps);
 
     // After replacement
-    List<HookPoint> afterHooks;
+    List<HookPoint> afterHooks = Lists.newArrayList();
     if (this.specificAfter.contains(templateName, ast)) {
       afterHooks = this.specificAfter.get(templateName, ast);
       Reporting.reportAddAfterTemplate(templateName, Optional.of(ast), afterHooks);
-    } else {
-      afterHooks = Lists.newArrayList(this.after.get(templateName));
-      if (!afterHooks.isEmpty()) {
-        Reporting.reportCallAfterHookPoint(templateName, afterHooks, ast);
-      }
+    }
+    hooks = Lists.newArrayList(this.after.get(templateName));
+    if (!hooks.isEmpty()) {
+      afterHooks.addAll(hooks);
+      Reporting.reportCallAfterHookPoint(templateName, hooks, ast);
+
     }
     replacements.addAll(afterHooks);
 
