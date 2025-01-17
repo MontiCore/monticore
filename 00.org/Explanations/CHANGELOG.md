@@ -10,6 +10,7 @@ released: 20.01.2025
   * SIUnits, SIUnitLiterals, SIUnitTypes4Math, SIUnitTypes4Computing
     (ported from SIUnit project)
   * TypeParameters for generics
+  * Stream constructor for StreamExpressions
 * Symbols
   * DeSer has access to outer scope while deserializing
 * CoCos
@@ -26,7 +27,7 @@ released: 20.01.2025
   * new class SymTypePredicateVisitor to check predicates over STEs
   * new class TypeVisitorOperatorCalculator to reuse operator calculations
 * Tests
-  * Junit 5.10.3 for tests
+  * Junit 5.10.3 for tests and parametrization
 * Templates
   * introduced scopes for template inclusion
   * CD2Java support for Javadocs
