@@ -56,6 +56,13 @@ released: --to be determined--
   * Added TypeSystem3 markdown documentation
 * Expressions:
   * ASTRule: LambdaBodys have a return type
+* Model Interpreters:
+  * General runtime infrastructure
+  * Generative support for compositional interpreters
+  * Interpreter library for:
+    * Assignment expressions
+    * Common expressions
+    * Common Literals
 
 ### Changes
 * Findings of parse errors now contain additional context
