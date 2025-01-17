@@ -8,8 +8,9 @@ import de.monticore.javalight._visitor.JavaLightTraverser;
 import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
 import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCheck;
 import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -28,12 +29,19 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
   public static final String ERROR_CODE_3 = "0xA0912 ";
   
   public static final String ERROR_MSG_FORMAT_3 = "Return statement must be of the type of the method or a subtype of it.";
-  
+
+  @Deprecated
   TypeCalculator typeCheck;
-  
+
+  /**
+   * @deprecated use default constructor
+   */
+  @Deprecated
   public ReturnTypeAssignmentIsValid(TypeCalculator typeCheck) {
     this.typeCheck = typeCheck;
   }
+
+  public ReturnTypeAssignmentIsValid() {}
   
   @Override
   public void check(ASTMethodDeclaration node) {
@@ -45,27 +53,39 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
     node.accept(traverser);
     List<ASTReturnStatement> returnStatements = returnStatementCollector.getReturnStatementList();
     
-    SymTypeExpression typeOfMethod = typeCheck.symTypeFromAST(node.getMCReturnType());
-    
+    SymTypeExpression typeOfMethod;
+    // support deprecated behavior
+    if (typeCheck != null) {
+      typeOfMethod = typeCheck.symTypeFromAST(node.getMCReturnType());
+    } else {
+      typeOfMethod = TypeCheck3.symTypeFromAST(node.getMCReturnType());
+    }
+
     // Check return-Statements
     if (node.isPresentMCJavaBlock()) {
-      if (TypeCheck.isVoid(typeOfMethod)) {
+      if (typeOfMethod.isVoidType()) {
         for (ASTReturnStatement statement : returnStatements) {
           if (statement.isPresentExpression()) {
             Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
           }
         }
       }
-      if (!TypeCheck.isVoid(typeOfMethod) && returnStatements.isEmpty()) {
+      if (!typeOfMethod.isVoidType() && returnStatements.isEmpty()) {
         Log.error(ERROR_CODE_2 + ERROR_MSG_FORMAT_2, node.get_SourcePositionStart());
       }
-      if (!TypeCheck.isVoid(typeOfMethod) && !returnStatements.isEmpty()) {
+      if (!typeOfMethod.isVoidType() && !returnStatements.isEmpty()) {
         for (ASTReturnStatement returnStatement : returnStatements) {
           if (!returnStatement.isPresentExpression()) {
             Log.error(ERROR_CODE_2 + ERROR_MSG_FORMAT_2, node.get_SourcePositionStart());
           } else {
-            SymTypeExpression returnType = typeCheck.typeOf(returnStatement.getExpression());
-            if (!returnType.deepEquals(typeOfMethod)) {
+            SymTypeExpression returnType;
+            // support deprecated behavior
+            if (typeCheck != null) {
+              returnType = typeCheck.typeOf(returnStatement.getExpression());
+            } else {
+              returnType = TypeCheck3.typeOf(returnStatement.getExpression());
+            }
+            if (!SymTypeRelations.isCompatible(typeOfMethod, returnType)) {
               Log.error(ERROR_CODE_3 + ERROR_MSG_FORMAT_3, node.get_SourcePositionStart());
             }
           }
