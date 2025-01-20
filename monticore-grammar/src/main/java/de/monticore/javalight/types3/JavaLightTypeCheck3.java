@@ -16,8 +16,7 @@ import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import de.monticore.types3.util.TypeContextCalculator;
-import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
-import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
+import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
@@ -31,15 +30,15 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
   public static void init() {
     Log.trace("init JavaLightTypeCheck3", "TypeCheck setup");
 
+    // initialize static delegates
+    OOWithinScopeBasicSymbolsResolver.init();
+    OOWithinTypeBasicSymbolsResolver.init();
+    TypeContextCalculator.init();
+    TypeVisitorOperatorCalculator.init();
+
     JavaLightTraverser traverser = JavaLightMill.traverser();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
-
-    // for some Visitors
-    WithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver =
-        new OOWithinTypeBasicSymbolsResolver();
-    WithinScopeBasicSymbolsResolver withinScopeBasicSymbolsResolver =
-        new OOWithinScopeBasicSymbolsResolver();
 
     // Literals
 
@@ -56,15 +55,12 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
     traverser.setAssignmentExpressionsHandler(visAssignmentExpressions);
 
     CommonExpressionsCTTIVisitor visCommonExpressions = new CommonExpressionsCTTIVisitor();
-    visCommonExpressions.setWithinTypeBasicSymbolsResolver(withinTypeBasicSymbolsResolver);
-    visCommonExpressions.setWithinScopeResolver(withinScopeBasicSymbolsResolver);
     visCommonExpressions.setType4Ast(type4Ast);
     visCommonExpressions.setContext4Ast(ctx4Ast);
     traverser.add4CommonExpressions(visCommonExpressions);
     traverser.setCommonExpressionsHandler(visCommonExpressions);
 
     ExpressionBasisCTTIVisitor visExpressionBasis = new ExpressionBasisCTTIVisitor();
-    visExpressionBasis.setWithinScopeResolver(withinScopeBasicSymbolsResolver);
     visExpressionBasis.setType4Ast(type4Ast);
     visExpressionBasis.setContext4Ast(ctx4Ast);
     traverser.add4ExpressionsBasis(visExpressionBasis);
@@ -73,18 +69,12 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
     UglyExpressionsCTTIVisitor visUglyExpressions = new UglyExpressionsCTTIVisitor();
     visUglyExpressions.setType4Ast(type4Ast);
     visUglyExpressions.setContext4Ast(ctx4Ast);
-    visUglyExpressions.setOOWithinTypeBasicSymbolsResolver(
-        new OOWithinTypeBasicSymbolsResolver()
-    );
-    visUglyExpressions.setTypeContextCalculator(new TypeContextCalculator());
     traverser.add4UglyExpressions(visUglyExpressions);
     traverser.setUglyExpressionsHandler(visUglyExpressions);
 
     // MCTypes
 
     MCBasicTypesTypeVisitor visMCBasicTypes = new MCBasicTypesTypeVisitor();
-    visMCBasicTypes.setWithinTypeResolver(withinTypeBasicSymbolsResolver);
-    visMCBasicTypes.setWithinScopeResolver(withinScopeBasicSymbolsResolver);
     visMCBasicTypes.setType4Ast(type4Ast);
     traverser.add4MCBasicTypes(visMCBasicTypes);
 
