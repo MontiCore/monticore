@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.expressions.javaclassexpressions.types3;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTGenericInvocationExpression;
@@ -22,28 +23,73 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.util.TypeContextCalculator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 
+/*
+ * WARN: referencing TypeVariables from an inner class is not supported;
+ * Java (invalid class E):
+ *   class C<T> {
+ *     class D {T x(T t) {return t;}}
+ *     // error: non-static type variable T
+ *     //        cannot be referenced from a static context
+ *     static class E {T x(T t) {return t;}}
+ *   }
+ * Java allows referencing TypeVariables from non-static inner classes.
+ * This, however, would require storing
+ * the type arguments in the SymTypeOfGeneric.
+ * This is problematic,
+ * as SymTypeOfGeneric has a single List of type arguments,
+ * which makes handling TypeArguments of outer objects hard
+ * (read: it can safely be assumed that larger parts of our code base
+ * were not created with this in mind and do not support it correctly)
+ * It can also be questioned how much this feature is needed for DSLs
+ * (especially considering that MontiCore offers first-order functions).
+ */
+
+/**
+ * Expressions must be checked with
+ * {@link de.monticore.expressions.javaclassexpressions.cocos.GenericInvocationExpressionIsASTValid}
+ * before using this visitor.
+ */
 public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
     implements JavaClassExpressionsVisitor2 {
 
+  /**
+   * S. JLS 21 15.8.3
+   */
   @Override
   public void endVisit(ASTPrimaryThisExpression primThisExpr) {
   }
 
+  /**
+   * S. JLS 21 15.8.4
+   */
   @Override
   public void endVisit(ASTThisExpression thisExpr) {
   }
 
+  /**
+   * Note: Single "super" is not valid Java.
+   * However, super can be used as a subExpression;
+   * {@code class Student extends Person {
+   * Person getAsSuper() {return super;} // not valid Java
+   * }}
+   * S. a. JLS 21 15.11, 15.12 (, 15.13)
+   */
   @Override
   public void endVisit(ASTPrimarySuperExpression primSuperExpr) {
   }
 
+  /**
+   * S. JLS 21 15.11, 15.12 (, 15.13)
+   */
   @Override
   public void endVisit(ASTSuperExpression superExpr) {
   }
@@ -167,6 +213,26 @@ public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
       );
       return createObscureType();
     }
+  }
+
+  /**
+   * finds the most-inner enclosing type fulfilling the predicate
+   */
+  protected Optional<TypeSymbol> getEnclosingTypeSymbol(
+      ASTExpression startNode,
+      Predicate<TypeSymbol> filter
+  ) {
+    Optional<TypeSymbol> result = Optional.empty();
+    Optional<TypeSymbol> enclosingType =
+        TypeContextCalculator.getEnclosingType(startNode.getEnclosingScope());
+    while (enclosingType.isPresent() && result.isEmpty()) {
+      if (filter.test(enclosingType.get())) {
+        result = enclosingType;
+      }
+      enclosingType = TypeContextCalculator
+          .getEnclosingType(enclosingType.get().getEnclosingScope());
+    }
+    return result;
   }
 
 }
