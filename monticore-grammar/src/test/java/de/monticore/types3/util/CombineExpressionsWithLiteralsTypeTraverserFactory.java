@@ -61,6 +61,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   }
 
   public MapBasedTypeCheck3 initTypeCheck3() {
+    WithinScopeBasicSymbolsResolver.init();
+    WithinTypeBasicSymbolsResolver.init();
+    TypeVisitorOperatorCalculator.init();
+    TypeContextCalculator.init();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = createTraverser(type4Ast, ctx4Ast);
@@ -91,6 +95,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   }
 
   public MapBasedTypeCheck3 initTypeCheck3ForOO() {
+    OOWithinScopeBasicSymbolsResolver.init();
+    OOWithinTypeBasicSymbolsResolver.init();
+    TypeVisitorOperatorCalculator.init();
+    TypeContextCalculator.init();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = createTraverserForOO(type4Ast, ctx4Ast);
@@ -121,6 +129,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   }
 
   public MapBasedTypeCheck3 initTypeCheck3ForOOWithConstructors() {
+    OOWithinScopeBasicSymbolsResolver.init();
+    OOWithinTypeBasicSymbolsResolver.init();
+    TypeVisitorOperatorCalculator.init();
+    TypeContextCalculator.init();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = createTraverserForOOWithConstructors(type4Ast, ctx4Ast);
@@ -298,28 +310,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     VisitorList visitors = constructVisitorsNoCTTI();
     visitors.derCommonExpressions =
         new CommonExpressionsTypeIdAsConstructorTypeVisitor();
-    OOWithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver =
-        new OOWithinTypeBasicSymbolsResolver();
-    WithinScopeBasicSymbolsResolver withinScopeResolver =
-        new OOWithinScopeBasicSymbolsResolver();
-    visitors.derCommonExpressions.setWithinTypeBasicSymbolsResolver(
-        withinTypeBasicSymbolsResolver
-    );
-    visitors.derCommonExpressions.setWithinScopeResolver(
-        withinScopeResolver
-    );
-    visitors.derExpressionBasis.setWithinScopeResolver(
-        withinScopeResolver
-    );
-    visitors.derUglyExpressions.setOOWithinTypeBasicSymbolsResolver(
-        withinTypeBasicSymbolsResolver
-    );
-    visitors.synMCBasicTypes.setWithinTypeResolver(
-        withinTypeBasicSymbolsResolver
-    );
-    visitors.synMCBasicTypes.setWithinScopeResolver(
-        withinScopeResolver
-    );
     return visitors;
   }
 

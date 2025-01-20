@@ -34,16 +34,12 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
   protected static final String OPT_NUMERIC_EXPECTED_ERROR_CODE = "0xFD209";
   protected static final String OPT_EQUALITY_ERROR_CODE = "0xFD285";
 
-  protected TypeVisitorOperatorCalculator operatorCalculator
-      = new TypeVisitorOperatorCalculator();
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setOperatorCalculator(
       TypeVisitorOperatorCalculator operatorCalculator) {
-    this.operatorCalculator = operatorCalculator;
-  }
-
-  protected TypeVisitorOperatorCalculator getOperatorCalculator() {
-    return operatorCalculator;
   }
 
   @Override
@@ -88,7 +84,7 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         OPT_NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().lessEqual(leftNum, right), leftNum, right
+        TypeVisitorOperatorCalculator.lessEqual(leftNum, right), leftNum, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -100,7 +96,7 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         OPT_NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().greaterEqual(leftNum, right), leftNum, right
+        TypeVisitorOperatorCalculator.greaterEqual(leftNum, right), leftNum, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -112,7 +108,7 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         OPT_NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().lessThan(leftNum, right), leftNum, right
+        TypeVisitorOperatorCalculator.lessThan(leftNum, right), leftNum, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -124,7 +120,7 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         OPT_NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().greaterThan(leftNum, right), leftNum, right
+        TypeVisitorOperatorCalculator.greaterThan(leftNum, right), leftNum, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -137,7 +133,7 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         OPT_EQUALITY_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().equality(leftElem, right), left, right
+        TypeVisitorOperatorCalculator.equality(leftElem, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -150,7 +146,7 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         OPT_EQUALITY_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().inequality(leftElem, right), left, right
+        TypeVisitorOperatorCalculator.inequality(leftElem, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
