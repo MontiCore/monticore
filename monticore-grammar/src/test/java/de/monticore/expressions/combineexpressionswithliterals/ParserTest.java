@@ -44,7 +44,7 @@ public class ParserTest  {
   @Test
   public void parseWithMode() throws IOException {
     CombineExpressionsWithLiteralsParser parser = CombineExpressionsWithLiteralsMill.parser();
-    parser.setMode("REGEX");
+    parser.setLexerMode("REGEX");
     parser.parse_StringCharRange("a-c").get();
   }
 
