@@ -4,32 +4,20 @@ package de.monticore.types3.util;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.function.Predicate;
 
 /**
  * contains the code to derive / synthesize the type of a single name,
- * but is "OO-aware" e.g. constructors are filtered out.
+ * but is "OO-aware", e.g., constructors are filtered out.
  */
 public class OOWithinScopeBasicSymbolsResolver
     extends WithinScopeBasicSymbolsResolver {
 
-  protected OOWithinScopeBasicSymbolsResolver(
-      TypeContextCalculator typeContextCalculator,
-      WithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver
-  ) {
-    super(
-        typeContextCalculator,
-        withinTypeBasicSymbolsResolver
-    );
-  }
-
-  public OOWithinScopeBasicSymbolsResolver() {
-    // default values
-    this(
-        new TypeContextCalculator(),
-        new OOWithinTypeBasicSymbolsResolver()
-    );
+  public static void init() {
+    Log.trace("init OOWithinScopeBasicSymbolsResolver", "TypeCheck setup");
+    delegate = new OOWithinScopeBasicSymbolsResolver();
   }
 
   /**

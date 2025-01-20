@@ -34,55 +34,50 @@ import java.util.stream.Collectors;
  */
 public class WithinScopeBasicSymbolsResolver {
 
-  protected TypeContextCalculator typeCtxCalc;
+  // static delegate
 
-  protected WithinTypeBasicSymbolsResolver withinTypeResolver;
+  protected static WithinScopeBasicSymbolsResolver delegate;
 
-  protected WithinScopeBasicSymbolsResolver(
-      TypeContextCalculator typeCtxCalc,
-      WithinTypeBasicSymbolsResolver withinTypeResolver
-  ) {
-    this.typeCtxCalc = typeCtxCalc;
-    this.withinTypeResolver = withinTypeResolver;
+  public static void init() {
+    Log.trace("init default WithinScopeBasicSymbolsResolver", "TypeCheck setup");
+    delegate = new WithinScopeBasicSymbolsResolver();
   }
 
-  public WithinScopeBasicSymbolsResolver() {
-    // default values
-    this(
-        new TypeContextCalculator(),
-        new WithinTypeBasicSymbolsResolver()
-    );
+  static {
+    init();
   }
+
+  protected static WithinScopeBasicSymbolsResolver getDelegate() {
+    return Log.errorIfNull(delegate);
+  }
+
+  // methods
 
   /**
-   * @deprecated use a constructor to set this
+   * @deprecated is now a static delegate
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setWithinTypeBasicSymbolsResolver(
       WithinTypeBasicSymbolsResolver withinTypeResolver) {
-    this.withinTypeResolver = withinTypeResolver;
   }
 
   /**
-   * @deprecated use a constructor to set this
+   * @deprecated is now a static delegate
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
-    this.typeCtxCalc = typeCtxCalc;
-  }
-
-  protected TypeContextCalculator getTypeCtxCalc() {
-    return typeCtxCalc;
-  }
-
-  protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
-    return withinTypeResolver;
   }
 
   /**
    * resolves the name as an expression (variable or function)
    */
-  public Optional<SymTypeExpression> resolveNameAsExpr(
+  public static Optional<SymTypeExpression> resolveNameAsExpr(
+      IBasicSymbolsScope enclosingScope,
+      String name) {
+    return getDelegate()._resolveNameAsExpr(enclosingScope, name);
+  }
+
+  protected Optional<SymTypeExpression> _resolveNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name) {
     Log.errorIfNull(enclosingScope);
@@ -101,17 +96,17 @@ public class WithinScopeBasicSymbolsResolver {
         resolveFunctionsWithoutSuperTypes(enclosingScope, name);
     // within type
     Optional<TypeSymbol> enclosingType =
-        getTypeCtxCalc().getEnclosingType(enclosingScope);
+        TypeContextCalculator.getEnclosingType(enclosingScope);
     Optional<SymTypeExpression> varInType = Optional.empty();
     List<SymTypeOfFunction> funcsInType = Collections.emptyList();
     if (enclosingType.isPresent()) {
       SymTypeExpression enclosingTypeExpr =
           SymTypeExpressionFactory.createFromSymbol(enclosingType.get());
-      AccessModifier modifier = getTypeCtxCalc()
+      AccessModifier modifier = TypeContextCalculator
           .getAccessModifier(enclosingType.get(), enclosingScope);
-      varInType = getWithinTypeResolver().resolveVariable(
+      varInType = WithinTypeBasicSymbolsResolver.resolveVariable(
           enclosingTypeExpr, name, modifier, getVariablePredicate());
-      funcsInType = getWithinTypeResolver().resolveFunctions(
+      funcsInType = WithinTypeBasicSymbolsResolver.resolveFunctions(
           enclosingTypeExpr, name, modifier, getFunctionPredicate());
     }
     // get the correct variable
@@ -161,7 +156,7 @@ public class WithinScopeBasicSymbolsResolver {
   /**
    * @deprecated use {@link #resolveNameAsExpr(IBasicSymbolsScope, String)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public Optional<SymTypeExpression> typeOfNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name
@@ -251,7 +246,13 @@ public class WithinScopeBasicSymbolsResolver {
     return v -> true;
   }
 
-  public Optional<SymTypeExpression> resolveType(
+  public static Optional<SymTypeExpression> resolveType(
+      IBasicSymbolsScope enclosingScope,
+      String name) {
+    return getDelegate()._resolveType(enclosingScope, name);
+  }
+
+  protected Optional<SymTypeExpression> _resolveType(
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
@@ -268,8 +269,8 @@ public class WithinScopeBasicSymbolsResolver {
     }
     else {
       optTypeVar = resolverHotfix(() ->
-        enclosingScope.resolveTypeVar(
-            name, AccessModifier.ALL_INCLUSION, getTypeVarPredicate())
+          enclosingScope.resolveTypeVar(
+              name, AccessModifier.ALL_INCLUSION, getTypeVarPredicate())
       );
     }
     // object
@@ -311,7 +312,7 @@ public class WithinScopeBasicSymbolsResolver {
   /**
    * @deprecated use {@link #resolveType}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public Optional<SymTypeExpression> typeOfNameAsTypeId(
       IBasicSymbolsScope enclosingScope,
       String name) {

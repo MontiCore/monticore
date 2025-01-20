@@ -32,40 +32,19 @@ public class UglyExpressionsTypeVisitor
     extends AbstractTypeVisitor
     implements UglyExpressionsVisitor2 {
 
-  protected OOWithinTypeBasicSymbolsResolver oOWithinTypeResolver;
-
-  protected TypeContextCalculator typeCtxCalc;
-
-  protected UglyExpressionsTypeVisitor(
-      OOWithinTypeBasicSymbolsResolver oOWithinTypeResolver,
-      TypeContextCalculator typeCtxCalc) {
-    this.oOWithinTypeResolver = oOWithinTypeResolver;
-    this.typeCtxCalc = typeCtxCalc;
-  }
-
-  public UglyExpressionsTypeVisitor() {
-    // default values
-    this(
-        new OOWithinTypeBasicSymbolsResolver(),
-        new TypeContextCalculator()
-    );
-  }
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setOOWithinTypeBasicSymbolsResolver(
       OOWithinTypeBasicSymbolsResolver withinTypeResolver) {
-    this.oOWithinTypeResolver = withinTypeResolver;
   }
 
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
-    this.typeCtxCalc = typeCtxCalc;
-  }
-
-  protected OOWithinTypeBasicSymbolsResolver getOOWithinTypeResolver() {
-    return oOWithinTypeResolver;
-  }
-
-  protected TypeContextCalculator getTypeCtxCalc() {
-    return typeCtxCalc;
   }
 
   @Override
@@ -328,9 +307,9 @@ public class UglyExpressionsTypeVisitor
       // search for a constructor
       // Hint: to support default constructors,
       // a corresponding OOWithinTypeBasicSymbolsResolver is required
-      AccessModifier modifier = getTypeCtxCalc().getAccessModifier(
+      AccessModifier modifier = TypeContextCalculator.getAccessModifier(
           typeToCreate.getTypeInfo(), creator.getEnclosingScope());
-      constructors = getOOWithinTypeResolver()
+      constructors = OOWithinTypeBasicSymbolsResolver
           .resolveConstructors(typeToCreate, modifier, c -> true);
       if (constructors.isEmpty()) {
         Log.error("0xFD557 could not find constructors for "
