@@ -2,6 +2,79 @@
 
 # Release Notes
 
+## MontiCore 7.7.0
+released: 20.01.2025
+
+### Additions
+* grammars
+  * SIUnits, SIUnitLiterals, SIUnitTypes4Math, SIUnitTypes4Computing
+    (ported from SIUnit project)
+  * TypeParameters for generics
+  * Stream constructor for StreamExpressions
+* Symbols
+  * DeSer has access to outer scope while deserializing
+* CoCos
+  * new CoCo QualifiedTypeHasNoTypeParameters
+  * new CoCo TypeParameterNoCyclicInheritance
+  * new CoCo TypeParametersHaveUniqueNames
+* TypeCheck
+  * initial support for generics/type inference
+  * TypeCheck3 static delegate with implementation MapBasedTypeCheck3
+  * new class SymTypeOf(NumericWith)SIUnit
+  * new class SymTypeSourceInfo to reference symbols
+  * new class SymTypeCollectionVisitor to collect sub-SymTypeExpressions
+  * new class SymTypeExpressionCalculator to sort SymTypeExpressions
+  * new class SymTypePredicateVisitor to check predicates over STEs
+  * new class TypeVisitorOperatorCalculator to reuse operator calculations
+* Tests
+  * Junit 5.10.3 for tests and parametrization
+* Templates
+  * introduced scopes for template inclusion
+  * CD2Java support for Javadocs
+
+### Changes
+* grammars
+  * JavaLight uses TypeParameters
+  * updated MLC models
+* AST
+  * deprecated definingSymbol (TypeCheck1)
+* CoCos
+  * LiteralAssignmentMatchesRegExExpressionCoCo uses TypeCheck3
+  * ExpressionStatementIsValid uses TypeCheck3
+  * VarDeclarationInitializationHasCorrectType uses TypeCheck3
+* Updated Gradle version to 7.6.4
+* Pretty Printers
+  * Removed (deprecated) handwritten pretty printers
+  * Replaced handwritten usage of pretty printers with the generated printers 
+* Logger has changed to a log-hook based logging infrastructure
+* Reporting
+  * Removed reporting of unused templates
+  * Adapted reporting to the new Logger
+* TypeCheck
+  * deprecated IDerive/ISynthesize
+  * deprecated TypeCheckResult
+  * deprecated ITypeCalculator
+  * better error messages
+* Parser
+  * Further improved readability of parse errors
+  * Refactored the parser generation to increase readability
+  * Usage of a two-phased parser approach (using ParseVisitors to create the AST)
+* Updated the Getting Started document
+* The development of MontiCore now occurs on GitHub
+* Exposition of internal objects of the DSTL-transformation generation 
+* GlobalExtensionManagement: extend template replacement
+* monticore-generator
+  * Removed GrammarFamily
+  * Removed dependencies to bootstrap-jars
+
+### Fixes
+* Symbols
+  * Deserialization uses outer scope
+* MCPath don't throw PatternSyntaxException
+* Pretty Printer generation of constant groups with usage names
+* Memory exhaustion of the Gradle plugin
+* compatibility with Gradle's build and configuration cache
+
 ## MontiCore 7.6.0
 released: --to be determined--
 
