@@ -6,6 +6,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
@@ -14,7 +15,6 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.types.MCTypeFacade;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,7 +109,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testVisitASTAutomaton() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ASTAUTOMATON))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(ASTAUTOMATON))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -123,7 +123,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testEndVisitASTAutomaton() {
     List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ASTAUTOMATON))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(ASTAUTOMATON))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -137,7 +137,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testVisitASTAutomatonNode() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ASTAUTOMATONNODE))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(ASTAUTOMATONNODE))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -151,7 +151,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testEndVisitASTAutomatonNode() {
     List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(ASTAUTOMATONNODE))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(ASTAUTOMATONNODE))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -165,7 +165,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testVisitStateSymbol() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(STATESYMBOL))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(STATESYMBOL))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -179,7 +179,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testEndVisitStateSymbol() {
     List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(STATESYMBOL))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(STATESYMBOL))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -193,7 +193,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testVisitIAutomatonScope() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(AUTOMATONSCOPE))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(AUTOMATONSCOPE))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -207,7 +207,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testEndVisitIAutomatonScope() {
     List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(AUTOMATONSCOPE))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(AUTOMATONSCOPE))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -221,7 +221,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testVisitIAutomatonArtifactScope() {
     List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(AUTOMATONARTIFACTSCOPE))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(AUTOMATONARTIFACTSCOPE))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);
@@ -235,7 +235,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
   public void testEndVisitIAutomatonArtifactScope() {
     List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> m.getCDParameter(0).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()).equals(AUTOMATONARTIFACTSCOPE))
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(AUTOMATONARTIFACTSCOPE))
         .collect(Collectors.toList());
     assertEquals(1, methods.size());
     ASTCDMethod method = methods.get(0);

@@ -1,7 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.prettyprint.data;
 
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
@@ -78,8 +78,7 @@ public class AltData implements Comparable<AltData> {
    * @return the printed
    */
   public String getExpressionConj() {
-    CD4CodeFullPrettyPrinter fp = new CD4CodeFullPrettyPrinter();
-    return fp.prettyprint(reduceToAnd(getExpressionList()));
+    return CD4CodeMill.prettyPrint(reduceToAnd(getExpressionList()), false);
   }
 
   public boolean isAlwaysTrue() {
