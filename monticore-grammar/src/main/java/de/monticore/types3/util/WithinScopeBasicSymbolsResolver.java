@@ -40,11 +40,17 @@ public class WithinScopeBasicSymbolsResolver {
 
   public static void init() {
     Log.trace("init default WithinScopeBasicSymbolsResolver", "TypeCheck setup");
-    delegate = new WithinScopeBasicSymbolsResolver();
+    setDelegate(new WithinScopeBasicSymbolsResolver());
   }
 
   static {
     init();
+  }
+
+  protected static void setDelegate(
+      WithinScopeBasicSymbolsResolver newDelegate
+  ) {
+    WithinScopeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
   }
 
   protected static WithinScopeBasicSymbolsResolver getDelegate() {

@@ -51,11 +51,17 @@ public class WithinTypeBasicSymbolsResolver {
 
   public static void init() {
     Log.trace("init default WithinTypeBasicSymbolsResolver", "TypeCheck setup");
-    delegate = new WithinTypeBasicSymbolsResolver();
+    setDelegate(new WithinTypeBasicSymbolsResolver());
   }
 
   static {
     init();
+  }
+
+  protected static void setDelegate(
+      WithinTypeBasicSymbolsResolver newDelegate
+  ) {
+    WithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
   }
 
   protected static WithinTypeBasicSymbolsResolver getDelegate() {
