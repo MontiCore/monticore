@@ -28,11 +28,15 @@ public class TypeContextCalculator {
   protected static TypeContextCalculator delegate;
 
   public static void init() {
-    delegate = new TypeContextCalculator();
+    setDelegate(new TypeContextCalculator());
   }
 
   static {
     init();
+  }
+
+  protected static void setDelegate(TypeContextCalculator newDelegate) {
+    TypeContextCalculator.delegate = Log.errorIfNull(newDelegate);
   }
 
   protected static TypeContextCalculator getDelegate() {

@@ -32,8 +32,14 @@ public class OOWithinTypeBasicSymbolsResolver
 
   public static void init() {
     Log.trace("init OOWithinTypeBasicSymbolsResolver", "TypeCheck setup");
-    delegate = new OOWithinTypeBasicSymbolsResolver();
-    WithinTypeBasicSymbolsResolver.delegate = delegate;
+    setDelegate(new OOWithinTypeBasicSymbolsResolver());
+  }
+
+  protected static void setDelegate(
+      OOWithinTypeBasicSymbolsResolver newDelegate
+  ) {
+    OOWithinTypeBasicSymbolsResolver.delegate = newDelegate;
+    WithinTypeBasicSymbolsResolver.setDelegate(newDelegate);
   }
 
   protected static OOWithinTypeBasicSymbolsResolver getDelegate() {

@@ -31,11 +31,15 @@ public class TypeVisitorOperatorCalculator {
 
   public static void init() {
     Log.trace("init default TypeVisitorOperatorCalculator", "TypeCheck setup");
-    delegate = new TypeVisitorOperatorCalculator();
+    setDelegate(new TypeVisitorOperatorCalculator());
   }
 
   static {
     init();
+  }
+
+  protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
+    TypeVisitorOperatorCalculator.delegate = Log.errorIfNull(newDelegate);
   }
 
   protected static TypeVisitorOperatorCalculator getDelegate() {

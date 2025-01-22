@@ -17,7 +17,7 @@ public class OOWithinScopeBasicSymbolsResolver
 
   public static void init() {
     Log.trace("init OOWithinScopeBasicSymbolsResolver", "TypeCheck setup");
-    delegate = new OOWithinScopeBasicSymbolsResolver();
+    setDelegate(new OOWithinScopeBasicSymbolsResolver());
   }
 
   /**
