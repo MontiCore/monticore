@@ -28,6 +28,7 @@ import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.check.SymTypeVoid;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
@@ -60,7 +61,9 @@ public class DefsTypesForTests {
     set_boxedCollections();
     set_genericsRecursive();
     set_objectTypes();
+    set_specialObjectTypes();
     set_generics();
+    set_specialGenerics();
     set_bottomTopTypes();
     set_siUnitBasic();
     set_siUnitTypes();
@@ -432,10 +435,7 @@ public class DefsTypesForTests {
   public static SymTypeOfObject _ShortSymType;
 
   public static void set_boxedPrimitives() {
-    // add java.lang scope
-    IBasicSymbolsScope javaScope = scope("java");
-    IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
-    BasicSymbolsMill.globalScope().addSubScope(javaScope);
+    IBasicSymbolsScope langScope = createJavaLangScope();
     // create boxed primitives
     _IntegerSymType =
         createTypeObject(inScope(langScope, type("Integer")));
@@ -481,9 +481,7 @@ public class DefsTypesForTests {
   public static SymTypeOfObject _boxedString;
 
   public static void set_boxedObjects() {
-    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
-    IBasicSymbolsScope javaScope = inScope(gs, scope("java"));
-    IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
+    IBasicSymbolsScope langScope = createJavaLangScope();
     _boxedString = createTypeObject(inScope(langScope, type("String")));
   }
 
@@ -715,6 +713,33 @@ public class DefsTypesForTests {
     _schoolSymType = createTypeObject(inScope(gs, type("School")));
   }
 
+  /*
+   * These are some objects types with special behavior wrt. typechecking
+   * (s. a. Java Spec)
+   * (These tend to lie in java.lang)
+   */
+
+  public static SymTypeOfObject _ObjectSymType;
+
+  public static SymTypeOfObject _ThrowableSymType;
+
+  public static SymTypeOfObject _VoidSymType;
+
+  // try-with-resource
+  public static SymTypeOfObject _AutoClosableSymType;
+
+  public static void set_specialObjectTypes() {
+    IBasicSymbolsScope langScope = createJavaLangScope();
+    _ObjectSymType =
+        createTypeObject(inScope(langScope, type("Object")));
+    _ThrowableSymType =
+        createTypeObject(inScope(langScope, type("Throwable")));
+    _VoidSymType =
+        createTypeObject(inScope(langScope, type("Void")));
+    _AutoClosableSymType =
+        createTypeObject(inScope(langScope, type("AutoClosable")));
+  }
+
   /*********************************************************************/
 
   /*
@@ -748,6 +773,35 @@ public class DefsTypesForTests {
             ),
             List.of(mapKVar, mapVVar))
         )
+    );
+  }
+
+
+  /*
+   * These are some generic types with special behavior wrt. typechecking
+   * (s. a. Java Spec)
+   * (These tend to lie in java.lang)
+   */
+
+  public static SymTypeOfGenerics _ClassSymType;
+
+  public static SymTypeOfGenerics _IterableSymType;
+
+  public static void set_specialGenerics() {
+    IBasicSymbolsScope langScope = createJavaLangScope();
+    TypeVarSymbol classVar = typeVariable("T");
+    _ClassSymType = createGenerics(
+        inScope(langScope, type("Class",
+            Collections.emptyList(),
+            List.of(classVar)
+        ))
+    );
+    TypeVarSymbol IterableVar = typeVariable("T");
+    _IterableSymType = createGenerics(
+        inScope(langScope, type("Iterable",
+            Collections.emptyList(),
+            List.of(classVar)
+        ))
     );
   }
 
@@ -1097,6 +1151,18 @@ public class DefsTypesForTests {
     _deg_int_SISymType = createNumericWithSIUnit(_deg_SISymType, _intSymType);
     _rad_int_SISymType = createNumericWithSIUnit(_rad_SISymType, _intSymType);
     _sr_int_SISymType = createNumericWithSIUnit(_sr_SISymType, _intSymType);
+  }
+
+  // Helper
+
+  /**
+   * creates a java.lang scope and adds it to the global scope
+   */
+  protected static IBasicSymbolsScope createJavaLangScope() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    IBasicSymbolsScope javaScope = inScope(gs, scope("java"));
+    IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
+    return langScope;
   }
 
 }
