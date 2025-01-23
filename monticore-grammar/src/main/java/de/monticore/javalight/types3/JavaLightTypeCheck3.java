@@ -3,6 +3,7 @@ package de.monticore.javalight.types3;
 import de.monticore.expressions.assignmentexpressions.types3.AssignmentExpressionsCTTIVisitor;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
+import de.monticore.expressions.javaclassexpressions.types3.JavaClassExpressionsTypeVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.javalight.JavaLightMill;
 import de.monticore.javalight._visitor.JavaLightTraverser;
@@ -65,6 +66,10 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
     visExpressionBasis.setContext4Ast(ctx4Ast);
     traverser.add4ExpressionsBasis(visExpressionBasis);
     traverser.setExpressionsBasisHandler(visExpressionBasis);
+
+    JavaClassExpressionsTypeVisitor visJavaClassExpressions = new JavaClassExpressionsTypeVisitor();
+    visJavaClassExpressions.setType4Ast(type4Ast);
+    traverser.add4JavaClassExpressions(visJavaClassExpressions);
 
     UglyExpressionsCTTIVisitor visUglyExpressions = new UglyExpressionsCTTIVisitor();
     visUglyExpressions.setType4Ast(type4Ast);
