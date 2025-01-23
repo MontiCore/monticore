@@ -54,9 +54,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createObscureTyp
  */
 
 /**
- * Expressions must be checked with
- * {@link de.monticore.expressions.javaclassexpressions.cocos.GenericInvocationExpressionIsASTValid}
- * before using this visitor.
+ * WARNING: incomplete (currently not required further)
  */
 public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
     implements JavaClassExpressionsVisitor2 {
@@ -66,6 +64,7 @@ public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   @Override
   public void endVisit(ASTPrimaryThisExpression primThisExpr) {
+    logUnsupported(primThisExpr);
   }
 
   /**
@@ -73,6 +72,7 @@ public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   @Override
   public void endVisit(ASTThisExpression thisExpr) {
+    logUnsupported(thisExpr);
   }
 
   /**
@@ -85,6 +85,7 @@ public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   @Override
   public void endVisit(ASTPrimarySuperExpression primSuperExpr) {
+    logUnsupported(primSuperExpr);
   }
 
   /**
@@ -92,14 +93,17 @@ public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   @Override
   public void endVisit(ASTSuperExpression superExpr) {
+    logUnsupported(superExpr);
   }
 
   @Override
   public void endVisit(ASTPrimaryGenericInvocationExpression primGenInvocExpr) {
+    logUnsupported(primGenInvocExpr);
   }
 
   @Override
   public void endVisit(ASTGenericInvocationExpression genInvocExpr) {
+    logUnsupported(genInvocExpr);
   }
 
   /**
@@ -233,6 +237,13 @@ public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
           .getEnclosingType(enclosingType.get().getEnclosingScope());
     }
     return result;
+  }
+
+  protected void logUnsupported(ASTExpression expr) {
+    Log.error("0xFD57B expression (currently) not supported",
+        expr.get_SourcePositionStart(),
+        expr.get_SourcePositionEnd()
+    );
   }
 
 }
