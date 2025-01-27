@@ -3,6 +3,7 @@ package de.monticore.symbols.basicsymbols._symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.types.check.DeprecatedSymTypeExpressionSymbolResolver;
 import de.monticore.types.check.SymTypeExpression;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public interface IBasicSymbolsScope extends IBasicSymbolsScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol);
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          set.addAll(t.getMethodList(name, true, modifier));
+          set.addAll(DeprecatedSymTypeExpressionSymbolResolver.getMethodList(t, name, true, modifier));
         }
       }
     }
@@ -71,7 +72,7 @@ public interface IBasicSymbolsScope extends IBasicSymbolsScopeTOP {
       if(spanningSymbol instanceof TypeSymbol){
         TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-          result.addAll(superType.getFieldList(name, true, modifier));
+          result.addAll(DeprecatedSymTypeExpressionSymbolResolver.getFieldList(superType, name, true, modifier));
         }
       }
     }

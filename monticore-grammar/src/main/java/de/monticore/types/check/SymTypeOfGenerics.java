@@ -268,31 +268,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   @Override
-  public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
-    for(int i = 0; i<this.getArgumentList().size(); i++){
-      SymTypeExpression type = this.getArgument(i);
-      TypeSymbol realTypeInfo;
-      TypeSymbol typeInfo = type.getTypeInfo();
-      if(typeInfo instanceof TypeSymbolSurrogate){
-        realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
-      }else{
-        realTypeInfo = typeInfo;
-      }
-      if(type.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
-        Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
-        if(typeVar.isPresent()){
-          List<SymTypeExpression> args = new ArrayList<>(getArgumentList());
-          args.remove(type);
-          args.add(i, replaceMap.get(typeVar.get()));
-          this.setArgumentList(args);
-        }
-      }else{
-        type.replaceTypeVariables(replaceMap);
-      }
-    }
-  }
-
-  @Override
   public void accept(ISymTypeVisitor visitor) {
     visitor.visit(this);
   }

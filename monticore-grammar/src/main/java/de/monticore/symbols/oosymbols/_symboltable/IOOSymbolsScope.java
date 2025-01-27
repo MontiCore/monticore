@@ -6,6 +6,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
+import de.monticore.types.check.DeprecatedSymTypeExpressionSymbolResolver;
 import de.monticore.types.check.SymTypeExpression;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
       if(spanningSymbol instanceof OOTypeSymbol){
         OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          t.getMethodList(name, false, modifier).stream().
+          DeprecatedSymTypeExpressionSymbolResolver.getMethodList(t, name, false, modifier).stream().
                   filter(m -> m instanceof MethodSymbol).forEach(m -> set.add((MethodSymbol) m));
         }
       }
@@ -56,7 +57,7 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
       if(spanningSymbol instanceof OOTypeSymbol){
         OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-         superType.getFieldList(name, false, modifier).stream().
+         DeprecatedSymTypeExpressionSymbolResolver.getFieldList(superType, name, false, modifier).stream().
                  filter(f -> f instanceof FieldSymbol).forEach(f -> result.add((FieldSymbol) f));
         }
       }
