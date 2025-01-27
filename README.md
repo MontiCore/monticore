@@ -7,13 +7,12 @@
 
 ---
 
+**NEWS**:
 <div align="center">
   <a href="https://monticore.github.io/monticore/docs/MontiCoreSymposium/" target="_blank">
   <img src="https://github.com/MontiCore/monticore/raw/dev/docs/docs/MC_Symp_Banner.png">
   </a>  
-</div><br>
-
-**NEWS**:
+</div>
 * ISW Stuttgart and RWTH Aachen organize the third **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** March 23 - March 26 in Gemünd, Germany
   * Deadline for submission of papers or abstracts: January, 10th.
 
