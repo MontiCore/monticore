@@ -13,7 +13,9 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.FullSynthesizeFromMCSimpleGenericTypes;
 import de.monticore.types.check.ISynthesize;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheckResult;
+import de.monticore.types3.TypeCheck3;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
 import java.util.stream.Collectors;
@@ -22,16 +24,21 @@ public class SimpleCDSymbolTableCompleter implements SimpleCDVisitor2 {
 
   protected SimpleCDTraverser traverser;
 
+  @Deprecated(forRemoval = true)
   protected ISynthesize typeSynthesizer;
   protected SimpleCDFullPrettyPrinter prettyPrinter;
 
+  /**
+   * @deprecated use default constructor
+   */
+  @Deprecated(forRemoval = true)
   public SimpleCDSymbolTableCompleter(ISynthesize typeSynthesizer) {
     this.typeSynthesizer = typeSynthesizer;
     prettyPrinter = new SimpleCDFullPrettyPrinter(new IndentPrinter());
   }
 
   public SimpleCDSymbolTableCompleter() {
-    this(new FullSynthesizeFromMCSimpleGenericTypes());
+    prettyPrinter = new SimpleCDFullPrettyPrinter(new IndentPrinter());
   }
 
   @Override
@@ -62,15 +69,20 @@ public class SimpleCDSymbolTableCompleter implements SimpleCDVisitor2 {
     final VariableSymbol symbol = node.getSymbol();
 
     // Compute the !final! SymTypeExpression for the type of the field
-    final TypeCheckResult typeResult = getTypeSynthesizer().synthesizeType(node.getMCType());
-    if (!typeResult.isPresentResult()) {
+    SymTypeExpression typeResult;
+    if(getTypeSynthesizer() != null) {
+      typeResult = getTypeSynthesizer().synthesizeType(node.getMCType()).getResult();
+    } else {
+      typeResult = TypeCheck3.symTypeFromAST(node.getMCType());
+    }
+    if (typeResult.isObscureType()) {
       Log.error(
         String.format(
           "0xCDA02: The type (%s) of the attribute (%s) could not be calculated",
           getPrettyPrinter().prettyprint(node.getMCType()), node.getName()),
         node.getMCType().get_SourcePositionStart());
     } else {
-      symbol.setType(typeResult.getResult());
+      symbol.setType(typeResult);
     }
   }
 
@@ -85,10 +97,12 @@ public class SimpleCDSymbolTableCompleter implements SimpleCDVisitor2 {
     VariableSymbol symbol = ast.getSymbol();
   }
 
+  @Deprecated(forRemoval = true)
   public ISynthesize getTypeSynthesizer() {
     return typeSynthesizer;
   }
 
+  @Deprecated(forRemoval = true)
   public void setTypeSynthesizer(ISynthesize typeSynthesizer) {
     this.typeSynthesizer = typeSynthesizer;
   }
