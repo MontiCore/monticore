@@ -40,7 +40,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated only used in 1 test ONCE... in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getBaseOfBoxedName() {
     String[] parts = box(typeSymbol.getName()).split("\\.");
     return parts[parts.length - 1];
@@ -49,7 +49,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated only used in tests in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setPrimitiveName(String constName){
     typeSymbol.setName(constName);
   }
@@ -59,7 +59,7 @@ public class SymTypePrimitive extends SymTypeExpression {
    * (on purpose not implemented as enum)
    * @deprecated cannot assume fixed set for all languages
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final List<String> primitiveTypes =
       Collections.unmodifiableList(Arrays.asList(
           BasicSymbolsMill.BOOLEAN,
@@ -77,14 +77,14 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * Map for unboxing const types (e.g. "java.lang.Boolean" -> "boolean")
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> unboxMap;
 
   /**
    * Map for boxing const types (e.g. "boolean" -> "java.lang.Boolean")
    * Results are fully qualified.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> boxMap;
 
   /**
@@ -133,7 +133,7 @@ public class SymTypePrimitive extends SymTypeExpression {
    * @param boxedName
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String unbox(String boxedName) {
     if (unboxMap.containsKey(boxedName))
       return unboxMap.get(boxedName);
@@ -149,7 +149,7 @@ public class SymTypePrimitive extends SymTypeExpression {
    * @param unboxedName
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String box(String unboxedName) {
     if (boxMap.containsKey(unboxedName))
       return boxMap.get(unboxedName);

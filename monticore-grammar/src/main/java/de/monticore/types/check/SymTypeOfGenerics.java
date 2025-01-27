@@ -26,14 +26,14 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Map for unboxing generic types (e.g. "java.util.Collection" -> "Collection")
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> unboxMap;
 
   /**
    * Map for boxing generic types (e.g. "Collection" -> "java.util.Collection")
    * Results are fully qualified.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> boxMap;
 
   /**
@@ -62,7 +62,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * @param type
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String unbox(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
@@ -94,7 +94,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * @param type
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String box(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
