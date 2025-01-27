@@ -14,6 +14,7 @@ import de.monticore.visitor.ITraverser;
  * While the TypeCheck3 should be used directly,
  * this can be used to try the TypeCheck without major rewrites.
  */
+@Deprecated(forRemoval = true)
 public class TypeCheck3AsISynthesize implements ISynthesize {
 
   protected Type4Ast type4Ast;

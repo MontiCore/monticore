@@ -30,7 +30,9 @@ import static de.monticore.types.check.TypeCheck.*;
  * For an OO language, use {@link de.monticore.types.check.DeriveSymTypeOfCommonExpressions} instead, which
  * extends the functionality of this class so that it may be used in an OO-context as well.
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated Use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated(forRemoval = true)
 public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpression implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
   protected CommonExpressionsTraverser traverser;

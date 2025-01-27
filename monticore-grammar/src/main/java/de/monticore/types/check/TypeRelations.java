@@ -10,7 +10,9 @@ import static de.monticore.types.check.SymTypePrimitive.unbox;
 
 /**
  * This Class provides the default implementation of {@link ITypeRelations}
+ * @deprecated use SymTypeRelations instead.
  */
+@Deprecated
 public class TypeRelations implements ITypeRelations {
 
   @Override

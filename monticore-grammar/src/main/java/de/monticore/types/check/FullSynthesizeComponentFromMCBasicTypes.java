@@ -6,6 +6,10 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 
 import java.util.Optional;
 
+/**
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
+ */
+@Deprecated(forRemoval = true)
 public class FullSynthesizeComponentFromMCBasicTypes implements ISynthesizeComponent {
 
   protected MCBasicTypesTraverser traverser;

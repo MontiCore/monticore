@@ -17,7 +17,9 @@ import de.monticore.symboltable.ISymbol;
  * get a full implementation. The traverser/handling pattern is used to downcast expressions to their real types.
  * Thereby we can easily set {@link ASTNameExpression#setDefiningSymbol(ISymbol)} or similar methods while maintaining
  * flexibility for language composition.
+ * @deprecated not required in TypeCheck3.
  */
+@Deprecated
 public class DefiningSymbolHandler implements ExpressionsBasisHandler, CommonExpressionsHandler {
 
   protected CommonExpressionsTraverser traverser;

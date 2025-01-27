@@ -21,7 +21,9 @@ import java.util.Optional;
  * Visitor for Derivation of SymType from MCSimpleGenericTypes
  * i.e. for
  * types/MCSimpleGenericTypes.mc4
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
  */
+@Deprecated(forRemoval = true)
 public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesizeFromType
     implements MCSimpleGenericTypesVisitor2, MCSimpleGenericTypesHandler {
 

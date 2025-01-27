@@ -4,6 +4,10 @@ package de.monticore.types.check;
 import de.monticore.types.mcfunctiontypes.MCFunctionTypesMill;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesTraverser;
 
+/**
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
+ */
+@Deprecated(forRemoval = true)
 public class FullSynthesizeFromMCFunctionTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCFunctionTypes() {

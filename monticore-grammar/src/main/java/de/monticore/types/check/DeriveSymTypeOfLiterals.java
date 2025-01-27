@@ -13,7 +13,9 @@ import de.se_rwth.commons.logging.Log;
  * (Function 2b)
  * i.e. for
  *    literals/MCLiteralsBasis.mc4
+ * @deprecated Use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated(forRemoval = true)
 public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor2 {
 
   public IBasicSymbolsScope getScope (IMCLiteralsBasisScope mcLiteralsBasisScope){

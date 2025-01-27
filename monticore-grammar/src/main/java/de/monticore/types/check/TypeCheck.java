@@ -2,11 +2,11 @@
 package de.monticore.types.check;
 
 /**
- * Deprecated due to static methods
+ * @deprecated due to static methods
  * use {@link ITypeRelations} instead,
  * preferably provided by {@link TypeCalculator}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class TypeCheck {
   
   /**

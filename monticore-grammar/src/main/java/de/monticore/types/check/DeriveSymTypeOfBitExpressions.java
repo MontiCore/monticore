@@ -12,7 +12,9 @@ import de.se_rwth.commons.logging.Log;
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in BitExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated Use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated(forRemoval = true)
 public class DeriveSymTypeOfBitExpressions extends AbstractDeriveFromExpression implements BitExpressionsVisitor2, BitExpressionsHandler {
 
   protected BitExpressionsTraverser traverser;

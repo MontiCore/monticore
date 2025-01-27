@@ -4,7 +4,9 @@ package de.monticore.types.check;
 /**
  * This class is intended to provide typeChecking functionality
  * with regard to relations of types
+ * @deprecated not required anymore. S. SymTypeRelations
  */
+@Deprecated
 public interface ITypeRelations {
 
   /**

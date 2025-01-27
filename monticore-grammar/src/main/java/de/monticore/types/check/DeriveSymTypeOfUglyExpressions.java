@@ -28,7 +28,9 @@ import static de.monticore.types.check.TypeCheck.compatible;
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in JavaClassExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated Use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated(forRemoval = true)
 public class DeriveSymTypeOfUglyExpressions
     extends AbstractDeriveFromExpression
     implements UglyExpressionsVisitor2, UglyExpressionsHandler {

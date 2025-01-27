@@ -16,7 +16,9 @@ import java.util.Optional;
  * (Function 2b)
  * i.e. for
  *    literals/MCLiteralsBasis.mc4
+ * @deprecated Use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated(forRemoval = true)
 public class DeriveSymTypeOfMCCommonLiterals extends DeriveSymTypeOfLiterals implements MCCommonLiteralsVisitor2 {
 
   protected TypeCheckResult typeCheckResult;

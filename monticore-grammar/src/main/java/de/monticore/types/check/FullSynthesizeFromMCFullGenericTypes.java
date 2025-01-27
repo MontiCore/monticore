@@ -4,6 +4,10 @@ package de.monticore.types.check;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesTraverser;
 
+/**
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
+ */
+@Deprecated(forRemoval = true)
 public class FullSynthesizeFromMCFullGenericTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCFullGenericTypes(){

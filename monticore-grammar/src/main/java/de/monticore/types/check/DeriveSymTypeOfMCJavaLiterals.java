@@ -8,6 +8,10 @@ import de.monticore.literals.mcjavaliterals._ast.ASTLongLiteral;
 import de.monticore.literals.mcjavaliterals._visitor.MCJavaLiteralsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 
+/**
+ * @deprecated Use {@link de.monticore.types3.TypeCheck3} instead.
+ */
+@Deprecated(forRemoval = true)
 public class DeriveSymTypeOfMCJavaLiterals extends DeriveSymTypeOfMCCommonLiterals implements MCJavaLiteralsVisitor2 {
 
   protected TypeCheckResult typeCheckResult;

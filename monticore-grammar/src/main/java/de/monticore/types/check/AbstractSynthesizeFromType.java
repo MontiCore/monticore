@@ -9,6 +9,10 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
+ */
+@Deprecated(forRemoval = true)
 public abstract class AbstractSynthesizeFromType {
 
   public abstract MCBasicTypesTraverser getTraverser();

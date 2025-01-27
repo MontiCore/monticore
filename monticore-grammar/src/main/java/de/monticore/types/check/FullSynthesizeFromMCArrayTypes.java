@@ -9,6 +9,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Optional;
 
+/**
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
+ */
+@Deprecated(forRemoval = true)
 public class FullSynthesizeFromMCArrayTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCArrayTypes(){

@@ -10,6 +10,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
+/**
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
+ */
+@Deprecated(forRemoval = true)
 public class TypeCalculator implements ITypeRelations {
 
   /**

@@ -12,7 +12,9 @@ import de.se_rwth.commons.logging.Log;
  * Visitor for Derivation of SymType from MCArrayTypes
  * i.e. for
  * types/MCArrayTypes.mc4
+ * @deprecated Use {@link de.monticore.types3.TypeCheck3}
  */
+@Deprecated(forRemoval = true)
 public class SynthesizeSymTypeFromMCArrayTypes extends AbstractSynthesizeFromType
     implements MCArrayTypesVisitor2, MCArrayTypesHandler {
 

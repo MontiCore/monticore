@@ -19,7 +19,9 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in ExpressionsBasis
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated Use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated(forRemoval = true)
 public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression implements ExpressionsBasisVisitor2, ExpressionsBasisHandler {
 
   public IBasicSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){

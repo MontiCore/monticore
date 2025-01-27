@@ -9,6 +9,10 @@ import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTrav
 
 import java.util.Optional;
 
+/**
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
+ */
+@Deprecated(forRemoval = true)
 public class FullSynthesizeFromMCSimpleGenericTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCSimpleGenericTypes(){

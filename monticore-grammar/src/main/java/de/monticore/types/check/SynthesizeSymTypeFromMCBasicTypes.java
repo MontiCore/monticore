@@ -20,7 +20,9 @@ import java.util.stream.Stream;
  * Visitor for Derivation of SymType from MCBasicTypes
  * i.e. for
  *    types/MCBasicTypes.mc4
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
  */
+@Deprecated(forRemoval = true)
 public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromType implements MCBasicTypesVisitor2, MCBasicTypesHandler {
 
   protected MCBasicTypesTraverser traverser;

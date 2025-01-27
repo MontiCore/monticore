@@ -12,7 +12,9 @@ import de.se_rwth.commons.logging.Log;
  * Visitor for Derivation of SymType from MCFullGenericTypes
  * i.e. for
  * types/MCFullGenericTypes.mc4
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
  */
+@Deprecated(forRemoval = true)
 public class SynthesizeSymTypeFromMCFullGenericTypes extends AbstractSynthesizeFromType
     implements MCFullGenericTypesVisitor2, MCFullGenericTypesHandler {
 

@@ -9,7 +9,9 @@ import de.monticore.symboltable.ISymbol;
 /**
  * Implements {@link DefiningSymbolSetter} for <i>common expressions</i> by using traversers and handlers to
  * automatically down cast expressions to their concrete type.
+ * @deprecated not required in TypeCheck3.
  */
+@Deprecated
 public class DefiningSymbolSetter4CommonExpressions implements DefiningSymbolSetter {
 
   protected CommonExpressionsTraverser traverser;

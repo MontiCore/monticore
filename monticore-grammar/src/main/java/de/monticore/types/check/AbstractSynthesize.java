@@ -6,6 +6,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.visitor.ITraverser;
 
+/**
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
+ */
+@Deprecated(forRemoval = true)
 public abstract class AbstractSynthesize implements ISynthesize {
 
   protected ITraverser traverser;

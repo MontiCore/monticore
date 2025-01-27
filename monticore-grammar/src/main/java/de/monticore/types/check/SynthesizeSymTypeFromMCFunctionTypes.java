@@ -17,7 +17,9 @@ import java.util.List;
  * Visitor for Derivation of SymType from MCFunctionTypes
  * i.e. for
  * types/MCFunctionTypes.mc4
+ * @deprecated use {@link de.monticore.types3.TypeCheck3}
  */
+@Deprecated(forRemoval = true)
 public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFromType
     implements MCFunctionTypesVisitor2, MCFunctionTypesHandler {
 

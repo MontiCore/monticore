@@ -7,7 +7,7 @@ import java.util.Optional;
  * Wrapper class for the last result in a type check
  * @deprecated of no use anymore, ISynthesize/IDerive are deprecated
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class TypeCheckResult {
 
   protected Optional<SymTypeExpression> result;
