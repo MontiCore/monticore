@@ -2,6 +2,8 @@
 
 ## Third MontiCore Symposium 23. March - 26. March 2025
 
+![](https://github.com/MontiCore/monticore/raw/dev/docs/docs/MC_Symp_Banner.png)
+
 MontiCore is a language workbench designed for the efficient 
 development of domain-specific languages (DSLs) along with their 
 corresponding tooling. It provides a robust infrastructure to define, 
