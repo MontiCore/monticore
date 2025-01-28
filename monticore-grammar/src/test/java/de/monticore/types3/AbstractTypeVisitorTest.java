@@ -28,6 +28,9 @@ import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFacto
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.types3.util.MapBasedTypeCheck3;
+import de.monticore.types3.util.TypeVisitorOperatorCalculator;
+import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
+import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -98,6 +101,10 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    SymTypeRelations.init();
+    WithinScopeBasicSymbolsResolver.init();
+    WithinTypeBasicSymbolsResolver.init();
+    TypeVisitorOperatorCalculator.init();
     DefsTypesForTests.setup();
     parser = CombineExpressionsWithLiteralsMill.parser();
     MapBasedTypeCheck3 tc3 = new CombineExpressionsWithLiteralsTypeTraverserFactory()
