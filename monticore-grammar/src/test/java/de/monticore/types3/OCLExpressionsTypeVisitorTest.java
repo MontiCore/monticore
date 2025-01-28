@@ -16,7 +16,6 @@ import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests.function;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
-import static org.junit.Assume.assumeFalse;
 
 public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
@@ -40,8 +39,7 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void checkTypeIfExpressions() throws IOException {
-    checkExpr("typeif vardouble instanceof double then 5.0 else 2*2", "double");
-    checkExpr("typeif vardouble instanceof int then 5 else 5.0", "double");
+    checkExpr("typeif varPerson instanceof Student then 5.0 else 2*2", "double");
   }
 
   @Test
@@ -60,12 +58,37 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   }
 
   @Test
+  public void checkTypeIfExpressionCorrectTypeInThen2() throws IOException {
+    // add Student::getHoursToLearn
+    BasicSymbolsMill.globalScope()
+        .resolveType("Student")
+        .get()
+        .addFunctionSymbol(function("getHoursToLearn", _intSymType));
+    // add Teacher::getHoursToTeach
+    BasicSymbolsMill.globalScope()
+        .resolveType("Teacher")
+        .get()
+        .addFunctionSymbol(function("getHoursToTeach", _intSymType));
+    // varStudent.getHoursToTeach() allowed iff varStudent is also a Teacher
+    checkExpr(
+        "typeif varStudent instanceof Teacher "
+            + "then varStudent.getHoursToLearn() + varStudent.getHoursToTeach() <= 24 else true",
+        "boolean"
+    );
+  }
+
+  @Test
   public void checkTypeIfExpressionRedundant() throws IOException {
     checkErrorExpr(
         "typeif varStudent instanceof Person "
             + "then varStudent else varPerson",
         "0xFD290"
     );
+  }
+
+  @Test
+  public void checkTypeIfExpressionsImpossible() throws IOException {
+    checkErrorExpr("typeif varPerson instanceof int->int then 5.0 else 2*2", "0xFD289");
   }
 
   @Test

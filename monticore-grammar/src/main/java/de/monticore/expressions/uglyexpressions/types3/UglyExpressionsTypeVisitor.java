@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
+import static de.monticore.types3.SymTypeRelations.isBottom;
 
 public class UglyExpressionsTypeVisitor
     extends AbstractTypeVisitor
@@ -91,7 +93,9 @@ public class UglyExpressionsTypeVisitor
       result = createObscureType();
     }
     else {
-      if (SymTypeRelations.isSubTypeOf(typeResult, exprResult)) {
+      // s. Empowering union and intersection types with integrated subtyping
+      // https://doi.org/10.1145/3276482
+      if (!isBottom(createIntersection(typeResult, exprResult))) {
         result = SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
       }
       else if (SymTypeRelations.isSubTypeOf(exprResult, typeResult)) {
