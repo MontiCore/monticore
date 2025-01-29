@@ -28,11 +28,12 @@ public class TypeContextCalculator {
   protected static TypeContextCalculator delegate;
 
   public static void init() {
+    Log.trace("init default TypeContextCalculator", "TypeCheck setup");
     setDelegate(new TypeContextCalculator());
   }
 
-  static {
-    init();
+  public static void reset() {
+    TypeContextCalculator.delegate = null;
   }
 
   protected static void setDelegate(TypeContextCalculator newDelegate) {
@@ -40,7 +41,10 @@ public class TypeContextCalculator {
   }
 
   protected static TypeContextCalculator getDelegate() {
-    return Log.errorIfNull(delegate);
+    if (TypeContextCalculator.delegate == null) {
+      init();
+    }
+    return TypeContextCalculator.delegate;
   }
 
   // methods

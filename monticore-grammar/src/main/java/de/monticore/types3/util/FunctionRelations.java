@@ -32,18 +32,7 @@ public class FunctionRelations {
 
   protected static final String LOG_NAME = "FunctionRelations";
 
-  // static delegate
-
   protected static FunctionRelations delegate;
-
-  public static void init() {
-    Log.trace("init default FunctionRelations", "TypeCheck setup");
-    FunctionRelations.delegate = new FunctionRelations();
-  }
-
-  static {
-    init();
-  }
 
   /**
    * whether the function can be called with the given arguments.
@@ -51,7 +40,7 @@ public class FunctionRelations {
   public static boolean canBeCalledWith(
       SymTypeOfFunction func,
       List<SymTypeExpression> args) {
-    return delegate.calculateCanBeCalledWith(func, args);
+    return getDelegate().calculateCanBeCalledWith(func, args);
   }
 
   protected boolean calculateCanBeCalledWith(
@@ -89,7 +78,7 @@ public class FunctionRelations {
    */
   public static Optional<SymTypeOfFunction> getMostSpecificFunctionOrLogError(
       Collection<SymTypeOfFunction> funcs) {
-    return delegate.calculateGetMostSpecificFunctionOrLogError(funcs);
+    return getDelegate().calculateGetMostSpecificFunctionOrLogError(funcs);
   }
 
   /**
@@ -98,7 +87,7 @@ public class FunctionRelations {
    */
   public static Optional<SymTypeOfFunction> getMostSpecificFunction(
       Collection<SymTypeOfFunction> funcs) {
-    return delegate.calculateGetMostSpecificFunction(funcs);
+    return getDelegate().calculateGetMostSpecificFunction(funcs);
   }
 
   protected Optional<SymTypeOfFunction> calculateGetMostSpecificFunctionOrLogError(
@@ -198,14 +187,14 @@ public class FunctionRelations {
     for (int i = 0; i < args.size(); i++) {
       target.setArgumentType(i, args.get(i));
     }
-    return delegate.calculateCanPotentiallyBeCalledWith(func, target);
+    return getDelegate().calculateCanPotentiallyBeCalledWith(func, target);
   }
 
   public static boolean internal_canPotentiallyBeCalledWith(
       SymTypeOfFunction func,
       PartialFunctionInfo target
   ) {
-    return delegate.calculateCanPotentiallyBeCalledWith(func, target);
+    return getDelegate().calculateCanPotentiallyBeCalledWith(func, target);
   }
 
   protected boolean calculateCanPotentiallyBeCalledWith(
@@ -259,4 +248,27 @@ public class FunctionRelations {
     }
     return result;
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default FunctionRelations", "TypeCheck setup");
+    FunctionRelations.delegate = new FunctionRelations();
+  }
+
+  public static void reset() {
+    FunctionRelations.delegate = null;
+  }
+
+  protected static void setDelegate(FunctionRelations newDelegate) {
+    FunctionRelations.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static FunctionRelations getDelegate() {
+    if (FunctionRelations.delegate == null) {
+      init();
+    }
+    return FunctionRelations.delegate;
+  }
+
 }

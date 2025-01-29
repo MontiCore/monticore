@@ -34,8 +34,8 @@ public class TypeVisitorOperatorCalculator {
     setDelegate(new TypeVisitorOperatorCalculator());
   }
 
-  static {
-    init();
+  public static void reset() {
+    TypeVisitorOperatorCalculator.delegate = null;
   }
 
   protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
@@ -43,7 +43,10 @@ public class TypeVisitorOperatorCalculator {
   }
 
   protected static TypeVisitorOperatorCalculator getDelegate() {
-    return Log.errorIfNull(delegate);
+    if (TypeVisitorOperatorCalculator.delegate == null) {
+      init();
+    }
+    return TypeVisitorOperatorCalculator.delegate;
   }
 
   // arithmetic: +, -, *, /, %

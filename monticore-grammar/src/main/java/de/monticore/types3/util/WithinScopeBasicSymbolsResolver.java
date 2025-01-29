@@ -34,28 +34,7 @@ import java.util.stream.Collectors;
  */
 public class WithinScopeBasicSymbolsResolver {
 
-  // static delegate
-
   protected static WithinScopeBasicSymbolsResolver delegate;
-
-  public static void init() {
-    Log.trace("init default WithinScopeBasicSymbolsResolver", "TypeCheck setup");
-    setDelegate(new WithinScopeBasicSymbolsResolver());
-  }
-
-  static {
-    init();
-  }
-
-  protected static void setDelegate(
-      WithinScopeBasicSymbolsResolver newDelegate
-  ) {
-    WithinScopeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
-  }
-
-  protected static WithinScopeBasicSymbolsResolver getDelegate() {
-    return Log.errorIfNull(delegate);
-  }
 
   // methods
 
@@ -375,6 +354,27 @@ public class WithinScopeBasicSymbolsResolver {
       resolved = Optional.empty();
     }
     return resolved;
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default WithinScopeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new WithinScopeBasicSymbolsResolver());
+  }
+
+  public static void reset() {
+    WithinScopeBasicSymbolsResolver.delegate = null;
+  }
+
+  protected static void setDelegate(
+      WithinScopeBasicSymbolsResolver newDelegate
+  ) {
+    WithinScopeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static WithinScopeBasicSymbolsResolver getDelegate() {
+    return Log.errorIfNull(delegate);
   }
 
 }

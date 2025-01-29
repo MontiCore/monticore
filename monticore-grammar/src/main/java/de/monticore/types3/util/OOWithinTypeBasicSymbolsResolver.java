@@ -26,25 +26,7 @@ import java.util.function.Predicate;
 public class OOWithinTypeBasicSymbolsResolver
     extends WithinTypeBasicSymbolsResolver {
 
-  // static delegate
-
   protected static OOWithinTypeBasicSymbolsResolver delegate;
-
-  public static void init() {
-    Log.trace("init OOWithinTypeBasicSymbolsResolver", "TypeCheck setup");
-    setDelegate(new OOWithinTypeBasicSymbolsResolver());
-  }
-
-  protected static void setDelegate(
-      OOWithinTypeBasicSymbolsResolver newDelegate
-  ) {
-    OOWithinTypeBasicSymbolsResolver.delegate = newDelegate;
-    WithinTypeBasicSymbolsResolver.setDelegate(newDelegate);
-  }
-
-  protected static OOWithinTypeBasicSymbolsResolver getDelegate() {
-    return Log.errorIfNull(delegate);
-  }
 
   // methods
 
@@ -164,4 +146,26 @@ public class OOWithinTypeBasicSymbolsResolver
     return newModifier;
   }
 
+  // static delegate
+
+  public static void init() {
+    Log.trace("init OOWithinTypeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new OOWithinTypeBasicSymbolsResolver());
+  }
+
+  public static void reset() {
+    OOWithinScopeBasicSymbolsResolver.delegate = null;
+    WithinTypeBasicSymbolsResolver.reset();
+  }
+
+  protected static void setDelegate(
+      OOWithinTypeBasicSymbolsResolver newDelegate
+  ) {
+    OOWithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    WithinTypeBasicSymbolsResolver.setDelegate(newDelegate);
+  }
+
+  protected static OOWithinTypeBasicSymbolsResolver getDelegate() {
+    return Log.errorIfNull(delegate);
+  }
 }

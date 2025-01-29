@@ -45,28 +45,7 @@ public class WithinTypeBasicSymbolsResolver {
 
   protected static final String LOG_NAME = "WithinTypeResolving";
 
-  // static delegate
-
   protected static WithinTypeBasicSymbolsResolver delegate;
-
-  public static void init() {
-    Log.trace("init default WithinTypeBasicSymbolsResolver", "TypeCheck setup");
-    setDelegate(new WithinTypeBasicSymbolsResolver());
-  }
-
-  static {
-    init();
-  }
-
-  protected static void setDelegate(
-      WithinTypeBasicSymbolsResolver newDelegate
-  ) {
-    WithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
-  }
-
-  protected static WithinTypeBasicSymbolsResolver getDelegate() {
-    return Log.errorIfNull(delegate);
-  }
 
   // methods
 
@@ -601,4 +580,29 @@ public class WithinTypeBasicSymbolsResolver {
       }
     }
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default WithinTypeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new WithinTypeBasicSymbolsResolver());
+  }
+
+  public static void reset() {
+    WithinScopeBasicSymbolsResolver.delegate = null;
+  }
+
+  protected static void setDelegate(
+      WithinTypeBasicSymbolsResolver newDelegate
+  ) {
+    WithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static WithinTypeBasicSymbolsResolver getDelegate() {
+    if (WithinTypeBasicSymbolsResolver.delegate == null) {
+      init();
+    }
+    return WithinTypeBasicSymbolsResolver.delegate;
+  }
+
 }

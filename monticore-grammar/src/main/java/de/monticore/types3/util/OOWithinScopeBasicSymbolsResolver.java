@@ -20,6 +20,10 @@ public class OOWithinScopeBasicSymbolsResolver
     setDelegate(new OOWithinScopeBasicSymbolsResolver());
   }
 
+  public static void reset() {
+    WithinScopeBasicSymbolsResolver.reset();
+  }
+
   /**
    * filter out any constructors
    */

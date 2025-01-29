@@ -12,10 +12,12 @@ import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
+import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import de.monticore.types3.util.TypeContextCalculator;
+import de.monticore.types3.util.TypeVisitorLifting;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
@@ -35,6 +37,8 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
     OOWithinTypeBasicSymbolsResolver.init();
     TypeContextCalculator.init();
     TypeVisitorOperatorCalculator.init();
+    TypeVisitorLifting.init();
+    FunctionRelations.init();
 
     JavaLightTraverser traverser = JavaLightMill.traverser();
     Type4Ast type4Ast = new Type4Ast();
@@ -89,6 +93,17 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
     // create delegate
     JavaLightTypeCheck3 oclTC3 = new JavaLightTypeCheck3(traverser, type4Ast, ctx4Ast);
     oclTC3.setThisAsDelegate();
+  }
+
+  public static void reset() {
+    Log.trace("reset JavaLightTypeCheck3", "TypeCheck setup");
+    JavaLightTypeCheck3.resetDelegate();
+    OOWithinScopeBasicSymbolsResolver.reset();
+    OOWithinTypeBasicSymbolsResolver.reset();
+    TypeContextCalculator.reset();
+    TypeVisitorOperatorCalculator.reset();
+    TypeVisitorLifting.reset();
+    FunctionRelations.reset();
   }
 
   protected JavaLightTypeCheck3(
