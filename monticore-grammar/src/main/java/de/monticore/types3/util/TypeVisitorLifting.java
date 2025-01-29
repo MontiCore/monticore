@@ -23,22 +23,13 @@ public class TypeVisitorLifting {
 
   protected static TypeVisitorLifting delegate;
 
-  public static void init() {
-    Log.trace("initializing default TypeVisitorLifting", "TypeCheck setup");
-    TypeVisitorLifting.delegate = new TypeVisitorLifting();
-  }
-
-  static {
-    init();
-  }
-
   /**
    * The default lifting, applicable in most cases.
    * It tries to transparently handle Obscure, Unions, and non-normalized types.
    */
   public static Function<SymTypeExpression, SymTypeExpression> liftDefault(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return delegate.calculateLiftDefault(func);
+    return getDelegate().calculateLiftDefault(func);
   }
 
   protected Function<SymTypeExpression, SymTypeExpression> calculateLiftDefault(
@@ -48,7 +39,7 @@ public class TypeVisitorLifting {
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftDefault(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return delegate.calculateLiftDefault(func);
+    return getDelegate().calculateLiftDefault(func);
   }
 
   protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftDefault(
@@ -61,7 +52,7 @@ public class TypeVisitorLifting {
    */
   public static Function<SymTypeExpression, SymTypeExpression> liftForObscure(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return delegate.calculateLiftForObscure(func);
+    return getDelegate().calculateLiftForObscure(func);
   }
 
   protected Function<SymTypeExpression, SymTypeExpression> calculateLiftForObscure(
@@ -77,7 +68,7 @@ public class TypeVisitorLifting {
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftForObscure(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return delegate.calculateLiftForObscure(func);
+    return getDelegate().calculateLiftForObscure(func);
   }
 
   protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftForObscure(
@@ -98,7 +89,7 @@ public class TypeVisitorLifting {
    */
   public static Function<SymTypeExpression, SymTypeExpression> liftForUnion(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return delegate.calculateLiftForUnion(func);
+    return getDelegate().calculateLiftForUnion(func);
   }
 
   protected Function<SymTypeExpression, SymTypeExpression> calculateLiftForUnion(
@@ -117,7 +108,7 @@ public class TypeVisitorLifting {
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftForUnion(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return delegate.calculateLiftForUnion(func);
+    return getDelegate().calculateLiftForUnion(func);
   }
 
   protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftForUnion(
@@ -152,7 +143,7 @@ public class TypeVisitorLifting {
    */
   public static Function<SymTypeExpression, SymTypeExpression> liftForNonNormalized(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return delegate.calculateLiftForNonNormalized(func);
+    return getDelegate().calculateLiftForNonNormalized(func);
   }
 
   protected Function<SymTypeExpression, SymTypeExpression> calculateLiftForNonNormalized(
@@ -164,7 +155,7 @@ public class TypeVisitorLifting {
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftForNonNormalized(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return delegate.calculateLiftForNonNormalized(func);
+    return getDelegate().calculateLiftForNonNormalized(func);
   }
 
   protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftForNonNormalized(
@@ -194,4 +185,27 @@ public class TypeVisitorLifting {
       return SymTypeExpressionFactory.createUnion(unionizedTypes);
     }
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default TypeVisitorLifting", "TypeCheck setup");
+    TypeVisitorLifting.delegate = new TypeVisitorLifting();
+  }
+
+  public static void reset() {
+    TypeVisitorLifting.delegate = null;
+  }
+
+  protected static void setDelegate(TypeVisitorLifting newDelegate) {
+    TypeVisitorLifting.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static TypeVisitorLifting getDelegate() {
+    if (TypeVisitorLifting.delegate == null) {
+      init();
+    }
+    return TypeVisitorLifting.delegate;
+  }
+
 }

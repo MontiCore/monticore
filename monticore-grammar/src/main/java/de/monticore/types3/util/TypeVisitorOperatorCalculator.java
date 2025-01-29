@@ -6,6 +6,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types3.SymTypeRelations;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * Implemented here, as some logic is reusable across multiple TypeVisitors,
  * e.g. CommonExpressions, OptionalOperators, AssignmentExpressions, ...
  * Additionally, common logic is shared between the Operators.
- *
+ * <p>
  * Return values are empty if the operation is not applicable to the types,
  * no error message will be logged.
  * Return values are not SymTypeOfObscure to make sure
@@ -24,9 +25,40 @@ import java.util.Optional;
  */
 public class TypeVisitorOperatorCalculator {
 
+  // static delegate
+
+  protected static TypeVisitorOperatorCalculator delegate;
+
+  public static void init() {
+    Log.trace("init default TypeVisitorOperatorCalculator", "TypeCheck setup");
+    setDelegate(new TypeVisitorOperatorCalculator());
+  }
+
+  public static void reset() {
+    TypeVisitorOperatorCalculator.delegate = null;
+  }
+
+  protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
+    TypeVisitorOperatorCalculator.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static TypeVisitorOperatorCalculator getDelegate() {
+    if (TypeVisitorOperatorCalculator.delegate == null) {
+      init();
+    }
+    return TypeVisitorOperatorCalculator.delegate;
+  }
+
   // arithmetic: +, -, *, /, %
 
-  public Optional<SymTypeExpression> plus(
+  public static Optional<SymTypeExpression> plus(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._plus(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _plus(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -57,7 +89,14 @@ public class TypeVisitorOperatorCalculator {
     return result;
   }
 
-  public Optional<SymTypeExpression> minus(
+  public static Optional<SymTypeExpression> minus(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._minus(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _minus(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -67,7 +106,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> modulo(
+  public static Optional<SymTypeExpression> modulo(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._modulo(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _modulo(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -119,7 +165,14 @@ public class TypeVisitorOperatorCalculator {
     return result;
   }
 
-  public Optional<SymTypeExpression> multiply(
+  public static Optional<SymTypeExpression> multiply(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._multiply(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _multiply(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -173,7 +226,14 @@ public class TypeVisitorOperatorCalculator {
     return result;
   }
 
-  public Optional<SymTypeExpression> divide(
+  public static Optional<SymTypeExpression> divide(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._divide(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _divide(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -247,14 +307,22 @@ public class TypeVisitorOperatorCalculator {
 
   // numeric prefixes: +, -
 
-  public Optional<SymTypeExpression> plusPrefix(SymTypeExpression inner) {
+  public static Optional<SymTypeExpression> plusPrefix(SymTypeExpression inner) {
+    return getDelegate()._plusPrefix(inner);
+  }
+
+  protected Optional<SymTypeExpression> _plusPrefix(SymTypeExpression inner) {
     SymTypeExpression result =
         TypeVisitorLifting.liftDefault(this::calculatePlusMinusPrefix)
             .apply(inner);
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> minusPrefix(SymTypeExpression inner) {
+  public static Optional<SymTypeExpression> minusPrefix(SymTypeExpression inner) {
+    return getDelegate()._minusPrefix(inner);
+  }
+
+  protected Optional<SymTypeExpression> _minusPrefix(SymTypeExpression inner) {
     SymTypeExpression result =
         TypeVisitorLifting.liftDefault(this::calculatePlusMinusPrefix)
             .apply(inner);
@@ -288,7 +356,14 @@ public class TypeVisitorOperatorCalculator {
 
   // equality: ==, !=
 
-  public Optional<SymTypeExpression> equality(
+  public static Optional<SymTypeExpression> equality(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._equality(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _equality(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -298,7 +373,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> inequality(
+  public static Optional<SymTypeExpression> inequality(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._inequality(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _inequality(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -367,7 +449,14 @@ public class TypeVisitorOperatorCalculator {
 
   // numeric comparison: <, <=, >, >=
 
-  public Optional<SymTypeExpression> lessThan(
+  public static Optional<SymTypeExpression> lessThan(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._lessThan(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _lessThan(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -377,7 +466,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> lessEqual(
+  public static Optional<SymTypeExpression> lessEqual(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._lessEqual(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _lessEqual(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -387,7 +483,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> greaterThan(
+  public static Optional<SymTypeExpression> greaterThan(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._greaterThan(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _greaterThan(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -397,7 +500,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> greaterEqual(
+  public static Optional<SymTypeExpression> greaterEqual(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._greaterEqual(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _greaterEqual(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -450,7 +560,14 @@ public class TypeVisitorOperatorCalculator {
 
   // boolean operators: &&, ||, !
 
-  public Optional<SymTypeExpression> booleanAnd(
+  public static Optional<SymTypeExpression> booleanAnd(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._booleanAnd(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _booleanAnd(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -460,7 +577,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> booleanOr(
+  public static Optional<SymTypeExpression> booleanOr(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._booleanOr(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _booleanOr(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -485,7 +609,11 @@ public class TypeVisitorOperatorCalculator {
     }
   }
 
-  public Optional<SymTypeExpression> logicalNot(SymTypeExpression inner) {
+  public static Optional<SymTypeExpression> logicalNot(SymTypeExpression inner) {
+    return getDelegate()._logicalNot(inner);
+  }
+
+  protected Optional<SymTypeExpression> _logicalNot(SymTypeExpression inner) {
     SymTypeExpression result =
         TypeVisitorLifting.liftDefault(this::calculateLogicalNot)
             .apply(inner);
@@ -503,7 +631,14 @@ public class TypeVisitorOperatorCalculator {
 
   // bitwise / binary: &, |, ^, ~
 
-  public Optional<SymTypeExpression> binaryAnd(
+  public static Optional<SymTypeExpression> binaryAnd(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._binaryAnd(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _binaryAnd(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -513,7 +648,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> binaryOr(
+  public static Optional<SymTypeExpression> binaryOr(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._binaryOr(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _binaryOr(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -523,7 +665,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> binaryXor(
+  public static Optional<SymTypeExpression> binaryXor(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._binaryXor(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _binaryXor(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -555,7 +704,11 @@ public class TypeVisitorOperatorCalculator {
     return result;
   }
 
-  public Optional<SymTypeExpression> bitwiseComplement(SymTypeExpression inner) {
+  public static Optional<SymTypeExpression> bitwiseComplement(SymTypeExpression inner) {
+    return getDelegate()._bitwiseComplement(inner);
+  }
+
+  protected Optional<SymTypeExpression> _bitwiseComplement(SymTypeExpression inner) {
     SymTypeExpression result =
         TypeVisitorLifting.liftDefault(this::calculateBitwiseComplement)
             .apply(inner);
@@ -577,7 +730,14 @@ public class TypeVisitorOperatorCalculator {
 
   // shifts: <<, >>, >>>
 
-  public Optional<SymTypeExpression> leftShift(
+  public static Optional<SymTypeExpression> leftShift(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._leftShift(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _leftShift(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -587,7 +747,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> signedRightShift(
+  public static Optional<SymTypeExpression> signedRightShift(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._signedRightShift(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _signedRightShift(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -597,7 +764,14 @@ public class TypeVisitorOperatorCalculator {
     return obscure2Empty(result);
   }
 
-  public Optional<SymTypeExpression> unsignedRightShift(
+  public static Optional<SymTypeExpression> unsignedRightShift(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._unsignedRightShift(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _unsignedRightShift(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -624,7 +798,14 @@ public class TypeVisitorOperatorCalculator {
 
   // assignment: =
 
-  public Optional<SymTypeExpression> assignment(
+  public static Optional<SymTypeExpression> assignment(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._assignment(left, right);
+  }
+
+  protected Optional<SymTypeExpression> _assignment(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
@@ -651,9 +832,17 @@ public class TypeVisitorOperatorCalculator {
   // cast: (.).
   // not an operator, but casting is used for some operators' calculation
 
-  public Optional<SymTypeExpression> cast(
+  public static Optional<SymTypeExpression> cast(
       SymTypeExpression target,
-      SymTypeExpression source) {
+      SymTypeExpression source
+  ) {
+    return getDelegate()._cast(target, source);
+  }
+
+  protected Optional<SymTypeExpression> _cast(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
     SymTypeExpression result =
         TypeVisitorLifting.liftDefault(this::calculateCast)
             .apply(target, source);

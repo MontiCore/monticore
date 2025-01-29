@@ -6,6 +6,7 @@ package de.monticore;
 
 import de.monticore.statements.*;
 import de.monticore.expressions.*;
+import de.monticore.literals.*;
 import de.monticore.symbols.*;
 import de.monticore.types.*;
 
@@ -25,6 +26,7 @@ import de.monticore.types.*;
 
 component grammar JavaLight extends AssignmentExpressions,
                                     JavaClassExpressions,
+                                    MCCommonLiterals,
                                     MCCommonStatements,
                                     MCArrayStatements,
                                     MCReturnStatements,

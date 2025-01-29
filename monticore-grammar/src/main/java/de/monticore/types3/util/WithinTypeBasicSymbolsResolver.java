@@ -45,10 +45,24 @@ public class WithinTypeBasicSymbolsResolver {
 
   protected static final String LOG_NAME = "WithinTypeResolving";
 
+  protected static WithinTypeBasicSymbolsResolver delegate;
+
+  // methods
+
   /**
    * resolves within a type including supertypes
    */
-  public Optional<SymTypeExpression> resolveVariable(
+  public static Optional<SymTypeExpression> resolveVariable(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate
+  ) {
+    return getDelegate().
+        _resolveVariable(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> _resolveVariable(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -117,7 +131,17 @@ public class WithinTypeBasicSymbolsResolver {
   /**
    * resolves within a type including supertypes
    */
-  public List<SymTypeOfFunction> resolveFunctions(
+  public static List<SymTypeOfFunction> resolveFunctions(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    return getDelegate()
+        ._resolveFunctions(thisType, name, accessModifier, predicate);
+  }
+
+  protected List<SymTypeOfFunction> _resolveFunctions(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -199,7 +223,17 @@ public class WithinTypeBasicSymbolsResolver {
   /**
    * resolves within a type including supertypes
    */
-  public Optional<SymTypeExpression> resolveType(
+  public static Optional<SymTypeExpression> resolveType(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate
+  ) {
+    return getDelegate()
+        ._resolveType(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> _resolveType(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -261,7 +295,11 @@ public class WithinTypeBasicSymbolsResolver {
    * it is NOT necessary to check a type with it before calling resolve[...]().
    * s. a. {@link NominalSuperTypeCalculator}
    */
-  public boolean canResolveIn(SymTypeExpression thisType) {
+  public static boolean canResolveIn(SymTypeExpression thisType) {
+    return getDelegate()._canResolveIn(thisType);
+  }
+
+  protected boolean _canResolveIn(SymTypeExpression thisType) {
     return thisType.isObjectType() ||
         thisType.isGenericType() ||
         thisType.isTypeVariable() ||
@@ -542,4 +580,29 @@ public class WithinTypeBasicSymbolsResolver {
       }
     }
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default WithinTypeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new WithinTypeBasicSymbolsResolver());
+  }
+
+  public static void reset() {
+    WithinScopeBasicSymbolsResolver.delegate = null;
+  }
+
+  protected static void setDelegate(
+      WithinTypeBasicSymbolsResolver newDelegate
+  ) {
+    WithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static WithinTypeBasicSymbolsResolver getDelegate() {
+    if (WithinTypeBasicSymbolsResolver.delegate == null) {
+      init();
+    }
+    return WithinTypeBasicSymbolsResolver.delegate;
+  }
+
 }
