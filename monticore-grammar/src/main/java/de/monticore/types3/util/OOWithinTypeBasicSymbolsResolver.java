@@ -166,6 +166,9 @@ public class OOWithinTypeBasicSymbolsResolver
   }
 
   protected static OOWithinTypeBasicSymbolsResolver getDelegate() {
-    return Log.errorIfNull(delegate);
+    if (OOWithinTypeBasicSymbolsResolver.delegate == null) {
+      init();
+    }
+    return OOWithinTypeBasicSymbolsResolver.delegate;
   }
 }

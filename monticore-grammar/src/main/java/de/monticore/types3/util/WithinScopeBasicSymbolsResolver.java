@@ -374,7 +374,10 @@ public class WithinScopeBasicSymbolsResolver {
   }
 
   protected static WithinScopeBasicSymbolsResolver getDelegate() {
-    return Log.errorIfNull(delegate);
+    if (WithinScopeBasicSymbolsResolver.delegate == null) {
+      init();
+    }
+    return WithinScopeBasicSymbolsResolver.delegate;
   }
 
 }
