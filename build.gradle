@@ -39,6 +39,20 @@ allprojects {
     mavenCentral()
   }
 
+  pluginManager.withPlugin('maven-publish', {
+    // If publishing is set up, add the MontiCore 3-Level License Model to every publication
+    publishing.publications.configureEach {
+      pom {
+        licenses {
+          license {
+            name = 'MontiCore 3-Level License Model'
+            url = 'https://monticore.github.io/monticore/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/'
+          }
+        }
+      }
+    }
+  })
+
 }
 
 subprojects {
