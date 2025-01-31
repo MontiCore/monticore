@@ -1230,19 +1230,19 @@ including the `Automata` tool class `AutomataTool`. For running the
 
     **With Powershell on Windows**
     ```powershell
-    java -jar target/libs/automaton-7.7.0-SNAPSHOT-tool.jar `
+    java -jar target/libs/automaton-7.7.0-tool.jar `
                         -i src/test/resources/automata/parser/PingPong.aut `
                         -s st/PingPong.autsym
     ```
     **With Bash on Unix**
     ```bash
-    java -jar target/libs/automaton-7.7.0-SNAPSHOT-tool.jar \
+    java -jar target/libs/automaton-7.7.0-tool.jar \
                         -i src/test/resources/automata/parser/PingPong.aut \
                         -s st/PingPong.autsym
     ```
     **With cmd on Windows**
     ```batch
-    java -jar target/libs/automaton-7.7.0-SNAPSHOT-tool.jar ^
+    java -jar target/libs/automaton-7.7.0-tool.jar ^
                         -i src/test/resources/automata/parser/PingPong.aut ^
                         -s st/PingPong.autsym
     ```

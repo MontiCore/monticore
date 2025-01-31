@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.tf.ast;
-
-import org.junit.Assert;
+package mc.tfcs.ast;
 
 import mc.feature.featuredsl._ast.ASTState;
 import mc.feature.featuredsl._visitor.FeatureDSLVisitor2;
+import org.junit.Assert;
 
 public class TestVisitor implements FeatureDSLVisitor2 {
   

@@ -3,7 +3,6 @@ package de.monticore.types3.util;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._util.BasicSymbolsTypeDispatcher;
 import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
@@ -11,6 +10,7 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.modifiers.CompoundAccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,40 @@ import java.util.Optional;
  */
 public class TypeContextCalculator {
 
+  // static delegate
+
+  protected static TypeContextCalculator delegate;
+
+  public static void init() {
+    Log.trace("init default TypeContextCalculator", "TypeCheck setup");
+    setDelegate(new TypeContextCalculator());
+  }
+
+  public static void reset() {
+    TypeContextCalculator.delegate = null;
+  }
+
+  protected static void setDelegate(TypeContextCalculator newDelegate) {
+    TypeContextCalculator.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static TypeContextCalculator getDelegate() {
+    if (TypeContextCalculator.delegate == null) {
+      init();
+    }
+    return TypeContextCalculator.delegate;
+  }
+
+  // methods
+
   /**
    * given an expression's enclosing scope, returns the enclosing type symbol
    */
-  public Optional<TypeSymbol> getEnclosingType(IScope enclosingScope) {
+  public static Optional<TypeSymbol> getEnclosingType(IScope enclosingScope) {
+    return getDelegate()._getEnclosingType(enclosingScope);
+  }
+
+  protected Optional<TypeSymbol> _getEnclosingType(IScope enclosingScope) {
     Optional<TypeSymbol> enclosingType = Optional.empty();
     for (IScope scope = enclosingScope;
          scope != null && enclosingType.isEmpty();
@@ -52,7 +82,21 @@ public class TypeContextCalculator {
    * ({@link WithinTypeBasicSymbolsResolver} handles supertypes)
    * for access via typeID, static access can be forced on (e.g., C.v)
    */
-  public AccessModifier getAccessModifier(
+  public static AccessModifier getAccessModifier(
+      TypeSymbol type,
+      IScope enclosingScope,
+      boolean forceStatic
+  ) {
+    return getDelegate()._getAccessModifier(type, enclosingScope, forceStatic);
+  }
+
+  public static AccessModifier getAccessModifier(
+      TypeSymbol type,
+      IScope enclosingScope) {
+    return getAccessModifier(type, enclosingScope, false);
+  }
+
+  protected AccessModifier _getAccessModifier(
       TypeSymbol type,
       IScope enclosingScope,
       boolean forceStatic
@@ -105,12 +149,6 @@ public class TypeContextCalculator {
       modifiers.add(StaticAccessModifier.STATIC);
     }
     return new CompoundAccessModifier(modifiers);
-  }
-
-  public AccessModifier getAccessModifier(
-      TypeSymbol type,
-      IScope enclosingScope) {
-    return getAccessModifier(type, enclosingScope, false);
   }
 
   // Helper

@@ -1417,17 +1417,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // initialize glex
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.addAfterTemplate("cd2java.Imports", new TemplateHookPoint("mc.Imports"));
-    if(Reporting.isInitialized()) {
       if(mcConfig.getConfigTemplate().isPresent()) {
         String configTemplate = mcConfig.getConfigTemplate().get();
         if (configTemplate.endsWith(".ftl")) { // remove file ending
           configTemplate = configTemplate.substring(0, configTemplate.length() - 4);
         }
         glex.setGlobalValue(CONFIGTEMPLATE_LONG, configTemplate);
-      }
-    } else {
-      Log.debug("Reporting not initialised or disabled. " +
-              "No values are added to the glex.", LOG_ID);
+
     }
     return glex;
   }

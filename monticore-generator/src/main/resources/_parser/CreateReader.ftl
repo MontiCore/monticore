@@ -8,4 +8,12 @@ ${tc.signature("grammarName")}
   lexer.addErrorListener(new de.monticore.antlr4.MCErrorListener(parser));
   parser.setFilename("StringReader");
   setError(false);
+  if (!lexerMode.isEmpty()) {
+    int index = Arrays.asList(lexer.getModeNames()).indexOf(lexerMode);
+    if (index>=0) {
+      lexer.mode(index);
+    } else {
+      Log.error("0xA01101${service.getGeneratedErrorCode(grammarName)} Invalid mode name " + lexerMode);
+    }
+  }
   return parser;

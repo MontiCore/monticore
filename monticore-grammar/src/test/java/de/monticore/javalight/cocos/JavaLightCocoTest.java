@@ -6,12 +6,14 @@ import de.monticore.io.FileReaderWriter;
 import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.javalight._ast.ASTJavaMethod;
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
+import de.monticore.javalight.types3.JavaLightTypeCheck3;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
+import de.monticore.testjavalight._symboltable.ITestJavaLightArtifactScope;
+import de.monticore.testjavalight._symboltable.ITestJavaLightGlobalScope;
 import de.monticore.testjavalight._symboltable.TestJavaLightArtifactScope;
-import de.monticore.testjavalight._symboltable.TestJavaLightGlobalScope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -27,9 +29,9 @@ import java.util.Optional;
 
 public abstract class JavaLightCocoTest {
 
-  static protected TestJavaLightGlobalScope globalScope;
+  static protected ITestJavaLightGlobalScope globalScope;
 
-  protected TestJavaLightArtifactScope artifactScope;
+  protected ITestJavaLightArtifactScope artifactScope;
 
   protected JavaLightCoCoChecker checker;
   
@@ -39,16 +41,12 @@ public abstract class JavaLightCocoTest {
     Log.enableFailQuick(false);
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
-    init();
-  }
-  
-  protected void init() {
-    globalScope = (TestJavaLightGlobalScope) TestJavaLightMill.globalScope();
-    globalScope.clear();
+    BasicSymbolsMill.initializePrimitives();
+    JavaLightTypeCheck3.init();
 
+    globalScope = TestJavaLightMill.globalScope();
     globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources"));
     globalScope.getSymbolPath().addEntry(Paths.get("target/test/resources"));
-    BasicSymbolsMill.initializePrimitives();
   }
 
   protected void testValid(String fileName, String methodName, JavaLightCoCoChecker checker) {

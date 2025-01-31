@@ -25,16 +25,12 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
   protected static final String SHIFT_OPERATOR_ERROR_CODE = "0xC0201";
   protected static final String BINARY_OPERATOR_ERROR_CODE = "0xC0203";
 
-  protected TypeVisitorOperatorCalculator operatorCalculator
-      = new TypeVisitorOperatorCalculator();
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setOperatorCalculator(
       TypeVisitorOperatorCalculator operatorCalculator) {
-    this.operatorCalculator = operatorCalculator;
-  }
-
-  protected TypeVisitorOperatorCalculator getOperatorCalculator() {
-    return operatorCalculator;
   }
 
   @Override
@@ -44,7 +40,7 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForOperatorOrLogError(
         SHIFT_OPERATOR_ERROR_CODE, expr, expr.getShiftOp(),
-        getOperatorCalculator().leftShift(left, right), left, right
+        TypeVisitorOperatorCalculator.leftShift(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -56,7 +52,7 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForOperatorOrLogError(
         SHIFT_OPERATOR_ERROR_CODE, expr, expr.getShiftOp(),
-        getOperatorCalculator().signedRightShift(left, right), left, right
+        TypeVisitorOperatorCalculator.signedRightShift(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -68,7 +64,7 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForOperatorOrLogError(
         SHIFT_OPERATOR_ERROR_CODE, expr, expr.getShiftOp(),
-        getOperatorCalculator().unsignedRightShift(left, right), left, right
+        TypeVisitorOperatorCalculator.unsignedRightShift(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -80,7 +76,7 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForOperatorOrLogError(
         BINARY_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().binaryAnd(left, right), left, right
+        TypeVisitorOperatorCalculator.binaryAnd(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -92,7 +88,7 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForOperatorOrLogError(
         BINARY_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().binaryOr(left, right), left, right
+        TypeVisitorOperatorCalculator.binaryOr(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -104,7 +100,7 @@ public class BitExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForOperatorOrLogError(
         BINARY_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().binaryXor(left, right), left, right
+        TypeVisitorOperatorCalculator.binaryXor(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }

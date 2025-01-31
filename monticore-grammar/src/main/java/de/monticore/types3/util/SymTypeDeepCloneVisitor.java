@@ -70,6 +70,19 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
   }
 
   @Override
+  public void visit(SymTypeInferenceVariable symType) {
+    SymTypeInferenceVariable clone =
+        SymTypeExpressionFactory.createInferenceVariable(
+            symType.getLowerBound(),
+            symType.getUpperBound(),
+            symType._internal_getIDStr(),
+            symType._internal_getID()
+        );
+    clone._internal_setSourceInfo(symType.getSourceInfo());
+    pushTransformedSymType(clone);
+  }
+
+  @Override
   public void visit(SymTypeObscure symType) {
     SymTypeObscure clone = SymTypeExpressionFactory.createObscureType();
     clone._internal_setSourceInfo(symType.getSourceInfo());
@@ -195,21 +208,8 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeVariable symType) {
-    SymTypeVariable clone;
-    if (symType.hasTypeVarSymbol()) {
-      clone = SymTypeExpressionFactory.createTypeVariable(
-          symType.getTypeVarSymbol(),
-          symType.getStoredLowerBound(),
-          symType.getStoredUpperBound()
-      );
-    }
-    else {
-      clone = SymTypeExpressionFactory.createTypeVariable(
-          symType.getFreeVarIdentifier(),
-          symType.getStoredLowerBound(),
-          symType.getStoredUpperBound()
-      );
-    }
+    SymTypeVariable clone = SymTypeExpressionFactory
+        .createTypeVariable(symType.getTypeVarSymbol());
     clone._internal_setSourceInfo(symType.getSourceInfo());
     pushTransformedSymType(clone);
   }

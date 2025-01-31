@@ -155,7 +155,11 @@ public abstract class TypeCheck3 {
   );
 
   protected static void setDelegate(TypeCheck3 delegate) {
-    TypeCheck3.delegate = delegate;
+    TypeCheck3.delegate = Log.errorIfNull(delegate);
+  }
+
+  protected static void resetDelegate() {
+    TypeCheck3.delegate = null;
   }
 
   protected static TypeCheck3 getDelegate() {

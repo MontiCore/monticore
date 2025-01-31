@@ -129,15 +129,15 @@ public class SymTypeExpressionTest {
 
     teInt = createPrimitive("int");
 
-    teVarA = createTypeVariable("A", scope);
+    teVarA = SymTypeExpressionFactory.createTypeVariable("A", scope);
 
     teIntA = createTypeObject("java.lang.Integer",scope);
 
-    teVarB = createTypeVariable("B", scope);
+    teVarB = SymTypeExpressionFactory.createTypeVariable("B", scope);
 
-    teVarUpper = createTypeVariable(teIntA, createBottomType());
+    teVarUpper = SymTypeExpressionFactory.createInferenceVariable(teIntA, createBottomType());
 
-    teVarLower = createTypeVariable(createTopType(), teIntA);
+    teVarLower = SymTypeExpressionFactory.createInferenceVariable(createTopType(), teIntA);
 
     teP = createTypeObject("de.x.Person", scope);
 
@@ -581,14 +581,14 @@ public class SymTypeExpressionTest {
     Assertions.assertTrue(teVarA.deepClone().isTypeVariable());
     Assertions.assertEquals(teVarA.print(), teVarA.deepClone().print());
 
-    Assertions.assertTrue(teVarUpper.deepClone() instanceof SymTypeVariable);
+    Assertions.assertTrue(teVarUpper.deepClone() instanceof SymTypeInferenceVariable);
     Assertions.assertFalse(teVarUpper.deepClone().isPrimitive());
-    Assertions.assertTrue(teVarUpper.deepClone().isTypeVariable());
+    Assertions.assertTrue(teVarUpper.deepClone().isInferenceVariable());
     Assertions.assertEquals(teVarUpper.print(), teVarUpper.deepClone().print());
 
-    Assertions.assertTrue(teVarLower.deepClone() instanceof SymTypeVariable);
+    Assertions.assertTrue(teVarLower.deepClone() instanceof SymTypeInferenceVariable);
     Assertions.assertFalse(teVarLower.deepClone().isPrimitive());
-    Assertions.assertTrue(teVarLower.deepClone().isTypeVariable());
+    Assertions.assertTrue(teVarLower.deepClone().isInferenceVariable());
     Assertions.assertEquals(teVarLower.print(), teVarLower.deepClone().print());
 
     //SymTypePrimitive

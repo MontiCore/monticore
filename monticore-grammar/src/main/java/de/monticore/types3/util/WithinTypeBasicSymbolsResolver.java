@@ -15,6 +15,7 @@ import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfUnion;
@@ -44,10 +45,24 @@ public class WithinTypeBasicSymbolsResolver {
 
   protected static final String LOG_NAME = "WithinTypeResolving";
 
+  protected static WithinTypeBasicSymbolsResolver delegate;
+
+  // methods
+
   /**
    * resolves within a type including supertypes
    */
-  public Optional<SymTypeExpression> resolveVariable(
+  public static Optional<SymTypeExpression> resolveVariable(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate
+  ) {
+    return getDelegate().
+        _resolveVariable(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> _resolveVariable(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -116,7 +131,17 @@ public class WithinTypeBasicSymbolsResolver {
   /**
    * resolves within a type including supertypes
    */
-  public List<SymTypeOfFunction> resolveFunctions(
+  public static List<SymTypeOfFunction> resolveFunctions(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    return getDelegate()
+        ._resolveFunctions(thisType, name, accessModifier, predicate);
+  }
+
+  protected List<SymTypeOfFunction> _resolveFunctions(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -198,7 +223,17 @@ public class WithinTypeBasicSymbolsResolver {
   /**
    * resolves within a type including supertypes
    */
-  public Optional<SymTypeExpression> resolveType(
+  public static Optional<SymTypeExpression> resolveType(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate
+  ) {
+    return getDelegate()
+        ._resolveType(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> _resolveType(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -260,7 +295,11 @@ public class WithinTypeBasicSymbolsResolver {
    * it is NOT necessary to check a type with it before calling resolve[...]().
    * s. a. {@link NominalSuperTypeCalculator}
    */
-  public boolean canResolveIn(SymTypeExpression thisType) {
+  public static boolean canResolveIn(SymTypeExpression thisType) {
+    return getDelegate()._canResolveIn(thisType);
+  }
+
+  protected boolean _canResolveIn(SymTypeExpression thisType) {
     return thisType.isObjectType() ||
         thisType.isGenericType() ||
         thisType.isTypeVariable() ||
@@ -489,7 +528,7 @@ public class WithinTypeBasicSymbolsResolver {
     // () -> C<#FV,T,R> where #FV is a free type variable
 
     // 1. find all variables
-    Map<SymTypeVariable, SymTypeVariable> allVarMap = TypeParameterRelations
+    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap = TypeParameterRelations
         .getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
     // 2. find all type variables already bound by the type resolved in
     List<SymTypeVariable> varsAlreadyBound = new SymTypeCollectionVisitor()
@@ -497,8 +536,8 @@ public class WithinTypeBasicSymbolsResolver {
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
     // 3. get variables that actually need to be replaced (unbound)
-    Map<SymTypeVariable, SymTypeVariable> freeVarMap = new HashMap<>();
-    for (Map.Entry<SymTypeVariable, SymTypeVariable> e : allVarMap.entrySet()) {
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
+    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
       if (varsAlreadyBound.stream().noneMatch(e.getKey()::deepEquals)) {
         freeVarMap.put(e.getKey(), e.getValue());
       }
@@ -541,4 +580,29 @@ public class WithinTypeBasicSymbolsResolver {
       }
     }
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default WithinTypeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new WithinTypeBasicSymbolsResolver());
+  }
+
+  public static void reset() {
+    WithinScopeBasicSymbolsResolver.delegate = null;
+  }
+
+  protected static void setDelegate(
+      WithinTypeBasicSymbolsResolver newDelegate
+  ) {
+    WithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static WithinTypeBasicSymbolsResolver getDelegate() {
+    if (WithinTypeBasicSymbolsResolver.delegate == null) {
+      init();
+    }
+    return WithinTypeBasicSymbolsResolver.delegate;
+  }
+
 }

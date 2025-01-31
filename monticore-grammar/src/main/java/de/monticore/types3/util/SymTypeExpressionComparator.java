@@ -1,20 +1,7 @@
 package de.monticore.types3.util;
 
 import de.monticore.symboltable.ISymbol;
-import de.monticore.types.check.SymTypeArray;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.SymTypeOfIntersection;
-import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
-import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.SymTypeOfRegEx;
-import de.monticore.types.check.SymTypeOfSIUnit;
-import de.monticore.types.check.SymTypeOfTuple;
-import de.monticore.types.check.SymTypeOfUnion;
-import de.monticore.types.check.SymTypeOfWildcard;
-import de.monticore.types.check.SymTypePrimitive;
-import de.monticore.types.check.SymTypeVariable;
+import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Comparator;
@@ -161,6 +148,17 @@ public class SymTypeExpressionComparator
     else if (o2.isGenericType()) {
       return 1;
     }
+    else if (o1.isWildcard()) {
+      if (!o2.isWildcard()) {
+        return -1;
+      }
+      else {
+        return compareWildcard(o1.asWildcard(), o2.asWildcard());
+      }
+    }
+    else if (o2.isWildcard()) {
+      return 1;
+    }
     else if (o1.isTypeVariable()) {
       if (!o2.isTypeVariable()) {
         return -1;
@@ -172,15 +170,15 @@ public class SymTypeExpressionComparator
     else if (o2.isTypeVariable()) {
       return 1;
     }
-    else if (o1.isWildcard()) {
-      if (!o2.isWildcard()) {
+    else if (o1.isInferenceVariable()) {
+      if (!o2.isInferenceVariable()) {
         return -1;
       }
       else {
-        return compareWildcard(o1.asWildcard(), o2.asWildcard());
+        return compareInfVar(o1.asInferenceVariable(), o2.asInferenceVariable());
       }
     }
-    else if (o2.isWildcard()) {
+    else if (o2.isInferenceVariable()) {
       return 1;
     }
     // the following do not have any further comparisons,
@@ -325,29 +323,6 @@ public class SymTypeExpressionComparator
     return compareSymbol(o1.getTypeInfo(), o2.getTypeInfo());
   }
 
-  protected int compareTypeVar(SymTypeVariable o1, SymTypeVariable o2) {
-    if (o1.hasTypeVarSymbol() && !o2.hasTypeVarSymbol()) {
-      return -1;
-    }
-    else if (!o1.hasTypeVarSymbol() && o2.hasTypeVarSymbol()) {
-      return 1;
-    }
-    int res = compare(o1.getUpperBound(), o2.getUpperBound());
-    if (res != 0) {
-      return res;
-    }
-    res = compare(o1.getLowerBound(), o2.getLowerBound());
-    if (res != 0) {
-      return res;
-    }
-    else if (!o1.hasTypeVarSymbol() && !o2.hasTypeVarSymbol()) {
-      return o1.printFullName().compareTo(o2.printFullName());
-    }
-    else {
-      return compareSymbol(o1.getTypeVarSymbol(), o2.getTypeVarSymbol());
-    }
-  }
-
   protected int compareWildcard(SymTypeOfWildcard o1, SymTypeOfWildcard o2) {
     if (o1.hasBound() && !o2.hasBound()) {
       return -1;
@@ -362,6 +337,25 @@ public class SymTypeExpressionComparator
       return 1;
     }
     return compare(o1.getBound(), o2.getBound());
+  }
+
+  protected int compareTypeVar(SymTypeVariable o1, SymTypeVariable o2) {
+    return compareSymbol(o1.getTypeVarSymbol(), o2.getTypeVarSymbol());
+  }
+
+  protected int compareInfVar(
+      SymTypeInferenceVariable o1,
+      SymTypeInferenceVariable o2
+  ) {
+    int res = compare(o1.getUpperBound(), o2.getUpperBound());
+    if (res != 0) {
+      return res;
+    }
+    res = compare(o1.getLowerBound(), o2.getLowerBound());
+    if (res != 0) {
+      return res;
+    }
+    return Integer.compare(o1._internal_getID(), o2._internal_getID());
   }
 
   protected int compareSymbol(ISymbol o1, ISymbol o2) {

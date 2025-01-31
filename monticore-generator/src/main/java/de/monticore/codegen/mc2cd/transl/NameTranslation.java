@@ -2,14 +2,16 @@
 
 package de.monticore.codegen.mc2cd.transl;
 
-import de.monticore.cdbasis._ast.*;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.grammar.LexNamer;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.utils.Link;
 import de.se_rwth.commons.StringTransformations;
 
@@ -87,7 +89,7 @@ public class NameTranslation implements
 
         for (Link<ASTAdditionalAttribute, ASTCDAttribute> link : rootLink.getLinks(ASTAdditionalAttribute.class,
             ASTCDAttribute.class)) {
-            String alternativeName = StringTransformations.uncapitalize(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(link.source().getMCType()));
+            String alternativeName = StringTransformations.uncapitalize(Grammar_WithConceptsMill.prettyPrint(link.source().getMCType(), false));
             String name = link.source().isPresentName() ? link.source().getName() : alternativeName;
             link.target().setName(name);
             link.source().setName(name);
