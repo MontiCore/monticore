@@ -7,9 +7,17 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Enumeration;
+
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.source_mapping.SourceMappingUtil;
+import de.monticore.source_mapping.SourcePositionMapper;
+import de.se_rwth.commons.logging.Log;
+import freemarker.core.Environment;
 import com.google.common.base.Preconditions;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
@@ -45,6 +53,8 @@ public class FreeMarkerTemplateEngine {
     Template result;
     try {
       result = configuration.getTemplate(qualifiedTemplateName);
+      result = SourcePositionMapper.adaptTemplateWithPositionMarkers(result, configuration);
+     // System.out.println("Template after addition: "+result.toString());
     }
     catch (IOException e) {
       throw new MontiCoreFreeMarkerException("0xA0560 Unable to load template: " + e.getMessage());
@@ -73,6 +83,10 @@ public class FreeMarkerTemplateEngine {
     };
 
     try {
+      if (data instanceof SimpleHash) {
+        SimpleHash asSimpleHash = (SimpleHash) data;
+        asSimpleHash.put(TemplateController.SOURCE_MAPPING_UTIL, new SourceMappingUtil(w, template));
+      }
       template.process(data, w);
       w.flush();
     }
