@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static junit.framework.TestCase.assertTrue;
-
 public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
   @BeforeEach
@@ -143,8 +141,8 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
   protected void testValid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
     Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
-            .map(Finding::buildMsg)
-            .collect(Collectors.joining(System.lineSeparator())));
+        .map(Finding::buildMsg)
+        .collect(Collectors.joining(System.lineSeparator())));
     Log.clearFindings();
   }
 
@@ -166,7 +164,8 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
     CombineExpressionsWithLiteralsTraverser traverser =
         factory.createTraverser(type4Ast);
     TypeCheck3AsIDerive derive = new TypeCheck3AsIDerive(
-        traverser, type4Ast, new CommonExpressionsLValueRelations());
+        new CommonExpressionsLValueRelations()
+    );
 
     functions.forEach(parameters -> {
       List<SymTypeExpression> parameterList = parameters.stream()

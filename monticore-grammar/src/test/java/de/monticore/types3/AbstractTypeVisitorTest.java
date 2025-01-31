@@ -119,11 +119,9 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     CombineExpressionsWithLiteralsTraverser combinedScopesCompleter =
         CombineExpressionsWithLiteralsMill.traverser();
     IDerive deriver = new TypeCheck3AsIDerive(
-        typeMapTraverser, type4Ast, new CommonExpressionsLValueRelations()
+        new CommonExpressionsLValueRelations()
     );
-    ISynthesize synthesizer = new TypeCheck3AsISynthesize(
-        typeMapTraverser, type4Ast
-    );
+    ISynthesize synthesizer = new TypeCheck3AsISynthesize();
     combinedScopesCompleter.add4LambdaExpressions(
         new LambdaExpressionsSTCompleteTypes2(
             typeMapTraverser,
