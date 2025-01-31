@@ -130,6 +130,8 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("let double a = 5.0 in 2*2", "int");
     checkExpr("let double a = 5.0 in a", "double");
     checkExpr("let double a = 5.0; int b = 5 in a*b", "double");
+    // requires correct order of SymTab completion
+    checkExpr("let Person p = typeif varPerson instanceof Student then varPerson else varPerson in p", "Person");
   }
 
   @Test
