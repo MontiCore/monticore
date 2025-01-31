@@ -179,14 +179,11 @@ while the SymTypeExpressions represent a type usage
 There is only one type definition,
 but there can be many type usages.   
 The SymTypeExpression knows its corresponding Symbol (if applicable):
-* SymTypeOfGenerics, SymTypeOfObject, and SymTypePrimitive
+* SymTypeOfGenerics, SymTypeOfObject, SymTypePrimitive, and SymTypeVariable
   know their corresponding TypeSymbol
 * SymTypeOfFunction _may_ have a corresponding FunctionSymbol
   (e.g., a named function declaration)
   or not (e.g., a lambda function definition)
-* SymTypeVariable _may_ have a corresponding TypeVarSymbol
-  (e.g., for a named type variable)
-  or not (e.g., a SymTypeVariable calculated based on a wildcard)
 * Other SymTypeExpressions do not have a corresponding symbol.
 
 A type symbol,
