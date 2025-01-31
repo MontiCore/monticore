@@ -43,7 +43,6 @@ public class TypeCheck3AsTypeCalculator extends TypeCalculator {
   /**
    * @param lValueRelations is expression a variable?, language specific
    */
-  @Deprecated
   public TypeCheck3AsTypeCalculator(
       ILValueRelations lValueRelations
   ) {
