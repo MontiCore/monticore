@@ -64,12 +64,30 @@ and combining their information to the SymTypeExpression currently calculated.
   (factory for creating instances of the subclasses of SymTypeExpression) 
     * [MCCollectionSymTypeFactory](../types/mccollectiontypes/types3/util/MCCollectionSymTypeFactory.java)
       (factory for CollectionTypes, convenience methods)
-* [SymTypeRelations](SymTypeRelations.java)
-  (relations over SymTypeExpressions, e.g., isSubTypeOf)
-    * [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java)
-      (relations over MCCollection SymTypeExpressions, e.g., isList)
-* [WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java)
-  (resolves contained fields, methods, etc. within a given type)
+* Functionality to work with SymTypeExpressions, Expressions
+    * [SymTypeRelations](SymTypeRelations.java)
+      (relations over SymTypeExpressions, e.g., `isSubTypeOf`, `isCompatible`)
+        * [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java)
+          (relations over MCCollection SymTypeExpressions, e.g., `isList`)
+        * [FunctionRelations](util/FunctionRelations.java)
+          (relations regarding functions, e.g, `canBeCalledWith`)
+        * [SIUnitTypeRelations](util/SIUnitTypeRelations.java)
+          (SIUnit relations, e.g., `multiply`, `isOfDimensionOne`)
+    * [WithinScopeBasicSymbolsResolver](util/WithinScopeBasicSymbolsResolver.java)
+      (resolves contained variables, functions, ect. within a given scope;
+      unlike symbol resolving this returns SymTypeExpressions)
+        * [OOWithinScopeBasicSymbolsResolver](util/OOWithinScopeBasicSymbolsResolver.java)
+          (resolves using OO-specific rules)
+    * [WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java)
+      (resolves contained fields, methods, etc. within a given type;
+       unlike symbol resolving this returns SymTypeExpressions)
+        * [OOWithinTypeBasicSymbolsResolver](util/OOWithinTypeBasicSymbolsResolver.java)
+          (resolves using OO-specific rules)
+    * [TypeContextCalculator](util/TypeContextCalculator.java)
+      (provides context information for an expression wrt. types, e.g.,
+      whether a type's private members can be accessed)
+    * [ILValueRelations](util/ILValueRelations.java)
+      (whether an expression is an L-value, e.g., a variable)
 * TypeVisitors traverse the AST and
   store the calculated SymTypeExpression in the Type4Ast map
     * Expressions
@@ -145,6 +163,7 @@ and combining their information to the SymTypeExpression currently calculated.
 * [TypeCheck1 Adapters](../types/check/types3wrapper/TypeCheck3AsTypeCalculator.java)
   (adapts the TypeSystem3 to the deprecated TypeCheck1 interface,
   offering implementations for IDerive and ISynthesize,
+  not compatible with generics,
   s. [TypeCheck1 documentation](../types/check/TypeCheck.md))
 
 ## What is the difference between BasicSymbols and SymTypeExpressions?
