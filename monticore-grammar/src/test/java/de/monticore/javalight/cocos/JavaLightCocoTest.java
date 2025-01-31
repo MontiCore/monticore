@@ -14,6 +14,7 @@ import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.monticore.testjavalight._symboltable.ITestJavaLightArtifactScope;
 import de.monticore.testjavalight._symboltable.ITestJavaLightGlobalScope;
 import de.monticore.testjavalight._symboltable.TestJavaLightArtifactScope;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -42,6 +43,7 @@ public abstract class JavaLightCocoTest {
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypesForTests.setup();
     JavaLightTypeCheck3.init();
 
     globalScope = TestJavaLightMill.globalScope();
