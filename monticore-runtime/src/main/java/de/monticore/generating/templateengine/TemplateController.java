@@ -10,8 +10,11 @@ import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.freemarker.alias.*;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.FileReaderWriter;
+import de.monticore.source_mapping.SourceMappingUtil;
 import de.se_rwth.commons.Names;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
+import freemarker.core.Environment;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.*;
 
@@ -28,6 +31,9 @@ import static com.google.common.collect.Lists.newArrayList;
  * calling and including of templates.
  */
 public class TemplateController {
+
+  public static final String SOURCE_MAPPING_UTIL = "sourceMappingUtil";
+
 
   /**
    * Variable name for the current node (used in the templates)
@@ -378,6 +384,7 @@ public class TemplateController {
    */
   public void writeArgs(final String templateName, final String qualifiedFileName,
                         final String fileExtension, final ASTNode ast, final List<Object> templateArguments) {
+    System.out.println(ast.get_SourcePositionStart());
     String fileExtensionWithDot = Strings.nullToEmpty(fileExtension);
     if (fileExtensionWithDot.startsWith(".")) {
       fileExtensionWithDot = fileExtensionWithDot.substring(1);
@@ -538,9 +545,15 @@ public class TemplateController {
       SimpleHash d = config.getGlex().getGlobalData();
       Optional<TemplateModel> oldAst = Optional.empty();
 
+      Optional<TemplateModel> oldSourceMappingUtil = Optional.empty();
+
       try {
         if (d.containsKey(AST)) {
           oldAst = Optional.ofNullable(d.get(AST));
+        }
+        SourceMappingUtil.pushTemplate(template);
+        if(d.containsKey(SOURCE_MAPPING_UTIL)){
+          oldSourceMappingUtil = Optional.ofNullable(d.get(SOURCE_MAPPING_UTIL));
         }
         for (var key : d.toMap().keySet()) {
           if (key instanceof String) {
@@ -569,6 +582,10 @@ public class TemplateController {
       if (oldAst.isPresent()) {
         d.put(AST, oldAst.get());
       }
+      if(oldSourceMappingUtil.isPresent()){
+        d.put(SOURCE_MAPPING_UTIL, oldSourceMappingUtil.get());
+      }
+      SourceMappingUtil.popTemplate(template, ret);
 
     } else {
       // no template
