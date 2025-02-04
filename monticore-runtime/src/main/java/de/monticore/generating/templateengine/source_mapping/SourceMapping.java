@@ -1,4 +1,4 @@
-package de.monticore.source_mapping;
+package de.monticore.generating.templateengine.source_mapping;
 
 public class SourceMapping {
   public final PositionMarker start;

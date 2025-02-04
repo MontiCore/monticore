@@ -6,6 +6,8 @@ import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
+import de.monticore.generating.templateengine.source_mapping.DecodedMapping;
+import de.monticore.generating.templateengine.source_mapping.SourceMapping;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 
@@ -448,6 +450,14 @@ public class ReportManager implements IReportEventHandler {
       handler.reportSymbolTableScope(scope);
     }
   }
+
+  @Override
+  public void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+    for (IReportEventHandler handler : reportEventHandlers) {
+      handler.reportTemplateSourceMapping(qualifiedTemplateName, mapping);
+    }
+  }
+
 
   /**
    * A factory for providing tool specific report managers.

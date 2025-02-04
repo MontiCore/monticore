@@ -1,4 +1,4 @@
-package de.monticore.source_mapping;
+package de.monticore.generating.templateengine.source_mapping;
 
 import de.se_rwth.commons.SourcePosition;
 
@@ -10,6 +10,13 @@ public class SimpleSourceMapping {
   SimpleSourceMapping(SourcePosition sourcePosition, int targetOffset, int pairId) {
     this.sourcePosition = sourcePosition;
     this.targetOffset = targetOffset;
+    this.pairId = pairId;
+  }
+
+  SimpleSourceMapping(SourcePosition sourcePosition,SourcePosition targetPosition, int pairId) {
+    this.sourcePosition = sourcePosition;
+    this.targetPosition = targetPosition;
+    this.targetOffset = 0;
     this.pairId = pairId;
   }
 
