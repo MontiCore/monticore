@@ -6,6 +6,8 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportLogHook;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
+import de.monticore.generating.templateengine.source_mapping.DecodedMapping;
+import de.monticore.generating.templateengine.source_mapping.SourceMapping;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
@@ -22,6 +24,9 @@ import java.util.Optional;
  * AReporter implementing this method to execute it.
  */
 public class Reporting extends Log {
+
+  public static final String MC_REPORT_SOURCE_MAPPING = "MC_REPORT_SOURCE_MAPPING";
+  public static final String CONFIG_TEMPLATE = "CONFIG_TEMPLATE";
 
   /* whether reporting is enabled at the moment */
   protected static boolean enabled = false;
@@ -109,6 +114,30 @@ public class Reporting extends Log {
    */
   public static void clearReportHooks() {
     reportHooks.clear();
+  }
+
+  public static boolean isTemplateSourceMappingEnabled(){
+    return isEnabled() && "true".equals(System.getProperty(MC_REPORT_SOURCE_MAPPING));
+  }
+
+  public static boolean isConfigTemplate(String templ){
+    return templ.equals(System.getProperty(CONFIG_TEMPLATE));
+  }
+
+  public static void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateSourceMapping(qualifiedTemplateName, mapping);
+      }
+    }
+  }
+
+  public static void reportASTSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateSourceMapping(qualifiedTemplateName, mapping);
+      }
+    }
   }
 
   public static void reportTransformationStart(String transformationName) {
