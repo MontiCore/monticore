@@ -376,6 +376,13 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("[[],[1,2]]", "List<List<int>>", "List<List<int>>");
   }
 
+  @Test
+  public void deriveFormSetEnumerationWithBoxingCTTI() throws IOException {
+    // with values
+    checkExpr("{1}", "Set<java.lang.Integer>", "Set<java.lang.Integer>");
+    checkExpr("{1}", "Set<java.lang.Float>", "Set<java.lang.Float>");
+  }
+
   @ParameterizedTest
   @MethodSource
   public void invalidSetEnumerationCTTI(
