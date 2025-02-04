@@ -34,9 +34,8 @@ The MontiCore symposium will be located in Gemünd, Germany.
 Participation is based on acceptance of an abstract or a full paper and 
 requires registration until **07th of March**. 
 
-Registration costs tba and include accommodation, 
-conference fees, and meals during the symposium as well as coordinated a 
-bus transfer from Dusseldorf airport or Aachen and the venue.  
+Registration costs are tba and include accommodation, 
+conference fees, and meals during the symposium.  
 
 ### Submission
 
