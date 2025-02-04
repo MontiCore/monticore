@@ -45,20 +45,23 @@ public class SourcePositionMapper {
   }
 
   private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm) {
-    String endPos = reportingExpressionEnd(new SourcePosition(t.getEndLine(), t.getEndColumn(), t.getTemplate().getName()), pairId.get());
-    String startPos = reportingExpressionStart(new SourcePosition(t.getBeginLine(), t.getBeginColumn(), t.getTemplate().getName()), pairId.get());
+
+    // The Freemarker Engine uses Source Positions starting at line and column 1, but we report them zero based
+    int curPairId = pairId.getAndIncrement();
+    String endPos = reportingExpressionEnd(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, t.getTemplate().getName()), curPairId);
+    String startPos = reportingExpressionStart(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, t.getTemplate().getName()), curPairId);
+
     // Inserting at the endPos first as otherwise we mangle with the String
     sb.insert(lineColumnToOffset(canonicalForm, t.getEndLine(), t.getEndColumn()) + 1, endPos);
     sb.insert(lineColumnToOffset(canonicalForm, t.getBeginLine(), t.getBeginColumn()), startPos);
-    pairId.getAndIncrement();
   }
 
   protected static String reportingExpressionStart(SourcePosition p, int pairId) {
-    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".reportStart(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast)}";
+    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast, true)}";
   }
 
   protected static String reportingExpressionEnd(SourcePosition p, int pairId) {
-    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".reportEnd(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast)}";
+    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast, false)}";
   }
 
   public static int lineColumnToOffset(String input, int lineNumber, int columnNumber) {

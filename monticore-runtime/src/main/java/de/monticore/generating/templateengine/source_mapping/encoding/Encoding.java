@@ -15,7 +15,7 @@ import static de.monticore.generating.templateengine.source_mapping.encoding.Bas
 public class Encoding {
 
   // For Debugging purposes
-  public static boolean USE_BASE_64_ENCODING = false;
+  public static boolean USE_BASE_64_ENCODING = true;
 
   public static String encodDecodedSourceMapToString(DecodedSourceMap decodedSourceMap) {
     return encodeDecodedSourceMap(decodedSourceMap).print(new IndentPrinter());
@@ -163,7 +163,7 @@ public class Encoding {
         {
           if(s.content == null || s.content.isEmpty()) {
             // Empty String without quotes
-            jsonArray.add(new JsonString(" "));
+            jsonArray.add(new JsonNull());
           } else {
             jsonArray.add(new UserJsonString(s.content));
           }

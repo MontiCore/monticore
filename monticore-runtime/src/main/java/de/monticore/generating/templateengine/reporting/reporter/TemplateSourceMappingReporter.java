@@ -4,6 +4,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
 import de.monticore.generating.templateengine.source_mapping.DecodedMapping;
 import de.monticore.generating.templateengine.source_mapping.DecodedSourceMap;
+import de.monticore.generating.templateengine.source_mapping.SourceMapCalculator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 import static de.monticore.generating.templateengine.source_mapping.encoding.Encoding.encodDecodedSourceMapToString;
 
 public class TemplateSourceMappingReporter extends AReporter {
+  public static boolean FIRST_FILE_WRITE = false;
+
   List<DecodedMapping> mappings = new ArrayList<>();
 
   public TemplateSourceMappingReporter(String path, String qualifiedFileName, String fileExtension) {
@@ -20,18 +23,20 @@ public class TemplateSourceMappingReporter extends AReporter {
 
   @Override
   protected void writeHeader() {
+    if(FIRST_FILE_WRITE) {
+      SourceMapCalculator.reset();
+      FIRST_FILE_WRITE = false;
+    }
     clearVariables();
   }
 
   @Override
   public void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
-    System.out.println("Called reportTemplateSourceMapping "+qualifiedTemplateName);
     this.mappings.addAll(mapping);
   }
 
   @Override
   public void reportFileCreation(String templateName, String qualifiedFilename, String fileExtension, ASTNode ast) {
-    System.out.println("Writing Content to File "+templateName);
     writeContent(qualifiedFilename+"."+fileExtension);
     clearVariables();
   }
