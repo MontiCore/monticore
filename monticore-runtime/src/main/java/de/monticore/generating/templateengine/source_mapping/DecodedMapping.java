@@ -44,15 +44,20 @@ public class DecodedMapping {
     this.generatedColumn =positionInGenerated.getColumn();
   }
 
+  /**
+   * Note: internally we use zero-based line and column numbering, but since IntelliJ uses one-based numbering the
+   * toString method add +1 to all line numberings to make debugging easier.
+   * @return
+   */
   @Override
   public String toString() {
     String orginalSourceStr = originalSource != null? originalSource.toString():"";
     return "{"
-        +generatedLine+","
-        +generatedColumn+","
+        +(generatedLine+1)+","
+        +(generatedColumn+1)+","
         +orginalSourceStr+","
-        +originalLine+","
-        +originalColumn+","
+        +(originalLine+1)+","
+        +(originalColumn+1)+","
         +name
         +"}";
   }
