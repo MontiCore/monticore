@@ -5,6 +5,8 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
+import de.monticore.generating.templateengine.source_mapping.DecodedMapping;
+import de.monticore.generating.templateengine.source_mapping.SourceMapping;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Finding;
@@ -402,4 +404,10 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
   public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     this.getReportManager().reportFileExistenceChecking(parentPath, file);
   }
+
+  @Override
+  public void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+    this.getReportManager().reportTemplateSourceMapping(qualifiedTemplateName, mapping);
+  }
+
 }
