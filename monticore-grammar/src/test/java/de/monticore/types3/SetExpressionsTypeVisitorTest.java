@@ -277,7 +277,7 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
             + "y in [\"zeug\", \"platz\"],"
             + "String z = x + y, "
             + "z != \"Feuerplatz\"]",
-        "List<String>"
+        "List<R\"(.*)(?)\">"
     );
 
   }
@@ -335,8 +335,8 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("{(char)1, (byte)1, (short)1, (int)1, (float)1}", "Set<float>"),
         arguments("[(char)1, (byte)1, (short)1, (int)1, (float)1]", "List<float>"),
         // examples combining non-numeric types
-        arguments("{\"1\", 1}", "Set<(String | int)>"),
-        arguments("{\"1\", varPerson}", "Set<(Person | String)>"),
+        arguments("{\"1\", 1}", "Set<(R\"1\" | int)>"),
+        arguments("{\"1\", varPerson}", "Set<(Person | R\"1\")>"),
         // complex
         arguments("{{1}}", "Set<Set<int>>")
     );
