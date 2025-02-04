@@ -277,7 +277,7 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
             + "y in [\"zeug\", \"platz\"],"
             + "String z = x + y, "
             + "z != \"Feuerplatz\"]",
-        "List<String>"
+        "List<R\"(.*)(?)\">"
     );
 
   }
@@ -335,8 +335,8 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("{(char)1, (byte)1, (short)1, (int)1, (float)1}", "Set<float>"),
         arguments("[(char)1, (byte)1, (short)1, (int)1, (float)1]", "List<float>"),
         // examples combining non-numeric types
-        arguments("{\"1\", 1}", "Set<(String | int)>"),
-        arguments("{\"1\", varPerson}", "Set<(Person | String)>"),
+        arguments("{\"1\", 1}", "Set<(R\"1\" | int)>"),
+        arguments("{\"1\", varPerson}", "Set<(Person | R\"1\")>"),
         // complex
         arguments("{{1}}", "Set<Set<int>>")
     );
@@ -374,6 +374,13 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         "Set<List<List<Set<double>>>>"
     );
     checkExpr("[[],[1,2]]", "List<List<int>>", "List<List<int>>");
+  }
+
+  @Test
+  public void deriveFormSetEnumerationWithBoxingCTTI() throws IOException {
+    // with values
+    checkExpr("{1}", "Set<java.lang.Integer>", "Set<java.lang.Integer>");
+    checkExpr("{1}", "Set<java.lang.Float>", "Set<java.lang.Float>");
   }
 
   @ParameterizedTest

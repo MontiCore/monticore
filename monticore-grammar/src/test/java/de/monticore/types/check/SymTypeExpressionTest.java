@@ -10,6 +10,7 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Assertions;
@@ -25,6 +26,8 @@ import java.util.stream.Stream;
 
 import static de.monticore.types.check.DefsTypeBasic._intSymType;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SymTypeExpressionTest {
 
@@ -776,6 +779,23 @@ public class SymTypeExpressionTest {
 
     SymTypeOfRegEx tRegEx1 = createTypeRegEx("rege(x(es)?|xps?)");
     Assertions.assertEquals("R\"rege(x(es)?|xps?)\"", tRegEx1.print());
+  }
+
+  @Test
+  public void testSymTypeExpressionFactoryString() {
+    // only String is available
+    // since adding regex types, this should not influence anything
+    BasicSymbolsMill.globalScope().clear();
+    DefsTypesForTests.set_unboxedObjects();
+    assertEquals("String", createStringType().printFullName());
+
+    // only java.util.String is available
+    // since adding regex types, this should not influence anything
+    BasicSymbolsMill.globalScope().clear();
+    DefsTypesForTests.set_boxedObjects();
+    assertEquals("java.lang.String", createStringType().printFullName());
+
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

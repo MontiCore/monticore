@@ -33,6 +33,8 @@ import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.PRIMITIVE_LIST;
  */
 public class SymTypeExpressionFactory {
 
+  protected static final String LOG_NAME = "SymTypeExpressionFactory";
+
   /**
    * createTypeVariable vor Variables
    * @deprecated -> create a symbol and use it to create a SymTypeVariable
@@ -539,6 +541,33 @@ public class SymTypeExpressionFactory {
     // Here, use the fact that we support
     // union types in our implementations
     return createUnion();
+  }
+
+  // convenience for specific types
+
+  public static SymTypeOfObject createStringType() {
+    // tries to find String
+    // We prefer the builtin String,
+    // such that one can specify the (foremost) functions,
+    // rather than using the Java one,
+    // e.g., a String type with only side effect free functions for OCL.
+
+    // String added into global scope analogous to primitive types.
+    Optional<TypeSymbol> stringType = BasicSymbolsMill.globalScope()
+        .resolveType(BasicSymbolsMill.STRING);
+    if (stringType.isEmpty()) {
+      // otherwise, java.util.String, most likely per Class2MC
+      stringType = BasicSymbolsMill.globalScope()
+          .resolveType("java.lang.String");
+    }
+    if (stringType.isEmpty()) {
+      Log.trace(
+          "No String symbol found yet, creating surrogate for now",
+          LOG_NAME
+      );
+      stringType = Optional.of(new TypeSymbolSurrogate(BasicSymbolsMill.STRING));
+    }
+    return createTypeObject(stringType.get());
   }
 
 }
