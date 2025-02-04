@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.valid;
+
+grammar Overriding extends de.monticore.common.TestTypes {
+
+  @Override
+  abstract ArrayType;
+
+  @Override
+  QualifiedName;
+
+  // Override mc.literals.Literals
+      @Override
+      interface Literal extends Expression;
+
+      Expression;
+      
+      A extends Name;
+
+}

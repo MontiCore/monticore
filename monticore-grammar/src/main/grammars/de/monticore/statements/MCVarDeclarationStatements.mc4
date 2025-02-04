@@ -1,0 +1,60 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.statements;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.statements.*;
+import de.monticore.expressions.*;
+import de.monticore.symbols.*;
+import de.monticore.types.*;
+
+/**
+ * This grammar defines Java's mechanism for the introduction
+ * of local variables with a type and
+ * the possibility to initialize the
+ * variable, e.g. private int a = ...
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCVarDeclarationStatements.mc4
+ * * -- -- statements/MCArrayStatements.mc4
+ * * -- -- statements/MCCommonStatements.mc4
+ * * -- -- -- statements/MCExceptionStatements.mc4
+ * * -- -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
+
+component grammar MCVarDeclarationStatements
+          extends MCStatementsBasis,
+                  MCBasicTypes,
+                  ExpressionsBasis,
+                  OOSymbols {
+
+  LocalVariableDeclarationStatement implements MCBlockStatement
+      = LocalVariableDeclaration ";" ;
+  
+  LocalVariableDeclaration
+      = MCModifier* MCType (VariableDeclarator || ",")+ ;
+  
+  VariableDeclarator
+      = Declarator ("=" VariableInit)? ;
+  
+  interface Declarator extends Field
+      = Name;
+  
+  DeclaratorId implements Declarator
+      = Name;
+  
+  interface VariableInit;
+  
+  SimpleInit implements VariableInit
+      = Expression;
+
+}

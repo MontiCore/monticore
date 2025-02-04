@@ -1,0 +1,18 @@
+package de.monticore.ocl;
+
+mlc OptionalOperators {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/ocl/OptionalOperators.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/ocl/optionaloperators/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.CommonExpressions";
+  }
+}

@@ -1,0 +1,643 @@
+///* (c) https://github.com/MontiCore/monticore */
+
+buildscript {
+    // fake a different group for Gradle to prevent it from including the build in it self
+    group = "de.mc"
+}
+
+plugins {
+  id "java-library"
+  id "com.github.johnrengelman.shadow" version "7.1.2"
+  // in case a "genTR" property is set to "true", transformation grammars are also created
+  id "de.monticore.generator-withtr" version "$version"
+  id "jacoco"
+}
+
+description = 'MontiCore: Grammar'
+group = "de.monticore"
+
+def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
+def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
+def symbolsDir = 'src/main/resources'
+
+sourceSets {
+  // Add mlc files to grammars source set (resulting in them being included in the grammars-jar)
+  main.grammars.include(["**/*.mlc", "**/*.mc4"])
+
+  symbols {
+    resources {
+      srcDirs(symbolsDir)
+      include "**/*.sym"
+    }
+  }
+  // The following is required as we still publish a Feature-variant (with usingSourceSet(grammarsForVariant))
+  grammarsForVariant {
+    java.srcDirs = []
+    resources {
+      // DO not include the grammars out dir here (with the TR grammars)
+      srcDirs([grammarDir])
+      include "**/*.mc4"
+      include "**/*.mlc"
+    }
+    grammars.srcDirs = []
+  }
+  test {
+    // Add the examples grammars to the test source set
+    grammars.srcDirs += "src/main/examples"
+  }
+  // The trafo source set might be configured based on the genTR property via the -withtr plugin
+
+  // If tagging is enabled, also create the tagging source set
+  if (("true").equals(getProperty('genTagging'))) {
+    tagging { // and compile its java code
+      java.srcDirs(taggingOutDir)
+    }
+  }
+}
+
+// Declare the de.monticore:monticore-grammar-grammars capability for compatibility reasons
+// Otherwise usage of the requireCapability notation would break
+configurations {
+  grammarSymbolOutElements {
+    outgoing {
+      capability("de.monticore:monticore-grammar-grammars:$version") // compat
+      capability("de.monticore:monticore-grammar:$version") // default
+    }
+  }
+}
+
+
+// for grammarsForVariant optimization
+processGrammarsForVariantResources.dependsOn generateMCGrammars
+
+dependencies {
+  api project(':monticore-runtime')
+  implementation "com.google.guava:guava:$guava_version"
+  implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
+  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  if (("true").equals(getProperty('genTagging'))) {
+    // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
+    taggingCompileOnly project(path)
+  }
+}
+
+
+generateMCGrammars {
+  outputDir = file grammarOutDir
+  debug = false
+  genINT = true
+  if (findProperty("ci") != null) {
+    script = "de/monticore/monticore_noreports.groovy"
+  }
+}
+
+// This task can be used to run the MC generator on only a single grammar
+// Use this task to test changes to the MC generator without the need to rebuild all grammars
+// This task is NOT required in a standard project using MC
+tasks.register("generateSingleMCGrammarForDev", MCGenTask) {
+  outputDir = file grammarOutDir
+  grammar.setFrom(file "src/main/grammars/de/monticore/grammar/Grammar_WithConcepts.mc4")
+  debug = false
+  group = 'mc'
+}
+
+// Note: In the future we will introduce options for TR/Tag output to the tool
+import de.monticore.gradle.gen.MCGenTask;
+
+if (("true").equals(getProperty('genTagging'))) {
+  // Explicitly configure tagging
+  tasks.register("generateTagDefGrammars", MCGenTask.class) {
+    // Make sure we use the output of the generate task
+    // (this ensures, that the inputs are not evaluated too early, resulting in this task being skipped)
+    grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTagDefOutput().matching {
+      exclude(['**/de/monticore/tagging/*', '**/Grammar_WithConcepts*'])
+    })
+    outputDir = file taggingOutDir
+    genTag = true
+    modelPath.from(file grammarOutDir)
+    dependsOn("generateMCGrammars")
+
+
+    if (findProperty("ci") != null) {
+      script = "de/monticore/monticore_noreports.groovy"
+    }
+    symbolPathConfiguration.from(configurations.named("taggingGrammarSymbolDependencies"))
+  }
+  compileTaggingJava.dependsOn(generateTagDefGrammars)
+  processGrammarsForVariantResources.dependsOn(generateTagDefGrammars)
+  tasks.register("generateTagSchemaGrammars", MCGenTask.class) {
+    // Make sure we use the output of the generate task
+    // (this ensures, that the inputs are not evaluated too early, resulting in this task being skipped)
+    grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTagSchemaOutput().matching {
+      exclude(['**/de/monticore/tagging/*', '**/de/monticore/grammar/*'])
+    })
+    outputDir = file taggingOutDir
+    modelPath.from(file grammarOutDir)
+    dependsOn("generateMCGrammars")
+    if (findProperty("ci") != null) {
+      script = "de/monticore/monticore_noreports.groovy"
+    }
+    symbolPathConfiguration.from(configurations.named("taggingGrammarSymbolDependencies"))
+  }
+  compileTaggingJava.dependsOn(generateTagSchemaGrammars)
+  processGrammarsForVariantResources.dependsOn(generateTagSchemaGrammars)
+}
+
+
+if (("true").equals(getProperty('genTR'))) {
+  // Further exclude the grammar and basic tf grammars from being included in the TR grammar input set
+  extractTRGrammars {
+    exclude(["**/de/monticore/tf/*", "**/de/monticore/grammar/*",  "**/de/monticore/siunit/*"])
+  }
+}
+
+// grammar dependencies without generated TR grammars
+def grammarDependencies = ext {
+  // no dependencies
+  MCBasics = []
+  MCLiteralsBasis = []
+  Completeness = []
+  MCStatementsBasis = []
+  Antlr = []
+
+  // one dependency
+  MCSynchronizedStatements = ["MCCommonStatements"]
+  CommonExpressions = ["ExpressionsBasis"]
+  BitExpressions = ["ExpressionsBasis"]
+  OptionalOperators = ["CommonExpressions"]
+  MCBasicTypes = ["MCBasics"]
+  MCFullGenericTypes = ["MCSimpleGenericTypes"]
+  ODRuleGeneration = ["MCFullGenericTypes"]
+  BasicSymbols = ["MCBasics"]
+  CompSymbols = ["BasicSymbols"]
+  AssignmentExpressions = ["ExpressionsBasis"]
+  UMLModifier = ["UMLStereotype"]
+  MCArrayTypes = ["MCBasicTypes"]
+  MCSimpleGenericTypes = ["MCCollectionTypes"]
+  MCCommonStatements = ["MCVarDeclarationStatements"]
+  MCCollectionTypes = ["MCBasicTypes"]
+  StreamExpressions = ["CommonExpressions"]
+  MCExceptionStatements = ["MCCommonStatements"]
+  MCFunctionTypes = ["MCBasicTypes"]
+  MCStructuralTypes = ["MCBasicTypes"]
+  OOSymbols = ["BasicSymbols"]
+  TFCommons = ["TFBasisExts"]
+  MCJavaLiterals = ["MCCommonLiterals"]
+  UMLStereotype = ["MCCommonLiterals"]
+  MCArrayStatements = ["MCVarDeclarationStatements"]
+  RegularExpressions = ["MCCommonLiterals"]
+  SIUnits = ["MCCommonLiterals"]
+  TupleExpressions = ["ExpressionsBasis"]
+
+  // two dependencies
+  Cardinality = ["MCBasics", "MCCommonLiterals"]
+  ExpressionsBasis = ["MCBasics", "MCLiteralsBasis"]
+  Grammar = ["MCCommonLiterals", "MCSimpleGenericTypes"]
+  MCReturnStatements = ["MCStatementsBasis", "ExpressionsBasis"]
+  MCCommonLiterals = ["MCBasics", "MCLiteralsBasis"]
+  MCLowLevelStatements = ["MCStatementsBasis", "MCBasics"]
+  MCAssertStatements = ["MCStatementsBasis", "ExpressionsBasis"]
+  RegExType = ["RegularExpressions", "MCBasicTypes"]
+  UglyExpressions = ["CommonExpressions", "MCBasicTypes"]
+  SIUnitLiterals = ["MCCommonLiterals", "SIUnits"]
+  SIUnitTypes4Math = ["MCBasicTypes", "SIUnits"]
+  SIUnitTypes4Computing = ["MCBasicTypes", "SIUnitTypes4Math"]
+  TypeParameters = ["BasicSymbols", "MCBasicTypes"]
+
+  // three dependencies
+  LambdaExpressions = ["BasicSymbols", "MCBasicTypes", "ExpressionsBasis"]
+  OCLExpressions = ["BasicSymbols", "ExpressionsBasis", "MCBasicTypes"]
+  SetExpressions = ["BasicSymbols", "ExpressionsBasis", "MCBasicTypes"]
+  TFBasisExts = ["JavaLight", "MCSimpleGenericTypes", "MCCommonLiterals"]
+  Tags = ["MCBasics", "BasicSymbols", "MCCommonLiterals"]
+  TagSchema = ["MCBasics", "MCBasicTypes", "MCCommonLiterals"]
+
+  // four dependencies
+  JavaClassExpressions = ["CommonExpressions", "MCFullGenericTypes", "MCVarDeclarationStatements", "UglyExpressions"]
+  MCCommon = ["Cardinality", "Completeness", "UMLModifier", "UMLStereotype"]
+  ODRules = ["TFBasisExts", "MCCommonLiterals", "MCJavaLiterals", "UMLStereotype"]
+  MCVarDeclarationStatements = ["MCStatementsBasis", "MCBasicTypes", "ExpressionsBasis", "OOSymbols"]
+
+  // six dependencies
+  JavaLight = ["AssignmentExpressions", "JavaClassExpressions", "MCCommonStatements", "MCArrayStatements", "MCReturnStatements", "TypeParameters"]
+  MCFullJavaStatements = ["MCAssertStatements", "MCExceptionStatements", "MCLowLevelStatements", "MCReturnStatements", "MCSynchronizedStatements", "MCArrayStatements"]
+
+  // nine dependencies
+  Grammar_WithConcepts = ["Grammar", "MCCommonStatements", "MCReturnStatements", "MCExceptionStatements", "JavaClassExpressions", "JavaLight", "Antlr", "CommonExpressions", "BitExpressions"]
+}
+
+/**
+ * Integration with MLC language and tool
+ */
+task showArtifacts {}
+task checkArtifacts {}
+configurations { MLC }
+dependencies {
+  MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
+  MLC(project(':monticore-runtime')) // Ensure the proper runtime is used for MLC
+}
+StringJoiner joiner = new StringJoiner(" ")
+configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
+joiner.add "$projectDir/target/symbols"
+String mp = joiner.toString()
+
+///////////// MLC tasks - Start ///////////////////////
+// two tasks per MLC file
+// each task needs to depend on all internally promoted MLCs
+fileTree("src/main/grammars").matching { include '**/*.mlc' }.each {
+  def f = it
+  def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
+
+  task "showArtifacts${mlcName}"(type: JavaExec) {
+    classpath = configurations.MLC
+    group = 'MLC'
+    mainClass = 'de.monticore.mlc.MLCTool'
+    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"
+    dependsOn("generateMCGrammars")
+    showArtifacts.dependsOn("showArtifacts${mlcName}")
+  }
+
+  task "checkArtifacts${mlcName}"(type: JavaExec) {
+    classpath = configurations.MLC
+    group = 'MLC'
+    mainClass = 'de.monticore.mlc.MLCTool'
+    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${buildDir}/reports"
+    dependsOn("generateMCGrammars")
+    checkArtifacts.dependsOn("checkArtifacts${mlcName}")
+  }
+}
+
+///////////// dependencies between check artifacts tasks ///////////////////////
+
+checkArtifactsAssignmentExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
+checkArtifactsBitExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
+checkArtifactsCommonExpressions.dependsOn(checkArtifactsExpressionsBasis)
+
+checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCBasics)
+checkArtifactsExpressionsBasis.dependsOn(checkArtifactsMCLiteralsBasis)
+checkArtifactsExpressionsBasis.dependsOn(checkArtifactsBasicSymbols)
+
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsCommonExpressions)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCFullGenericTypes)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsUglyExpressions)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsJavaClassExpressions.dependsOn(checkArtifactsMCVarDeclarationStatements)
+
+checkArtifactsAntlr.dependsOn(checkArtifactsMCBasics)
+
+checkArtifactsGrammar.dependsOn(checkArtifactsMCCommonLiterals)
+checkArtifactsGrammar.dependsOn(checkArtifactsMCSimpleGenericTypes)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsGrammar)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsMCCommonStatements)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsMCExceptionStatements)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsJavaClassExpressions)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsJavaLight)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsAntlr)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsCommonExpressions)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsBitExpressions)
+checkArtifactsGrammar_WithConcepts.dependsOn(checkArtifactsUglyExpressions)
+
+checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsMCLiteralsBasis)
+checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsMCBasics)
+checkArtifactsMCCommonLiterals.dependsOn(checkArtifactsBasicSymbols)
+
+checkArtifactsMCLiteralsBasis.dependsOn(checkArtifactsMCBasics)
+
+checkArtifactsMCJavaLiterals.dependsOn(checkArtifactsMCCommonLiterals)
+
+checkArtifactsMCArrayStatements.dependsOn(checkArtifactsMCVarDeclarationStatements)
+checkArtifactsMCAssertStatements.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsMCAssertStatements.dependsOn(checkArtifactsExpressionsBasis)
+
+checkArtifactsMCCommonStatements.dependsOn(checkArtifactsMCVarDeclarationStatements)
+
+checkArtifactsMCExceptionStatements.dependsOn(checkArtifactsMCCommonStatements)
+
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCAssertStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCExceptionStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCLowLevelStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCSynchronizedStatements)
+checkArtifactsMCFullJavaStatements.dependsOn(checkArtifactsMCArrayStatements)
+
+checkArtifactsMCLowLevelStatements.dependsOn(checkArtifactsMCStatementsBasis)
+
+checkArtifactsMCReturnStatements.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsMCReturnStatements.dependsOn(checkArtifactsExpressionsBasis)
+
+checkArtifactsMCStatementsBasis.dependsOn(checkArtifactsMCBasics)
+
+checkArtifactsMCSynchronizedStatements.dependsOn(checkArtifactsMCCommonStatements)
+
+checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsMCStatementsBasis)
+checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsMCBasicTypes)
+checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsExpressionsBasis)
+checkArtifactsMCVarDeclarationStatements.dependsOn(checkArtifactsOOSymbols)
+
+checkArtifactsBasicSymbols.dependsOn(checkArtifactsMCBasics)
+
+checkArtifactsOOSymbols.dependsOn(checkArtifactsBasicSymbols)
+
+checkArtifactsODRuleGeneration.dependsOn(checkArtifactsMCFullGenericTypes)
+
+checkArtifactsODRules.dependsOn(checkArtifactsMCFullGenericTypes)
+checkArtifactsODRules.dependsOn(checkArtifactsTFBasisExts)
+checkArtifactsODRules.dependsOn(checkArtifactsMCJavaLiterals)
+checkArtifactsODRules.dependsOn(checkArtifactsUMLStereotype)
+checkArtifactsODRules.dependsOn(checkArtifactsUglyExpressions)
+checkArtifactsODRules.dependsOn(checkArtifactsExpressionsBasis)
+
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsMCSimpleGenericTypes)
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsMCCommonLiterals)
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsJavaLight)
+checkArtifactsTFBasisExts.dependsOn(checkArtifactsUglyExpressions)
+
+checkArtifactsTFCommons.dependsOn(checkArtifactsTFBasisExts)
+checkArtifactsTFCommons.dependsOn(checkArtifactsUglyExpressions)
+
+checkArtifactsMCArrayTypes.dependsOn(checkArtifactsMCBasicTypes)
+
+checkArtifactsMCBasicTypes.dependsOn(checkArtifactsMCBasics)
+checkArtifactsMCBasicTypes.dependsOn(checkArtifactsOOSymbols)
+
+checkArtifactsMCCollectionTypes.dependsOn(checkArtifactsMCBasicTypes)
+
+checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
+
+checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
+
+checkArtifactsTypeParameters.dependsOn(checkArtifactsBasicSymbols)
+checkArtifactsTypeParameters.dependsOn(checkArtifactsMCBasicTypes)
+
+checkArtifactsCardinality.dependsOn(checkArtifactsMCBasics)
+checkArtifactsCardinality.dependsOn(checkArtifactsMCCommonLiterals)
+
+checkArtifactsJavaLight.dependsOn(checkArtifactsAssignmentExpressions)
+checkArtifactsJavaLight.dependsOn(checkArtifactsJavaClassExpressions)
+checkArtifactsJavaLight.dependsOn(checkArtifactsMCCommonStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsMCArrayStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsMCReturnStatements)
+checkArtifactsJavaLight.dependsOn(checkArtifactsTypeParameters)
+checkArtifactsJavaLight.dependsOn(checkArtifactsUglyExpressions)
+
+checkArtifactsMCCommon.dependsOn(checkArtifactsCardinality)
+checkArtifactsMCCommon.dependsOn(checkArtifactsCompleteness)
+checkArtifactsMCCommon.dependsOn(checkArtifactsUMLModifier)
+checkArtifactsMCCommon.dependsOn(checkArtifactsUMLStereotype)
+
+checkArtifactsUMLModifier.dependsOn(checkArtifactsUMLStereotype)
+
+checkArtifactsUMLStereotype.dependsOn(checkArtifactsMCCommonLiterals)
+
+checkArtifactsRegularExpressions.dependsOn(checkArtifactsMCCommonLiterals)
+
+checkArtifactsRegExType.dependsOn(checkArtifactsRegularExpressions)
+checkArtifactsRegExType.dependsOn(checkArtifactsMCBasicTypes)
+
+checkArtifactsUglyExpressions.dependsOn(checkArtifactsCommonExpressions)
+checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
+
+checkArtifactsMCStructuralTypes.dependsOn(checkArtifactsMCBasicTypes)
+
+///////////// dependencies between show artifacts tasks ///////////////////////
+
+showArtifactsAssignmentExpressions.dependsOn(showArtifactsExpressionsBasis)
+
+showArtifactsBitExpressions.dependsOn(showArtifactsExpressionsBasis)
+
+showArtifactsCommonExpressions.dependsOn(showArtifactsExpressionsBasis)
+
+showArtifactsExpressionsBasis.dependsOn(showArtifactsMCBasics)
+showArtifactsExpressionsBasis.dependsOn(showArtifactsMCLiteralsBasis)
+showArtifactsExpressionsBasis.dependsOn(showArtifactsBasicSymbols)
+
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsCommonExpressions)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCFullGenericTypes)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsUglyExpressions)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCStatementsBasis)
+showArtifactsJavaClassExpressions.dependsOn(showArtifactsMCVarDeclarationStatements)
+
+showArtifactsAntlr.dependsOn(showArtifactsMCBasics)
+
+showArtifactsGrammar.dependsOn(showArtifactsMCCommonLiterals)
+showArtifactsGrammar.dependsOn(showArtifactsMCSimpleGenericTypes)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsGrammar)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsMCCommonStatements)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsMCReturnStatements)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsMCExceptionStatements)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsJavaClassExpressions)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsJavaLight)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsAntlr)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsCommonExpressions)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsBitExpressions)
+showArtifactsGrammar_WithConcepts.dependsOn(showArtifactsUglyExpressions)
+
+showArtifactsMCCommonLiterals.dependsOn(showArtifactsMCLiteralsBasis)
+showArtifactsMCCommonLiterals.dependsOn(showArtifactsMCBasics)
+showArtifactsMCCommonLiterals.dependsOn(showArtifactsBasicSymbols)
+
+showArtifactsMCLiteralsBasis.dependsOn(showArtifactsMCBasics)
+
+showArtifactsMCJavaLiterals.dependsOn(showArtifactsMCCommonLiterals)
+
+showArtifactsMCArrayStatements.dependsOn(showArtifactsMCVarDeclarationStatements)
+showArtifactsMCAssertStatements.dependsOn(showArtifactsMCStatementsBasis)
+showArtifactsMCAssertStatements.dependsOn(showArtifactsExpressionsBasis)
+
+showArtifactsMCCommonStatements.dependsOn(showArtifactsMCVarDeclarationStatements)
+
+showArtifactsMCExceptionStatements.dependsOn(showArtifactsMCCommonStatements)
+
+showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCAssertStatements)
+showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCExceptionStatements)
+showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCLowLevelStatements)
+showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCReturnStatements)
+showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCSynchronizedStatements)
+showArtifactsMCFullJavaStatements.dependsOn(showArtifactsMCArrayStatements)
+
+showArtifactsMCLowLevelStatements.dependsOn(showArtifactsMCStatementsBasis)
+
+showArtifactsMCReturnStatements.dependsOn(showArtifactsMCStatementsBasis)
+showArtifactsMCReturnStatements.dependsOn(showArtifactsExpressionsBasis)
+
+showArtifactsMCStatementsBasis.dependsOn(showArtifactsMCBasics)
+
+showArtifactsMCSynchronizedStatements.dependsOn(showArtifactsMCCommonStatements)
+
+showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsMCStatementsBasis)
+showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsMCBasicTypes)
+showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsExpressionsBasis)
+showArtifactsMCVarDeclarationStatements.dependsOn(showArtifactsOOSymbols)
+
+showArtifactsBasicSymbols.dependsOn(showArtifactsMCBasics)
+
+showArtifactsOOSymbols.dependsOn(showArtifactsBasicSymbols)
+
+showArtifactsODRuleGeneration.dependsOn(showArtifactsMCFullGenericTypes)
+
+showArtifactsODRules.dependsOn(showArtifactsMCFullGenericTypes)
+showArtifactsODRules.dependsOn(showArtifactsTFBasisExts)
+showArtifactsODRules.dependsOn(showArtifactsMCJavaLiterals)
+showArtifactsODRules.dependsOn(showArtifactsUMLStereotype)
+showArtifactsODRules.dependsOn(showArtifactsUglyExpressions)
+showArtifactsODRules.dependsOn(showArtifactsExpressionsBasis)
+
+showArtifactsTFBasisExts.dependsOn(showArtifactsMCSimpleGenericTypes)
+showArtifactsTFBasisExts.dependsOn(showArtifactsMCCommonLiterals)
+showArtifactsTFBasisExts.dependsOn(showArtifactsJavaLight)
+showArtifactsTFBasisExts.dependsOn(showArtifactsUglyExpressions)
+
+showArtifactsTFCommons.dependsOn(showArtifactsTFBasisExts)
+showArtifactsTFCommons.dependsOn(showArtifactsUglyExpressions)
+
+showArtifactsMCArrayTypes.dependsOn(showArtifactsMCBasicTypes)
+
+showArtifactsMCBasicTypes.dependsOn(showArtifactsMCBasics)
+showArtifactsMCBasicTypes.dependsOn(showArtifactsOOSymbols)
+
+showArtifactsMCCollectionTypes.dependsOn(showArtifactsMCBasicTypes)
+
+showArtifactsMCFullGenericTypes.dependsOn(showArtifactsMCSimpleGenericTypes)
+
+showArtifactsMCSimpleGenericTypes.dependsOn(showArtifactsMCCollectionTypes)
+
+showArtifactsTypeParameters.dependsOn(showArtifactsBasicSymbols)
+showArtifactsTypeParameters.dependsOn(showArtifactsMCBasicTypes)
+
+showArtifactsCardinality.dependsOn(showArtifactsMCBasics)
+showArtifactsCardinality.dependsOn(showArtifactsMCCommonLiterals)
+
+showArtifactsJavaLight.dependsOn(showArtifactsAssignmentExpressions)
+showArtifactsJavaLight.dependsOn(showArtifactsJavaClassExpressions)
+showArtifactsJavaLight.dependsOn(showArtifactsMCCommonStatements)
+showArtifactsJavaLight.dependsOn(showArtifactsMCArrayStatements)
+showArtifactsJavaLight.dependsOn(showArtifactsMCReturnStatements)
+showArtifactsJavaLight.dependsOn(showArtifactsTypeParameters)
+showArtifactsJavaLight.dependsOn(showArtifactsUglyExpressions)
+
+showArtifactsMCCommon.dependsOn(showArtifactsCardinality)
+showArtifactsMCCommon.dependsOn(showArtifactsCompleteness)
+showArtifactsMCCommon.dependsOn(showArtifactsUMLModifier)
+showArtifactsMCCommon.dependsOn(showArtifactsUMLStereotype)
+
+showArtifactsUMLModifier.dependsOn(showArtifactsUMLStereotype)
+
+showArtifactsUMLStereotype.dependsOn(showArtifactsMCCommonLiterals)
+
+showArtifactsRegularExpressions.dependsOn(showArtifactsMCCommonLiterals)
+
+showArtifactsRegExType.dependsOn(showArtifactsRegularExpressions)
+showArtifactsRegExType.dependsOn(showArtifactsMCBasicTypes)
+
+showArtifactsUglyExpressions.dependsOn(showArtifactsCommonExpressions)
+showArtifactsUglyExpressions.dependsOn(showArtifactsMCBasicTypes)
+
+showArtifactsMCStructuralTypes.dependsOn(showArtifactsMCBasicTypes)
+
+///////////// MLC tasks - End ///////////////////////
+
+
+java {
+  // Deprecated
+  registerFeature('grammars') {
+    usingSourceSet(sourceSets.grammarsForVariant)
+  }
+  // End deprecation
+  registerFeature('tests') {
+    usingSourceSet(sourceSets.test)
+  }
+}
+
+shadowJar {
+  from sourceSets.main.grammars
+}
+
+generateTestMCGrammars {
+//   Temporary - for optimizations (due to feature)
+  genINT = true
+  dependsOn(tasks.grammarsForVariantJar)
+}
+
+// Ensure the grammars and GrammarsForVariant jars do not conflict
+tasks.grammarsForVariantJar {
+  archiveClassifier = "grammars-compat"
+}
+
+jar.dependsOn(shadowJar)
+
+if (findProperty('ci') == null) {
+  jar.dependsOn(shadowJar, testJar)
+}
+
+if (("true").equals(getProperty('genTR'))) {
+  generateTrafoMCGrammars {
+    // Temporary - for optimizations
+    dependsOn(tasks.grammarsForVariantJar)
+  }
+}
+
+
+if (("true").equals(getProperty('genTagging'))) {
+  // Because tagging is not properly published as a source set we instead add the tag definitions to the main grammar jars
+  ["grammarsJar", "grammarsForVariantJar"].forEach { taskname ->
+    // We have to add it to both the "compability grammarsForVariant", as well as the grammarsJar publication
+    tasks.named(taskname, org.gradle.jvm.tasks.Jar) {
+      from(tasks.generateMCGrammars.outputDir) {
+        include "**/*TagDefinition.mc4", "**/*TagSchema.mc4"
+      }
+      includeEmptyDirs = false
+    }
+  }
+  // Bundle and publish the generated tagging artifacts separately as monticore-grammar-tagging
+  tasks.register('taggingJar', Jar) {
+    from sourceSets.tagging.output
+    group 'build'
+    dependsOn(tasks.generateTaggingMCGrammars)
+  }
+  tasks.register('taggingSourcesJar', Jar) {
+    from sourceSets.tagging.java
+    group 'build'
+    dependsOn(tasks.generateTaggingMCGrammars)
+  }
+  publishing {
+    publications {
+      "tagging"(MavenPublication) {
+        artifactId = project.name + "-tagging"
+        artifact tasks.taggingJar { archiveAppendix = 'tagging' }
+        artifact tasks.taggingSourcesJar { archiveAppendix = 'tagging'; archiveClassifier = 'sources' }
+      }
+    }
+  }
+  configurations {
+    tagging
+  }
+  artifacts {
+    tagging(taggingJar)
+  }
+}
+
+if (("true").equals(getProperty('genTR'))) {
+  configurations {
+    // This configuration exposes the trafo compile classpath to the montitrans tests within this project
+    // (still using the old, non-transitive MC generator gradle plugin
+    trafoCompileClasspathForLegacyCompat {
+      extendsFrom trafoCompileClasspath
+      setCanBeResolved(false)
+      setCanBeConsumed(true)
+    }
+  }
+
+  publishing {
+    publications {
+      "trafo" {
+        groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
+      }
+    }
+  }
+}

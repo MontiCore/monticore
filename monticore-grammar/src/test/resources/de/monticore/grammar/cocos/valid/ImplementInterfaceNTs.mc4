@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.valid;
+
+grammar ImplementInterfaceNTs {
+  interface A = D;
+
+  B implements A = D;
+
+  abstract C implements A = D;
+
+  D;
+
+  interface Expression = operator:"";
+
+  TestExpression implements Expression = operator:"+";
+
+  interface IList = D*;
+
+  interface IList2 = D+;
+
+  ListImpl implements IList, IList2 = D*;
+
+  interface IOpt = D?;
+
+  OptImpl implements IOpt = D?;
+
+  interface ITerminal = bracketOpen:"{"  bracketClosed:"}";
+
+  TerminalImpl implements ITerminal = bracketOpen:"{" bracketClosed:"}";
+
+  interface I = u:Digit;
+  P1 implements I = u:Char;
+  token Digit = '0'..'9';
+  token Char = 'a'..'z';
+
+}
+

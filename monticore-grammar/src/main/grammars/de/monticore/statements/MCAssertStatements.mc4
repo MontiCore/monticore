@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.statements;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.statements.*;
+import de.monticore.expressions.*;
+
+/**
+ * This grammar defines the assert statement as known from Java
+ *   assert Constraint : Message ;
+ * It can be used independently of other Java statements,
+ * but also can be left out if its applications would not make sense.
+ *
+ * This grammar is part of a hierarchy of statements, namely
+ * * statements/MCStatementsBasis.mc4
+ * * -- statements/MCAssertStatements.mc4
+ * * -- statements/MCVarDeclarationStatements.mc4
+ * * -- -- statements/MCArrayStatements.mc4
+ * * -- -- statements/MCCommonStatements.mc4
+ * * -- -- -- statements/MCExceptionStatements.mc4
+ * * -- -- -- statements/MCSynchronizedStatements.mc4
+ * * -- statements/MCLowLevelStatements.mc4
+ * * -- statements/MCReturnStatements.mc4
+ *
+ * and the composition of all statement grammars to full Java:
+ * * -- -- statements/MCFullJavaStatements.mc4
+ *
+*/
+
+component grammar MCAssertStatements 
+          extends MCStatementsBasis,
+                  ExpressionsBasis  {
+
+AssertStatement implements MCStatement
+    = "assert" assertion:Expression (":" message:Expression)? ";" ;
+
+}

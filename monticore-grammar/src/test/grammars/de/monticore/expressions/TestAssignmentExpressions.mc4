@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+
+grammar TestAssignmentExpressions
+    extends de.monticore.expressions.AssignmentExpressions, de.monticore.literals.MCCommonLiterals {
+
+      start Expression;
+}

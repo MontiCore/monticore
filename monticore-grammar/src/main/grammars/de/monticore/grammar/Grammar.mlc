@@ -1,0 +1,35 @@
+package de.monticore.grammar;
+
+mlc Grammar {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/grammar/Grammar.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/grammar/grammar/**.java";
+
+    // additional, general Java source code
+    include "de/monticore/grammar/*.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/grammar/grammar/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.literals.MCCommonLiterals";
+    mlc "de.monticore.types.MCSimpleGenericTypes";
+    include "$mp/com/google/common/**.class";
+    include "$mp/org/apache/commons/lang3/StringUtils.class";
+  }
+
+  uses {
+    // needs to be included because it is needed to build the symbol table -> cf. GrammarScopesGenitor
+    include "$projectDir/target/generated-sources/monticore/sourcecode/de/monticore/grammar/grammar_withconcepts/_prettyprint/Grammar_WithConceptsFullPrettyPrinter.java";
+  }
+
+}

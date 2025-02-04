@@ -1,0 +1,1063 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://monticore.github.io/monticore/monticore-runtime/src/main/java/de/monticore/symboltable/Symboltable/">
+      
+      
+      
+      
+      <link rel="icon" href="../../../../../../../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.2">
+    
+    
+      
+        <title>Symboltable - MontiCore</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../../../assets/stylesheets/main.d7758b05.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['disableCookies']);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://stats.fh-aachen.de/";
+      _paq.push(['setTrackerUrl', u+'piwik.php']);
+      _paq.push(['setSiteId', '35']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documentation-of-the-symbol-table-infrastructure" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../../../../.." title="MontiCore" class="md-header__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MontiCore
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Symboltable
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/GettingStarted/" class="md-tabs__link">
+        
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../../../../monticore-grammar/src/main/grammars/de/monticore/Grammars/" class="md-tabs__link">
+          
+  
+  Core Grammars
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../../../../docs/DevelopedLanguages/" class="md-tabs__link">
+          
+  
+  Languages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/BestPractices/" class="md-tabs__link">
+        
+  
+    
+  
+  Best Practices
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../00.org/Explanations/CHANGELOG/" class="md-tabs__link">
+        
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/Download/" class="md-tabs__link">
+        
+  
+    
+  
+  Downloads
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/Publications/" class="md-tabs__link">
+        
+  
+    
+  
+  Publications
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-tabs__link">
+        
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../../../../.." title="MontiCore" class="md-nav__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    MontiCore
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/GettingStarted/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Core Grammars
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Core Grammars
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../monticore-grammar/src/main/grammars/de/monticore/Grammars/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Expressions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../monticore-grammar/src/main/grammars/de/monticore/literals/Literals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Literals
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../monticore-grammar/src/main/grammars/de/monticore/types/Types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Languages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Languages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/DevelopedLanguages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Languages and Language Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Languages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    List of Languages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/BestPractices/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Best Practices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../00.org/Explanations/CHANGELOG/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Download/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Downloads
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Publications/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Publications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    License
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<h1 id="documentation-of-the-symbol-table-infrastructure">Documentation of the Symbol Table Infrastructure</h1>
+<h2 id="conceptual-model-of-symbol-tables">Conceptual Model of Symbol Tables</h2>
+<ul>
+<li>What is a symbol? </li>
+<li>What is a symbol kind? </li>
+<li>What is a scope? </li>
+<li>What are properties of scopes? </li>
+<li>What is symbol resolution?</li>
+</ul>
+<h2 id="define-the-symbol-table-of-a-language-via-its-grammar">Define the Symbol Table of a Language via its Grammar</h2>
+<ul>
+<li>Indicate that a nonterminal defines a symbol</li>
+<li>Indicate that a nonterminal spans a scope</li>
+<li>Indicate that a nonterminal uses the name of a symbol</li>
+</ul>
+<h2 id="runtime-environment-for-symbol-table-infrastructure">Runtime Environment for Symbol Table Infrastructure</h2>
+<p>This section explains classes and interfaces that are part of the MontiCore runtime environment.</p>
+<h3 id="symbol-table-infrastructure-interfaces">Symbol Table Infrastructure Interfaces</h3>
+<p>Most of the interfaces of the MontiCore runtime enviroenment are super types of generated classes
+or interfaces that are explained <a href="#generated-symbol-table-infrastructure">here</a>.</p>
+<h4 id="iscope-interface">IScope Interface</h4>
+<p>This interface is the super type of the generated scope interfaces and thus, it is also transitive
+of global scope interfaces and artifact scope interfaces. <code>IScope</code> contains signatures for methods<br />
+realizing the scope's connection to its environment (i.e., AST classes, sub scopes, enclosing scopes).
+Generated, language-specific scope interfaces refine the types of these methods. </p>
+<h4 id="iartifactscope-interface">IArtifactScope Interface</h4>
+<p>The <code>IArtifactScope</code> interface is an interface that all generated language-specific artifact scope
+interfaces extend. It provides an abstract method for obtaining an artifact scope's package as String.
+All further methods have either language-specific arguments or return types and are, thus, introduced
+in the language-specific artifact scope interfaces.</p>
+<h4 id="iglobalscope-interface">IGlobalScope Interface</h4>
+<p>The <code>IGlobalScope</code> interface is an interface that all generated language-specific global scope
+interfaces extend. It provides an abstract method for obtaining the global scope's Modelpath.
+All further methods have either language-specific arguments or return types and are, thus, introduced
+in the language-specific global scope interfaces.</p>
+<h4 id="isymbol-interface">ISymbol Interface</h4>
+<p>The <code>ISymbol</code> interface is an interface that all generated language-specific symbol classes
+implement. It provides the signatures for methods to obtaining the symbol's name, its package, 
+its fully-qualified name, and its enclosing scope, and its AST node. 
+Further, the interface contains the signatures of methods for getting and setting the access 
+modifier of the symbol and default implementations for getting the source position of the symbol.
+It also includes a static method for sorting a collection of symbols by their source position, which
+is handy for realizing the semantics of ordered scopes. 
+All further methods have either language-specific arguments or return types and are, thus, introduced
+in the specific symbol classes.</p>
+<h4 id="isymbolpredicate-interface">ISymbolPredicate Interface</h4>
+<p>An <code>ISymbolPredicate</code> is a predicate of a symbol and is used for filtering the results of symbol 
+resolution. This is explained in more detail in <a href="https://monticore.de/MontiCore_Reference-Manual.2017.pdf">[HR17]</a>.
+The MontiCore runtime contains the class <code>IncludesAccessModifierSymbolPredicate</code>, which is an 
+implementation of a symbol predicate for filtering symbols based on their access modifier. </p>
+<h4 id="iscopespanningsymbol-interface">IScopeSpanningSymbol Interface</h4>
+<p>The <code>IScopeSpanningSymbol</code> interface extends the interface <code>ISymbol</code> and adds a method signature
+for obtaining the scope that this symbol spans. Symbols that span a scope (which is the case, e.g., 
+if the respective nonterminal in the grammar is annotated with both the keywords <code>symbol</code> and <code>scope</code>)
+implement this interface instead of the <code>ISymbol</code> interface.  </p>
+<h3 id="modifiers">Modifiers</h3>
+<p>The modifiers contained in the MontiCore runtime implement the interface <code>AccessModifier</code>, which again
+is a <code>Modifier</code>. Out of the box, MontiCore supports the two access modifier 
+implementations <code>BasicAccessModifier</code> and <code>NoAccessModifier</code>. Further, more sophisticated access modifiers
+have to be engineered individually, dedicated to their use for a specific modeling language.</p>
+<h3 id="json-infrastructure-for-symbol-table-serialization">JSON Infrastructure for Symbol Table Serialization</h3>
+<p>The MontiCore runtime contains classes that are required for serializing and deserializing 
+symbol tables to Json-encoded Strings. The following explains these in short:</p>
+<h4 id="jsonprinter-class">JsonPrinter Class</h4>
+<p>The class <code>JsonPrinter</code> wraps the concrete syntax of Json. It is an API for building Json-encoded 
+String via a series of method calls. </p>
+<h4 id="jsonparser-class">JsonParser Class</h4>
+<p>The class <code>JsonParser</code> parses a Json-encoded String into an instance of the Json 
+<a href="#json-model">abstract syntax model</a>. The central method of this class is the static method 
+<code>JsonElement parse(String s)</code>. </p>
+<h4 id="json-parsing-infrastructure">Json Parsing Infrastructure</h4>
+<p>Besides the <code>JsonParser</code> class, the MontiCore runtime contains more classes required
+for translating JSON-encoded Strings into instances of the Json <a href="#json-model">abstract syntax model</a>.
+The class <code>JsonLexer</code> lexes an input String into a sequence of <code>JsonToken</code> instances. 
+JsonToken instances realizes tokens that have a certain kind in form of a value from the 
+enumeration <code>JsonTokenKind</code>. The <code>NumberLexer</code> is able to lex all kinds of valid numbers encoded in
+Json.</p>
+<h4 id="json-model">Json Model</h4>
+<p>The MontiCore runtime contains a model of the abstract syntax of JSON
+that is used by the <code>JsonParser</code> and the <code>JsonPrinter</code> for serialization of symbol tables.
+Individual classes exist for the different abstract syntax types of JSON. </p>
+<h4 id="jsondesers-class">JsonDeSers Class</h4>
+<p>The class <code>JsonDeSers</code> contains constants and static methods that support the generated language-specific 
+symbol and scope DeSer classes.</p>
+<h2 id="generated-symbol-table-infrastructure">Generated Symbol Table Infrastructure</h2>
+<p>MontiCore generates large parts of the symbol table infrastructure that is strongly typed for each
+MontiCore language. The following gives a short and technical introduction of each of these
+generated classes, interfaces, and enums. The concepts behind each of these infrastructure part if 
+explained in the <a href="https://monticore.de/MontiCore_Reference-Manual.2017.pdf">MontiCore Reference Manual [HR17]</a>.</p>
+<!-- ################################################################################### -->
+<h3 id="infrastructure-generated-per-language">Infrastructure Generated per Language</h3>
+<p>This section explains all parts of the symbol table infrastructure that MontiCore generates once per 
+language.
+For scopes, artifact scopes, and global scopes, MontiCore separated classes and interfaces. The 
+interfaces follow the (multiple) inheritance of the grammars and realized most behavior in form 
+of default method implementations. The classes implement the interface and manage access to attributes.</p>
+<h4 id="scope-interface">Scope Interface</h4>
+<p>For each language, MontiCore generates a scope interface. The scope interface prescribes all public 
+methods of the scope class and realized some methods as default implementations. The hierarchy of 
+MontiCore grammars is also reflected in the hierarchy of scope interfaces. To realize the multiple 
+inheritance of MontiCore in Java, the scope interface is separated from the scope class.
+If a language inherits from one or more grammars, the scope interface of the language extends all
+scope interfaces of the inherited languages. Otherwise, if a language does not inherit from any 
+language, the scope interface extends the <code>IScope</code> interface from the MontiCore runtime.</p>
+<h4 id="scope-class">Scope Class</h4>
+<p>The scope class is generated for each MontiCore language. It implements the scope interface of the 
+language and realizes scope attributes as well as method implementations that realize direct access 
+to scope attributes.</p>
+<h4 id="scope-builder-class">Scope Builder Class</h4>
+<p>MontiCore generated builder classes for each scope class. The instances of the builders are available through the language's mill. With the builder, the attributes of the scope class can be initialized and a new instance of the scope can be created. </p>
+<p>We highly recommend instantiating scope classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages.</p>
+<h4 id="artifactscope-interface">ArtifactScope Interface</h4>
+<p>The artifact scope interface is generated once for each MontiCore language. It extends the scope
+interface of the language and the artifact scope interface of the MontiCore runtime.
+Artifact scopes are instantiated once for each processed artifact and, conceptually, slightly differ
+from scopes established within a model. To this end, their realization overrides some methods
+of the scope interface with a special behavior and adds new methods.</p>
+<h4 id="artifactscope-class">ArtifactScope Class</h4>
+<p>MontiCore generates a single artifact scope class for each language that extends the scope class of 
+the language and implements the artifact scope interface of the language. </p>
+<h4 id="artifactscope-builder-class">ArtifactScope Builder Class</h4>
+<p>MontiCore generated builder classes for each artifact scope class. The instances of the builders are available through the language's mill. With the builder, the attributes of the artifact scope class can be initialized and a new instance of the artifact scope can be created. </p>
+<p>We highly recommend instantiating artifact scope classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages.</p>
+<h4 id="globalscope-interface">GlobalScope Interface</h4>
+<p>Similar to artifact scope interfaces, global scope interfaces extends the scope interface of the language.
+Additionally, they implement the global scope interfaces of their parent languages or the 
+<code>IGlobalScope</code> of the MontiCore runtime if the languages do not inherit from another language.</p>
+<h4 id="globalscope-class">GlobalScope Class</h4>
+<p>The global scope class is generated for each MontiCore language and realizes the concrete global
+scope of a language. It extends the scope class and implements the global scope iterface of the 
+language.</p>
+<h4 id="globalscope-builder-class">GlobalScope Builder Class</h4>
+<p>MontiCore generated builder classes for each global scope class. The instances of the builders are available through the language's mill. With the builder, the attributes of the global scope class can be initialized and a new instance of the global scope can be created. </p>
+<p>We highly recommend instantiating global scope classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages.</p>
+<h4 id="scopegenitor-class">ScopeGenitor Class</h4>
+<p>The scope genitor creates the skeleton of the scope tree for the model and instantiates all its
+symbols. Additionally, it connects the scope and symbol objects with their AST nodes. The scope genitor does not initialize any additional attributes of
+the scope and symbol objects it created. These attributes have to be initialized manually.</p>
+<h4 id="scopegenitordelegator-class">ScopeGenitorDelegator Class</h4>
+<p>For instantiating symbol tables in the context of language composition, MontiCore generates a ScopesGenitorDelegator class for each language. This class instantiates a
+traverser of a language and adds scope genitors of the current language and all inherited
+languages. It further provides a createFromAST method that delegates to the respective
+method from the scopes genitor. The scopes genitor delegator is instantiated through the
+method scopesGenitorDelegator() of a language's mill.</p>
+<h4 id="common-symbol-interface">Common Symbol Interface</h4>
+<p>The common symbol interface of a language extends the MontiCore runtime class <code>ISymbol</code> and provides
+methods for the connection to the enclosing scope and the visitor of the language. As these are specifically
+typed for each language, the common symbol interface is generated. All symbol classes of a language
+implement the common symbol interface. </p>
+<h4 id="symboltableprinter">SymbolTablePrinter</h4>
+<p>The symbol table printer traverses the scope tree of an artifact using a visitor and serializes it 
+in form of a JSON-encoded String. Traversal typically begins with an artifact scope. In each scope, 
+the local symbols are visited and serialized. If a symbol spans a scope, the spanned scope is visited
+while visiting the symbol. It, therefore, realizes traversal of the scope tree along the 
+enclosingScope &lt;-&gt; localSymbols and the symbol &lt;-&gt; spannedScope associations. Symbol table printers
+are used by ScopeDeSers and SymbolDeSers. For language composition, the symbol table printers of
+individual languages are combined with a delegator visitor in the DeSer classes.</p>
+<h4 id="scopedeser">ScopeDeSer</h4>
+<p>The scope deser class provides methods realizing the loading and storing of scope objects of a language.
+Besides this, it realizes the deserialization of scopes. The deserialization of symbols within this
+scope is delegated to the respective symbol DeSers and serialization of symbols and scopes is 
+delegated to the symbol table printer. The reason for this separation is that employing a visitor is 
+suitable for serialization, but not for deserialization. The latter would visit elements of the 
+abstract syntax of JSON, such as a Json object, and would require a large number of case distinctions
+within handling different objects that can be serialized as a Json object. Combining the visitor-based
+serialization and the deserialization into a single class would be inefficient in terms of compilation
+time.</p>
+<!-- ################################################################################### -->
+<h3 id="generated-per-symbol">Generated per Symbol</h3>
+<p>This section explains parts of the symbol table infrastructure that MontiCore generates once for 
+each symbol of a language.</p>
+<h4 id="symbol-class">Symbol Class</h4>
+<p>For each symbol of the language, MontiCore generates a symbol class that implements the common 
+symbol interface of the language. The symbol class realizes symbols of a certain kind. For example,
+the class <code>StateSymbol</code> realizes the kind StateSymbol and objects of this class are concrete symbols.
+A symbol kind can inherit from at most one other symbol kind. This is reflected in the symbol classes
+by extending the class of the super kind. </p>
+<h4 id="symbol-builder-class">Symbol Builder Class</h4>
+<p>MontiCore generated builder classes for each symbol. The instances of the builders are available through
+the language's mill. With the builder, the attributes of the symbol class can be initialized and a new instance of the symbol can be created. </p>
+<p>We highly recommend instantiating symbol classes only through the builder obtained via the mill. All other forms of instantiations will prohibit reconfiguration through sublanguages, e.g., in case the symbol production is overridden in the grammar.</p>
+<h4 id="symbol-deser">Symbol DeSer</h4>
+<p>The symbol DeSer classes are generated for each symbol and realize serialization and deserialization
+of symbols of a certain kind. The serialization is visitor-based and, thus, delegated to the symbol
+table printer. Symbol DeSers are used by scope DeSers to realize the deserialization of symbols and
+as such, are reused for all languages that inherit from the current language. As serialization and 
+deserialization of individual symbols is rarely triggered manually, no load and store methods exist
+in symbol DeSer classes.</p>
+<h4 id="symbol-surrogate-class">Symbol Surrogate Class</h4>
+<p>Symbol surrogate classes extend the generated symbol classes and realize lazy loading of symbls of this kind. Surrogates have a delegate of the symbol class that is empty during initialization of the surrogate., where only the enclosing scope and the name are set. They further define a method for resolving the symbol
+with the on demand.
+Symbol surrogates must only be if both of the following two conditions are met:
+1. If on type level, a symbol has an attribute of another symbol, the attribute <em>may</em> be initialized with the surrogate as the symbol's subtype.
+2. If on instance level, the symbol definition of the 
+Surrogates must never be used to simplify instantiation of local symbols, i.e., of symbols that are contained in a single model for which the symbol table currently is build. In this case, it is always possible to split symbol table creation into multiple phases: In the first phase, all symbol definitions 
+instantiate symbol class objects, for which the symbol attributes are not instantiated yet. In a later phase, the symbol attributes are filled with values.</p>
+<h4 id="symbol-surrogate-builder">Symbol Surrogate Builder</h4>
+<p>MontiCore generated builder classes for each symbol surrogate. The instances of the builders are available through the language's mill. With the builder, the attributes of the symbol surrogate class can be initialized and a new instance of the symbol surrogate can be created. </p>
+<h4 id="resolvers">Resolvers</h4>
+<p>MontiCore generates a resolver interface for each symbol kind of a language. Resolvers
+have a method for resolving adapted symbol kinds. Language engineers can develop concrete resolving delegates
+that implement a resolver interface. Such classes can be added to the global scope of a language
+to integrate resolving for adapted symbols into the resolution process. 
+For example, an automata language defines the generated resolver interface <code>IStateSymbolResolver</code>.
+This interface can be used by language engineers to implement a <code>CDClass2StateResolver</code> class 
+implementing the interface that resolves, for example, for symbols of a CD class whenever
+resolving for state symbols is invoked. The result of this is typically an adapter symbol, which
+adapts the foreign symbol (e.g., CDClassSymbol) to the expected symbol (e.g., StateSymbol).</p>
+<!-- ################################################################################### -->
+<h2 id="further-information">Further Information</h2>
+<ul>
+<li><a href="https://github.com/MontiCore/monticore">Project root: MontiCore @github</a></li>
+<li><a href="https://www.monticore.de/">MontiCore documentation</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md"><strong>List of languages</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md"><strong>MontiCore Core Grammar Library</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md">Best Practices</a></li>
+<li><a href="https://www.se-rwth.de/publications/">Publications about MBSE and MontiCore</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md">Licence definition</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      (c) https://github.com/MontiCore/monticore
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../../../../../..", "features": ["navigation.tabs", "toc.integrate", "toc.follow", "content.tabs.link", "content.code.copy"], "search": "../../../../../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../../../../../assets/javascripts/bundle.f13b1293.min.js"></script>
+      
+    
+  </body>
+</html>

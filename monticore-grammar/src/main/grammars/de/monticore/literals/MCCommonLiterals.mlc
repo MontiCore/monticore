@@ -1,0 +1,37 @@
+package de.monticore.literals;
+
+mlc MCCommonLiterals {
+
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/literals/MCCommonLiterals.mc4";
+  }
+
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/literals/mccommonliterals/**.java";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/literals/mccommonliterals/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.MCBasics";
+    mlc "de.monticore.literals.MCLiteralsBasis";
+    mlc "de.monticore.symbols.BasicSymbols";
+    include "$mp/de/monticore/prettyprint/**";
+  }
+
+  // locally allowed
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/DeriveSymTypeOfLiterals.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpressionFactory.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeObscure.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeOfNull.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeOfObject.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/TypeCheckResult.java";
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+  }
+}

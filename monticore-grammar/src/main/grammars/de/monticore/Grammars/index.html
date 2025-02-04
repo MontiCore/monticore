@@ -1,0 +1,1967 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/">
+      
+      
+        <link rel="prev" href="../../../../../../../docs/GettingStarted/">
+      
+      
+        <link rel="next" href="../expressions/Expressions/">
+      
+      
+      <link rel="icon" href="../../../../../../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.2">
+    
+    
+      
+        <title>Overview - MontiCore</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../../assets/stylesheets/main.d7758b05.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['disableCookies']);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://stats.fh-aachen.de/";
+      _paq.push(['setTrackerUrl', u+'piwik.php']);
+      _paq.push(['setSiteId', '35']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#monticore-grammars-for-expressions-literals-and-types-an-overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../../../.." title="MontiCore" class="md-header__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MontiCore
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../docs/GettingStarted/" class="md-tabs__link">
+        
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  Core Grammars
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../../../docs/DevelopedLanguages/" class="md-tabs__link">
+          
+  
+  Languages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../docs/BestPractices/" class="md-tabs__link">
+        
+  
+    
+  
+  Best Practices
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../00.org/Explanations/CHANGELOG/" class="md-tabs__link">
+        
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../docs/Download/" class="md-tabs__link">
+        
+  
+    
+  
+  Downloads
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../docs/Publications/" class="md-tabs__link">
+        
+  
+    
+  
+  Publications
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-tabs__link">
+        
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../../../.." title="MontiCore" class="md-nav__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    MontiCore
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../docs/GettingStarted/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Core Grammars
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Core Grammars
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#general-list-of-grammars-in-package-demonticore" class="md-nav__link">
+    <span class="md-ellipsis">
+      General: List of Grammars in package de.monticore
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="General: List of Grammars in package de.monticore">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcbasicsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCBasics.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types-list-of-grammars-in-package-demonticoretypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Types: List of Grammars in package de.monticore.types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Types: List of Grammars in package de.monticore.types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcbasictypesmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCBasicTypes.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mccollectiontypesmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCCollectionTypes.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcsimplegenerictypesmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCSimpleGenericTypes.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcfullgenerictypesmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCFullGenericTypes.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcarraytypesmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCArrayTypes.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcfunctiontypesmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCFunctionTypes.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcstructuraltypesmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCStructuralTypes.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#siunittypes4mathmc4-for-physical-si-units-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      SIUnitTypes4Math.mc4 for Physical SI Units (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#siunittypes4computingmc4-for-physical-si-units-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      SIUnitTypes4Computing.mc4 for Physical SI Units (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#regextypemc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      RegExType.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typeparametersmc4-alpha" class="md-nav__link">
+    <span class="md-ellipsis">
+      TypeParameters.mc4 (alpha)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symbols-list-of-grammars-in-package-demonticoresymbols" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symbols: List of Grammars in package de.monticore.symbols
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Symbols: List of Grammars in package de.monticore.symbols">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basicsymbolsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      BasicSymbols.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oosymbolsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      OOSymbols.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expressions-list-of-grammars-in-package-demonticoreexpressions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expressions: List of Grammars in package de.monticore.expressions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Expressions: List of Grammars in package de.monticore.expressions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#expressionsbasismc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      ExpressionsBasis.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commonexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      CommonExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assignmentexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      AssignmentExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      BitExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oclexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      OCLExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      SetExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optionaloperatorsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      OptionalOperators.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lambdaexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      LambdaExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tupleexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      TupleExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#siunitsmc4-for-physical-si-units-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      SIUnits.mc4 for Physical SI Units (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#javaclassexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      JavaClassExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uglyexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      UglyExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#literals-list-of-grammars-in-package-demonticoreliterals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Literals: List of Grammars in package de.monticore.literals
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Literals: List of Grammars in package de.monticore.literals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcliteralsbasismc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCLiteralsBasis.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mccommonliteralsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCCommonLiterals.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcjavaliteralsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCJavaLiterals.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#siunitliteralsmc4-for-physical-si-units-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      SIUnitLiterals.mc4 for Physical SI Units (stable)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statements-list-of-grammars-in-package-demonticorestatements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Statements: List of Grammars in package de.monticore.statements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Statements: List of Grammars in package de.monticore.statements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcstatementsbasismc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCStatementsBasis.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mccommonstatementsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCCommonStatements.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcassertstatementsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCAssertStatements.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcexceptionstatementsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCExceptionStatements.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcsynchronizedstatementsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCSynchronizedStatements.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mclowlevelstatementsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCLowLevelStatements.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcreturnstatementsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCReturnStatements.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcfulljavastatementsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCFullJavaStatements.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-grammars-in-package-demonticore" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further grammars in package de.monticore
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further grammars in package de.monticore">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#regularexpressionsmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      RegularExpressions.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cardinalitymc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cardinality.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#completenessmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Completeness.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#umlmodifiermc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      UMLModifier.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#umlstereotypemc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      UMLStereotype.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mccommonmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      MCCommon.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#javalightmc4-stable" class="md-nav__link">
+    <span class="md-ellipsis">
+      JavaLight.mc4 (stable)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monticore-example-grammars-for-the-interested-reader" class="md-nav__link">
+    <span class="md-ellipsis">
+      MontiCore Example Grammars for the Interested Reader
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Information
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../expressions/Expressions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Expressions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../literals/Literals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Literals
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../types/Types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Languages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Languages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../docs/DevelopedLanguages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Languages and Language Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../docs/Languages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    List of Languages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../docs/BestPractices/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Best Practices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../00.org/Explanations/CHANGELOG/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../docs/Download/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Downloads
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../docs/Publications/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Publications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    License
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<!-- This is a MontiCore stable explanation. -->
+
+<h1 id="monticore-grammars-for-expressions-literals-and-types-an-overview">MontiCore Grammars for Expressions, Literals and Types - an Overview</h1>
+<p><a href="https://www.monticore.de">MontiCore</a> is a language workbench. It uses an
+extended grammar format as primary mechanism to describe DSLs. This format
+allows to <strong>compose language components</strong> by grammar
+(1) <strong>inheritance</strong>, (2) <strong>extension</strong>, (3) <strong>embedding</strong>
+and (4) <strong>aggregating</strong>. Please refer to the
+<a href="https://www.monticore.de/handbook.pdf">MontiCore handbook</a> for more details.</p>
+<p>MontiCore bundles a <strong>generator</strong> that can produce lots of infrastructure from
+MontiCore grammars. Like grammars, this infrastructure is <strong>composable</strong> and
+can be <strong>extended with handwritten code</strong>. Most importantly, these
+extensions and the grammar composition are compatible which
+leads to flexible forms of <strong>reuse</strong>.</p>
+<p>This documentation presents a library of language components provided by the
+core of the MontiCore project together with short descriptions and status
+information
+(<a href="../../../../../../../00.org/Explanations/StatusOfGrammars/">Status of Grammars</a>).
+The components are mainly defined by a primary grammar plus associated Java
+and template files.</p>
+<p>The presented components are mainly based on the grammars in the
+<code>MontiCore/monticore</code> project. They are organized in the following
+packages under the <code>monticore-grammar/src/main/grammars/</code> folder hierarchy:</p>
+<ul>
+<li><code>de.monticore</code></li>
+<li><code>de.monticore.expressions</code></li>
+<li><code>de.monticore.literals</code></li>
+<li><code>de.monticore.regex</code></li>
+<li><code>de.monticore.siunit</code></li>
+<li><code>de.monticore.statements</code></li>
+<li><code>de.monticore.symbols</code></li>
+<li><code>de.monticore.types</code></li>
+</ul>
+<p>Additionally, the documentation presents some expression/type related language
+components in projects that extend MontiCore's core languages.
+For more languages and language components, follow
+<a href="../../../../../../../docs/Languages/">this link</a>.</p>
+<h2 id="general-list-of-grammars-in-package-demonticore">General: List of Grammars in package <code>de.monticore</code></h2>
+<h3 id="mcbasicsmc4-stable"><a href="../MCBasics.mc4">MCBasics.mc4</a>  (stable)</h3>
+<ul>
+<li>This grammar defines basic rules for naming, spacing, and
+Java-like comments being useful in many languages.</li>
+</ul>
+<h2 id="types-list-of-grammars-in-package-demonticoretypes">Types: List of Grammars in package <code>de.monticore.types</code></h2>
+<p>These grammars generally deal with type definitions and build on each 
+other. Some snipets for type definitions:</p>
+<div class="highlight"><pre><span></span><code>grammars          some examples
+MCBasicTypes      boolean  byte  short  int
+                  long  char  float  double
+                  void  Person  a.b.Person
+                  import a.b.Foo.*;
+MCCollectionTypes List&lt;.&gt;   Set&lt;.&gt;
+                  Optional&lt;.&gt;   Map&lt;.,.&gt;
+MCSimpleGenericTypes
+                  Foo&lt;.&gt;  a.b.Bar&lt;.,..,.&gt;
+MCFullGenericTypes
+                  Foo&lt;? extends .&gt;
+                  Foo&lt;? super .&gt;
+MCArrayTypes      Person[]  int[][]
+MCFunctionTypes   Foo-&gt;Bar  (Foo, Bar)-&gt;Foo
+MCStructuralTypes Foo|Bar  Foo&amp;Bar
+                  (Foo, Bar)  (Foo)
+SI Unit types     [km/h]  [km/h]&lt;long&gt;
+RegExType         R&quot;[a-z][0-9*]&quot;
+</code></pre></div>
+<h3 id="mcbasictypesmc4-stable"><a href="../types/MCBasicTypes.mc4">MCBasicTypes.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines basic types and thus eases the reuse of type
+structures in languages similar to Java. However, the type definitions in the
+grammar are somewhat simplified, e.g., they do not comprise generics.</li>
+<li>The grammar contains types from Java, e.g., primitives, <code>void</code>, and
+classes (sometimes referred to as "reference types").</li>
+<li>Example type definitions: <code>boolean</code>, <code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code>, <code>char</code>,
+<code>float</code>, <code>double</code>, <code>void</code>, <code>Person</code>, <code>a.b.Person</code>, <code>import a.b.Foo.*;</code>.</li>
+</ul>
+<h3 id="mccollectiontypesmc4-stable"><a href="../types/MCCollectionTypes.mc4">MCCollectionTypes.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines four generic types: <code>List&lt;A&gt;</code>, <code>Map&lt;A,B&gt;</code>, <code>Set&lt;A&gt;</code> and
+<code>Optional&lt;A&gt;</code> on top of basic types.</li>
+<li>These four generic types correspond to a typical predefined set of generic
+types used, e.g., in connection with UML class diagrams or the
+OCL. UML associations typically have those association multiplicities which is
+why the generic types are of general interest.</li>
+<li>The grammar eases the reuse of type structures in languages similar to Java
+that are somewhat simplified, e.g., by omitting general generics.</li>
+<li>Example type definitions: <code>List&lt;.&gt;</code>, <code>Set&lt;.&gt;</code>, <code>Optional&lt;.&gt;</code>, <code>Map&lt;.,.&gt;</code>.</li>
+</ul>
+<h3 id="mcsimplegenerictypesmc4-stable"><a href="../types/MCSimpleGenericTypes.mc4">MCSimpleGenericTypes.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar provides rules for the definition of custom generic types
+such as <code>Blubb&lt;A&gt;</code>, <code>Bla&lt;B,C&gt;</code>, <code>Foo&lt;Blubb&lt;D&gt;&gt;</code>.</li>
+<li>The grammar covers a wide range of uses for generic types. Unlike Java, it
+does however not cover type restrictions on arguments.</li>
+<li>Example type definitions: <code>Foo&lt;.&gt;</code>, <code>a.b.Bar&lt;.,..,.&gt;</code>.</li>
+</ul>
+<h3 id="mcfullgenerictypesmc4-stable"><a href="../types/MCFullGenericTypes.mc4">MCFullGenericTypes.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar completes type definitions to support the full Java type system
+including wildcards on generic types like <code>Blubb&lt;? extends A&gt;</code>.</li>
+<li>A general advice: When you are not sure that you need this kind of
+types, use a simpler version from above. Type checking is tricky.</li>
+<li>Example type definitions: <code>Foo&lt;? extends .&gt;</code>, <code>Foo&lt;? super .&gt;</code>.</li>
+</ul>
+<h3 id="mcarraytypesmc4-stable"><a href="../types/MCArrayTypes.mc4">MCArrayTypes.mc4</a> (stable)</h3>
+<ul>
+<li>The grammar provides means to define arrays.</li>
+<li>Arrays are orthogonal to the generic extensions and may
+thus be combined with any of the above grammars.</li>
+<li>Example type definitions: <code>Person[]</code>, <code>int[][]</code>.</li>
+</ul>
+<h3 id="mcfunctiontypesmc4-stable"><a href="../types/MCFunctionTypes.mc4">MCFunctionTypes.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar introduces function types like <code>int -&gt; int</code>.</li>
+<li>They are useful when functions shall be passed around
+  as arguments or stored in a data structure (for later use).</li>
+<li>The syntax is inspired by the functional programming language Haskell.</li>
+<li>This grammar may be combined with any of the grammars above.</li>
+</ul>
+<h3 id="mcstructuraltypesmc4-stable"><a href="../types/MCStructuralTypes.mc4">MCStructuralTypes.mc4</a> (stable)</h3>
+<ul>
+<li>The grammar introduces additional structural types
+  as known partially from modern programming languages, like Kotlin.</li>
+<li>The grammar offers three ways to combine types: union types <code>A|B</code>,
+  intersection types <code>A&amp;B</code>, and tuple types <code>(A,B)</code>.</li>
+<li>Additionally, bracket types <code>(A)</code> are semantically 
+  isomorphic to their argument (here <code>A</code>).
+  They allow to represent types not representable otherwise, e.g., <code>(A|B) -&gt; C</code>.</li>
+<li>They may be combined with any of the grammars above.</li>
+</ul>
+<h3 id="siunittypes4mathmc4-for-physical-si-units-stable"><a href="../siunit/SIUnitTypes4Math.mc4">SIUnitTypes4Math.mc4</a> for Physical SI Units (stable)</h3>
+<p>The known units <code>s, m, kg, A, K, mol, cd</code> from the international system of 
+units (SI Units) and their combinations, such as <code>km/h</code> or <code>mg</code>, etc. can 
+be used as ordinary types (instead of only numbers). 
+The typecheck prevents e.g., assignment of a weight to a length 
+variable or to implicitely add appropriate conversion in the resulting program, 
+e.g., when a <code>km/h</code>-based velocity is stored in a <code>m/s</code>-based variable.</p>
+<ul>
+<li>Example type definitions: <code>[km/h]</code></li>
+</ul>
+<h3 id="siunittypes4computingmc4-for-physical-si-units-stable"><a href="../siunit/SIUnitTypes4Computing.mc4">SIUnitTypes4Computing.mc4</a> for Physical SI Units (stable)</h3>
+<p>Includes the types from <code>SIUnitTypes4Math</code>(see above), like <code>[km/h]</code>, 
+but also allows to add a
+resolution, such as <code>[km/h]&lt;int&gt;</code>. Here SI Unit types, 
+like <code>[km/h]&lt;.&gt;</code>, are used as generic type constructor that may take a number type,
+such as <code>int</code>, <code>long</code>, <code>double</code>, <code>float</code> as argument.</p>
+<ul>
+<li>Example type definitions: <code>[km/h]&lt;long&gt;</code></li>
+</ul>
+<h3 id="regextypemc4-stable"><a href="../regex/RegExType.mc4">RegExType.mc4</a> (stable)</h3>
+<ul>
+<li>If a variable should not use all kinds of <code>String</code>s, its is possible 
+to use a type definition of form in <code>R"..."</code> that contains a regular 
+expression (see above) to constrain the set of storable strings. This 
+is e.g. helpful to prevent malign user input in security relevant 
+codes. </li>
+<li>Types are e.g. , such as <code>R"[a-z]"</code> (single character), 
+<code>R"^([01][0-9]|2[0-3])$"</code> (hours), or <code>R"[1-9][0-9]*"</code> (integers). </li>
+<li>There are two possibilities for interpreters handling these types,
+  and both are possible uses in interpreters/generators: </li>
+<li>A typecheck ensures that all assignments, parameters are correct
+     in the types, or</li>
+<li>no static typecheck, but a dynamig typecheck is executed 
+     at runtime and e.g. issues an exception, if a type violation 
+     occurs. </li>
+<li>The static typecheck is recommended when adding RegExTypes to a 
+  language. Note that explicit type coercion is then needed, e.g. 
+  using the <code>typeif</code> construct.</li>
+<li>In some occasions, e.g. if in assignment <code>R"re1" v1 = v2</code> the type 
+<code>R"re2"</code> of <code>v2</code> is a subset then the static typecheck identifies 
+compatibility of the strings and may omit the dynamic regular 
+expression check at runtime. Subset 
+relationship of regular expressions is decidable (at compiletime).</li>
+<li>If the regular expressions are disjoint, a compile time error may 
+be issued (instead of runtime errors only).</li>
+<li><code>String</code> could be treated identical to <code>R".*"</code>, but it may be that 
+the chosen typecheck wants to enforce explicit coercion.</li>
+</ul>
+<h3 id="typeparametersmc4-alpha"><a href="../types/TypeParameters.mc4">TypeParameters.mc4</a> (alpha)</h3>
+<p>This grammar defines type parameters for,
+e.g., classes or functions, such as <code>&lt;T&gt;</code>, <code>&lt;U,V&gt;</code>,
+<code>T extends Person</code>, <code>U extends T &amp; Comparable&lt;U&gt;</code>.
+Modeling elements with type parameters therefore take type arguments.
+For example, the generic type <code>List&lt;T&gt;</code> has the type parameter <code>T</code> 
+allowing to use the type <code>List&lt;int&gt;</code>.</p>
+<h2 id="symbols-list-of-grammars-in-package-demonticoresymbols">Symbols: List of Grammars in package <code>de.monticore.symbols</code></h2>
+<p>These two grammars do not provide syntax themselves, but 
+characterize important forms of symbols, that will be used
+in the type and the expression grammars to define shared 
+kinds of symbols. </p>
+<h3 id="basicsymbolsmc4-stable"><a href="../symbols/BasicSymbols.mc4">BasicSymbols.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines symbols for <em>Types</em> (of all kinds), <em>Functions</em>, 
+  <em>Variables</em> and <em>TypeVariables</em>.</li>
+<li>The defined symbols are of general form and can be used in functional, OO
+  and other contexts. They do not preculde a concrete syntax and do not yet 
+  embody OO specifics.</li>
+<li>Remark: This grammar is not intended to define concrete or abstract 
+  syntax, but the
+  infrastructure for symbols. </li>
+</ul>
+<h3 id="oosymbolsmc4-stable"><a href="../symbols/OOSymbols.mc4">OOSymbols.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines symbols for <em>objectoriented Types</em>, <em>Methods</em>, and
+  <em>Fields</em> by mainly extending the symbols defined in <code>BasicTypeSymbols</code>.</li>
+<li>The newly defined symbols extend the general ones by typical 
+  objectoriented features, such as private, static, etc.
+  Again they do not preculde a concrete syntax.</li>
+<li>Remark: This grammar is not intended to define concrete or 
+  abstract syntax, but the
+  infrastructure for symbols in objectoriented context. </li>
+</ul>
+<h2 id="expressions-list-of-grammars-in-package-demonticoreexpressions">Expressions: List of Grammars in package <code>de.monticore.expressions</code></h2>
+<p>Expressions are defined in several grammars forming a (nonlinear) hierarchy,
+so that developers can choose the optimal grammar they want to build on 
+for their language and combine these with the appropriate typing 
+infrastructure.</p>
+<p>This modularity of expressions and associated types greatly eases 
+the reuse of type structures in languages similar to Java.
+Some snipets for operators defined in expressions:</p>
+<div class="highlight"><pre><span></span><code>grammar        operators and examples in this grammar
+CommonExp:     /  %  +  -  &lt;=  &gt;=  ==  &gt;  &lt;  !=  ~.  !.  .?.:.
+               &amp;&amp;  ||  ~. 
+AssigementExp: ++  --  =  +=  -=  *=  /=  &amp;=  |=  ^=  &gt;&gt;=  &gt;&gt;&gt;=  &lt;&lt;=  %=
+BitExp:        &amp;  |  ^  &lt;&lt;  &gt;&gt;  &gt;&gt;&gt;
+OclExp:        implies  &lt;=&gt;  |  &amp;  forall  exists  let.in. .@pre  .[.]  .**
+               Set{.|.}
+SetExp:        .isin.  .in.  union  intersect  setand  setor
+               { item | specifier }
+OptionalOps:   ?:  ?&lt;=  ?&gt;=  ?&lt;  ?&gt;  ?==  ?!=  ?~~   ?!~ 
+LambdaExp:     i-&gt;2*i   (a,b)-&gt;a+b
+TupleExp:      (.,.)  (.,.,.,.)
+SIUnits:       5km  3,2m/s  22l  2.400J  
+UglyExp:       .instanceof.  (.).  new
+JavaClass:     this  .[.]  super
+</code></pre></div>
+<h3 id="expressionsbasismc4-stable"><a href="../expressions/ExpressionsBasis.mc4">ExpressionsBasis.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines core interfaces for expressions and imports the 
+kinds of symbols necessary.</li>
+<li>The symbols are taken over from the TypeSymbols grammar (see below).</li>
+<li>A hierarchy of conservative extensions to this grammar realize
+these interfaces in various forms.</li>
+</ul>
+<h3 id="commonexpressionsmc4-stable"><a href="../expressions/CommonExpressions.mc4">CommonExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines a typical standard set of operations for
+expressions. </li>
+<li>This is a subset of Java as well as OCL/P, 
+mainly for arithmetic, comparisons, variable use (v), 
+attribute use (o.att), method call (foo(arg,arg2)),
+array access (v[i]), and brackets (exp).</li>
+</ul>
+<h3 id="assignmentexpressionsmc4-stable"><a href="../expressions/AssignmentExpressions.mc4">AssignmentExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines all Java expressions that have side effects.</li>
+<li>This includes assignment expressions like =, +=, etc. and 
+suffix and prefix expressions like ++, --, etc.</li>
+</ul>
+<h3 id="bitexpressionsmc4-stable"><a href="../expressions/BitExpressions.mc4">BitExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines a typical standard set of operations for
+expressions. </li>
+<li>This is a subset of Java for binary expressions 
+like &lt;&lt;, &gt;&gt;, &gt;&gt;&gt;, &amp;, ^ and |</li>
+</ul>
+<h3 id="oclexpressionsmc4-stable"><a href="../ocl/OCLExpressions.mc4">OCLExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines expressions typical to UMLs OCL .
+  OCL expressions can savely be composed if with other forms of expressions<br />
+  given in the MontiCore core project (i.e. as conservative extension).</li>
+<li>It contains various logical operations, such as quantifiers, 
+  the <code>let</code> and the <code>@pre</code> construct, and a transitive closure for 
+  associations, as discussed in [Rum17,Rum17].</li>
+</ul>
+<h3 id="setexpressionsmc4-stable"><a href="../ocl/SetExpressions.mc4">SetExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines set expressions like set union, intersection etc.
+these operations are typical for a logic with set operations, like 
+UML's OCL. These operators are usually infix and are thus more intuitive
+as they allow math oriented style of specification.</li>
+<li>Most of these operators are in principle executable, 
+  so it might be interesting to include them in a high level programming 
+  language (see e.g. Haskell)</li>
+</ul>
+<h3 id="optionaloperatorsmc4-stable"><a href="../ocl/OptionalOperators.mc4">OptionalOperators.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines nine operators dealing with optional values, e.g.
+  defined by 
+  <code>java.lang.Optional</code>. The operators are also called <em>Elvis operators</em>.</li>
+<li>E.g.: <code>val ?: 42</code>     equals to   <code>val.isPresent() ? val.get() : 42</code></li>
+<li><code>x ?&gt;= y</code> equals <code>x.isPresent() ? x.get() &gt;= y : false</code> </li>
+</ul>
+<h3 id="lambdaexpressionsmc4-stable"><a href="../expressions/LambdaExpressions.mc4">LambdaExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines lambda expressions.
+  Lambda expression define anonymous functions that can be passed around 
+  as values e.g. to higher-order functions 
+  and that can be evaluated on arguments of appropriate types.</li>
+<li>Lambda expressions are fully typed (see e.g. in Haskell) and can be nested.</li>
+<li>This is only the subset of Java's lambda expressions that allows to define 
+  a functional programming style (thus preventing side effects).</li>
+</ul>
+<h3 id="tupleexpressionsmc4-stable"><a href="../expressions/TupleExpressions.mc4">TupleExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines tuple expressions like <code>(1, "Hello")</code>.</li>
+<li>Tuple Expressions are tuples of expressions that can be used to, e.g.,
+  return multiple results from a function.</li>
+<li>The syntax is inspired by the functional programming language Haskell.</li>
+</ul>
+<h3 id="siunitsmc4-for-physical-si-units-stable">SIUnits.mc4 for Physical SI Units (stable)</h3>
+<ul>
+<li>This grammar the international system of units (SI units), based on 
+  the basis units <code>s, m, kg, A, K, mol, cd</code>, 
+  provides a variety of derived units, and can be refined using prefixes such 
+  as <code>m</code>(milli), <code>k</code>(kilo), etc.</li>
+<li>The SI Unit grammar provides an extension to expressions, but also to the 
+  typing system, e.g. types such as <code>km/h</code> or <code>km/h&lt;long&gt;</code>,
+  and literals, such as e.g. <code>5.3 km/h</code>.</li>
+</ul>
+<h3 id="javaclassexpressionsmc4-stable"><a href="../expressions/JavaClassExpressions.mc4">JavaClassExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines Java specific class expressions like super, 
+this, etc.</li>
+<li>This grammar should only be included, when a mapping to Java is
+intended and the full power of Java should be available in the 
+modeling language.</li>
+</ul>
+<h3 id="uglyexpressionsmc4-stable"><a href="../expressions/UglyExpressions.mc4">UglyExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines expressions deemed 'ugly' like
+  'instanceof', type cast, 'new', because they have some reflective behavior
+  that is convenient when developing, but not so easy to test.
+  'new' e.g. should be avoided, because in tests one might use
+  a mock (from a subclass) instead.</li>
+<li>The ugly expressions are not included in the usual logic and other
+  expressions, and only there to complete the Java expression syntax.</li>
+</ul>
+<h2 id="literals-list-of-grammars-in-package-demonticoreliterals">Literals: List of Grammars in package <code>de.monticore.literals</code></h2>
+<p>Literals are the basic elements of expressions, such as numbers, strings, 
+truth values. Some snipets:</p>
+<div class="highlight"><pre><span></span><code>grammar           examples of this grammar
+MCCommonLit       3  -3  2.17  -4  true  false  &#39;c&#39; 
+                  3L  2.17d  2.17f  0xAF  &quot;string&quot;  
+                  &quot;str\uAF01\u0001&quot;  null
+MCJavaLiterals    999_999  0x3F2A  0b0001_0101  0567  1.2e-7F
+SIUnitLiterals    5.3km/h  7mg
+</code></pre></div>
+<h3 id="mcliteralsbasismc4-stable"><a href="../literals/MCLiteralsBasis.mc4">MCLiteralsBasis.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines core interface for literals.</li>
+<li>Several conservative extensions to this grammar realize
+various forms of literals.</li>
+</ul>
+<h3 id="mccommonliteralsmc4-stable"><a href="../literals/MCCommonLiterals.mc4">MCCommonLiterals.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines the typical literals for an expression language, such as 
+  characters: 'c', Strings "text", booleans: "true", "null", or numbers 10, 
+  -23, 48l, 23.1f.</li>
+<li>Strings and characters use the Java-like escapes like "\n".</li>
+<li>Each defined nonterminal is extended by a conversion function <code>getValue()</code>
+  of appropriate type and a retrieve function <code>getSource()</code> for a text representation
+  of the literal.</li>
+</ul>
+<h3 id="mcjavaliteralsmc4-stable"><a href="../literals/MCJavaLiterals.mc4">MCJavaLiterals.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines Java compliant literals and builds on MCCommonLiterals.</li>
+<li>The scope of this grammar is to
+  ease the reuse of literals structures in Java-like sublanguages.</li>
+<li>The grammar contains literals from Java, e.g., Boolean, Char, String, ....</li>
+<li>Please note that Java (and this grammar) 
+  has an extended syntax e.g. for integers using underscores
+  or other kinds of encodings. They parse e.g. 999_999, 0x3F2A, or 0b10100.</li>
+<li>Like above <code>getValue()</code> and <code>getSource()</code> allow to retrive the content
+  as value resp. as text string.</li>
+</ul>
+<h3 id="siunitliteralsmc4-for-physical-si-units-stable"><a href="../siunit/SIUnitLiterals.mc4">SIUnitLiterals.mc4</a> for Physical SI Units (stable)</h3>
+<p>Provides concrete values, such as <code>5.3 km/h</code>or <code>7 mg</code> for the international system of 
+units (SI Units). </p>
+<h2 id="statements-list-of-grammars-in-package-demonticorestatements">Statements: List of Grammars in package <code>de.monticore.statements</code></h2>
+<p>Statements are the constructive part of programs: They allow to 
+change variables, call functions, send messages etc.
+The following hierarchy of statement definitions should allow
+the developers to choose needed forms of statements and extend it 
+by their own additional needs. The provided list of statements
+is inspired by Java (actually subset of Java). Some example statements:</p>
+<div class="highlight"><pre><span></span><code>int i;   int j = 2;                     Person p[] = { foo(3+7), p2, ...}
+if (.) then . else .                    for ( i = .; .; .) {.}
+while (.) .                             do . while (.)
+switch (.) { case .: .; default: .}
+foo(1,2,3)                              return .                                
+assert . : &quot;...&quot;
+try {.} catch (.) {.} finally {.}       throw .           
+break .                                 continue .
+label:                                  private  static  final  native ...
+</code></pre></div>
+<h3 id="mcstatementsbasismc4-stable"><a href="../statements/MCStatementsBasis.mc4">MCStatementsBasis.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines the core interface for statements.</li>
+<li>A hierarchy of conservative extensions to this grammar is provided below.</li>
+</ul>
+<h3 id="mccommonstatementsmc4-stable"><a href="../statements/MCCommonStatements.mc4">MCCommonStatements.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines typical statements, such as method calls
+  (which are actually expressions),
+  assignment of variables, if, for, while, switch statements, and blocks.</li>
+<li>This embodies a complete structured statement language, however does not
+  provide return, assert, exceptions, and low-level constructs like break.</li>
+</ul>
+<h3 id="mcassertstatementsmc4-stable"><a href="../statements/MCAssertStatements.mc4">MCAssertStatements.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines exactly the assert statement as known from Java.</li>
+<li>It can be used independently of other Java statements.</li>
+</ul>
+<h3 id="mcexceptionstatementsmc4-stable"><a href="../statements/MCExceptionStatements.mc4">MCExceptionStatements.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines the exception statements.</li>
+<li>This includes Java try with catch and finally, as well as throw.</li>
+</ul>
+<h3 id="mcsynchronizedstatementsmc4-stable"><a href="../statements/MCSynchronizedStatements.mc4">MCSynchronizedStatements.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines the Java-like synchronized statement.</li>
+</ul>
+<h3 id="mclowlevelstatementsmc4-stable"><a href="../statements/MCLowLevelStatements.mc4">MCLowLevelStatements.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines three low-level statements that Java provides.</li>
+<li>It contains the break and continue statements and the possibility to label a statement.</li>
+</ul>
+<h3 id="mcreturnstatementsmc4-stable"><a href="../statements/MCReturnStatements.mc4">MCReturnStatements.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines the Java-like return statement.</li>
+</ul>
+<h3 id="mcfulljavastatementsmc4-stable"><a href="../statements/MCFullJavaStatements.mc4">MCFullJavaStatements.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines all Java statements.</li>
+<li>This is neither a generalized approximation nor a restricted overapproximation,
+  but exact.</li>
+</ul>
+<h2 id="further-grammars-in-package-demonticore">Further grammars in package <code>de.monticore</code></h2>
+<p>several other grammars are also available:</p>
+<h3 id="regularexpressionsmc4-stable"><a href="../regex/RegularExpressions.mc4">RegularExpressions.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines regular expressions (RegEx) as used in Java 
+  (see e.g. <code>java.util.regex.Pattern</code>).</li>
+<li>It provides common regex tokens such as </li>
+<li>character classes, e.g., lowercase letters (<code>[a-z]</code>), the letters a, b, 
+    and c (<code>[abc]</code>)</li>
+<li>anchors, e.g., start of line (<code>^</code>), end of line (<code>$</code>), word boundary (<code>\b</code>),</li>
+<li>quantifiers, e.g., zero or one (<code>?</code>), zero or more (<code>*</code>), exactly 3 (<code>{3}</code>),</li>
+<li>RegEx also supports to capture groups and referencing these captured groups 
+  in replacements.  </li>
+<li>For example, <code>^([01][0-9]|2[0-3]):[0-5][0-9]$</code> matches all valid timestamps in 
+  <code>HH:MM</code> format.</li>
+<li>The main nonterminal <code>RegularExpression</code> is not part of the expression
+  hierarchy and 
+  thus regular expressions are not used as ordinary values. Instead 
+  the nonterminal <code>RegularExpression</code> is can be used in aother places 
+  of a language e.g. we do that as additional 
+  restriction for String values in input/output channels in architectural langages.</li>
+</ul>
+<h3 id="cardinalitymc4-stable"><a href="../Cardinality.mc4">Cardinality.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines UML Cardinalities of forms <code>*</code>, <code>[n..m]</code> or <code>[n..*]</code>.</li>
+</ul>
+<h3 id="completenessmc4-stable"><a href="../Completeness.mc4">Completeness.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar defines completeness information in UML
+  like <code>...</code>, <code>(c)</code>, but also <code>(...,c)</code>.</li>
+</ul>
+<h3 id="umlmodifiermc4-stable"><a href="../UMLModifier.mc4">UMLModifier.mc4</a> (stable)</h3>
+<ul>
+<li>The grammar contains the modifiers that UML provides.</li>
+<li>This includes <code>public</code> <code>private</code>, <code>protected</code>, <code>final</code>, 
+  <code>abstract</code>, <code>local</code>, <code>derived</code>, <code>readonly</code>, and <code>static</code>, 
+  but also the compact syntactic versions <code>+</code>, <code>#</code>, <code>-</code>, <code>/</code> 
+  and <code>?</code> (for readonly).</li>
+<li>UML modifiers are not identical to Java modifiers (e.g. <code>native</code> or 
+  <code>threadsafe</code> are missing.)</li>
+</ul>
+<h3 id="umlstereotypemc4-stable"><a href="../UMLStereotype.mc4">UMLStereotype.mc4</a> (stable)</h3>
+<ul>
+<li>This grammars defines Stereotypes like <em><code>&lt;&lt;val1,val2="text",...&gt;&gt;</code></em></li>
+<li>Methods contains(name), getValue(name) assist Stereotype retrieval.</li>
+<li>Values may only be of type String.
+  The real value unfortunately in UML is only encoded as String.</li>
+<li>We suggest to use a tagging infrastructure that even allows to
+  type the possible forms of tags.</li>
+</ul>
+<h3 id="mccommonmc4-stable"><a href="../MCCommon.mc4">MCCommon.mc4</a> (stable)</h3>
+<ul>
+<li>This grammar composes typical UML-like grammar components.</li>
+<li>This includes Cardinality, Completeness, UMLModifier, and UMLStereotype.</li>
+</ul>
+<h3 id="javalightmc4-stable"><a href="../JavaLight.mc4">JavaLight.mc4</a> (stable)</h3>
+<div class="highlight"><pre><span></span><code>int age = 3+x; 
+List&lt;Person&gt; myParents;
+
+@Override
+public int print(String name, Set&lt;Person&gt; p) {
+  int a = 2 + name.length();
+  if(a &lt; p.size()) {
+    System.out.println(&quot;Hello &quot; + name);
+  }
+  return a;
+}
+</code></pre></div>
+<ul>
+<li>JavaLight is a subset of Java that MontiCore itself
+  uses as intermediate language for the code generation process.</li>
+<li>JavaLight doesn't provide all forms of classes (e.g., inner classes)
+  and reduces the type system to normal generic types.<br />
+  However, that is sufficient for all code generated by MontiCore.</li>
+<li>JavaLight supports Java expressions (including anonymous classes),
+  Java statements as relevant to MontiCore code generation, method declaration,
+  constructors, constants, interface methods, and annotations.</li>
+<li>JavaLight composes the grammars <code>CommonExpressions</code>,
+                                    <code>AssignmentExpressions</code>,
+                                    <code>JavaClassExpressions</code>,
+                                    <code>MCCommonStatements</code>,
+                                    <code>MCBasicTypes</code>, and
+                                    <code>OOSymbols</code>.</li>
+<li>JavaLight can be used for other generator tools than MontiCore,
+  especially as its core templates are reusable and new templates
+  for customized method bodies can be added using MontiCore's
+  Hook-Mechanisms.</li>
+</ul>
+<h2 id="monticore-example-grammars-for-the-interested-reader">MontiCore Example Grammars for the Interested Reader</h2>
+<p>The  <code>monticore-grammar/src/main/examples</code> folder hosts the following example
+grammars:</p>
+<ul>
+<li><a href="../../../../examples/StringLiterals.mc4">StringLiterals.mc4</a></li>
+<li><a href="../../../../examples/MCHexNumbers.mc4">MCHexNumbers.mc4</a></li>
+<li><a href="../../../../examples/MCNumbers.mc4">MCNumbers.mc4</a></li>
+</ul>
+<h2 id="further-information">Further Information</h2>
+<ul>
+<li><a href="https://github.com/MontiCore/monticore">Project root: MontiCore @github</a></li>
+<li><a href="https://www.monticore.de/">MontiCore documentation</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md"><strong>List of languages</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md"><strong>MontiCore Core Grammar Library</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md">Best Practices</a></li>
+<li><a href="https://www.se-rwth.de/publications/">Publications about MBSE and MontiCore</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md">Licence definition</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      (c) https://github.com/MontiCore/monticore
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../../../../..", "features": ["navigation.tabs", "toc.integrate", "toc.follow", "content.tabs.link", "content.code.copy"], "search": "../../../../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../../../../assets/javascripts/bundle.f13b1293.min.js"></script>
+      
+    
+  </body>
+</html>

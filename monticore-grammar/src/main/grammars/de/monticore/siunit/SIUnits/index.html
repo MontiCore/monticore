@@ -1,0 +1,1024 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/siunit/SIUnits/">
+      
+      
+      
+      
+      <link rel="icon" href="../../../../../../../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.2">
+    
+    
+      
+        <title>SIUnits - MontiCore</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../../../assets/stylesheets/main.d7758b05.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['disableCookies']);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://stats.fh-aachen.de/";
+      _paq.push(['setTrackerUrl', u+'piwik.php']);
+      _paq.push(['setSiteId', '35']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#siunits" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../../../../.." title="MontiCore" class="md-header__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MontiCore
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SIUnits
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/GettingStarted/" class="md-tabs__link">
+        
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../Grammars/" class="md-tabs__link">
+          
+  
+  Core Grammars
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../../../../docs/DevelopedLanguages/" class="md-tabs__link">
+          
+  
+  Languages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/BestPractices/" class="md-tabs__link">
+        
+  
+    
+  
+  Best Practices
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../00.org/Explanations/CHANGELOG/" class="md-tabs__link">
+        
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/Download/" class="md-tabs__link">
+        
+  
+    
+  
+  Downloads
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/Publications/" class="md-tabs__link">
+        
+  
+    
+  
+  Publications
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-tabs__link">
+        
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../../../../.." title="MontiCore" class="md-nav__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    MontiCore
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/GettingStarted/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Core Grammars
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Core Grammars
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Grammars/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../expressions/Expressions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Expressions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../literals/Literals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Literals
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../types/Types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Languages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Languages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/DevelopedLanguages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Languages and Language Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Languages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    List of Languages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/BestPractices/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Best Practices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../00.org/Explanations/CHANGELOG/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Download/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Downloads
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Publications/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Publications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    License
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<h1 id="siunits">SIUnits</h1>
+<p>This language introduces SI units and allows language developers to
+integrate literals enriched with an SI unit to their language. Furthermore,
+this language provides functionality for unit compatibility and type
+checking.</p>
+<h2 id="the-grammar-files-are-see-details-below">The grammar files are (see details below):</h2>
+<ul>
+<li><a href="../SIUnits.mc4">SIUnits.mc4</a></li>
+<li><a href="../SIUnitLiterals.mc4">SIUnitLiterals.mc4</a></li>
+<li><a href="../SIUnitTypes4Math.mc4">SIUnitTypes4Math.mc4</a></li>
+<li><a href="../SIUnitTypes4Computing.mc4">SIUnitTypes4Computing.mc4</a></li>
+</ul>
+<h2 id="siunitsmc4"><a href="../SIUnits.mc4">SIUnits.mc4</a></h2>
+<p>This is the base grammar of the SIUnits language. It introduces SI
+units and other units that can be derived from them.
+This grammar defines SI units with their prefixes and complex,
+composed SI units allowing us to parse simple and derived units
+such as <code>m</code>, <code>km</code>, <code>km^2</code> or <code>km^2/VA^2h</code>.</p>
+<p>Some Si units are ambiguous, e.g.,
+<code>ms</code> can be interpreted as metre times second, or as milliseconds.
+In ambiguous cases, the interpretation with the prefix is preferred, e.g.,
+by the typecheck.
+To write metre times second, <code>m^1s</code> can be used.</p>
+<h2 id="siunitliteralsmc4"><a href="../SIUnitLiterals.mc4">SIUnitLiterals.mc4</a></h2>
+<p>The SIUnitLiterals allow to describe concrete values, such as
+<code>5km</code> or <code>23.4m/s</code> that can be used within ordinary expressions.
+For that purpose, they combine a NumericalLiteral resp.
+SignedNumericalLiteral from the
+<a href="https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/literals/MCCommonLiterals.mc4">MCCommonLiterals.mc4</a>
+grammar with a SIUnit from the <a href="#siunitsmc4">SIUnits</a> grammar.</p>
+<p>SIUnitLiterals allows us to parse literals of the following forms.
+Literals in combination with a unit. The unit may be of any form allowed
+by the SIUnits.mc4 grammar, i.e. including unit expressions:
+* Integer with unit: <code>5km</code> or <code>5 km/h</code>
+* Long with unit: <code>5l km</code>
+* Float with unit: <code>5.0km</code> or <code>5.0 km</code>; The space is obligatory for Farads to
+  avoid confusion with floats (<code>5.0 F</code>)
+* Float (explicit) with unit: <code>5.0f kg</code> or <code>5.0F kg</code>
+    * Caution: A space is obligatory for liters to
+      avoid confusion with longs (<code>5 l</code>)
+      Standard unitless literals are parsed as Literals as provided by the
+      MCCommonLiterals grammar:
+* Unitless integer: <code>5</code>
+* Unitless long: <code>5l</code> or <code>5L</code>
+* Unitless float: <code>5.0</code>
+* Unitless float (explicit): <code>5.0f</code> or <code>5.0F</code></p>
+<h2 id="siunittypes4mathmc4"><a href="../SIUnitTypes4Math.mc4">SIUnitTypes4Math.mc4</a></h2>
+<p>The SIUnitTypes interpret the SIUnits as a type in the MontiCore type universe,
+such as <code>[m]</code>.
+Therefore, the grammar extends
+<a href="../SIUnits.mc4">SIUnits.mc4</a>
+and <a href="https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4">de.monticore.types.MCBasicTypes.mc4</a>.
+A SIUnitType implements the MCType and can therefore be used wherever a type is used,
+e.g., when a variable is declared or a method parameter is typed.</p>
+<p>The idea of this grammar is that the types are used in a mathematically ideal world (e.g.,
+also in early stages of systems development), where no limitations on
+the type of numbers plays a role yet. This is opposed to the below-defined
+SIUnitTypes4Computing grammar, where concrete types of numbers can be added as well.</p>
+<h2 id="siunittypes4computingmc4"><a href="../SIUnitTypes4Computing.mc4">SIUnitTypes4Computing.mc4</a></h2>
+<p>SIUnitType4Computing interprets the SIUnits as a generic type that
+ have exactly one parameter, which is of a numeric type.
+This allows one to specify SI unit and underlying numeric type, such as <code>[km/h]&lt;float&gt;</code>
+or <code>[m]&lt;long&gt;</code> in combination and use that as type.
+This is more oriented toward computation because it allows one to model
+numeric restrictions. Please note that e.g. <code>[km]&lt;int&gt;</code> has a different behavior that
+<code>[m]&lt;int&gt;</code> in terms of rounding and overflow.</p>
+<p>Technically, SIUnitType4Computing defines a type expression with an
+SI unit as a generic type (not SymTypeOfGenerics)
+and a MCPrimitiveType as an argument.
+The primitive part must be a numeric type.</p>
+<p>Remark: while the syntax of SI Units is very carefully standardized,
+the use of SI Units as type definitions, and especially as generic types
+is an invention by the MontiCore team. Alternative syntaxes are definitely
+possible.</p>
+<h2 id="typecheck">TypeCheck</h2>
+<p>There are two main approaches how to handle si units: at compile-time
+or at runtime. The former variant is highly preferable as all unit-related
+checks and conversions are performed at compile-time and unit information
+can be thrown away completely at runtime. This approach is only feasible
+if our type system is static, i.e., it is not possible to change the unit 
+of a variable at runtime.
+A variable with type <code>[km/h]</code> will always be interpreted as <code>[km/h]</code>.
+Assignments of compatible variables, e.g., typed as <code>[m/s]</code> lead
+to an implicit conversion by the compiler or code generator.</p>
+<p>If static typing is not desired in an SI unit-based language and types can be altered
+dynamically at runtime, type information needs to be carried at runtime.
+Consequentially, all the compatibility checks and conversions need to be
+performed by the generated code. This approach is much less efficient,
+and we recommend to prefer static typing instead if possible.</p>
+<ul>
+<li>With the <a href="../../../../../java/de/monticore/types/check/TypeCalculator.java">TypeCheck</a> class <a href="../../../../../java/de/monticore/types/check/SymTypeExpression.java">SymTypeExpressions</a>
+  (MontiCore's internal form of storage for types) can be
+  synthesized from a <code>MCType</code> and returns a <a href="../../../../../java/de/monticore/types/check/SymTypeOfSIUnit.java">SymTypeOfSIUnit</a>
+  or a <a href="../../../../../java/de/monticore/types/check/SymTypeOfNumericWithSIUnit.java">SymTypeOfNumericWithSIUnit</a> for a
+  <code>SIUnitType</code> or <code>SIUnitType4Computing</code>.</li>
+<li>With the <a href="../../../../../java/de/monticore/types/check/TypeCalculator.java">TypeCheck</a> class <a href="../../../../../java/de/monticore/types/check/SymTypeExpression.java">SymTypeExpressions</a>
+  can be derived from a <code>Literal</code> or an <code>Expression</code> and returns a <a href="../../../../../java/de/monticore/types/check/SymTypeOfSIUnit.java">SymTypeOfSIUnit</a>
+  or a <a href="../../../../../java/de/monticore/types/check/SymTypeOfNumericWithSIUnit.java">SymTypeOfNumericWithSIUnit</a> for expressions
+  containing <code>SIUnits</code>.
+  The resulting types of the most common expressions is defined as follows:<ul>
+<li>The type of a SIUnitLiteral is a <code>SymTypeOfNumericWithSIUnit</code>
+  as a combination of the types of its NumericLiteral and its SIUnit. \
+  E.g. <code>typeOf(3.2f m) -&gt; [m]&lt;float&gt;</code></li>
+<li>The multiplication of two <code>SymTypeOfNumericWithSIUnit</code> results in the
+  combination of the multiplication of their numeric parts and
+  of their SI unit parts. \
+  E.g. <code>typeOf(3 m * 1.5 s) -&gt; [m^s]&lt;double&gt;</code></li>
+<li>The division of two <code>SymTypeOfNumericWithSIUnit</code> results in the
+  combination of the division of their numeric parts
+  of their SI unit parts. \
+  E.g. <code>typeOf(3 m / 2l s) -&gt; [m/s]&lt;long&gt;</code></li>
+<li>The addition of two <code>SymTypeOfNumericWithSIUnit</code> results in the
+  combination of the addition of their numeric parts and
+  their SI unit parts. The addition of the SI unit parts is only
+  defined if the units are compatible (same base units with different prefix)
+  and results in the <em>smaller</em> unit. \
+  E.g. <code>typeOf(3 m + 2 s) -&gt; undefined</code> (results in an error) \
+  <code>typeOf(1.25 h + 30 min) -&gt; [min]&lt;double&gt;</code> \
+  <code>typeOf(30 min + 1.25 h) -&gt; [min]&lt;double&gt;</code></li>
+<li>Subtraction and modulo are defined in the same way as the addition.</li>
+</ul>
+</li>
+</ul>
+<p>The TypeCheck classes here are:</p>
+<ul>
+<li><a href="../../../../../java/de/monticore/types/check/SIUnitBasic.java">SIUnitBasic</a>
+  which defines the SymType of a single SI unit basis, e.g. <code>m</code> or <code>ms^2</code>,
+  but not <code>K^2m</code>, as it contains two SI unit basis.</li>
+<li><a href="../../../../../java/de/monticore/types/check/SymTypeOfSIUnit.java">SymTypeOfSIUnit</a>
+  which contains a numerator and denominator list of SIUnitBasic.</li>
+<li><a href="../../../../../java/de/monticore/types/check/SymTypeOfNumericWithSIUnit.java">SymTypeOfNumericWithSIUnit</a>
+  which contains a numeric type and a SymTypeOfSIUnit.</li>
+</ul>
+<p>For more info, see <a href="../../../../../java/de/monticore/types3/TypeSystem3/">TypeCheck</a>.</p>
+<h2 id="runtime-executing-calculations">Runtime: Executing Calculations</h2>
+<p>While the previous part described, how SI Units are used in grammars
+and thus mainly for the concrete and abstract syntax of a modeling language,
+we here also discuss possibilities to execute calculations.</p>
+<p>There are mainly two approaches, while the latter also comes in variants:</p>
+<ol>
+<li>
+<p>Due to the strong typing system that is provided, the generator in principle
+   can throw all type information away after consistency has been checked.
+   This is efficient and type safe, given a correctly implemented type checker.
+   All needed scalar transformations can be explicitly added during the generation
+   process, SI Unit information is not present in the values anymore.
+   (efficient compilers do exactly that with their datatypes today).
+   I.e., <code>[km/h]&lt;int&gt; x = 100 * 30m / 100sec</code> would be translated to
+   <code>int x =  (100 * 30 / 60)  * 3600 / 1000</code> where the later multiplication
+   and division handles the scaling. (Further optimization is not needed here,
+   but handled by a subsequent compiler.)</p>
+</li>
+<li>
+<p>In some target languages, such as C, C++, or python,
+   strong typing doesn't really exist, and people
+   have implemented frameworks that make units explicit. I.e., instead of storing
+   a value for <code>[km/h]&lt;int&gt; x</code> in form of a simple <code>int</code> value, an object
+   with attributes like <code>int value</code>, <code>String siUnit</code>, and <code>int scaleFactor</code> are
+   carried around at runtime.
+   <a href="http://unitsofmeasurement.github.io/unit-api/site/apidocs/javax/measure/Unit.html">Unit</a>
+   is such a framework for Java.</p>
+<ul>
+<li>As a side effect, the SI Units are themselves encoded as values
+  (whereas in our language, we treat them as types, what they actually are)
+  and thus the typing system is encoded explicitly — a common approach,
+  when the programming language doesn't provide a strong typing system.</li>
+</ul>
+</li>
+</ol>
+<p>It is up to the developer of a generator to decide which solution to take.</p>
+<h2 id="further-information">Further Information</h2>
+<ul>
+<li><a href="https://github.com/MontiCore/monticore">Project root: MontiCore @github</a></li>
+<li><a href="http://www.monticore.de/">MontiCore documentation</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md"><strong>List of languages</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md"><strong>MontiCore Core Grammar Library</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md">Best Practices</a></li>
+<li><a href="https://www.se-rwth.de/publications/">Publications about MBSE and MontiCore</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md">Licence definition</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      (c) https://github.com/MontiCore/monticore
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../../../../../..", "features": ["navigation.tabs", "toc.integrate", "toc.follow", "content.tabs.link", "content.code.copy"], "search": "../../../../../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../../../../../assets/javascripts/bundle.f13b1293.min.js"></script>
+      
+    
+  </body>
+</html>

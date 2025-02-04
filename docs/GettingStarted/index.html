@@ -1,0 +1,2446 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://monticore.github.io/monticore/docs/GettingStarted/">
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../../monticore-grammar/src/main/grammars/de/monticore/Grammars/">
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.2">
+    
+    
+      
+        <title>Getting Started - MontiCore</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.d7758b05.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['disableCookies']);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://stats.fh-aachen.de/";
+      _paq.push(['setTrackerUrl', u+'piwik.php']);
+      _paq.push(['setSiteId', '35']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#getting-started-with-monticore" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="MontiCore" class="md-header__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MontiCore
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Getting Started
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../monticore-grammar/src/main/grammars/de/monticore/Grammars/" class="md-tabs__link">
+          
+  
+  Core Grammars
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../DevelopedLanguages/" class="md-tabs__link">
+          
+  
+  Languages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../BestPractices/" class="md-tabs__link">
+        
+  
+    
+  
+  Best Practices
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../00.org/Explanations/CHANGELOG/" class="md-tabs__link">
+        
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Download/" class="md-tabs__link">
+        
+  
+    
+  
+  Downloads
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../Publications/" class="md-tabs__link">
+        
+  
+    
+  
+  Publications
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-tabs__link">
+        
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="MontiCore" class="md-nav__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    MontiCore
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites-installing-the-java-development-kit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites: Installing the Java Development Kit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-the-monticore-command-line-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use the MontiCore Command Line Interface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use the MontiCore Command Line Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspect-the-example-grammar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inspect the Example Grammar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-monticore" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run MontiCore
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run MontiCore">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abstract-syntax-tree-data-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abstract Syntax Tree Data Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parser" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parser
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symbol-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Symbol Table
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deserialization-of-symbol-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      (De)Serialization of Symbol Tables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visitor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visitor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Conditions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mill-as-factory-for-builders" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mill as Factory for Builders
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compile-the-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compile the Target
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-the-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the Tool
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-monticore-in-eclipse" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using MontiCore in Eclipse
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using MontiCore in Eclipse">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-eclipse" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up Eclipse
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importing-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Importing the Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-monticore" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running MontiCore
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-monticore-in-intellij-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using MontiCore in IntelliJ IDEA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using MontiCore in IntelliJ IDEA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-intellij-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up IntelliJ IDEA
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importing-the-example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Importing the Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-monticore_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running MontiCore
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-monticore-with-gitpod" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using MontiCore with GitPod
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Information
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Core Grammars
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Core Grammars
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monticore-grammar/src/main/grammars/de/monticore/Grammars/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Expressions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monticore-grammar/src/main/grammars/de/monticore/literals/Literals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Literals
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monticore-grammar/src/main/grammars/de/monticore/types/Types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Languages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Languages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DevelopedLanguages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Languages and Language Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Languages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    List of Languages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BestPractices/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Best Practices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00.org/Explanations/CHANGELOG/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Download/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Downloads
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Publications/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Publications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    License
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<!-- (c) https://github.com/MontiCore/monticore -->
+<h1 id="getting-started-with-monticore">Getting Started with MontiCore</h1>
+<p>This page describes the technical installation and usage of MontiCore for
+language developers. This page further inspects a simple example grammar and the
+Java classes and other artifacts generated from this grammar. After installing
+MontiCore as described on this page, it can be used to develop new modeling
+languages and generators as described in subsequent chapters.</p>
+<p>MontiCore provides a command line interface (CLI) tool and can easily be used
+with Gradle. The Gradle integration enables developers to easily employ
+MontiCore in commonly used integrated development environments (IDEs), such as
+Eclipse and IntelliJ IDEA. This page contains information about an example
+MontiCore project and the files generated by MontiCore. It also shortly explains
+some key features of MontiCore.</p>
+<p>Detailed information about all configuration options that can be used in
+the MontiCore CLI tool and in MontiCore Gradle projects are explained in
+<a href="https://www.monticore.de/handbook.pdf">Chapter 16 of the handbook</a>. More
+information about the example <code>Automata</code> language are available in 
+<a href="https://www.monticore.de/handbook.pdf">Chapter 21 of the handbook</a>.</p>
+<h2 id="prerequisites-installing-the-java-development-kit">Prerequisites: Installing the Java Development Kit</h2>
+<p>We start with the JDK: Please perform the following steps to install the
+Java Development Kit (JDK) and validate that the installation was successful:</p>
+<ul>
+<li>Install a JDK with at least version 11 provided by Oracle or OpenJDK.</li>
+<li>Make sure the environment variable <code>JAVA_HOME</code> points to the installed JDK, and
+    <em>not</em> to the JRE, e.g., the following would be good:<ul>
+<li><code>/user/lib/jvm/java-11-openjdk</code> on UNIX or</li>
+<li><code>C:\Program Files\Java\jdk-11.*</code> on Windows.
+You will need this in order to run the Java compiler for compiling
+the generated Java source files.</li>
+</ul>
+</li>
+<li>Also make sure that the system variable is set such that the Java
+    compiler can be used from any directory. JDK installations on UNIX
+    systems do this automatically. On Windows systems, the <code>bin</code>
+    directory of the JDK installation needs to be appended to the <code>PATH</code>
+    variable, e.g. <code>%PATH%;%JAVA_HOME%</code>.</li>
+<li>Test whether the setup was successful. Open a command line shell in
+    any directory. Execute the command <code>javac -version</code>. If this command
+    is recognized and the shell displays the version of the installed
+    JDK (e.g., <code>javac 11.0.5</code>), then the setup was successful.</li>
+<li><em>(Optional)</em> Install <a href="https://gradle.org/install/">Gradle</a> version 7.6. </li>
+</ul>
+<p>Now we have the prerequisites to run MontiCore from the command line (CLI)
+or alternatively using Gradle.</p>
+<h2 id="use-the-monticore-command-line-interface">Use the MontiCore Command Line Interface</h2>
+<p>This section describes instructions to perform the following first steps
+to use MontiCore, either as a CLI tool or with Gradle:</p>
+<ul>
+<li>Installation of the MontiCore distribution file.</li>
+<li>Grammar inspection</li>
+<li>Running the MontiCore generator</li>
+<li>Compiling the product</li>
+<li>Running the product, i.e. the <code>Automata</code> tool with an example model
+    <code>example/PingPong.aut</code>.</li>
+</ul>
+<h3 id="installation">Installation</h3>
+<p>For installing MontiCore for either CLI or Gradle usage,
+select the suitable tab below, and perform the following steps:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CLI</label><label for="__tabbed_1_2">Gradle</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ul>
+<li>Download the example <code>Automata</code> MontiCore project:
+<div class="highlight"><pre><span></span><code>// MontiCore zip distribution source
+https://www.monticore.de/download/monticore.tar.gz
+</code></pre></div></li>
+<li>Unzip the archive. The unzipped files include a directory called
+    <code>mc-workspace</code> containing the executable MontiCore tool
+    <code>monticore.jar</code> along with a directory <code>src</code> containing
+    handwritten <code>Automata</code> DSL infrastructure, a directory <code>hwc</code>
+    containing handwritten code that is incorporated into the generated
+    code, and a directory <code>example</code> containing an example model of the
+    <code>Automata</code> DSL.
+<div class="highlight"><pre><span></span><code>// MontiCore zip distribution content in directory mc-workspace
+Automata.mc4
+monticore.jar
+monticore-rt.jar
+src/automata/AutomataTool.java
+src/automata/visitors/CountStates.java
+src/automata/prettyprint/PrettyPrinter.java
+src/automata/cocos/AtLeastOneInitialAndFinalState.java
+src/automata/cocos/StateNameStartsWithCapitalLetter.java
+src/automata/cocos/TransitionSourceExists.java
+hwc/automata/_ast/ASTState.java
+hwc/automata/_symboltable/AutomatonSymbol.java
+hwc/automata/_symboltable/AutomataSymbols2Json.java
+hwc/automata/_symboltable/AutomatonSymbolDeSer.java
+hwc/automata/_symboltable/AutomataGlobalScope.java
+example/PingPong.aut
+</code></pre></div></li>
+</ul>
+</div>
+<div class="tabbed-block">
+<ul>
+<li>Download the example <code>Automata</code> MontiCore project for Gradle:
+<div class="highlight"><pre><span></span><code>// MontiCore-Automaton zip distribution source
+http://www.monticore.de/download/Automaton.zip
+</code></pre></div></li>
+<li>Unzip the archive. The unzipped files include a directory called
+<code>automaton-master</code> containing the Gradle build script 
+along with the directories
+<code>src/main/grammars</code> containing the <code>Automata.mc4</code> grammar,
+<code>src/main/java</code> containing both handwritten <code>Automata</code> DSL infrastructure 
+and handwritten code that is incorporated into the generated code,
+and <code>src/test/resources</code> containing an example model of the <code>Automata</code> DSL.
+<div class="highlight"><pre><span></span><code>// Automaton zip distribution content
+build.gradle
+gradle.properties
+settings.gradle
+src/main/grammars/Automata.mc4
+src/main/java/automata/AutomataTool.java
+src/main/java/automata/visitors/CountStates.java
+src/main/java/automata/cocos/AtLeastOneInitialAndFinalState.java
+src/main/java/automata/cocos/StateNameStartsWithCapitalLetter.java
+src/main/java/automata/cocos/TransitionSourceExists.java
+src/main/java/automata/_ast/ASTState.java
+src/main/java/automata/_symboltable/AutomatonSymbol.java
+src/main/java/automata/_symboltable/AutomatonSymbolDeser.java
+src/main/java/automata/_symboltable/AutomataGlobalScope.java
+src/test/resources/automata/parser/PingPong.aut
+</code></pre></div></li>
+</ul>
+<p><em>Note:</em> When mentioned, this document will specify file locations based
+on the CLI project setup.
+The CLI directories <code>src</code> and <code>hwc</code> are both represented by the same 
+<code>src/main/java</code> directory using Gradle.</p>
+</div>
+</div>
+</div>
+<p>The CLI and Gradle setups both work on the same project,
+ albeit with a different directory structure.</p>
+<h3 id="inspect-the-example-grammar">Inspect the Example Grammar</h3>
+<p>MontiCore is a language workbench. It supports developers in developing
+modular modelling languages. The core of MontiCore is its grammar
+modelling language (cf. <a href="https://www.monticore.de/handbook.pdf">Chapter 4 of the MontiCore handbook</a>), 
+which is used by developers for modelling
+context-free grammars. A MontiCore grammar defines (parts of) the
+abstract and concrete syntax of a language. Each grammar contains
+nonterminals, production rules, and may extend other grammars. At most
+one rule is marked as the start rule.</p>
+<p>It is a <em>key feature of MontiCore</em> that it allows a grammar to <em>reuse and extend other grammars</em>. 
+In an extension all the nonterminals
+defined in the extended grammars can be reused or even overridden. This
+form of extension allows to achieve several effects:</p>
+<ul>
+<li>Language (i.e. grammar) components can be reused and integrated in
+    larger languages, composed of several components.</li>
+<li>Individual nonterminals can be reused (like classes) from a library.</li>
+<li>A given language can be extended, allowing to add additional
+    alternatives inside a language.</li>
+</ul>
+<p>Component grammars and grammar extensions are detailedly discussed in 
+<a href="https://www.monticore.de/handbook.pdf">Chapter 4 of the MontiCore handbook</a>.</p>
+<div class="highlight"><pre><span></span><code>grammar Automata extends de.monticore.MCBasics {
+
+  symbol scope Automaton =
+    &quot;automaton&quot; Name &quot;{&quot; (State | Transition)* &quot;}&quot; ;
+
+  symbol State =
+    &quot;state&quot; Name
+    ((&quot;&lt;&lt;&quot; [&quot;initial&quot;] &quot;&gt;&gt;&quot; ) | (&quot;&lt;&lt;&quot; [&quot;final&quot;] &quot;&gt;&gt;&quot; ))*
+    ( (&quot;{&quot; (State | Transition)* &quot;}&quot;) | &quot;;&quot;) ;
+
+  Transition =
+    from:Name &quot;-&quot; input:Name &quot;&gt;&quot; to:Name &quot;;&quot; ;
+}
+</code></pre></div>
+<figcaption>Listing 2.3: The <code>Automata</code> grammar.</figcaption>
+
+<p>In the following, we inspect the MontiCore grammar of the <code>Automata</code>
+language. Navigate your file explorer to the unzipped <code>mc-workspace</code>
+directory. The directory contains the file <code>Automata.mc4</code>. This file
+contains the MontiCore grammar depicted in Listing 2.3. MontiCore grammars end with
+<code>.mc4</code>.</p>
+<p>The definition of a MontiCore grammar starts with the keyword <code>grammar</code>,
+followed by the grammar's name. In this example, the grammar is
+called <code>Automata</code>. The grammar's name is optionally followed by the
+keyword <code>extends</code> and a list of grammars that are extended by the
+grammar. In this example, the <code>Automata</code> grammar extends the grammar
+<code>de.monticore.MCBasics</code>.</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.4 MontiCore Key Feature: Composition
+</div>
+<p>The MontiCore language workbench allows to compose language components
+by composing grammars and also to reuse all infrastructure, such as
+context conditions, symbol table infrastructure, generator parts and
+handwritten extensions.</p>
+
+<p>In the example the <code>Automata</code> grammar extends the grammar
+<code>de.monticore.MCBasics</code> and thus reuses its functionality.</p>
+
+<p>MontiCore comes with an extensive library of predefined language
+components.</p>
+</div>
+
+<p>Grammars can also have a package and import other grammars. If a grammar
+has a package, then the package declaration must be the first statement
+in the grammar and is of the form <code>package</code> <em>QualifiedName</em> where
+<code>package</code> is a keyword and <em>QualifiedName</em> is an arbitrary qualified
+name (e.g. <code>de.monticore</code>). The optional grammar imports follow the
+package definition. Every import is of the form <code>import</code>
+<em>QualifiedName</em>. The <code>Automata</code> example grammar file does neither
+contain a package declaration nor imports. The grammar extended by the
+<code>Automata</code> grammar is specified by its fully qualified name.</p>
+<p>As usual in context-free grammars, production rules have a left-hand
+side and a right-hand side. The left-hand side contains the possibly
+annotated name of a nonterminal. The left-hand side is followed by the
+terminal <code>=</code> and the right-hand side. Nonterminal names start with an
+upper-case letter. For instance, the <code>Automata</code> grammar contains the
+nonterminals <code>Automaton</code>, <code>State</code>, and <code>Transition</code>. A single
+nonterminal can be provided with the <code>start</code> keyword. Then, the
+nonterminal is the starting symbol of the grammar. If no nonterminal is
+marked with <code>start</code>, then the first nonterminal of the grammar
+becomes the starting symbol by default. In the <code>Automata</code> grammar, the
+<code>Automaton</code> nonterminal is the starting symbol.</p>
+<p>The other possible keywords for nonterminals influence the generated
+classes for the abstract syntax tree as well as the generated symbol
+table infrastructure. Details can be found in 
+<a href="https://www.monticore.de/handbook.pdf">Chapter 4 and Chapter 9 of the MontiCore handbook</a>. 
+For example, the
+<code>Automaton</code> nonterminal is marked with <code>symbol</code> and <code>scope</code>. The
+keyword <code>symbol</code> makes the MontiCore generator generate a symbol
+class for the nonterminal. Intuitively stated, the keyword <code>scope</code>
+instructs the MontiCore generator to construct a symbol table
+infrastructure that
+opens a scope when the production is processed. The following sections
+explain the effects of specifying the <code>Automaton</code> nonterminal with the
+keywords <code>symbol</code> and <code>scope</code> in more detail. Terminals are surrounded
+by quotation marks. The <code>Automata</code> grammar, for example, inter alia
+contains the terminals <code>automaton</code>, <code>state</code>, <code>{</code>, <code>}</code>, and <code>;</code>.</p>
+<p>The right-hand sides of grammar productions consist of nonterminals,
+terminals, and semantic predicates, may use cardinalities (<code>*</code>, <code>+</code>,
+<code>?</code>), and introduce alternatives via the terminal <code>|</code> as known from
+regular expressions. Details can be found in 
+<a href="https://www.monticore.de/handbook.pdf">Chapter 4 of the MontiCore handbook</a>. 
+The right-hand side of
+the production defining the nonterminal <code>Automaton</code>, for example, uses
+the terminal <code>automaton</code> and the nonterminals <code>Name</code>, <code>State</code>, and
+<code>Transition</code>. The nonterminal <code>Name</code> is not defined in the grammar
+<code>Automata</code>. Thus, it must be defined in one of the extended grammars. In
+this case, <code>Name</code> is defined in the grammar <code>MCBasics</code> and is reused by
+the grammar <code>Automata</code>. For distinguishing different usages of
+nonterminals on right-hand sides, they can be named. For example, the
+right-hand side of the production defining the nonterminal <code>Transition</code>
+uses the <code>Name</code> nonterminal twice. The first usage is named <code>input</code> and
+the second usage is named <code>to</code>. MontiCore also supports <code>interface</code> and
+<code>external</code> nonterminals for introducing extension points as detailedly
+described in <a href="https://www.monticore.de/handbook.pdf">Chapter 4 of the MontiCore handbook</a>. 
+However, the example grammar does not use these concepts.</p>
+<div class="highlight"><pre><span></span><code>automaton PingPong {
+  state NoGame &lt;&lt;initial&gt;&gt;;
+  state Ping;
+  state Pong &lt;&lt;final&gt;&gt;;
+
+  NoGame - startGame &gt; Ping;
+
+  Ping - stopGame &gt; NoGame;
+  Pong - stopGame &gt; NoGame;
+
+  Ping - returnBall &gt; Pong;
+  Pong - returnBall &gt; Ping;
+}
+</code></pre></div>
+<figcaption>Listing 2.5: A model conforming to the Automata grammar.</figcaption>
+
+<p>Listing 2.5 depicts an example model conforming to the <code>Automata</code> grammar in its
+concrete syntax. 
+It depicts a simple game of Ping Pong. The automaton consists of three states: 
+the initial state <code>NoGame</code>, such as the states <code>Ping</code> and <code>Pong</code>, for 
+identifying on which side the ball is located. 
+Initially, the automaton starts in the state <code>NoGame</code>. 
+The game starts at the corresponding event. 
+During a run, the automaton switches states by returning the ball from one 
+side to the other. 
+Additionally, it can be stopped at each stage of the game, resulting in the 
+initial configuration.
+You can find the model in the file <code>PingPong.aut</code>
+contained in the <code>example</code> directory of the unzipped <code>mc-workspace</code>
+directory.</p>
+<h3 id="run-monticore">Run MontiCore</h3>
+<p>The MontiCore generator takes a MontiCore grammar as input and generates
+an infrastructure for processing models conforming to the grammar. When
+a grammar <code>E</code> extends another grammar <code>G</code>, then all the
+infrastructure generated for the grammar <code>G</code> is reused and only the
+extending part from <code>E</code> is generated.</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.6 Infrastructure Generated by MontiCore
+</div>
+MontiCore itself as well as the infrastructure generated by the
+MontiCore generator are implemented in Java. This infrastructure
+includes:
+
+<ul>
+<li> a <em>parser</em> for parsing models conforming to the grammar and
+    transforming textual models into abstract syntax tree instances
+    abstracting from the concrete syntax.</li>
+<li> a <em>symbol table infrastructure</em> to handle the symbols introduced or
+    used by models conforming to the grammar. The symbol table
+    infrastructure is used for resolving dependencies between model
+    elements that are possibly defined in different files.</li>
+<li> a <em>context-condition checking framework</em> for checking
+    well-formedness rules that cannot be captured by context-free
+    languages.</li>
+<li> a <em>visitor infrastructure</em> for traversing models respectively their
+    abstract syntax instances. The abstract syntax of a model consists
+    of its internal representation as an abstract syntax tree
+    abstracting from the concrete syntax of the model (the instance of
+    the data structure obtained from parsing) and the symbol table of
+    the model.</li>
+<li> a <em>mill infrastructure</em> for retrieving objects for language
+    processing, such as parsers, builders for abstract syntax trees,
+    visitors and objects for the symbol tables of the language. 
+    A mill serves as a dynamic factory, adapting to the current 
+    modeling language. The
+    possibility to configure the mills is crucial for reusing the
+    functionality implemented for a sublanguage (cf. Section 5.9, 
+    Section 5.10.2, and Section 11.5 for details).</li>
+<li> a <em>code generating framework</em> that extends the 
+    <a href="https://freemarker.apache.org/">FreeMarker</a> template
+    engine by various modularity enhancing features.</li>
+</ul>
+
+</div>
+
+<p>For executing MontiCore using the <code>Automata</code> grammar as input, perform
+the following steps:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">CLI</label><label for="__tabbed_2_2">Gradle</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Open a command line shell and change the working directory to the
+    unzipped directory (<code>mc-workspace</code>).</li>
+<li>Execute the following command in order to generate the language
+    infrastructure of the <code>Automata</code> DSL:
+<div class="highlight"><pre><span></span><code>java -jar monticore.jar -g Automata.mc4 -hcp hwc/ src/ -mp monticore-rt.jar
+</code></pre></div>
+The only required argument <code>Automata.mc4</code> denotes the input grammar
+that shall be processed by MontiCore. The processing includes the
+generation of the language infrastructure. Using the option <code>-hcp</code>
+enables specifying the path to a directory containing the
+handwritten code that is to be incorporated into the generated
+infrastructure. In this case, passing the argument <code>hwc/</code> to the
+option <code>-hcp</code> makes MontiCore consider the handwritten code located
+in the directory <code>hwc/</code>. Providing handwritten code enables to
+easily incorporate additional functionality into the generated code.
+For example, this enables developers to extend generated abstract
+syntax classes as detailedly described in 
+(cf. <a href="https://www.monticore.de/handbook.pdf">Section 5.10 of the MontiCore handbook</a>).
+Passing the argument <code>-mp</code> enables specifying the paths to directories 
+or archives 
+containing paths to grammars and Java classes that are imported by the 
+processed grammar and the related tooling. In this case, the archive 
+<code>monticore-rt.jar</code> contains the grammars and handwritten extensions
+of the monticore standard library.
+More information about the standard library can be found in 
+<a href="https://www.monticore.de/handbook.pdf">Chapters 17- 20 of the handbook</a>.</li>
+</ol>
+</div>
+<div class="tabbed-block">
+<ol>
+<li>Open a command line shell and change the working directory to the
+    unzipped directory.</li>
+<li>Execute the following command in order to generate the language
+    infrastructure of the <code>Automata</code> DSL:
+<div class="highlight"><pre><span></span><code>gradle generateMCGrammars
+</code></pre></div>
+By default, the MontiCore Gradle plugin shall process all input grammars in 
+<code>src/main/grammars</code>. The processing includes the generation of the language infrastructure.
+Handwritten code in <code>src/main/grammar</code> is going to be incorporated into the generated
+infrastructure. Providing handwritten code enables to
+easily incorporate additional functionality into the generated code.
+For example, this enables developers to extend generated abstract
+syntax classes as detailedly described in
+(cf. <a href="https://www.monticore.de/handbook.pdf">Section 5.10 of the MontiCore handbook</a>).</li>
+</ol>
+<p>The MontiCore standard library,
+containing grammars and Java classes, is imported via the <code>de.monticore:monticore-grammar</code> dependency.
+More information about the standard library can be found in
+<a href="https://www.monticore.de/handbook.pdf">Chapters 17- 20 of the handbook</a>.</p>
+<p>A more detailed description of the MontiCore Gradle plugin is given 
+<a href="../Gradle/">here</a>.</p>
+</div>
+</div>
+</div>
+<p>Executing the command launches MontiCore, which results in the
+executing of the following steps:</p>
+<ol>
+<li>The specified grammar is parsed and processed by MontiCore.</li>
+<li>Java source files for the corresponding DSL infrastructure are
+    generated into the default output directory <code>out</code>.  This infrastructure
+     consists of the directories<ul>
+<li><code>out/automata/</code> containing the mill (cf. Section 5.9, Section 5.10.2, Section 11.5).</li>
+<li><code>out/automata/_ast</code> containing the abstract syntax tree data
+    structure (cf. <a href="https://www.monticore.de/handbook.pdf">Chapter 5 of the MontiCore handbook</a>).</li>
+<li><code>out/automata/_auxiliary</code> containing adapted mills of sublanguages,
+    which are required for configuring the mills of sublanguages
+    (cf. <a href="https://www.monticore.de/handbook.pdf">Chapter 11 of the MontiCore handbook</a>).</li>
+<li><code>out/automata/_cocos</code> containing the infrastructure for context
+    conditions (cf. <a href="https://www.monticore.de/handbook.pdf">Chapter 10 of the MontiCore handbook</a>).</li>
+<li><code>out/automata/_od</code> containing the infrastructure for printing
+    object diagrams for reports produced during processing the
+    models.</li>
+<li><code>out/automata/_parser</code> containing the generated parsers, which are
+    based on ANTLR (cf. <a href="https://www.monticore.de/handbook.pdf">Chapter 6 of the MontiCore handbook</a>).</li>
+<li><code>out/automata/_symboltable</code> containing the infrastructure for the symbol
+    table (cf. <a href="https://www.monticore.de/handbook.pdf">Chapter 6 of the MontiCore handbook</a>).</li>
+<li><code>out/automata/_utils</code> containing infrastructure for typecasting and 
+identifying subtypes of ast nodes, symbols, and scopes.</li>
+<li><code>out/automata/_visitor</code> containing the infrastructure for visitors
+  (cf. <a href="https://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>).</li>
+<li><code>out/reports/automata</code> containing reports created during the
+  processing of the grammar.</li>
+</ul>
+</li>
+<li>The output directory also contains a log file of the executed
+    generation process with the generation time in its name.</li>
+</ol>
+<p>In the following, we review the classes and interfaces generated from
+the <code>Automata</code> grammar that are relevant for language engineers in more
+detail. We do not review the classes and interfaces that are only
+internally relevant for MontiCore and are usually not intended to be
+used by language engineers.</p>
+<h4 id="abstract-syntax-tree-data-structure">Abstract Syntax Tree Data Structure</h4>
+<p>The tree data structure is generated into the directory <code>out/automata/_ast</code>.
+Details about the generation of AST classes can be found in 
+(cf. <a href="https://www.monticore.de/handbook.pdf">Chapter 5 of the MontiCore handbook</a>). For
+each nonterminal contained in the grammar, the MontiCore generator
+produces AST and corresponding builder classes. The AST classes
+implement the abstract syntax tree data structure.</p>
+<p>The builder classes implement the builder pattern for constructing
+instances of the respective AST classes as usual. For example, the class
+<code>ASTAutomaton</code> is the AST class generated for the <code>Automaton</code>
+nonterminal (cf. Listing 2.3) and the class <code>ASTAutomatonBuilder</code> is the
+corresponding generated builder class.</p>
+<p>Parts of the AST data structure generated for the <code>Automata</code> grammar.</p>
+<p><img alt="" src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataAST.png" /></p>
+<figcaption>Figure 2.7: Parts of the AST data structure generated for the <code>Automata</code> grammar.</figcaption>
+
+<p>The contents of the AST and builder classes are generated systematically
+from the grammar. The attributes of each AST class resemble the
+right-hand side of the corresponding production rule. In the following,
+we mainly speak of attributes, but please be aware that all attributes
+come fully equipped with access and modification methods, which should
+normally be used.</p>
+<p>For instance, Figure 2.7 depicts parts of the generated <code>AST</code> infrastructure for
+the <code>Automata</code> grammar. The class <code>ASTAutomaton</code> contains the attributes
+<code>name</code>, <code>states</code>, and <code>transitions</code>. The <code>AST</code> class does not contain an
+attribute for the terminal <code>automaton</code> as it is part of every word
+conforming to the production of the <code>Automaton</code> nonterminal. The type of
+the attribute <code>name</code> is <code>String</code> whereas the attributes <code>states</code> and
+<code>transitions</code> are lists of the types of the <code>AST</code> classes corresponding
+to the used nonterminals. This is the case because exactly one <code>Name</code> is
+parsed with the right-hand side of the production of the nonterminal
+<code>Automaton</code>, whereas multiple states and transitions can be parsed.</p>
+<p>The <code>ASTAutomaton</code> class further contains the attributes <code>symbol</code>,
+<code>spannedScope</code>, and <code>enclosingScope</code>. These attributes are specific to
+the symbol table of <code>Automata</code> models and are used for linking the
+symbol table of a model with its abstract syntax tree. Details can be
+found in <a href="https://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>.</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.8 Generated Symbols and Scopes in the AST
+</div>
+<p>Each <code>AST</code> class contains access to the <code>enclosingScope</code>.</p>
+
+<p>When a production contains the keyword <code>symbol</code>, the generated AST class
+contains the attribute <code>symbol</code> 
+(see <a href="https://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>).</p>
+
+<p>Keyword <code>scope</code> indicates that a nonterminal also defines a new local
+scope, stored in attribute <code>spannedScope</code>.</p>
+
+<p>The parser builds the abstract syntax tree of a model and the available
+scope genitor creates the symbol table of the model, consisting of
+symbols and scopes.</p>
+</div>
+
+<p>The <code>ASTAutomaton</code> class further contains several straight-forward
+methods for checking different instances for equality and accessing the
+attributes. Similar to the <code>ASTAutomaton</code> class, the
+<code>ASTAutomatonBuilder</code> class contains attributes resembling the
+right-hand side of the corresponding production. It further contains
+methods for changing the values of the attributes (e.g., <code>addState</code>),
+checking whether the <code>AST</code> instance that would be constructed from the
+current builder state is valid (cf. <code>isValid</code>), and for building the
+<code>AST</code> instance corresponding to the builder's state (cf. <code>build</code>). The
+contents of the other <code>AST</code> and <code>Builder</code> classes are constructed
+analogously.</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.9 Handwritten AST Class Extensions
+</div>
+<p>If the generator detects that an <code>AST</code> class for a nonterminal is
+already implemented in the handwritten code, then it produces a
+corresponding <code>TOP</code> <code>AST</code> class instead.</p>
+
+<p>This TOP mechanism allows developers to add handwritten extensions to
+any generated class, while reusing the generated <code>TOP</code> class via
+extension.</p>
+
+<p>This gives a <em>very close integration</em> between handwritten and generated
+code that even adapts builders accordingly, while preventing the very
+bad habit of performing manual changes to the generated code.</p>
+
+<p>Option <code>-hcp</code> tells the generator where to look for handwritten
+integrations.</p>
+</div>
+
+<p>The following section presents the methods of the classes for parsing
+textual models (possibly stored in files) into <code>AST</code> class instances at
+runtime. For now, it suffices for you to understand that (1) MontiCore
+generates an extensible <code>AST</code> data structure that resembles the
+nonterminals and productions of the grammar in a straight-forward way
+and (2) that all models of a grammar have an <code>AST</code> data structure
+representation for internal processing.</p>
+<h4 id="parser">Parser</h4>
+<p>The infrastructure is generated into the directory <code>out/automata/_parser</code>.
+Details about the generated parsers and their uses are described in 
+<a href="https://www.monticore.de/handbook.pdf">Chapter 6 of the MontiCore handbook</a>.</p>
+<p>Parts of the class <code>AutomataParser</code> generated from the <code>Automata</code>
+grammar.</p>
+<p><img alt="" src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataParser.png" /></p>
+<figcaption>Figure 2.10: Parts of the class <code>AutomataParser</code> generated from the <code>Automata</code> grammar.</figcaption>
+
+<p>Parts of the generated class <code>AutomataParser</code> are depicted in Figure 2.10. The
+class implements the generated parser for the <code>Automata</code> grammar.
+Usually, developers are solely concerned with the methods
+<code>parse(String)</code> and <code>parse_String(String)</code>. For now, it suffices if you
+remember that parsing textual <code>Automata</code> models stored in files is
+possible by calling the method <code>parse(String)</code> of an <code>AutomataParser</code>
+object with the fully qualified name of the file as input.</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.11 Methods for Parsing
+</div>
+<p>The class <code>AutomataParser</code> contains the methods</p>
+
+<ul>
+  <li><code>parse(Reader r)</code>,</li>
+  <li><code>parse(String filename)</code>, and</li>
+  <li><code>parse_String(String content)</code>.</li>
+</ul>
+
+<p>All of the methods return an object of type <code>Optional&#x3C;ASTAutomaton&#x3E;</code>,
+where absence means failure of parsing and errors have been issued.</p>
+
+<p>For each nonterminal in the grammar, the class further contains methods
+for parsing a sub-model described by this nonterminal.</p>
+</div>
+
+<h4 id="symbol-table">Symbol Table</h4>
+<p>The infrastructure is generated into the directory <code>out/automata/_symboltable</code>.
+Details about the generated symbol table infrastructure and its use are
+described in <a href="https://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>. 
+The symbol table infrastructure is used for resolving
+cross-references concerning information defined in different model
+elements that are potentially defined in different models stored in
+different files.</p>
+<p><img alt="" src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataScopes.png" /></p>
+<figcaption>Figure 2.12: The scope classes generated from the `Automata` grammar.</figcaption>
+
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.13 Scope Classes
+</div>
+<p>For the <code>Automata</code> grammar, the generator produces the classes</p>
+
+<ul>
+  <li><code>AutomataScope</code>,</li>
+  <li><code>AutomataArtifactScope</code>, and</li>
+  <li><code>AutomataGlobalScope</code></li>
+</ul>
+
+<p>as well as respective interfaces. The relationships between these
+classes and interfaces are depicted in Figure 2.12.</p>
+
+<p>The singleton <code>AutomataGlobalScope</code> contains all
+<code>AutomataArtifactScopes</code> of all loaded <code>Automata</code> artifacts.
+<code>AutomataScope</code>s represent scopes spanned inside of models.</p>
+</div>
+
+<p><img alt="" src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataSymbols.png" /></p>
+<figcaption>Figure 2.14: Parts of the symbol classes generated from the <code>Automata</code> grammar.</figcaption>
+
+<p>Figure 2.14 depicts parts of the symbol classes generated for the <code>Automata</code>
+grammar. As the nonterminal <code>State</code> is annotated with <code>symbol</code> in the
+<code>Automata</code> grammar, the generator produces the class <code>StateSymbol</code>. The
+<code>StateSymbol</code> class, inter alia, contains the attributes <code>name</code>,
+<code>enclosingScope</code>, and <code>spannedScope</code>. The attribute <code>name</code> stores the
+name of the symbol. The attributes <code>enclosingScope</code> and <code>spannedScope</code>
+store the enclosing and spanned scopes of the symbol. The class further
+contains methods for accessing and setting the attributes. For all
+symbol classes, the MontiCore generator also produces builder classes
+(e.g., <code>AutomataArtifactScopeBuilder</code> and <code>StateSymbolBuilder</code>).</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.15 Extending Symbol Classes
+</div>
+<p>It is possible to add further methods and attributes in two ways:</p>
+
+<ul>
+  <li>adding a <em>symbol rule</em> in the grammar 
+  (described in <a href="https://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>) or</li>
+  <li>using the <em>TOP mechanism</em> applied to the generated symbols.</li>
+</ul>
+</div>
+
+<p>The generated class <code>AutomataScopesGenitor</code> is responsible for creating
+the scope structure of <code>Automata</code> artifacts and linking the scope
+structure with the corresponding <code>AST</code> nodes. For this task, it provides
+the method <code>createFromAST</code> that takes an <code>ASTAutomaton</code> instance as
+input and returns an <code>IAutomataArtifactScope</code> instance. The returned
+<code>IAutomataArtifactScope</code> instance can be added as a subscope to the
+(during runtime unique and administrated by the mill)
+<code>AutomataGlobalScope</code> instance.</p>
+<p>Developers can create visitors for complementing the symbol table
+(creating symbols and filling the extensions introduced via symbol rules
+or the TOP mechanism) of an <code>Automata</code> artifact. After creating the
+scope structure, the visitor should be used to traverse the <code>AST</code>
+instance of the artifact for complementing the symbols and scopes. The
+following sections explain the generated visitor infrastructure in more
+detail.</p>
+<div class="no-copy highlight"><pre><span></span><code><span class="n">Optional</span><span class="o">&lt;</span><span class="n">AutomatonSymbol</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">resolveAutomaton</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">)</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">AutomatonSymbol</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">resolveAutomatonMany</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">)</span>
+<span class="n">Optional</span><span class="o">&lt;</span><span class="n">StateSymbol</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">resolveState</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">)</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">StateSymbol</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">resolveStateMany</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+<figcaption>Listing 2.16: Different <code>resolve</code> methods.</figcaption>
+
+<p>For each nonterminal annotated with <code>symbol</code> in the grammar <code>Automata</code>,
+the scope interfaces contain a symbol-specific <code>resolve</code> method taking a
+string as input. The method can be called to resolve symbol instances by
+their names. The name given as input to a <code>resolve</code> method should be as
+qualified as needed to find the symbol. For instance, Listing 2.16 lists the
+signatures of four of the <code>resolve</code> methods provided by the interface
+<code>IAutomataScope</code>.</p>
+<p>For now, it suffices for you to understand that (1) MontiCore generates
+an extensible symbol table data structure that resembles the scope and
+symbol structure as specified in the grammar in a straight-forward way
+and (2) that all models of a grammar have a symbol table data structure
+representation for internal processing and (3) that symbols can be
+resolved from scopes via calling the <code>resolve</code> methods.</p>
+<h4 id="deserialization-of-symbol-tables">(De)Serialization of Symbol Tables</h4>
+<p>MontiCore also supports the serialization and deserialization of symbol tables. The
+(de)serialization is crucial for incremental code generation and
+efficient language composition via aggregation. Details about this are
+explained in <a href="https://www.monticore.de/handbook.pdf">Chapter 7 and Chapter 9 of the MontiCore handbook</a>.</p>
+<p>For the (de)serialization, the generator produces the class
+<code>AutomataSymbol2Json</code>. It provides the public methods <code>store</code> and
+<code>load</code>. The former can be used to serialize <code>IAutomataScope</code> instances
+into their string representations encoded in JSON and persisting these
+to a file at a location that is passed as method argument. The latter
+can be used to load a stored <code>IAutomataScope</code> into its objects
+representation. For now, it suffices that you understand which methods
+to call for the (de)serialization.</p>
+<h4 id="visitor">Visitor</h4>
+<p><img alt="" src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataVisitors.png" /></p>
+<figcaption>Figure 2.17: Parts of the visitor infrastructure generated from the <code>Automata</code> grammar</figcaption>
+
+<p>The infrastructure is generated into the directory <code>out/automata/_visitor</code>.
+Details about the generated visitor infrastructure are described in 
+<a href="https://www.monticore.de/handbook.pdf">Chapter 8 of the MontiCore handbook</a>.
+For each grammar, the generator systematically produces several classes
+and interfaces implementing the visitor infrastructure. For the
+<code>Automata</code> grammar, for example, the generator produces the interfaces
+<code>AutomataTraverser</code>, <code>AutomataVisitor2</code>, and <code>AutomataHandler</code> and the
+class <code>AutomataTraverserImplementation</code>. The relationships between these
+interfaces and classes are depicted in Figure 2.17.</p>
+<p>The interfaces <code>Traverser</code>, <code>Visitor2</code> and <code>Handler</code> together realize
+the Visitor pattern. Conceptually, the traverser is the entry point for
+traversing. The traverser manages visitors for the different
+sublanguages and realizes the default traversing strategy. Whenever an
+AST node is traversed, the traverser delegates the visit to the
+corresponding visitor implementation. If a special traversal is to be
+implemented that differs from the default, it is possible to add
+handlers to the traverser that realize the alternative traversal. For a
+more detailed explanation consider reading 
+<a href="https://www.monticore.de/handbook.pdf">Chapter 8 of the MontiCore handbook</a>.</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.18 Visitors
+</div>
+<p>MontiCore provides the visitor pattern in a detangled and thus flexible
+variant.</p>
+
+<p><code>AutomataTraverser</code> is traversing the AST. <code>AutomataVisitor2</code> contain
+the actual functionalities, added through subclassing. Many visitors can
+be added to the traverser for parallel execution via the method
+<code>add4Automata</code>.</p>
+</div>
+
+<p>The visitors are compositional, allowing to maximize reuse of visitors
+from sublanguages, and they can be adapted through the TOP mechanism.</p>
+<p>For example, the handwritten class <code>PrettyPrinter</code>, which can be found
+in the directory <code>mc-workspace/src/automata/prettyprint</code>, implements
+functionality for pretty printing an <code>Automata</code> model, which is given by
+its abstract syntax tree. Listing 2.19 depicts the attributes and the constructor of
+the class. The <code>PrettyPrinter</code> class implements the <code>AutomataHandler</code>
+interface. Its constructor instantiates a printer (a helper for printing
+indented strings) and retrieves an <code>AutomataTraverser</code> object from the
+mill (which is explained later on). It sets the handler of the traverser
+to itself. This ensures that the pretty printer becomes the handler of
+the traverser. We will execute it in a following section.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PrettyPrinter</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">AutomataHandler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">IndentPrinter</span><span class="w"> </span><span class="n">printer</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">private</span><span class="w"> </span><span class="n">AutomataTraverser</span><span class="w"> </span><span class="n">traverser</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="nf">PrettyPrinter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="na">printer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IndentPrinter</span><span class="p">();</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="na">traverser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AutomataMill</span><span class="p">.</span><span class="na">traverser</span><span class="p">();</span>
+<span class="w">    </span><span class="n">traverser</span><span class="p">.</span><span class="na">setAutomataHandler</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// further methods</span>
+<span class="p">}</span>
+</code></pre></div>
+<figcaption>Listing 2.19: Attributes and constructor of the <code>PrettyPrinter</code> for the <code>Automata</code> language.</figcaption>
+
+<p>For now, you should understand that (1) for implementing visitors it is
+often sufficient to implement the visitor interfaces and to add them to
+a traverser and (2) custom traversals can be realized by implementing
+handlers and adding those to the traverser.</p>
+<h4 id="context-conditions">Context Conditions</h4>
+<p>The infrastructure is generated into the directory <code>out/automata/_cocos</code>.
+Details about the generated context condition infrastructure are
+described in <a href="https://www.monticore.de/handbook.pdf">Chapter 10 of the MontiCore handbook</a>.</p>
+<p>For each nonterminal of a grammar, the generator produces a context
+condition interface for implementing context conditions for this
+nonterminal. For the <code>Automata</code> grammar, for example, the generator
+produced the interface <code>AutomataASTStateCoCo</code>. The interface solely
+contains the method <code>check(ASTState)</code>. Each class implementing the
+interface should represent a predicate over subtrees of abstract syntax
+trees starting at a node with the type corresponding to the nonterminal.</p>
+<p>The check method should be implemented such that it reports an error or
+a warning if the input node does not satisfy the predicate. Thus,
+context conditions implement well-formedness rules that cannot be
+captured by context-free grammars (or that are intentionally not
+captured by the grammar to achieve a specific <code>AST</code> data structure). For
+producing the error or warning, the static methods <code>error</code> and <code>warning</code>
+of the MontiCore runtime class <code>Log</code> should be used.</p>
+<p>For the <code>Automata</code> grammar, the generator also produced the class
+<code>AutomataCocoChecker</code>. For each nonterminal of the grammar, the class
+contains a method for adding context condition instances to an
+<code>AutomataCocoChecker</code> instance. For checking whether an <code>AST</code> node
+satisfies all registered context conditions, the method <code>checkAll</code> can
+be called with the <code>AST</code> node as input. Calling the method makes the
+checker traverse the abstract syntax tree and check whether each node
+satisfies the context conditions registered for the node. Thus,
+<code>AutomataCocoChecker</code> instances represent sets of context conditions
+that are required to be satisfied by abstract syntax tree instances.</p>
+<p>For now, you should understand that (1) implementing context conditions
+is possible via implementing the generated <code>CoCo</code> interfaces and (2)
+context conditions can be checked via instantiating the <code>Checker</code> class,
+adding the CoCos, and calling the <code>checkAll</code> method.</p>
+<h4 id="mill-as-factory-for-builders">Mill as Factory for Builders</h4>
+<p>The for the <code>Automata</code> language is generated into the directory
+<code>out/automata/</code>. Details about the generated mill and the mill pattern
+in general are described in Section 11.5. The generated mill class <code>AutomataMill</code> is
+responsible for providing ready to use and correct parser, scope
+genitor, scope, and builder instances. The mill of each language is a
+singleton.</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.20 Mill Use and Automatic Initialization
+</div>
+<p>A mill is a factory for builders and other commonly used functions, such
+as parsers or visitors. The mill was introduced to ensure
+compositionality of languages, while retaining reusability of functions
+developed for sublanguages.</p>
+
+<p>Only one mill instance exists, even though in composed languages it is
+available under several static signatures. Let language <code>G2</code> extend
+another language <code>G1</code>. Then <code>G2Mill</code> initializes the <code>G1Mill</code>
+appropriately, such that all the code of the sublanguage <code>G1</code> can be
+reused in the tools developed for the language <code>G2</code>, even when creating
+new AST nodes, symbols, etc.</p>
+
+<p>Cool mechanism and the developers don't have to bother.</p>
+</div>
+
+<div class="no-copy highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">IAutomataGlobalScope</span><span class="w"> </span><span class="nf">globalScope</span><span class="p">()</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">IAutomataArtifactScope</span><span class="w"> </span><span class="nf">artifactScope</span><span class="p">()</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">IAutomataScope</span><span class="w"> </span><span class="nf">scope</span><span class="p">()</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">AutomataScopesGenitor</span><span class="w"> </span><span class="nf">scopesGenitor</span><span class="w"> </span><span class="p">()</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">AutomataScopesGenitorDelegator</span><span class="w"> </span><span class="nf">scopesGenitorDelegator</span><span class="p">()</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">ASTAutomatonBuilder</span><span class="w"> </span><span class="nf">automatonBuilder</span><span class="p">()</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">AutomatonSymbolBuilder</span><span class="w"> </span><span class="nf">automatonSymbolBuilder</span><span class="p">()</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">AutomataParser</span><span class="w"> </span><span class="nf">parser</span><span class="p">()</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">AutomataTraverser</span><span class="w"> </span><span class="nf">traverser</span><span class="w"> </span><span class="p">()</span>
+</code></pre></div>
+<figcaption>Listing 2.21: Some method of the <code>AutomataMill</code>.</figcaption>
+
+<p>Developers should retrieve all instances of the classes and interfaces
+provided by the mill by using the mill. Instances of the classes and
+interfaces that are provided by the mill should never be instantiated
+manually. Otherwise, it may be the case that not all of the code
+implemented for the language can be reused as expected in other
+languages extending the language. Listing 2.21 shows some signatures of the methods
+of the <code>AutomataMill</code>.</p>
+<div class="tip">
+<div class="tip-header">
+<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+Tip 2.22 Mill Methods
+</div>
+<p>A mill provides <code>public static</code> methods for retrieving the instances of
+the parsers, scope genitors, scopes, and builders. For that is acts like
+a factory. Because a mill is realized using the static delegator pattern
+(cf. Section 11.1), it still can be adapted at will.</p>
+
+<p>This combines the advantage of general availability with the advantage
+of being able to override the functions.</p>
+</div>
+
+<p>For now, you should understand that (1) the methods of the mill should
+be used for creating ready to use and correct parser, scope genitor,
+scope, and builder instances and (2) how to call these methods.</p>
+<h3 id="compile-the-target">Compile the Target</h3>
+<p><a href="https://www.monticore.de/handbook.pdf">Section 2.2.3 of the MontiCore handbook</a> 
+describes how to generate the desired Java code
+from a MontiCore grammar. For these Java classes, generated for the
+<code>Automata</code> DSL, execute the following command in the mc-workspace:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">CLI</label><label for="__tabbed_3_2">Gradle</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><strong>With Powershell on Windows</strong>
+<div class="highlight"><pre><span></span><code><span class="n">javac</span> <span class="n">-cp</span> <span class="n">monticore-rt</span><span class="p">.</span><span class="n">jar</span> <span class="n">-sourcepath</span> <span class="s2">&quot;src/;out/;hwc/&quot;</span> <span class="p">`</span>
+                                  <span class="n">src</span><span class="p">/</span><span class="n">automata</span><span class="p">/</span><span class="n">AutomataTool</span><span class="p">.</span><span class="n">java</span>
+</code></pre></div>
+<strong>With Bash on Unix</strong>
+<div class="highlight"><pre><span></span><code>javac<span class="w"> </span>-cp<span class="w"> </span>monticore-rt.jar<span class="w"> </span>-sourcepath<span class="w"> </span><span class="s2">&quot;src/:out/:hwc/&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                  </span>src/automata/AutomataTool.java
+</code></pre></div>
+<strong>With cmd on Windows</strong>
+<div class="highlight"><pre><span></span><code>javac -cp monticore-rt.jar -sourcepath <span class="s2">&quot;src/;out/;hwc/&quot;</span> <span class="se">^</span>
+<span class="se"> </span>                                 src/automata/AutomataTool.java
+</code></pre></div></p>
+<p>Please note, on Unix systems paths are separated using ":" (colon)
+instead of semicolons.</p>
+<p>Providing the option <code>-cp</code> with the argument <code>monticore-cli.jar</code> makes
+the Java compiler consider the compiled MontiCore runtime classes
+contained in the file <code>monticore-cli.jar</code>.</p>
+<p>The option <code>-sourcepath</code> enables to specify paths to directories
+containing the source files that should be considered during the
+compilation.</p>
+<p>In this case, executing the command makes the Java compiler consider all
+generated classes located in and all handwritten classes located in <code>src</code> and <code>hwc</code>. 
+The last argument instructs the Java compiler to compile the class
+<code>src/automata/AutomataTool.java</code>.</p>
+</div>
+<div class="tabbed-block">
+<p><div class="highlight"><pre><span></span><code>gradle compileJava
+</code></pre></div>
+Gradle will take care of running the Java compiler.</p>
+</div>
+</div>
+</div>
+<p>Please note that the structure of the handwritten classes follows the
+package layout of the generated code, i.e. there are the following sub
+directories (Java packages):</p>
+<ul>
+<li><code>src/automata</code> contains the top-level language realization for using
+    the generated DSL infrastructure. In this case the class
+    <code>src/automata/AutomataTool.java</code> constitutes a main class executable
+    for processing automata models with the automata DSL.</li>
+<li><code>src/automata/cocos</code> contains infrastructure for context condition
+    of the automata DSL.</li>
+<li><code>src/automata/prettyprint</code> contains an exemplary use of the
+    generated visitor infrastructure for processing parsed models for
+    pretty printing.</li>
+<li><code>src/automata/visitors</code> contains an exemplary analysis using the
+    visitor infrastructure. The exemplary analysis counts the states
+    contained in the parsed automata model.</li>
+<li><code>hwc/automata/_ast</code> contains an exemplary usage of the handwritten
+    code integration mechanism for modifying the AST for the automata
+    DSL. Details about the integration mechanism are described in Section 5.10.</li>
+<li><code>hwc/automata/_symboltable</code> contains handwritten extensions of the
+    generated symbol table infrastructure. Details about implementing
+    handwritten symbol table infrastructure extensions are described in 
+    <a href="https://www.monticore.de/handbook.pdf">Chapter 9 of the MontiCore handbook</a>.</li>
+</ul>
+<p>Please, also do not mix the code for the <code>Automata</code> tool vs. the code
+for the final product, generated from that tool, although both have a
+similar package structure.</p>
+<p>We already described the contents of the directories <code>hwc/automata/_ast</code>
+and <code>hwc/automata/_symboltable</code> in the previous section. They contain
+handwritten extensions of the abstract syntax of the <code>Automata</code>
+language.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CountStates</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">AutomataVisitor2</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Override</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">visit</span><span class="p">(</span><span class="n">ASTState</span><span class="w"> </span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">count</span><span class="o">++</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">getCount</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<figcaption>Listing 2.23: The <code>CountStates</code> visitor implementation</figcaption>
+
+<p>The directory <code>src/automata/visitors</code> contains the file
+<code>CountStates.java</code>. The class is depicted in Listing 2.23. It implements a simple
+visitor for counting the number of states contained in an <code>Automata</code>
+model. To this effect, it implements the <code>AutomataVisitor2</code> interface.
+It has an attribute <code>count</code> of type <code>int</code> for storing the current number
+of counted nodes. It overrides the <code>visit</code> method for <code>ASTState</code> to
+increase the counter whenever a state is visited.</p>
+<p>The directory <code>src/automata/cocos</code> contains the context-condition
+implementations for the <code>Automata</code> language.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">AtLeastOneInitialAndFinalState</span>
+<span class="w">       </span><span class="kd">implements</span><span class="w"> </span><span class="n">AutomataASTAutomatonCoCo</span><span class="w"> </span><span class="p">{</span>
+<span class="nd">@Override</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="n">ASTAutomaton</span><span class="w"> </span><span class="n">automaton</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">boolean</span><span class="w"> </span><span class="n">initialState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">boolean</span><span class="w"> </span><span class="n">finalState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">ASTState</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">automaton</span><span class="p">.</span><span class="na">getStateList</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">isInitial</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">initialState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">isFinal</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">finalState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">initialState</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">finalState</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Issue error...</span>
+<span class="w">      </span><span class="n">Log</span><span class="p">.</span><span class="na">error</span><span class="p">(</span><span class="s">&quot;0xA0116 An automaton must have at least one initial </span>
+<span class="s">                 and one final state.&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="n">automaton</span><span class="p">.</span><span class="na">get_SourcePositionStart</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<figcaption>Listing 2.24: Context condition implementation for checking that
+there exist at least one initial and at least one
+final state.</figcaption>
+
+<p>Listing 2.24 depicts the class <code>AtLeastOneInitialAndFinalState</code>. The class implements
+a context condition for checking whether an <code>Automata</code> model contains at
+least one initial and at least one final state. To this effect, the
+class implements the interface <code>AutomataASTAutomatonCoCo</code>. The class
+<code>StateNameStartsWithCapitalLetter</code> is implemented similarly.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TransitionSourceExists</span>
+<span class="w">                 </span><span class="kd">implements</span><span class="w"> </span><span class="n">AutomataASTTransitionCoCo</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="nd">@Override</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="n">ASTTransition</span><span class="w"> </span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">IAutomataScope</span><span class="w"> </span><span class="n">enclosingScope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="na">getEnclosingScope</span><span class="p">();</span>
+<span class="w">    </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">StateSymbol</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sourceState</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">enclosingScope</span><span class="p">.</span><span class="na">resolveState</span><span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="na">getFrom</span><span class="p">());</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">sourceState</span><span class="p">.</span><span class="na">isPresent</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Issue error...</span>
+<span class="w">      </span><span class="n">Log</span><span class="p">.</span><span class="na">error</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;0xADD03 Source state of transition missing.&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="n">node</span><span class="p">.</span><span class="na">get_SourcePositionStart</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<figcaption>Listing 2.25: Context condition implementation for checking that
+states used in transitions exist.</figcaption>
+
+<p>Listing 2.25 presents the implementation of the class <code>TransitionSourceExists</code>. The
+class implements a context condition for checking whether the source
+states used in transitions are defined. To this effect, the class uses
+the resolving mechanisms of the symbol table. For each transition, the
+context conditions tries to resolve the state symbol corresponding to
+the source state of the transition. If the resolving fails for the
+state, then the context condition logs an error.</p>
+<p>The class <code>AutomataTool</code> is the main class of the <code>Automata</code> language.
+It is defined in the file <code>AutomataTool.java</code> contained in the directory
+<code>src/automata</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">AutomataTool</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">AutomataToolTOP</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// main method missing in this listing</span>
+
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="n">ASTAutomaton</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">model</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">AutomataParser</span><span class="w"> </span><span class="n">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AutomataParser</span><span class="p">()</span><span class="w"> </span><span class="p">;</span>
+<span class="w">      </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">ASTAutomaton</span><span class="o">&gt;</span><span class="w"> </span><span class="n">optAutomaton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="na">parse</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">parser</span><span class="p">.</span><span class="na">hasErrors</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">optAutomaton</span><span class="p">.</span><span class="na">isPresent</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">optAutomaton</span><span class="p">.</span><span class="na">get</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">Log</span><span class="p">.</span><span class="na">error</span><span class="p">(</span><span class="s">&quot;0xEE840 Model could not be parsed.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">RecognitionException</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">Log</span><span class="p">.</span><span class="na">error</span><span class="p">(</span><span class="s">&quot;0xEE640 Failed to parse &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<figcaption>Listing 2.26: Methods for parsing and creating symbol tables.</figcaption>
+
+<p>Listing 2.26 presents the implementation of the method <code>parse</code> of the <code>AutomataTool</code> 
+class which can be used for parsing <code>Automata</code> models. The class extends the 
+generated abstract superclass <code>AutomataToolTOP</code> that provides methods to be used in
+the <code>run</code> method. One example is the method <code>createSymbolTable</code> that uses the global scope 
+and genitors available in the mill to create a symbol table for <code>Automata</code>. </p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// delegate main to instantiatable method for better integration,</span>
+<span class="w">  </span><span class="c1">// reuse, etc.</span>
+<span class="w">  </span><span class="k">new</span><span class="w"> </span><span class="n">AutomataTool</span><span class="p">().</span><span class="na">run</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="c1">// use normal logging (no DEBUG, TRACE)</span>
+<span class="w">  </span><span class="n">AutomataMill</span><span class="p">.</span><span class="na">init</span><span class="p">();</span>
+<span class="w">  </span><span class="n">Log</span><span class="p">.</span><span class="na">ensureInitialization</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">Options</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initOptions</span><span class="p">();</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//create CLI Parser and parse input options from commandline</span>
+<span class="w">    </span><span class="n">CommandLineParser</span><span class="w"> </span><span class="n">cliparser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">commons</span><span class="p">.</span><span class="na">cli</span><span class="p">.</span><span class="na">DefaultParser</span><span class="p">();</span>
+<span class="w">    </span><span class="n">CommandLine</span><span class="w"> </span><span class="n">cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cliparser</span><span class="p">.</span><span class="na">parse</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//help: when --help</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cmd</span><span class="p">.</span><span class="na">hasOption</span><span class="p">(</span><span class="s">&quot;h&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">printHelp</span><span class="p">(</span><span class="n">options</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">//do not continue, when help is printed.</span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">//version: when --version</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cmd</span><span class="p">.</span><span class="na">hasOption</span><span class="p">(</span><span class="s">&quot;v&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">printVersion</span><span class="p">();</span>
+<span class="w">      </span><span class="c1">//do not continue when help is printed</span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">Log</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;Automata DSL Tool&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AutomataTool&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cmd</span><span class="p">.</span><span class="na">hasOption</span><span class="p">(</span><span class="s">&quot;i&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cmd</span><span class="p">.</span><span class="na">getOptionValue</span><span class="p">(</span><span class="s">&quot;i&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="kd">final</span><span class="w"> </span><span class="n">ASTAutomaton</span><span class="w"> </span><span class="n">ast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parse</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+<span class="w">      </span><span class="n">Log</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="n">model</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; parsed successfully!&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AutomataTool&quot;</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">AutomataMill</span><span class="p">.</span><span class="na">globalScope</span><span class="p">().</span><span class="na">setFileExt</span><span class="p">(</span><span class="s">&quot;aut&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">IAutomataArtifactScope</span><span class="w"> </span><span class="n">modelTopScope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createSymbolTable</span><span class="p">(</span><span class="n">ast</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// can be used for resolving things in the model</span>
+<span class="w">      </span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">StateSymbol</span><span class="o">&gt;</span><span class="w"> </span><span class="n">aSymbol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modelTopScope</span><span class="p">.</span><span class="na">resolveState</span><span class="p">(</span><span class="s">&quot;Ping&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">aSymbol</span><span class="p">.</span><span class="na">isPresent</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;Resolved state symbol \&quot;Ping\&quot;; FQN = &quot;</span>
+<span class="w">            </span><span class="o">+</span><span class="w"> </span><span class="n">aSymbol</span><span class="p">.</span><span class="na">get</span><span class="p">().</span><span class="na">toString</span><span class="p">(),</span>
+<span class="w">          </span><span class="s">&quot;AutomataTool&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;This automaton does not contain a state called \&quot;Ping\&quot;;&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s">&quot;AutomataTool&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="n">runDefaultCoCos</span><span class="p">(</span><span class="n">ast</span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">cmd</span><span class="p">.</span><span class="na">hasOption</span><span class="p">(</span><span class="s">&quot;s&quot;</span><span class="p">)){</span>
+<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">storeLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cmd</span><span class="p">.</span><span class="na">getOptionValue</span><span class="p">(</span><span class="s">&quot;s&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">storeSymbols</span><span class="p">(</span><span class="n">modelTopScope</span><span class="p">,</span><span class="w"> </span><span class="n">storeLocation</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// analyze the model with a visitor</span>
+<span class="w">      </span><span class="n">CountStates</span><span class="w"> </span><span class="n">cs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CountStates</span><span class="p">();</span>
+<span class="w">      </span><span class="n">AutomataTraverser</span><span class="w"> </span><span class="n">traverser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AutomataMill</span><span class="p">.</span><span class="na">traverser</span><span class="p">();</span>
+<span class="w">      </span><span class="n">traverser</span><span class="p">.</span><span class="na">add4Automata</span><span class="p">(</span><span class="n">cs</span><span class="p">);</span>
+<span class="w">      </span><span class="n">ast</span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">traverser</span><span class="p">);</span>
+<span class="w">      </span><span class="n">Log</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;Automaton has &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cs</span><span class="p">.</span><span class="na">getCount</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; states.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AutomataTool&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">prettyPrint</span><span class="p">(</span><span class="n">ast</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="k">else</span><span class="p">{</span>
+<span class="w">      </span><span class="n">printHelp</span><span class="p">(</span><span class="n">options</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// e.getMessage displays the incorrect input-parameters</span>
+<span class="w">    </span><span class="n">Log</span><span class="p">.</span><span class="na">error</span><span class="p">(</span><span class="s">&quot;0xEE752 Could not process AutomataTool parameters: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="na">getMessage</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<figcaption>Listing 2.27: Main method of the <code>AutomataTool</code> class</figcaption>
+
+<p>The <code>AutomataTool</code> provides a <code>main</code> method, which can be called from
+the command line. The implementation of the method is depicted in Listing 2.27. It
+expects two inputs. The first is the name of a file containing an
+<code>Automata</code> model. The second input is the name of the file in which the
+tool should store the symbol table of the model given as first input.</p>
+<p>The method</p>
+<ul>
+<li>parses the input model,</li>
+<li>creates the symbol table,</li>
+<li>resolves a state,</li>
+<li>executes context conditions,</li>
+<li>stores the symbol table by using the serialization,</li>
+<li>executes the visitor for counting the states, and</li>
+<li>pretty prints the model to the standard output.</li>
+</ul>
+<p>Inspect the main method and try to understand the implementation for the
+executed tasks. Read the above descriptions again if necessary.</p>
+<h3 id="run-the-tool">Run the Tool</h3>
+<p>The previous command compiles the handwritten and generated code
+including the <code>Automata</code> tool class <code>AutomataTool</code>. For running the
+<code>Automata</code> DSL tool, execute the following command:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">CLI</label><label for="__tabbed_4_2">Gradle</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><strong>With Powershell on Windows</strong>
+<div class="highlight"><pre><span></span><code><span class="n">java</span> <span class="n">-cp</span> <span class="s2">&quot;src/;out/;hwc/;monticore-rt.jar&quot;</span> <span class="p">`</span>
+                    <span class="n">automata</span><span class="p">.</span><span class="n">AutomataTool</span> <span class="n">-i</span> <span class="n">example</span><span class="p">/</span><span class="n">PingPong</span><span class="p">.</span><span class="n">aut</span> <span class="p">`</span>
+                    <span class="n">-s</span> <span class="n">st</span><span class="p">/</span><span class="n">PingPong</span><span class="p">.</span><span class="n">autsym</span>
+</code></pre></div>
+<strong>With Bash on Unix</strong>
+<div class="highlight"><pre><span></span><code>java<span class="w"> </span>-cp<span class="w"> </span><span class="s2">&quot;src/:out/:hwc/:monticore-rt.jar&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>automata.AutomataTool<span class="w"> </span>-i<span class="w"> </span>example/PingPong.aut<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>-s<span class="w"> </span>st/PingPong.autsym
+</code></pre></div>
+<strong>With cmd on Windows</strong>
+<div class="highlight"><pre><span></span><code>java -cp <span class="s2">&quot;src/;out/;hwc/;monticore-rt.jar&quot;</span> <span class="se">^</span>
+<span class="se"> </span>                   automata.AutomataTool -i example/PingPong.aut <span class="se">^</span>
+<span class="se"> </span>                   -s st/PingPong.autsym
+</code></pre></div></p>
+<p>Please note again, on Unix systems paths are separated using ":"
+(colon) instead of semicolons. Executing the command runs the <code>Automata</code>
+DSL tool.</p>
+<p>Using the option <code>-cp</code> makes the Java interpreter consider the compiled
+classes contained in the paths specified by the argument.</p>
+<p>The argument <code>automata.AutomataTool</code> makes the Java interpreter execute
+the main method of the class <code>automata.AutomataTool</code> contained in the
+directory <code>src</code>.</p>
+</div>
+<div class="tabbed-block">
+<p><strong>With JUnit</strong><br />
+Run the <code>AutoamtaToolTest</code> JUnit test.</p>
+<p><strong>With Powershell on Windows</strong>
+<div class="highlight"><pre><span></span><code><span class="n">java</span> <span class="n">-jar</span> <span class="n">target</span><span class="p">/</span><span class="n">libs</span><span class="p">/</span><span class="n">automaton</span><span class="p">-</span><span class="n">7</span><span class="p">.</span><span class="n">7</span><span class="p">.</span><span class="n">0-tool</span><span class="p">.</span><span class="n">jar</span> <span class="p">`</span>
+                    <span class="n">-i</span> <span class="n">src</span><span class="p">/</span><span class="n">test</span><span class="p">/</span><span class="n">resources</span><span class="p">/</span><span class="n">automata</span><span class="p">/</span><span class="n">parser</span><span class="p">/</span><span class="n">PingPong</span><span class="p">.</span><span class="n">aut</span> <span class="p">`</span>
+                    <span class="n">-s</span> <span class="n">st</span><span class="p">/</span><span class="n">PingPong</span><span class="p">.</span><span class="n">autsym</span>
+</code></pre></div>
+<strong>With Bash on Unix</strong>
+<div class="highlight"><pre><span></span><code>java<span class="w"> </span>-jar<span class="w"> </span>target/libs/automaton-7.7.0-tool.jar<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>-i<span class="w"> </span>src/test/resources/automata/parser/PingPong.aut<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>-s<span class="w"> </span>st/PingPong.autsym
+</code></pre></div>
+<strong>With cmd on Windows</strong>
+<div class="highlight"><pre><span></span><code>java -jar target/libs/automaton-7.7.0-tool.jar <span class="se">^</span>
+<span class="se"> </span>                   -i src/test/resources/automata/parser/PingPong.aut <span class="se">^</span>
+<span class="se"> </span>                   -s st/PingPong.autsym
+</code></pre></div></p>
+<p>You will have to run <code>gradle build</code> to create the tool.jar.</p>
+<p>Executing the command runs the <code>Automata</code> DSL tool.
+The automaton-...-tool.jar is a packaged jar file with the AutomataTool 
+as its entry point.</p>
+</div>
+</div>
+</div>
+<p>The argument <code>example/PingPong.aut</code> is passed to the main method of the
+<code>Automata</code> DSL tool class as input. Inspect the output on the command
+line, which displays log messages concerning the processing of the
+example <code>Automata</code> model.</p>
+<p>The last argument <code>st/PingPong.autsym</code> is also passed to the main
+method. It makes the tool store the serialized symbol table of the input
+model into the file <code>example/PingPong.aut</code>.</p>
+<p>The shipped example <code>Automata</code> DSL (all sources contained in
+<code>mc-workspace/src</code> and <code>mc-workspace/hwc</code>) can be used as a starting
+point for creating your own language. It can easily be altered to
+specify your own DSL by adjusting the grammar and the handwritten Java
+sources and rerunning MontiCore as described above.</p>
+<h2 id="using-monticore-in-eclipse">Using MontiCore in Eclipse</h2>
+<p>The MontiCore plugin can be used in Eclipse. Section 2.4.1 describes the process of setting
+up Eclipse. Section 2.4.2 presents how to import the example project in Eclipse.
+Finally, Section 2.4.3 explains how the MontiCore Gradle plugin can be executed in
+Eclipse.</p>
+<h3 id="setting-up-eclipse">Setting up Eclipse</h3>
+<p>Before you import the example project and run MontiCore as a Gradle
+plugin, please make sure that a current version of the Gradle plugin is
+installed in Eclipse. When installing a new version of Eclipse, the
+Gradle plugin is installed by default. If the Gradle plugin is not yet
+integrated into your Eclipse installation, download the latest Eclipse
+version or perform the following steps to install the Eclipse plugin:</p>
+<ol>
+<li>Download and install Eclipse (or use an existing one).</li>
+<li>Open Eclipse.</li>
+<li>Install the needed Plugins.<ul>
+<li>Help &gt; Eclipse Marketplace...</li>
+<li>Type 'gradle' in the search box and click Enter.</li>
+<li>Install the 'Buildship Gradle Integration' plugin.</li>
+</ul>
+</li>
+<li>Make sure to configure Eclipse to use an JDK instead of an JRE.<ul>
+<li>Window &gt; Preferences &gt; Java &gt; Installed JREs.</li>
+</ul>
+</li>
+</ol>
+<h3 id="importing-the-example">Importing the Example</h3>
+<p>The shipped example <code>Automata</code> DSL can be used as a starting point. Once
+imported into Eclipse, it can easily be altered to specify your own DSL
+by adjusting the grammar and the handwritten Java sources and rerunning
+MontiCore as described in Section 2.4.3. To import the example, perform the following
+steps:</p>
+<ol>
+<li>Download and unzip the <code>Automata</code> example:
+<div class="highlight"><pre><span></span><code>http://www.monticore.de/download/Automaton.zip
+</code></pre></div></li>
+<li>Open Eclipse and select<ul>
+<li>File &gt; Import &gt; Gradle (if you are required to choose a Gradle
+    version, then choose version 7.6.4) &gt; Existing Gradle
+    Projects &gt; Next.</li>
+<li>Click on the <em>Browse..</em> button and import the directory that
+    contains the file <code>build.gradle</code> from the <code>Automata</code> example.</li>
+</ul>
+</li>
+</ol>
+<h3 id="running-monticore">Running MontiCore</h3>
+<p>To execute the MontiCore Gradle plugin, perform the following steps:</p>
+<ul>
+<li>Select the <em>Gradle Task</em> menu (at the top or bottom, depending on
+    your installed Eclipse version).</li>
+<li>There select automaton &gt; build &gt; build (double click).</li>
+</ul>
+<p>This makes Eclipse execute the MontiCore Gradle plugin as described in 
+<a href="https://www.monticore.de/handbook.pdf">Section 2.3 of the MontiCore handbook</a> .
+After installing and executing MontiCore in Eclipse, your workspace
+should look similar to Figure 2.28.</p>
+<p><img alt="" src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/Eclipse.png" /></p>
+<figcaption>Figure 2.28: Eclipse after importing the example project and executing MontiCore</figcaption>
+
+<h2 id="using-monticore-in-intellij-idea">Using MontiCore in IntelliJ IDEA</h2>
+<p>The MontiCore plugin can be used in IDEA. Section 2.5.1 describes the process of
+setting up IntelliJ IDEA. Afterwards, Section 2.5.2 presents how to import the example
+project in Eclipse. Finally, Section 2.5.3 explains how the MontiCore Gradle plugin
+can be executed in IntelliJ IDEA.</p>
+<h3 id="setting-up-intellij-idea">Setting up IntelliJ IDEA</h3>
+<p>For setting up IntelliJ IDEA, perform the following steps:</p>
+<ol>
+<li>Download and install IntelliJ IDEA (or use your existing installation).<ul>
+<li>Hint for Students: You get the Ultimate version of IntelliJ IDEA
+    for free.</li>
+</ul>
+</li>
+<li>Open IntelliJ IDEA.</li>
+</ol>
+<h3 id="importing-the-example_1">Importing the Example</h3>
+<p>The shipped example <code>Automata</code> DSL can be used as a starting point. Once
+imported into IntelliJ IDEA, it can easily be altered to specify your
+own DSL by adjusting the grammar and the handwritten Java sources and
+rerunning MontiCore as described in Section 2.5.3. For importing the example, perform
+the following steps:</p>
+<ol>
+<li>Download and unzip the <code>Automata</code> example:
+<div class="highlight"><pre><span></span><code>http://www.monticore.de/download/Automaton.zip
+</code></pre></div></li>
+<li>In the IDE select: File &gt; Open.</li>
+<li>Select the directory containing the build.gradle (if you are
+    required to choose a Gradle version, then choose version 6.7.1).</li>
+</ol>
+<h3 id="running-monticore_1">Running MontiCore</h3>
+<p>To execute the MontiCore Gradle plugin, perform the following steps:</p>
+<ul>
+<li>Select the Gradle Projects menu on the right.</li>
+<li>From there select automaton &gt; Tasks&gt; build &gt; build (double click).</li>
+</ul>
+<p>This makes IntelliJ IDEA execute the Gradle plugin as described in Section 2.3. If
+you do not see the Gradle Projects menu yet, right-click on the
+build.gradle file and select 'Import Gradle Project'. Now the Gradle
+Projects menu should occur on the right side and you can follow the
+above mentioned steps for the execution. After installing and executing
+MontiCore in IntelliJ IDEA, your workspace should look similar to Figure 2.29.</p>
+<p><img alt="" src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/IntelliJ-IDEA.png" /></p>
+<figcaption>Figure 2.29: IntelliJ IDEA after importing
+the example project and executing MontiCore</figcaption>
+
+<h2 id="using-monticore-with-gitpod">Using MontiCore with GitPod</h2>
+<p>Installing all the prerequisites and an IDE can take some time.
+Alternatively to this, you can use <a href="https://www.gitpod.io">Gitpod</a>, an open-source
+Kubernetes application for ready-to-code developer environments. It already
+has all the prerequisites and an operational Web IDE similar to Microsoft's
+Visual Studio Code installed. You need to login with an existing GitHub account
+to use it. </p>
+<p><a href="https://gitpod.io/#https://github.com/MontiCore/automaton">This link</a> can be used
+to access the Gitpod project for the <code>Automata</code> language.
+First, an environment for the project with the proper Java and Gradle version
+will be prepared and initialized automatically.
+After that, you will be directed to the Web IDE. The project will be built
+with Gradle first, and after that it is ready-to-use. The Web IDE also has a 
+built-in terminal which can be used to build the project via <code>gradle build</code> 
+or execute other tasks. </p>
+<p>The Web IDE can be used to change existing project files, such as the <code>Automata</code>
+grammar or the handwritten classes for the language. Simply navigate to the grammars
+or classes in the file explorer on the left-hand side of the IDE and edit the files. 
+This makes experimenting with MontiCore possible. The changes will be compiled by the
+IDE immediately and compilation errors will be marked with red color. To run the project,
+execute the command <code>gradle build</code> in the terminal.</p>
+<p>You will notice that the link to the Gitpod project is generated and always
+has the same pattern.
+An example for a link is https://indigo-ostrich-8psdfoer.ws-eu18.gitpod.io.
+After 30 minutes of non-use, Gitpod will "freeze" the environment.
+It can be reactivated by using the same link to access it. The environment is
+reactivated, and you do not even need to rebuild the project with Gradle to use
+the project again.</p>
+<h2 id="further-information">Further Information</h2>
+<ul>
+<li><a href="https://github.com/MontiCore/monticore">Project root: MontiCore @github</a></li>
+<li><a href="https://www.monticore.de/">MontiCore documentation</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md"><strong>List of languages</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md"><strong>MontiCore Core Grammar Library</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md">Best Practices</a></li>
+<li><a href="https://www.se-rwth.de/publications/">Publications about MBSE and MontiCore</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md">License definition</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      (c) https://github.com/MontiCore/monticore
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "toc.integrate", "toc.follow", "content.tabs.link", "content.code.copy"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f13b1293.min.js"></script>
+      
+    
+  </body>
+</html>

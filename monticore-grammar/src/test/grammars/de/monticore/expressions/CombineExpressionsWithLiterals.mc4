@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.expressions;
+
+grammar CombineExpressionsWithLiterals extends
+          de.monticore.expressions.AssignmentExpressions,
+          de.monticore.expressions.CommonExpressions,
+          de.monticore.expressions.BitExpressions,
+          de.monticore.ocl.OCLExpressions,
+          de.monticore.ocl.OptionalOperators,
+          de.monticore.ocl.SetExpressions,
+          de.monticore.literals.MCCommonLiterals,
+          de.monticore.siunit.SIUnitLiterals,
+          de.monticore.expressions.JavaClassExpressions,
+          de.monticore.expressions.LambdaExpressions,
+          de.monticore.expressions.TupleExpressions,
+          de.monticore.types.MCFullGenericTypes,
+          de.monticore.types.MCArrayTypes,
+          de.monticore.types.MCFunctionTypes,
+          de.monticore.types.MCStructuralTypes,
+          de.monticore.types.TypeParameters,
+          de.monticore.regex.RegExType,
+          de.monticore.siunit.SIUnitTypes4Math,
+          de.monticore.siunit.SIUnitTypes4Computing,
+          de.monticore.symbols.OOSymbols {
+
+    Foo="bar" Expression;
+
+    TModifier implements MCModifier = "private" | "static";
+
+}

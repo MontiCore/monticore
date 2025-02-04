@@ -1,0 +1,84 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.expressions.ExpressionsBasis;
+
+/**
+ * This grammar extends the available expressions with
+ * special operations for streams as initially defined by 
+ * Broy/Stoelen in [BS01] using the syntax style and
+ * function libraries from 
+ * Ringert/Rumpe [RR11] and 
+ * Buerger, Kausch, Raco, Ringert, Rumpe, Stueber, Wiartalla [BKR+20] 
+ * (see https://www.se-rwth.de/publications/)
+ *
+ * Stream expressions are partly 
+ * 1) extending the MontiCore Expression syntax by new grammar 
+ *    constructs (see below),
+ * 2) are provided as library of available Stream operations, and
+ * 3) are based on the type constructors 
+ *    Stream<T>, EventStream<T>, SyncStream<T>,
+ *    ToptStream<T> (defined in Types)
+ *
+ * The language developer may choose the subset of expressions
+ * of interest and combine these with the appropriate typing infrastructure
+ *
+ * This modularity of expressions and associated types greatly eases
+ * the reuse of type structures in languages similar to Java
+ *
+ * This grammar is part of a hierarchy of expressions, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
+ *
+*/
+
+component grammar StreamExpressions extends CommonExpressions {
+
+  /* ------ Special Syntax for Functions on Streams ---------------- */
+
+  /* 
+   * Stream constructor in concordance to the literature
+   * <> denotes the empty stream
+   * <a> is equal to a:<>
+   * <a,b> is equal to a:<b> and transitively a:b:<>
+   * the default stream timing is (timed) event
+   * Stream constructor has to bind harder than name expressions to avoid
+   * the scanner recognizing timing keywords as names
+   */
+  StreamConstructorExpression implements Expression <360> =
+    ({noSpace(2)}? 
+    timing:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
+    "<" (Expression || ",")* ">";
+
+  /* 
+   * Append first element 
+   * a:b:c  is equal to  a:(b:c), hence <rightassoc>
+   * a:b^^c  is equal to  a:(b^^c)
+   * a+b:c  is equal to  (a+b):c, and
+   * (even so they are semantically associative)
+   * a <= b:c  is equal to  a <= (b:c), hence the priority 154, 156
+   */
+  AppendStreamExpression implements Expression <154>, InfixExpression = 
+    <rightassoc>
+    left:Expression operator:":" right:Expression;
+
+  /*
+   * Concatenation of two streams 
+   * a^^b^^c  is equal to  a^^(b^^c),  hence <rightassoc>
+   * (even so it is semantically associative)
+   */
+  ConcatStreamExpression implements Expression <156>, InfixExpression = 
+    <rightassoc>
+    left:Expression operator:"^^" right:Expression;
+
+  /* 
+   * Length of a stream 
+   */
+  LengthStreamExpression implements Expression <185>
+    = "#" Expression;
+
+}

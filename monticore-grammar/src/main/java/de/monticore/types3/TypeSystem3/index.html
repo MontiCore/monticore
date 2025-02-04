@@ -1,0 +1,1197 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://monticore.github.io/monticore/monticore-grammar/src/main/java/de/monticore/types3/TypeSystem3/">
+      
+      
+      
+      
+      <link rel="icon" href="../../../../../../../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.2">
+    
+    
+      
+        <title>TypeSystem3 - MontiCore</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../../../assets/stylesheets/main.d7758b05.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['disableCookies']);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://stats.fh-aachen.de/";
+      _paq.push(['setTrackerUrl', u+'piwik.php']);
+      _paq.push(['setSiteId', '35']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#given-infrastructure-in-monticore" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../../../../.." title="MontiCore" class="md-header__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MontiCore
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TypeSystem3
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/GettingStarted/" class="md-tabs__link">
+        
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../grammars/de/monticore/Grammars/" class="md-tabs__link">
+          
+  
+  Core Grammars
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../../../../docs/DevelopedLanguages/" class="md-tabs__link">
+          
+  
+  Languages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/BestPractices/" class="md-tabs__link">
+        
+  
+    
+  
+  Best Practices
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../00.org/Explanations/CHANGELOG/" class="md-tabs__link">
+        
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/Download/" class="md-tabs__link">
+        
+  
+    
+  
+  Downloads
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../docs/Publications/" class="md-tabs__link">
+        
+  
+    
+  
+  Publications
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../../../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-tabs__link">
+        
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../../../../.." title="MontiCore" class="md-nav__button md-logo" aria-label="MontiCore" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h176l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32h256c17.7 0 32-14.3 32-32s-14.3-32-32-32h-69.3L336 416h176c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm448 64v224H64V64z"/></svg>
+
+    </a>
+    MontiCore
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/MontiCore/monticore/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/GettingStarted/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Core Grammars
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Core Grammars
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../grammars/de/monticore/Grammars/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../grammars/de/monticore/expressions/Expressions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Expressions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../grammars/de/monticore/literals/Literals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Literals
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../grammars/de/monticore/types/Types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Languages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Languages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/DevelopedLanguages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Languages and Language Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Languages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    List of Languages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/BestPractices/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Best Practices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../00.org/Explanations/CHANGELOG/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Download/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Downloads
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../docs/Publications/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Publications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../../../../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    License
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>TypeSystem3</h1>
+
+<!-- (c) https://github.com/MontiCore/monticore -->
+
+<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
+
+<p>A type system is as set of rules that assign types to terms,
+e.g., the type <code>int</code> can be assigned to the literal <code>2</code>. 
+In Monticore, the type system implementations assign SymTypeExpressions to
+expressions (e.g., <code>2</code>) and types (e.g., <code>int</code>).
+This is made possible first and foremost by traversing the AST
+of the expression or type,
+calculating the SymTypeExpressions of its subnodes,
+and combining their information to the SymTypeExpression currently calculated.</p>
+<h2 id="given-infrastructure-in-monticore">Given infrastructure in MontiCore</h2>
+<ul>
+<li><a href="../TypeCheck3.java">TypeCheck3</a>
+  (offers <code>typeOf</code>, etc., to query the SymtypeExpressions of AST nodes.)<ul>
+<li><a href="../util/MapBasedTypeCheck3.java">MapBasedTypeCheck3</a>
+  (default implementation of TypeCheck3)<ul>
+<li><a href="../Type4Ast.java">Type4Ast</a>
+  (maps ASTNodes to SymTypeExpressions, filled by the TypeVisitors)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="../../types/check/SymTypeExpression.java">SymTypeExpression</a>
+  (calculated by the TypeVisitors, represents types and "pseudo-types")<ul>
+<li><a href="../ISymTypeVisitor.java">ISymTypeVisitor</a>
+  (interface for traversal of SymTypeExpressions)</li>
+<li><a href="../../types/check/SymTypeArray.java">SymTypeArray</a>
+  (subclass of SymTypeExpression, represents arrays,
+  e.g., <code>int[]</code>)</li>
+<li><a href="../../types/check/SymTypeObscure.java">SymTypeObscure</a>
+  (subclass of SymTypeExpression, pseudo-type representing typing errors)</li>
+<li><a href="../../types/check/SymTypeOfFunction.java">SymTypeOfFunction</a>
+  (subclass of SymTypeExpression, represents functions,
+  e.g., <code>int -&gt; void</code>)</li>
+<li><a href="../../types/check/SymTypeOfGenerics.java">SymTypeOfGenerics</a>
+  (subclass of SymTypeExpression,
+  represents (non-primitive) generic nominal data types,
+  e.g., <code>java.util.List&lt;Person&gt;</code>)</li>
+<li><a href="../../types/check/SymTypeOfIntersection.java">SymTypeOfIntersection</a>
+  (subclass of SymTypeExpression, represents intersections of types,
+  e.g., <code>Car &amp; Ship</code>)</li>
+<li><a href="../../types/check/SymTypeOfNull.java">SymTypeOfNull</a>
+  (subclass of SymTypeExpression, represents the null type)</li>
+<li><a href="../../types/check/SymTypeOfObject.java">SymTypeOfObject</a>
+  (subclass of SymTypeExpression,
+  represents non-primitive non-generic nominal data types,
+  e.g., <code>java.lang.String</code>)</li>
+<li><a href="../../types/check/SymTypeOfRegEx.java">SymTypeOfRegEx</a>
+  (subclass of SymTypeExpression, represents subsets of Strings,
+  e.g., <code>R"gr(a|e)y"</code>)</li>
+<li><a href="../../types/check/SymTypeOfUnion.java">SymTypeOfUnion</a>
+  (subclass of SymTypeExpression, represents unions of types,
+  e.g., <code>TreeInnerNode | TreeLeaf</code>)</li>
+<li><a href="../../types/check/SymTypePrimitive.java">SymTypePrimitive</a>
+  (subclass of SymTypeExpression, represents primitive types,
+  e.g., <code>int</code>)</li>
+<li><a href="../../types/check/SymTypeVariable.java">SymTypeVariable</a>
+  (subclass of SymTypeExpression, represents bound type variables,
+  e.g., <code>T</code> in <code>List&lt;T&gt;</code>)</li>
+<li><a href="../../types/check/SymTypeInferenceVariable.java">SymTypeInferenceVariable</a>
+  (subclass of SymTypeExpression, represents free type variables)</li>
+<li><a href="../../types/check/SymTypeVoid.java">SymTypeVoid</a>
+  (subclass of SymTypeExpression, pseudo-type corresponding to <code>void</code>)</li>
+</ul>
+</li>
+<li><a href="../../types/check/SymTypeExpressionFactory.java">SymTypeExpressionFactory</a>
+  (factory for creating instances of the subclasses of SymTypeExpression) <ul>
+<li><a href="../../types/mccollectiontypes/types3/util/MCCollectionSymTypeFactory.java">MCCollectionSymTypeFactory</a>
+  (factory for CollectionTypes, convenience methods)</li>
+</ul>
+</li>
+<li>Functionality to work with SymTypeExpressions, Expressions<ul>
+<li><a href="../SymTypeRelations.java">SymTypeRelations</a>
+  (relations over SymTypeExpressions, e.g., <code>isSubTypeOf</code>, <code>isCompatible</code>)<ul>
+<li><a href="../../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java">MCCollectionSymTypeRelations</a>
+  (relations over MCCollection SymTypeExpressions, e.g., <code>isList</code>)</li>
+<li><a href="../util/FunctionRelations.java">FunctionRelations</a>
+  (relations regarding functions, e.g, <code>canBeCalledWith</code>)</li>
+<li><a href="../util/SIUnitTypeRelations.java">SIUnitTypeRelations</a>
+  (SIUnit relations, e.g., <code>multiply</code>, <code>isOfDimensionOne</code>)</li>
+</ul>
+</li>
+<li><a href="../util/WithinScopeBasicSymbolsResolver.java">WithinScopeBasicSymbolsResolver</a>
+  (resolves contained variables, functions, ect. within a given scope;
+  unlike symbol resolving this returns SymTypeExpressions)<ul>
+<li><a href="../util/OOWithinScopeBasicSymbolsResolver.java">OOWithinScopeBasicSymbolsResolver</a>
+  (resolves using OO-specific rules)</li>
+</ul>
+</li>
+<li><a href="../util/WithinTypeBasicSymbolsResolver.java">WithinTypeBasicSymbolsResolver</a>
+  (resolves contained fields, methods, etc. within a given type;
+   unlike symbol resolving this returns SymTypeExpressions)<ul>
+<li><a href="../util/OOWithinTypeBasicSymbolsResolver.java">OOWithinTypeBasicSymbolsResolver</a>
+  (resolves using OO-specific rules)</li>
+</ul>
+</li>
+<li><a href="../util/TypeContextCalculator.java">TypeContextCalculator</a>
+  (provides context information for an expression wrt. types, e.g.,
+  whether a type's private members can be accessed)</li>
+<li><a href="../util/ILValueRelations.java">ILValueRelations</a>
+  (whether an expression is an L-value, e.g., a variable)</li>
+</ul>
+</li>
+<li>TypeVisitors traverse the AST and
+  store the calculated SymTypeExpression in the Type4Ast map<ul>
+<li>Expressions<ul>
+<li><a href="../../expressions/assignmentexpressions/types3/AssignmentExpressionsTypeVisitor.java">AssignmentExpressionsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar AssignmentExpressions)</li>
+<li><a href="../../expressions/bitexpressions/types3/BitExpressionsTypeVisitor.java">BitExpressionsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar BitExpressions)</li>
+<li><a href="../../expressions/commonexpressions/types3/CommonExpressionsTypeVisitor.java">CommonExpressionsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar CommonExpressions)</li>
+<li><a href="../../expressions/expressionsbasis/types3/ExpressionBasisTypeVisitor.java">ExpressionsBasisTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar ExpressionBasis)</li>
+<li><a href="../../expressions/lambdaexpressions/types3/LambdaExpressionsTypeVisitor.java">LambdaExpressionsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar LambdaExpressions)</li>
+<li><a href="../../ocl/oclexpressions/types3/OCLExpressionsTypeVisitor.java">OCLExpressionsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar OCLExpressions)</li>
+<li><a href="../../ocl/optionaloperators/types3/OptionalOperatorsTypeVisitor.java">OptionalOperatorsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar OptionalOperators)</li>
+<li><a href="../../ocl/setexpressions/types3/SetExpressionsTypeVisitor.java">SetExpressionsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar SetExpressions)</li>
+<li><a href="../../expressions/tupleexpressions/types3/TupleExpressionsTypeVisitor.java">TupleExpressionsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar TupleExpressions)</li>
+<li><a href="../../expressions/uglyexpressions/types3/UglyExpressionsTypeVisitor.java">UglyExpressionsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the expressions
+  in the grammar UglyExpressions)</li>
+</ul>
+</li>
+<li>Literals<ul>
+<li><a href="../../literals/mccommonliterals/types3/MCCommonLiteralsTypeVisitor.java">MCCommonLiteralsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the literals
+  in the grammar MCCommonLiterals)</li>
+<li><a href="../../literals/mcjavaliterals/types3/MCJavaLiteralsTypeVisitor.java">MCJavaLiteralsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the literals
+  in the grammar MCJavaLiterals)</li>
+<li><a href="../../siunit/siunitliterals/types3/SIUnitLiteralsTypeVisitor.java">SIUnitLiteralsTypeVisitor</a>
+  (calculates the SymTypeExpressions for the literals
+  in the grammar SIUnitLiterals)</li>
+</ul>
+</li>
+<li>Types<ul>
+<li><a href="../../types/mcarraytypes/types3/MCArrayTypesTypeVisitor.java">MCArrayTypesTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar MCArrayTypes)</li>
+<li><a href="../../types/mcbasictypes/types3/MCBasicTypesTypeVisitor.java">MCBasicTypesTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar MCBasicTypes)</li>
+<li><a href="../../types/mccollectiontypes/types3/MCCollectionTypesTypeVisitor.java">MCCollectionTypesTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar MCCollectionTypes)</li>
+<li><a href="../../types/mcfullgenerictypes/types3/MCFullGenericTypesTypeVisitor.java">MCFullGenericTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar MCFullGenericTypes)</li>
+<li><a href="../../types/mcfunctiontypes/types3/MCFunctionTypesTypeVisitor.java">MCFunctionTypesTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar MCFunctionTypes)</li>
+<li><a href="../../types/mcsimplegenerictypes/types3/MCSimpleGenericTypesTypeVisitor.java">MCSimpleGenericTypesTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar MCArrayTypes)</li>
+<li><a href="../../regex/regextype/types3/RegExTypeTypeVisitor.java">RegExTypeTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar RegExType)</li>
+<li><a href="../../siunit/siunittypes4computing/types3/SIUnitTypes4ComputingTypeVisitor.java">SIUnitTypes4ComputingTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar SIUnitTypes4Computing)</li>
+<li><a href="../../siunit/siunittypes4math/types3/SIUnitTypes4MathTypeVisitor.java">SIUnitTypes4MathTypeVisitor</a>
+  (calculates the SymTypeExpressions for the types
+  in the grammar SIUnitTypes4Math)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Generics infrastructure is <a href="../generics/Generics/#given-infrastructure-in-monticore-wrt-type-inference">documented separately</a>!</li>
+<li><a href="../../types/check/types3wrapper/TypeCheck3AsTypeCalculator.java">TypeCheck1 Adapters</a>
+  (adapts the TypeSystem3 to the deprecated TypeCheck1 interface,
+  offering implementations for IDerive and ISynthesize,
+  not compatible with generics,
+  s. <a href="../../types/check/TypeCheck/">TypeCheck1 documentation</a>)</li>
+</ul>
+<h2 id="what-is-the-difference-between-basicsymbols-and-symtypeexpressions">What is the difference between BasicSymbols and SymTypeExpressions?</h2>
+<p>The type system uses the Symbols of the BasicSymbols grammar
+and the handwritten SymTypeExpressions.
+While they are very similar,
+there is a big difference between them and when to use them.
+The symbols represent definitions,
+including nominal data type definitions (e.g., in Java: <code>class List&lt;T&gt;</code>),
+while the SymTypeExpressions represent a type usage
+(e.g., in Java: <code>List&lt;String&gt; listOfStrings;</code> or <code>List&lt;T&gt; tempList;</code>).
+There is only one type definition,
+but there can be many type usages. <br />
+The SymTypeExpression knows its corresponding Symbol (if applicable):
+* SymTypeOfGenerics, SymTypeOfObject, SymTypePrimitive, and SymTypeVariable
+  know their corresponding TypeSymbol
+* SymTypeOfFunction <em>may</em> have a corresponding FunctionSymbol
+  (e.g., a named function declaration)
+  or not (e.g., a lambda function definition)
+* Other SymTypeExpressions do not have a corresponding symbol.</p>
+<p>A type symbol,
+as it <em>defines</em> a nominal data type,
+is present only once in the symbol table.
+A SymTypeExpression is not stored in the symbol table
+(except as an attribute of a symbol, s. e.g., VariableSymbol),
+but, as far as applicable,
+refers to the definitions / declarations in the symbol table.
+Thus, multiple identical SymTypeExpressions can be used at the same time.</p>
+<h2 id="how-to-use-the-type-system-implementation">How to use the type system implementation?</h2>
+<p>In MontiCore, the type system implementations have multiple usages.
+For example:
+* writing context conditions;
+  The CoCos reduce a set of models to those,
+  that adhere to the typing rules of the language. <br />
+  An example would be a CoCo that checks
+  for the condition of an <code>if</code>-statement to be a Boolean expression.
+* printing dependent on the types;
+  As an example, The model contains the expression <code>f(1)</code>
+  with <code>f</code> being a variable of function type <code>int -&gt; int</code>
+  and the expression is to be printed to a Java expression.<br />
+  In Java, functions are not first-class citizens.
+  An option is to use Java's functional interfaces
+  and print <code>f.apply(1)</code>.</p>
+<p>To these ends, MontiCore's type system implementations
+offer the following functionalities:</p>
+<ul>
+<li>Given an expression, the type of the expression is deduced
+  (e.g., given expression <code>2+2</code>, a SymTypeExpression for <code>int</code> is created)</li>
+<li>Given a type,
+  the SymTypeExpression of this type is constructed
+  (e.g., given MCType <code>int</code> in the model,
+  a corresponding SymTypeExpression is created)</li>
+<li>Given one or more types, a relation is checked
+  (e.g., whether an expression of type <code>int</code>
+  can be assigned to a variable of type <code>double</code>)</li>
+</ul>
+<p>In the first two cases,
+SymTypeExpressions are assigned to ASTNodes by the use of TypeVisitors.
+In the third case,
+the SymTypeRelations class is queried using SymTypeExpressions. <br />
+This implies how to select a specific type system implementation
+in the first place:
+To select a type system one selects a set of TypeVisitors 
+and an implementation of SymTypeRelations to use.
+This is described in detail further below.</p>
+<h3 id="how-to-get-the-type-of-an-astnode">How to get the type of an ASTNode?</h3>
+<p>Types can be calculated for ASTNodes
+representing either expressions (<code>2+2</code>)
+or types (<code>String</code>).
+This functionality is offered by the class TypeCheck3,
+which uses a static delegate pattern;
+This static delegate needs to be initialized;
+The default (and currently only) implementation is MapBasedTypeCheck3.</p>
+<p>First, a Type4Ast map has to be constructed to store the typing information,
+thus avoiding recalculation if they are queried again,
+e.g., by different CoCos. 
+After creating the map,
+a traverser is created with the TypeVisitors of the language components;
+The TypeVisitors are given the Type4Ast instance.
+<strong>Note:</strong> Multiple type visitors,
+which contain different typing rules,
+may be available for a given sub-grammar,
+the visitor to select is to be specified by the language.
+In the end, a MapBasedTypeCheck3 has to be created
+and set as the delegate of TypeCheck3.</p>
+<p>Example:
+<div class="highlight"><pre><span></span><code><span class="c1">// traverser of your language</span>
+<span class="c1">// no inheritance traverser is used, as it is recommended</span>
+<span class="c1">// to create a new traverser for each language.</span>
+<span class="n">MyLangTraverser</span><span class="w"> </span><span class="n">traverser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyLang</span><span class="p">.</span><span class="na">traverser</span><span class="p">();</span>
+<span class="c1">// map to store the results</span>
+<span class="n">Type4Ast</span><span class="w"> </span><span class="n">type4Ast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Type4Ast</span><span class="p">();</span>
+
+<span class="c1">// one of many type visitors</span>
+<span class="c1">// check their documentation, whether further configuration is required</span>
+<span class="n">BitExpressionsTypeVisitor</span><span class="w"> </span><span class="n">visBitExpressions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BitExpressionsTypeVisitor</span><span class="p">();</span>
+<span class="n">visBitExpressions</span><span class="p">.</span><span class="na">setType4Ast</span><span class="p">(</span><span class="n">type4Ast</span><span class="p">);</span>
+<span class="n">traverser</span><span class="p">.</span><span class="na">add4BitExpressions</span><span class="p">(</span><span class="n">visBitExpressions</span><span class="p">);</span>
+
+<span class="c1">// create the TypeCheck3 delegate</span>
+<span class="k">new</span><span class="w"> </span><span class="n">MapBasedTypeCheck3</span><span class="p">(</span><span class="n">traverser</span><span class="p">,</span><span class="w"> </span><span class="n">type4Ast</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="na">setThisAsDelegate</span><span class="p">();</span>
+</code></pre></div>
+An example of instantiating a traverser can be found 
+<a href="https://github.com/MontiCore/ocl/blob/dev/src/main/java/de/monticore/ocl/ocl/types3/OCLTypeCheck3.java">here</a>.
+It is recommended to initialize the TypeCheck3 directly after the Mill.</p>
+<p>After initializing the TypeCheck3 delegate,
+TypeCheck3 can be used to query SymTypeExpressions of expressions
+<code>TypeCheck3.typeOf(expr)</code>,
+as well as MCTypes
+<code>TypeCheck3.symTypeFromAST(mcType)</code>.</p>
+<p>Note: If the language supports generics,
+<a href="../generics/Generics/#how-to-get-the-type-of-an-astnode-with-generics">additional steps</a>
+have to be taken.</p>
+<h3 id="how-to-check-relations-on-types">How to check relations on types?</h3>
+<p>To check relations of SymTypeExpressions,
+the SymTypeExpressions are passed to the corresponding method
+of SymTypeRelations or one of its subclasses.
+A non-exhaustive List of relation methods:
+* <code>boolean isCompatible(SymTypeExpression assignee, SymTypeExpression assigner)</code>
+  (whether an assignment is allowed in the type system)
+* <code>boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression)</code>
+  (whether one type is considered a subtype of the other)
+* <code>SymTypeExpression normalize(SymTypeExpression type)</code>
+  (converts a SymTypeExpression into normal form)
+* <code>boolean isInt(SymTypeExpression type)</code>
+  (whether the type is an <code>int</code> or boxed version thereof)</p>
+<p>It is strongly recommended to make oneself familiar
+not just with the functionality offered by the
+<a href="../SymTypeRelations.java">SymTypeRelations</a>
+class,
+but also its subclasses,
+as they can offer further functionality like, e.g.: <br />
+<code>boolean isList(SymTypeExpression type)</code>
+(whether the type is considered a list).</p>
+<p>As different languages have different typing rules,
+the corresponding set of rules has to be selected.
+While this is partially done by selecting the TypeVisitors,
+relations between types are unrelated to the TypeVisitors
+and have to be initialized accordingly.</p>
+<p>As an example, the default type relations are initialized using
+<code>SymTypeRelations.init()</code>.
+The default typing relations are initialized per default
+and calling, e.g., <code>OCLSymTypeRelations.init()</code> of the OCL language project
+changes the relations according to the rules of the OCL language.
+According to the default, java-inspired type relations
+<code>List&lt;Student&gt;</code> is not a subtype of <code>List&lt;Person&gt;</code>
+and after initializing the OCL type relations
+<code>List&lt;Student&gt;</code> <em>is</em> calculated to be a subtype of <code>List&lt;Person&gt;</code>.
+Initializing the OCL type relations does not just allow
+usage of <code>OCLSymTypeRelations</code>, 
+but also changes the behavior of the methods in <code>SymTypeRelations</code>.
+This is done to allow reuse of CoCos between languages.</p>
+<h2 id="further-information">Further Information</h2>
+<ul>
+<li><a href="https://github.com/MontiCore/monticore">Project root: MontiCore @github</a></li>
+<li><a href="https://www.monticore.de/">MontiCore documentation</a></li>
+<li><a href="../../types/check/TypeCheck/">TypeCheck1 Readme</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md"><strong>List of languages</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md"><strong>MontiCore Core Grammar Library</strong></a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md">Best Practices</a></li>
+<li><a href="https://www.se-rwth.de/publications/">Publications about MBSE and MontiCore</a></li>
+<li><a href="https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md">Licence definition</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      (c) https://github.com/MontiCore/monticore
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../../../../../..", "features": ["navigation.tabs", "toc.integrate", "toc.follow", "content.tabs.link", "content.code.copy"], "search": "../../../../../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../../../../../assets/javascripts/bundle.f13b1293.min.js"></script>
+      
+    
+  </body>
+</html>

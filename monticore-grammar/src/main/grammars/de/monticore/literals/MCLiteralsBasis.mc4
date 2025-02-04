@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.literals;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+component grammar MCLiteralsBasis  {
+
+
+  /** ASTLiteral is the interface for all literals (NullLiteral,
+    BooleanLiteral, CharLiteral, StringLiteral and all NumericLiterals
+    without '-' at the beginning).
+
+    We deliberately decided to introduce this Nonterminal as
+    interface without concrete Implementation here,
+    because it allows to include Literals of various Forms
+    by composing with the appropriate Literals grammar.
+
+  */
+  interface Literal;
+
+}

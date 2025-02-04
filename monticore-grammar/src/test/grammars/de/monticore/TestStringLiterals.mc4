@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar TestStringLiterals extends StringLiterals {
+
+  CharLiteralList = "["  (CharLiteral | ",")* "]" ;
+  StringLiteralList = "["  (StringLiteral | ",")* "]" ;
+
+}

@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+grammar TestMCReturnStatements extends de.monticore.statements.MCReturnStatements, de.monticore.literals.MCCommonLiterals {
+
+}

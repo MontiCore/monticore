@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+grammar TestMCArrayStatements extends de.monticore.statements.MCArrayStatements,
+                                      de.monticore.expressions.CombineExpressionsWithLiterals {
+
+  TModifier implements MCModifier = "private";
+
+}

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4017;
+
+grammar A4017 {
+
+  token A = B;
+
+  B;
+}

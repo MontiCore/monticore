@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4035;
+
+grammar A4035b {
+
+  symbol S = "s" Name  ";" ;
+
+  symbol T extends S = "t" Name ";" ;
+
+  symbolrule S = b:boolean ;
+
+  symbolrule T = b:String ;
+
+
+}
