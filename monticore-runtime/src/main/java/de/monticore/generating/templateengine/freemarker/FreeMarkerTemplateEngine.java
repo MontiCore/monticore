@@ -6,15 +6,13 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Enumeration;
 
 import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.source_mapping.SourceMappingUtil;
-import de.monticore.source_mapping.SourcePositionMapper;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.source_mapping.SourceMapCalculator;
+import de.monticore.generating.templateengine.source_mapping.SourcePositionMapper;
 import de.se_rwth.commons.logging.Log;
-import freemarker.core.Environment;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
@@ -54,8 +52,9 @@ public class FreeMarkerTemplateEngine {
     Template result;
     try {
       result = configuration.getTemplate(qualifiedTemplateName);
-      result = SourcePositionMapper.adaptTemplateWithPositionMarkers(result, configuration);
-     // System.out.println("Template after addition: "+result.toString());
+      if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(qualifiedTemplateName)) {
+        result = SourcePositionMapper.adaptTemplateWithPositionMarkers(result, configuration);
+      }
     }
     catch (IOException e) {
       throw new MontiCoreFreeMarkerException("0xA0560 Unable to load template: " + e.getMessage());
@@ -78,9 +77,11 @@ public class FreeMarkerTemplateEngine {
 
     StringWriter w = new StringWriter();
     try {
-      if (data instanceof SimpleHash) {
-        SimpleHash asSimpleHash = (SimpleHash) data;
-        asSimpleHash.put(TemplateController.SOURCE_MAPPING_UTIL, new SourceMappingUtil(w, template));
+      if(Reporting.isTemplateSourceMappingEnabled()) {
+        if (data instanceof SimpleHash) {
+          SimpleHash asSimpleHash = (SimpleHash) data;
+          asSimpleHash.put(TemplateController.SOURCE_MAP_CALCULATOR, new SourceMapCalculator(w, template));
+        }
       }
       template.process(data, w);
       w.flush();
