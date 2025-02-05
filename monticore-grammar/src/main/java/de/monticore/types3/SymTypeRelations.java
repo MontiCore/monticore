@@ -32,11 +32,17 @@ public abstract class SymTypeRelations {
    * e.g., function call: (float -> void)(2),
    * -> float and type of 2 need to be compatible.
    */
-  public static boolean isCompatible(SymTypeExpression target, SymTypeExpression source) {
+  public static boolean isCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
     return getDelegate()._isCompatible(target, source);
   }
 
-  protected abstract boolean _isCompatible(SymTypeExpression target, SymTypeExpression source);
+  protected abstract boolean _isCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  );
 
   /**
    * Whether subType is the sub-type of superType,
@@ -47,11 +53,17 @@ public abstract class SymTypeRelations {
    * isSubType(int, float)
    * !isSubType(float, int)
    */
-  public static boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression superType) {
+  public static boolean isSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  ) {
     return getDelegate()._isSubTypeOf(subType, superType);
   }
 
-  protected abstract boolean _isSubTypeOf(SymTypeExpression subType, SymTypeExpression superType);
+  protected abstract boolean _isSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  );
 
   /**
    * returns nominal supertypes.
@@ -62,11 +74,15 @@ public abstract class SymTypeRelations {
    * Note that the "direct" supertype-relation is deliberately underspecified,
    * such that it can be refined according to the specific type system's needs.
    */
-  public static List<SymTypeExpression> getNominalSuperTypes(SymTypeExpression thisType) {
+  public static List<SymTypeExpression> getNominalSuperTypes(
+      SymTypeExpression thisType
+  ) {
     return getDelegate()._getNominalSuperTypes(thisType);
   }
 
-  protected abstract List<SymTypeExpression> _getNominalSuperTypes(SymTypeExpression thisType);
+  protected abstract List<SymTypeExpression> _getNominalSuperTypes(
+      SymTypeExpression thisType
+  );
 
   /**
    * least upper bound for a set of types
@@ -86,15 +102,21 @@ public abstract class SymTypeRelations {
    * empty represents the universal type (aka the lack of a bound)
    * Obscure is returned, if no lub could be calculated, e.g. lub(int, Person)
    */
-  public static Optional<SymTypeExpression> leastUpperBound(Collection<SymTypeExpression> types) {
+  public static Optional<SymTypeExpression> leastUpperBound(
+      Collection<SymTypeExpression> types
+  ) {
     return getDelegate()._leastUpperBound(types);
   }
 
-  public static Optional<SymTypeExpression> leastUpperBound(SymTypeExpression... types) {
+  public static Optional<SymTypeExpression> leastUpperBound(
+      SymTypeExpression... types
+  ) {
     return leastUpperBound(List.of(types));
   }
 
-  protected abstract Optional<SymTypeExpression> _leastUpperBound(Collection<SymTypeExpression> types);
+  protected abstract Optional<SymTypeExpression> _leastUpperBound(
+      Collection<SymTypeExpression> types
+  );
 
   /**
    * Boxes SymTypeExpressions,
@@ -142,13 +164,19 @@ public abstract class SymTypeRelations {
    * e.g., short -> int
    * e.g., byte, float -> float
    */
-  public static SymTypeExpression numericPromotion(List<SymTypeExpression> types) {
+  public static SymTypeExpression numericPromotion(
+      List<SymTypeExpression> types
+  ) {
     return getDelegate()._numericPromotion(types);
   }
 
-  protected abstract SymTypeExpression _numericPromotion(List<SymTypeExpression> types);
+  protected abstract SymTypeExpression _numericPromotion(
+      List<SymTypeExpression> types
+  );
 
-  public static SymTypeExpression numericPromotion(SymTypeExpression... types) {
+  public static SymTypeExpression numericPromotion(
+      SymTypeExpression... types
+  ) {
     return numericPromotion(List.of(types));
   }
 
@@ -253,7 +281,10 @@ public abstract class SymTypeRelations {
     return getDelegate()._constrainCompatible(target, source);
   }
 
-  protected abstract List<Bound> _constrainCompatible(SymTypeExpression target, SymTypeExpression source);
+  protected abstract List<Bound> _constrainCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  );
 
   /**
    * Same as {@link #isSubTypeOf(SymTypeExpression, SymTypeExpression)},
@@ -266,7 +297,10 @@ public abstract class SymTypeRelations {
     return getDelegate()._constrainSubTypeOf(subType, superType);
   }
 
-  protected abstract List<Bound> _constrainSubTypeOf(SymTypeExpression subType, SymTypeExpression superType);
+  protected abstract List<Bound> _constrainSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  );
 
   /**
    * Same as {@link #constrainSubTypeOf(SymTypeExpression, SymTypeExpression)},
@@ -281,7 +315,10 @@ public abstract class SymTypeRelations {
     return getDelegate()._internal_constrainSubTypeOfPreNormalized(subType, superType);
   }
 
-  protected abstract List<Bound> _internal_constrainSubTypeOfPreNormalized(SymTypeExpression subType, SymTypeExpression superType);
+  protected abstract List<Bound> _internal_constrainSubTypeOfPreNormalized(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  );
 
   /**
    * returns the list of Bounds on the free type variables,
@@ -297,7 +334,10 @@ public abstract class SymTypeRelations {
     return getDelegate()._constrainSameType(typeA, typeB);
   }
 
-  protected abstract List<Bound> _constrainSameType(SymTypeExpression typeA, SymTypeExpression typeB);
+  protected abstract List<Bound> _constrainSameType(
+      SymTypeExpression typeA,
+      SymTypeExpression typeB
+  );
 
   /**
    * @deprecated use constrain* methods above.
