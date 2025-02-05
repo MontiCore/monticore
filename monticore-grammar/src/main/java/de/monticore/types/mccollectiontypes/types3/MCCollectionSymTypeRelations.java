@@ -70,7 +70,7 @@ public class MCCollectionSymTypeRelations {
   }
 
   protected SymTypeExpression _getCollectionElementType(SymTypeExpression type) {
-    if (!isMCCollection(type)) {
+    if (!isCollectionType(type)) {
       Log.error("0xFD1C7 internal error: tried to get the type "
           + "of an collection's element of a non collection type");
       return SymTypeExpressionFactory.createObscureType();
@@ -79,6 +79,13 @@ public class MCCollectionSymTypeRelations {
     // in case of Map the second type parameter is the value type.
     SymTypeOfGenerics collectionType = (SymTypeOfGenerics) type;
     return collectionType.getArgument(collectionType.sizeArguments() - 1);
+  }
+
+  /**
+   * hookpoint for getCollectionElementType
+   */
+  protected boolean isCollectionType(SymTypeExpression type) {
+    return isMCCollection(type);
   }
 
   public static SymTypeExpression getMapKeyType(SymTypeExpression type) {
