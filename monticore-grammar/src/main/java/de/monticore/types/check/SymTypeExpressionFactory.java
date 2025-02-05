@@ -146,11 +146,15 @@ public class SymTypeExpressionFactory {
 
   /**
    * creates the "Void"-type, i.e. a pseudotype that represents the absence of a real type
-   *
-   * @return
    */
   public static SymTypeVoid createTypeVoid() {
-    return new SymTypeVoid();
+    Optional<TypeSymbol> type = BasicSymbolsMill.globalScope()
+      .resolveTypeLocally(BasicSymbolsMill.VOID);
+    if (type.isEmpty()) {
+      Log.error("0x893F63 Internal Error: Non primitive type "
+        + BasicSymbolsMill.VOID + " stored as constant.");
+    }
+    return new SymTypeVoid(type.orElseThrow());
   }
 
   public static SymTypeObscure createObscureType() {
