@@ -9,6 +9,7 @@ import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineE
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVisitor;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorTypeVisitor;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeVisitor;
+import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorTypeVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
@@ -61,14 +62,16 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     return traverser;
   }
 
-  public MapBasedTypeCheck3 initTypeCheck3() {
+  public static MapBasedTypeCheck3 initTypeCheck3() {
     WithinScopeBasicSymbolsResolver.init();
     WithinTypeBasicSymbolsResolver.init();
     TypeVisitorOperatorCalculator.init();
     TypeContextCalculator.init();
+    CommonExpressionsLValueRelations.init();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
-    ITraverser traverser = createTraverser(type4Ast, ctx4Ast);
+    ITraverser traverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
+        .createTraverser(type4Ast, ctx4Ast);
     // sets itself as delegate
     return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
   }
@@ -100,6 +103,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     OOWithinTypeBasicSymbolsResolver.init();
     TypeVisitorOperatorCalculator.init();
     TypeContextCalculator.init();
+    CommonExpressionsLValueRelations.init();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = createTraverserForOO(type4Ast, ctx4Ast);
