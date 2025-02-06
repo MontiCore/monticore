@@ -67,12 +67,12 @@ and combining their information to the SymTypeExpression currently calculated.
 * Functionality to work with SymTypeExpressions, Expressions
     * [SymTypeRelations](SymTypeRelations.java)
       (relations over SymTypeExpressions, e.g., `isSubTypeOf`, `isCompatible`)
-        * [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java)
-          (relations over MCCollection SymTypeExpressions, e.g., `isList`)
-        * [FunctionRelations](util/FunctionRelations.java)
-          (relations regarding functions, e.g, `canBeCalledWith`)
-        * [SIUnitTypeRelations](util/SIUnitTypeRelations.java)
-          (SIUnit relations, e.g., `multiply`, `isOfDimensionOne`)
+    * [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java)
+      (relations over MCCollection SymTypeExpressions, e.g., `isList`)
+    * [FunctionRelations](util/FunctionRelations.java)
+      (relations regarding functions, e.g, `canBeCalledWith`)
+    * [SIUnitTypeRelations](util/SIUnitTypeRelations.java)
+      (SIUnit relations, e.g., `multiply`, `isOfDimensionOne`)
     * [WithinScopeBasicSymbolsResolver](util/WithinScopeBasicSymbolsResolver.java)
       (resolves contained variables, functions, ect. within a given scope;
       unlike symbol resolving this returns SymTypeExpressions)
@@ -86,8 +86,17 @@ and combining their information to the SymTypeExpression currently calculated.
     * [TypeContextCalculator](util/TypeContextCalculator.java)
       (provides context information for an expression wrt. types, e.g.,
       whether a type's private members can be accessed)
-    * [ILValueRelations](util/ILValueRelations.java)
+    * [LValueRelations](util/LValueRelations.java)
       (whether an expression is an L-value, e.g., a variable)
+        * [CommonExpressionsLValueRelations](../expressions/commonexpressions/types3/util/CommonExpressionsLValueRelations.java)
+          (implementation of LValueRelations for languages with
+          CommonExpressions and no further LValues)
+    * [TypeVisitorLifting](util/TypeVisitorLifting.java)
+      (used in TypeVisitors to provide consistent handling of, e.g.,
+      union types)
+    * [TypeVisitorOperatorCalculator](util/TypeVisitorOperatorCalculator.java)
+      (used in TypeVisitors to provide consistent handling of
+      operators and similar constructs)
 * TypeVisitors traverse the AST and
   store the calculated SymTypeExpression in the Type4Ast map
     * Expressions
@@ -232,10 +241,10 @@ the SymTypeRelations class is queried using SymTypeExpressions.
 This implies how to select a specific type system implementation
 in the first place:
 To select a type system one selects a set of TypeVisitors 
-and an implementation of SymTypeRelations to use.
+and the implementations of type relations to use.
 This is described in detail further below.
 
-### How to get the type of an ASTNode?
+### How to initialize the Type Visitors?
 
 Types can be calculated for ASTNodes
 representing either expressions (`2+2`)
@@ -277,9 +286,70 @@ traverser.add4BitExpressions(visBitExpressions);
 new MapBasedTypeCheck3(traverser, type4Ast)
     .setThisAsDelegate();
 ```
+
+### How to select the Type Relations?
+
+The traverser handles the part of the type calculations that is AST-dependent;
+Rules such as `Student[]` is a subtype of `Person[]` are not AST-dependent.
+The non-AST-dependent rules of the system are available through static methods,
+to modify their behavior, the corresponding static delegate has to be replaced.
+
+Each of the following classes contains typing rules that are AST-independent,
+and their behavior should be modified if required,
+s.a. [Given Infrastructure](#given-infrastructure-in-monticore);
+
+* [SymTypeRelations](SymTypeRelations.java),
+* [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java),
+* [WithinScopeBasicSymbolsResolver](util/WithinScopeBasicSymbolsResolver.java),
+* [WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java),
+* [LValueRelations](util/LValueRelations.java)
+  (this uses the AST, but similarly has the same static delegate pattern)
+
+The following are further classes,
+that are unlikely to be required to be modified for a given language.
+They still use the same static delegate pattern.
+* [FunctionRelations](util/FunctionRelations.java),
+* [SIUnitTypeRelations](util/SIUnitTypeRelations.java),
+* [TypeContextCalculator](util/TypeContextCalculator.java),
+* [TypeVisitorLifting](util/TypeVisitorLifting.java),
+* [TypeVisitorOperatorCalculator](util/TypeVisitorOperatorCalculator.java).
+
+The implementation to use can be selected by using the `init()`-method
+of the corresponding class.
+E.g.,
+per default, TypeCheck3 will ignore any OOSymbol-specific rules while resolving
+types, variables, and functions.
+As such, a `private` method can be accessed from outside the class.
+To only allow access to `public` methods from outside the class,
+the corresponding resolvers have to be selected;
+`OOWithinTypeBasicSymbolsResolver.init()` will select
+[OOWithinTypeBasicSymbolsResolver](util/OOWithinTypeBasicSymbolsResolver.java)
+to be used instead of the default
+[WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java),
+thus changing the TypeCheck to one that checks for access modifiers.
+
+These static delegates should be initialized **once** with the Mill;
+It is expected that (nearly) each language only ever
+uses one set of typing rules.
+Any modification during the usage of the Mill
+should be avoided as much as possible.
+
+An example initialization of static delegates;
+
+```java
+// use OO rules to access types, fields, etc.
+OOWithinTypeBasicSymbolsResolver.init();
+OOWithinScopeBasicSymbolsResolver.init();
+// CommonExpressions are used and no further LValues exist in the language.
+CommonExpressionsLValueRelations.init();
+```
+
+
 An example of instantiating a traverser can be found 
 [here](https://github.com/MontiCore/ocl/blob/dev/src/main/java/de/monticore/ocl/ocl/types3/OCLTypeCheck3.java).
 It is recommended to initialize the TypeCheck3 directly after the Mill.
+Alternatively, the Mill's `init()` and `reset()` methods can be overridden,
+to add the typecheck's (de-)initalization to the Mill's (de-)initialization.
 
 After initializing the TypeCheck3 delegate,
 TypeCheck3 can be used to query SymTypeExpressions of expressions

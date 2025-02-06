@@ -167,7 +167,7 @@ Inference variables are never instantiated to `#BOTTOM`.
 ## How to get the type of an ASTNode with generics?
 
 Note: This is an extension of the
-[general documentation](../TypeSystem3.md#how-to-get-the-type-of-an-astnode),
+[general documentation](../TypeSystem3.md#how-to-use-the-type-system-implementation),
 which you should read first.
 
 When calculating types in a language with support for generics,
