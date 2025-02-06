@@ -45,21 +45,9 @@ public class CompileTimeTypeCalculator {
 
   protected static final String LOG_NAME = "CompileTimeTypeCalculator";
 
-  // static delegate
-
   protected static CompileTimeTypeCalculator delegate;
 
-  public static void init() {
-    Log.trace("init default FunctionRelations", "TypeCheck setup");
-    CompileTimeTypeCalculator.delegate = new CompileTimeTypeCalculator();
-  }
-
-  protected static CompileTimeTypeCalculator getDelegate() {
-    if (delegate == null) {
-      init();
-    }
-    return delegate;
-  }
+  // methods
 
   /**
    * Takes a resolved type (or similar) and tries to infer an instantiation.
@@ -86,7 +74,7 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    getDelegate().calculateHandleResolvedType(
+    getDelegate()._handleResolvedType(
         expr, resolvedType, typeTraverser, type4Ast, infCtx4Ast
     );
   }
@@ -112,7 +100,7 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    getDelegate().calculateHandleCall(
+    getDelegate()._handleCall(
         expr, funcType, arguments,
         typeTraverser, type4Ast, infCtx4Ast
     );
@@ -143,13 +131,13 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    getDelegate().calculateHandleCall(
+    getDelegate()._handleCall(
         callExpr, funcExpr, arguments,
         typeTraverser, type4Ast, infCtx4Ast
     );
   }
 
-  protected void calculateHandleResolvedType(
+  protected void _handleResolvedType(
       ASTExpression expr,
       SymTypeExpression resolvedType,
       ITraverser typeTraverser,
@@ -180,7 +168,7 @@ public class CompileTimeTypeCalculator {
     }
   }
 
-  protected void calculateHandleCall(
+  protected void _handleCall(
       ASTExpression callExpr,
       SymTypeExpression resolvedFuncType,
       List<ASTExpression> arguments,
@@ -208,7 +196,7 @@ public class CompileTimeTypeCalculator {
     );
   }
 
-  protected void calculateHandleCall(
+  protected void _handleCall(
       ASTExpression callExpr,
       ASTExpression funcExpr,
       List<ASTExpression> arguments,
@@ -1332,6 +1320,28 @@ public class CompileTimeTypeCalculator {
     return constraints.stream()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default CompileTimeTypeCalculator", "TypeCheck setup");
+    CompileTimeTypeCalculator.delegate = new CompileTimeTypeCalculator();
+  }
+
+  public static void reset() {
+    CompileTimeTypeCalculator.delegate = null;
+  }
+
+  protected static void setDelegate(CompileTimeTypeCalculator newDelegate) {
+    CompileTimeTypeCalculator.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static CompileTimeTypeCalculator getDelegate() {
+    if (CompileTimeTypeCalculator.delegate == null) {
+      init();
+    }
+    return CompileTimeTypeCalculator.delegate;
   }
 
 }
