@@ -342,8 +342,17 @@ OOWithinTypeBasicSymbolsResolver.init();
 OOWithinScopeBasicSymbolsResolver.init();
 // CommonExpressions are used and no further LValues exist in the language.
 CommonExpressionsLValueRelations.init();
+// All other delegates will use their default implementation
+// Explicitly initializing all other delegates the default
+// will avoid issues if multiple Languages are used in the same Java process.
 ```
 
+The delegates can be `reset()`,
+which removes the current selected integration/
+This can be integrated into the Mill's `reset()`-method,
+to further avoid issues with multiple languages in the same Java process.
+
+### Full Instantiation
 
 An example of instantiating a traverser can be found 
 [here](https://github.com/MontiCore/ocl/blob/dev/src/main/java/de/monticore/ocl/ocl/types3/OCLTypeCheck3.java).
@@ -351,7 +360,7 @@ It is recommended to initialize the TypeCheck3 directly after the Mill.
 Alternatively, the Mill's `init()` and `reset()` methods can be overridden,
 to add the typecheck's (de-)initalization to the Mill's (de-)initialization.
 
-After initializing the TypeCheck3 delegate,
+After initializing the TypeCheck3 delegates,
 TypeCheck3 can be used to query SymTypeExpressions of expressions
 `TypeCheck3.typeOf(expr)`,
 as well as MCTypes
