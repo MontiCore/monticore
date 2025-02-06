@@ -8,12 +8,12 @@ import de.se_rwth.commons.logging.Log;
  * Whether an expression is an LValue,
  * s. {@link #isLValue(ASTExpression)}.
  * <p>
- * There is no default implementation,
+ * There is no (non-trivial) default implementation,
  * as this tends to be based on the ASTExpression in question.
  * In most cases, you want to use
  * {@link de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations}.
  */
-public abstract class LValueRelations {
+public class LValueRelations {
 
   protected static LValueRelations delegate;
 
@@ -36,9 +36,21 @@ public abstract class LValueRelations {
     return getDelegate()._isLValue(expr);
   }
 
-  protected abstract boolean _isLValue(ASTExpression expr);
+  protected boolean _isLValue(ASTExpression expr) {
+    // per default false,
+    // each language (component) has to specify which elements are LValues.
+    return false;
+  }
 
   // static delegate
+
+  public static void init() {
+    Log.trace("init default LValueRelations"
+            + ", (this is most likely not what you want to initialize)",
+        "TypeCheck setup"
+    );
+    setDelegate(new LValueRelations());
+  }
 
   public static void reset() {
     LValueRelations.delegate = null;
@@ -50,8 +62,7 @@ public abstract class LValueRelations {
 
   protected static LValueRelations getDelegate() {
     if (LValueRelations.delegate == null) {
-      Log.error("0xFD152 internal error: "
-          + "LValueRelations has not been init()-ialized.");
+      init();
     }
     return LValueRelations.delegate;
   }
