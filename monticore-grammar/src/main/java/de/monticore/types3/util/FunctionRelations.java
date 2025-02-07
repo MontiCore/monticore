@@ -253,7 +253,7 @@ public class FunctionRelations {
 
   public static void init() {
     Log.trace("init default FunctionRelations", "TypeCheck setup");
-    FunctionRelations.delegate = new FunctionRelations();
+    setDelegate(new FunctionRelations());
   }
 
   public static void reset() {

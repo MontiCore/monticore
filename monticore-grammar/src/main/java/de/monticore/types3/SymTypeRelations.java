@@ -363,7 +363,7 @@ public abstract class SymTypeRelations {
 
   public static void init() {
     Log.trace("init default SymTypeRelations", "TypeCheck setup");
-    SymTypeRelations.delegate = new SymTypeRelationsDefaultDelegatee();
+    setDelegate(new SymTypeRelationsDefaultDelegatee());
   }
 
   public static void reset() {

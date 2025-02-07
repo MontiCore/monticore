@@ -1326,7 +1326,7 @@ public class CompileTimeTypeCalculator {
 
   public static void init() {
     Log.trace("init default CompileTimeTypeCalculator", "TypeCheck setup");
-    CompileTimeTypeCalculator.delegate = new CompileTimeTypeCalculator();
+    setDelegate(new CompileTimeTypeCalculator());
   }
 
   public static void reset() {

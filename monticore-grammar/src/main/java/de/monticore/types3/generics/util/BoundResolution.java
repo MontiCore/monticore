@@ -868,7 +868,7 @@ public class BoundResolution {
 
   public static void init() {
     Log.trace("init default BoundResolution", "TypeCheck setup");
-    BoundResolution.delegate = new BoundResolution();
+    setDelegate(new BoundResolution());
   }
 
   public static void reset() {

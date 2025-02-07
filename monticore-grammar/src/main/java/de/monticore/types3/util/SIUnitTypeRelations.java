@@ -389,7 +389,7 @@ public class SIUnitTypeRelations {
 
   public static void init() {
     Log.trace("init default SIUnitTypeRelations", "TypeCheck setup");
-    SIUnitTypeRelations.delegate = new SIUnitTypeRelations();
+    setDelegate(new SIUnitTypeRelations());
   }
 
   public static void reset() {

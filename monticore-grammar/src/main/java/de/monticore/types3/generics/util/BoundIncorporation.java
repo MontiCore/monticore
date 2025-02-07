@@ -1089,7 +1089,7 @@ public class BoundIncorporation {
 
   public static void init() {
     Log.trace("init default BoundIncorporation", "TypeCheck setup");
-    BoundIncorporation.delegate = new BoundIncorporation();
+    setDelegate(BoundIncorporation());
   }
 
   public static void reset() {

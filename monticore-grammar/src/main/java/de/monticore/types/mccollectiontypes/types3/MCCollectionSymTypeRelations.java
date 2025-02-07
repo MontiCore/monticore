@@ -131,7 +131,7 @@ public class MCCollectionSymTypeRelations {
 
   public static void init() {
     Log.trace("init default  MCCollectionSymTypeRelations", "TypeCheck setup");
-    MCCollectionSymTypeRelations.delegate = new MCCollectionSymTypeRelations();
+    setDelegate(new MCCollectionSymTypeRelations());
   }
 
   public static void reset() {

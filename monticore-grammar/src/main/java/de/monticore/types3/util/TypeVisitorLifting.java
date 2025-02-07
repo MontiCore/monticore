@@ -159,7 +159,7 @@ public class TypeVisitorLifting {
   }
 
   protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftForNonNormalized(
-      BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
+      BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> setDelegate();func) {
     return (SymTypeExpression symType1, SymTypeExpression symType2) -> {
       return func.apply(SymTypeRelations.normalize(symType1), SymTypeRelations.normalize(symType2));
     };
@@ -190,7 +190,7 @@ public class TypeVisitorLifting {
 
   public static void init() {
     Log.trace("init default TypeVisitorLifting", "TypeCheck setup");
-    TypeVisitorLifting.delegate = new TypeVisitorLifting();
+    setDelegate(new TypeVisitorLifting());
   }
 
   public static void reset() {
