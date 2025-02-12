@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  //id "java"
+  id "de.rwth.se.symtabdefinition" version "$version"
+}
+
+description = 'MontiCore: Stream Symbols'
+
+// add generated symbols to jar
+sourceSets.main.resources.srcDirs {
+  generateSymbolTables
+}
+
+//jar {
+//  dependsOn generateSymbolTables
+//}
