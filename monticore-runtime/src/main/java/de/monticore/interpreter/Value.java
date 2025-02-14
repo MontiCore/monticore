@@ -8,7 +8,19 @@ public interface Value {
   default boolean isBoolean() {
     return false;
   }
-
+  
+  default boolean isByte() {
+    return false;
+  }
+  
+  default boolean isChar() {
+    return false;
+  }
+  
+  default boolean isShort() {
+    return false;
+  }
+  
   default boolean isInt() {
     return false;
   }
@@ -25,56 +37,70 @@ public interface Value {
     return false;
   }
 
-  default boolean isChar() {
-    return false;
-  }
-
-  default boolean isString() {
-    return false;
-  }
-
-
   default boolean isObject() {
     return false;
   }
-
+  
+  default boolean isFunction() {
+    return false;
+  }
+  
+  default boolean isVoid() {
+    return false;
+  }
+  
+  default boolean isSIUnit() {
+    return false;
+  }
+  
+  default boolean isError() {
+    return false;
+  }
+  
+  
   default boolean asBoolean() {
     Log.error("0x31251 Type boolean is not applicable for result value.");
     return false;
   }
-
-  default int asInt() {
-    Log.error("0x31252 Type int is not applicable for result value.");
+  
+  default byte asByte() {
+    Log.error("0x31252 Type byte is not applicable for result value.");
     return 0;
   }
-
-  default double asDouble() {
-    Log.error("0x31253 Type double is not applicable for result value.");
-    return 0.0;
-  }
-
-  default String asString() {
-    Log.error("0x31254 Type String is not applicable for result value.");
-    return "";
-  }
-
+  
   default char asChar() {
-    Log.error("0x31255 Type char is not applicable for result value.");
-    return '\u0000';
+    Log.error("0x31253 Type char is not applicable for result value.");
+    return '\0';
   }
-
-  default Object asObject() {
-    Log.error("0x31256 Type Object is not applicable for result value.");
-    return new Object();
+  
+  default short asShort() {
+    Log.error("0x31254 Type short is not applicable for result value.");
+    return 0;
   }
-
+  
+  default int asInt() {
+    Log.error("0x31255 Type int is not applicable for result value.");
+    return 0;
+  }
+  
   default long asLong() {
-    Log.error("0x31257 Type long is not applicable for result value.");
+    Log.error("0x31256 Type long is not applicable for result value.");
     return 0L;
   }
-
+  
   default float asFloat() {
-    Log.error("0x31258 Type float is not applicable for result value.");
+    Log.error("0x31257 Type float is not applicable for result value.");
     return 0.0f;
   }
+  
+  default double asDouble() {
+    Log.error("0x31258 Type double is not applicable for result value.");
+    return 0.0;
+  }
+  
+  default Object asObject() {
+    Log.error("0x31259 Type object is not applicable for result value.");
+    return null;
+  }
+  
 }

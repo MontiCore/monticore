@@ -17,23 +17,8 @@ public class FloatValue implements Value {
   }
 
   @Override
-  public int asInt() {
-    return (int) value;
-  }
-
-  @Override
   public double asDouble() {
     return value;
-  }
-
-  @Override
-  public String asString() {
-    return Float.toString(value);
-  }
-
-  @Override
-  public long asLong() {
-    return (long) value;
   }
 
   @Override

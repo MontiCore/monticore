@@ -10,7 +10,7 @@ public class CommonExpressionsInterpreterTest extends AbstractInterpreterTest {
 
   @BeforeEach
   public void before() {
-    init(127);
+    init();
   }
 
   @Test

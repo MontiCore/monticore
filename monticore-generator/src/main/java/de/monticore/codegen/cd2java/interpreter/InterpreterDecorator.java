@@ -126,29 +126,44 @@ public class InterpreterDecorator
 
   public List<ASTCDMember> createMapMembers() {
     List<ASTCDMember> members = new ArrayList<>();
-
+    
     members.add(cdAttributeFacade.createAttribute(
         PROTECTED.build(),
-        mcTypeFacade.createMapTypeOf(SYMBOL_FULLNAME, VALUE_FULLNAME),
-        "contextMap"));
+        mcTypeFacade.createBasicGenericTypeOf("java.util.Stack", INTERPRETER_SCOPE_FULLNAME),
+        "scopeCallstack"));
 
     ASTCDParameter symbolParameter = cdParameterFacade.createParameter(SYMBOL_FULLNAME, "symbol");
     ASTCDParameter valueParameter = cdParameterFacade.createParameter(VALUE_FULLNAME, "value");
+    
+    ASTCDMethod declareVarMethod = cdMethodFacade.createMethod(
+        PUBLIC.build(), "declareVariable", symbolParameter, valueParameter);
+    this.replaceTemplate(EMPTY_BODY, declareVarMethod, new StringHookPoint("getRealThis().getCurrentScope().declareVariable(symbol, value);"));
+    members.add(declareVarMethod);
+    
     ASTCDMethod storeMethod = cdMethodFacade.createMethod(
         PUBLIC.build(), "store", symbolParameter, valueParameter);
-    this.replaceTemplate(EMPTY_BODY, storeMethod, new StringHookPoint("getRealThis().getContextMap().put(symbol, value);"));
+    this.replaceTemplate(EMPTY_BODY, storeMethod, new StringHookPoint("getRealThis().getCurrentScope().store(symbol, value);"));
     members.add(storeMethod);
 
     ASTCDMethod loadMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME, "load", symbolParameter);
-    this.replaceTemplate(EMPTY_BODY, loadMethod, new StringHookPoint("return getRealThis().getContextMap().get(symbol);"));
+    this.replaceTemplate(EMPTY_BODY, loadMethod, new StringHookPoint("return getRealThis().getCurrentScope().load(symbol);"));
     members.add(loadMethod);
 
     ASTCDMethod getter = cdMethodFacade.createMethod(
         PUBLIC.build(),
-        mcTypeFacade.createMapTypeOf(SYMBOL_FULLNAME, VALUE_FULLNAME),
-        "getContextMap");
-    this.replaceTemplate(EMPTY_BODY, getter, new StringHookPoint("return this.contextMap;"));
+        mcTypeFacade.createQualifiedType(INTERPRETER_SCOPE_FULLNAME),
+        "getCurrentScope");
+    this.replaceTemplate(EMPTY_BODY, getter, new StringHookPoint("return this.scopeCallstack.peek();"));
     members.add(getter);
+    
+    ASTCDParameter scopeParameter = cdParameterFacade.createParameter(INTERPRETER_SCOPE_FULLNAME, "scope");
+    ASTCDMethod pushScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), "pushScope", scopeParameter);
+    this.replaceTemplate(EMPTY_BODY, pushScopeMethod, new StringHookPoint("this.scopeCallstack.push(scope);"));
+    members.add(pushScopeMethod);
+    
+    ASTCDMethod popScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), "popScope");
+    this.replaceTemplate(EMPTY_BODY, popScopeMethod, new StringHookPoint("this.scopeCallstack.pop();"));
+    members.add(popScopeMethod);
 
     return members;
   }

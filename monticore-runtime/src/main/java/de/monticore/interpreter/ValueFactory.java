@@ -4,37 +4,41 @@ package de.monticore.interpreter;
 import de.monticore.interpreter.values.*;
 
 public class ValueFactory {
-
-  public static Value createValue(int Value) {
-    return new IntValue(Value);
+  
+  public static Value createValue(short value) {
+    return new ShortValue(value);
   }
 
-  public static Value createValue(double Value) {
-    return new DoubleValue(Value);
+  public static Value createValue(int value) {
+    return new IntValue(value);
   }
 
-  public static Value createValue(float Value) {
-    return new FloatValue(Value);
+  public static Value createValue(double value) {
+    return new DoubleValue(value);
   }
 
-  public static Value createValue(long Value) {
-    return new LongValue(Value);
+  public static Value createValue(float value) {
+    return new FloatValue(value);
   }
 
-  public static Value createValue(boolean Value) {
-    return new BooleanValue(Value);
+  public static Value createValue(long value) {
+    return new LongValue(value);
   }
 
-  public static Value createValue(char Value) {
-    return new CharValue(Value);
+  public static Value createValue(boolean value) {
+    return new BooleanValue(value);
   }
 
-  public static Value createValue(String Value) {
-    return new StringValue(Value);
+  public static Value createValue(char value) {
+    return new CharValue(value);
+  }
+  
+  public static Value createValue(byte value) {
+    return new ByteValue(value);
   }
 
-  public static Value createValue(Object Value) {
-    return new ObjectValue(Value);
+  public static Value createValue(Object value) {
+    return new ObjectValue(value);
   }
 
 }
