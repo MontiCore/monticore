@@ -33,6 +33,6 @@ public class SubcomponentSymbolDeSer extends SubcomponentSymbolDeSerTOP {
 
   @Override
   protected CompKindExpression deserializeType(JsonObject symbolJson) {
-    return null;
+    return this.getCompKindExprDeSer().deserialize(symbolJson.getObjectMember("type"));
   }
 }
