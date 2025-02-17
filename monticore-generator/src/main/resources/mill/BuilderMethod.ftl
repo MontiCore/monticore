@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("astNodeName", "methodName")}
-  if (mill${astNodeName} == null) {
-    mill${astNodeName} = getMill();
+  if (mill${astNodeName}.get() == null) {
+    mill${astNodeName}.set(getMill());
   }
-  return mill${astNodeName}._${methodName}();
+  return mill${astNodeName}.get()._${methodName}();

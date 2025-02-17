@@ -71,6 +71,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
   public ASTCDClass decorate(List<ASTCDPackage> packageList) {
     String millClassName = symbolTableService.getMillSimpleName();
     ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
+    ASTMCType millAttrType = this.getMCTypeFacade().createBasicGenericTypeOf("java.lang.ThreadLocal", millClassName);
 
     String fullDefinitionName = symbolTableService.getCDSymbol().getFullName();
 
@@ -78,7 +79,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED.build(), millClassName);
 
-    ASTCDAttribute millAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, MILL_INFIX);
+    ASTCDAttribute millAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX);
     // add all standard methods
     ASTCDMethod getMillMethod = addGetMillMethods(millType);
     ASTCDMethod initMethod = addInitMethod(millType, superSymbolList, fullDefinitionName);
@@ -137,7 +138,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       // add mill attribute for each class
       List<ASTCDAttribute> attributeList = new ArrayList<>();
       for (String attributeName : getAttributeNameList(classList)) {
-        attributeList.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, MILL_INFIX + attributeName));
+        attributeList.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX + attributeName));
       }
       // add pretty printer functionality
       List<ASTCDMember> prettyPrinterMembersList = new ArrayList<>();
@@ -194,7 +195,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
 
     if (!symbolTableService.hasComponentStereotype((ASTCDDefinition) symbolTableService.getCDSymbol().getAstNode())) {
-      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, MILL_INFIX + parserService.getParserClassSimpleName());
+      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX + parserService.getParserClassSimpleName());
       List<ASTCDMethod> parserMethods = getParserMethods();
       millClass.addCDMember(parserAttribute);
       millClass.addAllCDMembers(parserMethods);
@@ -359,6 +360,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.PrettyPrintProtectedBuilderMethod", fullPrettyPrinterType.printType()));
 
     // attribute for caching the full pretty printer
+    // todo FDr
     prettyPrintMembersList.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), fullPrettyPrinterType, "fullPrettyPrinter"));
 
     return prettyPrintMembersList;
