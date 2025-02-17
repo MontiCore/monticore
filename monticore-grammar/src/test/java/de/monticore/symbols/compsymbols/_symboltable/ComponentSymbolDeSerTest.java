@@ -23,7 +23,7 @@ import static java.nio.file.Files.readString;
 
 public class ComponentSymbolDeSerTest {
 
-  protected static final String RELATIVE_DIR = "test/resources/de/monticore/symbols/compsymbols/_symboltable/";
+  protected static final String RELATIVE_DIR = "src/test/resources/de/monticore/symbols/compsymbols/_symboltable/";
 
   protected ComponentSymbolDeSer deSer;
   protected CompSymbolsSymbols2Json arc2json;
