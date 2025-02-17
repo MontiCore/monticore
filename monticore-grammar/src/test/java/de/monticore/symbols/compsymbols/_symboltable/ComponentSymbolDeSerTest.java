@@ -17,14 +17,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 
 import static java.nio.file.Files.readString;
 
 public class ComponentSymbolDeSerTest {
 
-  protected static final String RELATIVE_DIR = "de/monticore/symbols/compsymbols/_symboltable/";
+  protected static final String RELATIVE_DIR = "src/test/resources/de/monticore/symbols/compsymbols/_symboltable/";
 
   protected ComponentSymbolDeSer deSer;
   protected CompSymbolsSymbols2Json arc2json;
@@ -43,7 +42,7 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldSerializeSuperComponentType() throws IOException, URISyntaxException {
+  void shouldSerializeSuperComponentType() throws IOException {
     // Given
     // create a symbol for the super component type
     ComponentSymbol superCType = CompSymbolsMill.componentSymbolBuilder()
@@ -65,7 +64,7 @@ public class ComponentSymbolDeSerTest {
     String actual = deSer.serialize(cType, arc2json);
 
     // the expected result
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithSuper1.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithSuper1.json");
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
@@ -73,7 +72,7 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldSerializeSuperComponentType2() throws IOException, URISyntaxException {
+  void shouldSerializeSuperComponentType2() throws IOException {
     // Given
     // create symbols for the two super component types
     ComponentSymbol superCType1 = CompSymbolsMill.componentSymbolBuilder()
@@ -101,7 +100,7 @@ public class ComponentSymbolDeSerTest {
     String actual = deSer.serialize(cType, arc2json);
 
     // the expected result
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithSuper2.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithSuper2.json");
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
@@ -109,7 +108,7 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldNotSerializeAbsent() throws IOException, URISyntaxException {
+  void shouldNotSerializeAbsent() throws IOException {
     // Given
     ComponentSymbol comp = createSimpleComp();
 
@@ -117,7 +116,7 @@ public class ComponentSymbolDeSerTest {
     String createdJson = deSer.serialize(comp, arc2json);
 
     // the expected result
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "Simple.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "Simple.json");
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
@@ -125,7 +124,7 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldSerializeTypeParameters() throws IOException, URISyntaxException {
+  void shouldSerializeTypeParameters() throws IOException {
     // Given
     ComponentSymbol comp = createSimpleComp();
     comp.getSpannedScope().add(
@@ -145,7 +144,7 @@ public class ComponentSymbolDeSerTest {
     String createdJson = deSer.serialize(comp, arc2json);
 
     // the expected result
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithTypeParams.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithTypeParams.json");
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
@@ -153,7 +152,7 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldSerializeParameters() throws IOException, URISyntaxException {
+  void shouldSerializeParameters() throws IOException {
     // Given
     ComponentSymbol comp = createSimpleComp();
     VariableSymbol paramA = CompSymbolsMill.variableSymbolBuilder()
@@ -174,7 +173,7 @@ public class ComponentSymbolDeSerTest {
     String createdJson = deSer.serialize(comp, arc2json);
 
     // the expected result
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithParams.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithParams.json");
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
@@ -182,7 +181,7 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldSerializePorts() throws IOException, URISyntaxException {
+  void shouldSerializePorts() throws IOException {
     // Given
     ComponentSymbol comp = createSimpleComp();
     PortSymbol portIncoming = CompSymbolsMill.portSymbolBuilder()
@@ -208,7 +207,7 @@ public class ComponentSymbolDeSerTest {
     String createdJson = deSer.serialize(comp, arc2json);
 
     // the expected result
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithPorts.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithPorts.json");
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
@@ -216,9 +215,9 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldDeserializeParent() throws IOException, URISyntaxException {
+  void shouldDeserializeParent() throws IOException {
     // When
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithParent.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithParent.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
     ComponentSymbol comp = deSer.deserialize(jsonString);
 
@@ -228,9 +227,9 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldNotDeserializeAbsentParent() throws IOException, URISyntaxException {
+  void shouldNotDeserializeAbsentParent() throws IOException {
     // When
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "Simple.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "Simple.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
     ComponentSymbol comp = deSer.deserialize(jsonString);
 
@@ -239,9 +238,9 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldDeserializeTypeParameters() throws IOException, URISyntaxException {
+  void shouldDeserializeTypeParameters() throws IOException {
     // When
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithTypeParams.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithTypeParams.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
     ComponentSymbol comp = deSer.deserialize(jsonString);
 
@@ -254,9 +253,9 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldDeserializeParameters() throws IOException, URISyntaxException {
+  void shouldDeserializeParameters() throws IOException {
     // When
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithParams.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithParams.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
     ComponentSymbol comp = deSer.deserialize(jsonString);
 
@@ -274,9 +273,9 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldDeserializePorts() throws IOException, URISyntaxException {
+  void shouldDeserializePorts() throws IOException {
     // When
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithPorts.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithPorts.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
     ComponentSymbol comp = deSer.deserialize(jsonString);
 
@@ -294,7 +293,7 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldSerializeSubComponents() throws IOException, URISyntaxException {
+  void shouldSerializeSubComponents() throws IOException {
     // Given
     ComponentSymbol comp = createParentComp();
     comp.getSpannedScope().add(
@@ -308,7 +307,7 @@ public class ComponentSymbolDeSerTest {
     String createdJson = deSer.serialize(comp, arc2json);
 
     // the expected result
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithSub.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithSub.json");
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
@@ -316,9 +315,9 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldDeserializeSubComponents() throws IOException, URISyntaxException {
+  void shouldDeserializeSubComponents() throws IOException {
     // When
-    Path json = Path.of(this.getClass().getClassLoader().getResource(RELATIVE_DIR + "WithSub.json").toURI());
+    Path json = Path.of(RELATIVE_DIR, "WithSub.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
     ComponentSymbol comp = deSer.deserialize(jsonString);
 
