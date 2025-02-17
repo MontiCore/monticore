@@ -335,7 +335,9 @@ public class WithinScopeBasicSymbolsResolver {
    * note: Exception is not supposed to happen,
    * thus, never rely on this(!) Error being logged (here)
    * some error should be logged, though.
-   * This methods is to be removed in the future
+   * This method is to be removed in the future
+   * <p>
+   * Error considered internal, as the Exception should not have been thrown.
    */
   protected <T> Optional<T> resolverHotfix(java.util.function.Supplier<Optional<T>> s) {
     Optional<T> resolved;
@@ -344,7 +346,7 @@ public class WithinScopeBasicSymbolsResolver {
     }
     catch (ResolvedSeveralEntriesForSymbolException e) {
       Log.error("0xFD226 internal error: resolved " + e.getSymbols().size()
-              + "occurences of Symbol"
+              + " occurrences of Symbol"
               + ", but expected only one:" + System.lineSeparator()
               + e.getSymbols().stream()
               .map(ISymbol::getFullName)

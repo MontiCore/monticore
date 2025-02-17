@@ -243,6 +243,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression source) {
     List<Bound> result;
     if (target.isRegExType() && de.monticore.types3.SymTypeRelations.isString(source)) {
+      // note: heuristic as well
       result = Collections.emptyList();
     }
     else if (target.isRegExType() && source.isRegExType()) {
@@ -980,7 +981,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression superType
   ) {
     List<Bound> result;
-    if (de.monticore.types3.SymTypeRelations.isString(superType) && subType.isRegExType()) {
+    if (SymTypeRelations.isString(superType) && subType.isRegExType()) {
       result = Collections.emptyList();
     }
     else if (superType.isRegExType()) {
@@ -1348,6 +1349,7 @@ public class SymTypeCompatibilityCalculator {
     result.addAll(internal_constrainSubTypeOfPreNormalized(typeA, typeB));
     result.addAll(internal_constrainSubTypeOfPreNormalized(typeB, typeA));
     // only happens if any type includes inference variables
+    // (or, as of 2025.03.02, only partially supported RegExTypes)
     if (!result.isEmpty()) {
       Log.error("0xFDCAF (internal) error: Constraint to complex"
           + " to evaluate with the current implementation: "

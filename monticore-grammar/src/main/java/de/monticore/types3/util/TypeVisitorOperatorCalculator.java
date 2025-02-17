@@ -11,6 +11,12 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
+import static de.monticore.types.check.SymTypeExpressionFactory.createStringType;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
+import static de.monticore.types3.SymTypeRelations.isString;
+import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
+
 /**
  * Implementation of common operators for type visitors,
  * e.g., multiply, add, etc.
@@ -24,6 +30,8 @@ import java.util.Optional;
  * that this case is not ignored.
  */
 public class TypeVisitorOperatorCalculator {
+
+  protected static final String REGEX_STRING = ".*";
 
   // static delegate
 
@@ -73,13 +81,12 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression right
   ) {
     SymTypeExpression result;
-    // if one part of the expression is a String
-    // then the whole expression is a String
-    if (SymTypeRelations.isString(left)) {
-      result = SymTypeExpressionFactory.createTypeObject(left.getTypeInfo());
-    }
-    else if (SymTypeRelations.isString(right)) {
-      result = SymTypeExpressionFactory.createTypeObject(right.getTypeInfo());
+    // if one part of the expression is a String (subtype)
+    // then the whole expression is a String (subtype)
+    if (isSubTypeOf(left, createStringType()) ||
+        isSubTypeOf(right, createStringType())
+    ) {
+      result = calculatePlusString(left, right);
     }
     // no String in the expression
     // -> use the normal calculation for the basic arithmetic operators
@@ -163,6 +170,70 @@ public class TypeVisitorOperatorCalculator {
     }
 
     return result;
+  }
+
+  protected SymTypeExpression calculatePlusString(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression result;
+    SymTypeExpression leftStr = calculateToString(left);
+    SymTypeExpression rightStr = calculateToString(right);
+
+    if (isString(leftStr) && isString(rightStr)) {
+      result = leftStr.deepClone();
+    }
+    else {
+      // convert String to RegEx
+      if (isString(leftStr)) {
+        leftStr = createTypeRegEx(REGEX_STRING);
+      }
+      if (isString(rightStr)) {
+        rightStr = createTypeRegEx(REGEX_STRING);
+      }
+      if (!leftStr.isRegExType() || !rightStr.isRegExType()) {
+        Log.error("0xFD572 internal error: expected String (sub-)types"
+            + ", but got " + leftStr.printFullName()
+            + " and " + rightStr.printFullName()
+        );
+        return createObscureType();
+      }
+      // concat the two RegEx
+      // todo should be done better, but that requires extended regex support,
+      // currently, this may break groups, does not filter ^, $,
+      // and may have further issues
+      result = createTypeRegEx(
+          "(" + leftStr.asRegExType().getRegExString() + ")"
+              + "(" + rightStr.asRegExType().getRegExString() + ")"
+      );
+    }
+    return result;
+  }
+
+  /**
+   * Assume that toString (or the conceptual equivalent operation)
+   * is used on the set of possible values of the given type.
+   * This returns the type after the operation, e.g.,
+   * for an int, one could return the type R"-?\d+".
+   * However, one could use R"-?[0-9]{1,10}",
+   * or be even more precise.
+   * Alternatively, one could print a 3000 as "3*10^3",
+   * which does not fit the regexes above.
+   * As such, here we try to be as general as possible,
+   * and expect specific languages to override this method,
+   * if the need for more restrictive types is required.
+   *
+   * @return either a SymTypeOfRegEx or a SymTypeOfString
+   */
+  protected SymTypeExpression calculateToString(SymTypeExpression type) {
+    SymTypeExpression strType;
+    if (type.isRegExType()) {
+      strType = type.deepClone();
+    }
+    else {
+      strType = createStringType();
+    }
+    return strType;
   }
 
   public static Optional<SymTypeExpression> multiply(
