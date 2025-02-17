@@ -28,6 +28,7 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
@@ -72,7 +73,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
   public ASTCDClass decorate(List<ASTCDPackage> packageList) {
     String millClassName = symbolTableService.getMillSimpleName();
     ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
-    ASTMCType millAttrType = this.getMCTypeFacade().createBasicGenericTypeOf("java.lang.ThreadLocal", millClassName);
+    ASTMCType millAttrType = createThreadLocal(millType);
 
     String fullDefinitionName = symbolTableService.getCDSymbol().getFullName();
 
@@ -641,6 +642,12 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     attributeMethods.add(protectedMethod);
 
     return attributeMethods;
+  }
+
+  protected ASTMCGenericType createThreadLocal(ASTMCType inner) {
+    return this.getMCTypeFacade().createBasicGenericTypeOf("java.lang.ThreadLocal",
+        CD4CodeMill.mCCustomTypeArgumentBuilder().setMCType(inner).build()
+    );
   }
 
   protected ASTExpression getThreadLocalInitializer() {
