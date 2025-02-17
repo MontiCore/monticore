@@ -1,0 +1,19 @@
+{
+  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentSymbol",
+  "name": "Comp",
+  "fullName": "Comp",
+  "spannedScope": {
+    "symbols": [
+      {
+        "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+        "name": "A",
+        "fullName": "Comp.A"
+      },
+      {
+        "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol",
+        "name": "B",
+        "fullName": "Comp.B"
+      }
+    ]
+  }
+}

@@ -17,112 +17,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Path;
+
+import static java.nio.file.Files.readString;
 
 public class ComponentSymbolDeSerTest {
-  private static final String SIMPLE_JSON =
-    "{" +
-      "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.ComponentSymbol\"," +
-      "\"name\":\"Comp\"," +
-      "\"fullName\":\"Comp\"" +
-      "}";
 
-  private static final String JSON_WITH_PARENT =
-    "{" +
-      "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.ComponentSymbol\"," +
-      "\"name\":\"Comp\"," +
-      "\"fullName\":\"Comp\"," +
-      "\"super\":[{\"kind\":\"de.monticore.types.check.KindOfComponent\",\"componentName\":\"Parent\"}]" +
-      "}";
-
-  private static final String JSON_WITH_TYPE_PARAMS =
-    "{" +
-      "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.ComponentSymbol\"," +
-      "\"name\":\"Comp\"," +
-      "\"fullName\":\"Comp\"," +
-      "\"spannedScope\":{\"symbols\":[{" +
-      "\"kind\":\"de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol\"," +
-      "\"name\":\"A\"," +
-      "\"fullName\":\"Comp.A\"" +
-      "},{" +
-      "\"kind\":\"de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol\"," +
-      "\"name\":\"B\"," +
-      "\"fullName\":\"Comp.B\"" +
-      "}]" +
-      "}}";
-
-  private static final String JSON_WITH_PARAMS =
-    "{" +
-      "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.ComponentSymbol\"," +
-      "\"name\":\"Comp\"," +
-      "\"fullName\":\"Comp\"," +
-      "\"parameters\":[{" +
-      "\"kind\":\"de.monticore.symbols.basicsymbols._symboltable.VariableSymbol\"," +
-      "\"name\":\"a\"," +
-      "\"fullName\":\"Comp.a\"," +
-      "\"type\":{\"kind\":\"de.monticore.types.check.SymTypePrimitive\",\"primitiveName\":\"int\"}" +
-      "},{" +
-      "\"kind\":\"de.monticore.symbols.basicsymbols._symboltable.VariableSymbol\"," +
-      "\"name\":\"b\"," +
-      "\"fullName\":\"Comp.b\"," +
-      "\"type\":{\"kind\":\"de.monticore.types.check.SymTypePrimitive\",\"primitiveName\":\"int\"}" +
-      "}]" +
-      "}";
-
-  private static final String JSON_WITH_PORTS =
-    "{" +
-      "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.ComponentSymbol\"," +
-      "\"name\":\"Comp\"," +
-      "\"fullName\":\"Comp\"," +
-      "\"spannedScope\":{\"symbols\":[{" +
-      "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.PortSymbol\"," +
-      "\"name\":\"inc\"," +
-      "\"fullName\":\"Comp.inc\"," +
-      "\"type\":{\"kind\":\"de.monticore.types.check.SymTypePrimitive\",\"primitiveName\":\"int\"}," +
-      "\"incoming\":true," +
-      "\"timing\":\"timed\"" +
-      "},{" +
-      "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.PortSymbol\"," +
-      "\"name\":\"outg\"," +
-      "\"fullName\":\"Comp.outg\"," +
-      "\"type\":{\"kind\":\"de.monticore.types.check.SymTypePrimitive\",\"primitiveName\":\"int\"}," +
-      "\"outgoing\":true," +
-      "\"timing\":\"timed\"" +
-      "}]" +
-      "}}";
-
-  private static final String JSON_WITH_SUB =
-    "{" +
-      "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.ComponentSymbol\"," +
-      "\"name\":\"Parent\"," +
-      "\"fullName\":\"Parent\"," +
-      "\"spannedScope\":{\"symbols\":[{\"kind\":\"de.monticore.symbols.compsymbols._symboltable.SubcomponentSymbol\",\"name\":\"inst\",\"fullName\":\"Parent.inst\",\"type\":{\"kind\":\"de.monticore.types.check.KindOfComponent\",\"componentName\":\"Comp\"}}]" +
-      "}}";
-
-  protected static final String COMP_TYPE_WITH_SUPER1 = "{" +
-    "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.ComponentSymbol\"," +
-    "\"name\":\"CompTypeWithSuper1\"," +
-    "\"fullName\":\"CompTypeWithSuper1\"," +
-    "\"super\":[" +
-    "{" +
-    "\"kind\":\"de.monticore.types.check.KindOfComponent\"," +
-    "\"componentName\":\"SuperCType\"" +
-    "}]" +
-    "}";
-
-  protected static final String COMP_TYPE_WITH_SUPER2 = "{" +
-    "\"kind\":\"de.monticore.symbols.compsymbols._symboltable.ComponentSymbol\"," +
-    "\"name\":\"CompTypeWithSuper2\"," +
-    "\"fullName\":\"CompTypeWithSuper2\"," +
-    "\"super\":[" +
-    "{" +
-    "\"kind\":\"de.monticore.types.check.KindOfComponent\"," +
-    "\"componentName\":\"SuperCType1\"" +
-    "}," +
-    "{" +
-    "\"kind\":\"de.monticore.types.check.KindOfComponent\"," +
-    "\"componentName\":\"SuperCType2\"" +
-    "}]" +
-    "}";
+  protected static final String RELATIVE_DIR = "de/monticore/symbols/compsymbols/_symboltable/";
 
   protected ComponentSymbolDeSer deSer;
   protected CompSymbolsSymbols2Json arc2json;
@@ -162,8 +63,12 @@ public class ComponentSymbolDeSerTest {
     // When
     String actual = deSer.serialize(cType, arc2json);
 
+    // the expected result
+    Path json = Path.of(RELATIVE_DIR, "WithSuper1.json");
+    String expected = readString(json).replaceAll("\\s+", "");
+
     // Then
-    Assertions.assertEquals(COMP_TYPE_WITH_SUPER1, actual);
+    Assertions.assertEquals(expected, actual);
   }
 
   @Test
@@ -194,24 +99,32 @@ public class ComponentSymbolDeSerTest {
     // When
     String actual = deSer.serialize(cType, arc2json);
 
+    // the expected result
+    Path json = Path.of(RELATIVE_DIR, "WithSuper2.json");
+    String expected = readString(json).replaceAll("\\s+", "");
+
     // Then
-    Assertions.assertEquals(COMP_TYPE_WITH_SUPER2, actual);
+    Assertions.assertEquals(expected, actual);
   }
 
   @Test
-  void shouldNotSerializeAbsent() {
+  void shouldNotSerializeAbsent() throws IOException {
     // Given
     ComponentSymbol comp = createSimpleComp();
 
     // When
     String createdJson = deSer.serialize(comp, arc2json);
 
+    // the expected result
+    Path json = Path.of(RELATIVE_DIR, "Simple.json");
+    String expected = readString(json).replaceAll("\\s+", "");
+
     // Then
-    Assertions.assertEquals(SIMPLE_JSON, createdJson);
+    Assertions.assertEquals(expected, createdJson);
   }
 
   @Test
-  void shouldSerializeTypeParameters() {
+  void shouldSerializeTypeParameters() throws IOException {
     // Given
     ComponentSymbol comp = createSimpleComp();
     comp.getSpannedScope().add(
@@ -230,12 +143,16 @@ public class ComponentSymbolDeSerTest {
     // When
     String createdJson = deSer.serialize(comp, arc2json);
 
+    // the expected result
+    Path json = Path.of(RELATIVE_DIR, "WithTypeParams.json");
+    String expected = readString(json).replaceAll("\\s+", "");
+
     // Then
-    Assertions.assertEquals(JSON_WITH_TYPE_PARAMS, createdJson);
+    Assertions.assertEquals(expected, createdJson);
   }
 
   @Test
-  void shouldSerializeParameters() {
+  void shouldSerializeParameters() throws IOException {
     // Given
     ComponentSymbol comp = createSimpleComp();
     VariableSymbol paramA = CompSymbolsMill.variableSymbolBuilder()
@@ -255,12 +172,16 @@ public class ComponentSymbolDeSerTest {
     // When
     String createdJson = deSer.serialize(comp, arc2json);
 
+    // the expected result
+    Path json = Path.of(RELATIVE_DIR, "WithParams.json");
+    String expected = readString(json).replaceAll("\\s+", "");
+
     // Then
-    Assertions.assertEquals(JSON_WITH_PARAMS, createdJson);
+    Assertions.assertEquals(expected, createdJson);
   }
 
   @Test
-  void shouldSerializePorts() {
+  void shouldSerializePorts() throws IOException {
     // Given
     ComponentSymbol comp = createSimpleComp();
     PortSymbol portIncoming = CompSymbolsMill.portSymbolBuilder()
@@ -285,14 +206,20 @@ public class ComponentSymbolDeSerTest {
     // When
     String createdJson = deSer.serialize(comp, arc2json);
 
+    // the expected result
+    Path json = Path.of(RELATIVE_DIR, "WithPorts.json");
+    String expected = readString(json).replaceAll("\\s+", "");
+
     // Then
-    Assertions.assertEquals(JSON_WITH_PORTS, createdJson);
+    Assertions.assertEquals(expected, createdJson);
   }
 
   @Test
-  void shouldDeserializeParent() {
+  void shouldDeserializeParent() throws IOException {
     // When
-    ComponentSymbol comp = deSer.deserialize(JSON_WITH_PARENT);
+    Path json = Path.of(RELATIVE_DIR, "WithParent.json");
+    String jsonString = readString(json).replaceAll("\\s+", "");
+    ComponentSymbol comp = deSer.deserialize(jsonString);
 
     // Then
     Assertions.assertFalse(comp.isEmptySuperComponents(), "Parent not present");
@@ -300,18 +227,22 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldNotDeserializeAbsentParent() {
+  void shouldNotDeserializeAbsentParent() throws IOException {
     // When
-    ComponentSymbol comp = deSer.deserialize(SIMPLE_JSON);
+    Path json = Path.of(RELATIVE_DIR, "Simple.json");
+    String jsonString = readString(json).replaceAll("\\s+", "");
+    ComponentSymbol comp = deSer.deserialize(jsonString);
 
     // Then
     Assertions.assertTrue(comp.isEmptySuperComponents(), "Parent is present");
   }
 
   @Test
-  void shouldDeserializeTypeParameters() {
+  void shouldDeserializeTypeParameters() throws IOException {
     // When
-    ComponentSymbol comp = deSer.deserialize(JSON_WITH_TYPE_PARAMS);
+    Path json = Path.of(RELATIVE_DIR, "WithTypeParams.json");
+    String jsonString = readString(json).replaceAll("\\s+", "");
+    ComponentSymbol comp = deSer.deserialize(jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getTypeParameters().size());
@@ -322,9 +253,11 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldDeserializeParameters() {
+  void shouldDeserializeParameters() throws IOException {
     // When
-    ComponentSymbol comp = deSer.deserialize(JSON_WITH_PARAMS);
+    Path json = Path.of(RELATIVE_DIR, "WithParams.json");
+    String jsonString = readString(json).replaceAll("\\s+", "");
+    ComponentSymbol comp = deSer.deserialize(jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getParameterList().size());
@@ -340,9 +273,11 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldDeserializePorts() {
+  void shouldDeserializePorts() throws IOException {
     // When
-    ComponentSymbol comp = deSer.deserialize(JSON_WITH_PORTS);
+    Path json = Path.of(RELATIVE_DIR, "WithPorts.json");
+    String jsonString = readString(json).replaceAll("\\s+", "");
+    ComponentSymbol comp = deSer.deserialize(jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getPorts().size());
@@ -358,7 +293,7 @@ public class ComponentSymbolDeSerTest {
   }
 
   @Test
-  void shouldSerializeSubComponents() {
+  void shouldSerializeSubComponents() throws IOException {
     // Given
     ComponentSymbol comp = createParentComp();
     comp.getSpannedScope().add(
@@ -371,14 +306,20 @@ public class ComponentSymbolDeSerTest {
     // When
     String createdJson = deSer.serialize(comp, arc2json);
 
+    // the expected result
+    Path json = Path.of(RELATIVE_DIR, "WithSub.json");
+    String expected = readString(json).replaceAll("\\s+", "");
+
     // Then
-    Assertions.assertEquals(JSON_WITH_SUB, createdJson);
+    Assertions.assertEquals(expected, createdJson);
   }
 
   @Test
-  void shouldDeserializeSubComponents() {
+  void shouldDeserializeSubComponents() throws IOException {
     // When
-    ComponentSymbol comp = deSer.deserialize(JSON_WITH_SUB);
+    Path json = Path.of(RELATIVE_DIR, "WithSub.json");
+    String jsonString = readString(json).replaceAll("\\s+", "");
+    ComponentSymbol comp = deSer.deserialize(jsonString);
 
     // Then
     Assertions.assertEquals(1, comp.getSubcomponents().size());
