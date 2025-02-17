@@ -18,6 +18,7 @@ import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -79,7 +80,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED.build(), millClassName);
 
-    ASTCDAttribute millAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX);
+    ASTCDAttribute millAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX, getThreadLocalInitializer());
     // add all standard methods
     ASTCDMethod getMillMethod = addGetMillMethods(millType);
     ASTCDMethod initMethod = addInitMethod(millType, superSymbolList, fullDefinitionName);
@@ -138,7 +139,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       // add mill attribute for each class
       List<ASTCDAttribute> attributeList = new ArrayList<>();
       for (String attributeName : getAttributeNameList(classList)) {
-        attributeList.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX + attributeName));
+        attributeList.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX + attributeName, getThreadLocalInitializer()));
       }
       // add pretty printer functionality
       List<ASTCDMember> prettyPrinterMembersList = new ArrayList<>();
@@ -195,7 +196,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
 
     if (!symbolTableService.hasComponentStereotype((ASTCDDefinition) symbolTableService.getCDSymbol().getAstNode())) {
-      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX + parserService.getParserClassSimpleName());
+      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX + parserService.getParserClassSimpleName(), getThreadLocalInitializer());
       List<ASTCDMethod> parserMethods = getParserMethods();
       millClass.addCDMember(parserAttribute);
       millClass.addAllCDMembers(parserMethods);
@@ -640,6 +641,16 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     attributeMethods.add(protectedMethod);
 
     return attributeMethods;
+  }
+
+  protected ASTExpression getThreadLocalInitializer() {
+    return CD4CodeMill.callExpressionBuilder().setExpression(
+        CD4CodeMill.nameExpressionBuilder()
+            .setName("de.monticore.ast.ThreadLocalCreator.createThreadLocal")
+            .build()
+    ).setArguments(
+        CD4CodeMill.argumentsBuilder().build()
+    ).build();
   }
 
 }
