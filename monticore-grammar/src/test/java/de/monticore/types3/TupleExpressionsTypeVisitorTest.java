@@ -12,9 +12,9 @@ public class TupleExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     // simple
     checkExpr("(1,1)", "(int, int)");
     checkExpr("(1, 1)", "(int, int)");
-    checkExpr("(\"1\", 1)", "(String, int)");
-    checkExpr("(1, \"1\")", "(int, String)");
-    checkExpr("(\"1\", 1, 1.0f, 1.0)", "(String, int, float, double)");
+    checkExpr("(\"1\", 1)", "(R\"1\", int)");
+    checkExpr("(1, \"1\")", "(int, R\"1\")");
+    checkExpr("(\"1\", 1, 1.0f, 1.0)", "(R\"1\", int, float, double)");
 
     // complex
     checkExpr("((1, 1), 1)", "((int, int), int)");

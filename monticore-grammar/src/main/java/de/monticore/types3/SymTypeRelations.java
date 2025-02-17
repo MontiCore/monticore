@@ -248,6 +248,12 @@ public abstract class SymTypeRelations {
 
   protected abstract boolean _isByte(SymTypeExpression type);
 
+  /**
+   * This is most likely NOT the method you need;
+   * This returns whether the type is _exactly_ String.
+   * In most cases, you want to check whether the type
+   * is either compatible to, or a subtype of String.
+   */
   public static boolean isString(SymTypeExpression type) {
     return getDelegate()._isString(type);
   }
