@@ -37,6 +37,7 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    new CombineExpressionsWithLiteralsTypeTraverserFactory().initTypeCheck3();
     DefsTypesForTests.setup();
   }
 
