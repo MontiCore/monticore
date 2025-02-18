@@ -39,8 +39,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariab
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
 import static de.monticore.types3.util.DefsTypesForTests.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
@@ -261,8 +259,27 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(_unboxedString, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, _unboxedString));
+  }
+
+  @Test
+  public void isCompatibleRegExOnlyJavaLangString() {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
+    SymTypeOfRegEx regEx1 = createTypeRegEx("gr(a|e)y");
+    SymTypeOfRegEx regEx2 = createTypeRegEx("gr(e|a)y");
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, regEx1));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(_boxedString, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, _boxedString));
+  }
+
+  @Test
+  public void isCompatibleRegExToStringSuperTypes() {
+    // String extends Person,
+    // just to test if String supertypes are taken care of for RegEx
+    _unboxedString.getTypeInfo().addSuperTypes(_personSymType);
+    SymTypeOfRegEx regEx1 = createTypeRegEx("gr(a|e)y");
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, regEx1));
   }
 
   @Test
