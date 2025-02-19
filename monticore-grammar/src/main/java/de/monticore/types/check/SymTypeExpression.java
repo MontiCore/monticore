@@ -658,7 +658,9 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
       return typeSymbol;
     }
     Log.error("0xFDFDF internal error: getTypeInfo called,"
-        + "but no typeinfo available");
+        + "but no typeinfo available. Presumably hasTypeInfo() missing?"
+        + " Type: " + printFullName()
+    );
     return null;
   }
 
