@@ -6,6 +6,11 @@ plugins {
 description = 'MontiCore: Stream Symbols'
 
 // add generated symbols to jar
-sourceSets.main.resources.srcDirs {
-  generateSymbolTables
+jar {
+  from generateSymbolTables
+}
+
+sourcesJar {
+  // exclude generated files
+  exclude("*.symtabdefinitionsym")
 }
