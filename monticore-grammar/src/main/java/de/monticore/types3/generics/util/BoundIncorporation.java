@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createInferenceVariable;
@@ -899,9 +900,20 @@ public class BoundIncorporation {
           + "did not expect empty collection at this point.");
       return Collections.emptyList();
     }
+    List<SymTypeExpression> commonSuperTypesWithoutInfVars =
+        commonSuperTypes.stream()
+            .filter(Predicate.not(SymTypeExpression::isInferenceVariable))
+            .collect(Collectors.toList());
+    if (commonSuperTypesWithoutInfVars.size() <= 1) {
+      // no information to be gained
+      return Collections.emptyList();
+    }
+
     // all are tuples (and necessarily have the same length)
-    if (commonSuperTypes.stream().allMatch(SymTypeExpression::isTupleType)) {
-      List<SymTypeOfTuple> tuples = commonSuperTypes.stream()
+    if (commonSuperTypesWithoutInfVars.stream()
+        .allMatch(SymTypeExpression::isTupleType)
+    ) {
+      List<SymTypeOfTuple> tuples = commonSuperTypesWithoutInfVars.stream()
           .map(SymTypeExpression::asTupleType)
           .collect(Collectors.toList());
       int length = tuples.get(0).sizeTypes();
@@ -934,9 +946,11 @@ public class BoundIncorporation {
       constraints.add(new TypeEqualityConstraint(typeVar, freshVarTuple));
     }
     // all are functions (and necessarily have the same number of parameters)
-    else if (commonSuperTypes.stream().allMatch(SymTypeExpression::isFunctionType)) {
+    else if (commonSuperTypesWithoutInfVars.stream()
+        .allMatch(SymTypeExpression::isFunctionType)
+    ) {
       // this can be optimized if required (s. tuples comment)
-      List<SymTypeOfFunction> functions = commonSuperTypes.stream()
+      List<SymTypeOfFunction> functions = commonSuperTypesWithoutInfVars.stream()
           .map(SymTypeExpression::asFunctionType)
           .collect(Collectors.toList());
       int parLength = functions.get(0).sizeArgumentTypes();
@@ -974,7 +988,7 @@ public class BoundIncorporation {
       constraints.add(new TypeEqualityConstraint(typeVar, freshVarFunc));
     }
     // now, there ought to be neither tuples nor functions
-    else if (commonSuperTypes.stream().anyMatch(
+    else if (commonSuperTypesWithoutInfVars.stream().anyMatch(
         t -> t.isTupleType() || t.isFunctionType()
     )) {
       // this should never happen, probably incorrect normalization
