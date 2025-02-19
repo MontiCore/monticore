@@ -235,11 +235,6 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTConcatStreamExpression expr) {
-    if (type4Ast.hasTypeOfExpression(expr)) {
-      // todo FDr: check that inference did not calculate Stream, but a specific subtype. otherwise error
-      // already calculated
-      return;
-    }
     SymTypeExpression result;
     SymTypeExpression leftType =
         normalize(getType4Ast().getPartialTypeOfExpr(expr.getLeft()));
