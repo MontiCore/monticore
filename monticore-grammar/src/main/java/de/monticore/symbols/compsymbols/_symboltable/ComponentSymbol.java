@@ -2,7 +2,6 @@
 package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.base.Preconditions;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.CompKindExpression;
 import de.se_rwth.commons.logging.Log;
@@ -18,32 +17,26 @@ import java.util.stream.Collectors;
 
 public class ComponentSymbol extends ComponentSymbolTOP {
 
-  protected List<VariableSymbol> parameters = new ArrayList<>();
-
   public ComponentSymbol(String name) {
     super(name);
   }
 
-  public List<VariableSymbol> getParameters() {
-    return this.parameters;
-  }
-
   public Optional<VariableSymbol> getParameter(@NonNull String name) {
     Preconditions.checkNotNull(name);
-    for (VariableSymbol parameter : this.getParameters()) {
+    for (VariableSymbol parameter : this.getParameterList()) {
       if (parameter.getName().equals(name)) return Optional.of(parameter);
     }
     return Optional.empty();
   }
 
-  public void addParameter(@NonNull VariableSymbol parameter) {
+  public boolean addParameter(@NonNull VariableSymbol parameter) {
     Preconditions.checkNotNull(parameter);
     Preconditions.checkArgument(this.getSpannedScope().getLocalVariableSymbols().contains(parameter));
-    this.parameters.add(parameter);
+    return super.addParameter(parameter);
   }
 
   public boolean hasParameters() {
-    return !this.getParameters().isEmpty();
+    return !this.getParameterList().isEmpty();
   }
 
   public boolean hasTypeParameter() {

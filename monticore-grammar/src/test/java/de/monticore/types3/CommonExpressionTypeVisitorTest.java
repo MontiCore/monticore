@@ -2050,6 +2050,8 @@ public class CommonExpressionTypeVisitorTest
    * we only have one scope and the symbols are all in this scope or in subscopes
    */
   public void init_inheritance() {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
     //inheritance example
     IOOSymbolsGlobalScope globalScope = OOSymbolsMill.globalScope();
     //super
@@ -2127,6 +2129,8 @@ public class CommonExpressionTypeVisitorTest
    */
   @Test
   public void testGenericInheritanceTwoTypeVariables() throws IOException {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
     // two generic parameters, supertype GenSup<S,V>,
     // create SymType GenSup<String,int>
     IOOSymbolsGlobalScope gs = OOSymbolsMill.globalScope();
@@ -2745,8 +2749,8 @@ public class CommonExpressionTypeVisitorTest
 
     checkErrorExpr("foo2(c, c, c)", "0xFD446");
 
-    checkErrorExpr("foo2(a, a)", "0xFD444");
-    checkErrorExpr("foo2(b, a)", "0xFD444");
+    checkErrorExpr("foo2(a, a)", "0xFD44E");
+    checkErrorExpr("foo2(b, a)", "0xFD44E");
     checkErrorExpr("foo2(c, b)", "0xFD446");
     checkErrorExpr("foo2(c, c)", "0xFD446");
 

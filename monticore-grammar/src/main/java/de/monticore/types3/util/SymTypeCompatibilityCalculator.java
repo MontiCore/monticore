@@ -981,10 +981,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression superType
   ) {
     List<Bound> result;
-    if (SymTypeRelations.isString(superType) && subType.isRegExType()) {
-      result = Collections.emptyList();
-    }
-    else if (superType.isRegExType()) {
+    if (superType.isRegExType()) {
       if (subType.isRegExType()) {
         // this is incomplete,
         // R"(a|e)" can be considered a subtype of R"(a|e|o)".
@@ -1008,7 +1005,19 @@ public class SymTypeCompatibilityCalculator {
       }
     }
     else {
-      result = Collections.singletonList(getUnsatisfiableBoundForSubTyping(subType, superType));
+      // Search for the nominal superTypes of RegEx types,
+      // this should be at least String.
+      // (simplified, as no constraints are expected here)
+      List<SymTypeExpression> nominalSuperTypesOfRegEx =
+          SymTypeRelations.getNominalSuperTypes(subType);
+      if (nominalSuperTypesOfRegEx.stream().anyMatch(regExSuperType ->
+          internal_constrainSubTypeOfPreNormalized(regExSuperType, superType).isEmpty()
+      )) {
+        result = Collections.emptyList();
+      }
+      else {
+        result = Collections.singletonList(getUnsatisfiableBoundForSubTyping(subType, superType));
+      }
     }
     return result;
   }
