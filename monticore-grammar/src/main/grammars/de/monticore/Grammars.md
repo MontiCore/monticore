@@ -300,7 +300,7 @@ as they allow math oriented style of specification.
   so it might be interesting to include them in a high level programming 
   language (see e.g. Haskell)
 
-### [SetExpressions.mc4](expressions/StreamExpressions.mc4) (stable)
+### [StreamExpressions.mc4](expressions/StreamExpressions.mc4) (stable)
 * This grammar defines stream expressions like to create and concat streams,
   as well as append elements to the front of the stream.
 * Further operations on streams are offered by inclusion of
