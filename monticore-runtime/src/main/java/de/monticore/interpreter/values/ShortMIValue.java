@@ -1,12 +1,12 @@
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 
-public class ShortValue implements Value {
+public class ShortMIValue implements MIValue {
   
   protected short value;
   
-  public ShortValue(short value) {
+  public ShortMIValue(short value) {
     this.value = value;
   }
   

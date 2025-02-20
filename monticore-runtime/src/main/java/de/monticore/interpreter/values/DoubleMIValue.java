@@ -1,14 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.interpreter.MIValue;
 
-public class DoubleValue implements Value {
+public class DoubleMIValue implements MIValue {
 
   protected double value;
 
-  public DoubleValue(double value) {
+  public DoubleMIValue(double value) {
     this.value = value;
   }
 

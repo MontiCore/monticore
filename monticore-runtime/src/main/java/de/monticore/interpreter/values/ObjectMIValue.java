@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 
-public class ObjectValue implements Value {
+public class ObjectMIValue implements MIValue {
 
   protected Object value;
 
-  public ObjectValue(Object value) {
+  public ObjectMIValue(Object value) {
     this.value = value;
   }
 

@@ -1,12 +1,12 @@
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 
-public class ErrorValue implements Value {
+public class ErrorMIValue implements MIValue {
   
   String message;
   
-  public ErrorValue(String message) {
+  public ErrorMIValue(String message) {
     this.message = message;
   }
   

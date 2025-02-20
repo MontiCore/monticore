@@ -1,24 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 
-public class IntValue implements Value {
+public class LongMIValue implements MIValue {
 
-  protected int value;
+  protected long value;
 
-  public IntValue(int value) {
+  public LongMIValue(long value) {
     this.value = value;
   }
 
   @Override
-  public boolean isInt() {
+  public boolean isLong() {
     return true;
-  }
-
-  @Override
-  public int asInt() {
-    return value;
   }
 
   @Override

@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 
-public class BooleanValue implements Value {
+public class BooleanMIValue implements MIValue {
 
   protected boolean value;
 
-  public BooleanValue(boolean value){
+  public BooleanMIValue(boolean value){
     this.value = value;
   }
 

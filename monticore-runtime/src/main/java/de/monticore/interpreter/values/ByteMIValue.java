@@ -1,12 +1,12 @@
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 
-public class ByteValue implements Value {
+public class ByteMIValue implements MIValue {
   
   protected byte value;
   
-  public ByteValue(byte value) {
+  public ByteMIValue(byte value) {
     this.value = value;
   }
   

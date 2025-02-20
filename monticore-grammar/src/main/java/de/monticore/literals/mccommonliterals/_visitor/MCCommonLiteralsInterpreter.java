@@ -2,13 +2,12 @@
 package de.monticore.literals.mccommonliterals._visitor;
 
 import de.monticore.interpreter.ModelInterpreter;
-import de.monticore.interpreter.Value;
-import de.monticore.interpreter.ValueFactory;
-import de.monticore.interpreter.values.ErrorValue;
+import de.monticore.interpreter.MIValue;
+import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.se_rwth.commons.logging.Log;
 
-import static de.monticore.interpreter.ValueFactory.createValue;
+import static de.monticore.interpreter.MIValueFactory.createValue;
 
 public class MCCommonLiteralsInterpreter extends MCCommonLiteralsInterpreterTOP {
 
@@ -21,64 +20,64 @@ public class MCCommonLiteralsInterpreter extends MCCommonLiteralsInterpreterTOP 
   }
 
   @Override
-  public Value interpret(ASTNullLiteral node) {
+  public MIValue interpret(ASTNullLiteral node) {
     String errorMsg = "Null should not be used";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTBooleanLiteral node){
+  public MIValue interpret(ASTBooleanLiteral node){
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTCharLiteral node) {
+  public MIValue interpret(ASTCharLiteral node) {
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTStringLiteral node){
+  public MIValue interpret(ASTStringLiteral node){
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTNatLiteral node){
+  public MIValue interpret(ASTNatLiteral node){
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTSignedNatLiteral node){
+  public MIValue interpret(ASTSignedNatLiteral node){
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTBasicLongLiteral node){
+  public MIValue interpret(ASTBasicLongLiteral node){
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTSignedBasicLongLiteral node) {
+  public MIValue interpret(ASTSignedBasicLongLiteral node) {
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTBasicFloatLiteral node){
+  public MIValue interpret(ASTBasicFloatLiteral node){
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTSignedBasicFloatLiteral node){
+  public MIValue interpret(ASTSignedBasicFloatLiteral node){
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTBasicDoubleLiteral node){
+  public MIValue interpret(ASTBasicDoubleLiteral node){
     return createValue(node.getValue());
   }
 
   @Override
-  public Value interpret(ASTSignedBasicDoubleLiteral node){
+  public MIValue interpret(ASTSignedBasicDoubleLiteral node){
     return createValue(node.getValue());
   }
 

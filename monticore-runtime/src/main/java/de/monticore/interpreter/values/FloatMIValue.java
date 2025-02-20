@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 
-public class FloatValue implements Value {
+public class FloatMIValue implements MIValue {
 
   protected float value;
 
-  public FloatValue(float value) {
+  public FloatMIValue(float value) {
     this.value = value;
   }
 

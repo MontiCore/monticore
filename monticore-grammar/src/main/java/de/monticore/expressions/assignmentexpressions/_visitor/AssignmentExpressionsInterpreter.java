@@ -5,8 +5,8 @@ import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.interpreter.InterpreterUtils;
 import de.monticore.interpreter.ModelInterpreter;
-import de.monticore.interpreter.Value;
-import de.monticore.interpreter.values.ErrorValue;
+import de.monticore.interpreter.MIValue;
+import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -18,7 +18,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.*;
-import static de.monticore.interpreter.ValueFactory.createValue;
+import static de.monticore.interpreter.MIValueFactory.createValue;
 
 public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInterpreterTOP {
 
@@ -32,226 +32,226 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
 
   //i++
   @Override
-  public Value interpret(ASTIncSuffixExpression n) {
+  public MIValue interpret(ASTIncSuffixExpression n) {
     ASTExpression expr = n.getExpression();
     SymTypeExpression type = TypeCheck3.typeOf(expr);
     Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
     if (symbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     
-    Value value = load(symbol.get());
+    MIValue value = load(symbol.get());
     if (value.isError()) return value;
     
     if (type.isPrimitive()) {
       String primitive = type.asPrimitive().getPrimitiveName();
       if (primitive.equals(BasicSymbolsMill.BYTE)) {
-        Value res = createValue((byte)(value.asByte() + 1));
+        MIValue res = createValue((byte)(value.asByte() + 1));
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
-        Value res = createValue((short)(value.asShort() + 1));
+        MIValue res = createValue((short)(value.asShort() + 1));
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
-        Value res = createValue((char)(value.asChar() + 1));
+        MIValue res = createValue((char)(value.asChar() + 1));
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.INT)) {
-        Value res = createValue(value.asInt() + 1);
+        MIValue res = createValue(value.asInt() + 1);
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.LONG)) {
-        Value res = createValue(value.asLong() + 1);
+        MIValue res = createValue(value.asLong() + 1);
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
-        Value res = createValue(value.asFloat() + 1);
+        MIValue res = createValue(value.asFloat() + 1);
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
-        Value res = createValue(value.asDouble() + 1);
+        MIValue res = createValue(value.asDouble() + 1);
         store(symbol.get(), res);
         return value;
       }
     }
     String errorMsg = "Suffix incrementation operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   //++i
   @Override
-  public Value interpret(ASTIncPrefixExpression n) {
+  public MIValue interpret(ASTIncPrefixExpression n) {
     ASTExpression expr = n.getExpression();
     SymTypeExpression type = TypeCheck3.typeOf(expr);
     Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
     if (symbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     
-    Value value = load(symbol.get());
+    MIValue value = load(symbol.get());
     if (value.isError()) return value;
     
     if (type.isPrimitive()) {
       String primitive = type.asPrimitive().getPrimitiveName();
       if (primitive.equals(BasicSymbolsMill.BYTE)) {
-        Value res = createValue((byte)(value.asByte() + 1));
+        MIValue res = createValue((byte)(value.asByte() + 1));
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
-        Value res = createValue((short)(value.asShort() + 1));
+        MIValue res = createValue((short)(value.asShort() + 1));
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
-        Value res = createValue((char)(value.asChar() + 1));
+        MIValue res = createValue((char)(value.asChar() + 1));
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.INT)) {
-        Value res = createValue(value.asInt() + 1);
+        MIValue res = createValue(value.asInt() + 1);
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.LONG)) {
-        Value res = createValue(value.asLong() + 1);
+        MIValue res = createValue(value.asLong() + 1);
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
-        Value res = createValue(value.asFloat() + 1);
+        MIValue res = createValue(value.asFloat() + 1);
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
-        Value res = createValue(value.asDouble() + 1);
+        MIValue res = createValue(value.asDouble() + 1);
         store(symbol.get(), res);
         return res;
       }
     }
     String errorMsg = "Prefix incrementation operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   //i--
   @Override
-  public Value interpret(ASTDecSuffixExpression n) {
+  public MIValue interpret(ASTDecSuffixExpression n) {
     ASTExpression expr = n.getExpression();
     SymTypeExpression type = TypeCheck3.typeOf(expr);
     Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
     if (symbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     
-    Value value = load(symbol.get());
+    MIValue value = load(symbol.get());
     if (value.isError()) return value;
     
     if (type.isPrimitive()) {
       String primitive = type.asPrimitive().getPrimitiveName();
       if (primitive.equals(BasicSymbolsMill.BYTE)) {
-        Value res = createValue((byte)(value.asByte() - 1));
+        MIValue res = createValue((byte)(value.asByte() - 1));
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
-        Value res = createValue((short)(value.asShort() - 1));
+        MIValue res = createValue((short)(value.asShort() - 1));
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
-        Value res = createValue((char)(value.asChar() - 1));
+        MIValue res = createValue((char)(value.asChar() - 1));
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.INT)) {
-        Value res = createValue(value.asInt() - 1);
+        MIValue res = createValue(value.asInt() - 1);
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.LONG)) {
-        Value res = createValue(value.asLong() - 1);
+        MIValue res = createValue(value.asLong() - 1);
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
-        Value res = createValue(value.asFloat() - 1);
+        MIValue res = createValue(value.asFloat() - 1);
         store(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
-        Value res = createValue(value.asDouble() - 1);
+        MIValue res = createValue(value.asDouble() - 1);
         store(symbol.get(), res);
         return value;
       }
     }
     String errorMsg = "Suffix decrementation operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   //--i
   @Override
-  public Value interpret(ASTDecPrefixExpression n) {
+  public MIValue interpret(ASTDecPrefixExpression n) {
     ASTExpression expr = n.getExpression();
     SymTypeExpression type = TypeCheck3.typeOf(expr);
     Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
     if (symbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     
-    Value value = load(symbol.get());
+    MIValue value = load(symbol.get());
     if (value.isError()) return value;
     
     if (type.isPrimitive()) {
       String primitive = type.asPrimitive().getPrimitiveName();
       if (primitive.equals(BasicSymbolsMill.BYTE)) {
-        Value res = createValue((byte)(value.asByte() - 1));
+        MIValue res = createValue((byte)(value.asByte() - 1));
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
-        Value res = createValue((short)(value.asShort() - 1));
+        MIValue res = createValue((short)(value.asShort() - 1));
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
-        Value res = createValue((char)(value.asChar() - 1));
+        MIValue res = createValue((char)(value.asChar() - 1));
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.INT)) {
-        Value res = createValue(value.asInt() - 1);
+        MIValue res = createValue(value.asInt() - 1);
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.LONG)) {
-        Value res = createValue(value.asLong() - 1);
+        MIValue res = createValue(value.asLong() - 1);
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
-        Value res = createValue(value.asFloat() - 1);
+        MIValue res = createValue(value.asFloat() - 1);
         store(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
-        Value res = createValue(value.asDouble() - 1);
+        MIValue res = createValue(value.asDouble() - 1);
         store(symbol.get(), res);
         return res;
       }
     }
     String errorMsg = "Prefix decrementation operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTAssignmentExpression n) {
+  public MIValue interpret(ASTAssignmentExpression n) {
     ASTExpression leftExpr = n.getLeft();
     SymTypeExpression leftType = TypeCheck3.typeOf(leftExpr);
     Optional<ISymbol> leftSymbol = leftType.getSourceInfo().getSourceSymbol();
     if (leftSymbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     
     int operator = n.getOperator();
 
-    Value rightValue = n.getRight().evaluate(getRealThis());
+    MIValue rightValue = n.getRight().evaluate(getRealThis());
     if (rightValue.isError()) return rightValue;
     
     SymTypeExpression rightType = TypeCheck3.typeOf(n.getRight());
@@ -266,7 +266,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
       if (!SymTypeRelations.isCompatible(leftType, rightType)) {
         String errorMsg = "A value of type " + rightType.print() + " can not be writen to a variable of type " + leftType.print() + ".";
         Log.error(errorMsg);
-        return new ErrorValue(errorMsg);
+        return new ErrorMIValue(errorMsg);
       }
       
       if (leftType.isPrimitive() && rightType.isPrimitive()) {
@@ -274,17 +274,17 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
       } else {
         String errorMsg = "The implicit conversion from " + rightType.print() + " to " + leftType.print() + " is not supported.";
         Log.error(errorMsg);
-        return new ErrorValue(errorMsg);
+        return new ErrorMIValue(errorMsg);
       }
       
       store(leftSymbol.get(), rightValue);
       return rightValue;
     }
     
-    Value leftValue = load(leftSymbol.get());
+    MIValue leftValue = load(leftSymbol.get());
     if (leftValue.isError()) return leftValue;
     
-    Value resultValue;
+    MIValue resultValue;
     SymTypeExpression resultType;
     
     switch (operator) {
@@ -362,7 +362,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
           if (rightValue.asDouble() == 0.0) {
             String errorMsg = "Division by zero is undefined";
             Log.error(errorMsg);
-            return new ErrorValue(errorMsg);
+            return new ErrorMIValue(errorMsg);
           }
           
           resultValue = InterpreterUtils.calcOpPrimitive(leftValue, rightValue, resultPrimitive,
@@ -372,7 +372,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         }
         String errorMsg = "Division Assignment operation with result of type " + resultType + " is not supported.";
         Log.error(errorMsg);
-        return new ErrorValue(errorMsg);
+        return new ErrorMIValue(errorMsg);
       }
 
       case STAREQUALS: {
@@ -384,7 +384,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
       }
       default:
         Log.error("Operator is not defined.");
-        return new ErrorValue("Operator is not defined.");
+        return new ErrorMIValue("Operator is not defined.");
     }
     
     if (resultValue.isError()) return resultValue;
@@ -396,7 +396,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     } else {
       String errorMsg = "Cast from " + resultType.print() + " to " + leftType.print() + " is not supported.";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     
     if (resultValue.isError()) return resultValue;

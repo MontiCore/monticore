@@ -3,7 +3,7 @@ package de.monticore.interpreter;
 
 import de.se_rwth.commons.logging.Log;
 
-public interface Value {
+public interface MIValue {
 
   default boolean isBoolean() {
     return false;

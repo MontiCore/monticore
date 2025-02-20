@@ -11,7 +11,7 @@ public final class InterpreterConstants {
   
   public static final String INTERPRETER_SCOPE_FULLNAME = "de.monticore.interpreter.MIScope";
 
-  public static final String VALUE_FULLNAME = "de.monticore.interpreter.Value";
+  public static final String VALUE_FULLNAME = "de.monticore.interpreter.MIValue";
 
   public static final String NOT_A_VALUE_FULLNAME = "de.monticore.interpreter.values.NotAValue";
 

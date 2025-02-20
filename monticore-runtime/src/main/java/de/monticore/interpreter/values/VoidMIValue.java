@@ -1,8 +1,8 @@
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 
-public class VoidValue implements Value {
+public class VoidMIValue implements MIValue {
   
   @Override
   public boolean isVoid() {

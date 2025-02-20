@@ -1,42 +1,22 @@
 package de.monticore.interpreter;
 
-import de.monticore.interpreter.values.ErrorValue;
+import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
-import static de.monticore.interpreter.ValueFactory.createValue;
+import static de.monticore.interpreter.MIValueFactory.createValue;
 
 public class InterpreterUtils {
   
-  public static Value calcBitwiseOpPrimitive(Value v1, Value v2, String resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
-      String opName) {
-    switch (resultType) {
-      case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
-      case BasicSymbolsMill.LONG: return createValue((long)opLong.apply(v1.asLong(), v2.asLong()));
-    }
-    String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
-    Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
-  }
-  
-  public static Value calcBitwiseLogicalOpPrimitive(Value v1, Value v2, String resultType, BinaryOperator<Boolean> opBool, BinaryOperator<Integer> opInt,
-      BinaryOperator<Long> opLong, String opName) {
-    switch (resultType) {
-      case BasicSymbolsMill.BOOLEAN: return createValue((boolean)opBool.apply(v1.asBoolean(), v2.asBoolean()));
-      case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
-      case BasicSymbolsMill.LONG: return createValue((long)opLong.apply(v1.asLong(), v2.asLong()));
-    }
-    String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
-    Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
-  }
-  
-  public static Value calcOpPrimitive(Value v1, Value v2, String resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
+  public static MIValue calcOpPrimitive(MIValue v1, MIValue v2, String resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
       BinaryOperator<Float> opFloat, BinaryOperator<Double> opDouble, String opName) {
+    
+    
     switch (resultType) {
       case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
       case BasicSymbolsMill.LONG: return createValue((long)opLong.apply(v1.asLong(), v2.asLong()));
@@ -45,10 +25,33 @@ public class InterpreterUtils {
     }
     String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public static Value calcShiftPrimitive(Value v1, Value v2, String resultType, BiFunction<Integer, Long, Integer> opInt, BinaryOperator<Long> opLong,
+  public static MIValue calcBitwiseOpPrimitive(MIValue v1, MIValue v2, String resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
+      String opName) {
+    switch (resultType) {
+      case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
+      case BasicSymbolsMill.LONG: return createValue((long)opLong.apply(v1.asLong(), v2.asLong()));
+    }
+    String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
+    Log.error(errorMsg);
+    return new ErrorMIValue(errorMsg);
+  }
+  
+  public static MIValue calcBitwiseLogicalOpPrimitive(MIValue v1, MIValue v2, String resultType, BinaryOperator<Boolean> opBool, BinaryOperator<Integer> opInt,
+      BinaryOperator<Long> opLong, String opName) {
+    switch (resultType) {
+      case BasicSymbolsMill.BOOLEAN: return createValue((boolean)opBool.apply(v1.asBoolean(), v2.asBoolean()));
+      case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
+      case BasicSymbolsMill.LONG: return createValue((long)opLong.apply(v1.asLong(), v2.asLong()));
+    }
+    String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
+    Log.error(errorMsg);
+    return new ErrorMIValue(errorMsg);
+  }
+  
+  public static MIValue calcShiftPrimitive(MIValue v1, MIValue v2, String resultType, BiFunction<Integer, Long, Integer> opInt, BinaryOperator<Long> opLong,
       String opName) {
     switch (resultType) {
       case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asLong()));
@@ -56,10 +59,10 @@ public class InterpreterUtils {
     }
     String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public static Value calcOp(Value v1, Value v2, SymTypeExpression resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
+  public static MIValue calcOp(MIValue v1, MIValue v2, SymTypeExpression resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
       BinaryOperator<Float> opFloat, BinaryOperator<Double> opDouble, String opName) {
     if (resultType.isPrimitive()) {
       return calcOpPrimitive(v1, v2, resultType.asPrimitive().getPrimitiveName(), opInt, opLong, opFloat, opDouble, opName);
@@ -67,10 +70,10 @@ public class InterpreterUtils {
     
     String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public static Value calcBitwiseOp(Value v1, Value v2, SymTypeExpression resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
+  public static MIValue calcBitwiseOp(MIValue v1, MIValue v2, SymTypeExpression resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
       String opName) {
     if (resultType.isPrimitive()) {
       return calcBitwiseOpPrimitive(v1, v2, resultType.asPrimitive().getPrimitiveName(), opInt, opLong, opName);
@@ -78,10 +81,10 @@ public class InterpreterUtils {
     
     String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public static Value calcBitwiseLogicalOp(Value v1, Value v2, SymTypeExpression resultType, BinaryOperator<Boolean> opBool, BinaryOperator<Integer> opInt,
+  public static MIValue calcBitwiseLogicalOp(MIValue v1, MIValue v2, SymTypeExpression resultType, BinaryOperator<Boolean> opBool, BinaryOperator<Integer> opInt,
       BinaryOperator<Long> opLong, String opName) {
     if (resultType.isPrimitive()) {
       return calcBitwiseLogicalOpPrimitive(v1, v2, resultType.asPrimitive().getPrimitiveName(), opBool, opInt, opLong, opName);
@@ -89,10 +92,10 @@ public class InterpreterUtils {
     
     String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public static Value calcShift(Value v1, Value v2, SymTypeExpression resultType, BiFunction<Integer, Long, Integer> opInt,
+  public static MIValue calcShift(MIValue v1, MIValue v2, SymTypeExpression resultType, BiFunction<Integer, Long, Integer> opInt,
       BinaryOperator<Long> opLong, String opName) {
     if (resultType.isPrimitive()) {
       return calcShiftPrimitive(v1, v2, resultType.asPrimitive().getPrimitiveName(), opInt, opLong, opName);
@@ -100,14 +103,14 @@ public class InterpreterUtils {
     
     String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public static Value convertToPrimitiveExplicit(String from, String to, Value value) {
+  public static MIValue convertToPrimitiveExplicit(String from, String to, MIValue value) {
     if (to.equals(BasicSymbolsMill.BOOLEAN) || from.equals(BasicSymbolsMill.BOOLEAN)) {
       String errorMsg = "Cast to or from boolean is not supported.";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     if (to.equals(BasicSymbolsMill.BYTE)) {
       switch (from) {
@@ -169,10 +172,10 @@ public class InterpreterUtils {
     
     String errorMsg = "Cast from " + from + " to " + to + " is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public static Value convertToPrimitiveImplicit(String targetType, Value value) {
+  public static MIValue convertToPrimitiveImplicit(String targetType, MIValue value) {
     if (targetType.equals(BasicSymbolsMill.BYTE)) {
       return createValue(value.asByte());
     } else if (targetType.equals(BasicSymbolsMill.SHORT)) {
@@ -191,7 +194,7 @@ public class InterpreterUtils {
     
     String errorMsg = "Implicit cast to " + targetType + " is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
 }

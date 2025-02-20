@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.interpreter;
 
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code._util.ICD4CodeTypeDispatcher;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
@@ -35,9 +37,10 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDClass, List<ASTCD
 
   public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD) {
     ASTCDPackage astPackage = getPackage(input, decoratedCD, ASTConstants.AST_PACKAGE);
+    ICD4CodeTypeDispatcher dispatcher = CD4CodeMill.typeDispatcher();
     astPackage.streamCDElements()
-        .filter(e -> e instanceof ASTCDClass)
-        .map(e -> (ASTCDClass) e)
+        .filter(dispatcher::isCDBasisASTCDClass)
+        .map(dispatcher::asCDBasisASTCDClass)
         .forEach(t -> t.addAllCDMembers(decorate(t)));
   }
 

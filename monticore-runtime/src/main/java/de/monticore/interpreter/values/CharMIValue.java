@@ -1,14 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.Value;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.interpreter.MIValue;
 
-public class CharValue implements Value {
+public class CharMIValue implements MIValue {
 
   protected char value;
 
-  public CharValue(char value){
+  public CharMIValue(char value){
     this.value = value;
   }
 

@@ -5,8 +5,8 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScopesGenitorDelegator;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsInterpreter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.interpreter.Value;
-import de.monticore.interpreter.values.ErrorValue;
+import de.monticore.interpreter.MIValue;
+import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -17,7 +17,7 @@ import de.se_rwth.commons.logging.LogStub;
 
 import java.io.IOException;
 
-import static de.monticore.interpreter.ValueFactory.createValue;
+import static de.monticore.interpreter.MIValueFactory.createValue;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
 import static junit.framework.TestCase.*;
@@ -26,14 +26,6 @@ import static junit.framework.TestCase.assertEquals;
 public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
 
   protected static final double delta = 0.00001;
-
-  protected static final int BOOL = 1;
-  protected static final int INT = 2;
-  protected static final int LONG = 4;
-  protected static final int FLOAT = 8;
-  protected static final int DOUBLE = 16;
-  protected static final int CHAR = 32;
-  protected static final int STRING = 64;
 
   protected CombineExpressionsWithLiteralsInterpreter interpreter;
   protected CombineExpressionsWithLiteralsScopesGenitorDelegator delegator;
@@ -108,9 +100,9 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
     interpreter.declareVariable(varSymbol, createValue(3.14));
   }
 
-  protected void testValidExpression(String expr, Value expected) {
+  protected void testValidExpression(String expr, MIValue expected) {
     Log.clearFindings();
-    Value interpretationResult = null;
+    MIValue interpretationResult = null;
     try {
       interpretationResult = parseExpressionAndInterpret(expr);
     } catch (IOException e) {
@@ -151,7 +143,7 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
 
   protected void testInvalidExpression(String expr) {
     Log.clearFindings();
-    Value interpretationResult = null;
+    MIValue interpretationResult;
     
     try {
       interpretationResult = parseExpressionAndInterpret(expr);
@@ -164,14 +156,14 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
     assertTrue(interpretationResult.isError());
   }
 
-  protected Value parseExpressionAndInterpret(String expr) throws IOException {
+  protected MIValue parseExpressionAndInterpret(String expr) throws IOException {
     final ASTExpression ast = parseExpr(expr);
     generateScopes(ast);
     SymTypeExpression type = TypeCheck3.typeOf(ast);
     if (type.isObscureType()) {
       String errorMsg = "Invalid Expression: " + expr;
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     return interpreter.interpret(ast);
   }

@@ -3,9 +3,11 @@ package de.monticore.expressions.commonexpressions._visitor;
 
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.interpreter.InterpreterUtils;
+import de.monticore.interpreter.MIScope;
 import de.monticore.interpreter.ModelInterpreter;
-import de.monticore.interpreter.Value;
-import de.monticore.interpreter.values.ErrorValue;
+import de.monticore.interpreter.MIValue;
+import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypePrimitive;
@@ -13,7 +15,7 @@ import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
-import static de.monticore.interpreter.ValueFactory.createValue;
+import static de.monticore.interpreter.MIValueFactory.createValue;
 
 public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTOP {
 
@@ -35,13 +37,13 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     );
   }
   
-  public Value isEqual(SymTypePrimitive leftType, Value left, SymTypePrimitive rightType, Value right) {
+  public MIValue isEqual(SymTypePrimitive leftType, MIValue left, SymTypePrimitive rightType, MIValue right) {
     SymTypePrimitive compatibleType = getCompatibleType(leftType, rightType);
     if (compatibleType == null) {
       String errorMsg = "Equality operation with operands ot type '" + leftType.print()
           + "' and '" + rightType.print() + "' is not supported.";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     
     String primitive = compatibleType.getPrimitiveName();
@@ -66,16 +68,16 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Equality operator with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not implemented.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public Value subtract(SymTypePrimitive leftType, Value left, SymTypePrimitive rightType, Value right) {
+  public MIValue subtract(SymTypePrimitive leftType, MIValue left, SymTypePrimitive rightType, MIValue right) {
     SymTypePrimitive compatibleType = getCompatibleType(leftType, rightType);
     if (compatibleType == null) {
       String errorMsg = "Greater or Lesser operation with operands ot type '" + leftType.print()
           + "' and '" + rightType.print() + "' is not supported.";
       Log.error(errorMsg);
-      return new ErrorValue(errorMsg);
+      return new ErrorMIValue(errorMsg);
     }
     
     String primitive = compatibleType.getPrimitiveName();
@@ -98,166 +100,86 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Greater or Lesser operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTPlusExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTPlusExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
+    if (left.isError()) return left;
+    if (right.isError()) return right;
+    
+    SymTypeExpression type = TypeCheck3.typeOf(node);
+    return InterpreterUtils.calcOp(left, right, type, Integer::sum, Long::sum, Float::sum, Double::sum, "Plus");
+  }
+
+  @Override
+  public MIValue interpret(ASTMinusExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
+    if (left.isError()) return left;
+    if (right.isError()) return right;
+    
+    SymTypeExpression type = TypeCheck3.typeOf(node);
+    return InterpreterUtils.calcOp(left, right, type, (a, b) -> a - b, (a, b) -> a - b,
+        (a, b) -> a - b, (a, b) -> a - b, "Minus");
+  }
+
+  @Override
+  public MIValue interpret(ASTMultExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
+    if (left.isError()) return left;
+    if (right.isError()) return right;
+    
+    SymTypeExpression type = TypeCheck3.typeOf(node);
+    return InterpreterUtils.calcOp(left, right, type, (a, b) -> a * b, (a, b) -> a * b,
+        (a, b) -> a * b, (a, b) -> a * b, "Multiplication");
+  }
+
+  @Override
+  public MIValue interpret(ASTDivideExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     if (type.isPrimitive()) {
-      String primitive = type.asPrimitive().getPrimitiveName();
-      if (primitive.equals(BasicSymbolsMill.BYTE)) {
-        return createValue(left.asByte() + right.asByte());
-      } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
-        return createValue(left.asShort() + right.asShort());
-      } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
-        return createValue(left.asChar() + right.asChar());
-      } else if (primitive.equals(BasicSymbolsMill.INT)) {
-        return createValue(left.asInt() + right.asInt());
-      } else if (primitive.equals(BasicSymbolsMill.LONG)) {
-        return createValue(left.asLong() + right.asLong());
-      } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
-        return createValue(left.asFloat() + right.asFloat());
-      } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
-        return createValue(left.asDouble() + right.asDouble());
-      }
-    }
-    
-    String errorMsg = "Plus operation with result of type '" + type.print() + "' is not supported.";
-    Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
-  }
-
-  @Override
-  public Value interpret(ASTMinusExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
-    
-    SymTypeExpression typeLeft = TypeCheck3.typeOf(node.getLeft());
-    SymTypeExpression typeRight = TypeCheck3.typeOf(node.getRight());
-    if (typeLeft.isPrimitive() && typeRight.isPrimitive()) {
-      return subtract(typeLeft.asPrimitive(), left, typeRight.asPrimitive(), right);
-    }
-    
-    String errorMsg = "Minus operation with operands of type '" + typeLeft.print() + "' and '"
-        + typeRight.print() + "' is not supported.";
-    Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
-  }
-
-  @Override
-  public Value interpret(ASTMultExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
-    
-    SymTypeExpression type = TypeCheck3.typeOf(node);
-    if (type.isPrimitive()) {
-      String primitive = type.asPrimitive().getPrimitiveName();
-      if (primitive.equals(BasicSymbolsMill.BYTE)) {
-        return createValue(left.asByte() * right.asByte());
-      } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
-        return createValue(left.asShort() * right.asShort());
-      } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
-        return createValue(left.asChar() * right.asChar());
-      } else if (primitive.equals(BasicSymbolsMill.INT)) {
-        return createValue(left.asInt() * right.asInt());
-      } else if (primitive.equals(BasicSymbolsMill.LONG)) {
-        return createValue(left.asLong() * right.asLong());
-      } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
-        return createValue(left.asFloat() * right.asFloat());
-      } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
-        return createValue(left.asDouble() * right.asDouble());
-      }
-    }
-    
-    String errorMsg = "Multiplication operation with result of type '" + type.print() + "' is not supported.";
-    Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
-  }
-
-  @Override
-  public Value interpret(ASTDivideExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
-    
-    SymTypeExpression type = TypeCheck3.typeOf(node);
-    if (type.isPrimitive() && (type.asPrimitive().isIntegralType() || type.asPrimitive().isNumericType())) {
-      String primitive = type.asPrimitive().getPrimitiveName();
+      String resultPrimitive = type.asPrimitive().getPrimitiveName();
+      
       if (right.asDouble() == 0.0) {
         String errorMsg = "Division by zero is undefined";
         Log.error(errorMsg);
-        return new ErrorValue(errorMsg);
+        return new ErrorMIValue(errorMsg);
       }
       
-      if (primitive.equals(BasicSymbolsMill.BYTE)) {
-        return createValue(left.asByte() * right.asByte());
-      } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
-        return createValue(left.asShort() * right.asShort());
-      } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
-        return createValue(left.asChar() * right.asChar());
-      } else if (primitive.equals(BasicSymbolsMill.INT)) {
-        return createValue(left.asInt() * right.asInt());
-      } else if (primitive.equals(BasicSymbolsMill.LONG)) {
-        return createValue(left.asLong() * right.asLong());
-      } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
-        return createValue(left.asFloat() * right.asFloat());
-      } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
-        return createValue(left.asDouble() * right.asDouble());
-      }
+      return InterpreterUtils.calcOpPrimitive(left, right, resultPrimitive,
+          (a, b) -> a / b, (a, b) -> a / b, (a, b) -> a / b, (a, b) -> a / b,
+          "Division");
     }
     
     String errorMsg = "Division operation with result of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTModuloExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTModuloExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
-    if (type.isPrimitive()) {
-      String primitive = type.asPrimitive().getPrimitiveName();
-      
-      if (primitive.equals(BasicSymbolsMill.BYTE)) {
-        return createValue(left.asByte() % right.asByte());
-      } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
-        return createValue(left.asShort() % right.asShort());
-      } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
-        return createValue(left.asChar() % right.asChar());
-      } else if (primitive.equals(BasicSymbolsMill.INT)) {
-        return createValue(left.asInt() % right.asInt());
-      } else if (primitive.equals(BasicSymbolsMill.LONG)) {
-        return createValue(left.asLong() % right.asLong());
-      } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
-        return createValue(left.asFloat() % right.asFloat());
-      } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
-        return createValue(left.asDouble() % right.asDouble());
-      }
-    }
-    
-    String errorMsg = "Modulo operation with result of type '" + type.print() + "' is not supported.";
-    Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return InterpreterUtils.calcOp(left, right, type, (a, b) -> a % b, (a, b) -> a % b,
+        (a, b) -> a % b, (a, b) -> a % b, "Modulo");
   }
 
   @Override
-  public Value interpret(ASTMinusPrefixExpression node) {
-    Value value = node.getExpression().evaluate(getRealThis());
+  public MIValue interpret(ASTMinusPrefixExpression node) {
+    MIValue value = node.getExpression().evaluate(getRealThis());
     if (value.isError()) return value;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
@@ -283,12 +205,12 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     String errorMsg = "Minus Prefix operation with result of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTPlusPrefixExpression node) {
-    Value value = node.getExpression().evaluate(getRealThis());
+  public MIValue interpret(ASTPlusPrefixExpression node) {
+    MIValue value = node.getExpression().evaluate(getRealThis());
     if (value.isError()) return value;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
@@ -298,13 +220,13 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     String errorMsg = "Minus Prefix operation with result of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTEqualsExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTEqualsExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
@@ -317,20 +239,20 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Equality operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTNotEqualsExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTNotEqualsExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
-      Value result = isEqual(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
+      MIValue result = isEqual(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
       if (result.isError()) return result;
       
       return createValue(!result.asBoolean());
@@ -339,20 +261,20 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Inequality operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTGreaterThanExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTGreaterThanExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
-      Value result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
+      MIValue result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
       if (result.isError()) return result;
       
       return createValue(result.asDouble() > 0.0);
@@ -361,20 +283,20 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Greater than operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTLessThanExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTLessThanExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
-      Value result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
+      MIValue result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
       if (result.isError()) return result;
       
       return createValue(result.asDouble() < 0.0);
@@ -383,20 +305,20 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Less than operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTGreaterEqualExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTGreaterEqualExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
-      Value result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
+      MIValue result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
       if (result.isError()) return result;
       
       return createValue(result.asDouble() >= 0.0);
@@ -405,20 +327,20 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Greater equal operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTLessEqualExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTLessEqualExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
-      Value result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
+      MIValue result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
       if (result.isError()) return result;
       
       return createValue(result.asDouble() <= 0.0);
@@ -427,13 +349,13 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Less equal operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   //~ -> behaves as a bitwise complement
   @Override
-  public Value interpret(ASTBooleanNotExpression node) {
-    Value value = node.getExpression().evaluate(getRealThis());
+  public MIValue interpret(ASTBooleanNotExpression node) {
+    MIValue value = node.getExpression().evaluate(getRealThis());
     if (value.isError()) return value;
 
     SymTypeExpression type = TypeCheck3.typeOf(node.getExpression());
@@ -452,9 +374,9 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       }
     }
     
-    String errorMsg = "Bitwise Not opeartion with operand of type '" + type.print() + "' is not supported.";
+    String errorMsg = "Bitwise Not operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   /*=================================================================*/
@@ -462,8 +384,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   /*=================================================================*/
 
   @Override
-  public Value interpret(ASTLogicalNotExpression node) {
-    Value value = node.getExpression().evaluate(getRealThis());
+  public MIValue interpret(ASTLogicalNotExpression node) {
+    MIValue value = node.getExpression().evaluate(getRealThis());
     if (value.isError()) return value;
     
     SymTypeExpression type = TypeCheck3.typeOf(node.getExpression());
@@ -474,13 +396,13 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     String errorMsg = "Logical Not operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTBooleanAndOpExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTBooleanAndOpExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
@@ -494,13 +416,13 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Logical And operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTBooleanOrOpExpression node) {
-    Value left = node.getLeft().evaluate(getRealThis());
-    Value right = node.getRight().evaluate(getRealThis());
+  public MIValue interpret(ASTBooleanOrOpExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
     if (left.isError()) return left;
     if (right.isError()) return right;
     
@@ -514,17 +436,17 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     String errorMsg = "Logical Or operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   @Override
-  public Value interpret(ASTBracketExpression node) {
+  public MIValue interpret(ASTBracketExpression node) {
     return node.getExpression().evaluate(getRealThis());
   }
 
   @Override
-  public Value interpret(ASTConditionalExpression node) {
-    Value condition = node.getCondition().evaluate(getRealThis());
+  public MIValue interpret(ASTConditionalExpression node) {
+    MIValue condition = node.getCondition().evaluate(getRealThis());
     if (condition.isError()) return condition;
     
     return condition.asBoolean()
@@ -533,17 +455,35 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   }
 
   @Override
-  public Value interpret(ASTFieldAccessExpression node) {
+  public MIValue interpret(ASTFieldAccessExpression node) {
     String errorMsg = "Field Access operation not supported.";
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
 //    String expression = CommonExpressionsMill.prettyPrint(node, false);
 //    Optional<VariableSymbol> symbol = ((IBasicSymbolsScope) node.getEnclosingScope()).resolveVariable(expression);
 //    return symbol.map(this::load).orElse(new NullValue());
   }
 
   @Override
-  public Value interpret(ASTLiteralExpression node) {
+  public MIValue interpret(ASTLiteralExpression node) {
     return node.getLiteral().evaluate(getRealThis());
+  }
+  
+  @Override
+  public MIValue interpret(ASTCallExpression node) {
+    // evaluate expression that gives lambda/function
+    // get original parent scope of lambda/function declaration
+    // create Scope with parent and arguments
+    // evaluate arguments in current scope & put into new scope
+    
+    // node.getExpression();
+    // parent = whatever
+    
+//    MIScope scope = new MIScope(parent);
+//    List<ISymbol> parameterSymbols =
+//    List<ASTExpression> arguments = node.getArguments().getExpressionList();
+//    for (int i = 0; i < arguments.getSize(); i++) {
+//      scope.declareVariable()
+//    }
   }
 }

@@ -2,16 +2,16 @@
 package de.monticore.interpreter;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.interpreter.values.ErrorValue;
+import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
 
 public interface ModelInterpreter {
   
-  default Value interpret(ASTNode n) {
+  default MIValue interpret(ASTNode n) {
     String errorMsg = "No implementation of ASTNode of type " + n.toString();
     Log.error(errorMsg);
-    return new ErrorValue(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
 
   void setRealThis(ModelInterpreter realThis);
@@ -23,15 +23,15 @@ public interface ModelInterpreter {
   void pushScope(MIScope scope);
   void popScope();
 
-  default void declareVariable(ISymbol symbol, Value value) {
+  default void declareVariable(ISymbol symbol, MIValue value) {
     getCurrentScope().declareVariable(symbol, value);
   }
   
-  default Value load(ISymbol symbol) {
+  default MIValue load(ISymbol symbol) {
     return getRealThis().load(symbol);
   }
 
-  default void store (ISymbol symbol, Value value){
+  default void store (ISymbol symbol, MIValue value){
     getRealThis().store(symbol, value);
   }
 

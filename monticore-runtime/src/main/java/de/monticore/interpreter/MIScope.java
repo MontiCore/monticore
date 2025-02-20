@@ -1,6 +1,6 @@
 package de.monticore.interpreter;
 
-import de.monticore.interpreter.values.ErrorValue;
+import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -9,24 +9,27 @@ import java.util.Map;
 
 public class MIScope {
   
-  private Map<ISymbol, Value> contextMap;
+  private Map<ISymbol, MIValue> contextMap = new HashMap<>();
   
   private MIScope parent;
   
   public MIScope() {
-    this.contextMap = new HashMap<ISymbol, Value>();
     this.parent = null;
   }
   
-  public void declareVariable(ISymbol symbol, Value value) {
+  public MIScope(MIScope parent) {
+    this.parent = parent;
+  }
+  
+  public void declareVariable(ISymbol symbol, MIValue value) {
     if (contextMap.containsKey(symbol)) {
       Log.error("Variable was already declared");
     }
     this.contextMap.put(symbol, value);
   }
   
-  public Value load(ISymbol symbol) {
-    Value value = contextMap.get(symbol);
+  public MIValue load(ISymbol symbol) {
+    MIValue value = contextMap.get(symbol);
     if (value != null) {
       return value;
     }
@@ -36,10 +39,10 @@ public class MIScope {
     }
     
     Log.error("Failed to load Value of Symbol. Could not find Symbol in the current or any parent scope");
-    return new ErrorValue("Failed to load Value of Symbol. Could not find Symbol in the current or any parent scope");
+    return new ErrorMIValue("Failed to load Value of Symbol. Could not find Symbol in the current or any parent scope");
   }
   
-  public void store(ISymbol symbol, Value value) {
+  public void store(ISymbol symbol, MIValue value) {
     if (contextMap.containsKey(symbol)) {
       contextMap.put(symbol, value);
     } else if (parent != null){
