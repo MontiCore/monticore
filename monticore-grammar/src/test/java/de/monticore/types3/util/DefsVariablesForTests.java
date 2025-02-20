@@ -45,7 +45,7 @@ public class DefsVariablesForTests {
     set_boxedObjects(scope);
     set_unboxedCollections(scope);
     set_boxedCollections(scope);
-    set_Streams(scope);
+    set_streams(scope);
     set_objectTypes(scope);
     set_generics(scope);
     set_siUnitsWithNumerics(scope);
@@ -177,7 +177,7 @@ public class DefsVariablesForTests {
 
   public static VariableSymbol _intUntimedStreamVarSym;
 
-  public static void set_Streams(IBasicSymbolsScope scope) {
+  public static void set_streams(IBasicSymbolsScope scope) {
     _intStreamVarSym = inScope(scope, variable("varintStream",
         createGenerics(_StreamSymType.getTypeInfo(), _intSymType)));
     _intEventStreamVarSym = inScope(scope, variable("varintEventStream",
