@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.examples.composition;
+
+component grammar Exprs {
+  interface Expr;
+}

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.examples.composition;
+
+grammar BExprs extends Exprs, de.monticore.MCBasics {
+ NameE implements Expr<350> = Name;
+ BracketE implements Expr<310> = "(" Expr ")";
+ NotE implements Expr<190> = "!" Expr;
+ AndE implements Expr<120> = left:Expr "&&" right:Expr;
+ OrE implements Expr<117> = left:Expr "||" right:Expr;
+}

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.examples.composition;
+
+grammar Statecharts extends BExprs, Automaton {
+ @Override
+  Aut = "statechart" Name "{" AutElem*  "}";
+  // Or replacekeyword?
+  start Aut;
+  replacekeyword "automaton": "statechart";
+
+  @Override
+  T = from:Name "->" to:Name
+    ("[" precondition:Expr "]") ";";
+}
