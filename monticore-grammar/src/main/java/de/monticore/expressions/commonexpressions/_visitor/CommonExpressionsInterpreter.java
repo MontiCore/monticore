@@ -469,21 +469,21 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     return node.getLiteral().evaluate(getRealThis());
   }
   
-  @Override
-  public MIValue interpret(ASTCallExpression node) {
-    // evaluate expression that gives lambda/function
-    // get original parent scope of lambda/function declaration
-    // create Scope with parent and arguments
-    // evaluate arguments in current scope & put into new scope
-    
-    // node.getExpression();
-    // parent = whatever
-    
-//    MIScope scope = new MIScope(parent);
-//    List<ISymbol> parameterSymbols =
-//    List<ASTExpression> arguments = node.getArguments().getExpressionList();
-//    for (int i = 0; i < arguments.getSize(); i++) {
-//      scope.declareVariable()
-//    }
-  }
+//  @Override
+//  public MIValue interpret(ASTCallExpression node) {
+//    // evaluate expression that gives lambda/function
+//    // get original parent scope of lambda/function declaration
+//    // create Scope with parent and arguments
+//    // evaluate arguments in current scope & put into new scope
+//
+//    // node.getExpression();
+//    // parent = whatever
+//
+////    MIScope scope = new MIScope(parent);
+////    List<ISymbol> parameterSymbols =
+////    List<ASTExpression> arguments = node.getArguments().getExpressionList();
+////    for (int i = 0; i < arguments.getSize(); i++) {
+////      scope.declareVariable()
+////    }
+//  }
 }
