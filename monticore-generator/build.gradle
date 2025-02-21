@@ -170,4 +170,15 @@ publishing {
             }
         }
     }
+    // Add the license information to the publication
+    publications.configureEach {
+        pom {
+            licenses {
+                license {
+                    name = 'MontiCore 3-Level License Model'
+                    url = 'https://monticore.github.io/monticore/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/'
+                }
+            }
+        }
+    }
 }
