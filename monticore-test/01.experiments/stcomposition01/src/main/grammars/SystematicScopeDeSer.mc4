@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar SystematicScopeDeSer extends de.monticore.MCBasics, de.monticore.symbols.OOSymbols {
+
+  CompilationUnit = MyScopeSymbolI* Method* Function*;
+  start CompilationUnit;
+
+  // Defines scope & interface
+  interface symbol scope MyScopeSymbolI = Name;
+
+  // In the symbol table, this is actually a MyScopeSymbolI
+  interface MyScopeSymbolI2 extends MyScopeSymbolI = Name;
+
+  // All of the following productions are symbols which span a scope
+  // Some explicitly define a "new" symbol, while others are MyScopeSymbolI-symbols
+                MyScopeSymbolIImpl1 implements MyScopeSymbolI = Name; // MyScopeSymbolI symbol
+  symbol        MyScopeSymbolIImpl2 implements MyScopeSymbolI = Name; // new symbol
+  symbol scope  MyScopeSymbolIImpl3 implements MyScopeSymbolI = Name; // new symbol
+
+                MyScopeSymbolI2Impl1 implements MyScopeSymbolI2 = Name; // MyScopeSymbolI symbol
+  symbol        MyScopeSymbolI2Impl2 implements MyScopeSymbolI2 = Name; // new symbol
+  symbol scope  MyScopeSymbolI2Impl3 implements MyScopeSymbolI2 = Name; // new symbol
+
+  // Also test using OO/Basic symbols
+  TestMethod implements Method = "method" Name;
+  TestFunction implements Function = "function" Name;
+
+}

@@ -2,8 +2,10 @@ package de.monticore.types3.generics;
 
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.generics.util.SymTypeFreeVariableReplaceVisitor;
+import de.monticore.types3.generics.util.SymTypeInferenceVariableReplaceVisitor;
 import de.monticore.types3.generics.util.SymTypeVariableReplaceVisitor;
 import de.monticore.types3.generics.util.WildcardCapturer;
 import de.monticore.types3.util.SymTypeCollectionVisitor;
@@ -43,6 +45,7 @@ public class TypeParameterRelations {
 
   protected TypeParameterRelations() {
     this.typeVarReplacer = new SymTypeVariableReplaceVisitor();
+    this.infVarReplacer = new SymTypeInferenceVariableReplaceVisitor();
     this.freeVariableReplacer = new SymTypeFreeVariableReplaceVisitor();
     this.symTypeCollectionVisitor = new SymTypeCollectionVisitor();
     this.wildCardCapturer = new WildcardCapturer();
@@ -52,6 +55,8 @@ public class TypeParameterRelations {
 
   SymTypeVariableReplaceVisitor typeVarReplacer;
 
+  SymTypeInferenceVariableReplaceVisitor infVarReplacer;
+
   SymTypeFreeVariableReplaceVisitor freeVariableReplacer;
 
   SymTypeCollectionVisitor symTypeCollectionVisitor;
@@ -59,7 +64,7 @@ public class TypeParameterRelations {
   WildcardCapturer wildCardCapturer;
 
   /**
-   * replaces TypeVariables using a given map
+   * replaces bound TypeVariables using a given map
    * e.g., T, {T->int,U->float} -> int
    * e.g., List<T>, {T->int} -> List<int>
    */
@@ -78,6 +83,25 @@ public class TypeParameterRelations {
   }
 
   /**
+   * replaces InferenceVariables using a given map
+   * e.g., a, {a->int,b->float} -> int
+   * e.g., List<a>, {a->int} -> List<int>
+   */
+  public static SymTypeExpression replaceInferenceVariables(
+      SymTypeExpression type,
+      Map<SymTypeInferenceVariable, ? extends SymTypeExpression> replaceMap
+  ) {
+    return getDelegate().calculateReplaceInferenceVariables(type, replaceMap);
+  }
+
+  protected SymTypeExpression calculateReplaceInferenceVariables(
+      SymTypeExpression type,
+      Map<SymTypeInferenceVariable, ? extends SymTypeExpression> replaceMap
+  ) {
+    return infVarReplacer.calculate(type, replaceMap);
+  }
+
+  /**
    * Returns a map that can be used to replace
    * free type variables with inference variables.
    *
@@ -85,14 +109,14 @@ public class TypeParameterRelations {
    * @param enclosingScope the enclosing scope used to check
    *                       if the variables are free or bound
    */
-  public static Map<SymTypeVariable, SymTypeVariable> getFreeVariableReplaceMap(
+  public static Map<SymTypeVariable, SymTypeInferenceVariable> getFreeVariableReplaceMap(
       SymTypeExpression type,
       IBasicSymbolsScope enclosingScope
   ) {
     return getDelegate().calculateGetFreeVariableReplaceMap(type, enclosingScope);
   }
 
-  protected Map<SymTypeVariable, SymTypeVariable> calculateGetFreeVariableReplaceMap(
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> calculateGetFreeVariableReplaceMap(
       SymTypeExpression type,
       IBasicSymbolsScope enclosingScope
   ) {
@@ -111,13 +135,16 @@ public class TypeParameterRelations {
     return replaceTypeVariables(type, getFreeVariableReplaceMap(type, enclosingScope));
   }
 
+  /**
+   * use type.isInferenceVariable
+   */
+  @Deprecated
   public static boolean isInferenceVariable(SymTypeExpression type) {
     return getDelegate().calculateIsInferenceVariable(type);
   }
 
   protected boolean calculateIsInferenceVariable(SymTypeExpression type) {
-    return type.isTypeVariable() &&
-        type.asTypeVariable().isInferenceVariable();
+    return type.isInferenceVariable();
   }
 
   /**
@@ -131,26 +158,28 @@ public class TypeParameterRelations {
    * In the Java Spec (v.21 chap. 18) types with inference variables
    * would be called "improper".
    */
-  public static List<SymTypeVariable> getIncludedInferenceVariables(SymTypeExpression... types) {
+  public static List<SymTypeInferenceVariable> getIncludedInferenceVariables(
+      SymTypeExpression... types
+  ) {
     return getIncludedInferenceVariables(Arrays.asList(types));
   }
 
-  public static List<SymTypeVariable> getIncludedInferenceVariables(
+  public static List<SymTypeInferenceVariable> getIncludedInferenceVariables(
       Collection<? extends SymTypeExpression> types
   ) {
     return getDelegate().calculateGetIncludedInferenceVariables(types);
   }
 
-  protected List<SymTypeVariable> calculateGetIncludedInferenceVariables(
+  protected List<SymTypeInferenceVariable> calculateGetIncludedInferenceVariables(
       Collection<? extends SymTypeExpression> types
   ) {
-    List<SymTypeVariable> infVars = new ArrayList<>();
+    List<SymTypeInferenceVariable> infVars = new ArrayList<>();
     for (SymTypeExpression type : types) {
       infVars.addAll(
-          symTypeCollectionVisitor.calculate(type, t ->
-                  t.isTypeVariable() && t.asTypeVariable().isInferenceVariable()
-              ).stream()
-              .map(SymTypeExpression::asTypeVariable)
+          symTypeCollectionVisitor
+              .calculate(type, SymTypeExpression::isInferenceVariable)
+              .stream()
+              .map(SymTypeExpression::asInferenceVariable)
               .collect(Collectors.toList())
       );
     }

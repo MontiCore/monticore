@@ -5,19 +5,17 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.ocl.setexpressions._ast.ASTSetEnumeration;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsHandler;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsTraverser;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
 import de.monticore.types3.generics.util.CompileTimeTypeCalculator;
 
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
+import static de.monticore.types.check.SymTypeExpressionFactory.createInferenceVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 
 public class SetExpressionsCTTIVisitor extends SetExpressionsTypeVisitor
     implements SetExpressionsHandler {
@@ -77,10 +75,7 @@ public class SetExpressionsCTTIVisitor extends SetExpressionsTypeVisitor
 
   /** {@code <T> (T...) -> Set<T>} */
   protected SymTypeOfFunction getSetEnumerationFunc() {
-    SymTypeVariable typeVar = createTypeVariable(
-        createBottomType(),
-        createTopType()
-    );
+    SymTypeInferenceVariable typeVar = createInferenceVariable();
     SymTypeOfFunction setEnumerationFunc = createFunction(
         MCCollectionSymTypeFactory.createSet(typeVar),
         List.of(typeVar),
@@ -91,10 +86,7 @@ public class SetExpressionsCTTIVisitor extends SetExpressionsTypeVisitor
 
   /** {@code <T> (T...) -> List<T>} */
   protected SymTypeOfFunction getListEnumerationFunc() {
-    SymTypeVariable typeVar = createTypeVariable(
-        createBottomType(),
-        createTopType()
-    );
+    SymTypeInferenceVariable typeVar = createInferenceVariable();
     SymTypeOfFunction listEnumerationFunc = createFunction(
         MCCollectionSymTypeFactory.createList(typeVar),
         List.of(typeVar),

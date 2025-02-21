@@ -33,6 +33,8 @@ import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.PRIMITIVE_LIST;
  */
 public class SymTypeExpressionFactory {
 
+  protected static final String LOG_NAME = "SymTypeExpressionFactory";
+
   /**
    * createTypeVariable vor Variables
    * @deprecated -> create a symbol and use it to create a SymTypeVariable
@@ -42,6 +44,24 @@ public class SymTypeExpressionFactory {
     TypeVarSymbol typeSymbol = new TypeVarSymbol(name);
     typeSymbol.setEnclosingScope(scope);
     return createTypeVariable(typeSymbol);
+  }
+
+  public static SymTypeVariable createTypeVariable(TypeVarSymbol typeVarSymbol) {
+    return new SymTypeVariable(typeVarSymbol);
+  }
+
+  @Deprecated
+  public static SymTypeVariable createTypeVariable(TypeSymbol typeSymbol) {
+    return new SymTypeVariable(typeSymbol);
+  }
+
+  /**
+   * Used to create a (optionally bounded) FREE type variable,
+   * without bounds.
+   * These are created internally while inferring types.
+   */
+  public static SymTypeInferenceVariable createInferenceVariable() {
+    return createInferenceVariable(createBottomType(), createTopType());
   }
 
   /**
@@ -54,50 +74,37 @@ public class SymTypeExpressionFactory {
    *                   e.g., {@code T extends Person & Iterable<Integer>}.
    *                   For no bounds use {@link #createTopType()}.
    */
-  public static SymTypeVariable createTypeVariable(
+  public static SymTypeInferenceVariable createInferenceVariable(
       SymTypeExpression lowerBound, SymTypeExpression upperBound) {
     // free type variables need an identifier
-    return createTypeVariable(
-        getUniqueFreeTypeVarName(),
-        lowerBound, upperBound
-    );
+    return createInferenceVariable(lowerBound, upperBound, "FV");
   }
 
   /**
    * Creates FREE type variable, BUT:
-   * You most likely do not want this method,
-   * this is (nearly) only used for deepCloning.
-   * Use {@link #createTypeVariable(SymTypeExpression, SymTypeExpression)}.
+   * You most likely do not want this method.
+   * Use {@link #createInferenceVariable(SymTypeExpression, SymTypeExpression)}.
    */
-  public static SymTypeVariable createTypeVariable(
-      String name,
+  public static SymTypeInferenceVariable createInferenceVariable(
       SymTypeExpression lowerBound,
-      SymTypeExpression upperBound
+      SymTypeExpression upperBound,
+      String idStr
   ) {
-    return new SymTypeVariable(name, lowerBound, upperBound);
+    return new SymTypeInferenceVariable(idStr, lowerBound, upperBound);
   }
 
-  public static SymTypeVariable createTypeVariable(TypeVarSymbol typeVarSymbol) {
-    // the SymTypeVariable extracts the upper bound from the type itself,
-    // as such we do not set it here
-    SymTypeExpression upperBound = createTopType();
-    // our Symbols have no notion of lower bound,
-    // as such we use the bottom type
-    SymTypeExpression lowerBound = createBottomType();
-    return createTypeVariable(typeVarSymbol, lowerBound, upperBound);
-  }
-
-  public static SymTypeVariable createTypeVariable(
-      TypeVarSymbol typeVarSymbol,
+  /**
+   * Only used for deepcloning:
+   * You most likely do not want this method.
+   * Use {@link #createInferenceVariable(SymTypeExpression, SymTypeExpression)}.
+   */
+  public static SymTypeInferenceVariable createInferenceVariable(
       SymTypeExpression lowerBound,
-      SymTypeExpression upperBound
+      SymTypeExpression upperBound,
+      String idStr,
+      int id
   ) {
-    return new SymTypeVariable(typeVarSymbol, lowerBound, upperBound);
-  }
-
-  @Deprecated
-  public static SymTypeVariable createTypeVariable(TypeSymbol typeSymbol) {
-    return new SymTypeVariable(typeSymbol);
+    return new SymTypeInferenceVariable(id, idStr, lowerBound, upperBound);
   }
 
   /**
@@ -212,8 +219,10 @@ public class SymTypeExpressionFactory {
    *
    * @param name
    * @param scope
-   * @return
+   * @deprecated use TypeCheck to get SymTypeExpressions from MCTypes,
+   *     this method is rather incorrect/incomplete
    */
+  @Deprecated
   public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
     if ("void".equals(name)) {
@@ -534,17 +543,31 @@ public class SymTypeExpressionFactory {
     return createUnion();
   }
 
-  // Helper
+  // convenience for specific types
 
-  /**
-   * The Only guarantee is that the names are unique.
-   * Never test against them.
-   */
-  protected static String getUniqueFreeTypeVarName() {
-    // naming inspired by JDK
-    // s.a. https://git.rwth-aachen.de/monticore/monticore/-/issues/4296
-    return "FV#" + String.format("%05d", typeVarIDCounter++);
+  public static SymTypeOfObject createStringType() {
+    // tries to find String
+    // We prefer the builtin String,
+    // such that one can specify the (foremost) functions,
+    // rather than using the Java one,
+    // e.g., a String type with only side effect free functions for OCL.
+
+    // String added into global scope analogous to primitive types.
+    Optional<TypeSymbol> stringType = BasicSymbolsMill.globalScope()
+        .resolveType(BasicSymbolsMill.STRING);
+    if (stringType.isEmpty()) {
+      // otherwise, java.util.String, most likely per Class2MC
+      stringType = BasicSymbolsMill.globalScope()
+          .resolveType("java.lang.String");
+    }
+    if (stringType.isEmpty()) {
+      Log.trace(
+          "No String symbol found yet, creating surrogate for now",
+          LOG_NAME
+      );
+      stringType = Optional.of(new TypeSymbolSurrogate(BasicSymbolsMill.STRING));
+    }
+    return createTypeObject(stringType.get());
   }
-  protected static int typeVarIDCounter = 0;
 
 }

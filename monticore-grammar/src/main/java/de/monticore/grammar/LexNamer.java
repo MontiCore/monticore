@@ -4,7 +4,9 @@ package de.monticore.grammar;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -15,7 +17,9 @@ import org.apache.commons.lang3.StringUtils;
  * 
  */
 public class LexNamer {
-  
+
+  public static final Pattern NAME_PATTERN = Pattern.compile("([a-z]|[A-Z]|[_]|[$])([a-z]|[A-Z]|[_]|[0-9]|[$])*");
+
   protected int constantCounter = 0;
 
   protected int lexCounter = 0;
@@ -120,13 +124,29 @@ public class LexNamer {
   }
 
   /**
+   * Computes a new name for the lexical production or returns the previously
+   * computed one.
+   *
+   * @deprecated Use {@link LexNamer#getComputedLexName(String)}
+   * or {@link LexNamer#getOrComputeLexName(MCGrammarSymbol, String)} instead
+   */
+  @Deprecated
+  public String getLexName(MCGrammarSymbol grammarSymbol, String sym) {
+    return this.getOrComputeLexName(grammarSymbol, sym);
+  }
+
+  public Optional<String> getComputedLexName(String sym) {
+    return Optional.ofNullable(this.usedLex.get(sym));
+  }
+
+  /**
    * Returns Human-Readable, antlr conformed name for a lexsymbols nice names for common tokens
    * (change constructor to add tokenes) LEXi where i is number for unknown ones
-   * 
+   *
    * @param sym lexer symbol
    * @return Human-Readable, antlr conformed name for a lexsymbols
    */
-  public String getLexName(MCGrammarSymbol grammarSymbol, String sym) {
+  public String getOrComputeLexName(MCGrammarSymbol grammarSymbol, String sym) {
     if (usedLex.containsKey(sym)) {
       return usedLex.get(sym);
     }
@@ -139,8 +159,17 @@ public class LexNamer {
     Log.debug("Using lexer symbol " + goodName + " for symbol '" + sym + "'", "LexNamer");
     return goodName;
   }
-  
+
+  @Deprecated
   public String getConstantName(String sym) {
+    return this.getOrComputeConstantName(sym);
+  }
+
+  public Optional<String> getComputedConstantName(String sym) {
+    return Optional.ofNullable(this.usedConstants.get(sym));
+  }
+
+  public String getOrComputeConstantName(String sym) {
     String s = sym.intern();
     
     if (!usedConstants.containsKey(s)) {
@@ -165,8 +194,11 @@ public class LexNamer {
     return key;
   }
 
-
   public Set<String> getLexnames() {
-    return usedLex.keySet();
+    return this.usedLex.keySet();
+  }
+
+  public Set<String> getUsedConstants() {
+    return this.usedConstants.keySet();
   }
 }

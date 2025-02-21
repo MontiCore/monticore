@@ -1,6 +1,7 @@
 package de.monticore.types3.generics.context;
 
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.generics.TypeParameterRelations;
@@ -200,11 +201,11 @@ public class InferenceResult {
   protected Optional<SymTypeOfFunction> getResolvedFunction(
       List<Bound> bounds
   ) {
-    Optional<Map<SymTypeVariable, SymTypeExpression>> instantiations =
+    Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> instantiations =
         BoundResolution.resolve(bounds);
     if (instantiations.isPresent()) {
       SymTypeOfFunction instantiatedFunc = TypeParameterRelations
-          .replaceTypeVariables(getResolvedFunction(), instantiations.get())
+          .replaceInferenceVariables(getResolvedFunction(), instantiations.get())
           .asFunctionType();
       return Optional.of(instantiatedFunc);
     }

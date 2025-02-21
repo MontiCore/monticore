@@ -6,6 +6,7 @@ import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.util.DefsVariablesForTests;
+import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +23,7 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   @BeforeEach
   public void init() {
     DefsVariablesForTests.setup();
+    OOWithinTypeBasicSymbolsResolver.init();
   }
 
   @Test
@@ -39,7 +41,7 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   @Test
   public void testInvalidInstanceOfExpression() throws IOException {
     // unrelated type
-    checkErrorExpr("varintList instanceof Person", "0xFD203");
+    checkErrorExpr("varintList instanceof int->int", "0xFD203");
   }
 
   @Test
@@ -106,7 +108,7 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     MethodSymbol constructor1 = method("Person", _personSymType, _intSymType);
     constructor1.setIsConstructor(true);
     personScope.add(constructor1);
-    checkErrorExpr("new Person(1.2f)", "0xFD444");
+    checkErrorExpr("new Person(1.2f)", "0xFD44E");
     // constructors: () -> Person, (int) -> Person, (int) -> Person
     // no most specific constructor exists
     MethodSymbol constructor2 = method("Person", _personSymType, _intSymType);

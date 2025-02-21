@@ -1,0 +1,36 @@
+# (c) https://github.com/MontiCore/monticore
+name: "Trigger the MontiVerse (workflow-call)"
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: 'The (internal) name for this project, as defined within the MontiVerse job'
+        type: string
+        required: true
+    secrets:
+      MONTIVERSE_TRIGGER_TOKEN:
+        required: true
+      MONTIVERSE_ACCESS_TOKEN:
+        required: true
+
+
+jobs:
+  # Run the MontiVerse pipeline (tests this change on a suite of projects)
+  # The MontiVerse is a suite of projects, which are not build & tested with the given changes on a branch
+  trigger-montiverse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Branch Name
+        # We have to remove the refs/heads/ prefix from the branch which called this action
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+      - name: Trigger MontiVerse
+        # Then actually trigger the MontiVerseCI projects pipeline
+        uses: digital-blueprint/gitlab-pipeline-trigger-action@c81ead300bf664f76245d816268c4a1b4bed2604 # @v1.2.0
+        with:
+          host: 'git.rwth-aachen.de'
+          trigger_token: ${{ secrets.MONTIVERSE_TRIGGER_TOKEN }}
+          access_token: ${{ secrets.MONTIVERSE_ACCESS_TOKEN }}  # Access is required to show the status
+          id: '91803'  # MontiVerseCI project id
+          ref: 'main'
+          variables: '{"${{inputs.project}}_BRANCH":"${{env.BRANCH_NAME}}", "${{inputs.project}}_PROJECT":"${{ github.event.repository.full_name  }}"}'

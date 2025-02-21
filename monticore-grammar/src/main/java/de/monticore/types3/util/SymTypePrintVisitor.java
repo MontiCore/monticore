@@ -50,6 +50,14 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
   }
 
   @Override
+  public void visit(SymTypeInferenceVariable symType) {
+    getPrint().append(symType._internal_getIDStr())
+        .append("#")
+        .append(symType._internal_getID())
+    ;
+  }
+
+  @Override
   public void visit(SymTypeObscure symType) {
     getPrint().append(OBSCURE_PRINT);
   }
@@ -203,12 +211,7 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
 
   @Override
   public void visit(SymTypeVariable symType) {
-    if (symType.hasTypeVarSymbol()) {
-      getPrint().append(printTypeVarSymbol(symType.getTypeVarSymbol()));
-    }
-    else {
-      getPrint().append(symType.getFreeVarIdentifier());
-    }
+    getPrint().append(printTypeVarSymbol(symType.getTypeVarSymbol()));
   }
 
   @Override
@@ -281,9 +284,13 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
    * returns whether the type is printed as TypeA 'operator' TypeB
    */
   protected boolean isTypePrintedAsInfix(SymTypeExpression symType) {
+    boolean isUnionNotEmpty = symType.isUnionType() &&
+        !symType.asUnionType().isEmptyUnionizedTypes();
+    boolean isIntersectionNotEmpty = symType.isIntersectionType() &&
+        !symType.asIntersectionType().isEmptyIntersectedTypes();
     return symType.isFunctionType() ||
-        symType.isUnionType() ||
-        symType.isIntersectionType();
+        isUnionNotEmpty ||
+        isIntersectionNotEmpty;
   }
 
 }

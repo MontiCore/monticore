@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
-import de.monticore.cd.codegen.CD2JavaTemplates;
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.AbstractTransformer;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -17,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class DataDecorator extends AbstractTransformer<ASTCDClass> {
 
@@ -84,10 +87,10 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (getDecorationHelper().isListType(attribute.printType())) {
+    if (getDecorationHelper().isListType(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
 
-    } else if (getDecorationHelper().isOptional(attribute.printType())) {
+    } else if (getDecorationHelper().isOptional(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfWildcard;
@@ -142,16 +143,6 @@ public class WildcardCapturer {
     // e.g., in Java, only upper bounds can be specified, e.g.,
     // <T extends UpperBound> // valid Java
     // <T super LowerBound> // not valid Java
-    for (SymTypeVariable param : typeParameters) {
-      if (!SymTypeRelations.isBottom(param.getLowerBound())) {
-        Log.error("0xFD305 internal error: "
-            + "parameter " + param.printFullName()
-            + " has unexpected lower bound: "
-            + param.getLowerBound().printFullName()
-        );
-      }
-    }
-
     // type variables to replace parameters in the set of type arguments.
     // WildCards get fresh variables
     List<SymTypeExpression> typeArgNoWCs = new ArrayList<>(typeParameters.size());
@@ -163,7 +154,7 @@ public class WildcardCapturer {
         if (!wildcard.hasBound()) {
           typeArgNoWC = createCaptureVar(
               SymTypeExpressionFactory.createBottomType(),
-              param.getUpperBound().deepClone()
+              param.getUpperBound()
           );
         }
         else if (wildcard.isUpper()) {
@@ -243,23 +234,18 @@ public class WildcardCapturer {
 
   // Helper
 
-  //should be unique, NO further guarantees
-  static int captureVarNextID = 0;
-
   /**
    * creates a "free" type variable,
    * however, the name is different from others,
    * such that recognizing variables from capture conversion
    * are easier identifiable in Log messages.
    */
-  protected SymTypeVariable createCaptureVar(
+  protected SymTypeInferenceVariable createCaptureVar(
       SymTypeExpression lowerBound,
       SymTypeExpression upperBound
   ) {
-    return SymTypeExpressionFactory.createTypeVariable(
-        // s.a. https://git.rwth-aachen.de/monticore/monticore/-/issues/4296
-        "CAP#" + String.format("%05d", captureVarNextID++)
-        , lowerBound, upperBound
+    return SymTypeExpressionFactory.createInferenceVariable(
+        lowerBound, upperBound, "CAP"
     );
   }
 

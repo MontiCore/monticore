@@ -54,7 +54,9 @@ public class SynthesizeSymTypeFromMCArrayTypes extends AbstractSynthesizeFromTyp
         arrayType.getDimensions(),
         getTypeCheckResult().getResult());
       getTypeCheckResult().setResult(tex);
-      arrayType.setDefiningSymbol(tex.getTypeInfo());
+      if(tex.hasTypeInfo()) {
+        arrayType.setDefiningSymbol(tex.getTypeInfo());
+      }
     }
   }
 

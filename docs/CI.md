@@ -4,23 +4,22 @@ The CI is (as of 2024) partially run via GitHub actions and for private
 projects,
 on the RWTH GitLab.
 
-## Workflow [gradle_mc.yml](../.github/workflows/gradle_mc.yml)
+## Workflow [gradle_mc.yml](https://github.com/MontiCore/monticore/blob/dev/.github/workflows/gradle_mc.yml)
 
 Uses Gradle to test & build the project.
 
-## Trigger MontiVerse [trigger_montiverse.yml](../.github/workflows/trigger_montiverse.yml)
+## Trigger MontiVerse [trigger_montiverse.yml](https://github.com/MontiCore/monticore/blob/dev/.github/workflows/trigger_montiverse.yml)
 
-The MontiVerse is a collection of language projects
-Publishes the release to GitHub packages (using `$GITHUB_REPOSITORY`) and
-the se-nexus.
-In addition, the tutorial tar.gz is packaged and added as an artifact (TODO).
+The MontiVerse is a collection of (internal) language projects.
+Builds the projects within the MontiVerse against the changes.
 
-## Deploy Snapshot [deploy_snapshot_mc.yml](../.github/workflows/deploy_snapshot_mc.yml)
+
+## Deploy Snapshot [deploy_snapshot_mc.yml](https://github.com/MontiCore/monticore/blob/dev/.github/workflows/deploy_snapshot_mc.yml)
 
 Publishes the snapshot to GitHub packages (using `$GITHUB_REPOSITORY`) and
 the se-nexus.
 
-## Deploy Release [deploy_release_mc.yml](../.github/workflows/deploy_release_mc.yml)
+## Deploy Release [deploy_release_mc.yml](https://github.com/MontiCore/monticore/blob/dev/.github/workflows//deploy_release_mc.yml)
 
 Publishes the release to GitHub packages (using `$GITHUB_REPOSITORY`) and
 the se-nexus.

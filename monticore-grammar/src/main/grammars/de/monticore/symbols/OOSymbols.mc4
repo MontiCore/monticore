@@ -48,7 +48,7 @@ component grammar OOSymbols extends BasicSymbols {
    * The new symbol OOTypeSymbol mainly adds OO specific properties.
    *
    */
-  interface scope symbol OOType extends Type = Name ;
+  interface symbol OOType extends Type = Name ;
   
   symbolrule OOType =
     isClass: boolean
@@ -89,7 +89,7 @@ component grammar OOSymbols extends BasicSymbols {
    * The new symbol MethodSymbol inherits from FunctionSymbol and 
    * mainly adds OO specific properties.
    */
-  interface scope symbol Method extends Function = Name ;
+  interface symbol Method extends Function = Name ;
   
   symbolrule Method =
     isConstructor: boolean

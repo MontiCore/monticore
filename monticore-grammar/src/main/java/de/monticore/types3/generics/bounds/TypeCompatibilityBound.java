@@ -42,8 +42,8 @@ public class TypeCompatibilityBound extends Bound {
   ) {
     this.sourceType = sourceType;
     this.targetType = targetType;
-    if (!TypeParameterRelations.isInferenceVariable(sourceType) &&
-        !TypeParameterRelations.isInferenceVariable(targetType)
+    if (!sourceType.isInferenceVariable() &&
+        !targetType.isInferenceVariable()
     ) {
       Log.error("0xFD334 internal error: "
           + "expected at least one inference variable, but got "

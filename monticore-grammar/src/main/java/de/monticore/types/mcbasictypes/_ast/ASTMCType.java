@@ -15,8 +15,17 @@ public interface ASTMCType extends ASTMCTypeTOP {
     return MCBasicTypesMill.prettyPrint(this, false);
   }
 
+  /**
+   * @deprecated part of TypeCheck1. instead use
+   *     {@link de.monticore.types.check.SymTypeExpression#getSourceInfo()}.
+   */
+  @Deprecated
   Optional<? extends ISymbol> getDefiningSymbol();
 
+  /**
+   * @deprecated part of TypeCheck1. Not required in TypeCheck3.
+   */
+  @Deprecated
   void setDefiningSymbol(ISymbol symbol);
 
 }

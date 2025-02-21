@@ -28,6 +28,9 @@ import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFacto
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.types3.util.MapBasedTypeCheck3;
+import de.monticore.types3.util.TypeVisitorOperatorCalculator;
+import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
+import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -98,6 +101,10 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    SymTypeRelations.init();
+    WithinScopeBasicSymbolsResolver.init();
+    WithinTypeBasicSymbolsResolver.init();
+    TypeVisitorOperatorCalculator.init();
     DefsTypesForTests.setup();
     parser = CombineExpressionsWithLiteralsMill.parser();
     MapBasedTypeCheck3 tc3 = new CombineExpressionsWithLiteralsTypeTraverserFactory()
@@ -112,11 +119,9 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     CombineExpressionsWithLiteralsTraverser combinedScopesCompleter =
         CombineExpressionsWithLiteralsMill.traverser();
     IDerive deriver = new TypeCheck3AsIDerive(
-        typeMapTraverser, type4Ast, new CommonExpressionsLValueRelations()
+        new CommonExpressionsLValueRelations()
     );
-    ISynthesize synthesizer = new TypeCheck3AsISynthesize(
-        typeMapTraverser, type4Ast
-    );
+    ISynthesize synthesizer = new TypeCheck3AsISynthesize();
     combinedScopesCompleter.add4LambdaExpressions(
         new LambdaExpressionsSTCompleteTypes2(
             typeMapTraverser,
@@ -302,8 +307,9 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     assertFalse(type.isObscureType(), "No type calculated for expression " + exprStr);
     // usually, type normalization is expected and (basically) always allowed
     // for specific tests, however, it may be required to disable this
+    SymTypeExpression typeNormalized = SymTypeRelations.normalize(type);
     boolean equalsNormalized =
-        expectedType.equals(SymTypeRelations.normalize(type).printFullName());
+        expectedType.equals(typeNormalized.printFullName());
     if (!allowNormalization || !equalsNormalized) {
       Assertions.assertEquals(expectedType, type.printFullName(), "Wrong type for expression " + exprStr);
     }

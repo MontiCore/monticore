@@ -10,6 +10,7 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Assertions;
@@ -25,6 +26,8 @@ import java.util.stream.Stream;
 
 import static de.monticore.types.check.DefsTypeBasic._intSymType;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SymTypeExpressionTest {
 
@@ -129,15 +132,15 @@ public class SymTypeExpressionTest {
 
     teInt = createPrimitive("int");
 
-    teVarA = createTypeVariable("A", scope);
+    teVarA = SymTypeExpressionFactory.createTypeVariable("A", scope);
 
     teIntA = createTypeObject("java.lang.Integer",scope);
 
-    teVarB = createTypeVariable("B", scope);
+    teVarB = SymTypeExpressionFactory.createTypeVariable("B", scope);
 
-    teVarUpper = createTypeVariable(teIntA, createBottomType());
+    teVarUpper = SymTypeExpressionFactory.createInferenceVariable(teIntA, createBottomType());
 
-    teVarLower = createTypeVariable(createTopType(), teIntA);
+    teVarLower = SymTypeExpressionFactory.createInferenceVariable(createTopType(), teIntA);
 
     teP = createTypeObject("de.x.Person", scope);
 
@@ -527,8 +530,8 @@ public class SymTypeExpressionTest {
   public void testHasTypeInfo() {
     Assertions.assertTrue(teInt.hasTypeInfo());
     Assertions.assertFalse(createPrimitive((TypeSymbol) null).hasTypeInfo());
-    Assertions.assertTrue(teVarA.hasTypeInfo());
-    Assertions.assertTrue(teVarB.hasTypeInfo());
+    Assertions.assertFalse(teVarA.hasTypeInfo());
+    Assertions.assertFalse(teVarB.hasTypeInfo());
     Assertions.assertFalse(teVarUpper.hasTypeInfo());
     Assertions.assertFalse(teVarLower.hasTypeInfo());
     Assertions.assertTrue(teIntA.hasTypeInfo());
@@ -581,14 +584,14 @@ public class SymTypeExpressionTest {
     Assertions.assertTrue(teVarA.deepClone().isTypeVariable());
     Assertions.assertEquals(teVarA.print(), teVarA.deepClone().print());
 
-    Assertions.assertTrue(teVarUpper.deepClone() instanceof SymTypeVariable);
+    Assertions.assertTrue(teVarUpper.deepClone() instanceof SymTypeInferenceVariable);
     Assertions.assertFalse(teVarUpper.deepClone().isPrimitive());
-    Assertions.assertTrue(teVarUpper.deepClone().isTypeVariable());
+    Assertions.assertTrue(teVarUpper.deepClone().isInferenceVariable());
     Assertions.assertEquals(teVarUpper.print(), teVarUpper.deepClone().print());
 
-    Assertions.assertTrue(teVarLower.deepClone() instanceof SymTypeVariable);
+    Assertions.assertTrue(teVarLower.deepClone() instanceof SymTypeInferenceVariable);
     Assertions.assertFalse(teVarLower.deepClone().isPrimitive());
-    Assertions.assertTrue(teVarLower.deepClone().isTypeVariable());
+    Assertions.assertTrue(teVarLower.deepClone().isInferenceVariable());
     Assertions.assertEquals(teVarLower.print(), teVarLower.deepClone().print());
 
     //SymTypePrimitive
@@ -776,6 +779,23 @@ public class SymTypeExpressionTest {
 
     SymTypeOfRegEx tRegEx1 = createTypeRegEx("rege(x(es)?|xps?)");
     Assertions.assertEquals("R\"rege(x(es)?|xps?)\"", tRegEx1.print());
+  }
+
+  @Test
+  public void testSymTypeExpressionFactoryString() {
+    // only String is available
+    // since adding regex types, this should not influence anything
+    BasicSymbolsMill.globalScope().clear();
+    DefsTypesForTests.set_unboxedObjects();
+    assertEquals("String", createStringType().printFullName());
+
+    // only java.util.String is available
+    // since adding regex types, this should not influence anything
+    BasicSymbolsMill.globalScope().clear();
+    DefsTypesForTests.set_boxedObjects();
+    assertEquals("java.lang.String", createStringType().printFullName());
+
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

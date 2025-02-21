@@ -636,10 +636,10 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
   protected String getRuleName(String name) {
     if (name.isEmpty()) {
       return "";
-    } else if (grammarInfo.isKeyword(name, parserGeneratorHelper.getGrammarSymbol()) && grammarInfo.getKeywordRules().contains(name)) {
+    } else if (grammarInfo.isKeyword(name) && grammarInfo.getKeywordRules().contains(name)) {
       return parserGeneratorHelper.getKeyRuleName(name);
     } else {
-      return parserGeneratorHelper.getLexSymbolName(name.intern());
+      return parserGeneratorHelper.getCachedLexSymbolName(name.intern()).orElse("##no-usagename-for-rulename");
     }
   }
 
@@ -779,13 +779,16 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
       }
       return parserGeneratorHelper.getKeyRuleName(constant.getKeyConstant().getString(0));
     } else if (constant.isPresentTokenConstant()) {
-      return parserGeneratorHelper.getLexSymbolName(constant.getTokenConstant().getString());
-    } else if (!grammarInfo.isKeyword(constant.getName(), parserGeneratorHelper.getGrammarSymbol())) {
-      return parserGeneratorHelper.getLexSymbolName(constant.getName());
+      return parserGeneratorHelper.getCachedLexSymbolName(constant.getTokenConstant().getString())
+              .orElse("##no-usagename-rulename-tc");
+    } else if (!grammarInfo.isKeyword(constant.getName())) {
+      return parserGeneratorHelper.getCachedLexSymbolName(constant.getName())
+              .orElse("##no-usagename-rulename-k");
     } else if (grammarInfo.getKeywordRules().contains(constant.getName())) {
       return parserGeneratorHelper.getKeyRuleName(constant.getName());
     } else {
-      return parserGeneratorHelper.getLexSymbolName(constant.getName());
+      return parserGeneratorHelper.getCachedLexSymbolName(constant.getName())
+              .orElse("##no-usagename-rulename");
     }
   }
 

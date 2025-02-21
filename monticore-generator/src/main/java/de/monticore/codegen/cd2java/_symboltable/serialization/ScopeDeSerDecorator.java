@@ -252,7 +252,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
       Optional<HookPoint> impl = bitser
-          .getDeserialHook(attr.printType(), attr.getName(), "scopeJson");
+          .getDeserialHook(attr.printType(), attr.getName(), "scopeJson", scopeParam.getName());
       if (impl.isPresent()) {
         this.replaceTemplate(EMPTY_BODY, method, impl.get());
         String deprecatedWrapperImpl = "return this." + methodName +
@@ -301,7 +301,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     //add local symbols
     for (ASTCDType prod : symbolTableService.getSymbolDefiningProds(symbolInput)) {
       String name = symbolTableService.getSymbolFullName(prod);
-      boolean spansScope = symbolTableService.hasScopeStereotype(prod.getModifier());
+      boolean spansScope = symbolTableService.hasScopeStereotype(prod.getModifier())
+              || symbolTableService.hasInheritedScopeStereotype(prod.getModifier());
       symbolMap.put(name, spansScope);
     }
 
@@ -311,8 +312,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           String name = symbolTableService
               .getSymbolFullName(type.getAstNode(), cdDefinitionSymbol);
-          boolean spansScope = symbolTableService
-              .hasScopeStereotype(type.getAstNode().getModifier());
+          boolean spansScope = symbolTableService.hasScopeStereotype(type.getAstNode().getModifier())
+                  || symbolTableService.hasInheritedScopeStereotype(type.getAstNode().getModifier());
           symbolMap.put(name, spansScope);
         }
       }

@@ -12,7 +12,9 @@ import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeVi
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorTypeVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
+import de.monticore.expressions.javaclassexpressions.types3.JavaClassExpressionsTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
+import de.monticore.expressions.streamexpressions.types3.StreamExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
@@ -61,6 +63,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   }
 
   public MapBasedTypeCheck3 initTypeCheck3() {
+    WithinScopeBasicSymbolsResolver.init();
+    WithinTypeBasicSymbolsResolver.init();
+    TypeVisitorOperatorCalculator.init();
+    TypeContextCalculator.init();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = createTraverser(type4Ast, ctx4Ast);
@@ -91,6 +97,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   }
 
   public MapBasedTypeCheck3 initTypeCheck3ForOO() {
+    OOWithinScopeBasicSymbolsResolver.init();
+    OOWithinTypeBasicSymbolsResolver.init();
+    TypeVisitorOperatorCalculator.init();
+    TypeContextCalculator.init();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = createTraverserForOO(type4Ast, ctx4Ast);
@@ -121,6 +131,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   }
 
   public MapBasedTypeCheck3 initTypeCheck3ForOOWithConstructors() {
+    OOWithinScopeBasicSymbolsResolver.init();
+    OOWithinTypeBasicSymbolsResolver.init();
+    TypeVisitorOperatorCalculator.init();
+    TypeContextCalculator.init();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = createTraverserForOOWithConstructors(type4Ast, ctx4Ast);
@@ -151,6 +165,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     else if (visitors.cTTIExpressionBasis != null) {
       visitors.cTTIExpressionBasis.setType4Ast(type4Ast);
     }
+    if (visitors.derJavaClassExpressions != null) {
+      visitors.derJavaClassExpressions.setType4Ast(type4Ast);
+    }
     if (visitors.derLambdaExpressions != null) {
       visitors.derLambdaExpressions.setType4Ast(type4Ast);
     }
@@ -165,6 +182,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     }
     else if (visitors.cTTISetExpressions != null) {
       visitors.cTTISetExpressions.setType4Ast(type4Ast);
+    }
+    if (visitors.derStreamExpressions != null) {
+      visitors.derStreamExpressions.setType4Ast(type4Ast);
     }
     if (visitors.derTupleExpressions != null) {
       visitors.derTupleExpressions.setType4Ast(type4Ast);
@@ -240,10 +260,12 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derBitExpressions = new BitExpressionsTypeVisitor();
     visitors.cTTICommonExpressions = new CommonExpressionsCTTIVisitor();
     visitors.cTTIExpressionBasis = new ExpressionBasisCTTIVisitor();
+    visitors.derJavaClassExpressions = new JavaClassExpressionsTypeVisitor();
     visitors.derLambdaExpressions = new LambdaExpressionsTypeVisitor();
     visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
     visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
     visitors.cTTISetExpressions = new SetExpressionsCTTIVisitor();
+    visitors.derStreamExpressions = new StreamExpressionsTypeVisitor();
     visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
     visitors.cTTIUglyExpressions = new UglyExpressionsCTTIVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
@@ -269,10 +291,12 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derBitExpressions = new BitExpressionsTypeVisitor();
     visitors.derCommonExpressions = new CommonExpressionsTypeVisitor();
     visitors.derExpressionBasis = new ExpressionBasisTypeVisitor();
+    visitors.derJavaClassExpressions = new JavaClassExpressionsTypeVisitor();
     visitors.derLambdaExpressions = new LambdaExpressionsTypeVisitor();
     visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
     visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
     visitors.derSetExpressions = new SetExpressionsTypeVisitor();
+    visitors.derStreamExpressions = new StreamExpressionsTypeVisitor();
     visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
     visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
@@ -298,28 +322,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     VisitorList visitors = constructVisitorsNoCTTI();
     visitors.derCommonExpressions =
         new CommonExpressionsTypeIdAsConstructorTypeVisitor();
-    OOWithinTypeBasicSymbolsResolver withinTypeBasicSymbolsResolver =
-        new OOWithinTypeBasicSymbolsResolver();
-    WithinScopeBasicSymbolsResolver withinScopeResolver =
-        new OOWithinScopeBasicSymbolsResolver();
-    visitors.derCommonExpressions.setWithinTypeBasicSymbolsResolver(
-        withinTypeBasicSymbolsResolver
-    );
-    visitors.derCommonExpressions.setWithinScopeResolver(
-        withinScopeResolver
-    );
-    visitors.derExpressionBasis.setWithinScopeResolver(
-        withinScopeResolver
-    );
-    visitors.derUglyExpressions.setOOWithinTypeBasicSymbolsResolver(
-        withinTypeBasicSymbolsResolver
-    );
-    visitors.synMCBasicTypes.setWithinTypeResolver(
-        withinTypeBasicSymbolsResolver
-    );
-    visitors.synMCBasicTypes.setWithinScopeResolver(
-        withinScopeResolver
-    );
     return visitors;
   }
 
@@ -366,6 +368,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
       traverser.add4ExpressionsBasis(visitors.cTTIExpressionBasis);
       traverser.setExpressionsBasisHandler(visitors.cTTIExpressionBasis);
     }
+    if (visitors.derJavaClassExpressions != null) {
+      traverser.add4JavaClassExpressions(visitors.derJavaClassExpressions);
+    }
     if (visitors.derLambdaExpressions != null) {
       traverser.add4LambdaExpressions(visitors.derLambdaExpressions);
     }
@@ -381,6 +386,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     else if (visitors.cTTISetExpressions != null) {
       traverser.add4SetExpressions(visitors.cTTISetExpressions);
       traverser.setSetExpressionsHandler(visitors.cTTISetExpressions);
+    }
+    if (visitors.derStreamExpressions != null) {
+      traverser.add4StreamExpressions(visitors.derStreamExpressions);
     }
     if (visitors.derTupleExpressions != null) {
       traverser.add4TupleExpressions(visitors.derTupleExpressions);
@@ -452,6 +460,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
 
     public ExpressionBasisCTTIVisitor cTTIExpressionBasis;
 
+    public JavaClassExpressionsTypeVisitor derJavaClassExpressions;
+
     public LambdaExpressionsTypeVisitor derLambdaExpressions;
 
     public OCLExpressionsTypeVisitor derOCLExpressions;
@@ -461,6 +471,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public SetExpressionsTypeVisitor derSetExpressions;
 
     public SetExpressionsCTTIVisitor cTTISetExpressions;
+
+    public StreamExpressionsTypeVisitor derStreamExpressions;
 
     public TupleExpressionsTypeVisitor derTupleExpressions;
 

@@ -23,7 +23,6 @@ import de.monticore.types.check.SymTypeOfTuple;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.FunctionRelations;
-import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.TypeVisitorLifting;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
@@ -64,36 +63,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
 
   protected CommonExpressionsTraverser traverser;
 
-  protected TypeVisitorOperatorCalculator operatorCalculator;
-
-  protected WithinTypeBasicSymbolsResolver withinTypeResolver;
-
-  protected TypeContextCalculator typeCtxCalc;
-
-  // should be the same as used in DeriveSymTypeOfExpressionBasis
-  protected WithinScopeBasicSymbolsResolver withinScopeResolver;
-
-  protected CommonExpressionsTypeVisitor(
-      TypeVisitorOperatorCalculator operatorCalculator,
-      WithinTypeBasicSymbolsResolver withinTypeResolver,
-      TypeContextCalculator typeCtxCalc,
-      WithinScopeBasicSymbolsResolver withinScopeResolver) {
-    this.operatorCalculator = operatorCalculator;
-    this.withinTypeResolver = withinTypeResolver;
-    this.typeCtxCalc = typeCtxCalc;
-    this.withinScopeResolver = withinScopeResolver;
-  }
-
-  public CommonExpressionsTypeVisitor() {
-    // default values
-    this(
-        new TypeVisitorOperatorCalculator(),
-        new WithinTypeBasicSymbolsResolver(),
-        new TypeContextCalculator(),
-        new WithinScopeBasicSymbolsResolver()
-    );
-  }
-
   @Override
   public CommonExpressionsTraverser getTraverser() {
     return traverser;
@@ -104,47 +73,35 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     this.traverser = traverser;
   }
 
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setOperatorCalculator(
       TypeVisitorOperatorCalculator operatorCalculator) {
-    this.operatorCalculator = operatorCalculator;
-  }
-
-  public void setWithinTypeBasicSymbolsResolver(
-      WithinTypeBasicSymbolsResolver withinTypeResolver) {
-    this.withinTypeResolver = withinTypeResolver;
-  }
-
-  public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
-    this.typeCtxCalc = typeCtxCalc;
-  }
-
-  public void setWithinScopeResolver(
-      WithinScopeBasicSymbolsResolver withinScopeResolver) {
-    this.withinScopeResolver = withinScopeResolver;
   }
 
   /**
-   * @deprecated use {@link #setWithinScopeResolver}
+   * @deprecated is now a static delegate
    */
-  @Deprecated
-  public void setNameExpressionTypeCalculator(NameExpressionTypeCalculator resolver) {
-    setWithinScopeResolver(resolver);
+  @Deprecated(forRemoval = true)
+  public void setWithinTypeBasicSymbolsResolver(
+      WithinTypeBasicSymbolsResolver withinTypeResolver) {
   }
 
-  protected TypeVisitorOperatorCalculator getOperatorCalculator() {
-    return operatorCalculator;
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
+  public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
   }
 
-  protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
-    return withinTypeResolver;
-  }
-
-  protected TypeContextCalculator getTypeCtxCalc() {
-    return typeCtxCalc;
-  }
-
-  protected WithinScopeBasicSymbolsResolver getWithinScopeResolver() {
-    return withinScopeResolver;
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
+  public void setWithinScopeResolver(
+      WithinScopeBasicSymbolsResolver withinScopeResolver) {
   }
 
   // Prefix
@@ -154,7 +111,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression result = getTypeForPrefixOrLogError(
         NUMERIC_PREFIX_ERROR_CODE, expr, "+",
-        getOperatorCalculator().plusPrefix(inner), inner
+        TypeVisitorOperatorCalculator.plusPrefix(inner), inner
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -164,7 +121,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression result = getTypeForPrefixOrLogError(
         NUMERIC_PREFIX_ERROR_CODE, expr, "-",
-        getOperatorCalculator().minusPrefix(inner), inner
+        TypeVisitorOperatorCalculator.minusPrefix(inner), inner
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -177,7 +134,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().plus(left, right), left, right
+        TypeVisitorOperatorCalculator.plus(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -188,7 +145,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().multiply(left, right), left, right
+        TypeVisitorOperatorCalculator.multiply(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -199,7 +156,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().divide(left, right), left, right
+        TypeVisitorOperatorCalculator.divide(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -210,7 +167,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().minus(left, right), left, right
+        TypeVisitorOperatorCalculator.minus(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -221,7 +178,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         ARITHMETIC_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().modulo(left, right), left, right
+        TypeVisitorOperatorCalculator.modulo(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -234,7 +191,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().lessEqual(left, right), left, right
+        TypeVisitorOperatorCalculator.lessEqual(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -245,7 +202,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().greaterEqual(left, right), left, right
+        TypeVisitorOperatorCalculator.greaterEqual(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -256,7 +213,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().lessThan(left, right), left, right
+        TypeVisitorOperatorCalculator.lessThan(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -267,7 +224,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         NUMERIC_COMPARISON_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().greaterThan(left, right), left, right
+        TypeVisitorOperatorCalculator.greaterThan(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -280,7 +237,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         EQUALITY_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().equality(left, right), left, right
+        TypeVisitorOperatorCalculator.equality(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -291,7 +248,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         EQUALITY_OPERATOR_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().inequality(left, right), left, right
+        TypeVisitorOperatorCalculator.inequality(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -304,7 +261,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         BOOLEAN_CONDITIONAL_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().booleanAnd(left, right), left, right
+        TypeVisitorOperatorCalculator.booleanAnd(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -315,7 +272,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
     SymTypeExpression result = getTypeForInfixOrLogError(
         BOOLEAN_CONDITIONAL_ERROR_CODE, expr, expr.getOperator(),
-        getOperatorCalculator().booleanOr(left, right), left, right
+        TypeVisitorOperatorCalculator.booleanOr(left, right), left, right
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -326,7 +283,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression result = getTypeForPrefixOrLogError(
         "0xB0164", expr, "!",
-        getOperatorCalculator().logicalNot(inner), inner
+        TypeVisitorOperatorCalculator.logicalNot(inner), inner
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -371,7 +328,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression result = getTypeForPrefixOrLogError(
         "0xB0175", expr, "~",
-        getOperatorCalculator().bitwiseComplement(inner), inner
+        TypeVisitorOperatorCalculator.bitwiseComplement(inner), inner
     );
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -857,9 +814,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     else {
       SymTypeExpression innerAsExprType =
           getType4Ast().getPartialTypeOfExpr(expr.getExpression());
-      if (getWithinTypeResolver().canResolveIn(innerAsExprType)) {
+      if (WithinTypeBasicSymbolsResolver.canResolveIn(innerAsExprType)) {
         AccessModifier modifier = innerAsExprType.hasTypeInfo() ?
-            getTypeCtxCalc().getAccessModifier(
+            TypeContextCalculator.getAccessModifier(
                 innerAsExprType.getTypeInfo(), expr.getEnclosingScope()
             ) : AccessModifier.ALL_INCLUSION;
         type = resolveVariablesAndFunctionsWithinType(
@@ -951,9 +908,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     else {
       SymTypeExpression innerAsTypeIdType =
           getType4Ast().getPartialTypeOfTypeIdForName(expr.getExpression());
-      if (getWithinTypeResolver().canResolveIn(innerAsTypeIdType)) {
+      if (WithinTypeBasicSymbolsResolver.canResolveIn(innerAsTypeIdType)) {
         AccessModifier modifier = innerAsTypeIdType.hasTypeInfo() ?
-            getTypeCtxCalc().getAccessModifier(
+            TypeContextCalculator.getAccessModifier(
                 innerAsTypeIdType.getTypeInfo(),
                 expr.getEnclosingScope(),
                 true
@@ -1041,14 +998,14 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     else {
       SymTypeExpression innerAsTypeIdType =
           getType4Ast().getPartialTypeOfTypeIdForName(expr.getExpression());
-      if (getWithinTypeResolver().canResolveIn(innerAsTypeIdType)) {
+      if (WithinTypeBasicSymbolsResolver.canResolveIn(innerAsTypeIdType)) {
         AccessModifier modifier = innerAsTypeIdType.hasTypeInfo() ?
-            getTypeCtxCalc().getAccessModifier(
+            TypeContextCalculator.getAccessModifier(
                 innerAsTypeIdType.getTypeInfo(),
                 expr.getEnclosingScope(),
                 true
             ) : StaticAccessModifier.STATIC;
-        type = getWithinTypeResolver().resolveType(
+        type = WithinTypeBasicSymbolsResolver.resolveType(
             innerAsTypeIdType,
             name,
             modifier,
@@ -1110,8 +1067,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     Optional<String> nameOpt = getExprAsQName(expr);
     Optional<SymTypeExpression> type;
     if (nameOpt.isPresent()) {
-      type = getWithinScopeResolver().
-          resolveNameAsExpr(
+      type = WithinScopeBasicSymbolsResolver
+          .resolveNameAsExpr(
               getAsBasicSymbolsScope(expr.getEnclosingScope()),
               nameOpt.get()
           );
@@ -1127,7 +1084,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected Optional<SymTypeExpression> calculateExprQName(
       ASTNameExpression expr) {
-    return getWithinScopeResolver().resolveNameAsExpr(
+    return WithinScopeBasicSymbolsResolver.resolveNameAsExpr(
         getAsBasicSymbolsScope(expr.getEnclosingScope()),
         expr.getName()
     );
@@ -1143,7 +1100,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     Optional<String> nameOpt = getExprAsQName(expr);
     Optional<SymTypeExpression> type;
     if (nameOpt.isPresent()) {
-      type = getWithinScopeResolver().resolveType(
+      type = WithinScopeBasicSymbolsResolver.resolveType(
           getAsBasicSymbolsScope(expr.getEnclosingScope()),
           nameOpt.get()
       );
@@ -1159,7 +1116,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected Optional<SymTypeExpression> calculateTypeIdQName(
       ASTNameExpression expr) {
-    return getWithinScopeResolver().resolveType(
+    return WithinScopeBasicSymbolsResolver.resolveType(
         getAsBasicSymbolsScope(expr.getEnclosingScope()),
         expr.getName()
     );
@@ -1180,7 +1137,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   ) {
     Set<SymTypeExpression> types = new HashSet<>();
     Optional<SymTypeExpression> variable =
-        getWithinTypeResolver().resolveVariable(innerAsExprType,
+        WithinTypeBasicSymbolsResolver.resolveVariable(innerAsExprType,
             name,
             modifier,
             varPredicate
@@ -1189,7 +1146,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       types.add(variable.get());
     }
     Collection<SymTypeOfFunction> functions =
-        getWithinTypeResolver().resolveFunctions(
+        WithinTypeBasicSymbolsResolver.resolveFunctions(
             innerAsExprType,
             name,
             modifier,

@@ -8,10 +8,10 @@ import de.monticore.cdbasis._ast.ASTCDBasisNode;
 import de.monticore.generating.templateengine.reporting.commons.Layouter;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.types.MCSimpleGenericTypesNodeIdentHelper;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.Names;
 
@@ -111,7 +111,7 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
   }
   public String getIdent(ASTMCType a)
   {
-    return format(a.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()), Layouter.nodeName(a));
+    return format(Grammar_WithConceptsMill.prettyPrint(a, false), Layouter.nodeName(a));
   }
   /**
    * @see de.monticore.generating.templateengine.reporting.commons.IASTNodeIdentHelper#getIdent(de.monticore.ast.ASTNode)

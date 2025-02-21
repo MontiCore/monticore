@@ -2,8 +2,7 @@
 package de.monticore.types3.generics.bounds;
 
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.generics.TypeParameterRelations;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -21,25 +20,23 @@ import java.util.Optional;
  */
 public class TypeEqualityBound extends Bound {
 
-  protected SymTypeVariable firstType;
+  protected SymTypeInferenceVariable firstType;
   protected SymTypeExpression secondType;
 
   public TypeEqualityBound(
       SymTypeExpression typeA,
       SymTypeExpression typeB
   ) {
-    if (TypeParameterRelations.isInferenceVariable(typeA) &&
-        TypeParameterRelations.isInferenceVariable(typeB)) {
-      SymTypeVariable typeVarA = typeA.asTypeVariable();
-      SymTypeVariable typeVarB = typeB.asTypeVariable();
+    if (typeA.isInferenceVariable() && typeB.isInferenceVariable()) {
+      SymTypeInferenceVariable typeVarA = typeA.asInferenceVariable();
+      SymTypeInferenceVariable typeVarB = typeB.asInferenceVariable();
       // assure a predefined order, no matter whether it has been
       // created with (A,B) oder (B,A)
       // this is used to
       // 1. find duplicates easier
       // 2. reduce the number of possibilities how this is printed to a user
       // 3. reduce cases that can lead to hard to spot errors
-      if (typeVarA.getFreeVarIdentifier()
-          .compareTo(typeVarB.getFreeVarIdentifier()) < 0) {
+      if (typeVarA._internal_getID() < typeVarB._internal_getID()) {
         this.firstType = typeVarA;
         this.secondType = typeVarB;
       }
@@ -48,12 +45,12 @@ public class TypeEqualityBound extends Bound {
         this.secondType = typeVarA;
       }
     }
-    else if (TypeParameterRelations.isInferenceVariable(typeA)) {
-      this.firstType = typeA.asTypeVariable();
+    else if (typeA.isInferenceVariable()) {
+      this.firstType = typeA.asInferenceVariable();
       this.secondType = typeB;
     }
-    else if (TypeParameterRelations.isInferenceVariable(typeB)) {
-      this.firstType = typeB.asTypeVariable();
+    else if (typeB.isInferenceVariable()) {
+      this.firstType = typeB.asInferenceVariable();
       this.secondType = typeA;
     }
     else {
@@ -67,7 +64,7 @@ public class TypeEqualityBound extends Bound {
   protected TypeEqualityBound() {
   }
 
-  public SymTypeVariable getFirstType() {
+  public SymTypeInferenceVariable getFirstType() {
     return firstType;
   }
 
@@ -80,9 +77,9 @@ public class TypeEqualityBound extends Bound {
    * returns the Bound with its types order exchanged.
    */
   public Optional<TypeEqualityBound> getFlipped() {
-    if (TypeParameterRelations.isInferenceVariable(getSecondType())) {
+    if (getSecondType().isInferenceVariable()) {
       TypeEqualityBound flipped = new TypeEqualityBound();
-      flipped.firstType = getSecondType().asTypeVariable();
+      flipped.firstType = getSecondType().asInferenceVariable();
       flipped.secondType = getFirstType();
       return Optional.of(flipped);
     }

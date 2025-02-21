@@ -3,6 +3,7 @@ package de.monticore.types3.generics.util;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
@@ -37,7 +38,6 @@ import java.util.stream.Collectors;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersectionOrDefault;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnionOrDefault;
 
 public class CompileTimeTypeCalculator {
@@ -508,7 +508,7 @@ public class CompileTimeTypeCalculator {
               .collect(Collectors.joining(", "))
               + " cannot be used to call the function."
               + " The compile-time function type for the expression "
-              + "has been calculated to be " + targetFunc.printFullName()
+              + "has been calculated to be " + printFunctionForLog(targetFunc)
               + ".",
           callExpr.get_SourcePositionStart(),
           callExpr.get_SourcePositionEnd()
@@ -546,21 +546,20 @@ public class CompileTimeTypeCalculator {
     // we expect a function, thus get only the functions (filter out vars)
     List<SymTypeOfFunction> resolvedFuncs =
         getFunctionsOfResolvedType(resolvedType);
-    List<SymTypeOfFunction> fixArityFuncs =
-        fixArities(resolvedFuncs, funcInfo.getParameterCount());
-    List<SymTypeOfFunction> potentiallyApplicableFuncs = new ArrayList<>();
-    for (SymTypeOfFunction func : fixArityFuncs) {
-      if (FunctionRelations.internal_canPotentiallyBeCalledWith(func, funcInfo)) {
-        potentiallyApplicableFuncs.add(func);
-      }
-    }
-
+    Optional<List<SymTypeOfFunction>> fixArityFuncsOpt =
+        fixAritiesOrLogError(resolvedFuncs, funcInfo.getParameterCount());
+    Optional<List<SymTypeOfFunction>> potentiallyApplicableFuncsOpt =
+        fixArityFuncsOpt.flatMap(fixArityFuncs ->
+            getPotentiallyApplicableFunctionsOrLogError(fixArityFuncs, funcInfo)
+        );
     // Note: this MUST(!) be Map that uses object identity;
     // otherwise, the case is not identified
     // when there are two identical functions (modulo symbols) resolved.
     Optional<Map<SymTypeOfFunction, InferenceResult>> func2InferenceResultOpt =
-        getApplicableFunctionsOrLogError(
-            potentiallyApplicableFuncs, funcInfo
+        potentiallyApplicableFuncsOpt.flatMap(potentiallyApplicableFuncs ->
+            getApplicableFunctionsOrLogError(
+                potentiallyApplicableFuncs, funcInfo
+            )
         );
     if (func2InferenceResultOpt.isEmpty()) {
       InferenceResult result = new InferenceResult();
@@ -590,7 +589,7 @@ public class CompileTimeTypeCalculator {
         // without relying on target type -> pertinent to applicability
         // -> calculate the type
         Log.trace("The most specific function "
-                + mostSpecificFunc.printFullName()
+                + printFunctionForLog(mostSpecificFunc)
                 + "contains no inference variables in the return type."
                 + "Thus switching modes: " + mode.name()
                 + " -> " + InferenceVisitorMode.TYPE_CHECKING.name(),
@@ -628,7 +627,7 @@ public class CompileTimeTypeCalculator {
     ) {
       Log.error("0xFD452 internal error: "
           + "entered final phase of calculating an invocation type for "
-          + infResult.getResolvedFunction().printFullName()
+          + printFunctionForLog(infResult.getResolvedFunction())
           + ", during this, expected a target type without free variables"
           + ", but got " + inferenceContext.getTargetType().printFullName()
       );
@@ -802,6 +801,34 @@ public class CompileTimeTypeCalculator {
   }
 
   /**
+   * s. {@link FunctionRelations#internal_canPotentiallyBeCalledWith(SymTypeOfFunction, PartialFunctionInfo)}
+   * logs error if no functions exist that are callable.
+   */
+  protected Optional<List<SymTypeOfFunction>> getPotentiallyApplicableFunctionsOrLogError(
+      List<SymTypeOfFunction> fixedArityFunctions,
+      PartialFunctionInfo funcInfo
+  ) {
+    List<SymTypeOfFunction> potentiallyApplicableFuncs = new ArrayList<>();
+    for (SymTypeOfFunction func : fixedArityFunctions) {
+      if (FunctionRelations.internal_canPotentiallyBeCalledWith(func, funcInfo)) {
+        potentiallyApplicableFuncs.add(func);
+      }
+    }
+    if (potentiallyApplicableFuncs.isEmpty()) {
+      Log.error("0xFD44E no applicable function found!"
+          + System.lineSeparator() + "Arguments pertinent to applicability:"
+          + printPertinentToApplicabilityArgInfo(funcInfo) + System.lineSeparator()
+          + " potentially applicable functions (with regards to arity): "
+          + System.lineSeparator() + fixedArityFunctions.stream()
+          .map(this::printFunctionForLog)
+          .collect(Collectors.joining(System.lineSeparator()))
+      );
+      return Optional.empty();
+    }
+    return Optional.of(potentiallyApplicableFuncs);
+  }
+
+  /**
    * takes potentially applicable functions (s. FunctionRelations)
    * and returns applicable functions and their inference results.
    *
@@ -830,27 +857,40 @@ public class CompileTimeTypeCalculator {
       }
     }
     if (func2InferenceResult.isEmpty()) {
-      StringBuilder argInfo = new StringBuilder();
-      for (int i = 0; i < funcInfo.getParameterCount(); i++) {
-        if (funcInfo.hasArgumentType(i)) {
-          argInfo
-              .append(System.lineSeparator())
-              .append(i)
-              .append(": ")
-              .append(funcInfo.getArgumentType(i).printFullName());
-        }
-      }
       Log.error("0xFD444 no applicable function found!"
           + System.lineSeparator() + "Arguments pertinent to applicability:"
-          + argInfo + System.lineSeparator()
+          + printPertinentToApplicabilityArgInfo(funcInfo) + System.lineSeparator()
           + " potentially applicable functions (before inference): "
           + System.lineSeparator() + potentiallyApplicableFuncs.stream()
-          .map(SymTypeExpression::printFullName)
+          .map(this::printFunctionForLog)
           .collect(Collectors.joining(System.lineSeparator()))
       );
       return Optional.empty();
     }
     return Optional.of(func2InferenceResult);
+  }
+
+  /**
+   * Fixes arity to the specified value.
+   * Filters out all functions that cannot have the specified arity,
+   * and logs an error if none can have the arity.
+   */
+  protected Optional<List<SymTypeOfFunction>> fixAritiesOrLogError(
+      List<SymTypeOfFunction> functions,
+      int parameterCount
+  ) {
+    List<SymTypeOfFunction> funcsFixedArity =
+        fixArities(functions, parameterCount);
+    if (funcsFixedArity.isEmpty()) {
+      Log.error("0xFD44D called function with " + parameterCount
+          + " arguments, but no function found has the required arity:"
+          + System.lineSeparator() + functions.stream()
+          .map(this::printFunctionForLog)
+          .collect(Collectors.joining(System.lineSeparator()))
+      );
+      return Optional.empty();
+    }
+    return Optional.of(funcsFixedArity);
   }
 
   /**
@@ -874,28 +914,29 @@ public class CompileTimeTypeCalculator {
     List<Bound> bounds = new ArrayList<>();
     SymTypeOfFunction func = inferenceResult.getResolvedFunction();
     if (func.hasSymbol()) {
-      Map<SymTypeVariable, SymTypeVariable> typeParamReplaceMap =
+      Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
           getParamReplaceMap(func);
-      for (Map.Entry<SymTypeVariable, SymTypeVariable> param2InfVar :
+      for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> param2InfVar :
           typeParamReplaceMap.entrySet()
       ) {
-        SymTypeVariable typeVar = param2InfVar.getValue();
+        SymTypeInferenceVariable infVar = param2InfVar.getValue();
         SymTypeVariable parameter = param2InfVar.getKey();
         SymTypeExpression upperBound = parameter.getUpperBound();
         SymTypeExpression upperBoundWithInfVars = TypeParameterRelations
             .replaceTypeVariables(upperBound, typeParamReplaceMap);
-        bounds.add(new SubTypingBound(typeVar, upperBoundWithInfVars));
+        bounds.add(new SubTypingBound(infVar, upperBoundWithInfVars));
       }
     }
     else {
       // no symbol => no restrictive parameter bounds,
-      // but, the bound typeVar <: Top is required, thus added here.
+      // unless given as explicitly,
+      // but, at least the bound typeVar <: Top is required, thus added here.
       // this function type most likely has been created
       // as a stand-in for e.g., an operator.
-      List<SymTypeVariable> typeVars = TypeParameterRelations
+      List<SymTypeInferenceVariable> typeVars = TypeParameterRelations
           .getIncludedInferenceVariables(func);
-      for (SymTypeVariable typeVar : typeVars) {
-        bounds.add(new SubTypingBound(typeVar, createTopType()));
+      for (SymTypeInferenceVariable typeVar : typeVars) {
+        bounds.add(new SubTypingBound(typeVar, typeVar.getUpperBound()));
       }
     }
     // can always calculate B0 (assuming no internal error)
@@ -947,7 +988,7 @@ public class CompileTimeTypeCalculator {
       Log.error("0xFD446 unable to select a most specific function."
           + System.lineSeparator() + " Applicable functions:"
           + System.lineSeparator() + func2InferenceResult.keySet().stream()
-          .map(SymTypeExpression::printFullName)
+          .map(this::printFunctionForLog)
           .collect(Collectors.joining(System.lineSeparator()))
       );
       InferenceResult result = new InferenceResult();
@@ -957,7 +998,7 @@ public class CompileTimeTypeCalculator {
     else {
       Log.trace("inferCalledFunction(): Applicable functions:"
               + System.lineSeparator() + func2InferenceResult.keySet().stream()
-              .map(SymTypeExpression::printFullName)
+              .map(this::printFunctionForLog)
               .collect(Collectors.joining(System.lineSeparator()))
           , LOG_NAME);
     }
@@ -981,7 +1022,7 @@ public class CompileTimeTypeCalculator {
     if (compatibilityInstantiation.isEmpty()) {
       Log.error("0xFD451 the return type"
           + " of the selected compile-time declaration "
-          + infResult.getResolvedFunction().printFullName()
+          + printFunctionForLog(infResult.getResolvedFunction())
           + " (partially instantiated to "
           + infResult.getApplicabilityInstantiation().get().printFullName()
           + ") is not compatible with the target type "
@@ -997,7 +1038,7 @@ public class CompileTimeTypeCalculator {
     if (funcInfo.hasReturnTargetType()) {
       Log.trace("The return type"
               + " of the selected compile-time declaration "
-              + infResult.getResolvedFunction().printFullName()
+              + printFunctionForLog(infResult.getResolvedFunction())
               + " (previously partially instantiated to "
               + infResult.getApplicabilityInstantiation().get().printFullName()
               + ") is compatible with the target type "
@@ -1058,7 +1099,7 @@ public class CompileTimeTypeCalculator {
     List<ExpressionCompatibilityConstraint> constraints = new ArrayList<>();
     SymTypeOfFunction func = inferenceResult.getResolvedFunction();
     Log.trace("START collecting invocation type constraints for "
-            + func.printFullName(),
+            + printFunctionForLog(func),
         LOG_NAME
     );
     for (int i = 0; i < funcInfo.getParameterCount(); i++) {
@@ -1100,7 +1141,7 @@ public class CompileTimeTypeCalculator {
       }
     }
     Log.trace("END collecting invocation type constraints for "
-            + func.printFullName() + ":" + System.lineSeparator()
+            + printFunctionForLog(func) + ":" + System.lineSeparator()
             + printConstraints(constraints),
         LOG_NAME
     );
@@ -1125,7 +1166,7 @@ public class CompileTimeTypeCalculator {
     infResult.setLastInferenceMode(InferenceVisitorMode.TYPE_CHECKING);
     Optional<SymTypeOfFunction> invocationType = infResult.getInvocationType();
     String logInfo = " for compile-time declaration "
-        + infResult.getResolvedFunction().printFullName()
+        + printFunctionForLog(infResult.getResolvedFunction())
         + (funcInfo.hasReturnTargetType()
         ? " with the target type "
         + funcInfo.getReturnTargetType().printFullName()
@@ -1294,28 +1335,27 @@ public class CompileTimeTypeCalculator {
    * with the inference variables.
    * In JLS 21 18.1.3: [P1:=α1,...,Pn:=αn]
    */
-  protected Map<SymTypeVariable, SymTypeVariable> getParamReplaceMap(
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> getParamReplaceMap(
       SymTypeOfFunction func
   ) {
-    List<SymTypeVariable> typeVars = func.getTypeArguments().stream()
-        .map(SymTypeExpression::asTypeVariable)
+    List<SymTypeInferenceVariable> infVars = func.getTypeArguments().stream()
+        .map(SymTypeExpression::asInferenceVariable)
         .collect(Collectors.toList());
     SymTypeOfFunction declaredFunc = func.getDeclaredType();
     List<SymTypeVariable> typeParams = declaredFunc.getTypeArguments().stream()
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
-    Map<SymTypeVariable, SymTypeVariable> typeParamReplaceMap =
+    Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
         new TreeMap<>(new SymTypeExpressionComparator());
     for (int i = 0; i < typeParams.size(); i++) {
-      typeParamReplaceMap.put(typeParams.get(i), typeVars.get(i));
+      typeParamReplaceMap.put(typeParams.get(i), infVars.get(i));
     }
-    for (int i = 0; i < typeVars.size(); i++) {
-      SymTypeVariable typeVar = typeVars.get(i);
+    for (int i = 0; i < infVars.size(); i++) {
+      SymTypeInferenceVariable infVar = infVars.get(i);
       SymTypeVariable parameter = typeParams.get(i);
       // small check asserting correct input
-      if (!TypeParameterRelations.isInferenceVariable(typeVar) ||
-          TypeParameterRelations.isInferenceVariable(parameter) ||
-          !SymTypeRelations.isBottom(parameter.getLowerBound())) {
+      if (!infVar.isInferenceVariable() ||
+          parameter.isInferenceVariable()) {
         Log.error("0xFD147 internal error: unexpected input to fill B0");
       }
     }
@@ -1332,6 +1372,25 @@ public class CompileTimeTypeCalculator {
     return constraints.stream()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
+  }
+
+  protected String printPertinentToApplicabilityArgInfo(PartialFunctionInfo funcInfo) {
+    StringBuilder argInfo = new StringBuilder();
+    for (int i = 0; i < funcInfo.getParameterCount(); i++) {
+      if (funcInfo.hasArgumentType(i)) {
+        argInfo
+            .append(System.lineSeparator())
+            .append(i)
+            .append(": ")
+            .append(funcInfo.getArgumentType(i).printFullName());
+      }
+    }
+    return argInfo.toString();
+  }
+
+  protected String printFunctionForLog(SymTypeOfFunction func) {
+    return func.printFullName()
+        + (func.hasSymbol() ? " [" + func.getSymbol().getFullName() + "]" : "");
   }
 
 }

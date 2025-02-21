@@ -15,6 +15,7 @@ import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfUnion;
@@ -44,10 +45,24 @@ public class WithinTypeBasicSymbolsResolver {
 
   protected static final String LOG_NAME = "WithinTypeResolving";
 
+  protected static WithinTypeBasicSymbolsResolver delegate;
+
+  // methods
+
   /**
    * resolves within a type including supertypes
    */
-  public Optional<SymTypeExpression> resolveVariable(
+  public static Optional<SymTypeExpression> resolveVariable(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate
+  ) {
+    return getDelegate().
+        _resolveVariable(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> _resolveVariable(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -59,15 +74,23 @@ public class WithinTypeBasicSymbolsResolver {
     }
     // search in this scope
     else {
-      Optional<VariableSymbol> resolvedSymbol = resolveVariableLocally(
+      Optional<VariableSymbol> resolvedSymbolOpt = resolveVariableLocally(
           spannedScopeOpt.get(),
           name,
           accessModifier,
           predicate
       );
-      resolvedSymType = resolvedSymbol.map(
-          s -> replaceVariablesIfNecessary(thisType, s.getType())
-      );
+      if (resolvedSymbolOpt.isPresent()) {
+        VariableSymbol resolvedSymbol = resolvedSymbolOpt.get();
+        SymTypeExpression varType = replaceVariablesIfNecessary(
+            thisType, resolvedSymbol.getType()
+        );
+        varType.getSourceInfo().setSourceSymbol(resolvedSymbol);
+        resolvedSymType = Optional.of(varType);
+      }
+      else {
+        resolvedSymType = Optional.empty();
+      }
     }
     // search in super types
     if (resolvedSymType.isEmpty()) {
@@ -108,12 +131,22 @@ public class WithinTypeBasicSymbolsResolver {
   /**
    * resolves within a type including supertypes
    */
-  public List<SymTypeOfFunction> resolveFunctions(
+  public static List<SymTypeOfFunction> resolveFunctions(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    return getDelegate()
+        ._resolveFunctions(thisType, name, accessModifier, predicate);
+  }
+
+  protected List<SymTypeOfFunction> _resolveFunctions(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
-    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
+    List<SymTypeOfFunction> resolvedSymTypes;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
       resolvedSymTypes = new ArrayList<>();
@@ -127,12 +160,15 @@ public class WithinTypeBasicSymbolsResolver {
           accessModifier,
           predicate
       );
-      List<SymTypeOfFunction> resolvedTypesUnmodified = resolvedSymbols.stream()
-          .map(FunctionSymbol::getFunctionType)
-          .collect(Collectors.toList());
-      resolvedSymTypes = resolvedTypesUnmodified.stream()
-          .map(f -> (SymTypeOfFunction) replaceVariablesIfNecessary(thisType, f))
-          .collect(Collectors.toList());
+      resolvedSymTypes = new ArrayList<>(resolvedSymbols.size());
+      for (FunctionSymbol funcSym : resolvedSymbols) {
+        SymTypeOfFunction funcTypeUnmodified = funcSym.getFunctionType();
+        SymTypeOfFunction funcType = replaceVariablesIfNecessary(
+            thisType, funcTypeUnmodified
+        ).asFunctionType();
+        funcType.getSourceInfo().setSourceSymbol(funcSym);
+        resolvedSymTypes.add(funcType);
+      }
     }
     // search in super types
     // private -> protected while searching in super types
@@ -187,7 +223,17 @@ public class WithinTypeBasicSymbolsResolver {
   /**
    * resolves within a type including supertypes
    */
-  public Optional<SymTypeExpression> resolveType(
+  public static Optional<SymTypeExpression> resolveType(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate
+  ) {
+    return getDelegate()
+        ._resolveType(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> _resolveType(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -208,9 +254,10 @@ public class WithinTypeBasicSymbolsResolver {
       if (resolvedSymbol.isPresent()) {
         SymTypeExpression resolvedTypeUnmodified =
             SymTypeExpressionFactory.createFromSymbol(resolvedSymbol.get());
-        resolvedSymType = Optional.of(
-            replaceVariablesIfNecessary(thisType, resolvedTypeUnmodified)
-        );
+        SymTypeExpression objectType =
+            replaceVariablesIfNecessary(thisType, resolvedTypeUnmodified);
+        objectType.getSourceInfo().setSourceSymbol(resolvedSymbol.get());
+        resolvedSymType = Optional.of(objectType);
       }
       else {
         resolvedSymType = Optional.empty();
@@ -248,12 +295,17 @@ public class WithinTypeBasicSymbolsResolver {
    * it is NOT necessary to check a type with it before calling resolve[...]().
    * s. a. {@link NominalSuperTypeCalculator}
    */
-  public boolean canResolveIn(SymTypeExpression thisType) {
+  public static boolean canResolveIn(SymTypeExpression thisType) {
+    return getDelegate()._canResolveIn(thisType);
+  }
+
+  protected boolean _canResolveIn(SymTypeExpression thisType) {
     return thisType.isObjectType() ||
         thisType.isGenericType() ||
         thisType.isTypeVariable() ||
         thisType.isUnionType() ||
-        thisType.isIntersectionType();
+        thisType.isIntersectionType() ||
+        thisType.isRegExType();
     // array.size not supported yet
   }
 
@@ -349,6 +401,8 @@ public class WithinTypeBasicSymbolsResolver {
     return resolved.stream().findAny();
   }
 
+  // Helper
+
   /**
    * Even more legacy code workarounds:
    * filter out anything that is not in the exact scope
@@ -431,6 +485,11 @@ public class WithinTypeBasicSymbolsResolver {
           SymTypeRelations.leastUpperBound(unionizedTypes);
       spannedScope = lubOpt.flatMap(lub -> getSpannedScope(lub));
     }
+    else if (type.isRegExType()) {
+      // considered empty, String is the (direct) nominal supertype,
+      // as such, those methods are resolved later
+      spannedScope = Optional.empty();
+    }
     // extension point
     else {
       Log.debug("tried to get the spanned scope of "
@@ -477,7 +536,7 @@ public class WithinTypeBasicSymbolsResolver {
     // () -> C<#FV,T,R> where #FV is a free type variable
 
     // 1. find all variables
-    Map<SymTypeVariable, SymTypeVariable> allVarMap = TypeParameterRelations
+    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap = TypeParameterRelations
         .getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
     // 2. find all type variables already bound by the type resolved in
     List<SymTypeVariable> varsAlreadyBound = new SymTypeCollectionVisitor()
@@ -485,8 +544,8 @@ public class WithinTypeBasicSymbolsResolver {
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
     // 3. get variables that actually need to be replaced (unbound)
-    Map<SymTypeVariable, SymTypeVariable> freeVarMap = new HashMap<>();
-    for (Map.Entry<SymTypeVariable, SymTypeVariable> e : allVarMap.entrySet()) {
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
+    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
       if (varsAlreadyBound.stream().noneMatch(e.getKey()::deepEquals)) {
         freeVarMap.put(e.getKey(), e.getValue());
       }
@@ -529,4 +588,29 @@ public class WithinTypeBasicSymbolsResolver {
       }
     }
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default WithinTypeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new WithinTypeBasicSymbolsResolver());
+  }
+
+  public static void reset() {
+    WithinScopeBasicSymbolsResolver.delegate = null;
+  }
+
+  protected static void setDelegate(
+      WithinTypeBasicSymbolsResolver newDelegate
+  ) {
+    WithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static WithinTypeBasicSymbolsResolver getDelegate() {
+    if (WithinTypeBasicSymbolsResolver.delegate == null) {
+      init();
+    }
+    return WithinTypeBasicSymbolsResolver.delegate;
+  }
+
 }

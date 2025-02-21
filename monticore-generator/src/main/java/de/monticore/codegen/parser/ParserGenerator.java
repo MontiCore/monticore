@@ -194,6 +194,8 @@ public class ParserGenerator {
 
     ParserInfoGenerator.generateParserInfo(astGrammar, setup, antlrTool.getNonTerminalToParserStates(), genHelper.getParserPackage(), lang);
 
+    antlrTool.cleanUp();
+
     return parserVisitor.getVisitorClass();
   }
 

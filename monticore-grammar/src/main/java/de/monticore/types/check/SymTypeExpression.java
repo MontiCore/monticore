@@ -8,6 +8,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
  * (such as comparison, printing)
  */
 public abstract class SymTypeExpression {
+
+  protected static final String LOG_NAME = "SymTypeExpression";
 
   /**
    * print: Conversion to a compact string, such as "int", "Person", "List< A >"
@@ -70,7 +73,8 @@ public abstract class SymTypeExpression {
 
   public SymTypePrimitive asPrimitive() {
     Log.error("0xFDAA0 internal error: "
-        + "tried to convert non-primitive to a primitive");
+        + "tried to convert non-primitive to a primitive."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -83,12 +87,13 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfGenerics asGenericType() {
     Log.error("0xFDAA1 internal error: "
-        + "tried to convert non-generic to a generic");
+        + "tried to convert non-generic to a generic."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
   /**
-   * Am I a type variable?
+   * Am I a bound type variable?
    */
   public boolean isTypeVariable() {
     return false;
@@ -96,7 +101,22 @@ public abstract class SymTypeExpression {
 
   public SymTypeVariable asTypeVariable() {
     Log.error("0xFDAA2 internal error: "
-        + "tried to convert non-type-variable to a type-variable");
+        + "tried to convert non-bound-type-variable to a bound-type-variable."
+        + " Actual: " + this.printFullName());
+    return null;
+  }
+
+  /**
+   * Am I a free type variable?
+   */
+  public boolean isInferenceVariable() {
+    return false;
+  }
+
+  public SymTypeInferenceVariable asInferenceVariable() {
+    Log.error("0xFDAAF internal error: "
+        + "tried to convert non-inference-variable to an inference-variable."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -109,7 +129,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeArray asArrayType() {
     Log.error("0xFDAA3 internal error: "
-        + "tried to convert non-array to an array");
+        + "tried to convert non-array to an array."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -122,7 +143,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeVoid asVoidType() {
     Log.error("0xFDAA4 internal error: "
-        + "tried to convert non-void-type to a void type");
+        + "tried to convert non-void-type to a void type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -135,7 +157,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfNull asNullType() {
     Log.error("0xFDAA5 internal error: "
-        + "tried to convert non-null-type to a null-type");
+        + "tried to convert non-null-type to a null-type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -148,7 +171,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfObject asObjectType() {
     Log.error("0xFDAA6 internal error: "
-        + "tried to convert non-object-type to an object-type");
+        + "tried to convert non-object-type to an object-type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -161,7 +185,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfRegEx asRegExType() {
     Log.error("0xFDAAC internal error: "
-        + "tried to convert non-regex-type to a regex type");
+        + "tried to convert non-regex-type to a regex type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -174,7 +199,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfFunction asFunctionType() {
     Log.error("0xFDAA7 internal error: "
-        + "tried to convert non-function-type to a function type");
+        + "tried to convert non-function-type to a function type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -185,7 +211,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfSIUnit asSIUnitType() {
     Log.error("0xFDAAC internal error: "
-        + "tried to convert non-SIUnit type to a SIUnit type");
+        + "tried to convert non-SIUnit type to a SIUnit type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -197,8 +224,8 @@ public abstract class SymTypeExpression {
   public SymTypeOfNumericWithSIUnit asNumericWithSIUnitType() {
     Log.error("0xFDAAD internal error: "
         + "tried to convert non-numeric-with-SIUnit type "
-        + "to a numeric-with-SIUnit type"
-    );
+        + "to a numeric-with-SIUnit type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -210,8 +237,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfTuple asTupleType() {
-    Log.error("0xFDAAD internal error: "
-        + "tried to convert non-tuple-type to a tuple type");
+    Log.error("0xFDAAE internal error: "
+        + "tried to convert non-tuple-type to a tuple type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -224,7 +252,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfUnion asUnionType() {
     Log.error("0xFDAA8 internal error: "
-        + "tried to convert non-union-type to a union-type");
+        + "tried to convert non-union-type to a union-type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -237,7 +266,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfIntersection asIntersectionType() {
     Log.error("0xFDAA9 internal error: "
-        + "tried to convert non-intersection-type to an intersection-type");
+        + "tried to convert non-intersection-type to an intersection-type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -250,7 +280,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeObscure asObscureType() {
     Log.error("0xFDAAA internal error: "
-        + "tried to convert non-obscure-type to an obscure-type");
+        + "tried to convert non-obscure-type to an obscure-type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -263,7 +294,8 @@ public abstract class SymTypeExpression {
 
   public SymTypeOfWildcard asWildcard() {
     Log.error("0xFDAAB internal error: "
-        + "tried to convert non-wildcard-type to a wildcard-type");
+        + "tried to convert non-wildcard-type to a wildcard-type."
+        + " Actual: " + this.printFullName());
     return null;
   }
 
@@ -624,16 +656,47 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
 
   /**
    * Returns an TypeSymbol representing the type
-   * Only to be called according to {@link SymTypeExpression::hasTypeInfo}
+   * Only to be called according to {@link #hasTypeInfo()}
+   * <p>
+   * As most SymTypeExpressions do not have a TypeSymbol (this is legacy),
+   * this method will log a warning and is expected to be overridden,
+   * if a TypeSymbol exists.
    */
   public TypeSymbol getTypeInfo() {
+    Log.debug("0xFDFDE internal error: getTypeInfo called"
+            + ", but the current SymTypeExpression should never have"
+            + " a TypeSymbol in the first place."
+            + " (This will be an error in the future)",
+        LOG_NAME
+    );
     //support deprecated behaviour
     if(typeSymbol != null) {
       return typeSymbol;
     }
     Log.error("0xFDFDF internal error: getTypeInfo called,"
-        + "but no typeinfo available");
+        + "but no typeinfo available. Presumably hasTypeInfo() missing?"
+        + " Type: " + printFullName()
+    );
     return null;
+  }
+
+  protected SymTypeSourceInfo sourceInfo = new SymTypeSourceInfo();
+
+  /**
+   * Contains information where this SymTypeExpression comes from.
+   * Used in CoCos, code-generation, etc.
+   * <p>
+   * not considered during {@link #deepEquals(SymTypeExpression)}.
+   */
+  public SymTypeSourceInfo getSourceInfo() {
+    return this.sourceInfo;
+  }
+
+  /**
+   * used during deep-cloning, clones the SymTypeSourceInfo
+   */
+  public void _internal_setSourceInfo(SymTypeSourceInfo sourceInfo) {
+    this.sourceInfo = new SymTypeSourceInfo(sourceInfo);
   }
 
   public void accept(ISymTypeVisitor visitor) {

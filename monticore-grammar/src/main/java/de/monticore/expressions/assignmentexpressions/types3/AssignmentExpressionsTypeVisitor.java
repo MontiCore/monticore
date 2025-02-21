@@ -32,16 +32,12 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
   protected static final String BIT_ASSIGNMENT_ERROR_CODE = "0xA0177";
   protected static final String BINARY_ASSIGNMENT_ERROR_CODE = "0xA0176";
 
-  protected TypeVisitorOperatorCalculator operatorCalculator
-      = new TypeVisitorOperatorCalculator();
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setOperatorCalculator(
       TypeVisitorOperatorCalculator operatorCalculator) {
-    this.operatorCalculator = operatorCalculator;
-  }
-
-  protected TypeVisitorOperatorCalculator getOperatorCalculator() {
-    return operatorCalculator;
   }
 
   // Note: there is currently no SIUnit support for
@@ -166,7 +162,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().plus(left, right),
+        TypeVisitorOperatorCalculator.plus(left, right),
         ARITHMETIC_ASSIGNMENT_ERROR_CODE, "+=", pos);
   }
 
@@ -174,7 +170,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().minus(left, right),
+        TypeVisitorOperatorCalculator.minus(left, right),
         ARITHMETIC_ASSIGNMENT_ERROR_CODE, "-=", pos);
   }
 
@@ -182,7 +178,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().multiply(left, right),
+        TypeVisitorOperatorCalculator.multiply(left, right),
         ARITHMETIC_ASSIGNMENT_ERROR_CODE, "*=", pos);
   }
 
@@ -190,7 +186,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().modulo(left, right),
+        TypeVisitorOperatorCalculator.modulo(left, right),
         ARITHMETIC_ASSIGNMENT_ERROR_CODE, "%=", pos);
   }
 
@@ -198,7 +194,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().divide(left, right),
+        TypeVisitorOperatorCalculator.divide(left, right),
         ARITHMETIC_ASSIGNMENT_ERROR_CODE, "/=", pos);
   }
 
@@ -206,7 +202,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().binaryAnd(left, right),
+        TypeVisitorOperatorCalculator.binaryAnd(left, right),
         BINARY_ASSIGNMENT_ERROR_CODE, "&=", pos);
   }
 
@@ -214,7 +210,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().binaryOr(left, right),
+        TypeVisitorOperatorCalculator.binaryOr(left, right),
         BINARY_ASSIGNMENT_ERROR_CODE, "|=", pos);
   }
 
@@ -222,7 +218,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().binaryXor(left, right),
+        TypeVisitorOperatorCalculator.binaryXor(left, right),
         BINARY_ASSIGNMENT_ERROR_CODE, "^=", pos);
   }
 
@@ -230,7 +226,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().signedRightShift(left, right),
+        TypeVisitorOperatorCalculator.signedRightShift(left, right),
         BIT_ASSIGNMENT_ERROR_CODE, ">>=", pos);
   }
 
@@ -238,7 +234,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().leftShift(left, right),
+        TypeVisitorOperatorCalculator.leftShift(left, right),
         BIT_ASSIGNMENT_ERROR_CODE, "<<=", pos);
   }
 
@@ -246,7 +242,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression right,
       SourcePosition pos) {
     return compoundAssignment(left, right,
-        getOperatorCalculator().unsignedRightShift(left, right),
+        TypeVisitorOperatorCalculator.unsignedRightShift(left, right),
         BIT_ASSIGNMENT_ERROR_CODE, ">>>=", pos);
   }
 
@@ -263,9 +259,9 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       String errorCode, String op, SourcePosition pos
   ) {
     Optional<SymTypeExpression> casted = interimResult
-        .flatMap(ir -> getOperatorCalculator().cast(left, ir));
+        .flatMap(ir -> TypeVisitorOperatorCalculator.cast(left, ir));
     Optional<SymTypeExpression> assigned = casted
-        .flatMap(c -> getOperatorCalculator().assignment(left, c));
+        .flatMap(c -> TypeVisitorOperatorCalculator.assignment(left, c));
     SymTypeExpression result = getTypeForAssignmentOrLogError(
         errorCode, op, pos, assigned, left, right);
     return result;
@@ -276,7 +272,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
       SourcePosition src) {
     return getTypeForAssignmentOrLogError(
         "0xA0179", "=", src,
-        getOperatorCalculator().assignment(left, right),
+        TypeVisitorOperatorCalculator.assignment(left, right),
         left, right);
   }
 

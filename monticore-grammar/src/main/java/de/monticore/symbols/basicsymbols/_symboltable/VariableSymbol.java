@@ -28,11 +28,17 @@ public class VariableSymbol extends VariableSymbolTOP {
     return clone;
   }
 
+  /**
+   * @deprecated use TypeParameterRelations
+   */
+  @Deprecated
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
     //return type
     SymTypeExpression returnType = this.getType();
     TypeSymbol realTypeInfo;
-    TypeSymbol typeInfo = returnType.getTypeInfo();
+    TypeSymbol typeInfo = returnType.isTypeVariable() ?
+        returnType.asTypeVariable().getTypeVarSymbol() :
+        returnType.getTypeInfo();
     if(typeInfo instanceof TypeSymbolSurrogate){
       realTypeInfo = ((TypeSymbolSurrogate) returnType.getTypeInfo()).lazyLoadDelegate();
     }else{

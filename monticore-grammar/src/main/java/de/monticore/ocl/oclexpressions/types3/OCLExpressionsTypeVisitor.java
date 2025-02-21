@@ -29,8 +29,10 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
+import static de.monticore.types3.SymTypeRelations.isBottom;
 
 public class OCLExpressionsTypeVisitor extends AbstractTypeVisitor
     implements OCLExpressionsVisitor2 {
@@ -54,32 +56,33 @@ public class OCLExpressionsTypeVisitor extends AbstractTypeVisitor
       // if any inner obscure then error already logged
       result = createObscureType();
     }
-    else if (!SymTypeRelations.isSubTypeOf(typeResult, varResult)) {
-      if (SymTypeRelations.isSubTypeOf(varResult, typeResult)) {
-        Log.error(
-            "0xFD290 checking whether '"
-                + expr.getName()
-                + "' of type "
-                + varResult.printFullName()
-                + " is of type "
-                + typeResult.printFullName()
-                + ", which is redundant"
-                + ", since it is always true",
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd());
-      }
-      else {
-        Log.error(
-            "0xFD289 checking whether '"
-                + expr.getName()
-                + "' of type "
-                + varResult.printFullName()
-                + " is of type "
-                + typeResult.printFullName()
-                + ", which is impossible",
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd());
-      }
+    if (SymTypeRelations.isSubTypeOf(varResult, typeResult)) {
+      Log.error(
+          "0xFD290 checking whether '"
+              + expr.getName()
+              + "' of type "
+              + varResult.printFullName()
+              + " is of type "
+              + typeResult.printFullName()
+              + ", which is redundant"
+              + ", since it is always true",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
+      result = createObscureType();
+    }
+    // s. Empowering union and intersection types with integrated subtyping
+    // https://doi.org/10.1145/3276482
+    else if (isBottom(createIntersection(varResult, typeResult))) {
+      Log.error(
+          "0xFD289 checking whether '"
+              + expr.getName()
+              + "' of type "
+              + varResult.printFullName()
+              + " is of type "
+              + typeResult.printFullName()
+              + ", which is impossible",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd());
       result = createObscureType();
     }
     else {

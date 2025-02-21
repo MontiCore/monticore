@@ -5,6 +5,7 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
 
@@ -24,15 +25,15 @@ public class SymTypeFreeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
   /**
    * Map for replacing Type Variables
    */
-  protected Map<SymTypeVariable, SymTypeVariable> replaceMap;
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> replaceMap;
 
   protected IBasicSymbolsScope enclosingScope;
 
-  protected Map<SymTypeVariable, SymTypeVariable> getReplaceMap() {
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> getReplaceMap() {
     return replaceMap;
   }
 
-  public void setReplaceMap(Map<SymTypeVariable, SymTypeVariable> replaceMap) {
+  public void setReplaceMap(Map<SymTypeVariable, SymTypeInferenceVariable> replaceMap) {
     this.replaceMap = replaceMap;
   }
 
@@ -58,21 +59,18 @@ public class SymTypeFreeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
     }
     else {
       // as containsKey uses equals, we need to go other it ourselves
-      SymTypeVariable replacement = null;
+      SymTypeInferenceVariable replacement = null;
       for (SymTypeVariable keyTypeVar : getReplaceMap().keySet()) {
         if (typeVar.denotesSameVar(keyTypeVar) && replacement == null) {
           replacement = getReplaceMap().get(keyTypeVar);
         }
       }
       if (replacement == null) {
-        replacement = SymTypeExpressionFactory.createTypeVariable(
-            typeVar.getLowerBound(),
-            typeVar.getUpperBound()
-        );
-        // better naming, reference the replaced type
-        replacement.setFreeVarIdentifier(
-            replacement.getFreeVarIdentifier()
-                + "{" + typeVar.printFullName() + "}"
+        replacement = SymTypeExpressionFactory.createInferenceVariable(
+            SymTypeExpressionFactory.createBottomType(),
+            typeVar.getUpperBound(),
+            // better naming, reference the replaced type
+            "FV{" + typeVar.printFullName() + "}"
         );
         getReplaceMap().put(typeVar, replacement);
       }
@@ -86,7 +84,7 @@ public class SymTypeFreeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
       SymTypeExpression symType,
       IBasicSymbolsScope enclosingScope
   ) {
-    Map<SymTypeVariable, SymTypeVariable> oldMap = this.replaceMap;
+    Map<SymTypeVariable, SymTypeInferenceVariable> oldMap = this.replaceMap;
     setReplaceMap(new HashMap<>());
     IBasicSymbolsScope oldScope = this.enclosingScope;
     setEnclosingScope(enclosingScope);
@@ -106,11 +104,11 @@ public class SymTypeFreeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
   public static class Result {
 
     final protected SymTypeExpression type;
-    final protected Map<SymTypeVariable, SymTypeVariable> replaceMap;
+    final protected Map<SymTypeVariable, SymTypeInferenceVariable> replaceMap;
 
     public Result(
         SymTypeExpression type,
-        Map<SymTypeVariable, SymTypeVariable> replaceMap
+        Map<SymTypeVariable, SymTypeInferenceVariable> replaceMap
     ) {
       this.type = type;
       this.replaceMap = replaceMap;
@@ -120,7 +118,7 @@ public class SymTypeFreeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
       return type;
     }
 
-    public Map<SymTypeVariable, SymTypeVariable> getReplaceMap() {
+    public Map<SymTypeVariable, SymTypeInferenceVariable> getReplaceMap() {
       return replaceMap;
     }
 

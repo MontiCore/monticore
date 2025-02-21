@@ -59,6 +59,19 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
   }
 
   /**
+   * This constructor may only be used
+   * if the language does not support generics!
+   * Otherwise, use
+   * {@link #MapBasedTypeCheck3(ITraverser, Type4Ast, InferenceContext4Ast)}.
+   */
+  public MapBasedTypeCheck3(
+      ITraverser typeTraverser,
+      Type4Ast type4Ast
+  ) {
+    this(typeTraverser, type4Ast, new InferenceContext4Ast());
+  }
+
+  /**
    * This will be set as the TypeCheck3 delegate.
    */
   public void setThisAsDelegate() {
