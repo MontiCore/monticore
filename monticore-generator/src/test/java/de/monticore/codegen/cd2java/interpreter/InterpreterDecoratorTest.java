@@ -10,6 +10,7 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
@@ -85,11 +86,9 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
         attributes.get(1).getMCType().printType());
 
     assertEquals("scopeCallstack", attributes.get(2).getName());
-    assertTrue(attributes.get(2).getMCType() instanceof ASTMCMapType);
-    assertEquals(InterpreterConstants.SYMBOL_FULLNAME,
-        ((ASTMCMapType) attributes.get(2).getMCType()).getMCTypeArgument(0).printType());
-    assertEquals(InterpreterConstants.VALUE_FULLNAME,
-        ((ASTMCMapType) attributes.get(2).getMCType()).getMCTypeArgument(1).printType());
+    assertEquals("java.util.Stack", ((ASTMCGenericType)attributes.get(2).getMCType()).printWithoutTypeArguments());
+    assertEquals(InterpreterConstants.INTERPRETER_SCOPE_FULLNAME,
+        ((ASTMCGenericType)attributes.get(2).getMCType()).getMCTypeArgument(0).printType());
   }
 
   @Test
@@ -187,7 +186,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     
     assertTrue(getCurrentScopeMethod.getCDParameterList().isEmpty());
     assertEquals(InterpreterConstants.INTERPRETER_SCOPE_FULLNAME,
-        ((ASTMCMapType) getCurrentScopeMethod.getMCReturnType().getMCType()).getMCTypeArgument(0).printType());
+        getCurrentScopeMethod.getMCReturnType().getMCType().printType());
     
     Optional<ASTCDMethod> optPushScope = decoratedClass.getCDMethodList()
         .stream()
