@@ -40,7 +40,8 @@ jobs:
         # Write the result into the steps summary
         # Fetch the related PRs (if applicable)
       - uses: octokit/request-action@v2.x
-        if: ${{ ! github.event.pull_request.number }}
+        name: 'Fetch related PR (if not already known)'
+        if: ${{ (success() || failure()) && !github.event.pull_request.number }}
         id: get_related_pr
         with:
           route: GET /repos/{ownerandrepo}/commits/{commit_sha}/pulls
@@ -50,7 +51,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Extract the PR-number
       - id: related_pr
-        if: ${{ ! github.event.pull_request.number }}
+        name: 'Extract related PR (if not already known)'
+        if: ${{ (success() || failure()) && !github.event.pull_request.number }}
         run: echo "number=${{ fromJson(steps.get_related_pr.outputs.data)[0].number }}" >> $GITHUB_OUTPUT
 
         # in case we can't find a PR => we only report via the job summary
@@ -58,7 +60,7 @@ jobs:
         # we could find a PR => Update the last message (or create a new one=
       - name: Find last Comment on PR
         uses: peter-evans/find-comment@v3
-        if: ${{ github.event.pull_request.number || steps.related_pr.outputs.number }}
+        if: ${{ (success() || failure()) && (github.event.pull_request.number || steps.related_pr.outputs.number) }}
         id: fc
         with:
           issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
@@ -67,7 +69,7 @@ jobs:
 
       - name: Create or update PR comment
         uses: peter-evans/create-or-update-comment@v4
-        if: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
+        if: ${{ (success() || failure()) && (github.event.pull_request.number || steps.related_pr.outputs.number) }}
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
