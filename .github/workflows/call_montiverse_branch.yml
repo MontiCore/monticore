@@ -20,13 +20,17 @@ jobs:
   # The MontiVerse is a suite of projects, which are not build & tested with the given changes on a branch
   trigger-montiverse:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write       # to write commit comments
+      pull-requests: write  # to write PR comments
     steps:
       - name: Extract Branch Name
         # We have to remove the refs/heads/ prefix from the branch which called this action
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       - name: Trigger MontiVerse
         # Then actually trigger the MontiVerseCI projects pipeline
-        uses: digital-blueprint/gitlab-pipeline-trigger-action@c81ead300bf664f76245d816268c4a1b4bed2604 # @v1.2.0
+        uses: luepges/MontiVerseAction@main #
+        id: montiverse
         with:
           host: 'git.rwth-aachen.de'
           trigger_token: ${{ secrets.MONTIVERSE_TRIGGER_TOKEN }}
@@ -34,3 +38,45 @@ jobs:
           id: '91803'  # MontiVerseCI project id
           ref: 'main'
           variables: '{"${{inputs.project}}_BRANCH":"${{env.BRANCH_NAME}}", "${{inputs.project}}_PROJECT":"${{ github.event.repository.full_name  }}"}'
+        # Next, we want to either reply on the PR with the status (or if no PR was found, add a comment to the commit)
+
+        # Fetch the related PRs (if applicable)
+      - uses: octokit/request-action@v2.x
+        if: ${{ ! github.event.pull_request.number }}
+        id: get_related_pr
+        with:
+          route: GET /repos/{ownerandrepo}/commits/{commit_sha}/pulls
+          ownerandrepo: ${{ github.repository }}
+          commit_sha: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Extract the PR-number
+      - id: related_pr
+        if: ${{ ! github.event.pull_request.number }}
+        run: echo "number=${{ fromJson(steps.get_related_pr.outputs.data)[0].number }}" >> $GITHUB_OUTPUT
+
+        # we could not find a PR => comment on the commit
+      - name: Reply on Commit
+        if: ${{ ! github.event.pull_request.number && !steps.related_pr.outputs.number }}
+        uses: peter-evans/commit-comment@v3
+        with:
+          body: "${{steps.montiverse.outputs.pretty_output}}\n\n(Could not find a related PR)"
+
+        # we could find a PR => Update the last message (or create a new one=
+      - name: Find last Comment on PR
+        uses: peter-evans/find-comment@v3
+        if: ${{ github.event.pull_request.number || steps.related_pr.outputs.number }}
+        id: fc
+        with:
+          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: MontiVerse Result
+
+      - name: Create or update PR comment
+        uses: peter-evans/create-or-update-comment@v4
+        if: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
+          body: "${{steps.montiverse.outputs.pretty_output}}\n<!-- MontiVerse Result -->"
+          edit-mode: replace
