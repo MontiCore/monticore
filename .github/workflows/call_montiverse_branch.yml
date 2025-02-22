@@ -21,7 +21,6 @@ jobs:
   trigger-montiverse:
     runs-on: ubuntu-latest
     permissions:
-      contents: write       # to write commit comments
       pull-requests: write  # to write PR comments
     steps:
       - name: Extract Branch Name
@@ -38,8 +37,7 @@ jobs:
           id: '91803'  # MontiVerseCI project id
           ref: 'main'
           variables: '{"${{inputs.project}}_BRANCH":"${{env.BRANCH_NAME}}", "${{inputs.project}}_PROJECT":"${{ github.event.repository.full_name  }}"}'
-        # Next, we want to either reply on the PR with the status (or if no PR was found, add a comment to the commit)
-
+        # Write the result into the steps summary
         # Fetch the related PRs (if applicable)
       - uses: octokit/request-action@v2.x
         if: ${{ ! github.event.pull_request.number }}
@@ -55,12 +53,7 @@ jobs:
         if: ${{ ! github.event.pull_request.number }}
         run: echo "number=${{ fromJson(steps.get_related_pr.outputs.data)[0].number }}" >> $GITHUB_OUTPUT
 
-        # we could not find a PR => comment on the commit
-      - name: Reply on Commit
-        if: ${{ ! github.event.pull_request.number && !steps.related_pr.outputs.number }}
-        uses: peter-evans/commit-comment@v3
-        with:
-          body: "${{steps.montiverse.outputs.pretty_output}}\n\n(Could not find a related PR)"
+        # in case we can't find a PR => we only report via the job summary
 
         # we could find a PR => Update the last message (or create a new one=
       - name: Find last Comment on PR
