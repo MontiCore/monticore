@@ -24,6 +24,7 @@ env:
 
 permissions:
   contents: read # This action may run somewhat unsafe code
+  checks: write
 
 
 jobs:
@@ -39,13 +40,10 @@ jobs:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Build the monticore-generator
         run: gradle build -p monticore-generator ${{env.GRADLE_CLI_OPTS}}
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always() # always run even if the previous step fails
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         with:
-          name: junit-generator-tests-results
-          path: '**/target/test-results/test/TEST-*.xml'
-          retention-days: 1
+          report_paths: '**/target/test-results/test/TEST-*.xml'
 
   build-mc:
     runs-on: ubuntu-latest
@@ -59,13 +57,10 @@ jobs:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Build monticore (buildMC)
         run: gradle buildMC ${{env.GRADLE_CLI_OPTS}} -PgenTR=true -PgenEMF=true -PgenTagging=true
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always() # always run even if the previous step fails
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         with:
-          name: junit-mc-test-results
-          path: '**/target/test-results/test/TEST-*.xml'
-          retention-days: 1
+          report_paths: '**/target/test-results/test/TEST-*.xml'
 
   # first set of experiments from the handbook
   test-01-experiments:
@@ -80,13 +75,10 @@ jobs:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Test 01.experiments
         run: gradle build test -p monticore-test/01.experiments ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always() # always run even if the previous step fails
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         with:
-          name: junit-exp01-test-results
-          path: '**/target/test-results/test/TEST-*.xml'
-          retention-days: 1
+          report_paths: '**/target/test-results/test/TEST-*.xml'
 
   # second set of experiments from the handbook
   test-02-experiments:
@@ -101,13 +93,10 @@ jobs:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Test 02.experiments
         run: gradle build test -p monticore-test/02.experiments ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always() # always run even if the previous step fails
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         with:
-          name: junit-exp02-test-results
-          path: '**/target/test-results/test/TEST-*.xml'
-          retention-days: 1
+          report_paths: '**/target/test-results/test/TEST-*.xml'
 
   # test integration tests from the it project
   test-it:
@@ -124,13 +113,10 @@ jobs:
         run: gradle build test -p monticore-test/it ${{env.GRADLE_CLI_OPTS}}
       - name: Checking that all file handles in the target folder are closed
         run: if pgrep java | xargs -i ls -la /proc/{}/fd | grep "monticore-test/it/target/"; then echo "Found open file handles!"; exit 1; else echo "No open file handles."; exit 0; fi
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always() # always run even if the previous step fails
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         with:
-          name: junit-it-test-results
-          path: '**/target/test-results/test/TEST-*.xml'
-          retention-days: 1
+          report_paths: '**/target/test-results/test/TEST-*.xml'
 
   # test integration tests from the "it" project, using the emf profile
   test-it-emf:
@@ -145,13 +131,10 @@ jobs:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Test monticore-test/it with emf profile
         run: gradle build test -p monticore-test/it ${{env.GRADLE_CLI_OPTS}} -PbuildProfile=emf -PgenEMF=true
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always() # always run even if the previous step fails
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         with:
-          name: junit-it-emf-test-results
-          path: '**/target/test-results/test/TEST-*.xml'
-          retention-days: 1
+          report_paths: '**/target/test-results/test/TEST-*.xml'
 
   # Grammar integration tests
   test-grammar-it:
@@ -166,13 +149,10 @@ jobs:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Test monticore-grammar-it
         run: gradle build test -p monticore-test/monticore-grammar-it ${{env.GRADLE_CLI_OPTS}} -PgenEMF=true
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always() # always run even if the previous step fails
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         with:
-          name: junit-grammar-it-test-results
-          path: '**/target/test-results/test/TEST-*.xml'
-          retention-days: 1
+          report_paths: '**/target/test-results/test/TEST-*.xml'
 
   # Transformation tests
   test-montitrans:
@@ -187,14 +167,10 @@ jobs:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Test monticore-grammar-it
         run: gradle build test -p monticore-test/montitrans ${{env.GRADLE_CLI_OPTS}} -PgenTR=true
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: always() # always run even if the previous step fails
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         with:
-          name: junit-tr-test-results
-          path: '**/target/test-results/test/TEST-*.xml'
-          retention-days: 1
-
+          report_paths: '**/target/test-results/test/TEST-*.xml'
 
   # Run the MontiVerse pipeline (tests this change on a suite of projects)
   trigger-montiverse:
