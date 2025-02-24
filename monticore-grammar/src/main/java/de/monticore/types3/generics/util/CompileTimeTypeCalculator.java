@@ -1379,6 +1379,7 @@ public class CompileTimeTypeCalculator {
   protected String printFunctionForLog(SymTypeOfFunction func) {
     return func.printFullName()
         + (func.hasSymbol() ? " [" + func.getSymbol().getFullName() + "]" : "");
+  }
 
   // static delegate
 
