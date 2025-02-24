@@ -112,7 +112,6 @@ tasks.withType(Test) {
         }
     }
     reports {
-        junitXml.required = false
         html.required = false
     }
 }
