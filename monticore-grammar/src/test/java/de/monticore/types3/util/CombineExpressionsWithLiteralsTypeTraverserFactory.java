@@ -15,6 +15,7 @@ import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsC
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.javaclassexpressions.types3.JavaClassExpressionsTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
+import de.monticore.expressions.streamexpressions.types3.StreamExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsTypeVisitor;
@@ -186,6 +187,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     else if (visitors.cTTISetExpressions != null) {
       visitors.cTTISetExpressions.setType4Ast(type4Ast);
     }
+    if (visitors.derStreamExpressions != null) {
+      visitors.derStreamExpressions.setType4Ast(type4Ast);
+    }
     if (visitors.derTupleExpressions != null) {
       visitors.derTupleExpressions.setType4Ast(type4Ast);
     }
@@ -265,6 +269,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
     visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
     visitors.cTTISetExpressions = new SetExpressionsCTTIVisitor();
+    visitors.derStreamExpressions = new StreamExpressionsTypeVisitor();
     visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
     visitors.cTTIUglyExpressions = new UglyExpressionsCTTIVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
@@ -295,6 +300,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derOCLExpressions = new OCLExpressionsTypeVisitor();
     visitors.derOptionalOperators = new OptionalOperatorsTypeVisitor();
     visitors.derSetExpressions = new SetExpressionsTypeVisitor();
+    visitors.derStreamExpressions = new StreamExpressionsTypeVisitor();
     visitors.derTupleExpressions = new TupleExpressionsTypeVisitor();
     visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
@@ -385,6 +391,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
       traverser.add4SetExpressions(visitors.cTTISetExpressions);
       traverser.setSetExpressionsHandler(visitors.cTTISetExpressions);
     }
+    if (visitors.derStreamExpressions != null) {
+      traverser.add4StreamExpressions(visitors.derStreamExpressions);
+    }
     if (visitors.derTupleExpressions != null) {
       traverser.add4TupleExpressions(visitors.derTupleExpressions);
     }
@@ -466,6 +475,8 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public SetExpressionsTypeVisitor derSetExpressions;
 
     public SetExpressionsCTTIVisitor cTTISetExpressions;
+
+    public StreamExpressionsTypeVisitor derStreamExpressions;
 
     public TupleExpressionsTypeVisitor derTupleExpressions;
 

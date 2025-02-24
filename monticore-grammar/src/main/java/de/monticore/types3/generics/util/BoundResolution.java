@@ -549,6 +549,7 @@ public class BoundResolution {
                 LOG_NAME
             );
             lubSubtyping = Optional.empty();
+            break;
           }
         }
       }
