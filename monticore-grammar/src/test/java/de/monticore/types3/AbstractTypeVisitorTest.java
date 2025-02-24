@@ -107,8 +107,8 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     TypeVisitorOperatorCalculator.init();
     DefsTypesForTests.setup();
     parser = CombineExpressionsWithLiteralsMill.parser();
-    MapBasedTypeCheck3 tc3 = new CombineExpressionsWithLiteralsTypeTraverserFactory()
-        .initTypeCheck3();
+    MapBasedTypeCheck3 tc3 =
+        CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     type4Ast = tc3.getType4Ast();
     typeMapTraverser = tc3.getTypeTraverser();
     setupSymbolTableCompleter(typeMapTraverser, type4Ast);
@@ -118,9 +118,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
       ITraverser typeMapTraverser, Type4Ast type4Ast) {
     CombineExpressionsWithLiteralsTraverser combinedScopesCompleter =
         CombineExpressionsWithLiteralsMill.traverser();
-    IDerive deriver = new TypeCheck3AsIDerive(
-        new CommonExpressionsLValueRelations()
-    );
+    IDerive deriver = new TypeCheck3AsIDerive();
     ISynthesize synthesizer = new TypeCheck3AsISynthesize();
     combinedScopesCompleter.add4LambdaExpressions(
         new LambdaExpressionsSTCompleteTypes2(

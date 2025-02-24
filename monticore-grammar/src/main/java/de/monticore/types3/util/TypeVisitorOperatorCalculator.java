@@ -37,26 +37,6 @@ public class TypeVisitorOperatorCalculator {
 
   protected static TypeVisitorOperatorCalculator delegate;
 
-  public static void init() {
-    Log.trace("init default TypeVisitorOperatorCalculator", "TypeCheck setup");
-    setDelegate(new TypeVisitorOperatorCalculator());
-  }
-
-  public static void reset() {
-    TypeVisitorOperatorCalculator.delegate = null;
-  }
-
-  protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
-    TypeVisitorOperatorCalculator.delegate = Log.errorIfNull(newDelegate);
-  }
-
-  protected static TypeVisitorOperatorCalculator getDelegate() {
-    if (TypeVisitorOperatorCalculator.delegate == null) {
-      init();
-    }
-    return TypeVisitorOperatorCalculator.delegate;
-  }
-
   // arithmetic: +, -, *, /, %
 
   public static Optional<SymTypeExpression> plus(
@@ -1006,6 +986,28 @@ public class TypeVisitorOperatorCalculator {
     else {
       return SymTypeExpressionFactory.createObscureType();
     }
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default TypeVisitorOperatorCalculator", "TypeCheck setup");
+    setDelegate(new TypeVisitorOperatorCalculator());
+  }
+
+  public static void reset() {
+    TypeVisitorOperatorCalculator.delegate = null;
+  }
+
+  protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
+    TypeVisitorOperatorCalculator.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static TypeVisitorOperatorCalculator getDelegate() {
+    if (TypeVisitorOperatorCalculator.delegate == null) {
+      init();
+    }
+    return TypeVisitorOperatorCalculator.delegate;
   }
 
 }

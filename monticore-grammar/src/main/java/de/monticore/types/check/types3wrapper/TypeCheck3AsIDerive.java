@@ -8,6 +8,7 @@ import de.monticore.types.check.IDerive;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.util.LValueRelations;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
@@ -25,8 +26,6 @@ public class TypeCheck3AsIDerive implements IDerive {
   @Deprecated
   protected ITraverser typeTraverser;
 
-  protected ILValueRelations lValueRelations;
-
   /**
    * type4Ast should be filled by the typeTraverser,
    * thus, this and TypeCheck3AsISynthesize should have the same type4Ast.
@@ -39,11 +38,13 @@ public class TypeCheck3AsIDerive implements IDerive {
   ) {
     this.typeTraverser = typeTraverser;
     this.type4Ast = type4Ast;
-    this.lValueRelations = lValueRelations;
   }
 
+  @Deprecated
   public TypeCheck3AsIDerive(ILValueRelations lValueRelations) {
-    this.lValueRelations = Log.errorIfNull(lValueRelations);
+  }
+
+  public TypeCheck3AsIDerive() {
   }
 
   @Override
@@ -58,7 +59,7 @@ public class TypeCheck3AsIDerive implements IDerive {
     else {
       result.setResult(TypeCheck3.typeOf(expr));
     }
-    if (lValueRelations.isLValue(expr)) {
+    if (LValueRelations.isLValue(expr)) {
       result.setField();
     }
     return result;
@@ -68,7 +69,6 @@ public class TypeCheck3AsIDerive implements IDerive {
   public TypeCheckResult deriveType(ASTLiteral lit) {
     TypeCheckResult result = new TypeCheckResult();
     if (type4Ast != null) {
-
       if (!type4Ast.hasTypeOfExpression(lit)) {
         lit.accept(typeTraverser);
       }

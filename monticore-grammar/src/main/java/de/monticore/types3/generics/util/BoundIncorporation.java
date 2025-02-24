@@ -47,17 +47,7 @@ public class BoundIncorporation {
 
   protected static BoundIncorporation delegate;
 
-  public static void init() {
-    Log.trace("init default BoundIncorporation", "TypeCheck setup");
-    BoundIncorporation.delegate = new BoundIncorporation();
-  }
-
-  protected static BoundIncorporation getDelegate() {
-    if (delegate == null) {
-      init();
-    }
-    return delegate;
-  }
+  // methods
 
   /**
    * returns the constraints resulting from complementary bound-pairs
@@ -70,14 +60,14 @@ public class BoundIncorporation {
       List<Bound> newBounds,
       List<Bound> oldBounds
   ) {
-    return getDelegate().calculateIncorporate(newBounds, oldBounds);
+    return getDelegate()._incorporate(newBounds, oldBounds);
   }
 
   public static List<Constraint> incorporate(List<Bound> bounds) {
     return incorporate(bounds, Collections.emptyList());
   }
 
-  protected List<Constraint> calculateIncorporate(
+  protected List<Constraint> _incorporate(
       List<Bound> newBounds,
       List<Bound> oldBounds
   ) {
@@ -1157,4 +1147,27 @@ public class BoundIncorporation {
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default BoundIncorporation", "TypeCheck setup");
+    setDelegate(new BoundIncorporation());
+  }
+
+  public static void reset() {
+    BoundIncorporation.delegate = null;
+  }
+
+  protected static void setDelegate(BoundIncorporation newDelegate) {
+    BoundIncorporation.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static BoundIncorporation getDelegate() {
+    if (BoundIncorporation.delegate == null) {
+      init();
+    }
+    return BoundIncorporation.delegate;
+  }
+
 }

@@ -4,9 +4,8 @@ package de.monticore.expressions.assignmentexpressions.cocos;
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTAssignmentExpressionCoCo;
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsCoCoChecker;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +29,7 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
     // this test is (currently) not type dependent,
     // as whether something is a lvalue can be derived from the ASTNode-type
     // thus nothing type related needs to be initialized
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
   }
 
   @Test
@@ -209,11 +209,10 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
   }
 
   protected AssignmentExpressionsCoCoChecker getChecker() {
-    ILValueRelations ilValueRelations = new CommonExpressionsLValueRelations();
     AssignmentExpressionsCoCoChecker checker =
         new AssignmentExpressionsCoCoChecker();
     checker.addCoCo((AssignmentExpressionsASTAssignmentExpressionCoCo)
-        new AssignmentExpressionsOnlyAssignToLValuesCoCo(ilValueRelations)
+        new AssignmentExpressionsOnlyAssignToLValuesCoCo()
     );
     return checker;
   }

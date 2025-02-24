@@ -48,7 +48,7 @@ public class SymTypeCompatibilityCalculator {
    *
    * @deprecated use {@link #constrainSubTypeOf(SymTypeExpression, SymTypeExpression)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean internal_isSubTypeOf(
       SymTypeExpression subType,
       SymTypeExpression superType,
@@ -57,7 +57,7 @@ public class SymTypeCompatibilityCalculator {
     return constrainSubTypeOf(subType, superType).isEmpty();
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean internal_isSubTypeOfPreNormalized(
       SymTypeExpression subType,
       SymTypeExpression superType,
@@ -1411,7 +1411,7 @@ public class SymTypeCompatibilityCalculator {
   }
 
   // not needed anymore
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
     return SymTypeRelations.getNominalSuperTypes(thisType);
   }

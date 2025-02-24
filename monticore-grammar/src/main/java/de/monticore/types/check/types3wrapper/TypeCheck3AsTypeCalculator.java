@@ -43,13 +43,15 @@ public class TypeCheck3AsTypeCalculator extends TypeCalculator {
   /**
    * @param lValueRelations is expression a variable?, language specific
    */
+  @Deprecated
   public TypeCheck3AsTypeCalculator(
       ILValueRelations lValueRelations
   ) {
-    super(
-        new TypeCheck3AsISynthesize(),
-        new TypeCheck3AsIDerive(lValueRelations)
-    );
+    this();
+  }
+
+  public TypeCheck3AsTypeCalculator() {
+    super(new TypeCheck3AsISynthesize(), new TypeCheck3AsIDerive());
   }
 
   @Override

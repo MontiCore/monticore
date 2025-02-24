@@ -167,7 +167,7 @@ Inference variables are never instantiated to `#BOTTOM`.
 ## How to get the type of an ASTNode with generics?
 
 Note: This is an extension of the
-[general documentation](../TypeSystem3.md#how-to-get-the-type-of-an-astnode),
+[general documentation](../TypeSystem3.md#how-to-use-the-type-system-implementation),
 which you should read first.
 
 When calculating types in a language with support for generics,
@@ -205,7 +205,17 @@ new MapBasedTypeCheck3(traverser, type4Ast, ctx4Ast)
     .setThisAsDelegate();
 ```
 
-Again, after initializing the TypeCheck3 delegate,
+Furthermore, the set of typing rules is extended,
+thus, further static delegates exist
+which can be extended if required;
+
+* [TypeParameterRelations](TypeParameterRelations.java)
+* [CompileTimeTypeCalculator](util/CompileTimeTypeCalculator.java)
+* [ConstraintReduction](util/ConstraintReduction.java)
+* [BoundIncorporation](util/BoundIncorporation.java)
+* [BoundResolution](util/BoundResolution.java)
+
+Again, after initializing the TypeCheck3 delegates,
 TypeCheck3 can be used to query SymTypeExpressions of expressions
 `TypeCheck3.typeOf(expr)`,
 as well as MCTypes
