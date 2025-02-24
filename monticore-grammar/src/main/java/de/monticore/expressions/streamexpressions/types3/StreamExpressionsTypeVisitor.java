@@ -13,6 +13,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.streams.StreamSymTypeFactory;
 import de.monticore.types3.streams.StreamSymTypeRelations;
 import de.se_rwth.commons.logging.Log;
@@ -97,7 +98,7 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
         boolean hasBadElem = false;
         if (givenElementType.isPresent()) {
           for (SymTypeExpression containedExprType : containedExprTypes) {
-            if (!StreamSymTypeRelations.isCompatible(givenElementType.get(), containedExprType)) {
+            if (!SymTypeRelations.isCompatible(givenElementType.get(), containedExprType)) {
               Log.error("0xFD578 " +
                       "stream with explicit element type "
                       + givenElementType.get().printFullName()
