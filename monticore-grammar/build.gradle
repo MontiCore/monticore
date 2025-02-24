@@ -575,6 +575,21 @@ if (("true").equals(getProperty('genTR'))) {
   }
 }
 
+// Pack & Publish the reported CD & OD in a jar (without the gradle module system, just a classifier)
+tasks.register('reportsJar', Jar) {
+  from (tasks.generateMCGrammars.getReportDir().dir('src/main/grammars')) {
+    include('**/*.cd', '**/*.od')
+  }
+  dependsOn(tasks.generateMCGrammars)
+  archiveClassifier = 'reports'
+}
+publishing {
+  publications {
+    maven {
+      artifact reportsJar
+    }
+  }
+}
 
 if (("true").equals(getProperty('genTagging'))) {
   // Because tagging is not properly published as a source set we instead add the tag definitions to the main grammar jars
