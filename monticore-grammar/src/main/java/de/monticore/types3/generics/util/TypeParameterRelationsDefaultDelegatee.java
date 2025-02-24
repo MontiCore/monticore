@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Default delegatee for TypeParameterRelations.
- * This itself only delegates to the individual implementations.
+ * This itself delegates to the individual implementations.
  */
 public class TypeParameterRelationsDefaultDelegatee
     extends TypeParameterRelations {
