@@ -1,6 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("attributeNameList")}
+${tc.signature()}
     mill.set(a);
-  <#list attributeNameList as attributeName>
-    mill${attributeName}.set(a);
-  </#list>

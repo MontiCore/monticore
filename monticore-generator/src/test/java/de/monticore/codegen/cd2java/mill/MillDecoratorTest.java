@@ -227,7 +227,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(23, millClass.getCDAttributeList().size());
+    assertEquals(2, millClass.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -236,30 +236,9 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testAttributeName() {
     // ast
     getAttributeBy("mill", millClass);
-    getAttributeBy("millASTAutomatonBuilder", millClass);
-    getAttributeBy("millASTStateBuilder", millClass);
-    getAttributeBy("millASTTransitionBuilder", millClass);
-    getAttributeBy("millASTScopeBuilder", millClass);
-    getAttributeBy("millASTInheritedSymbolClassBuilder", millClass);
-    //symboltable
-    getAttributeBy("millAutomatonSymbolBuilder", millClass);
-    getAttributeBy("millStateSymbolBuilder", millClass);
-    getAttributeBy("millFooSymbolBuilder", millClass);
-    getAttributeBy("millAutomatonScope", millClass);
-    getAttributeBy("millAutomatonSymbolSurrogateBuilder", millClass);
-    getAttributeBy("millStateSymbolSurrogateBuilder", millClass);
-    getAttributeBy("millFooSymbolSurrogateBuilder", millClass);
-    getAttributeBy("millAutomatonGlobalScope", millClass);
-    getAttributeBy("millAutomatonArtifactScope", millClass);
 
     getAttributeBy("automatonGlobalScope", millClass);
 
-    getAttributeBy("millAutomatonTraverserImplementation", millClass);
-    getAttributeBy("millAutomatonInheritanceHandler", millClass);
-
-    getAttributeBy("millAutomatonScopesGenitor", millClass);
-    getAttributeBy("millAutomatonScopesGenitorDelegator", millClass);
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 

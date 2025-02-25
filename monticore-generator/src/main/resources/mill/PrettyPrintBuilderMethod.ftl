@@ -5,9 +5,5 @@
 * @param printComments Whether comments should be printed
 * @return the pretty printer instance
 */
-${tc.signature("astNodeName")}
-  if (mill${astNodeName}.get() == null) {
-    mill${astNodeName}.set(getMill());
-    mill${astNodeName}.get().fullPrettyPrinter = null; // reset cached
-  }
-  return mill${astNodeName}.get()._prettyPrint(node, printComments);
+${tc.signature()}
+  return getMill()._prettyPrint(node, printComments);
