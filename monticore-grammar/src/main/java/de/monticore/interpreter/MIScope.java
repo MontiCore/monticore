@@ -9,9 +9,9 @@ import java.util.Map;
 
 public class MIScope {
   
-  private Map<ISymbol, MIValue> contextMap = new HashMap<>();
+  protected Map<ISymbol, MIValue> contextMap = new HashMap<>();
   
-  private MIScope parent;
+  protected MIScope parent;
   
   public MIScope() {
     this.parent = null;

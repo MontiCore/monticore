@@ -2,7 +2,7 @@
 
 package de.monticore.ast;
 
-import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.symboltable.IScope;
 import de.monticore.visitor.ITraverser;
@@ -679,7 +679,7 @@ public interface ASTNode {
     visitor.handle(this);
   }
 
-  default MIValue evaluate(ModelInterpreter interpreter) {
+  default MIValue evaluate(IModelInterpreter interpreter) {
     return interpreter.interpret(this);
   }
 }

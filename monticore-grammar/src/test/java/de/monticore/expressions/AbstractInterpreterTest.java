@@ -14,6 +14,7 @@ import de.monticore.types3.AbstractTypeVisitorTest;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 
@@ -30,6 +31,7 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
   protected CombineExpressionsWithLiteralsInterpreter interpreter;
   protected CombineExpressionsWithLiteralsScopesGenitorDelegator delegator;
 
+  @BeforeEach
   public void init() {
     LogStub.init();
     Log.clearFindings();
@@ -109,7 +111,10 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
       System.out.println(e.getMessage());
     }
     assertNotNull(interpretationResult);
-    assertTrue(Log.getFindings().isEmpty());
+    if (!Log.getFindings().isEmpty()) {
+      Log.printFindings();
+      fail();
+    }
     if (expected.isBoolean()) {
       assertTrue(interpretationResult.isBoolean());
       assertEquals(expected.asBoolean(), interpretationResult.asBoolean());

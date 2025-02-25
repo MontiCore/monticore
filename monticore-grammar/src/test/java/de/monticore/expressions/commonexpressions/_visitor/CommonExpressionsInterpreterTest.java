@@ -3,15 +3,9 @@ package de.monticore.expressions.commonexpressions._visitor;
 
 import de.monticore.expressions.AbstractInterpreterTest;
 import de.monticore.interpreter.MIValueFactory;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CommonExpressionsInterpreterTest extends AbstractInterpreterTest {
-
-  @BeforeEach
-  public void before() {
-    init();
-  }
 
   @Test
   public void testInterpretPlusExpression() {

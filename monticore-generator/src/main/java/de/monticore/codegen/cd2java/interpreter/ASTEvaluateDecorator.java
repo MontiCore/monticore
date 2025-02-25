@@ -77,7 +77,7 @@ public class ASTEvaluateDecorator extends AbstractCreator<ASTCDClass, List<ASTCD
 
   protected ASTCDMethod createEvaluateInterpreterSuperMethod(ASTCDType cdType) {
     ASTCDParameter parameter = cdParameterFacade.createParameter(
-        mcTypeFacade.createQualifiedType(InterpreterConstants.MODELINTERPRETER_FULLNAME),
+        mcTypeFacade.createQualifiedType(InterpreterConstants.IMODELINTERPRETER_FULLNAME),
         "interpreter");
     ASTCDMethod method = cdMethodFacade.createMethod(
         PUBLIC.build(), InterpreterConstants.VALUE_FULLNAME, "evaluate", parameter);

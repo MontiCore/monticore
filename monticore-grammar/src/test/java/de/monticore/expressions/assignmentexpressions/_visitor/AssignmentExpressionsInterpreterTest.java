@@ -599,7 +599,6 @@ public class AssignmentExpressionsInterpreterTest extends AbstractInterpreterTes
       "roofEqualsExpression", "slashEqualsExpression", "starEqualsExpression"
   })
   public void testInterpreter(String expression, MIValue result) {
-    init();
     if (result == null) {
       testInvalidExpression(expression);
     } else {

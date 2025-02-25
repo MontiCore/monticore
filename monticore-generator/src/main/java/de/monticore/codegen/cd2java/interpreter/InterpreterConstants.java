@@ -8,6 +8,7 @@ public final class InterpreterConstants {
   public static final String INTERPRET_METHOD_NAME = "interpret";
 
   public static final String MODELINTERPRETER_FULLNAME = "de.monticore.interpreter.ModelInterpreter";
+  public static final String IMODELINTERPRETER_FULLNAME = "de.monticore.interpreter.IModelInterpreter";
   
   public static final String INTERPRETER_SCOPE_FULLNAME = "de.monticore.interpreter.MIScope";
 

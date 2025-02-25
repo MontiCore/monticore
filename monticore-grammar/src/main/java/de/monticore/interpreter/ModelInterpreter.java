@@ -1,18 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symboltable.ISymbol;
-import de.se_rwth.commons.logging.Log;
 
-public interface ModelInterpreter {
-  
-  default MIValue interpret(ASTNode n) {
-    String errorMsg = "No implementation of ASTNode of type " + n.toString();
-    Log.error(errorMsg);
-    return new ErrorMIValue(errorMsg);
-  }
+public interface ModelInterpreter extends IModelInterpreter {
 
   void setRealThis(ModelInterpreter realThis);
 

@@ -5,7 +5,6 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 

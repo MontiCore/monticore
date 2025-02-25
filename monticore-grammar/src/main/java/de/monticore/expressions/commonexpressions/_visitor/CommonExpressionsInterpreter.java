@@ -2,18 +2,22 @@
 package de.monticore.expressions.commonexpressions._visitor;
 
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.interpreter.InterpreterUtils;
-import de.monticore.interpreter.MIScope;
 import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.values.ErrorMIValue;
+import de.monticore.interpreter.values.FunctionMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static de.monticore.interpreter.MIValueFactory.createValue;
 
@@ -469,21 +473,24 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     return node.getLiteral().evaluate(getRealThis());
   }
   
-//  @Override
-//  public MIValue interpret(ASTCallExpression node) {
-//    // evaluate expression that gives lambda/function
-//    // get original parent scope of lambda/function declaration
-//    // create Scope with parent and arguments
-//    // evaluate arguments in current scope & put into new scope
-//
-//    // node.getExpression();
-//    // parent = whatever
-//
-////    MIScope scope = new MIScope(parent);
-////    List<ISymbol> parameterSymbols =
-////    List<ASTExpression> arguments = node.getArguments().getExpressionList();
-////    for (int i = 0; i < arguments.getSize(); i++) {
-////      scope.declareVariable()
-////    }
-//  }
+  @Override
+  public MIValue interpret(ASTCallExpression node) {
+    // evaluate expression that gives lambda/function
+    // get original parent scope of lambda/function declaration
+    // create Scope with parent and arguments
+    // evaluate arguments in current scope & put into new scope
+    MIValue value = node.getExpression().evaluate(getRealThis());
+    if (!value.isFunction()) {
+      String errorMsg = "Call expression expected a function but got " + TypeCheck3.typeOf(node.getExpression()).print() + ".";
+      Log.error(errorMsg);
+      return new ErrorMIValue(errorMsg);
+    }
+    
+    List<MIValue> args = new ArrayList<>();
+    for (ASTExpression argument : node.getArguments().getExpressionList()) {
+      args.add(argument.evaluate(getRealThis()));
+    }
+    
+    return ((FunctionMIValue)value).execute(getRealThis(), args);
+  }
 }

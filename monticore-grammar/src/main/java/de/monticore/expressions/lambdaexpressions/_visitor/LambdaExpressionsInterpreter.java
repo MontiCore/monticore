@@ -1,10 +1,15 @@
 package de.monticore.expressions.lambdaexpressions._visitor;
 
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
+import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpressionBody;
+import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameter;
 import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.values.FunctionMIValue;
-//import de.monticore.interpreter.values.func.MILambdaValue;
+import de.monticore.interpreter.values.ASTFunctionMIValue;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LambdaExpressionsInterpreter extends LambdaExpressionsInterpreterTOP {
   
@@ -16,9 +21,18 @@ public class LambdaExpressionsInterpreter extends LambdaExpressionsInterpreterTO
     super(realThis);
   }
   
-//  @Override
-//  public MIValue interpret(ASTLambdaExpression node) {
-//    return new MILambdaValue(getRealThis().getCurrentScope(), node);
-//  }
+  @Override
+  public MIValue interpret(ASTLambdaExpressionBody node) {
+    return node.getExpression().evaluate(getRealThis());
+  }
+  
+  @Override
+  public MIValue interpret(ASTLambdaExpression node) {
+    List<VariableSymbol> parameterSymbols = new ArrayList<>();
+    for (ASTLambdaParameter parameter : node.getLambdaParameters().getLambdaParameterList()) {
+      parameterSymbols.add(parameter.getSymbol());
+    }
+    return new ASTFunctionMIValue(getRealThis().getCurrentScope(), parameterSymbols, node.getLambdaBody());
+  }
   
 }
