@@ -315,7 +315,12 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   }
 
   @Override
-  public void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+  public void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
+    // default
+  }
+
+  @Override
+  public void reportASTSourceMapping(List<DecodedMapping> mapping) {
     // default
   }
 

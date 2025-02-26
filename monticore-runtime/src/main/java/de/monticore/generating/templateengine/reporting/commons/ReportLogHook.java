@@ -406,8 +406,13 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
   }
 
   @Override
-  public void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
-    this.getReportManager().reportTemplateSourceMapping(qualifiedTemplateName, mapping);
+  public void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
+    this.getReportManager().reportTemplateSourceMapping(mapping);
+  }
+
+  @Override
+  public void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    this.getReportManager().reportTemplateSourceMapping(mapping);
   }
 
 }

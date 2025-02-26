@@ -452,9 +452,16 @@ public class ReportManager implements IReportEventHandler {
   }
 
   @Override
-  public void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+  public void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
     for (IReportEventHandler handler : reportEventHandlers) {
-      handler.reportTemplateSourceMapping(qualifiedTemplateName, mapping);
+      handler.reportTemplateSourceMapping(mapping);
+    }
+  }
+
+  @Override
+  public void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    for (IReportEventHandler handler : reportEventHandlers) {
+      handler.reportTemplateSourceMapping(mapping);
     }
   }
 
