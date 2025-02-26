@@ -54,8 +54,8 @@ public class SourceMapCalculator {
     if (templates.isEmpty()) {
       List<DecodedMapping> templateSourceMappings = calculateMappings(mappings, content.toString());
       List<DecodedMapping> astSourceMappings = calculateMappings(astMappings, content.toString());
-      Reporting.reportTemplateSourceMapping(template.getName(), templateSourceMappings);
-      Reporting.reportASTSourceMapping(template.getName(), astSourceMappings);
+      Reporting.reportTemplateSourceMapping(templateSourceMappings);
+      Reporting.reportASTSourceMapping(astSourceMappings);
       reset();
     }
     assert positionState.size() == templates.size();
