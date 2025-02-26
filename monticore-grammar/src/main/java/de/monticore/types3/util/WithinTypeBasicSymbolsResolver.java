@@ -304,7 +304,8 @@ public class WithinTypeBasicSymbolsResolver {
         thisType.isGenericType() ||
         thisType.isTypeVariable() ||
         thisType.isUnionType() ||
-        thisType.isIntersectionType();
+        thisType.isIntersectionType() ||
+        thisType.isRegExType();
     // array.size not supported yet
   }
 
@@ -400,6 +401,8 @@ public class WithinTypeBasicSymbolsResolver {
     return resolved.stream().findAny();
   }
 
+  // Helper
+
   /**
    * Even more legacy code workarounds:
    * filter out anything that is not in the exact scope
@@ -481,6 +484,11 @@ public class WithinTypeBasicSymbolsResolver {
       Optional<SymTypeExpression> lubOpt =
           SymTypeRelations.leastUpperBound(unionizedTypes);
       spannedScope = lubOpt.flatMap(lub -> getSpannedScope(lub));
+    }
+    else if (type.isRegExType()) {
+      // considered empty, String is the (direct) nominal supertype,
+      // as such, those methods are resolved later
+      spannedScope = Optional.empty();
     }
     // extension point
     else {

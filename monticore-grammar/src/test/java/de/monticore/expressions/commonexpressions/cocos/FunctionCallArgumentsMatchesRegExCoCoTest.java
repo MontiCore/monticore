@@ -6,7 +6,6 @@ import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsCoCoChecker;
-import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.IDerive;
@@ -37,7 +36,9 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    new CombineExpressionsWithLiteralsTypeTraverserFactory().initTypeCheck3();
     DefsTypesForTests.setup();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
   }
 
   @Test
@@ -164,7 +165,6 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
     CombineExpressionsWithLiteralsTraverser traverser =
         factory.createTraverser(type4Ast);
     TypeCheck3AsIDerive derive = new TypeCheck3AsIDerive(
-        new CommonExpressionsLValueRelations()
     );
 
     functions.forEach(parameters -> {

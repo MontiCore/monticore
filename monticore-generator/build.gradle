@@ -112,7 +112,6 @@ tasks.withType(Test) {
         }
     }
     reports {
-        junitXml.required = false
         html.required = false
     }
 }
@@ -125,7 +124,10 @@ shadowJar { // all in one jar
     zip64 true
 }
 
-tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {}
+tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {
+    // With an input property ensuring UP-TO-DATE checks consider the version property
+    version = project.version
+}
 
 processResources.dependsOn("buildInfo")
 
@@ -166,6 +168,17 @@ publishing {
                 credentials {
                     username = System.getenv("GITHUB_ACTOR")
                     password = System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
+    }
+    // Add the license information to the publication
+    publications.configureEach {
+        pom {
+            licenses {
+                license {
+                    name = 'MontiCore 3-Level License Model'
+                    url = 'https://monticore.github.io/monticore/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/'
                 }
             }
         }

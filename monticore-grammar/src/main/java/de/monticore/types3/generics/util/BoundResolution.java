@@ -41,17 +41,7 @@ public class BoundResolution {
 
   protected static BoundResolution delegate;
 
-  public static void init() {
-    Log.trace("init default BoundResolution", "TypeCheck setup");
-    BoundResolution.delegate = new BoundResolution();
-  }
-
-  protected static BoundResolution getDelegate() {
-    if (delegate == null) {
-      init();
-    }
-    return delegate;
-  }
+  // methods
 
   /**
    * Aims to find instantiations for inference variables
@@ -84,7 +74,17 @@ public class BoundResolution {
       List<Bound> oldBounds,
       List<SymTypeInferenceVariable> toBeResolved
   ) {
-    return getDelegate().calculateResolve(
+    return getDelegate()._resolve(
+        newBounds, oldBounds, toBeResolved
+    );
+  }
+
+  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> _resolve(
+      List<Bound> newBounds,
+      List<Bound> oldBounds,
+      List<SymTypeInferenceVariable> toBeResolved
+  ) {
+    return recursiveResolve(
         newBounds, oldBounds, toBeResolved, Collections.emptySet()
     );
   }
@@ -92,7 +92,7 @@ public class BoundResolution {
   /**
    * @param lastSetOfUninstantiated used to stop infinite recursion
    */
-  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> calculateResolve(
+  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> recursiveResolve(
       List<Bound> newBounds,
       List<Bound> oldBounds,
       List<SymTypeInferenceVariable> toBeResolved,
@@ -289,7 +289,7 @@ public class BoundResolution {
             varsToResolveNext, var2LowerBounds, var2UpperBounds, var2SourceBounds, var2TargetBounds
         );
         // use the new-found instantiations to reiterate
-        result = calculateResolve(
+        result = recursiveResolve(
             new ArrayList<>(newEqualityBounds), reducedBounds, toBeResolved,
             varsWithoutInstantiation
         );
@@ -370,7 +370,7 @@ public class BoundResolution {
           }
         }
         Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> potentialResult =
-            calculateResolve(
+            recursiveResolve(
                 new ArrayList<>(newInfVarsBounds),
                 reducedBoundsFiltered,
                 toBeResolved,
@@ -549,6 +549,7 @@ public class BoundResolution {
                 LOG_NAME
             );
             lubSubtyping = Optional.empty();
+            break;
           }
         }
       }
@@ -863,4 +864,27 @@ public class BoundResolution {
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default BoundResolution", "TypeCheck setup");
+    setDelegate(new BoundResolution());
+  }
+
+  public static void reset() {
+    BoundResolution.delegate = null;
+  }
+
+  protected static void setDelegate(BoundResolution newDelegate) {
+    BoundResolution.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static BoundResolution getDelegate() {
+    if (BoundResolution.delegate == null) {
+      init();
+    }
+    return BoundResolution.delegate;
+  }
+
 }

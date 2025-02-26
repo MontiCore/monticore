@@ -77,7 +77,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       boolean shouldAdd = true;
       // if A extends B, do not add A if B is in union
       for (SymTypeExpression addedType : uniqueTypes) {
-        if (SymTypeRelations.internal_isSubTypeOfPreNormalized(newType, addedType, false)) {
+        if (SymTypeRelations.internal_constrainSubTypeOfPreNormalized(newType, addedType).isEmpty()) {
           shouldAdd = false;
           break;
         }
@@ -89,7 +89,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
         // because A extending C can be represented by replacing A with (A&C)
         // thus (A|C) -> ((A&C)|C) -> C
         uniqueTypes.removeIf(
-            addedType -> SymTypeRelations.internal_isSubTypeOfPreNormalized(addedType, newType, false));
+            addedType -> SymTypeRelations.internal_constrainSubTypeOfPreNormalized(addedType, newType).isEmpty());
         uniqueTypes.add(newType);
       }
     }
@@ -189,7 +189,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       boolean shouldAdd = true;
       // if A extends B, do not add B if A is in intersection
       for (SymTypeExpression addedType : uniqueTypes) {
-        if (SymTypeRelations.internal_isSubTypeOfPreNormalized(addedType, newType, false)) {
+        if (SymTypeRelations.internal_constrainSubTypeOfPreNormalized(addedType, newType).isEmpty()) {
           shouldAdd = false;
           break;
         }
@@ -201,7 +201,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
         // because A extending B can be represented by replacing A with (A&B)
         // thus (A&B&C) -> ((A&B)&B&C) -> (A&C)
         uniqueTypes.removeIf(addedType ->
-            SymTypeRelations.internal_isSubTypeOfPreNormalized(newType, addedType, false));
+            SymTypeRelations.internal_constrainSubTypeOfPreNormalized(newType, addedType).isEmpty());
         uniqueTypes.add(newType);
       }
     }

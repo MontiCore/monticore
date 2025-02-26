@@ -27,14 +27,14 @@ In addition, the tutorial tar.gz is packaged and added as an artifact (TODO).
 
 # Secrets
 
-| Name                     | Description                                                                                                                     | Workflows                             |
-|--------------------------|---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
-| SE_NEXUS_USER            |                                                                                                                                 | deploy_snapshot_mc, deploy_release_mc |
-| SE_NEXUS_PASSWORD        |                                                                                                                                 | deploy_snapshot_mc, deploy_release_mc |
-| DOWNSTREAM_PAT           | Personal access token to trigger downstream projects on GitHub (fine grained: content: write, actions: write)                   | deploy_snapshot_mc                    |
-| DOWNSTREAM_GITLAB_PAT    | Personal access token to trigger downstream projects on GitLab (not required for now)                                           | deploy_snapshot_mc                    |
-| GITLAB_TOKEN             | Checks out the monticore-pygments-highlighting project from GitLab                                                              | prepare_pages                         |
-| MONTIVERSE_TRIGGER_TOKEN | Triggers the MontiVerse IT-Pipeline on GitLab [more](https://github.com/digital-blueprint/gitlab-pipeline-trigger-action)       | gradle_mc                             |
-| MONTIVERSE_ACCESS_TOKEN  | Reads the MontiVerse IT-Pipeline status from GitLab [more](https://github.com/digital-blueprint/gitlab-pipeline-trigger-action) | gradle_mc                             |
+| Name                     | Description                                                                                                                                                                                                                            | Workflows                             |
+|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
+| SE_NEXUS_USER            |                                                                                                                                                                                                                                        | deploy_snapshot_mc, deploy_release_mc |
+| SE_NEXUS_PASSWORD        |                                                                                                                                                                                                                                        | deploy_snapshot_mc, deploy_release_mc |
+| DOWNSTREAM_PAT           | Personal access token to trigger downstream projects on GitHub (fine grained: content: write, actions: write)                                                                                                                          | deploy_snapshot_mc                    |
+| DOWNSTREAM_GITLAB_PAT    | Personal access token to trigger downstream projects on GitLab (not required for now)                                                                                                                                                  | deploy_snapshot_mc                    |
+| GITLAB_TOKEN             | Checks out the monticore-pygments-highlighting project from GitLab                                                                                                                                                                     | prepare_pages                         |
+| MONTIVERSE_TRIGGER_TOKEN | Triggers the MontiVerse IT-Pipeline on GitLab [more](https://github.com/digital-blueprint/gitlab-pipeline-trigger-action)                                                                                                              | gradle_mc                             |
+| MONTIVERSE_ACCESS_TOKEN  | Reads the MontiVerse IT-Pipeline status from GitLab [more](https://github.com/digital-blueprint/gitlab-pipeline-trigger-action), must have access to [montiverseciprojects](https://git.rwth-aachen.de/monticore/montiverseciprojects) | gradle_mc                             |
 
 

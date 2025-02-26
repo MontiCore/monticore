@@ -23,29 +23,7 @@ import java.util.Optional;
  */
 public class TypeContextCalculator {
 
-  // static delegate
-
   protected static TypeContextCalculator delegate;
-
-  public static void init() {
-    Log.trace("init default TypeContextCalculator", "TypeCheck setup");
-    setDelegate(new TypeContextCalculator());
-  }
-
-  public static void reset() {
-    TypeContextCalculator.delegate = null;
-  }
-
-  protected static void setDelegate(TypeContextCalculator newDelegate) {
-    TypeContextCalculator.delegate = Log.errorIfNull(newDelegate);
-  }
-
-  protected static TypeContextCalculator getDelegate() {
-    if (TypeContextCalculator.delegate == null) {
-      init();
-    }
-    return TypeContextCalculator.delegate;
-  }
 
   // methods
 
@@ -155,6 +133,28 @@ public class TypeContextCalculator {
 
   protected IBasicSymbolsTypeDispatcher getTypeDispatcher() {
     return BasicSymbolsMill.typeDispatcher();
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default TypeContextCalculator", "TypeCheck setup");
+    setDelegate(new TypeContextCalculator());
+  }
+
+  public static void reset() {
+    TypeContextCalculator.delegate = null;
+  }
+
+  protected static void setDelegate(TypeContextCalculator newDelegate) {
+    TypeContextCalculator.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static TypeContextCalculator getDelegate() {
+    if (TypeContextCalculator.delegate == null) {
+      init();
+    }
+    return TypeContextCalculator.delegate;
   }
 
 }
