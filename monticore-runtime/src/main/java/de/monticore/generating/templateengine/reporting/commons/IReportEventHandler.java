@@ -283,5 +283,7 @@ public interface IReportEventHandler {
 
   void reportFileExistenceChecking(List<Path> parentPath, Path file);
 
-  void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping);
+  void reportTemplateSourceMapping(List<DecodedMapping> mapping);
+
+  void reportASTSourceMapping(List<DecodedMapping> mapping);
 }

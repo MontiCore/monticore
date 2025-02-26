@@ -124,18 +124,18 @@ public class Reporting extends Log {
     return templ.equals(System.getProperty(CONFIG_TEMPLATE));
   }
 
-  public static void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+  public static void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
     if (isEnabled()) {
       for (ReportLogHook hook : getReportHooks()) {
-        hook.reportTemplateSourceMapping(qualifiedTemplateName, mapping);
+        hook.reportTemplateSourceMapping(mapping);
       }
     }
   }
 
-  public static void reportASTSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+  public static void reportASTSourceMapping(List<DecodedMapping> mapping) {
     if (isEnabled()) {
       for (ReportLogHook hook : getReportHooks()) {
-        hook.reportTemplateSourceMapping(qualifiedTemplateName, mapping);
+        hook.reportASTSourceMapping(mapping);
       }
     }
   }

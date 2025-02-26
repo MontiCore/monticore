@@ -14,7 +14,8 @@ import static de.monticore.generating.templateengine.source_mapping.encoding.Enc
 public class TemplateSourceMappingReporter extends AReporter {
   public static boolean FIRST_FILE_WRITE = false;
 
-  List<DecodedMapping> mappings = new ArrayList<>();
+  List<DecodedMapping> templateMappings = new ArrayList<>();
+  List<DecodedMapping> astMappings = new ArrayList<>();
 
   public TemplateSourceMappingReporter(String path, String qualifiedFileName, String fileExtension) {
     super(path, qualifiedFileName, fileExtension);
@@ -31,8 +32,13 @@ public class TemplateSourceMappingReporter extends AReporter {
   }
 
   @Override
-  public void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
-    this.mappings.addAll(mapping);
+  public void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
+    this.templateMappings.addAll(mapping);
+  }
+
+  @Override
+  public void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    this.astMappings.addAll(mapping);
   }
 
   @Override
@@ -48,10 +54,12 @@ public class TemplateSourceMappingReporter extends AReporter {
   }
 
   protected void writeContent(String fileName) {
-    writeLine(encodDecodedSourceMapToString(new DecodedSourceMap(fileName, mappings)));
+    writeLine(encodDecodedSourceMapToString(new DecodedSourceMap(fileName, templateMappings)));
+    writeLine(encodDecodedSourceMapToString(new DecodedSourceMap(fileName, astMappings)));
   }
 
   protected void clearVariables() {
-    mappings.clear();
+    templateMappings.clear();
+    astMappings.clear();
   }
 }
