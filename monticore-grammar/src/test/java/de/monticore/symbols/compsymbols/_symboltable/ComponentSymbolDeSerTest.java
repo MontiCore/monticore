@@ -354,8 +354,8 @@ public class ComponentSymbolDeSerTest {
     }
 
     @Override
-    public CompKindExpression deserialize(@NonNull JsonElement serialized) {
-      return kindOfComponentDeSer.deserialize(serialized.getAsJsonObject());
+    public CompKindExpression deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonElement serialized) {
+      return kindOfComponentDeSer.deserialize(scope, serialized.getAsJsonObject());
     }
   }
 }

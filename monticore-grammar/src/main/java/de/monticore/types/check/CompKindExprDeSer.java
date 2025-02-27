@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.CompKindExpression;
 import de.monticore.types.check.FullCompKindExprDeSer;
@@ -17,5 +18,5 @@ public interface CompKindExprDeSer<T extends CompKindExpression> {
 
   String serializeAsJson(@NonNull T toSerialize);
 
-  T deserialize(@NonNull JsonObject serialized);
+  T deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonObject serialized);
 }
