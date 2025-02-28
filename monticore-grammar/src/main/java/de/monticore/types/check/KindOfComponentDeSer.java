@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentSymbolSurrogate;
+import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -32,7 +33,7 @@ public class KindOfComponentDeSer implements CompKindExprDeSer<KindOfComponent> 
   }
 
   @Override
-  public KindOfComponent deserialize(@NonNull JsonObject serialized) {
+  public KindOfComponent deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonObject serialized) {
     Preconditions.checkNotNull(serialized);
     Preconditions.checkArgument(
       JsonDeSers.getKind(serialized).equals(SERIALIZED_KIND),
@@ -45,7 +46,7 @@ public class KindOfComponentDeSer implements CompKindExprDeSer<KindOfComponent> 
     ComponentSymbolSurrogate compType = CompSymbolsMill
       .componentSymbolSurrogateBuilder()
       .setName(compTypeName)
-      .setEnclosingScope(CompSymbolsMill.globalScope())
+      .setEnclosingScope(scope)
       .build();
 
     return new KindOfComponent(compType);
