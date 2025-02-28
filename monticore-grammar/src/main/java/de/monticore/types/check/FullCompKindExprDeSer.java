@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
+import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -24,15 +25,15 @@ public interface FullCompKindExprDeSer {
   /**
    * Deserialize a {@link CompKindExpression} from its Json encoding.
    */
-  default CompKindExpression deserializeFromJsonString(@NonNull String serializedInJson) {
+  default CompKindExpression deserializeFromJsonString(@NonNull ICompSymbolsScope scope, @NonNull String serializedInJson) {
     JsonObject compExpr = JsonParser.parseJsonObject(serializedInJson);
-    return deserialize(compExpr);
+    return deserialize(scope, compExpr);
   }
 
   /**
    * Deserialize a {@link CompKindExpression} from its Json representation.
    */
-  CompKindExpression deserialize(@NonNull JsonElement serialized);
+  CompKindExpression deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonElement serialized);
 
   default IllegalStateException missingDeSerException(@NonNull JsonObject unloadableElement) {
     Preconditions.checkNotNull(unloadableElement);
