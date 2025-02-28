@@ -152,7 +152,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
           .map(e -> (ASTCDClass) e)
           .filter(c -> c.getName().endsWith(TYPE_DISPATCHER_SUFFIX))
           .findFirst();
-      typeDispatcherClass.ifPresent(c -> typeDispatcherMemberList.addAll(addTypeDispatcherMembers(c, cd, millType)));
+      typeDispatcherClass.ifPresent(c -> typeDispatcherMemberList.addAll(addTypeDispatcherMembers(c, cd)));
 
       //remove the methods that are generated in the code below the for-loop
       classList = classList.stream().filter(this::checkNotGeneratedSpecifically).collect(Collectors.toList());
@@ -363,7 +363,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     return prettyPrintMembersList;
   }
 
-  protected List<ASTCDMember> addTypeDispatcherMembers(ASTCDClass cdClass, ASTCDPackage cdPackage, ASTMCType millType) {
+  protected List<ASTCDMember> addTypeDispatcherMembers(ASTCDClass cdClass, ASTCDPackage cdPackage) {
     List<ASTCDMember> typeDispatcherMembers = new ArrayList<>();
 
     String typeDispatcherName = cdClass.getName();
@@ -381,7 +381,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTCDMethod protectedGetter = this.getCDMethodFacade().createMethod(PROTECTED.build(), typeDispatcherType, "_typeDispatcher");
     this.replaceTemplate(EMPTY_BODY, protectedGetter,
         new TemplateHookPoint("mill.TypeDispatcherGetter",
-            MILL_INFIX,
             packageName + "." + typeDispatcherName));
     typeDispatcherMembers.add(protectedGetter);
 
