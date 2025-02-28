@@ -32,7 +32,12 @@ public class SubcomponentSymbolDeSer extends SubcomponentSymbolDeSerTOP {
   }
 
   @Override
+  protected CompKindExpression deserializeType(ICompSymbolsScope scope, JsonObject symbolJson) {
+    return this.getCompKindExprDeSer().deserialize(scope, symbolJson.getObjectMember("type"));
+  }
+
+  @Override
   protected CompKindExpression deserializeType(JsonObject symbolJson) {
-    return this.getCompKindExprDeSer().deserialize(symbolJson.getObjectMember("type"));
+    throw new UnsupportedOperationException();
   }
 }

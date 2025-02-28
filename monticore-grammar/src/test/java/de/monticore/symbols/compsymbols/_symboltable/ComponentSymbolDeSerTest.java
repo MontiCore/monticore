@@ -11,6 +11,7 @@ import de.monticore.types.check.FullCompKindExprDeSer;
 import de.monticore.types.check.KindOfComponent;
 import de.monticore.types.check.KindOfComponentDeSer;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -219,7 +220,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithParent.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertFalse(comp.isEmptySuperComponents(), "Parent not present");
@@ -231,7 +232,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "Simple.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertTrue(comp.isEmptySuperComponents(), "Parent is present");
@@ -242,7 +243,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithTypeParams.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getTypeParameters().size());
@@ -257,7 +258,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithParams.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getParameterList().size());
@@ -277,7 +278,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithPorts.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getPorts().size());
@@ -319,7 +320,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithSub.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertEquals(1, comp.getSubcomponents().size());
@@ -354,8 +355,8 @@ public class ComponentSymbolDeSerTest {
     }
 
     @Override
-    public CompKindExpression deserialize(@NonNull JsonElement serialized) {
-      return kindOfComponentDeSer.deserialize(serialized.getAsJsonObject());
+    public CompKindExpression deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonElement serialized) {
+      return kindOfComponentDeSer.deserialize(scope, serialized.getAsJsonObject());
     }
   }
 }
