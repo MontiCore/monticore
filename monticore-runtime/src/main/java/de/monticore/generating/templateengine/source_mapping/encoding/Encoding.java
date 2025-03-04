@@ -17,7 +17,7 @@ public class Encoding {
   // For Debugging purposes
   public static boolean USE_BASE_64_ENCODING = true;
 
-  public static String encodDecodedSourceMapToString(DecodedSourceMap decodedSourceMap) {
+  public static String encodeDecodedSourceMapToString(DecodedSourceMap decodedSourceMap) {
     return encodeDecodedSourceMap(decodedSourceMap).print(new IndentPrinter());
   }
 

@@ -13,12 +13,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static de.monticore.generating.templateengine.source_mapping.SourceMapCalculator.pairId;
 
-public class SourcePositionMapper {
+public class TemplateAdaptionForSourcePositionReporting {
 
   public static Template adaptTemplateWithPositionMarkers(Template result, Configuration configuration) throws IOException {
     List<TemplateElement> tes = new ArrayList<>();
@@ -32,11 +31,13 @@ public class SourcePositionMapper {
     Comparator<TemplateElement> c = firstComp.thenComparingInt(TemplateObject::getEndColumn);
     tes.stream().sorted(c.reversed()).forEach(t -> {
       if (t.getClass().getName().contains("DollarVariable")) {
-        addSourcePositionReport(t, sb, canonicalForm);
+        addSourcePositionReport(t, sb, canonicalForm, true);
       }
       if (t instanceof TextBlock) {
         if (!t.getCanonicalForm().isBlank()) {
-          addSourcePositionReport(t, sb, canonicalForm);
+          // No AST Reporting since this is only text from the template
+          // to discuss: Through freemarker-ifs this might still be dependent on the AST variable
+          addSourcePositionReport(t, sb, canonicalForm, false);
         }
       }
     });
@@ -44,16 +45,32 @@ public class SourcePositionMapper {
     return new Template(result.getName(), sb.toString(), configuration);
   }
 
-  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm) {
+  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, boolean reportAstMapping) {
 
     // The Freemarker Engine uses Source Positions starting at line and column 1, but we report them zero based
     int curPairId = pairId.getAndIncrement();
-    String endPos = reportingExpressionEnd(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, t.getTemplate().getName()), curPairId);
-    String startPos = reportingExpressionStart(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, t.getTemplate().getName()), curPairId);
+    String endPos;
+    String startPos;
+
+    if(reportAstMapping) {
+      endPos = reportingExpressionEnd(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, t.getTemplate().getName()), curPairId);
+      startPos = reportingExpressionStart(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, t.getTemplate().getName()), curPairId);
+    } else {
+      endPos = reportingTextStart(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, t.getTemplate().getName()), curPairId);
+      startPos = reportingTextEnd(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, t.getTemplate().getName()), curPairId);
+    }
 
     // Inserting at the endPos first as otherwise we mangle with the String
     sb.insert(lineColumnToOffset(canonicalForm, t.getEndLine(), t.getEndColumn()) + 1, endPos);
     sb.insert(lineColumnToOffset(canonicalForm, t.getBeginLine(), t.getBeginColumn()), startPos);
+  }
+
+  protected static String reportingTextStart(SourcePosition p, int pairId) {
+    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ")}";
+  }
+
+  protected static String reportingTextEnd(SourcePosition p, int pairId) {
+    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ")}";
   }
 
   protected static String reportingExpressionStart(SourcePosition p, int pairId) {
