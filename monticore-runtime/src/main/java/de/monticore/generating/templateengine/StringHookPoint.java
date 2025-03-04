@@ -49,7 +49,7 @@ public class StringHookPoint extends HookPoint {
   public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
     if(this.sourceURL.isPresent()) {
       System.out.println("String HookPoint changes Template Mappings");
-      SourceMapCalculator.reportStringHP(value, sourceURL.get(), node);
+      //SourceMapCalculator.reportStringHP(value, sourceURL.get(), node);
     }
     return value;
   }

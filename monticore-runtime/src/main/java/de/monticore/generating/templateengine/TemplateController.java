@@ -603,7 +603,7 @@ public class TemplateController {
         if(oldSourceMappingUtil.isPresent()){
           d.put(SOURCE_MAP_CALCULATOR, oldSourceMappingUtil.get());
         }
-        SourceMapCalculator.popTemplate(template, ret);
+        SourceMapCalculator.popTemplate(template);
       }
     } else {
       // no template
