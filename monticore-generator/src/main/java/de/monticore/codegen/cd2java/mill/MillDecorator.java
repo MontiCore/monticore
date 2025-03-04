@@ -73,7 +73,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
   public ASTCDClass decorate(List<ASTCDPackage> packageList) {
     String millClassName = symbolTableService.getMillSimpleName();
     ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
-    ASTMCType millAttrType = createThreadLocal(millType);
+    ASTMCType millAttrType = millType;
 
     String fullDefinitionName = symbolTableService.getCDSymbol().getFullName();
 
@@ -94,9 +94,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         .addCDMember(getMillMethod)
         .addCDMember(initMethod)
         .build();
-
-    // add the mill initializer of the mill attribute
-    glex.addAfterTemplate("ClassContent:Elements", millClass, new StringHookPoint("\nstatic{\nmill = new ThreadLocal<>();\n}"));
 
     this.replaceTemplate(JAVADOC, millClass, JavaDoc.of("The mill is a factory for builders and other commonly used functions, such as parsers or visitors.",
             "The mill was introduced to ensure compositionality of languages, while retaining reusability of functions developed for sublanguages.",
@@ -635,12 +632,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     attributeMethods.add(protectedMethod);
 
     return attributeMethods;
-  }
-
-  protected ASTMCGenericType createThreadLocal(ASTMCType inner) {
-    return this.getMCTypeFacade().createBasicGenericTypeOf("java.lang.ThreadLocal",
-        CD4CodeMill.mCCustomTypeArgumentBuilder().setMCType(inner).build()
-    );
   }
 
 }

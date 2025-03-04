@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("millName")}
-  if (mill.get() == null) {
-    mill.set(new ${millName}());
+  if (mill == null) {
+    mill = new ${millName}();
   }
-  return mill.get();
+  return mill;
