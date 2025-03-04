@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.source_mapping.SourceMapCalculator;
-import de.monticore.generating.templateengine.source_mapping.SourcePositionMapper;
+import de.monticore.generating.templateengine.source_mapping.TemplateAdaptionForSourcePositionReporting;
 import de.se_rwth.commons.logging.Log;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
@@ -53,7 +53,7 @@ public class FreeMarkerTemplateEngine {
     try {
       result = configuration.getTemplate(qualifiedTemplateName);
       if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(qualifiedTemplateName)) {
-        result = SourcePositionMapper.adaptTemplateWithPositionMarkers(result, configuration);
+        result = TemplateAdaptionForSourcePositionReporting.adaptTemplateWithPositionMarkers(result, configuration);
       }
     }
     catch (IOException e) {
