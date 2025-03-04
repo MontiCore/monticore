@@ -15,9 +15,12 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
  * int[] is = new int[3]; is[0] = 0; // is[0] is a variable and thus a lvalue
  * Note, not every lvalue can be assigned to,
  * e.g., a final variable that has been assigned to already.
+ * @deprecated use {@link de.monticore.types3.util.LValueRelations}
  */
+@Deprecated(forRemoval = true)
 public interface ILValueRelations {
 
+  @Deprecated
   boolean isLValue(ASTExpression expression);
 
 }

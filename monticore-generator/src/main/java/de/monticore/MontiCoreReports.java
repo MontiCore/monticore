@@ -78,8 +78,7 @@ public class MontiCoreReports implements ReportManagerFactory {
     String lowerCaseName = modelName.toLowerCase();
     MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
     ReportingRepository repository = new ReportingRepository(identifierHelper);
-    repository.initAllTemplates();
-    
+
     ReportManager reports = new ReportManager(this.outputDirectory);
 
     Grammar_WithConceptsTraverser traverserSummary = Grammar_WithConceptsMill.inheritanceTraverser();

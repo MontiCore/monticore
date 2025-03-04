@@ -48,7 +48,7 @@ public class SymTypeCompatibilityCalculator {
    *
    * @deprecated use {@link #constrainSubTypeOf(SymTypeExpression, SymTypeExpression)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean internal_isSubTypeOf(
       SymTypeExpression subType,
       SymTypeExpression superType,
@@ -57,7 +57,7 @@ public class SymTypeCompatibilityCalculator {
     return constrainSubTypeOf(subType, superType).isEmpty();
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean internal_isSubTypeOfPreNormalized(
       SymTypeExpression subType,
       SymTypeExpression superType,
@@ -243,6 +243,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression source) {
     List<Bound> result;
     if (target.isRegExType() && de.monticore.types3.SymTypeRelations.isString(source)) {
+      // note: heuristic as well
       result = Collections.emptyList();
     }
     else if (target.isRegExType() && source.isRegExType()) {
@@ -980,10 +981,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression superType
   ) {
     List<Bound> result;
-    if (de.monticore.types3.SymTypeRelations.isString(superType) && subType.isRegExType()) {
-      result = Collections.emptyList();
-    }
-    else if (superType.isRegExType()) {
+    if (superType.isRegExType()) {
       if (subType.isRegExType()) {
         // this is incomplete,
         // R"(a|e)" can be considered a subtype of R"(a|e|o)".
@@ -1007,7 +1005,19 @@ public class SymTypeCompatibilityCalculator {
       }
     }
     else {
-      result = Collections.singletonList(getUnsatisfiableBoundForSubTyping(subType, superType));
+      // Search for the nominal superTypes of RegEx types,
+      // this should be at least String.
+      // (simplified, as no constraints are expected here)
+      List<SymTypeExpression> nominalSuperTypesOfRegEx =
+          SymTypeRelations.getNominalSuperTypes(subType);
+      if (nominalSuperTypesOfRegEx.stream().anyMatch(regExSuperType ->
+          internal_constrainSubTypeOfPreNormalized(regExSuperType, superType).isEmpty()
+      )) {
+        result = Collections.emptyList();
+      }
+      else {
+        result = Collections.singletonList(getUnsatisfiableBoundForSubTyping(subType, superType));
+      }
     }
     return result;
   }
@@ -1348,6 +1358,7 @@ public class SymTypeCompatibilityCalculator {
     result.addAll(internal_constrainSubTypeOfPreNormalized(typeA, typeB));
     result.addAll(internal_constrainSubTypeOfPreNormalized(typeB, typeA));
     // only happens if any type includes inference variables
+    // (or, as of 2025.03.02, only partially supported RegExTypes)
     if (!result.isEmpty()) {
       Log.error("0xFDCAF (internal) error: Constraint to complex"
           + " to evaluate with the current implementation: "
@@ -1400,7 +1411,7 @@ public class SymTypeCompatibilityCalculator {
   }
 
   // not needed anymore
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
     return SymTypeRelations.getNominalSuperTypes(thisType);
   }

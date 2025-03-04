@@ -39,6 +39,20 @@ allprojects {
     mavenCentral()
   }
 
+  pluginManager.withPlugin('maven-publish', {
+    // If publishing is set up, add the MontiCore 3-Level License Model to every publication
+    publishing.publications.configureEach {
+      pom {
+        licenses {
+          license {
+            name = 'MontiCore 3-Level License Model'
+            url = 'https://monticore.github.io/monticore/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/'
+          }
+        }
+      }
+    }
+  })
+
 }
 
 subprojects {
@@ -73,7 +87,6 @@ subprojects {
       }
     }
     reports {
-      junitXml.required = false
       html.required = false
     }
   }
@@ -112,7 +125,6 @@ task buildMC {
 }
 
 buildMC.dependsOn(gradle.includedBuilds*.task(':build'))
-buildMC.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:build'))
 
 /**
  *  Assembles the core projects, i.e. the generator, runtime and grammar library.
@@ -130,8 +142,6 @@ task assembleMC {
 }
 
 assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
-assembleMC.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:assemble'))
-
 
 /**
  *  Executes JUnit tests of the core projects, i.e. the generator, runtime and grammar library.
@@ -149,7 +159,6 @@ task testMC {
 }
 
 testMC.dependsOn(gradle.includedBuilds*.task(':test'))
-testMC.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:test'))
 
 /**
  *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
@@ -170,7 +179,6 @@ task deployMC {
 }
 
 deployMC.dependsOn(gradle.includedBuilds*.task(':publish'))
-deployMC.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:publish'))
 
 /**
  *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
@@ -190,7 +198,6 @@ task publishMCToMavenLocal {
 }
 
 publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocal'))
-publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':monticore-runtime-fix:publishToMavenLocal'))
 
 /**
  *  Build the test projects, i.e. integration tests and experiments.
@@ -239,7 +246,9 @@ task sonarMC (type: GradleBuild) {
 
 def projectsToConfigure = [
   project(':monticore-grammar'),
-  project(':monticore-runtime')]
+  project(':monticore-runtime'),
+  project(':monticore-libraries:stream-symbols')
+]
 if(("true").equals(getProperty('genEMF'))) {
     projectsToConfigure << project(':monticore-grammar-emf')
     projectsToConfigure << project(':monticore-runtime-emf')

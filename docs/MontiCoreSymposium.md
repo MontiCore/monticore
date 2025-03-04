@@ -2,6 +2,8 @@
 
 ## Third MontiCore Symposium 23. March - 26. March 2025
 
+![](https://github.com/MontiCore/monticore/raw/dev/docs/docs/MC_Symp_Banner.png)
+
 MontiCore is a language workbench designed for the efficient 
 development of domain-specific languages (DSLs) along with their 
 corresponding tooling. It provides a robust infrastructure to define, 
@@ -32,9 +34,9 @@ The MontiCore symposium will be located in Gemünd, Germany.
 Participation is based on acceptance of an abstract or a full paper and 
 requires registration until **07th of March**. 
 
-Registration costs tba and include accommodation, 
-conference fees, and meals during the symposium as well as coordinated a 
-bus transfer from Dusseldorf airport or Aachen and the venue.  
+Registration costs are 660€ and include accommodation, 
+conference fees, and meals during the symposium.  
+You can register via [this link](https://www.eventim-light.com/de/a/67a1d4620555173e53f9cad4/e/67a1d66563e4dc304798a9f2). 
 
 ### Submission
 

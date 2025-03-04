@@ -1,0 +1,77 @@
+# (c) https://github.com/MontiCore/monticore
+name: "Trigger the MontiVerse (workflow-call)"
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: 'The (internal) name for this project, as defined within the MontiVerse job'
+        type: string
+        required: true
+    secrets:
+      MONTIVERSE_TRIGGER_TOKEN:
+        required: true
+      MONTIVERSE_ACCESS_TOKEN:
+        required: true
+
+
+jobs:
+  # Run the MontiVerse pipeline (tests this change on a suite of projects)
+  # The MontiVerse is a suite of projects, which are not build & tested with the given changes on a branch
+  trigger-montiverse:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write  # to write PR comments
+    steps:
+      - name: Extract Branch Name
+        # We have to remove the refs/heads/ prefix from the branch which called this action
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+      - name: Trigger MontiVerse
+        # Then actually trigger the MontiVerseCI projects pipeline
+        uses: luepges/MontiVerseAction@main #
+        id: montiverse
+        with:
+          host: 'git.rwth-aachen.de'
+          trigger_token: ${{ secrets.MONTIVERSE_TRIGGER_TOKEN }}
+          access_token: ${{ secrets.MONTIVERSE_ACCESS_TOKEN }}  # Access is required to show the status
+          id: '91803'  # MontiVerseCI project id
+          ref: 'main'
+          variables: '{"${{inputs.project}}_BRANCH":"${{env.BRANCH_NAME}}", "${{inputs.project}}_PROJECT":"${{ github.event.repository.full_name  }}"}'
+        # Write the result into the steps summary
+        # Fetch the related PRs (if applicable)
+      - uses: octokit/request-action@v2.x
+        name: 'Fetch related PR (if not already known)'
+        if: ${{ (success() || failure()) && !github.event.pull_request.number }}
+        id: get_related_pr
+        with:
+          route: GET /repos/{ownerandrepo}/commits/{commit_sha}/pulls
+          ownerandrepo: ${{ github.repository }}
+          commit_sha: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Extract the PR-number
+      - id: related_pr
+        name: 'Extract related PR (if not already known)'
+        if: ${{ (success() || failure()) && !github.event.pull_request.number }}
+        run: echo "number=${{ fromJson(steps.get_related_pr.outputs.data)[0].number }}" >> $GITHUB_OUTPUT
+
+        # in case we can't find a PR => we only report via the job summary
+
+        # we could find a PR => Update the last message (or create a new one=
+      - name: Find last Comment on PR
+        uses: peter-evans/find-comment@v3
+        if: ${{ (success() || failure()) && (github.event.pull_request.number || steps.related_pr.outputs.number) }}
+        id: fc
+        with:
+          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: MontiVerse Result
+
+      - name: Create or update PR comment
+        uses: peter-evans/create-or-update-comment@v4
+        if: ${{ (success() || failure()) && (github.event.pull_request.number || steps.related_pr.outputs.number) }}
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{  github.event.pull_request.number || steps.related_pr.outputs.number }}
+          body: "${{steps.montiverse.outputs.pretty_output}}\n<!-- MontiVerse Result -->"
+          edit-mode: replace

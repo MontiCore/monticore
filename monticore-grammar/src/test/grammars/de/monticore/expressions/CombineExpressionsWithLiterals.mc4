@@ -13,6 +13,7 @@ grammar CombineExpressionsWithLiterals extends
           de.monticore.siunit.SIUnitLiterals,
           de.monticore.expressions.JavaClassExpressions,
           de.monticore.expressions.LambdaExpressions,
+          de.monticore.expressions.StreamExpressions,
           de.monticore.expressions.TupleExpressions,
           de.monticore.types.MCFullGenericTypes,
           de.monticore.types.MCArrayTypes,

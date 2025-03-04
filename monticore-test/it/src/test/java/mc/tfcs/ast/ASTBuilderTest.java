@@ -2,6 +2,7 @@
 package mc.tfcs.ast;
 
 import com.google.common.collect.Lists;
+import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl.FeatureDSLMill;
@@ -13,8 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import de.se_rwth.commons.logging.Log;
 
 public class ASTBuilderTest extends GeneratorIntegrationsTest {
   

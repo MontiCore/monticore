@@ -12,7 +12,6 @@ import de.monticore.types.check.SymTypeOfFunction;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,10 +26,22 @@ import java.util.function.Predicate;
 public class OOWithinTypeBasicSymbolsResolver
     extends WithinTypeBasicSymbolsResolver {
 
+  protected static OOWithinTypeBasicSymbolsResolver delegate;
+
+  // methods
+
   /**
    * resolves within a type including supertypes
    */
-  public List<SymTypeOfFunction> resolveConstructors(
+  public static List<SymTypeOfFunction> resolveConstructors(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate) {
+    return getDelegate()
+        ._resolveConstructors(thisType, accessModifier, predicate);
+  }
+
+  protected List<SymTypeOfFunction> _resolveConstructors(
       SymTypeExpression thisType,
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
@@ -98,7 +109,7 @@ public class OOWithinTypeBasicSymbolsResolver
    *
    * @deprecated is to be made private, use {@link #resolveConstructors}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<FunctionSymbol> resolveConstructorLocally(
       IBasicSymbolsScope scope,
       String name,
@@ -135,4 +146,29 @@ public class OOWithinTypeBasicSymbolsResolver
     return newModifier;
   }
 
+  // static delegate
+
+  public static void init() {
+    Log.trace("init OOWithinTypeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new OOWithinTypeBasicSymbolsResolver());
+  }
+
+  public static void reset() {
+    OOWithinScopeBasicSymbolsResolver.delegate = null;
+    WithinTypeBasicSymbolsResolver.reset();
+  }
+
+  protected static void setDelegate(
+      OOWithinTypeBasicSymbolsResolver newDelegate
+  ) {
+    OOWithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    WithinTypeBasicSymbolsResolver.setDelegate(newDelegate);
+  }
+
+  protected static OOWithinTypeBasicSymbolsResolver getDelegate() {
+    if (OOWithinTypeBasicSymbolsResolver.delegate == null) {
+      init();
+    }
+    return OOWithinTypeBasicSymbolsResolver.delegate;
+  }
 }

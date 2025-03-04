@@ -19,7 +19,6 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
@@ -28,8 +27,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast_emf.EmfConstants.*;
 
 public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
@@ -214,7 +213,7 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), type, methodName);
 
     replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return ("
-        + type.printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()) + ")" +
+        + CD4CodeMill.prettyPrint(type, false) + ")" +
         StringTransformations.uncapitalize(astcdClassName) + ".getEStructuralFeatures().get(" + index + ");"));
     return method;
   }

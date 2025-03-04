@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentSymbolSurrogate;
+import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -33,7 +34,7 @@ public class KindOfGenericComponentDeSer implements CompKindExprDeSer<KindOfGene
   }
 
   @Override
-  public KindOfGenericComponent deserialize(JsonObject serialized) {
+  public KindOfGenericComponent deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonObject serialized) {
     Preconditions.checkNotNull(serialized);
     Preconditions.checkArgument(
       JsonDeSers.getKind(serialized).equals(SERIALIZED_KIND),
@@ -50,10 +51,10 @@ public class KindOfGenericComponentDeSer implements CompKindExprDeSer<KindOfGene
     ComponentSymbolSurrogate compType = CompSymbolsMill
       .componentSymbolSurrogateBuilder()
       .setName(compTypeName)
-      .setEnclosingScope(CompSymbolsMill.globalScope())
+      .setEnclosingScope(scope)
       .build();
 
-    List<SymTypeExpression> paramBindings = SymTypeExpressionDeSer.deserializeListMember(TYPE_VAR_BINDINGS, serialized);
+    List<SymTypeExpression> paramBindings = SymTypeExpressionDeSer.deserializeListMember(TYPE_VAR_BINDINGS, serialized, scope);
 
     return new KindOfGenericComponent(compType, paramBindings);
   }

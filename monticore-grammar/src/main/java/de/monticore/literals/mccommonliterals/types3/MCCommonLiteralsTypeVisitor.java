@@ -8,11 +8,6 @@ import de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTCharLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTNullLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedLiteral;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
@@ -20,11 +15,14 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types3.AbstractTypeVisitor;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
+
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
 
 /**
  * Visitor for Derivation of SymType from Literals
@@ -66,29 +64,8 @@ public class MCCommonLiteralsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTStringLiteral lit) {
-    // tries to find String
-    // String added into global scope analogous to primitive types.
-    // We prefer the builtin String,
-    // such that one can specify the (foremost) functions,
-    // rather than using the Java one,
-    // e.g., a String with only side effect free functions for OCL.
-    Optional<TypeSymbol> stringType = BasicSymbolsMill.globalScope()
-        .resolveType("String");
-    if (stringType.isEmpty()) {
-      // otherwise, java.util.String, most likely per Class2MC
-      stringType = BasicSymbolsMill.globalScope()
-          .resolveType("java.lang.String");
-    }
-    if (stringType.isPresent()) {
-      getType4Ast().setTypeOfExpression((ASTLiteral) lit,
-          SymTypeExpressionFactory.createTypeObject(stringType.get())
-      );
-    }
-    else {
-      Log.error("0xD02A6 The type String could not be resolved.");
-      getType4Ast().setTypeOfExpression((ASTLiteral) lit,
-          SymTypeExpressionFactory.createObscureType());
-    }
+    SymTypeOfRegEx type = createTypeRegEx(lit.getValue());
+    getType4Ast().setTypeOfExpression(lit, type);
   }
 
   protected void derivePrimitive(ASTLiteral lit, String primitive) {

@@ -3,15 +3,19 @@ package de.monticore.codegen.cd2java._parser;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import de.monticore.cd.facade.CDAttributeFacade;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis.CD4CodeBasisMill;
-import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -22,8 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ParserClassDecorator extends AbstractDecorator {
 
@@ -54,6 +60,7 @@ public class ParserClassDecorator extends AbstractDecorator {
             .addAllCDMembers(createCreateMethods(grammarName))
             .addAllCDMembers(createParseMethods(startRuleName, qualifiedStartRuleName))
             .addAllCDMembers(createParseMethodsForProds(grammarName, prods))
+            .addAllCDMembers(createMode())
             .build());
       }
     }
@@ -79,8 +86,20 @@ public class ParserClassDecorator extends AbstractDecorator {
     this.replaceTemplate(EMPTY_BODY, createReader, new TemplateHookPoint(TEMPLATE_PATH + "CreateReader", grammarName));
     methods.add(createReader);
 
-
     return methods;
+  }
+
+  protected List<ASTCDMember> createMode(){
+    List<ASTCDMember> members = Lists.newArrayList();
+
+    ASTCDAttribute modeAttribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), "String", "lexerMode");
+    this.replaceTemplate(VALUE, modeAttribute, new StringHookPoint("= \"\";"));
+    members.add(modeAttribute);
+
+    MethodDecorator methodDecorator = new MethodDecorator(glex, service);
+    members.addAll(methodDecorator.getMutatorDecorator().decorate(modeAttribute));
+
+    return members;
   }
 
   protected List<ASTCDMethod> createParseMethods(String startRuleName, String startRuleFullName){

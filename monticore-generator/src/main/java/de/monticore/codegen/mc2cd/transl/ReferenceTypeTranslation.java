@@ -5,14 +5,14 @@ package de.monticore.codegen.mc2cd.transl;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.utils.Link;
 
 import java.util.Optional;
@@ -107,7 +107,7 @@ public class ReferenceTypeTranslation implements
     }
     Optional<ASTMCType> byPrimitive = determineConstantsType(typeName)
         .map(p -> GrammarMill.mCPrimitiveTypeBuilder().setPrimitive(p).build());
-    return byReference.orElse(byPrimitive.orElse(createType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter().prettyprint(astGenericType))));
+    return byReference.orElse(byPrimitive.orElse(createType(Grammar_WithConceptsMill.prettyPrint(astGenericType, false))));
   }
 
   protected ASTMCType determineTypeToSet(String typeName, ASTMCGrammar astMCGrammar) {

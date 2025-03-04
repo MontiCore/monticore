@@ -1417,17 +1417,13 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // initialize glex
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.addAfterTemplate("cd2java.Imports", new TemplateHookPoint("mc.Imports"));
-    if(Reporting.isInitialized()) {
       if(mcConfig.getConfigTemplate().isPresent()) {
         String configTemplate = mcConfig.getConfigTemplate().get();
         if (configTemplate.endsWith(".ftl")) { // remove file ending
           configTemplate = configTemplate.substring(0, configTemplate.length() - 4);
         }
         glex.setGlobalValue(CONFIGTEMPLATE_LONG, configTemplate);
-      }
-    } else {
-      Log.debug("Reporting not initialised or disabled. " +
-              "No values are added to the glex.", LOG_ID);
+
     }
     return glex;
   }
@@ -1484,6 +1480,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       List<MCPath> mcPaths = new ArrayList<>();
       Optional<MontiCoreReports> reportsOpt = Optional.empty();
 
+      DelegatingClassLoader groovyClassLoader = new DelegatingClassLoader(this.getClass().getClassLoader());
       try {
         if(config.isPresent()) {
           MontiCoreConfiguration mcConfig = MontiCoreConfiguration.withConfiguration(config.get());
@@ -1531,6 +1528,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           // the "force" parameter, which is always true
           builder.addVariable("force", true);
         }
+        // Use a delegating classloader for groovy to reduce
+        // the impact of JDK-8078641
+        builder.withClassLoader(groovyClassLoader);
 
         GroovyInterpreter g = builder.build();
         g.evaluate(script);
@@ -1541,8 +1541,12 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         for(MCPath mcPath: mcPaths) {
           mcPath.close();
         }
-        if(reportsOpt.isPresent()) {
-          reportsOpt.get().close();
+        // Notify the reporters about flushing & closing their file handles
+        reportsOpt.ifPresent(MontiCoreReports::close);
+        // Clean up after groovy
+        try {
+          groovyClassLoader.close();
+        } catch (IOException ignored) {
         }
       }
     }
