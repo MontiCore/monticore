@@ -155,6 +155,17 @@ public class ParserGeneratorHelper {
     }
   }
 
+  public String escapeSingleQuote(String str) {
+    String retStr = "";
+    String del = "";
+    for (String s: str.split("'")) {
+      retStr += del;
+      retStr += s;
+      del = "\\'";
+    }
+    return retStr;
+  }
+
   /**
    * Side effect free.
    * @return the name for a lexsymbol that was used in an Antlr-File
