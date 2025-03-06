@@ -6,6 +6,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -174,7 +175,7 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         .map(service::resolveCD)
         .collect(Collectors.toList());
     for (DiagramSymbol superCd : importedClasses) {
-      Collection<CDTypeSymbol> overriddenSet = Lists.newArrayList();
+      Collection<CDTypeSymbol> overriddenSet = Sets.newHashSet();
       for (String className : nativeClasses) {
         Optional<CDTypeSymbol> cdType = calcOCDCDTypeDownCache.getUnchecked(Pair.of((ICDBasisScope) superCd.getEnclosingScope(),className));
         if (cdType.isPresent()) {
@@ -188,7 +189,13 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       if (!overriddenSet.isEmpty()) {
         overridden.put(superCd, overriddenSet);
       }
-      calculateOverriddenCds(superCd, nativeClasses, overridden, firstClasses);
+      Collection<String> astcdClassList = ((ASTCDDefinition) superCd.getAstNode()).getCDClassesList()
+          .stream()
+          .filter(x -> !x.getModifier().isAbstract())
+          .map(ASTCDClass::getName)
+          .collect(Collectors.toList());
+      astcdClassList.addAll(nativeClasses);
+      calculateOverriddenCds(superCd, astcdClassList, overridden, firstClasses);
     }
     firstClasses.addAll(l.values());
   }
