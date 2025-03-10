@@ -6,7 +6,8 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.values.ErrorMIValue;
-import de.monticore.symboltable.ISymbol;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
@@ -26,14 +27,23 @@ public class ExpressionsBasisInterpreter extends ExpressionsBasisInterpreterTOP 
   @Override
   public MIValue interpret(ASTNameExpression n) {
     SymTypeExpression type = TypeCheck3.typeOf(n);
-    Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
+    if (type.isFunctionType() && type.asFunctionType().hasSymbol()) {
+      Optional<FunctionSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (FunctionSymbol)s);
+      if (symbol.isEmpty()) {
+        String errorMsg = "Cannot resolve function '" + n.getName() + "'.";
+        Log.error(errorMsg);
+        return new ErrorMIValue(errorMsg);
+      }
+      return loadFunction(symbol.get());
+    }
+    
+    Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
-      String errorMsg = "Unknown variable symbol detected";
+      String errorMsg = "Cannot resolve variable '" + n.getName() + "'.";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
-    
-    return load(symbol.get());
+    return loadVariable(symbol.get());
   }
 
   @Override

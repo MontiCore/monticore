@@ -42,7 +42,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(8, decoratedClass.getCDMethodList().size());
+    assertEquals(10, decoratedClass.getCDMethodList().size());
   }
 
   @Test
@@ -118,6 +118,42 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
         setMethod.getCDParameter(0).getName());
     assertTrue(setMethod.getMCReturnType().isPresentMCVoidType());
   }
+  
+  @Test
+  public void testFunctionMethods() {
+    Optional<ASTCDMethod> optDeclareMethod = decoratedClass.getCDMethodList()
+        .stream()
+        .filter(m -> m.getName().equals("declareFunction"))
+        .findAny();
+    
+    assertTrue(optDeclareMethod.isPresent());
+    ASTCDMethod declareMethod = optDeclareMethod.get();
+    
+    assertTrue(declareMethod.getMCReturnType().isPresentMCVoidType());
+    assertEquals(2, declareMethod.getCDParameterList().size());
+    assertEquals("symbol", declareMethod.getCDParameter(0).getName());
+    assertEquals(InterpreterConstants.FUNCTION_SYMBOL_FULLNAME,
+        declareMethod.getCDParameter(0).getMCType().printType());
+    assertEquals("value", declareMethod.getCDParameter(1).getName());
+    assertEquals(InterpreterConstants.FUNCTION_VALUE_FULLNAME,
+        declareMethod.getCDParameter(1).getMCType().printType());
+    
+    Optional<ASTCDMethod> optLoadMethod = decoratedClass.getCDMethodList()
+        .stream()
+        .filter(m -> m.getName().equals("loadFunction"))
+        .findAny();
+    
+    assertTrue(optLoadMethod.isPresent());
+    ASTCDMethod loadMethod = optLoadMethod.get();
+    
+    assertEquals(InterpreterConstants.VALUE_FULLNAME,
+        loadMethod.getMCReturnType().printType());
+    assertEquals(1, loadMethod.getCDParameterList().size());
+    assertEquals(InterpreterConstants.FUNCTION_SYMBOL_FULLNAME,
+        loadMethod.getCDParameter(0).getMCType().printType());
+    assertEquals("symbol",
+        loadMethod.getCDParameter(0).getName());
+  }
 
   @Test
   public void testVariableMethods() {
@@ -132,7 +168,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertTrue(declareMethod.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, declareMethod.getCDParameterList().size());
     assertEquals("symbol", declareMethod.getCDParameter(0).getName());
-    assertEquals(InterpreterConstants.SYMBOL_FULLNAME,
+    assertEquals(InterpreterConstants.VARIABLE_SYMBOL_FULLNAME,
         declareMethod.getCDParameter(0).getMCType().printType());
     assertEquals("value", declareMethod.getCDParameter(1).getName());
     assertEquals(InterpreterConstants.VALUE_FULLNAME,
@@ -140,7 +176,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     
     Optional<ASTCDMethod> optStoreMethod = decoratedClass.getCDMethodList()
         .stream()
-        .filter(m -> m.getName().equals("store"))
+        .filter(m -> m.getName().equals("storeVariable"))
         .findAny();
     
     assertTrue(optStoreMethod.isPresent());
@@ -149,7 +185,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertTrue(storeMethod.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, storeMethod.getCDParameterList().size());
     assertEquals("symbol", storeMethod.getCDParameter(0).getName());
-    assertEquals(InterpreterConstants.SYMBOL_FULLNAME,
+    assertEquals(InterpreterConstants.VARIABLE_SYMBOL_FULLNAME,
         storeMethod.getCDParameter(0).getMCType().printType());
     assertEquals("value", storeMethod.getCDParameter(1).getName());
     assertEquals(InterpreterConstants.VALUE_FULLNAME,
@@ -157,7 +193,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
     Optional<ASTCDMethod> optLoadMethod = decoratedClass.getCDMethodList()
         .stream()
-        .filter(m -> m.getName().equals("load"))
+        .filter(m -> m.getName().equals("loadVariable"))
         .findAny();
 
     assertTrue(optLoadMethod.isPresent());
@@ -166,7 +202,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertEquals(InterpreterConstants.VALUE_FULLNAME,
         loadMethod.getMCReturnType().printType());
     assertEquals(1, loadMethod.getCDParameterList().size());
-    assertEquals(InterpreterConstants.SYMBOL_FULLNAME,
+    assertEquals(InterpreterConstants.VARIABLE_SYMBOL_FULLNAME,
         loadMethod.getCDParameter(0).getMCType().printType());
     assertEquals("symbol",
         loadMethod.getCDParameter(0).getName());

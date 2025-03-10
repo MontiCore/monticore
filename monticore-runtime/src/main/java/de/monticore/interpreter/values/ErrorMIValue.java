@@ -15,4 +15,8 @@ public class ErrorMIValue implements MIValue {
     return true;
   }
   
+  public String getMessage() {
+    return message;
+  }
+  
 }

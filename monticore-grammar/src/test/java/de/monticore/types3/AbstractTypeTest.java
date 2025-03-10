@@ -9,8 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertTrue;
-
 public class AbstractTypeTest {
 
   @BeforeEach

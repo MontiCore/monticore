@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter;
 
-import de.monticore.symboltable.ISymbol;
+import de.monticore.interpreter.values.FunctionMIValue;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
 public interface ModelInterpreter extends IModelInterpreter {
 
@@ -14,16 +16,24 @@ public interface ModelInterpreter extends IModelInterpreter {
   void pushScope(MIScope scope);
   void popScope();
 
-  default void declareVariable(ISymbol symbol, MIValue value) {
+  default void declareFunction(FunctionSymbol symbol, FunctionMIValue value) {
+    getCurrentScope().declareFunction(symbol, value);
+  }
+  
+  default MIValue loadFunction(FunctionSymbol symbol) {
+    return getRealThis().loadFunction(symbol);
+  }
+  
+  default void declareVariable(VariableSymbol symbol, MIValue value) {
     getCurrentScope().declareVariable(symbol, value);
   }
   
-  default MIValue load(ISymbol symbol) {
-    return getRealThis().load(symbol);
+  default MIValue loadVariable(VariableSymbol symbol) {
+    return getRealThis().loadVariable(symbol);
   }
 
-  default void store (ISymbol symbol, MIValue value){
-    getRealThis().store(symbol, value);
+  default void storeVariable (VariableSymbol symbol, MIValue value){
+    getRealThis().storeVariable(symbol, value);
   }
 
 }

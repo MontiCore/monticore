@@ -8,7 +8,7 @@ import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symboltable.ISymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
@@ -35,45 +35,45 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
   public MIValue interpret(ASTIncSuffixExpression n) {
     ASTExpression expr = n.getExpression();
     SymTypeExpression type = TypeCheck3.typeOf(expr);
-    Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
+    Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
     
-    MIValue value = load(symbol.get());
+    MIValue value = loadVariable(symbol.get());
     if (value.isError()) return value;
     
     if (type.isPrimitive()) {
       String primitive = type.asPrimitive().getPrimitiveName();
       if (primitive.equals(BasicSymbolsMill.BYTE)) {
         MIValue res = createValue((byte)(value.asByte() + 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
         MIValue res = createValue((short)(value.asShort() + 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
         MIValue res = createValue((char)(value.asChar() + 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.INT)) {
         MIValue res = createValue(value.asInt() + 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.LONG)) {
         MIValue res = createValue(value.asLong() + 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
         MIValue res = createValue(value.asFloat() + 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
         MIValue res = createValue(value.asDouble() + 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       }
     }
@@ -87,45 +87,45 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
   public MIValue interpret(ASTIncPrefixExpression n) {
     ASTExpression expr = n.getExpression();
     SymTypeExpression type = TypeCheck3.typeOf(expr);
-    Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
+    Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
     
-    MIValue value = load(symbol.get());
+    MIValue value = loadVariable(symbol.get());
     if (value.isError()) return value;
     
     if (type.isPrimitive()) {
       String primitive = type.asPrimitive().getPrimitiveName();
       if (primitive.equals(BasicSymbolsMill.BYTE)) {
         MIValue res = createValue((byte)(value.asByte() + 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
         MIValue res = createValue((short)(value.asShort() + 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
         MIValue res = createValue((char)(value.asChar() + 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.INT)) {
         MIValue res = createValue(value.asInt() + 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.LONG)) {
         MIValue res = createValue(value.asLong() + 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
         MIValue res = createValue(value.asFloat() + 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
         MIValue res = createValue(value.asDouble() + 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       }
     }
@@ -139,45 +139,45 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
   public MIValue interpret(ASTDecSuffixExpression n) {
     ASTExpression expr = n.getExpression();
     SymTypeExpression type = TypeCheck3.typeOf(expr);
-    Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
+    Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
     
-    MIValue value = load(symbol.get());
+    MIValue value = loadVariable(symbol.get());
     if (value.isError()) return value;
     
     if (type.isPrimitive()) {
       String primitive = type.asPrimitive().getPrimitiveName();
       if (primitive.equals(BasicSymbolsMill.BYTE)) {
         MIValue res = createValue((byte)(value.asByte() - 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
         MIValue res = createValue((short)(value.asShort() - 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
         MIValue res = createValue((char)(value.asChar() - 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.INT)) {
         MIValue res = createValue(value.asInt() - 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.LONG)) {
         MIValue res = createValue(value.asLong() - 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
         MIValue res = createValue(value.asFloat() - 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
         MIValue res = createValue(value.asDouble() - 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return value;
       }
     }
@@ -191,45 +191,45 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
   public MIValue interpret(ASTDecPrefixExpression n) {
     ASTExpression expr = n.getExpression();
     SymTypeExpression type = TypeCheck3.typeOf(expr);
-    Optional<ISymbol> symbol = type.getSourceInfo().getSourceSymbol();
+    Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
     
-    MIValue value = load(symbol.get());
+    MIValue value = loadVariable(symbol.get());
     if (value.isError()) return value;
     
     if (type.isPrimitive()) {
       String primitive = type.asPrimitive().getPrimitiveName();
       if (primitive.equals(BasicSymbolsMill.BYTE)) {
         MIValue res = createValue((byte)(value.asByte() - 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.SHORT)) {
         MIValue res = createValue((short)(value.asShort() - 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.CHAR)) {
         MIValue res = createValue((char)(value.asChar() - 1));
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.INT)) {
         MIValue res = createValue(value.asInt() - 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.LONG)) {
         MIValue res = createValue(value.asLong() - 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.FLOAT)) {
         MIValue res = createValue(value.asFloat() - 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       } else if (primitive.equals(BasicSymbolsMill.DOUBLE)) {
         MIValue res = createValue(value.asDouble() - 1);
-        store(symbol.get(), res);
+        storeVariable(symbol.get(), res);
         return res;
       }
     }
@@ -242,7 +242,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
   public MIValue interpret(ASTAssignmentExpression n) {
     ASTExpression leftExpr = n.getLeft();
     SymTypeExpression leftType = TypeCheck3.typeOf(leftExpr);
-    Optional<ISymbol> leftSymbol = leftType.getSourceInfo().getSourceSymbol();
+    Optional<VariableSymbol> leftSymbol = leftType.getSourceInfo().getSourceSymbol().map(symbol -> (VariableSymbol)symbol);
     if (leftSymbol.isEmpty()) {
       String errorMsg = "Unknown variable symbol detected";
       Log.error(errorMsg);
@@ -259,7 +259,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     // no operation
     if (operator == EQUALS) {
       if (leftType.deepEquals(rightType)) {
-        store(leftSymbol.get(), rightValue);
+        storeVariable(leftSymbol.get(), rightValue);
         return rightValue;
       }
       
@@ -277,11 +277,11 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         return new ErrorMIValue(errorMsg);
       }
       
-      store(leftSymbol.get(), rightValue);
+      storeVariable(leftSymbol.get(), rightValue);
       return rightValue;
     }
     
-    MIValue leftValue = load(leftSymbol.get());
+    MIValue leftValue = loadVariable(leftSymbol.get());
     if (leftValue.isError()) return leftValue;
     
     MIValue resultValue;
@@ -401,7 +401,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     
     if (resultValue.isError()) return resultValue;
     
-    store(leftSymbol.get(), resultValue);
+    storeVariable(leftSymbol.get(), resultValue);
     return resultValue;
   }
 }

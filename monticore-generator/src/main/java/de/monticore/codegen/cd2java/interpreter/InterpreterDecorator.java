@@ -132,22 +132,33 @@ public class InterpreterDecorator
         mcTypeFacade.createBasicGenericTypeOf("java.util.Stack", INTERPRETER_SCOPE_FULLNAME),
         "scopeCallstack"));
 
-    ASTCDParameter symbolParameter = cdParameterFacade.createParameter(SYMBOL_FULLNAME, "symbol");
+    ASTCDParameter variableSymbolParameter = cdParameterFacade.createParameter(VARIABLE_SYMBOL_FULLNAME, "symbol");
+    ASTCDParameter functionSymbolParameter = cdParameterFacade.createParameter(FUNCTION_SYMBOL_FULLNAME, "symbol");
     ASTCDParameter valueParameter = cdParameterFacade.createParameter(VALUE_FULLNAME, "value");
+    ASTCDParameter functionValueParameter = cdParameterFacade.createParameter(FUNCTION_VALUE_FULLNAME, "value");
+    
+    ASTCDMethod declareFuncMethod = cdMethodFacade.createMethod(
+        PUBLIC.build(), "declareFunction", functionSymbolParameter, functionValueParameter);
+    this.replaceTemplate(EMPTY_BODY, declareFuncMethod, new StringHookPoint("getRealThis().getCurrentScope().declareFunction(symbol, value);"));
+    members.add(declareFuncMethod);
+    
+    ASTCDMethod loadFuncMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME, "loadFunction", functionSymbolParameter);
+    this.replaceTemplate(EMPTY_BODY, loadFuncMethod, new StringHookPoint("return getRealThis().getCurrentScope().loadFunction(symbol);"));
+    members.add(loadFuncMethod);
     
     ASTCDMethod declareVarMethod = cdMethodFacade.createMethod(
-        PUBLIC.build(), "declareVariable", symbolParameter, valueParameter);
+        PUBLIC.build(), "declareVariable", variableSymbolParameter, valueParameter);
     this.replaceTemplate(EMPTY_BODY, declareVarMethod, new StringHookPoint("getRealThis().getCurrentScope().declareVariable(symbol, value);"));
     members.add(declareVarMethod);
     
-    ASTCDMethod storeMethod = cdMethodFacade.createMethod(
-        PUBLIC.build(), "store", symbolParameter, valueParameter);
-    this.replaceTemplate(EMPTY_BODY, storeMethod, new StringHookPoint("getRealThis().getCurrentScope().store(symbol, value);"));
-    members.add(storeMethod);
-
-    ASTCDMethod loadMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME, "load", symbolParameter);
-    this.replaceTemplate(EMPTY_BODY, loadMethod, new StringHookPoint("return getRealThis().getCurrentScope().load(symbol);"));
-    members.add(loadMethod);
+    ASTCDMethod loadVarMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME, "loadVariable", variableSymbolParameter);
+    this.replaceTemplate(EMPTY_BODY, loadVarMethod, new StringHookPoint("return getRealThis().getCurrentScope().loadVariable(symbol);"));
+    members.add(loadVarMethod);
+    
+    ASTCDMethod storeVarMethod = cdMethodFacade.createMethod(
+        PUBLIC.build(), "storeVariable", variableSymbolParameter, valueParameter);
+    this.replaceTemplate(EMPTY_BODY, storeVarMethod, new StringHookPoint("getRealThis().getCurrentScope().storeVariable(symbol, value);"));
+    members.add(storeVarMethod);
 
     ASTCDMethod getter = cdMethodFacade.createMethod(
         PUBLIC.build(),

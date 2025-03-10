@@ -1,7 +1,9 @@
 package de.monticore.interpreter;
 
 import de.monticore.interpreter.values.ErrorMIValue;
-import de.monticore.symboltable.ISymbol;
+import de.monticore.interpreter.values.FunctionMIValue;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashMap;
@@ -9,7 +11,8 @@ import java.util.Map;
 
 public class MIScope {
   
-  protected Map<ISymbol, MIValue> contextMap = new HashMap<>();
+  protected Map<FunctionSymbol, FunctionMIValue> functionMap = new HashMap<>();
+  protected Map<VariableSymbol, MIValue> variableMap = new HashMap<>();
   
   protected MIScope parent;
   
@@ -21,32 +24,55 @@ public class MIScope {
     this.parent = parent;
   }
   
-  public void declareVariable(ISymbol symbol, MIValue value) {
-    if (contextMap.containsKey(symbol)) {
-      Log.error("Variable was already declared");
+  public void declareFunction(FunctionSymbol symbol, FunctionMIValue value) {
+    if (functionMap.containsKey(symbol)) {
+      Log.error("Function was already declared");
     }
-    this.contextMap.put(symbol, value);
+    this.functionMap.put(symbol, value);
   }
   
-  public MIValue load(ISymbol symbol) {
-    MIValue value = contextMap.get(symbol);
+  public MIValue loadFunction(FunctionSymbol symbol) {
+    FunctionMIValue value = functionMap.get(symbol);
     if (value != null) {
       return value;
     }
     
     if (parent != null) {
-      return parent.load(symbol);
+      return parent.loadFunction(symbol);
     }
     
-    Log.error("Failed to load Value of Symbol. Could not find Symbol in the current or any parent scope");
-    return new ErrorMIValue("Failed to load Value of Symbol. Could not find Symbol in the current or any parent scope");
+    String errorMsg = "Failed to load Function by Symbol. Could not find Symbol in the current or any parent scope";
+    Log.error(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
-  public void store(ISymbol symbol, MIValue value) {
-    if (contextMap.containsKey(symbol)) {
-      contextMap.put(symbol, value);
+  public void declareVariable(VariableSymbol symbol, MIValue value) {
+    if (variableMap.containsKey(symbol)) {
+      Log.error("Variable was already declared");
+    }
+    this.variableMap.put(symbol, value);
+  }
+  
+  public MIValue loadVariable(VariableSymbol symbol) {
+    MIValue value = variableMap.get(symbol);
+    if (value != null) {
+      return value;
+    }
+    
+    if (parent != null) {
+      return parent.loadVariable(symbol);
+    }
+    
+    String errorMsg = "Failed to load Variable by Symbol. Could not find Symbol in the current or any parent scope";
+    Log.error(errorMsg);
+    return new ErrorMIValue(errorMsg);
+  }
+  
+  public void storeVariable(VariableSymbol symbol, MIValue value) {
+    if (variableMap.containsKey(symbol)) {
+      variableMap.put(symbol, value);
     } else if (parent != null){
-      parent.store(symbol, value);
+      parent.storeVariable(symbol, value);
     } else {
       Log.error("Failed to store Value in Symbol. Could not find Symbol in the current or any parent scope");
     }
