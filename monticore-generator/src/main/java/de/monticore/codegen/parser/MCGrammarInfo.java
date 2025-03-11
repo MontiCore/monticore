@@ -100,6 +100,8 @@ public class MCGrammarInfo {
    *
    */
   protected void addSubRules() {
+    Map<String, Integer> counts = new HashMap<>();
+    Set<String> prodCounts = new HashSet<>();
     Set<MCGrammarSymbol> grammarsToHandle = Sets
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
@@ -143,7 +145,11 @@ public class MCGrammarInfo {
           }
         }
       }
+      System.err.println("#####ruleMap " + grammar.getFullName() + ": # " + ruleMap.size());
+      counts.put(grammar.getFullName(), ruleMap.size());
+      prodCounts.addAll(ruleMap.keySet());
     }
+    System.err.println("==>" + this.grammarSymbol.getFullName() + ": " + counts.values().stream().mapToInt(Integer::intValue).sum() + "/" + prodCounts.size());
   }
   
   
