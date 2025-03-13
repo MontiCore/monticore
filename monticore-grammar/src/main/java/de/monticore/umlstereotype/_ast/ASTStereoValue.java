@@ -44,6 +44,11 @@ public class ASTStereoValue extends ASTStereoValueTOP {
   }
 
   @Deprecated
+  public String getContent() {
+    return getValue();
+  }
+
+  @Deprecated
   public void setContent(String content) {
     this.setExpression(ExpressionsBasisMill
       .literalExpressionBuilder()
