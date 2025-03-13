@@ -7,7 +7,7 @@ import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 public class ASTStereoValueBuilder extends ASTStereoValueBuilderTOP {
 
   @Deprecated
-  public void setContent(String content) {
+  public ASTStereoValueBuilder setContent(String content) {
     this.setExpression(ExpressionsBasisMill
       .literalExpressionBuilder()
       .setLiteral(MCCommonLiteralsMill
@@ -15,5 +15,6 @@ public class ASTStereoValueBuilder extends ASTStereoValueBuilderTOP {
         .setSource(content)
         .build())
       .build());
+    return this.realBuilder;
   }
 }
