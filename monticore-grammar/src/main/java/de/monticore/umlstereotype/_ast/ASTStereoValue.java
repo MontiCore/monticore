@@ -6,38 +6,36 @@ import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
-
 public class ASTStereoValue extends ASTStereoValueTOP {
 
-  protected Optional<ASTStringLiteral> text = Optional.empty();
-
   public boolean isPresentText() {
-    if (text.isEmpty() && isPresentExpression() &&
-      ExpressionsBasisMill
+    if (isPresentExpression()) {
+      return ExpressionsBasisMill
         .typeDispatcher()
         .isExpressionsBasisASTLiteralExpression(expression.get())
-      && MCCommonLiteralsMill.typeDispatcher()
-      .isMCCommonLiteralsASTStringLiteral(ExpressionsBasisMill
-        .typeDispatcher().asExpressionsBasisASTLiteralExpression(expression.get())
-        .getLiteral())) {
-      text = Optional.of(MCCommonLiteralsMill.typeDispatcher()
-        .asMCCommonLiteralsASTStringLiteral(ExpressionsBasisMill.typeDispatcher()
-          .asExpressionsBasisASTLiteralExpression(expression.get())
-          .getLiteral()));
+        && MCCommonLiteralsMill.typeDispatcher()
+        .isMCCommonLiteralsASTStringLiteral(ExpressionsBasisMill
+          .typeDispatcher().asExpressionsBasisASTLiteralExpression(expression.get())
+          .getLiteral());
     }
-    return text.isPresent();
+    return false;
   }
 
   public ASTStringLiteral getText() {
     if (isPresentText()) {
-      return this.text.get();
+      return MCCommonLiteralsMill.typeDispatcher()
+        .asMCCommonLiteralsASTStringLiteral(ExpressionsBasisMill.typeDispatcher()
+          .asExpressionsBasisASTLiteralExpression(expression.get())
+          .getLiteral());
     }
     Log.error("0xA7003x52066 get for Text can't return a value. Attribute is empty.");
     // Normally this statement is not reachable
     throw new IllegalStateException();
   }
 
+  /**
+   * @return the content of the String or an empty string if no text is present
+   */
   public String getValue() {
     if (isPresentText()) {
       return getText().getValue();
@@ -45,7 +43,14 @@ public class ASTStereoValue extends ASTStereoValueTOP {
     return "";
   }
 
+  @Deprecated
   public void setContent(String content) {
-    text = Optional.of(MCCommonLiteralsMill.stringLiteralBuilder().setSource("\"" + content + "\"").build());
+    this.setExpression(ExpressionsBasisMill
+      .literalExpressionBuilder()
+      .setLiteral(MCCommonLiteralsMill
+        .stringLiteralBuilder()
+        .setSource(content)
+        .build())
+      .build());
   }
 }
