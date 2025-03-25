@@ -36,7 +36,7 @@ requires registration until **07th of March**.
 
 Registration costs are 660€ and include accommodation, 
 conference fees, and meals during the symposium.  
-You can register via [this link](https://www.eventim-light.com/de/a/67a1d4620555173e53f9cad4/e/67a1d66563e4dc304798a9f2). 
+~~You can register via this link~~ Registration is closed.
 
 ### Submission
 
