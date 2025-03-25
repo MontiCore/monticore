@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -1263,7 +1264,107 @@ public class CompileTimeTypeCalculator {
     return Optional.of(bounds);
   }
 
+  /**
+   * Handles compile time type calculation of "pass-through"-expressions;
+   * Pass-through expressions (a subset of JLS 21 15.2 poly expressions)
+   * which pass a value through the expression,
+   * without modifying the value in any way,
+   * while optionally selecting one out of multiple sub-expressions.
+   * Examples are BracketExpression, ConditionalExpression,
+   * SwitchExpression (currently not part of MC, s. Java).
+   *
+   * @param passThroughExpr             the pass-through expression
+   * @param passedThroughSubExpressions expressions that are passed trough
+   * @param typeCheckingModeCalculation calculation to be done during
+   *                                    the type-checking mode of the visitor.
+   *                                    The target type will have been set
+   *                                    iff applicable.
+   *                                    This usually needs to check
+   *                                    the expression used to select
+   *                                    the expression that is passed through.
+   */
+  public static void handlePassThroughExpression(
+      ASTExpression passThroughExpr,
+      List<ASTExpression> passedThroughSubExpressions,
+      Action typeCheckingModeCalculation,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    getDelegate()._handlePassThroughExpression(
+        passThroughExpr, passedThroughSubExpressions,
+        typeCheckingModeCalculation,
+        typeTraverser, type4Ast, infCtx4Ast
+    );
+  }
+
+  protected void _handlePassThroughExpression(
+      ASTExpression passThroughExpression,
+      List<ASTExpression> passedThroughSubExpressions,
+      Action typeCheckingModeCalculation,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    if (passedThroughSubExpressions.isEmpty()) {
+      Log.error("0xFD44C internal error: "
+              + "did not expect empty list.",
+          passThroughExpression.get_SourcePositionStart(),
+          passThroughExpression.get_SourcePositionEnd()
+      );
+    }
+
+    // pass context information down to subExpressions
+    InferenceContext infCtx =
+        infCtx4Ast.getContextOfExpression(passThroughExpression);
+    for (ASTExpression passedThroughSubExpression
+        : passedThroughSubExpressions
+    ) {
+      infCtx4Ast.setContextOfExpression(
+          passedThroughSubExpression, infCtx.deepClone()
+      );
+    }
+
+    // calculate inference Results iff applicable
+    List<InferenceResult> infRess = new ArrayList<>();
+    if (infCtx4Ast.getContextOfExpression(passThroughExpression)
+        .getVisitorMode() != InferenceVisitorMode.TYPE_CHECKING
+    ) {
+      for (ASTExpression passedThroughSubExpression
+          : passedThroughSubExpressions
+      ) {
+        passedThroughSubExpression.accept(typeTraverser);
+        infRess.addAll(infCtx4Ast
+            .getContextOfExpression(passedThroughSubExpression)
+            .getInferenceResults()
+        );
+      }
+    }
+
+    // if required, use the type-checking mode calculation
+    if (infRess.isEmpty()) {
+      // usually visit, traverse, endvisit
+      infCtx.setVisitorMode(InferenceVisitorMode.TYPE_CHECKING);
+      typeCheckingModeCalculation.run();
+    }
+    // otherwise, simply pass the inference results upwards
+    else {
+      infCtx4Ast.getContextOfExpression(passThroughExpression)
+          .setInferredTypes(infRess);
+    }
+  }
+
   // Helper
+
+  /**
+   * Only exists as Java is missing a ()->void functional interface.
+   * This is not meant to be used otherwise.
+   * (Runnable is specifically meant to be used for threads)
+   */
+  @FunctionalInterface
+  public interface Action {
+    void run();
+  }
 
   protected List<SymTypeOfFunction> getFunctionsOfResolvedType(
       SymTypeExpression resolvedType
