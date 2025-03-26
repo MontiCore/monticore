@@ -8,7 +8,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.codegen.parser.antlr.Grammar2Antlr;
+import de.monticore.codegen.parser.antlr.InterfaceInliningAlt;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
@@ -62,8 +62,8 @@ public class ParserGeneratorHelper {
 
   protected boolean isJava;
 
-  protected Grammar2Antlr.InterfaceInliningAlt curInterfaceInliningAlt;
-  protected Map<Grammar2Antlr.InterfaceInliningAlt, List<String>> interfaceInliningAltToTmpNames = new LinkedHashMap<>();
+  protected InterfaceInliningAlt curInterfaceInliningAlt;
+  protected Map<InterfaceInliningAlt, List<String>> interfaceInliningAltToTmpNames = new LinkedHashMap<>();
 
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
@@ -483,11 +483,11 @@ public class ParserGeneratorHelper {
     return tmpVariables.get(a);
   }
 
-  public void setCurInterfaceInliningAlt(Grammar2Antlr.InterfaceInliningAlt curInterfaceInliningAlt) {
+  public void setCurInterfaceInliningAlt(InterfaceInliningAlt curInterfaceInliningAlt) {
     this.curInterfaceInliningAlt = curInterfaceInliningAlt;
   }
 
-  public Map<Grammar2Antlr.InterfaceInliningAlt, List<String>> getInterfaceInliningAltToTmpNames() {
+  public Map<InterfaceInliningAlt, List<String>> getInterfaceInliningAltToTmpNames() {
     return interfaceInliningAltToTmpNames;
   }
 

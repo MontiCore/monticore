@@ -52,20 +52,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected Map<ASTProd, ProdInfo> prodInfoMap = new LinkedHashMap<>();
 
-  public static class ProdInfo {
-    public final ASTProd prod;
-    public final Map<ASTNode, String> tmpNames = new LinkedHashMap<>();
-    public final Map<InterfaceInliningAlt, List<String>> alternativeToNames = new LinkedHashMap<>();
-
-    protected ProdInfo(ASTProd prod) {
-      this.prod = prod;
-    }
-
-    public Map<InterfaceInliningAlt, List<String>> getAlternativeToNames() {
-      return alternativeToNames;
-    }
-  }
-
   public Grammar2Antlr(
       ParserGeneratorHelper parserGeneratorHelper,
       MCGrammarInfo grammarInfo) {
@@ -654,34 +640,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     ast.accept(getTraverser());
     prodInfoMap.computeIfAbsent(ast, ProdInfo::new).tmpNames.putAll(parserHelper.getTmpVariables());
     return getAntlrCode();
-  }
-
-  /**
-   * Used for inlining of interface productions.
-   * Describes a production that is one of the replacements of an interface production.
-   */
-  public static class InterfaceInliningAlt {
-    ASTGrammarNode alternative;
-    PredicatePair pp;
-    ProdSymbol prodSymbol;
-
-    public InterfaceInliningAlt(ASTGrammarNode alternative, PredicatePair pp, ProdSymbol prodSymbol) {
-      this.alternative = alternative;
-      this.pp = pp;
-      this.prodSymbol = prodSymbol;
-    }
-
-    public ASTGrammarNode getAlternative() {
-      return this.alternative;
-    }
-
-    public PredicatePair getPredicatePair() {
-      return this.pp;
-    }
-
-    public String getOriginalName() {
-      return prodSymbol.getName();
-    }
   }
 
   /**

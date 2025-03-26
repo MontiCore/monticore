@@ -2,7 +2,7 @@
 package de.monticore.codegen.parser;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.codegen.parser.antlr.Grammar2Antlr;
+import de.monticore.codegen.parser.antlr.ProdInfo;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
@@ -19,7 +19,6 @@ import de.se_rwth.commons.logging.Log;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ParserInfoGenerator {
@@ -58,7 +57,7 @@ public class ParserInfoGenerator {
       GeneratorSetup setup,
       String parserPackage,
       Languages lang,
-      Map<ASTProd, Grammar2Antlr.ProdInfo> prodInfoMap
+      Map<ASTProd, ProdInfo> prodInfoMap
   ) {
     Map<ASTNode, Set<Integer>> nonTerminalToEmptyParserStates = collectNonTerminals(astGrammar)
         .stream()
@@ -84,7 +83,7 @@ public class ParserInfoGenerator {
       Map<ASTNode, Set<Integer>> rhsNodeToParserStates,
       String parserPackage,
       Languages lang,
-      Map<ASTProd, Grammar2Antlr.ProdInfo> prodInfoMap
+      Map<ASTProd, ProdInfo> prodInfoMap
   ) {
     if(!Languages.JAVA.equals(lang)){
       Log.info("Don't generate ParserInfo for the grammar " + astGrammar.getName() + " since the target language is " + lang.getLanguage() + " and not Java", LOG);

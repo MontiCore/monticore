@@ -25,10 +25,10 @@ import java.util.*;
 public class AntlrTool extends Tool {
   
   protected MCGrammarSymbol grammarSymbol;
-  protected Map<ASTProd, Grammar2Antlr.ProdInfo> prodInfo;
+  protected Map<ASTProd, ProdInfo> prodInfo;
   protected Map<ASTNode, Set<Integer>> rhsNodeToParserStates = new LinkedHashMap<>();
 
-  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Map<ASTProd, Grammar2Antlr.ProdInfo> prodInfo) {
+  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Map<ASTProd, ProdInfo> prodInfo) {
     super(args);
     this.grammarSymbol = grammarSymbol;
     this.prodInfo = prodInfo;
@@ -119,7 +119,7 @@ public class AntlrTool extends Tool {
    */
   private void calculateStatesForNonTerminals(Grammar g) {
     if(g.isParser() || g.isCombined()){
-      for (Map.Entry<ASTProd, Grammar2Antlr.ProdInfo> outer : prodInfo.entrySet()) {
+      for (Map.Entry<ASTProd, ProdInfo> outer : prodInfo.entrySet()) {
         Map<ASTNode, String> names = outer.getValue().tmpNames;
 
         if(!names.isEmpty()) {
