@@ -1513,6 +1513,12 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void deriveFromConditionalExprsCTTI() throws IOException {
+    checkExpr("(varboolean ? [] : [])", "List<int>", "List<int>");
+    checkExpr("(varboolean ? [] : varintList)", "List<int>", "List<int>");
+  }
+
+  @Test
   public void testInvalidConditionalExpression() throws IOException {
     checkErrorExpr("3?true:fvarlse", "0xFD118");
     checkErrorExpr("varbyte ? 0 : 1", "0xB0165"); // ? not applicable to byte
