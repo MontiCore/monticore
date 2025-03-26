@@ -112,10 +112,6 @@ public class ${ast.getName()}ParserInfo {
        Used to construct a token path with the concrete prod used to parse an interface prod
   -->
 
-  public static Optional<String> originalProductionName(int state){
-    return getDelegate()._originalProductionName(state);
-  }
-
   boolean cn(Object... objects){
     for(Object o : objects){
       if(o != null){
