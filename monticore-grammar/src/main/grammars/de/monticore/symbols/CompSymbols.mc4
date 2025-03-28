@@ -6,12 +6,12 @@ package de.monticore.symbols;
  */
 component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
 
-  interface scope symbol Component = Name;
+  interface scope symbol ComponentType = Name;
 
   /**
    * Associations to add-ons are expressed as custom getters except parameters which require further configuration.
    */
-  symbolrule Component =
+  symbolrule ComponentType =
     superComponents: de.monticore.types.check.CompKindExpression*
     refinements: de.monticore.types.check.CompKindExpression*
     parameter: de.monticore.symbols.basicsymbols._symboltable.VariableSymbol*

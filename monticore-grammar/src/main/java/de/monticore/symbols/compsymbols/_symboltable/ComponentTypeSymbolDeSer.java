@@ -2,7 +2,6 @@
 package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.base.Preconditions;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symboltable.serialization.ISymbolDeSer;
@@ -12,7 +11,7 @@ import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.CompKindExpression;
-import de.monticore.types.check.FullCompKindExprDeSer;
+import de.monticore.types.check.CompKindExpressionDeSer;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -20,31 +19,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
+public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
 
   public static final String PARAMETERS = "parameters";
   public static final String SUPER = "super";
   public static final String REFINEMENTS = "refinements";
 
-  private FullCompKindExprDeSer compTypeExprDeSer;
+  protected final CompKindExpressionDeSer compTypeExprDeSer;
 
-  public ComponentSymbolDeSer() {
-
+  public ComponentTypeSymbolDeSer() {
+    compTypeExprDeSer = new CompKindExpressionDeSer();
   }
 
   /**
    * @param compTypeExprDeSer the DeSer to use for (de)serializing the super components
    */
-  public ComponentSymbolDeSer(@NonNull FullCompKindExprDeSer compTypeExprDeSer) {
+  public ComponentTypeSymbolDeSer(@NonNull CompKindExpressionDeSer compTypeExprDeSer) {
     this.compTypeExprDeSer = Preconditions.checkNotNull(compTypeExprDeSer);
   }
 
-  protected FullCompKindExprDeSer getCompTypeExprDeSer() {
+  protected CompKindExpressionDeSer getCompTypeExprDeSer() {
     return compTypeExprDeSer;
   }
 
   @Override
-  protected void deserializeAddons(ComponentSymbol symbol, JsonObject symbolJson) {
+  protected void deserializeAddons(ComponentTypeSymbol symbol, JsonObject symbolJson) {
     symbol.getParameterList().forEach(symbol.getSpannedScope()::add);
   }
 
@@ -54,7 +53,7 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
     s2j.getJsonPrinter().beginArray(SUPER);
     for (CompKindExpression superComponent : superComponents) {
       s2j.getJsonPrinter().addToArray(JsonElementFactory
-          .createJsonString(this.getCompTypeExprDeSer().serializeAsJson(superComponent)));
+          .createJsonString(this.getCompTypeExprDeSer().serialize(superComponent)));
     }
     s2j.getJsonPrinter().endArray();
   }
@@ -109,7 +108,7 @@ public class ComponentSymbolDeSer extends ComponentSymbolDeSerTOP {
     s2j.getJsonPrinter().beginArray(REFINEMENTS);
     for (CompKindExpression superComponent : refinements) {
       s2j.getJsonPrinter().addToArray(JsonElementFactory
-          .createJsonString(compTypeExprDeSer.serializeAsJson(superComponent)));
+          .createJsonString(compTypeExprDeSer.serialize(superComponent)));
     }
     s2j.getJsonPrinter().endArray();
   }

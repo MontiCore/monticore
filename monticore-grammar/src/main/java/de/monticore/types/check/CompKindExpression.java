@@ -7,7 +7,8 @@ import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpressi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbol;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ import java.util.Optional;
  */
 public abstract class CompKindExpression {
 
-  protected final ComponentSymbol component;
+  protected final ComponentTypeSymbol component;
   protected LinkedHashMap<VariableSymbol, ASTExpression> parameterBindings;
   protected List<ASTExpression> arguments;
   protected Optional<ASTNode> sourceNode;
@@ -41,6 +42,28 @@ public abstract class CompKindExpression {
   public void addArgument(ASTExpression argument) {
     Preconditions.checkNotNull(argument);
     this.arguments.add(argument);
+  }
+
+  public boolean isComponentType() {
+    return false;
+  }
+
+  public CompKindOfComponentType asComponentType() {
+    Log.error("0xFDAB1 internal error: "
+      + "tried to convert non-component to a component."
+      + " Actual: " + this.printFullName());
+    return null;
+  }
+
+  public boolean isGenericComponentType() {
+    return false;
+  }
+
+  public CompKindOfGenericComponentType asGenericComponentType() {
+    Log.error("0xFDAB2 internal error: "
+      + "tried to convert non-generic-component to a generic-component."
+      + " Actual: " + this.printFullName());
+    return null;
   }
 
   /**
@@ -126,7 +149,7 @@ public abstract class CompKindExpression {
     this.sourceNode = Optional.empty();
   }
 
-  protected CompKindExpression(ComponentSymbol component) {
+  protected CompKindExpression(ComponentTypeSymbol component) {
     Preconditions.checkNotNull(component);
     this.component = component;
     this.arguments = new ArrayList<>();
@@ -134,7 +157,7 @@ public abstract class CompKindExpression {
     this.sourceNode = Optional.empty();
   }
 
-  public ComponentSymbol getTypeInfo() {
+  public ComponentTypeSymbol getTypeInfo() {
     return this.component;
   }
 
@@ -180,7 +203,7 @@ public abstract class CompKindExpression {
     return deepClone(getTypeInfo());
   }
 
-  public abstract CompKindExpression deepClone(ComponentSymbol component);
+  public abstract CompKindExpression deepClone(ComponentTypeSymbol component);
 
   public abstract boolean deepEquals(CompKindExpression compSymType);
 }

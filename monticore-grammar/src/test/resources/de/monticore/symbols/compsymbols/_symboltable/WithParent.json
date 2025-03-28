@@ -1,10 +1,10 @@
 {
-  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentSymbol",
+  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol",
   "name": "Comp",
   "fullName": "Comp",
   "super": [
     {
-      "kind": "de.monticore.types.check.KindOfComponent",
+      "kind": "de.monticore.types.check.CompKindOfComponentType",
       "componentName": "Parent"
     }
   ]

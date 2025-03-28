@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbolSurrogate;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbolSurrogate;
 import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -11,15 +11,14 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * (De-)serializes {@link KindOfComponent}s.
+ * (De-)serializes {@link CompKindOfComponentType}s.
  */
-public class KindOfComponentDeSer implements CompKindExprDeSer<KindOfComponent> {
+public class CompKindOfComponentTypeDeSer {
 
-  public static final String SERIALIZED_KIND = "de.monticore.types.check.KindOfComponent";
+  public static final String SERIALIZED_KIND = "de.monticore.types.check.CompKindOfComponentType";
   public static final String COMP_NAME = "componentName";
 
-  @Override
-  public String serializeAsJson(@NonNull KindOfComponent toSerialize) {
+  public String serialize(@NonNull CompKindOfComponentType toSerialize) {
     Preconditions.checkNotNull(toSerialize);
 
     JsonPrinter printer = new JsonPrinter();
@@ -32,8 +31,7 @@ public class KindOfComponentDeSer implements CompKindExprDeSer<KindOfComponent> 
     return printer.getContent();
   }
 
-  @Override
-  public KindOfComponent deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonObject serialized) {
+  public CompKindOfComponentType deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonObject serialized) {
     Preconditions.checkNotNull(serialized);
     Preconditions.checkArgument(
       JsonDeSers.getKind(serialized).equals(SERIALIZED_KIND),
@@ -43,12 +41,12 @@ public class KindOfComponentDeSer implements CompKindExprDeSer<KindOfComponent> 
 
     String compTypeName = serialized.getMember(COMP_NAME).getAsJsonString().getValue();
 
-    ComponentSymbolSurrogate compType = CompSymbolsMill
-      .componentSymbolSurrogateBuilder()
+    ComponentTypeSymbolSurrogate compType = CompSymbolsMill
+      .componentTypeSymbolSurrogateBuilder()
       .setName(compTypeName)
       .setEnclosingScope(scope)
       .build();
 
-    return new KindOfComponent(compType);
+    return new CompKindOfComponentType(compType);
   }
 }

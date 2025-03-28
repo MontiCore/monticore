@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolTOP;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbol;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.PortSymbol;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -13,9 +13,9 @@ import java.util.Optional;
 /**
  * Represents a component expression that is solely defined by the component symbol.
  */
-public class KindOfComponent extends CompKindExpression {
+public class CompKindOfComponentType extends CompKindExpression {
 
-  public KindOfComponent(@NonNull ComponentSymbol component) {
+  public CompKindOfComponentType(@NonNull ComponentTypeSymbol component) {
     super(component);
   }
 
@@ -27,6 +27,16 @@ public class KindOfComponent extends CompKindExpression {
   @Override
   public String printFullName() {
     return this.getTypeInfo().getFullName();
+  }
+
+  @Override
+  public boolean isComponentType() {
+    return true;
+  }
+
+  @Override
+  public CompKindOfComponentType asComponentType() {
+    return this;
   }
 
   @Override
@@ -47,8 +57,8 @@ public class KindOfComponent extends CompKindExpression {
   }
 
   @Override
-  public KindOfComponent deepClone(@NonNull ComponentSymbol component) {
-    return new KindOfComponent(component);
+  public CompKindOfComponentType deepClone(@NonNull ComponentTypeSymbol component) {
+    return new CompKindOfComponentType(component);
   }
 
   @Override

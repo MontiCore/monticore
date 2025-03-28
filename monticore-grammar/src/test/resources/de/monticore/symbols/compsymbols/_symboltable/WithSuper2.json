@@ -1,14 +1,14 @@
 {
-  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentSymbol",
+  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol",
   "name": "CompTypeWithSuper2",
   "fullName": "CompTypeWithSuper2",
   "super": [
     {
-      "kind": "de.monticore.types.check.KindOfComponent",
+      "kind": "de.monticore.types.check.CompKindOfComponentType",
       "componentName": "SuperCType1"
     },
     {
-      "kind": "de.monticore.types.check.KindOfComponent",
+      "kind": "de.monticore.types.check.CompKindOfComponentType",
       "componentName": "SuperCType2"
     }
   ]

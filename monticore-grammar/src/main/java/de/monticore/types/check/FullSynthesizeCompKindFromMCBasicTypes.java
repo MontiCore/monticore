@@ -6,17 +6,17 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 
 import java.util.Optional;
 
-public class FullSynthesizeComponentFromMCBasicTypes implements ISynthesizeComponent {
+public class FullSynthesizeCompKindFromMCBasicTypes implements ISynthesizeComponent {
 
   protected MCBasicTypesTraverser traverser;
 
-  protected CompTypeCheckResult resultWrapper;
+  protected CompKindCheckResult resultWrapper;
 
   @Override
   public void init() {
     this.traverser = MCBasicTypesMill.traverser();
-    this.resultWrapper = new CompTypeCheckResult();
-    SynthesizeCompTypeFromMCBasicTypes synFromBasic = new SynthesizeCompTypeFromMCBasicTypes(resultWrapper);
+    this.resultWrapper = new CompKindCheckResult();
+    SynthesizeCompKindFromMCBasicTypes synFromBasic = new SynthesizeCompKindFromMCBasicTypes(resultWrapper);
 
     traverser.setMCBasicTypesHandler(synFromBasic);
   }

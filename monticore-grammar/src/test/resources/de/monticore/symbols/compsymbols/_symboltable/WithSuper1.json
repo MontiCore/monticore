@@ -1,10 +1,10 @@
 {
-  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentSymbol",
+  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol",
   "name": "CompTypeWithSuper1",
   "fullName": "CompTypeWithSuper1",
   "super": [
     {
-      "kind": "de.monticore.types.check.KindOfComponent",
+      "kind": "de.monticore.types.check.CompKindOfComponentType",
       "componentName": "SuperCType"
     }
   ]

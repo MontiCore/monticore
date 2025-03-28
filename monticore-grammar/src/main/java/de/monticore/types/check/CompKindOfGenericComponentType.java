@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolTOP;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbol;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.PortSymbol;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -21,17 +21,27 @@ import java.util.stream.Collectors;
  * Represents generic component with filled type parameters. E.g., a {@code TypeExprOfGenericComponent} can
  * represent generic component usages, such as, {@code MyComp<Person>} and {@code OtherComp<List<T>>}.
  */
-public class KindOfGenericComponent extends CompKindExpression {
+public class CompKindOfGenericComponentType extends CompKindExpression {
 
   protected final ImmutableList<SymTypeExpression> typeArguments;
 
   private ImmutableMap<TypeVarSymbol, SymTypeExpression> typeVarBindingsAsMap;
 
-  public KindOfGenericComponent(@NonNull ComponentSymbol component,
-                                @NonNull List<SymTypeExpression> typeArguments) {
+  public CompKindOfGenericComponentType(@NonNull ComponentTypeSymbol component,
+                                        @NonNull List<SymTypeExpression> typeArguments) {
     super(component);
 
     this.typeArguments = ImmutableList.copyOf(Preconditions.checkNotNull(typeArguments));
+  }
+
+  @Override
+  public boolean isGenericComponentType() {
+    return true;
+  }
+
+  @Override
+  public CompKindOfGenericComponentType asGenericComponentType() {
+    return this;
   }
 
   public ImmutableMap<TypeVarSymbol, SymTypeExpression> getTypeVarBindings() {
@@ -143,7 +153,7 @@ public class KindOfGenericComponent extends CompKindExpression {
    * {@code Comp<List<Person>>}. If you provide mappings for type variables that do not appear in the component type
    * expression, then these will be ignored.
    */
-  public KindOfGenericComponent bindTypeParameter(
+  public CompKindOfGenericComponentType bindTypeParameter(
     @NonNull Map<TypeVarSymbol, SymTypeExpression> newTypeVarBindings) {
     Preconditions.checkNotNull(newTypeVarBindings);
 
@@ -158,25 +168,25 @@ public class KindOfGenericComponent extends CompKindExpression {
       }
       newBindings.add(newTypeArg);
     }
-    return new KindOfGenericComponent(this.getTypeInfo(), newBindings);
+    return new CompKindOfGenericComponentType(this.getTypeInfo(), newBindings);
   }
 
   @Override
-  public KindOfGenericComponent deepClone(@NonNull ComponentSymbol compTypeSymbol) {
+  public CompKindOfGenericComponentType deepClone(@NonNull ComponentTypeSymbol compTypeSymbol) {
     List<SymTypeExpression> clonedBindings = this.getTypeBindingsAsList().stream()
       .map(SymTypeExpression::deepClone)
       .collect(Collectors.toList());
-    return new KindOfGenericComponent(compTypeSymbol, clonedBindings);
+    return new CompKindOfGenericComponentType(compTypeSymbol, clonedBindings);
   }
 
   @Override
   public boolean deepEquals(@NonNull CompKindExpression compSymType) {
     Preconditions.checkNotNull(compSymType);
 
-    if(!(compSymType instanceof KindOfGenericComponent)) {
+    if(!(compSymType instanceof CompKindOfGenericComponentType)) {
       return false;
     }
-    KindOfGenericComponent otherCompExpr = (KindOfGenericComponent) compSymType;
+    CompKindOfGenericComponentType otherCompExpr = (CompKindOfGenericComponentType) compSymType;
 
     boolean equal = this.getTypeInfo().equals(compSymType.getTypeInfo());
     equal &= this.getTypeBindingsAsList().size() == otherCompExpr.getTypeBindingsAsList().size();

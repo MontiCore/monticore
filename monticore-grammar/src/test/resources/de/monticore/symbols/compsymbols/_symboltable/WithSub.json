@@ -1,5 +1,5 @@
 {
-  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentSymbol",
+  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol",
   "name": "Parent",
   "fullName": "Parent",
   "spannedScope": {
@@ -9,7 +9,7 @@
         "name": "inst",
         "fullName": "Parent.inst",
         "type": {
-          "kind": "de.monticore.types.check.KindOfComponent",
+          "kind": "de.monticore.types.check.CompKindOfComponentType",
           "componentName": "Comp"
         }
       }
