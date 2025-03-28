@@ -126,7 +126,7 @@ public class AntlrTool extends Tool {
           for (Map.Entry<ASTNode, String> inner : names.entrySet()) {
             ASTNode key = inner.getKey();
             String ruleName = outer.getKey().getName();
-            ruleName = ruleName.substring(0, 1).toLowerCase() + ruleName.substring(1);
+            ruleName = StringTransformations.uncapitalize(ruleName);
             rhsNodeToParserStates.computeIfAbsent(
                     key,
                     k -> new LinkedHashSet<>()
