@@ -3,7 +3,6 @@
 package de.monticore.codegen.parser.antlr;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
@@ -12,6 +11,7 @@ import de.se_rwth.commons.SourcePositionBuilder;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.Tool;
+import org.antlr.v4.runtime.atn.ATNState;
 import org.antlr.v4.tool.*;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.misc.MultiMap;
@@ -25,17 +25,17 @@ import java.util.*;
 public class AntlrTool extends Tool {
   
   protected MCGrammarSymbol grammarSymbol;
-  protected Map<ASTProd, Map<ASTNode, String>> tmpNameDict;
-  protected Map<ASTNonTerminal, Set<Integer>> nonTerminalToParserStates = new LinkedHashMap<>();
+  protected Map<ASTProd, ProdInfo> prodInfo;
+  protected Map<ASTNode, Set<Integer>> rhsNodeToParserStates = new LinkedHashMap<>();
 
-  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Map<ASTProd, Map<ASTNode, String>> tmpNameDict) {
+  public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Map<ASTProd, ProdInfo> prodInfo) {
     super(args);
     this.grammarSymbol = grammarSymbol;
-    this.tmpNameDict = tmpNameDict;
+    this.prodInfo = prodInfo;
   }
 
-  public Map<ASTNonTerminal, Set<Integer>> getNonTerminalToParserStates() {
-    return nonTerminalToParserStates;
+  public Map<ASTNode, Set<Integer>> getRhsNodeToParserStates() {
+    return rhsNodeToParserStates;
   }
 
   @Override
@@ -119,19 +119,18 @@ public class AntlrTool extends Tool {
    */
   private void calculateStatesForNonTerminals(Grammar g) {
     if(g.isParser() || g.isCombined()){
-      for (Map.Entry<ASTProd, Map<ASTNode, String>> outer : tmpNameDict.entrySet()) {
-        if(!outer.getValue().isEmpty()) {
-          for (Map.Entry<ASTNode, String> inner : outer.getValue().entrySet()) {
+      for (Map.Entry<ASTProd, ProdInfo> outer : prodInfo.entrySet()) {
+        Map<ASTNode, String> names = outer.getValue().tmpNames;
+
+        if(!names.isEmpty()) {
+          for (Map.Entry<ASTNode, String> inner : names.entrySet()) {
             ASTNode key = inner.getKey();
-            if(key instanceof ASTNonTerminal){
-              ASTNonTerminal nonTerminal = (ASTNonTerminal) key;
-              String ruleName = outer.getKey().getName();
-              ruleName = ruleName.substring(0, 1).toLowerCase() + ruleName.substring(1);
-              nonTerminalToParserStates.put(
-                      nonTerminal,
-                      calculateStateForTmpName(g, ruleName, inner.getValue())
-              );
-            }
+            String ruleName = outer.getKey().getName();
+            ruleName = StringTransformations.uncapitalize(ruleName);
+            rhsNodeToParserStates.computeIfAbsent(
+                    key,
+                    k -> new LinkedHashSet<>()
+            ).addAll(calculateStateForTmpName(g, ruleName, inner.getValue()));
           }
         }
       }
@@ -147,7 +146,12 @@ public class AntlrTool extends Tool {
    */
   private Set<Integer> calculateStateForTmpName(Grammar g, String ruleName, String tmpName){
     Rule r = g.getRule(ruleName);
-    if(r == null){ return Collections.emptySet(); }
+    if(r == null){
+      r = g.getRule("r__" + ruleName);
+      if(r == null) {
+        return Collections.emptySet();
+      }
+    }
 
     MultiMap<String, LabelElementPair> elementLabelDefs = r.getElementLabelDefs();
     if(!elementLabelDefs.containsKey(tmpName)) { return Collections.emptySet(); }
@@ -155,8 +159,10 @@ public class AntlrTool extends Tool {
     Set<Integer> res = new LinkedHashSet<>();
 
     for (LabelElementPair pair : elementLabelDefs.get(tmpName)) {
-      if(pair.type == LabelType.TOKEN_LABEL || pair.type == LabelType.TOKEN_LIST_LABEL){
-        res.add(pair.element.atnState.stateNumber);
+      ATNState atnState = pair.element.atnState;
+      if(atnState != null) {
+        int stateNumber = atnState.stateNumber;
+        res.add(stateNumber);
       }
     }
 
@@ -172,7 +178,7 @@ public class AntlrTool extends Tool {
    */
   public void cleanUp() {
     this.grammarSymbol = null;
-    this.tmpNameDict = null;
-    this.nonTerminalToParserStates = null;
+    this.prodInfo = null;
+    this.rhsNodeToParserStates = null;
   }
 }
