@@ -135,7 +135,10 @@ public abstract class MCGenTask extends MCSingleFileTask {
     // The templates directory is not set to src/${sourceSet}/resources
     // it has to be set explicitly
     if (this.getConfigTemplate().isPresent() && !this.getTmplDir().isPresent()) {
-      getLogger().warn("Task uses a custom config template without setting the templates directory.");
+      getLogger().warn("Task {} uses a custom config template " +
+                      "without setting the templates directory - " +
+                      "Consider setting it via tmplDir.from('src/main/resources').",
+              this.getPath());
     }
 
     return args;
