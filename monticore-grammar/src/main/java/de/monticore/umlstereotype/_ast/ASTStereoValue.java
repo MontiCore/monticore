@@ -29,8 +29,8 @@ public class ASTStereoValue extends ASTStereoValueTOP {
           .getLiteral());
     }
     Log.error("0xA7003x52066 get for Text can't return a value. Attribute is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
+    // In case quickfail is disabled, we have to error with an exception
+    throw new IllegalStateException("0xA7003x52066 get for Text can't return a value. Attribute is empty");
   }
 
   /**
