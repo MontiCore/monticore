@@ -253,12 +253,23 @@ public abstract class SymTypeRelations {
    * This returns whether the type is _exactly_ String.
    * In most cases, you want to check whether the type
    * is either compatible to, or a subtype of String.
+   * You may want to use
+   * {@link #isStringOrSubType(SymTypeExpression)} instead.
    */
   public static boolean isString(SymTypeExpression type) {
     return getDelegate()._isString(type);
   }
 
   protected abstract boolean _isString(SymTypeExpression type);
+
+  /**
+   * whether it is a String (boxed or unboxed) or a subtype (e.g., a RegEx)
+   */
+  public static boolean isStringOrSubType(SymTypeExpression type) {
+    return getDelegate()._isStringOrSubType(type);
+  }
+
+  protected abstract boolean _isStringOrSubType(SymTypeExpression type);
 
   // Top, Bottom
 

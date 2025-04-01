@@ -565,7 +565,10 @@ public class SymTypeExpressionFactory {
           "No String symbol found yet, creating surrogate for now",
           LOG_NAME
       );
-      stringType = Optional.of(new TypeSymbolSurrogate(BasicSymbolsMill.STRING));
+      TypeSymbolSurrogate surrogate =
+          new TypeSymbolSurrogate(BasicSymbolsMill.STRING);
+      surrogate.setEnclosingScope(BasicSymbolsMill.globalScope());
+      stringType = Optional.of(surrogate);
     }
     return createTypeObject(stringType.get());
   }

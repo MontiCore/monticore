@@ -14,7 +14,9 @@ import java.util.Optional;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createStringType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
+import static de.monticore.types3.SymTypeRelations.isCompatible;
 import static de.monticore.types3.SymTypeRelations.isString;
+import static de.monticore.types3.SymTypeRelations.isStringOrSubType;
 import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
 
 /**
@@ -63,8 +65,8 @@ public class TypeVisitorOperatorCalculator {
     SymTypeExpression result;
     // if one part of the expression is a String (subtype)
     // then the whole expression is a String (subtype)
-    if (isSubTypeOf(left, createStringType()) ||
-        isSubTypeOf(right, createStringType())
+    if (isStringOrSubType(left) ||
+        isStringOrSubType(right)
     ) {
       result = calculatePlusString(left, right);
     }
@@ -157,35 +159,42 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression right
   ) {
     SymTypeExpression result;
-    SymTypeExpression leftStr = calculateToString(left);
-    SymTypeExpression rightStr = calculateToString(right);
-
-    if (isString(leftStr) && isString(rightStr)) {
-      result = leftStr.deepClone();
+    if (!isCompatible(createStringType(), left) ||
+        !isCompatible(createStringType(), right)
+    ) {
+      result = createObscureType();
     }
     else {
-      // convert String to RegEx
-      if (isString(leftStr)) {
-        leftStr = createTypeRegEx(REGEX_STRING);
+      SymTypeExpression leftStr = calculateToString(left);
+      SymTypeExpression rightStr = calculateToString(right);
+
+      if (isString(leftStr) && isString(rightStr)) {
+        result = leftStr.deepClone();
       }
-      if (isString(rightStr)) {
-        rightStr = createTypeRegEx(REGEX_STRING);
-      }
-      if (!leftStr.isRegExType() || !rightStr.isRegExType()) {
-        Log.error("0xFD572 internal error: expected String (sub-)types"
-            + ", but got " + leftStr.printFullName()
-            + " and " + rightStr.printFullName()
+      else {
+        // convert String to RegEx
+        if (isString(leftStr)) {
+          leftStr = createTypeRegEx(REGEX_STRING);
+        }
+        if (isString(rightStr)) {
+          rightStr = createTypeRegEx(REGEX_STRING);
+        }
+        if (!leftStr.isRegExType() || !rightStr.isRegExType()) {
+          Log.error("0xFD572 internal error: expected String (sub-)types"
+              + ", but got " + leftStr.printFullName()
+              + " and " + rightStr.printFullName()
+          );
+          return createObscureType();
+        }
+        // concat the two RegEx
+        // todo should be done better, but that requires extended regex support,
+        // currently, this may break groups, does not filter ^, $,
+        // and may have further issues
+        result = createTypeRegEx(
+            "(" + leftStr.asRegExType().getRegExString() + ")"
+                + "(" + rightStr.asRegExType().getRegExString() + ")"
         );
-        return createObscureType();
       }
-      // concat the two RegEx
-      // todo should be done better, but that requires extended regex support,
-      // currently, this may break groups, does not filter ^, $,
-      // and may have further issues
-      result = createTypeRegEx(
-          "(" + leftStr.asRegExType().getRegExString() + ")"
-              + "(" + rightStr.asRegExType().getRegExString() + ")"
-      );
     }
     return result;
   }
@@ -202,6 +211,32 @@ public class TypeVisitorOperatorCalculator {
    * As such, here we try to be as general as possible,
    * and expect specific languages to override this method,
    * if the need for more restrictive types is required.
+   *
+   * Interestingly, this COULD (but should not!) be generalized;
+   * A function (STE target, STE source) -> STE converted,
+   * where source is compatible to target,
+   * and converted is the result of the conversion to the target type,
+   * which is a subType of the target type.
+   * E.g., in this case, a regEx is a strict subtype of String,
+   * because the additional info is requried.
+   * Let's imagine this for further cases, e.g.,
+   * This additonal info is not needed for assignements (I think),
+   * but, e.g.,  for operations like +.
+   * However, this becomes rather unintuitive real quick:
+   * Assume that this conversion is allowed:
+   * (int, int, int) i3 = (1, (2, 3));
+   * Now we could just use this for the +-operator:
+   * (1, 2, 3) + (4, (5, 6)) == (5, 7, 9),
+   * but this gets wierd with
+   * ((1, 2), 3) + (4, (5, 6))
+   * -> need to find (int, int, int) first, as it is not on either side.
+   * Other example: int and tuples can be converted to String,
+   * in this case, the following could be allowed:
+   * 1 + (2, 3) // "1(2, 3)"
+   * which is severely unintuitiv.
+   * As such, currently we avoid generalizing this method,
+   * as we don't have another (reasonable!) use case.
+   * Somewhat simmilar cases would be numeric promotion, autoboxing.
    *
    * @return either a SymTypeOfRegEx or a SymTypeOfString
    */

@@ -1,7 +1,19 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
-import de.monticore.types.check.*;
+import de.monticore.types.check.SymTypeArray;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.check.SymTypeOfNull;
+import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
+import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeOfSIUnit;
+import de.monticore.types.check.SymTypeOfTuple;
+import de.monticore.types.check.SymTypeOfUnion;
+import de.monticore.types.check.SymTypeOfWildcard;
+import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.bounds.SubTypingBound;
@@ -20,6 +32,8 @@ import java.util.stream.Collectors;
 import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
+import static de.monticore.types3.SymTypeRelations.isString;
+import static de.monticore.types3.SymTypeRelations.isStringOrSubType;
 
 /**
  * checks for compatibility between SymTypes
@@ -99,33 +113,54 @@ public class SymTypeCompatibilityCalculator {
     else if (source.isNullType()) {
       result = nullConstrainCompatible(target, source.asNullType());
     }
+    // e.g., R"[1-9]+" num = 2;
+    else if (isStringOrSubType(target)) {
+      result = stringConstrainCompatible(target, source);
+    }
     // subtypes are assignable to their supertypes
     // in addition, we allow boxing
     else {
-      SymTypeExpression boxedTarget = de.monticore.types3.SymTypeRelations.box(target);
-      SymTypeExpression boxedSource = de.monticore.types3.SymTypeRelations.box(source);
-      // important: this does fully work in all cases;
-      // as isCompatible (in combination with constrainSubTypeOf)
-      // can lead to multiple instantiations for the same type,
-      // some boxed, some unboxed.
-      // Recommendation is to not mix boxed and unboxed types,
-      // however, in combination with Class2MC, this may not be possible.
-      result = constrainSubTypeOf(source, target);
-      if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
-        result = constrainSubTypeOf(boxedSource, target);
-      }
-      if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
-        result = constrainSubTypeOf(source, boxedTarget);
-      }
-      if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
-        result = constrainSubTypeOf(boxedSource, boxedTarget);
-      }
+      result = constraintCompatiblePreNormalized2(target, source);
     }
     // additionally check regular expressions
     if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
       if (target.isRegExType() || source.isRegExType()) {
         result = regExConstrainCompatible(target, source);
       }
+    }
+    return result;
+  }
+
+  /**
+   * checks every type combinations that has not been checked in
+   * {@link #constrainCompatiblePreNormalized(SymTypeExpression, SymTypeExpression)}
+   * yet.
+   * These numbered must be kept in sync;
+   * Basically a mixture of chain-of-responsibility-pattern and
+   * the concrete request-handlers may use
+   */
+  protected List<Bound> constraintCompatiblePreNormalized2(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    List<Bound> result;
+    SymTypeExpression boxedTarget = de.monticore.types3.SymTypeRelations.box(target);
+    SymTypeExpression boxedSource = de.monticore.types3.SymTypeRelations.box(source);
+    // important: this does fully work in all cases;
+    // as isCompatible (in combination with constrainSubTypeOf)
+    // can lead to multiple instantiations for the same type,
+    // some boxed, some unboxed.
+    // Recommendation is to not mix boxed and unboxed types,
+    // however, in combination with Class2MC, this may not be possible.
+    result = constrainSubTypeOf(source, target);
+    if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
+      result = constrainSubTypeOf(boxedSource, target);
+    }
+    if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
+      result = constrainSubTypeOf(source, boxedTarget);
+    }
+    if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
+      result = constrainSubTypeOf(boxedSource, boxedTarget);
     }
     return result;
   }
@@ -217,7 +252,6 @@ public class SymTypeCompatibilityCalculator {
   protected List<Bound> nullConstrainCompatible(
       SymTypeExpression target,
       SymTypeOfNull source
-
   ) {
     // null is compatible to any object type
     // including arrays for java-compatibility
@@ -233,6 +267,58 @@ public class SymTypeCompatibilityCalculator {
     }
   }
 
+  protected List<Bound> stringConstrainCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    if (!isStringOrSubType(target)) {
+      Log.errorInternal("0xFD57C internal error: "
+          + "expected a String, but got " + target.printFullName()
+      );
+    }
+    List<Bound> result;
+    if (target.isRegExType()) {
+      // already checked deepequals
+      // todo need RegEx support (s. comment in subtyping)
+      result = List.of(getUnsatisfiableBoundForCompatibilty(target, source));
+    }
+    // target is String
+    else {
+      if (isStringOrSubType(source)) {
+        result = Collections.emptyList();
+      }
+      else if (canBeImplicitlyConvertedToString(source)) {
+        result = Collections.emptyList();
+      }
+      else {
+        result = List.of(getUnsatisfiableBoundForCompatibilty(target, source));
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Hookpoint:
+   * Whether a value of the type can be implicitly converted to String.
+   * s.a. {@link TypeVisitorOperatorCalculator#calculateToString(SymTypeExpression)}
+   *
+   * Can be used, e.g., to allow
+   * String numStr = 2; // (enabled by default, as most users expect this)
+   */
+  protected boolean canBeImplicitlyConvertedToString(SymTypeExpression source) {
+    boolean result;
+    if (isStringOrSubType(source)) {
+      result = true;
+    }
+    else if (SymTypeRelations.isNumericType(source)) {
+      result = true;
+    }
+    else {
+      result = false;
+    }
+    return result;
+  }
+
   /**
    * isCompatible if one of the arguments is a SymTypeOfRegex
    *
@@ -242,7 +328,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression target,
       SymTypeExpression source) {
     List<Bound> result;
-    if (target.isRegExType() && de.monticore.types3.SymTypeRelations.isString(source)) {
+    if (target.isRegExType() && isString(source)) {
       // note: heuristic as well
       result = Collections.emptyList();
     }
