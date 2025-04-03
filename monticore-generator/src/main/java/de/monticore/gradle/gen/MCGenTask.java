@@ -44,9 +44,11 @@ public abstract class MCGenTask extends MCSingleFileTask {
     // Input files to this task
     setIfPathExists(x -> this.getGrammar().from(x), Path.of(
             getProject().getProjectDir().getAbsolutePath(), "src", "main", "grammars"));
-    // Templates (such as the config templates) are NOT loaded by default,
-    // as the default usage does not use them.
-    // In case config templates are used, getTmplDir() has to be set
+    // Templates (such as the config templates) are NOT loaded from resources,
+    // but from templates.
+    // In case config templates are present in resources, modify getTmplDir()
+    setIfPathExists(this.getTmplDir()::set, Path.of(
+            getProject().getProjectDir().getAbsolutePath(), "src", "main", "templates"));
 
     // Gradle does not support a default value for ConfigurableFileCollection
     // Thus, we have to set a default value this way (and possibly, override it via setFrom)
