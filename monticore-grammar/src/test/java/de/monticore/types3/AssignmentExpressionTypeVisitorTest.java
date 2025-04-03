@@ -188,6 +188,8 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     checkExpr("vardouble += vardouble", "double"); // += applicable to double, double
     checkExpr("varintMetre += varintMetre", "[m]<int>");
     checkExpr("varString+=1", "String"); // example with String - Number
+    checkExpr("varInteger+=1", "java.lang.Integer"); // example with Integer - Number
+    checkExpr("varBoxedString+=1", "java.lang.String"); // example with String - Number
   }
 
   @Test

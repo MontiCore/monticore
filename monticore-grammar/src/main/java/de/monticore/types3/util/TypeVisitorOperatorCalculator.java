@@ -944,6 +944,13 @@ public class TypeVisitorOperatorCalculator {
     if (SymTypeRelations.isNumericType(target) && SymTypeRelations.isNumericType(source)) {
       result = target;
     }
+    // explicitly allow casts for String <-> java.lang.String as well
+    // note: may need to be extended for further boxed types/
+    // add a more general boxing test here,
+    // currently not needed/requirements unknown.
+    else if (isString(target) && isString(source)) {
+      result = target;
+    }
     // check typecast is possible
     else if (
         SymTypeRelations.isSubTypeOf(target, source) || // downcast
