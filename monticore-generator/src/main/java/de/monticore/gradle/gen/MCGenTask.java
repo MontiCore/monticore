@@ -48,7 +48,7 @@ public abstract class MCGenTask extends MCSingleFileTask {
     // but from templates.
     // In case config templates are present in resources, modify getTmplDir()
     setIfPathExists(this.getTmplDir()::set, Path.of(
-            getProject().getProjectDir().getAbsolutePath(), "src", "main", "templates"));
+            getProject().getProjectDir().getAbsolutePath(), "src", "main", "configtemplates"));
 
     // Gradle does not support a default value for ConfigurableFileCollection
     // Thus, we have to set a default value this way (and possibly, override it via setFrom)
