@@ -4,13 +4,16 @@ package de.monticore.codegen.cd2java._parser;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.cd.facade.CDAttributeFacade;
+import de.monticore.cd.facade.CDConstructorFacade;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis.CD4CodeBasisMill;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -61,6 +64,7 @@ public class ParserClassDecorator extends AbstractDecorator {
             .addAllCDMembers(createParseMethods(startRuleName, qualifiedStartRuleName))
             .addAllCDMembers(createParseMethodsForProds(grammarName, prods))
             .addAllCDMembers(createMode())
+            .addCDMember(createConstructor())
             .build());
       }
     }
@@ -87,6 +91,17 @@ public class ParserClassDecorator extends AbstractDecorator {
     methods.add(createReader);
 
     return methods;
+  }
+
+  protected ASTCDMember createConstructor() {
+    ASTCDConstructor constr = CDConstructorFacade.getInstance().createConstructor(PUBLIC.build(), service.getParserClassSimpleName());
+    // With MC
+    this.replaceTemplate(JAVADOC, constr, JavaDoc.of("The parser for this grammar.",
+                    "{@link " + service.getMillFullName() + "#parser()} should be preferred over this constructor, as this further enables language composition.")
+            .block("deprecated", "new instances of a parser should be retrieved via a language's mill")
+            .asHP());
+    this.replaceTemplate(ANNOTATIONS, constr, new StringHookPoint("@Deprecated"));
+    return constr;
   }
 
   protected List<ASTCDMember> createMode(){
