@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.codegen.CD2JavaTemplates.*;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
