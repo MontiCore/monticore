@@ -104,8 +104,8 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNoConstructors(){
-    assertTrue(parserClass.getCDConstructorList().isEmpty());
+  public void testConstructors(){
+    assertEquals(1, parserClass.getCDConstructorList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
