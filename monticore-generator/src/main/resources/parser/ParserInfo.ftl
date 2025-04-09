@@ -1,9 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("referencedSymbolToStates", "usageNameToStates", "superGrammars", "nameDefiningStates")}
+${tc.signature("referencedSymbolToStates", "usageNameToStates", "superGrammars", "nameDefiningStates", "prodInfoMap")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
 package ${genHelper.getParserPackage()};
 
 import java.util.*;
+import org.antlr.v4.runtime.ParserRuleContext;
+
 <#list superGrammars as superLangGrammarAst>
 import ${genHelper.getParserPackage()}._auxiliary.${ast.getName()}ParserInfoFor${superLangGrammarAst.getName()};
 </#list>
@@ -104,5 +106,51 @@ public class ${ast.getName()}ParserInfo {
 
   protected boolean _stateDefinesName(int state){
     return statesDefiningName.contains(state);
+  }
+
+  <#-- Interface inlining concerns.
+       Used to construct a token path with the concrete prod used to parse an interface prod
+  -->
+
+  boolean cn(Object... objects){
+    for(Object o : objects){
+      if(o != null){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  <#list prodInfoMap as prod, prodInfo>
+  <#if prodInfo.getAlternativeToNames()?? && (prodInfo.getAlternativeToNames()?size != 0) >
+    protected Optional<String> getImplementationOfInterfaceProd(${ast.getName()}AntlrParser.${prod.getName()}Context context) {
+    <#list prodInfo.getAlternativeToNames() as interfacePart, tmpNames>
+      if(cn(
+                <#list tmpNames as tmpName>
+                  context.${tmpName}<#if tmpName?has_next>,</#if>
+                </#list>
+      )){
+        return Optional.of("${interfacePart.getOriginalName()}");
+      }
+    </#list>
+      return Optional.empty();
+    }
+  </#if>
+  </#list>
+
+  public static Optional<String> getImplementationOfInterfaceProd(ParserRuleContext context) {
+    return getDelegate()._getImplementationOfInterfaceProd(context);
+  }
+
+  public Optional<String> _getImplementationOfInterfaceProd(ParserRuleContext context) {
+  <#list prodInfoMap as prod, prodInfo>
+  <#if prodInfo.getAlternativeToNames()?? && (prodInfo.getAlternativeToNames()?size != 0) >
+    if(context instanceof ${ast.getName()}AntlrParser.${prod.getName()}Context){
+      return getImplementationOfInterfaceProd((${ast.getName()}AntlrParser.${prod.getName()}Context) context);
+    }
+  </#if>
+  </#list>
+    return Optional.empty();
   }
 }

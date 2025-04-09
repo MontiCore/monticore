@@ -23,6 +23,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.getQualifiedName;
 import static de.monticore.codegen.parser.ParserGeneratorHelper.getDefaultValue;
@@ -49,7 +50,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected boolean embeddedJavaCode;
 
-  protected Map<ASTProd, Map<ASTNode, String>> tmpNameDict = new LinkedHashMap<>();
+  protected Map<ASTProd, ProdInfo> prodInfoMap = new LinkedHashMap<>();
 
   public Grammar2Antlr(
       ParserGeneratorHelper parserGeneratorHelper,
@@ -246,7 +247,11 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     addToCodeSection("(");
     String del = "";
-    String tmpName = parserHelper.getTmpVarName(ast);
+    String tmpName = null; // will be replaced for both values of `iterated` but the java parser can not automatically prove it
+    if(!iterated){
+      tmpName = parserHelper.getTmpVarName(ast);
+    }
+
     String label = "=";
 
     for (ASTConstant x: ast.getConstantList()) {
@@ -633,38 +638,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     clearAntlrCode();
     parserHelper.resetTmpVarNames();
     ast.accept(getTraverser());
-    tmpNameDict.put(ast, new LinkedHashMap<>(parserHelper.getTmpVariables()));
+    prodInfoMap.computeIfAbsent(ast, ProdInfo::new).tmpNames.putAll(parserHelper.getTmpVariables());
     return getAntlrCode();
-  }
-
-  class NodePair {
-    ASTGrammarNode alternative;
-    PredicatePair pp;
-
-    /**
-     * Constructor for de.monticore.codegen.parser.antlr.NodePair.
-     *
-     * @param alternative
-     * @param pp
-     */
-    public NodePair(ASTGrammarNode alternative, PredicatePair pp) {
-      this.alternative = alternative;
-      this.pp = pp;
-    }
-
-    /**
-     * @return the alternative
-     */
-    public ASTGrammarNode getAlternative() {
-      return this.alternative;
-    }
-
-    /**
-     * @return the ruleReference
-     */
-    public PredicatePair getPredicatePair() {
-      return this.pp;
-    }
   }
 
   /**
@@ -672,7 +647,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    * C = zz ; results in an extra rule C : A | B;
    */
   public List<String> createAntlrCodeForInterface(ProdSymbol interfaceRule) {
-
     clearAntlrCode();
     parserHelper.resetTmpVarNames();
 
@@ -681,7 +655,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addToCodeSection("\n// ASTInterface ", interfaceRule.getName(), "\n");
     addToCodeSection(getRuleNameForAntlr(interfacename), ":", "\n");
 
-    List<NodePair> alts = new ArrayList<>();
+    List<InterfaceInliningAlt> alts = new ArrayList<>();
     String del = "";
     // Get all implementing/extending interfaces
     boolean left = addAlternatives(interfaceRule, alts);
@@ -691,7 +665,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         Integer.valueOf(p1.getPredicatePair().getRuleReference().isPresentPrio() ? p1.getPredicatePair().getRuleReference().getPrio() : "0").compareTo(
             Integer.valueOf(p2.getPredicatePair().getRuleReference().isPresentPrio() ? p2.getPredicatePair().getRuleReference().getPrio() : "0")));
 
-    for (NodePair entry : alts) {
+    for (InterfaceInliningAlt entry : alts) {
+      parserHelper.setCurInterfaceInliningAlt(entry);
       addToCodeSection(del);
 
       // Append semantic predicates for rules
@@ -721,12 +696,16 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
       del = " |\n";
     }
+    parserHelper.setCurInterfaceInliningAlt(null);
 
     addDummyRules(interfacename);
 
     addToCodeSection(";\n");
 
-    tmpNameDict.put(interfaceRule.getAstNode(), new LinkedHashMap<>(parserHelper.getTmpVariables()));
+    ASTProd ast = interfaceRule.getAstNode();
+    ProdInfo prodInfo = prodInfoMap.computeIfAbsent(ast, ProdInfo::new);
+    prodInfo.tmpNames.putAll(parserHelper.getTmpVariables());
+    prodInfo.alternativeToNames.putAll(parserHelper.getInterfaceInliningAltToTmpNames());
 
     return getAntlrCode();
   }
@@ -735,7 +714,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    * @param prodSymbol
    * @param alts
    */
-  protected boolean addAlternatives(ProdSymbol prodSymbol, List<NodePair> alts) {
+  protected boolean addAlternatives(ProdSymbol prodSymbol, List<InterfaceInliningAlt> alts) {
     boolean isLeft = false;
     List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(prodSymbol.getName());
     for (PredicatePair interf : interfaces) {
@@ -747,19 +726,19 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       if (!prodSymbol.isPresentAstNode()) {
         continue;
       }
-      ASTGrammarNode astNode = superSymbol.getAstNode();
+      ASTProd astNode = superSymbol.getAstNode();
       if (superSymbol.isIsIndirectLeftRecursive()) {
         isLeft = true;
         if (superSymbol.isClass()) {
           List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAltList();
           for (ASTAlt alt : localAlts) {
-            alts.add(new NodePair(alt, interf));
+            alts.add(new InterfaceInliningAlt(alt, interf, superSymbol));
           }
         } else if (prodSymbol.isIsInterface()) {
           addAlternatives(superSymbol, alts);
         }
       } else {
-        alts.add(new NodePair( astNode, interf));
+        alts.add(new InterfaceInliningAlt(astNode, interf, superSymbol));
       }
     }
     return isLeft;
@@ -774,7 +753,11 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   }
 
   public Map<ASTProd, Map<ASTNode, String>> getTmpNameDict() {
-    return tmpNameDict;
+    return prodInfoMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().tmpNames));
+  }
+
+  public Map<ASTProd, ProdInfo> getProdInfoMap(){
+    return prodInfoMap;
   }
 
   // ----------------------------------------------------------------------------------------------

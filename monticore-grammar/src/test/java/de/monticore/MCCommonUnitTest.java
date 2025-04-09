@@ -3,6 +3,7 @@ package de.monticore;
 
 import de.monticore.cardinality._ast.ASTCardinality;
 import de.monticore.completeness._ast.ASTCompleteness;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import de.monticore.testmccommon.TestMCCommonMill;
 import de.monticore.testmccommon._parser.TestMCCommonParser;
@@ -120,6 +121,18 @@ public class MCCommonUnitTest {
 
   // --------------------------------------------------------------------
   @Test
+  public void testStereoValueExpr() throws IOException {
+    ASTStereoValue ast = parser.parse_StringStereoValue( "bla=name1" ).get();
+    Assertions.assertEquals("bla", ast.getName());
+    Assertions.assertEquals(false, ast.isPresentText());
+    Assertions.assertEquals(true, ast.getExpression() instanceof ASTNameExpression);
+    Assertions.assertEquals(true, ((ASTNameExpression) ast.getExpression()).getName().equals("name1"));
+
+    Assertions.assertTrue(Log.getFindings().isEmpty());
+  }
+
+  // --------------------------------------------------------------------
+  @Test
   public void testStereotype() throws IOException {
     ASTStereotype ast = parser.parse_StringStereotype( "<< a1 >>" ).get();
     List<ASTStereoValue> svl = ast.getValuesList();
@@ -144,6 +157,23 @@ public class MCCommonUnitTest {
     Assertions.assertEquals(false, ast.contains("a1",""));
     Assertions.assertEquals(true, ast.contains("a1","wert1"));
   
+    Assertions.assertTrue(Log.getFindings().isEmpty());
+  }
+
+
+  // --------------------------------------------------------------------
+  @Test
+  public void testStereotype3() throws IOException {
+    ASTStereotype ast = parser.parse_StringStereotype( "<< a1=name1 >>" ).get();
+    List<ASTStereoValue> svl = ast.getValuesList();
+    Assertions.assertEquals(1, svl.size());
+    Assertions.assertEquals(true, ast.contains("a1"));
+    Assertions.assertEquals(false, ast.contains("bla"));
+    Assertions.assertEquals(true, ast.contains("a1",""));
+    Assertions.assertEquals(false, ast.contains("a1","name1"));
+    Assertions.assertEquals(true, ast.getValues(0).getExpression() instanceof ASTNameExpression);
+    Assertions.assertEquals(true, ((ASTNameExpression) ast.getValues(0).getExpression()).getName().equals("name1"));
+
     Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 

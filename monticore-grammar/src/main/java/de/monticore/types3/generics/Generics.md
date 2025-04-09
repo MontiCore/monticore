@@ -108,6 +108,9 @@ To this end, MontiCore provides a type inference algorithm.
     * [ExpressionsBasisCTTIVisitor](../../expressions/expressionsbasis/types3/ExpressionBasisCTTIVisitor.java)
       (calculates the SymTypeExpressions for the expressions
       in the grammar ExpressionBasis)
+    * [OCLExpressionsCTTIVisitor](../../ocl/oclexpressions/types3/OCLExpressionsCTTIVisitor.java)
+      (calculates the SymTypeExpressions for the expressions
+      in the grammar OCLExpressions)
     * [SetExpressionsCTTIVisitor](../../ocl/setexpressions/types3/SetExpressionsCTTIVisitor.java)
       (calculates the SymTypeExpressions for the expressions
       in the grammar SetExpressions)

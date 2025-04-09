@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -132,7 +133,7 @@ public class ParserGenerator {
     setup.setGlex(glex);
 
     if (astGrammar.isComponent()) {
-      ParserInfoGenerator.generateParserInfoForComponent(astGrammar, setup, genHelper.getParserPackage(), lang);
+      ParserInfoGenerator.generateParserInfoForComponent(astGrammar, setup, genHelper.getParserPackage(), lang, new HashMap<>());
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
       return null;
     }
@@ -183,8 +184,10 @@ public class ParserGenerator {
                     gLexer.toString().replace('\\', '/'), // fix windows paths unicode \\u
                     gParser.toString().replace('\\', '/') },
             grammarSymbol,
-            grammar2Antlr.getTmpNameDict()
+            grammar2Antlr.getProdInfoMap()
     );
+
+    // collects parser states
     antlrTool.processGrammarsOnCommandLine();
 
     removeGeneratedFromComment(gLexer.toFile(), lang);
@@ -192,7 +195,15 @@ public class ParserGenerator {
 
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
 
-    ParserInfoGenerator.generateParserInfo(astGrammar, setup, antlrTool.getNonTerminalToParserStates(), genHelper.getParserPackage(), lang);
+    // saves parser states
+    ParserInfoGenerator.generateParserInfo(
+        astGrammar,
+        setup,
+        antlrTool.getRhsNodeToParserStates(),
+        genHelper.getParserPackage(),
+        lang,
+        grammar2Antlr.getProdInfoMap()
+    );
 
     antlrTool.cleanUp();
 
