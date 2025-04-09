@@ -5,6 +5,7 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.symboltable.serialization.ISymbolDeSer;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
@@ -24,11 +25,9 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCSetType;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
@@ -78,6 +77,63 @@ public class GlobalScopeInterfaceDecorator
     this.methodDecorator = methodDecorator;
     this.accessorDecorator = methodDecorator.getAccessorDecorator();
     this.mutatorDecorator = methodDecorator.getMutatorDecorator();
+    // TODO: Barebone
+  }
+
+
+  protected String getTypeArgumentFromListType(ASTMCType type) {
+    String typeString = CD4CodeMill.prettyPrint(type, false);
+    int lastListIndex = typeString.lastIndexOf("List<") + 5;
+    return typeString.substring(lastListIndex, typeString.length() - 1);
+  }
+
+  protected HookPoint createListImplementation(final ASTCDMethod method, String capitalizedAttributeNameWithOutS) {
+    String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithOutS);
+    int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
+    String methodName = method.getName().substring(0, attributeIndex);
+    String parameterCall = method.getCDParameterList().stream()
+            .map(ASTCDParameter::getName)
+            .collect(Collectors.joining(", "));
+    String returnType = CD4CodeMill.prettyPrint(method.getMCReturnType(), false);
+
+    return new TemplateHookPoint("methods.MethodDelegate", attributeName, methodName, parameterCall, returnType);
+  }
+
+
+  protected List<ASTCDMethod> fakeMethodDecorate(ASTCDAttribute attribute) {
+    // TODO: The MethodDecorator adds way to many default methods, slowing down the  (during class loading)
+    String attributeType = getTypeArgumentFromListType(attribute.getMCType());
+    String capitalizedAttributeNameWithS = StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName()));
+    // if the attributeName is set by itself then the s is not removed
+    // this means capitalizedAttributeNameWithS == capitalizedAttributeNameWithOutS
+    String capitalizedAttributeNameWithOutS = capitalizedAttributeNameWithS;
+    // but if the attributeName is derived then the s is removed
+//    if(capitalizedAttributeNameWithS.endsWith("s") && hasDerivedAttributeName(ast)) {
+//      this.capitalizedAttributeNameWithOutS = capitalizedAttributeNameWithS.substring(0, capitalizedAttributeNameWithS.length() - 1);
+//    }
+    String signature = String.format("public List<%s> get%sList();", attributeType, capitalizedAttributeNameWithOutS);
+    ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", attribute));
+
+    // ToDo: add?
+    // TODO: Deprecate the following methods
+
+    final String ADD = "public void add%s(%s element);";
+
+    var addMethod = getCDMethodFacade().createMethodByDefinition(String.format(ADD, capitalizedAttributeNameWithOutS, attributeType));
+
+
+    glex.replaceTemplate(EMPTY_BODY, addMethod, createListImplementation(addMethod, capitalizedAttributeNameWithOutS));
+
+
+    return Arrays.asList(getList, addMethod);
+  }
+
+  List<ASTCDMethod> aOrB(ASTCDAttribute attribute) {
+    if ("true".equals(System.getenv("lessaccessor"))) {
+      return fakeMethodDecorate(attribute);
+    }
+    return methodDecorator.decorate(attribute);
   }
 
   @Override
@@ -91,7 +147,9 @@ public class GlobalScopeInterfaceDecorator
 
     List<ASTCDMethod> resolverMethods = createAllResolverAttributes(symbolClasses)
         .stream()
-        .map(methodDecorator::decorate)
+//        .map(methodDecorator::decorate)
+//        .map(this::fakeMethodDecorate)
+        .map(this::aOrB)
         .flatMap(List::stream)
         .collect(Collectors.toList());
     adjustResolverMethodsForInterface(resolverMethods);
@@ -232,8 +290,12 @@ public class GlobalScopeInterfaceDecorator
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
+          if (!"true".equals(System.getenv("noinheritresolve"))) {
           methodList.add(createResolveAdaptedMethod(type.getAstNode(), cdDefinitionSymbol, foundSymbolsParameter, nameParameter,
               accessModifierParameter));
+          } else
+            System.err.println("Skipping " + type.getFullName());
+
         }
       }
     }
@@ -285,8 +347,11 @@ public class GlobalScopeInterfaceDecorator
     for (DiagramSymbol cdDefinitionSymbol : symbolTableService.getSuperCDsTransitive()) {
       for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
-          resolveMethods.addAll(createResolveMethods(type.getAstNode(), nameParameter, foundSymbolsParameter,
-              accessModifierParameter, cdDefinitionSymbol, definitionName));
+          if (!"true".equals(System.getenv("noinheritresolve"))) {
+            resolveMethods.addAll(createResolveMethods(type.getAstNode(), nameParameter, foundSymbolsParameter,
+                accessModifierParameter, cdDefinitionSymbol, definitionName));
+          } else
+          System.err.println("skipping createResolveMethods " + type.getFullName());
         }
       }
     }
@@ -337,18 +402,24 @@ public class GlobalScopeInterfaceDecorator
     List<ASTCDMethod> enclosingScopeMethods = methodDecorator.decorate(enclosingScopeAttribute);
     methodDecorator.enableTemplates();
     for (ASTCDMethod enclosingScopeMethod : enclosingScopeMethods) {
+      // Default methods which just throw an error break the performance (cf. ALu)
+
       String generatedErrorCode = symbolTableService.getGeneratedErrorCode(globalScopeName + enclosingScopeAttribute.printType());
       // add return null if method has return type
-      if (enclosingScopeMethod.getMCReturnType().isPresentMCType()) {
-        this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
-                " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");\n" +
-                "    return null;"));
+      if (!"true".equals(System.getenv("nodefenclosing"))) {
+        if (enclosingScopeMethod.getMCReturnType().isPresentMCType()) {
+          this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
+              "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
+                  " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");\n" +
+                  "    return null;"));
+        } else {
+          // no return if method is void type
+          this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
+              "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
+                  " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");"));
+        }
       } else {
-        // no return if method is void type
-        this.replaceTemplate(EMPTY_BODY, enclosingScopeMethod, new StringHookPoint(
-            "Log.error(\"" + ERROR_CODE + generatedErrorCode + " GlobalScope " + globalScopeName +
-                " has no EnclosingScope, so you cannot call method" + enclosingScopeMethod.getName() + ".\");"));
+        enclosingScopeMethod.getModifier().setAbstract(true);
       }
     }
     return enclosingScopeMethods;

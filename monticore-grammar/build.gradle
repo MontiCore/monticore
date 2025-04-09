@@ -85,6 +85,7 @@ generateMCGrammars {
   if (findProperty("ci") != null) {
     script = "de/monticore/monticore_noreports.groovy"
   }
+  outputs.upToDateWhen {false}
 }
 
 // This task can be used to run the MC generator on only a single grammar
@@ -542,9 +543,9 @@ java {
     usingSourceSet(sourceSets.grammarsForVariant)
   }
   // End deprecation
-  registerFeature('tests') {
-    usingSourceSet(sourceSets.test)
-  }
+//  registerFeature('tests') {
+//    usingSourceSet(sourceSets.test)
+//  }
 }
 
 shadowJar {
@@ -565,13 +566,18 @@ tasks.grammarsForVariantJar {
 jar.dependsOn(shadowJar)
 
 if (findProperty('ci') == null) {
-  jar.dependsOn(shadowJar, testJar)
+//  jar.dependsOn(shadowJar, testJar)
+  jar.dependsOn(shadowJar)
 }
 
 if (("true").equals(getProperty('genTR'))) {
   generateTrafoMCGrammars {
     // Temporary - for optimizations
     dependsOn(tasks.grammarsForVariantJar)
+    outputs.upToDateWhen {false}
+
+
+
   }
 }
 

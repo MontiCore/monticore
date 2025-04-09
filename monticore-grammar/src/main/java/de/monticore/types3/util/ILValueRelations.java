@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.expressions.expressionsbasis.types3.util;
+package de.monticore.types3.util;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 

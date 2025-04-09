@@ -80,6 +80,9 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
             .addAllCDMembers(createAcceptTraverserSuperMethods())
             .build();
 
+    if (!"true".equals(System.getenv("customenv")))
+      throw new IllegalStateException("Missing env customenv: " + System.getenv("customenv"));
+
     CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
     return clazz;
   }
@@ -164,6 +167,9 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
             PREDICATE, definingSymbolFullName.get()), PREDICATE_VAR);
         String methodName = String.format(CONTINUE_WITH_ENCLOSING_SCOPE, className);
 
+//        System.err.println("TODO CHECK HERE");
+//        System.err.println(definingSymbolFullName.get() + " vs " + definitionSymbol.getFullName());
+
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createListTypeOf(definingSymbolFullName.get()),
             methodName, parameterFoundSymbols, parameterName, parameterModifier, parameterPredicate);
         this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
@@ -191,7 +197,8 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
           .filter(CDTypeSymbol::isPresentAstNode)
           .map(CDTypeSymbol::getAstNode)
           .collect(Collectors.toList());
-      methodList.addAll(createContinueWithEnclosingScopeMethods(symbolProds, cdDefinitionSymbol));
+      if (!"true".equals(System.getenv("nocontinue")))
+        methodList.addAll(createContinueWithEnclosingScopeMethods(symbolProds, cdDefinitionSymbol));
     }
     return methodList;
   }
