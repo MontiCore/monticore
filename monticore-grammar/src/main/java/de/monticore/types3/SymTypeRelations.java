@@ -263,7 +263,8 @@ public abstract class SymTypeRelations {
   protected abstract boolean _isString(SymTypeExpression type);
 
   /**
-   * whether it is a String (boxed or unboxed) or a subtype (e.g., a RegEx)
+   * @param type the SymTypeExpression to check
+   * @return whether it is a String (boxed or unboxed) or a subtype (e.g., a RegEx)
    */
   public static boolean isStringOrSubType(SymTypeExpression type) {
     return getDelegate()._isStringOrSubType(type);
