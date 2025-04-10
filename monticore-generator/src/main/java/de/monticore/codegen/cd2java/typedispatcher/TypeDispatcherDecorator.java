@@ -16,6 +16,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.types.MCTypeFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -343,9 +344,15 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   protected ASTCDInterfaceUsage getInterfaceUsage() {
-    return CDInterfaceUsageFacade.getInstance()
-        .createCDInterfaceUsage(
-            String.format("I%s", getTypeDispatcherName(visitorService.getCDName())));
+    List<String> superIs = new ArrayList<>();
+    superIs.add(String.format("I%s", getTypeDispatcherName(visitorService.getCDName())));
+    superIs.add(visitorService.getHandlerFullName());
+    // We add the handler interfaces only in the implementation (this class)
+    for (DiagramSymbol symbol : visitorService.getSuperCDsTransitive()) {
+      superIs.add(visitorService.getHandlerFullName(symbol));
+    }
+    return CDInterfaceUsageFacade.getInstance().createCDInterfaceUsage(superIs.stream().map(MCTypeFacade.getInstance()::createQualifiedType).collect(
+            Collectors.toList()));
   }
 
   protected void addGettersAndSetters(List<ASTCDAttribute> attributes, ASTCDType type) {
