@@ -123,6 +123,7 @@ public class SymTypeExpressionTest {
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypeBasic.setup();
     scope.add(new OOTypeSymbol("long"));
     scope.add(new OOTypeSymbol("Human"));
     scope = OOSymbolsMill.scope();

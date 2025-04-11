@@ -48,9 +48,10 @@ public class AbstractDeriveTest {
   public void init(){
     LogStub.init();
     Log.enableFailQuick(false);
+    DefsTypeBasic.setup();
     AbstractTypeCheckTestMill.reset();
     AbstractTypeCheckTestMill.init();
-    
+
     scope = AbstractTypeCheckTestMill.scope();
     scope.setEnclosingScope(null);
     scope.setExportingSymbols(true);

@@ -40,6 +40,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypeBasic.setup();
 
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     gs.add(DefsTypeBasic.type("A"));

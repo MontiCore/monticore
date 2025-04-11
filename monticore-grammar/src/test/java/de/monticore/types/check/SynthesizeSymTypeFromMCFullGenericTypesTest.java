@@ -42,6 +42,7 @@ public class SynthesizeSymTypeFromMCFullGenericTypesTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypeBasic.setup();
 
     ICombineExpressionsWithLiteralsGlobalScope gs = CombineExpressionsWithLiteralsMill.globalScope();
     OOTypeSymbol a2 = DefsTypeBasic.type("A2", Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(DefsTypeBasic.typeVariable("T")), gs);

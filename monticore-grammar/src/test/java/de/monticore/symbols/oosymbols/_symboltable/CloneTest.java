@@ -27,6 +27,7 @@ public class CloneTest {
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypeBasic.setup();
 
     symbolTable = OOSymbolsMill.scope();
 

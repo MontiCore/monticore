@@ -14,15 +14,11 @@ import java.util.List;
  * including Scopes etc. that is used to provide relevant Symbols.
  *
  * This infrastructure can be used for testing
+ * @deprecated use {@link de.monticore.types3.util.DefsTypesForTests}
  */
-
+@Deprecated
 public class DefsTypeBasic {
 
-  // Original initialization
-  static {
-    setup();
-  }
-  
   /**
    * Initialization of the structure (can be called again to reinitialize).
    * Setup comes in two phases:

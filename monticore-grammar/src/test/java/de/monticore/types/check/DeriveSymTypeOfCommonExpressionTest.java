@@ -53,6 +53,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypeBasic.setup();
     CombineExpressionsWithLiteralsMill.globalScope().setSymbolPath(new MCPath());
     CombineExpressionsWithLiteralsMill.globalScope().setFileExt("ce");
 

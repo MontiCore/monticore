@@ -39,6 +39,7 @@ public class MCType2SymTypeExpressionTest {
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
+    DefsTypeBasic.setup();
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();

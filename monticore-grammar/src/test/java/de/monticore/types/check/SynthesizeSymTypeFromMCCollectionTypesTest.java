@@ -61,6 +61,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypeBasic.setup();
 
     scopeSetter = new FlatExpressionScopeSetter(CombineExpressionsWithLiteralsMill.globalScope());
     traverser = CombineExpressionsWithLiteralsMill.traverser();

@@ -33,6 +33,7 @@ public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypeBasic.setup();
     // Setting up a Scope Infrastructure (without a global Scope)
     ICombineExpressionsWithLiteralsScope scope = CombineExpressionsWithLiteralsMill.scope();
     scope.setEnclosingScope(null);       // No enclosing Scope: Search ending here

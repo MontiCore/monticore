@@ -50,6 +50,7 @@ public class DefiningSymbolsTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
+    DefsTypeBasic.setup();
 
     p = CombineExpressionsWithLiteralsMill.parser();
 
