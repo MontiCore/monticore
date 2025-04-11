@@ -554,7 +554,7 @@ public class BoundIncorporation {
       if (
           !SymTypeRelations.normalize(sourceType)
               .deepEquals(SymTypeRelations.normalize(bComp.getSourceType())) ||
-              !SymTypeRelations.normalize(sourceType)
+              !SymTypeRelations.normalize(targetType)
                   .deepEquals(SymTypeRelations.normalize(bComp.getTargetType()))
       ) {
         result = Optional.of(new TypeCompatibilityConstraint(sourceType, targetType));
