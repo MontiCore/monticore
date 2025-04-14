@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -25,6 +26,7 @@ public abstract class CompKindExpression {
   protected final ComponentSymbol component;
   protected LinkedHashMap<VariableSymbol, ASTExpression> parameterBindings;
   protected List<ASTExpression> arguments;
+  protected Optional<ASTNode> sourceNode;
 
   /**
    * @return a {@code List} of the configuration arguments of this component.
@@ -98,6 +100,28 @@ public abstract class CompKindExpression {
 
     this.parameterBindings = parameterBindings;
   }
+
+  /**
+   * The ast node on which this CompKindExpression is based, if present.
+   */
+  public Optional<ASTNode> getSourceNode() {
+    return this.sourceNode;
+  }
+
+  /**
+   * @see CompKindExpression#getSourceNode
+   * @param sourceNode Must not be null
+   */
+  public void setSourceNode(ASTNode sourceNode) {
+    Preconditions.checkNotNull(sourceNode);
+    this.sourceNode = Optional.of(sourceNode);
+  }
+
+  /** @see CompKindExpression#getSourceNode */
+  public void setSourceNodeAbsent() {
+    this.sourceNode = Optional.empty();
+  }
+
   protected CompKindExpression(ComponentSymbol component) {
     Preconditions.checkNotNull(component);
     this.component = component;
