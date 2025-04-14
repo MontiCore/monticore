@@ -103,6 +103,10 @@ public abstract class CompKindExpression {
 
   /**
    * The ast node on which this CompKindExpression is based, if present.
+   * <p>
+   * This is ONLY meant to be used to create better log messages!
+   * As CompKindExpressions are moved around, cloned, and modified, it cannot be
+   * assumed that the reference to the AST node holds reliable.
    */
   public Optional<ASTNode> getSourceNode() {
     return this.sourceNode;
