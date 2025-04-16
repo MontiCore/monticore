@@ -5,6 +5,7 @@ import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class ASTStereoValue extends ASTStereoValueTOP {
 
@@ -54,7 +55,7 @@ public class ASTStereoValue extends ASTStereoValueTOP {
       .literalExpressionBuilder()
       .setLiteral(MCCommonLiteralsMill
         .stringLiteralBuilder()
-        .setSource(content)
+        .setSource(StringEscapeUtils.escapeJava(content))
         .build())
       .build());
   }
