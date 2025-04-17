@@ -131,6 +131,7 @@ public abstract class CompKindExpression {
     this.component = component;
     this.arguments = new ArrayList<>();
     this.parameterBindings = new LinkedHashMap<>();
+    this.sourceNode = Optional.empty();
   }
 
   public ComponentSymbol getTypeInfo() {
