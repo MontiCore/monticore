@@ -24,8 +24,24 @@ public class StereoValueContentTest {
   }
 
   @Test
+  public void testSimpleBuilder() {
+    String input = "Hello world";
+    var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo")
+            .setContent(input).build();
+    Assertions.assertEquals(input, sv.getContent());
+  }
+
+  @Test
   public void testSimple() {
     String input = "Hello world";
+    var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo").build();
+    sv.setContent(input);
+    Assertions.assertEquals(input, sv.getContent());
+  }
+
+  @Test
+  public void testQuotationBuilder() {
+    String input = "Hello \"world\"";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo")
             .setContent(input).build();
     Assertions.assertEquals(input, sv.getContent());
@@ -34,22 +50,30 @@ public class StereoValueContentTest {
   @Test
   public void testQuotation() {
     String input = "Hello \"world\"";
+    var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo").build();
+    sv.setContent(input);
+    Assertions.assertEquals(input, sv.getContent());
+  }
+
+  @Test
+  public void testBackslashBuilder() {
+    String input = "Hello \\ world,\n hello\\people";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo")
             .setContent(input).build();
     Assertions.assertEquals(input, sv.getContent());
   }
-
 
   @Test
   public void testBackslash() {
-    String input = "Hello \\ world, hello\\people";
-    var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo")
-            .setContent(input).build();
+    String input = "Hello \\ world,\n hello\\people";
+    var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo").build();
+    sv.setContent(input);
     Assertions.assertEquals(input, sv.getContent());
   }
 
+
   @Test
-  public void testSetText() {
+  public void testSetTextBuilder() {
     String input = "Hello \\ \"world\", hello\\people";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo")
             .setText(MCCommonLiteralsMill.stringLiteralBuilder()
@@ -57,4 +81,5 @@ public class StereoValueContentTest {
             .build();
     Assertions.assertEquals(input, sv.getContent());
   }
+
 }
