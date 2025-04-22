@@ -32,6 +32,16 @@ sourceSets {
     srcDirs += "$projectDir/src/test/java"
     includes = ["**/Assert.java"]
   }
+  testGradle {
+
+  }
+}
+
+dependencies {
+  testGradleImplementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+  testGradleImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+  testGradleRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+
 }
 
 description = 'MontiCore: Runtime'
@@ -40,6 +50,12 @@ java {
   registerFeature('tests') {
     usingSourceSet(sourceSets.tests)
   }
+  registerFeature('testGradle') {
+    usingSourceSet(sourceSets.testGradle)
+  }
+  withJavadocJar()
+  withSourcesJar()
 }
 
 jar.dependsOn testsJar
+jar.dependsOn testGradleJar
