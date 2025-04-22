@@ -171,6 +171,7 @@ task deployMC {
 
   dependsOn ":monticore-grammar:publish"
   dependsOn ":monticore-runtime:publish"
+  dependsOn ":monticore-runtime-tests:publish"
   if(("true").equals(getProperty('genEMF'))) {
     dependsOn ":monticore-runtime-emf:publish"
     dependsOn ":monticore-grammar-emf:publish"
@@ -191,6 +192,7 @@ task publishMCToMavenLocal {
           'to the local maven repository.')
   dependsOn ":monticore-grammar:publishToMavenLocal"
   dependsOn ":monticore-runtime:publishToMavenLocal"
+  dependsOn ":monticore-runtime-tests:publishToMavenLocal"
   if(("true").equals(getProperty('genEMF'))) {
     dependsOn ":monticore-runtime-emf:publishToMavenLocal"
     dependsOn   ":monticore-grammar-emf:publishToMavenLocal"
@@ -247,6 +249,7 @@ task sonarMC (type: GradleBuild) {
 def projectsToConfigure = [
   project(':monticore-grammar'),
   project(':monticore-runtime'),
+  project(':monticore-runtime-tests'),
   project(':monticore-libraries:stream-symbols')
 ]
 if(("true").equals(getProperty('genEMF'))) {
