@@ -15,8 +15,9 @@ import de.monticore.aggregation.foo._symboltable.BarSymbol;
 import de.monticore.aggregation.foo._symboltable.FooGlobalScope;
 import de.monticore.aggregation.foo._symboltable.FooScopesGenitorDelegator;
 import de.monticore.aggregation.foo._symboltable.IFooArtifactScope;
+import de.monticore.runtime.junit.jupyter.AbstractMCTest;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,12 +27,10 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 
-public class AggregationTest {
+public class AggregationTest extends AbstractMCTest {
   
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
     FooMill.reset();
     FooMill.init();
     BlahMill.reset();
@@ -54,7 +53,7 @@ public class AggregationTest {
     FooGlobalScope globalScope = (FooGlobalScope) FooMill.globalScope();
     
     //Parse blah model
-    BlahParser blahParser = new BlahParser();
+    BlahParser blahParser = BlahMill.parser();
     Optional<ASTBlahModel> blahModel = blahParser.parse_String(
       "blahmodel {" +
         "blubScope blubScope1 {" +
@@ -96,7 +95,7 @@ public class AggregationTest {
    */
     
     //parse foo model
-    FooParser fooParser = new FooParser();
+    FooParser fooParser = FooMill.parser();
     Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() } name");
     
     // Check foo model is parsed
@@ -112,6 +111,11 @@ public class AggregationTest {
   
     Assertions.assertTrue(Log.getFindings().isEmpty());
   }
-  
+
+  @AfterEach
+  public void afterEach() {
+    FooMill.reset();
+    BlahMill.reset();
+  }
   
 }
