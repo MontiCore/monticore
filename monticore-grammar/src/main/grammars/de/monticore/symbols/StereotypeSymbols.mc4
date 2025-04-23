@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+import de.monticore.*;
+
+component grammar StereotypeSymbols extends de.monticore.MCBasics {
+
+  interface symbol MCStereotype = Name;
+
+  symbolrule MCStereotype
+    implements de.monticore.symboltable.stereotypes.ISymbolicStereotype =
+      annotatedElement : Class<? extends de.monticore.symboltable.ISymbol>
+      allowedValueTypes : de.monticore.symboltable.stereotypes.StereoValueType+
+    ;
+}
