@@ -6,6 +6,7 @@ java {
 
 dependencies {
   implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+  implementation project(':monticore-runtime')
   implementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   runtimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
