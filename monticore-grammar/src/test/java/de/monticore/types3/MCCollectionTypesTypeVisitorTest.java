@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.type;
 

@@ -3,6 +3,7 @@ package de.monticore.types3;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
+import de.monticore.runtime.junit.jupyter.AbstractMCTest;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
@@ -21,7 +23,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.Assert.assertEquals;
 
-public class SymTypeUnboxingVisitorTest extends AbstractTypeTest {
+public class SymTypeUnboxingVisitorTest extends AbstractMCTest {
 
   SymTypeUnboxingVisitor visitor = new SymTypeUnboxingVisitor();
 
@@ -42,7 +44,6 @@ public class SymTypeUnboxingVisitorTest extends AbstractTypeTest {
     check(_BooleanSymType, "boolean");
     check(_ByteSymType, "byte");
     check(_CharacterSymType, "char");
-    assertNoFindings();
   }
 
   @Test
@@ -74,7 +75,6 @@ public class SymTypeUnboxingVisitorTest extends AbstractTypeTest {
         "List<int>");
     check(createGenerics(_boxedMapSymType.getTypeInfo(), _IntegerSymType, _DoubleSymType),
         "Map<int,double>");
-    assertNoFindings();
   }
 
   @Test

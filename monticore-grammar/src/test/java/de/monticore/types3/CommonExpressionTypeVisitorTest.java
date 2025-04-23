@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import static de.monticore.runtime.junit.jupyter.MCAssertions.assertHasFindingsStartingWith;
+import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
@@ -2588,7 +2590,9 @@ public class CommonExpressionTypeVisitorTest
   public void testInvalidStaticType() throws IOException {
     init_static_example();
 
-    checkErrorMCType("A.NotAType", "0xA0324");
+    checkErrorMCType("A.NotAType", "0xFDAE3");
+    // legacy error code...
+    assertHasFindingsStartingWith("0xA0324");
   }
 
   @Test
