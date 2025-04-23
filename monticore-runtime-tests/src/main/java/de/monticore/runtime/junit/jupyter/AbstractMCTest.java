@@ -9,9 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 /**
  * Common abstract super class for MontiCore language tests
  * Ensures, that the correct Log is initialized
- * and no findings are present after a test
+ * and no findings are present after a test;
+ * findings are either expected to not occur at all
+ * or, if they occur, are checked and removed afterward,
+ * s.a. {@link MCAssertions}.
  */
 public abstract class AbstractMCTest {
+
   @BeforeEach
   public void initAbstract() {
     Log.clearFindings();
@@ -22,10 +26,9 @@ public abstract class AbstractMCTest {
   @AfterEach
   public void resetAndCheckLog() {
     try {
-      if (Log.getFindingsCount() > 0) {
-        // output
-        MCAssertions.failFindings("After the test has run, findings were still present");
-      }
+      MCAssertions.assertNoFindings(
+          "After the test has run, findings were present."
+      );
     } finally {
       Log.clearFindings();
     }
