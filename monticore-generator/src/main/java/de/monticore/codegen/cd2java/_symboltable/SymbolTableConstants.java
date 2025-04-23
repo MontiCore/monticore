@@ -86,6 +86,10 @@ public class SymbolTableConstants {
 
   public static final String I_SYMBOL_DE_SER = "de.monticore.symboltable.serialization.ISymbolDeSer";
 
+  public static final String I_SYMBOLIC_STEREOTYPE = "de.monticore.symboltable.stereotypes.ISymbolicStereotype";
+
+  public static final String INTERPRETER_VALUE = "de.monticore.interpreter.Value";
+
   /**
    * attribute names
    */
@@ -119,6 +123,8 @@ public class SymbolTableConstants {
   public static final String SCOPE_VAR = "scope";
 
   public static final String MODIFIER_VAR = "modifier";
+
+  public static final String STEREOINFO_VAR = "stereoinfo";
 
   public static final String SCOPE_STACK_VAR = "scopeStack";
 

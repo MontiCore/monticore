@@ -1,9 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable;
 
+import de.monticore.interpreter.Value;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.stereotypes.ISymbolicStereotype;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.ast.ASTNode;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /** A builder for {@link SymbolWithScopeOfUnknownKind}. */
 public class SymbolWithScopeOfUnknownKindBuilder {
@@ -15,6 +21,8 @@ public class SymbolWithScopeOfUnknownKindBuilder {
   protected String packageName;
 
   protected AccessModifier accessModifier;
+
+  protected Map<ISymbolicStereotype, Optional<Value>> stereoinfo = new HashMap<>();
 
   protected IScope enclosingScope;
 
@@ -36,6 +44,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
     symbol.setFullName(this.fullName);
     symbol.setPackageName(this.packageName);
     symbol.setAccessModifier(this.accessModifier);
+    symbol.getStereoinfo().putAll(stereoinfo);
     symbol.setEnclosingScope(this.enclosingScope);
     return symbol;
   }
@@ -45,6 +54,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
         && fullName != null
         && packageName != null
         && accessModifier != null
+        && stereoinfo != null
         && enclosingScope != null
         && spannedScope != null;
   }
@@ -76,6 +86,10 @@ public class SymbolWithScopeOfUnknownKindBuilder {
     return this.accessModifier;
   }
 
+  public Map<ISymbolicStereotype, Optional<Value>> getStereoinfo() {
+    return this.stereoinfo;
+  }
+
   public IScope getEnclosingScope() {
     return this.enclosingScope;
   }
@@ -101,6 +115,24 @@ public class SymbolWithScopeOfUnknownKindBuilder {
 
   public SymbolWithScopeOfUnknownKindBuilder setAccessModifier(AccessModifier accessModifier) {
     this.accessModifier = accessModifier;
+    return this.realBuilder;
+  }
+
+  public SymbolWithScopeOfUnknownKindBuilder setStereoinfo(
+    Map<ISymbolicStereotype, Optional<Value>> stereoinfo) {
+
+    this.stereoinfo = stereoinfo;
+    return this.realBuilder;
+  }
+
+  public SymbolWithScopeOfUnknownKindBuilder addStereoinfo(ISymbolicStereotype stereotype) {
+    this.stereoinfo.put(stereotype, Optional.empty());
+    return this.realBuilder;
+  }
+
+  public  SymbolWithScopeOfUnknownKindBuilder addStereoinfo(ISymbolicStereotype stereotype,
+                                                            Value stereovalue) {
+    this.stereoinfo.put(stereotype, Optional.of(stereovalue));
     return this.realBuilder;
   }
 

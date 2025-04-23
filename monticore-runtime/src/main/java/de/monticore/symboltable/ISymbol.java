@@ -3,8 +3,10 @@ package de.monticore.symboltable;
 
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
+import de.monticore.interpreter.Value;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.symboltable.stereotypes.ISymbolicStereotype;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
 
@@ -58,6 +60,9 @@ public interface ISymbol {
    * @param accessModifier the access modifier
    */
   void setAccessModifier(AccessModifier accessModifier);
+
+  /** Returns the stereotypes of this symbol, associated with values for them if present */
+  Map<ISymbolicStereotype, Optional<Value>> getStereoinfo();
 
   boolean isPresentAstNode();
 
