@@ -1,12 +1,12 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.streams;
 
+import de.monticore.runtime.junit.jupyter.AbstractMCTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionTypeRelations;
-import de.monticore.types3.AbstractTypeTest;
 import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StreamSymTypeFactoryTest extends AbstractTypeTest {
+public class StreamSymTypeFactoryTest extends AbstractMCTest {
 
   MCCollectionTypeRelations collectionTypeRelations;
 

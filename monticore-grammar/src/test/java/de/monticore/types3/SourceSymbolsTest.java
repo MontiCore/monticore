@@ -87,8 +87,6 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertTrue(listOfIntType.getSourceInfo().getSourceSymbol().isPresent());
     definingSymbol = listOfIntType.getSourceInfo().getSourceSymbol().get();
     assertSame(this.listOfInt, definingSymbol);
-
-    assertNoFindings();
   }
 
   @Test
@@ -114,8 +112,6 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertTrue(listOfIntType.getSourceInfo().getSourceSymbol().isPresent());
     definingSymbol = listOfIntType.getSourceInfo().getSourceSymbol().get();
     assertEquals(this.listOfInt, definingSymbol);
-
-    assertNoFindings();
   }
 
   @Test
@@ -129,8 +125,6 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertTrue(eType.getSourceInfo().getSourceSymbol().isPresent());
     ISymbol definingSymbol = eType.getSourceInfo().getSourceSymbol().get();
     assertSame(this.e, definingSymbol);
-
-    assertNoFindings();
   }
 
   @Test
@@ -146,8 +140,6 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertTrue(addType.getSourceInfo().getSourceSymbol().isPresent());
     ISymbol definingSymbol = addType.getSourceInfo().getSourceSymbol().get();
     assertSame(this.add, definingSymbol);
-
-    assertNoFindings();
   }
 
   protected CombineExpressionsWithLiteralsTraverser getFlatExpressionScopeSetter(IExpressionsBasisScope scope) {

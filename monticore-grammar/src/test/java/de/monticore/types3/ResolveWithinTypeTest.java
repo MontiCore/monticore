@@ -21,6 +21,7 @@ import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
+import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._booleanSymType;
 import static de.monticore.types3.util.DefsTypesForTests.field;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
@@ -309,7 +311,10 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     inScope(oOType1.getSpannedScope(), typeVariable("t"));
 
     calculateTypeIDWithinScopeError("t.t", oOType1.getSpannedScope(), "0xFDAE3");
+    // ignore legacy error codes explicitly
+    Log.clearFindings();
     calculateTypeIDWithinScopeError("t.t", oOType1.getEnclosingScope(), "0xFDAE3");
+    Log.clearFindings();
   }
 
   // Helper

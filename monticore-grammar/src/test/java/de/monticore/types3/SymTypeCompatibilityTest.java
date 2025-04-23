@@ -5,6 +5,7 @@ package de.monticore.types3;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.runtime.junit.jupyter.AbstractMCTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
@@ -40,7 +41,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 
-public class SymTypeCompatibilityTest extends AbstractTypeTest {
+public class SymTypeCompatibilityTest extends AbstractMCTest {
 
   protected ICombineExpressionsWithLiteralsScope scope;
 
@@ -128,7 +129,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
     Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _personSymType));
     Assertions.assertTrue(SymTypeRelations.isCompatible(_booleanSymType, _BooleanSymType));
-    assertNoFindings();
   }
 
   @Test
@@ -207,7 +207,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
     Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _personSymType));
     Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _BooleanSymType));
-    assertNoFindings();
   }
 
   @Test
@@ -248,7 +247,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createTypeArray(_personSymType, 0)));
     Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, _unboxedMapSymType));
     Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, _BooleanSymType));
-    assertNoFindings();
   }
 
   @Test
@@ -311,7 +309,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertFalse(SymTypeRelations.isCompatible(listOfPerson, listOfBoolean));
     Assertions.assertFalse(SymTypeRelations.isCompatible(listOfBoolean, subPersonList));
     Assertions.assertFalse(SymTypeRelations.isCompatible(subPersonList, listOfPerson));
-    assertNoFindings();
   }
 
   @Test
@@ -330,7 +327,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
     Assertions.assertTrue(SymTypeRelations.isCompatible(iSMap, iSHashMap));
     Assertions.assertFalse(SymTypeRelations.isCompatible(iSMap, sIHashMap));
-    assertNoFindings();
   }
 
   @Test
@@ -351,7 +347,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertFalse(SymTypeRelations.isCompatible(
         createUnion(_studentSymType, _teacherSymType), _personSymType
     ));
-    assertNoFindings();
   }
 
   @Test
@@ -373,7 +368,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertFalse(SymTypeRelations.isCompatible(
         createIntersection(_personSymType, _carSymType), _personSymType
     ));
-    assertNoFindings();
   }
 
   @Test
@@ -453,8 +447,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createFunction(_personSymType, List.of(_intSymType), true),
         createFunction(_personSymType, _intSymType)
     ));
-
-    assertNoFindings();
   }
 
   @Test
@@ -630,8 +622,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertTrue(SymTypeRelations.isCompatible(_studentSymType, superSSubCsSTVar));
     Assertions.assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, superSSubCsSTVar));
     Assertions.assertFalse(SymTypeRelations.isCompatible(_firstSemesterCsStudentSymType, superSSubCsSTVar));
-
-    assertNoFindings();
   }
 
   @Test
@@ -693,8 +683,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertTrue(SymTypeRelations.isCompatible(pSubList, sSubLinkedList));
     Assertions.assertFalse(SymTypeRelations.isCompatible(sSubList, pSubLinkedList));
     Assertions.assertTrue(SymTypeRelations.isCompatible(sSubList, sSubLinkedList));
-
-    assertNoFindings();
   }
 
   @Test
@@ -746,8 +734,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertFalse(SymTypeRelations.isCompatible(pSuperList, sSuperLinkedList));
     Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, pSuperLinkedList));
     Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, sSuperLinkedList));
-
-    assertNoFindings();
   }
 
   @Test
