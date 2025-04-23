@@ -135,7 +135,8 @@ This adds the java-library variant (aka implementation) to the java classpath,
 and the grammar files to the symbol path.
 
 _Note:_ Grammar dependencies are transitive,
- which includes the implementation/java dependencies as well (such as the monticore-runtime).
+ which includes the implementation/java dependencies as well 
+ (such as the monticore-runtime, AST classes, etc.).
 
 ## Examples
 
@@ -189,6 +190,20 @@ Instead, a full-rebuild is enforced.
 
 Simply use the `de.monticore.generator-withtr` gradle plugin.
 You can set a `genTR` property to any value different than `true` to disable the trafo generation.
+
+
+
+```groovy
+plugins {
+  id "java-library"
+  id "de.monticore.generator-withtr" version "$mc_version"
+}
+dependencies {
+  grammar "de.monticore:monticore-grammar:$mc_version"
+  // You also have to depend on the trafo language of 'monticore-grammar'
+  trafoGrammar "de.monticore:monticore-grammar-trafo:$mc_version"
+}
+```
 
 To further exclude grammars, you can filter on the `extractTRGrammars` task:
 
