@@ -1,28 +1,17 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3;
 
+import de.monticore.runtime.junit.jupyter.AbstractMCTest;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertTrue;
-
-public class AbstractTypeTest {
-
-  @BeforeEach
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  protected static void assertNoFindings() {
-    Assertions.assertTrue(Log.getFindings().isEmpty(), "Expected no Log findings, but got:"
-            + System.lineSeparator() + getAllFindingsAsString());
-  }
+/**
+ * @deprecated use {@link AbstractTypeTest} directly
+ */
+@Deprecated
+public class AbstractTypeTest extends AbstractMCTest {
 
   /**
    * @return all findings as one String
