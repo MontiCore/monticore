@@ -3,8 +3,6 @@
 package mc.feature.ast;
 
 import de.monticore.runtime.junit.jupyter.AbstractMCTest;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.feature.delete.deletetest.DeleteTestMill;
 import mc.feature.delete.deletetest._ast.ASTChild;
 import mc.feature.delete.deletetest._ast.ASTParent;
