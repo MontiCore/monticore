@@ -1,19 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import de.monticore.runtime.types3.DefsVariablesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
-import de.monticore.types3.util.DefsVariablesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.variable;
-import static de.monticore.types3.util.DefsVariablesForTests._intUnboxedOptionalVarSym;
+import static de.monticore.runtime.types3.DefsTypesForTests.inScope;
+import static de.monticore.runtime.types3.DefsTypesForTests.variable;
+import static de.monticore.runtime.types3.DefsVariablesForTests._intUnboxedOptionalVarSym;
 
 public class OptionalOperatorsTypeVisitorTest extends AbstractTypeVisitorTest {
 

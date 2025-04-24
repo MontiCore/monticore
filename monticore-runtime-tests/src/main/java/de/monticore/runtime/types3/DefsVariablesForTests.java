@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types3.util;
+package de.monticore.runtime.types3;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
+import static de.monticore.runtime.types3.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types3.util.DefsTypesForTests.*;
 
 /**
  * creates default variables for type check tests,

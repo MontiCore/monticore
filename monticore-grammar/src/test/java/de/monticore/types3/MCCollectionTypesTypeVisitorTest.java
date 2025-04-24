@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.type;
+import static de.monticore.runtime.types3.DefsTypesForTests.inScope;
+import static de.monticore.runtime.types3.DefsTypesForTests.type;
 
 public class MCCollectionTypesTypeVisitorTest
     extends AbstractTypeVisitorTest {

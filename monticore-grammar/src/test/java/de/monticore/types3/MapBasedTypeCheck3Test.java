@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
+import static de.monticore.runtime.types3.DefsTypesForTests._floatSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._intSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._unboxedListSymType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
-import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedListSymType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MapBasedTypeCheck3Test extends AbstractTypeVisitorTest {
