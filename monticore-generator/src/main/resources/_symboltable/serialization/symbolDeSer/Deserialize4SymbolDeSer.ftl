@@ -9,6 +9,17 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
   if (symbolJson.hasStringMember(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE_NAME)) {
     builder.setPackageName(symbolJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.PACKAGE_NAME));
   }
+  if (symbolJson.hasArrayMember(de.monticore.symboltable.serialization.JsonDeSers.STEREO_INFO)) {
+    for (de.monticore.symboltable.serialization.json.JsonElement stereoinfoJson : symbolJson.getArrayMember(de.monticore.symboltable.serialization.JsonDeSers.STEREO_INFO)) {
+      java.util.Map.Entry<de.monticore.symboltable.stereotypes.ISymbolicStereotype, java.util.Optional<de.monticore.interpreter.Value>> stereoinfo = de.monticore.symboltable.stereotypes.StereoinfoDeSer.deserialize(stereoinfoJson, scope);
+      if (stereoinfo.getValue().isPresent()) {
+        builder.addStereoinfo(stereoinfo.getKey(), stereoinfo.getValue().get());
+      } else {
+        builder.addStereoinfo(stereoinfo.getKey());
+      }
+    }
+  }
+
   <#list symbolRuleAttribute as attr>
   <#if genHelper.isOptional(attr.getMCType())>
   if (deserialize${attr.getName()?cap_first}(symbolJson).isPresent()) {
