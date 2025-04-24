@@ -2011,7 +2011,7 @@ public class CommonExpressionTypeVisitorTest
       throws IOException {
     // Expression (2 + 3)() and all other Expressions in front of brackets are parsable
     init_advanced();
-    checkErrorExpr("(2 + 3)()", "0xFDABC");
+    checkErrorExpr("(2 + 3)()", "0xFDAB4");
   }
 
   @Test
