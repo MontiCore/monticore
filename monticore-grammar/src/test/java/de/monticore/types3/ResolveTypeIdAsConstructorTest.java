@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
 import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;

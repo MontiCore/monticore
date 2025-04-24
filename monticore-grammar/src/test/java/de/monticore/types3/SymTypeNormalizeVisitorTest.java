@@ -2,7 +2,7 @@
 package de.monticore.types3;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.runtime.junit.jupyter.AbstractMCTest;
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfUnion;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests.function;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;

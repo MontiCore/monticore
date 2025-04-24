@@ -1,7 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types.mccollectiontypes.types3.util;
 
-import de.monticore.runtime.junit.jupyter.AbstractMCTest;
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertHasFindingStartingWith;
+import static de.monticore.runtime.junit.MCAssertions.assertHasFindingStartingWith;
 import static de.monticore.types3.util.DefsTypesForTests._boxedListSymType;
 import static de.monticore.types3.util.DefsTypesForTests._boxedMapSymType;
 import static de.monticore.types3.util.DefsTypesForTests._boxedOptionalSymType;

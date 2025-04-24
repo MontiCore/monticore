@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;

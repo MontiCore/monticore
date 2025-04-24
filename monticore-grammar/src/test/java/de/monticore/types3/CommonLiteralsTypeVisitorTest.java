@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 
 public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
 

@@ -2,7 +2,7 @@
 package de.monticore.types.prettyprint;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.runtime.junit.jupyter.AbstractMCTest;
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.types.typeparameterstest.TypeParametersTestMill;
 import de.monticore.types.typeparameterstest._parser.TypeParametersTestParser;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.IOException;
 import java.util.Optional;
 
-import static de.monticore.runtime.junit.jupyter.PrettyPrinterTester.testPrettyPrinter;
+import static de.monticore.runtime.junit.PrettyPrinterTester.testPrettyPrinter;
 
 public class TypeParametersPrettyPrinterTest extends AbstractMCTest {
 

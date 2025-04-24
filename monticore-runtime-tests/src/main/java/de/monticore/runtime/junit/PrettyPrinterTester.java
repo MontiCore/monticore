@@ -1,4 +1,4 @@
-package de.monticore.runtime.junit.jupyter;
+package de.monticore.runtime.junit;
 
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -42,16 +42,16 @@ public abstract class PrettyPrinterTester {
   ) throws IOException {
     // parse the model
     Optional<N> astOpt = parseFunc.apply(model);
-    assertNoFindings();
+    MCAssertions.assertNoFindings();
     assertTrue(astOpt.isPresent(), "Failed to parse input");
     Assertions.assertFalse(parser.hasErrors(), "Parser has Errors");
     N ast = astOpt.get();
     // pretty print the model
     String prettyPrinted = prettyPrintFunc.apply(ast);
-    assertNoFindings();
+    MCAssertions.assertNoFindings();
     // parse the pretty printed model
     Optional<N> prettyPrintedAstOpt = parseFunc.apply(prettyPrinted);
-    assertNoFindings();
+    MCAssertions.assertNoFindings();
     Assertions.assertFalse(parser.hasErrors());
     assertTrue(prettyPrintedAstOpt.isPresent());
     // compare both ASTs
