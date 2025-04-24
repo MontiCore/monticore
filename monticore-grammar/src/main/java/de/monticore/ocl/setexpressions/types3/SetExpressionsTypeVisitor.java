@@ -498,21 +498,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTSetValueRange expr) {
-    SymTypeExpression leftResult = getType4Ast().getPartialTypeOfExpr(expr.getLowerBound());
-    SymTypeExpression rightResult = getType4Ast().getPartialTypeOfExpr(expr.getUpperBound());
-    if (!leftResult.isObscureType() && !rightResult.isObscureType()) {
-      if (!isIntegralType(normalize(leftResult))
-          || !isIntegralType(normalize(rightResult))) {
-        Log.error(
-            "0xFD217 bounds in SetValueRange "
-                + "are not integral types, but have to be, got "
-                + leftResult.printFullName()
-                + " and "
-                + rightResult.printFullName(),
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd());
-      }
-    }
+    assertRangeContainsIntegrals(expr);
   }
 
   // hook points
