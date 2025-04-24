@@ -15,7 +15,7 @@ import de.monticore.aggregation.foo._symboltable.BarSymbol;
 import de.monticore.aggregation.foo._symboltable.FooGlobalScope;
 import de.monticore.aggregation.foo._symboltable.FooScopesGenitorDelegator;
 import de.monticore.aggregation.foo._symboltable.IFooArtifactScope;
-import de.monticore.runtime.junit.jupyter.AbstractMCTest;
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

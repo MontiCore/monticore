@@ -35,8 +35,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertHasFindingsStartingWith;
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertNoFindings;
+import static de.monticore.runtime.junit.MCAssertions.assertHasFindingsStartingWith;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;

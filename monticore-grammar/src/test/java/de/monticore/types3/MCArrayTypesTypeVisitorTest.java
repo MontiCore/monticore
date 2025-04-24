@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static de.monticore.runtime.junit.jupyter.MCAssertions.assertHasFindingStartingWith;
+import static de.monticore.runtime.junit.MCAssertions.assertHasFindingStartingWith;
 
 public class MCArrayTypesTypeVisitorTest
     extends AbstractTypeVisitorTest {

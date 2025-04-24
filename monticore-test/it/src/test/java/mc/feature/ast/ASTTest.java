@@ -2,7 +2,7 @@
 
 package mc.feature.ast;
 
-import de.monticore.runtime.junit.jupyter.AbstractMCTest;
+import de.monticore.runtime.junit.AbstractMCTest;
 import mc.feature.delete.deletetest.DeleteTestMill;
 import mc.feature.delete.deletetest._ast.ASTChild;
 import mc.feature.delete.deletetest._ast.ASTParent;
