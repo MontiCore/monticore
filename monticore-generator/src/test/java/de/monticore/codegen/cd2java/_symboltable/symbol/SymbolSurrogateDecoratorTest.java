@@ -50,6 +50,10 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
+  private static final String I_SYMBOLIC_STEREOTYPE = "de.monticore.symboltable.stereotypes.ISymbolicStereotype";
+
+  private static final String VALUE = "de.monticore.interpreter.Value";
+
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol";
@@ -137,7 +141,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(11, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(13, symbolClassAutomaton.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -213,6 +217,45 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
     assertTrue(method.isEmptyCDParameters());
   
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testGetStereoinfoNameMethod() {
+    ASTCDMethod method = getMethodBy("getStereoinfo", symbolClassAutomaton);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertTrue(method.isEmptyCDParameters());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testSetStereoinfoNameMethod() {
+    ASTCDMethod method = getMethodBy("setStereoinfo", symbolClassAutomaton);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("stereoinfo", method.getCDParameter(0).getName());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      method.getCDParameter(0).getMCType()
+    );
+
     assertTrue(Log.getFindings().isEmpty());
   }
 

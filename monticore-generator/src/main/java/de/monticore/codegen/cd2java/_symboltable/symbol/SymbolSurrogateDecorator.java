@@ -20,7 +20,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -36,7 +35,10 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOLIC_STEREOTYPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.INTERPRETER_VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.STEREOINFO_VAR;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
 
 /**
@@ -106,6 +108,8 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(scopeInterfaceType);
     List<ASTCDMethod> enclosingScopeMethods = Lists.newArrayList(createSetEnclosingScopeMethod(enclosingScopeAttribute, symbolTableService.getScopeInterfaceSimpleName()));
     enclosingScopeMethods.add(createGetEnclosingScopeMethod(enclosingScopeAttribute));
+
+    List<ASTCDMethod> delegateStereoinfoMethods = createOverriddenStereotypeMethods();
     
     ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
       .setName(symbolSurrogateSimpleName)
@@ -118,7 +122,8 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addCDMember(createGetFullNameMethod())
       .addCDMember(createOverridenDeterminePackageName())
       .addCDMember(createOverridenDetermineFullName())
-      .addAllCDMembers(delegateSymbolRuleMethods);
+      .addAllCDMembers(delegateSymbolRuleMethods)
+      .addAllCDMembers(delegateStereoinfoMethods);
     return builder
       .addCDMember(delegateAttribute)
       .addAllCDMembers(enclosingScopeMethods)
@@ -263,6 +268,22 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     return method;
   }
 
+  protected List<ASTCDMethod> createOverriddenStereotypeMethods() {
+    ASTMCType stereoinfoType = getMCTypeFacade().createMapTypeOf(
+      getMCTypeFacade().createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+      getMCTypeFacade().createOptionalTypeOf(INTERPRETER_VALUE)
+    );
+
+    ASTCDAttribute stereoinfoAttrDummy =
+      getCDAttributeFacade().createAttribute(
+        PROTECTED.build(),
+        stereoinfoType,
+        STEREOINFO_VAR
+      );
+
+    List<ASTCDMethod> normalAccessors = methodDecorator.decorate(stereoinfoAttrDummy);
+    return createOverriddenMethodDelegates(normalAccessors);
+  }
 
   protected List<ASTCDMethod> createAcceptTraverserMethods(ASTCDClass symbolInput) {
     List<ASTCDMethod> result = new ArrayList<>();
