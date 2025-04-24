@@ -531,6 +531,17 @@ public class CompileTimeTypeCalculator {
     if (!funcInfo.hasParameterCount()) {
       return getResultIfNoFunctionInfoAvailable(resolvedType, inferenceContext);
     }
+    // check that arguments have not been calculated to Obscure
+    for (int i = 0; i < funcInfo.getParameterCount(); i++) {
+      if (funcInfo.hasArgumentType(i) &&
+          SymTypeRelations.normalize(funcInfo.getArgumentType(i))
+              .isObscureType()
+      ) {
+        InferenceResult result = new InferenceResult();
+        result.setHasErrorOccurred();
+        return result;
+      }
+    }
 
     // we expect a function, thus get only the functions (filter out vars)
     List<SymTypeOfFunction> resolvedFuncs =
