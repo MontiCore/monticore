@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.types3.util;
+package de.monticore.runtime.types3;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
@@ -644,7 +644,7 @@ public class DefsTypesForTests {
       SymTypeExpression eventStreamSuperType = createGenerics(
           _StreamSymType.getTypeInfo(),
           List.of(createTypeVariable(eventStreamVar))
-          );
+      );
       _EventStreamSymType = createGenerics(
           inScope(gs, type(
               "EventStream",

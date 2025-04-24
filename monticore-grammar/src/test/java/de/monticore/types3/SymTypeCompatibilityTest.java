@@ -6,6 +6,7 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.types3.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
@@ -19,7 +20,6 @@ import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
+import static de.monticore.runtime.types3.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
@@ -39,7 +40,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
-import static de.monticore.types3.util.DefsTypesForTests.*;
 
 public class SymTypeCompatibilityTest extends AbstractMCTest {
 

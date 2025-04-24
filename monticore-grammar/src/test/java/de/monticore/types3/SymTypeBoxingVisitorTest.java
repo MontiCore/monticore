@@ -4,20 +4,25 @@ package de.monticore.types3;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.types3.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types3.util.SymTypeBoxingVisitor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.types.check.SymTypeExpressionFactory.*;
-import static de.monticore.types3.util.DefsTypesForTests.*;
-import static org.junit.Assert.assertEquals;
+import static de.monticore.runtime.types3.DefsTypesForTests.*;
+import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
+import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
+import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 
 public class SymTypeBoxingVisitorTest extends AbstractMCTest {
 

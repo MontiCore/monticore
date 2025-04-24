@@ -2,21 +2,21 @@
 package de.monticore.types3.streams;
 
 import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.types3.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionTypeRelations;
-import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static de.monticore.types3.util.DefsTypesForTests._boxedOptionalSymType;
-import static de.monticore.types3.util.DefsTypesForTests._boxedSetSymType;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedOptionalSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedSetSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._boxedOptionalSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._boxedSetSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._intSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._unboxedListSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._unboxedOptionalSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._unboxedSetSymType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;

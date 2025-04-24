@@ -25,11 +25,11 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.method;
-import static de.monticore.types3.util.DefsTypesForTests.oOtype;
+import static de.monticore.runtime.types3.DefsTypesForTests._floatSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._intSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests.inScope;
+import static de.monticore.runtime.types3.DefsTypesForTests.method;
+import static de.monticore.runtime.types3.DefsTypesForTests.oOtype;
 
 /**
  * tests whether we can resolve correctly constructors
