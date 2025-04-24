@@ -48,6 +48,10 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
+  private static final String I_SYMBOLIC_STEREOTYPE = "de.monticore.symboltable.stereotypes.ISymbolicStereotype";
+
+  private static final String VALUE = "de.monticore.interpreter.Value";
+
   @Before
   public void setup() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
@@ -104,7 +108,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributes() {
-    assertEquals(7, builderClass.getCDAttributeList().size());
+    assertEquals(8, builderClass.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -164,10 +168,26 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
     assertTrue(Log.getFindings().isEmpty());
   }
 
+  @Test
+  public void testStereoinfoAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("stereoinfo", builderClass);
+
+    assertDeepEquals(CDModifier.PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      astcdAttribute.getMCType()
+    );
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
 
   @Test
   public void testMethods() {
-    assertEquals(16, builderClass.getCDMethodList().size());
+    assertEquals(20, builderClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -352,6 +372,95 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
         method.getCDParameter(0).getMCType());
     assertEquals("accessModifier", method.getCDParameter(0).getName());
   
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testGetStereoinfoMethod() {
+    ASTCDMethod method = getMethodBy("getStereoinfo", builderClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertEquals(0, method.sizeCDParameters());
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testSetStereoinfoMethod() {
+    ASTCDMethod method = getMethodBy("setStereoinfo", builderClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType("ASymbolBuilder"),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("stereoinfo", method.getCDParameter(0).getName());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      method.getCDParameter(0).getMCType()
+    );
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testAddStereoinfoWithoutValueMethod() {
+    ASTCDMethod method = getMethodBy("addStereoinfo", 1, builderClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType("ASymbolBuilder"),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertEquals("stereotype", method.getCDParameter(0).getName());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+      method.getCDParameter(0).getMCType()
+    );
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testAddStereoinfoWithValueMethod() {
+    ASTCDMethod method = getMethodBy("addStereoinfo", 2, builderClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType("ASymbolBuilder"),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertEquals(2, method.sizeCDParameters());
+    assertEquals("stereotype", method.getCDParameter(0).getName());
+    assertEquals("value", method.getCDParameter(1).getName());
+    System.out.println(method.getCDParameter(0).getMCType().printType());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+      method.getCDParameter(0).getMCType()
+    );
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType(VALUE),
+      method.getCDParameter(1).getMCType()
+    );
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
