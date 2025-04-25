@@ -25,6 +25,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.ArrayList;
@@ -212,6 +213,8 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       } else {
         if (method.getMCReturnType().getMCType() instanceof ASTMCListType) {
           message.append("return new ArrayList<>();\n}\n");
+        } else if (method.getMCReturnType().getMCType() instanceof ASTMCMapType) {
+          message.append("return new java.util.HashMap<>();\n}\n");
         } else if (method.getMCReturnType().getMCType() instanceof ASTMCArrayType) {
           String typeOfMethod = ((ASTMCArrayType) method.getMCReturnType().getMCType()).getMCType().printType();
           message.append("return new " + typeOfMethod + "[0];\n}\n");
