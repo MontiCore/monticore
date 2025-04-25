@@ -13,6 +13,7 @@ import de.monticore.StatisticsHandlerFix;
 import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.io.FileReaderWriterFix;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 import org.apache.commons.cli.*;
@@ -91,6 +92,7 @@ public class MontiCoreTool {
    * @param args The input parameters for configuring the MontiCore tool.
    */
   public void run(String[] args) {
+    FileReaderWriterFix.init();
 
     runUpdateCheck();
   
