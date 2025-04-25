@@ -229,7 +229,13 @@ public final class MCPath {
     if (1 == resolvedURLs.size()) {
       try {
         // Note: URL#getFile() might be unexpectedly encoded
-        File resolvedFile = new File(resolvedURLs.get(0).toURI());
+        URI resolvedURI = resolvedURLs.get(0).toURI();
+        if (resolvedURI.isOpaque() || !resolvedURI.isAbsolute()) {
+          // For example, a jar:file:/home/.../MyFile.jar!/de/mc/Entry.mc4
+          // As the "parentFile" would be within the jar-filesystem, we do not do the check case-sensitive check
+          return Optional.of(resolvedURLs.get(0));
+        }
+        File resolvedFile = new File(resolvedURI);
         File parentFile = new File(resolvedFile.getParent());
         if (parentFile.isDirectory()) {
           // Special handling to ensure the file name matches without ignoring the case
