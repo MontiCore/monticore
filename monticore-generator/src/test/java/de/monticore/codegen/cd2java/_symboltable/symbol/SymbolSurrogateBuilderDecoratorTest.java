@@ -222,7 +222,7 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(
-      mcTypeFacade.createQualifiedType("ASymbolBuilder"),
+      mcTypeFacade.createQualifiedType("AutomatonSymbolSurrogateBuilder"),
       method.getMCReturnType().getMCType()
     );
 
@@ -242,7 +242,7 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PUBLIC, method.getModifier());
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(
-      mcTypeFacade.createQualifiedType("ASymbolBuilder"),
+      mcTypeFacade.createQualifiedType("AutomatonSymbolSurrogateBuilder"),
       method.getMCReturnType().getMCType()
     );
 
