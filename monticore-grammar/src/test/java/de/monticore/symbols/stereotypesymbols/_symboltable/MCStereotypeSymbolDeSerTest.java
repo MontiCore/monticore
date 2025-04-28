@@ -2,7 +2,6 @@
 package de.monticore.symbols.stereotypesymbols._symboltable;
 
 import de.monticore.symbols.stereotypesymbols.StereotypeSymbolsMill;
-import de.monticore.symboltable.stereotypes.StereoValueType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MCStereotypeSymbolDeSerTest {
 
@@ -28,13 +26,12 @@ class MCStereotypeSymbolDeSerTest {
     syms2json = new StereotypeSymbolsSymbols2Json();
   }
 
-  protected static final String MULTIPLE_ALLOWED_VALUE_TYPES =
+  protected static final String SERIALIZED =
     "{\"kind\":\"de.monticore.symbols.stereotypesymbols._symboltable.MCStereotypeSymbol\"," +
       "\"name\":\"Foo\"," +
       "\"fullName\":\"Foo\"," +
       "\"annotatedElement\":" +
-        "\"foo.bar.Symbol\"," +
-      "\"allowedValueTypes\":[\"boolean\",\"none\"]" +
+        "\"foo.bar.Symbol\"" +
       "}";
 
   @Test
@@ -44,8 +41,6 @@ class MCStereotypeSymbolDeSerTest {
       .mCStereotypeSymbolBuilder()
       .setName("Foo")
       .setAnnotatedElement("foo.bar.Symbol")
-      .addAllowedValueTypes(StereoValueType.BOOLEAN)
-      .addAllowedValueTypes(StereoValueType.NONE)
       .build();
 
     // When
@@ -53,7 +48,7 @@ class MCStereotypeSymbolDeSerTest {
 
     // Then
     assertAll(
-      () -> assertEquals(MULTIPLE_ALLOWED_VALUE_TYPES, serial),
+      () -> assertEquals(SERIALIZED, serial),
       () -> assertEquals(0, Log.getFindingsCount())
     );
   }
@@ -61,17 +56,12 @@ class MCStereotypeSymbolDeSerTest {
   @Test
   void shouldSerializeAllowedValueTypes() {
     // Given & When
-    MCStereotypeSymbol stereotype = deSer.deserialize(MULTIPLE_ALLOWED_VALUE_TYPES);
+    MCStereotypeSymbol stereotype = deSer.deserialize(SERIALIZED);
 
     // Then
     assertAll(
       () -> assertEquals("foo.bar.Symbol", stereotype.getAnnotatedElement()),
-      () -> assertEquals(2, stereotype.getAllowedValueTypesList().size()),
       () -> assertEquals(0, Log.getFindingsCount())
-    );
-    assertAll(
-      () -> assertTrue(stereotype.containsAllowedValueTypes(StereoValueType.BOOLEAN)),
-      () -> assertTrue(stereotype.containsAllowedValueTypes(StereoValueType.NONE))
     );
   }
 }

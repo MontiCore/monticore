@@ -4,13 +4,11 @@ package de.monticore.symboltable.stereotypes;
 import de.monticore.ast.ASTNode;
 import de.monticore.interpreter.Value;
 import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,11 +54,6 @@ class StereoinfoDeSerTest {
     @Override
     public String getAnnotatedElement() {
       return "";
-    }
-
-    @Override
-    public List<StereoValueType> getAllowedValueTypesList() {
-      return List.of();
     }
 
     @Override
