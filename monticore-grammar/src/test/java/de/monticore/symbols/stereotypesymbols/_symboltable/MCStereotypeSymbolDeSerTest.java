@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/** Tests {@link MCStereotypeSymbolDeSer} */
 class MCStereotypeSymbolDeSerTest {
 
   protected MCStereotypeSymbolDeSer deSer;

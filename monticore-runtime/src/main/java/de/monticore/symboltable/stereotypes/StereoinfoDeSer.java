@@ -10,6 +10,26 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Facade to serialize and deserialize stereoinfos of symbols. <p>
+ * I.e., the de-/serialization is based on / results in a json object with the
+ * info about a stereotype that a symbol has. If the symbol has. If there is a
+ * corresponding stereovalue for the stereotype, it is also de-/serialized.
+ * <p>
+ * The facade consists of
+ * {@link StereoinfoDeSer#printAsJson(ISymbolicStereotype, Optional)},
+ * {@link StereoinfoDeSer#printAsJson(Map.Entry)}, and
+ * {@link StereoinfoDeSer#deserialize(JsonElement, IScope)}.
+ * Custom de-/serialization behavior can be achieved by initializing the
+ * singleton within this class with a sub class that overwrites
+ * {@link StereoinfoDeSer#doPrintAsJson(ISymbolicStereotype, Optional)} and
+ * {@link StereoinfoDeSer#doDeserialize(JsonElement, IScope)}.
+ * <p>
+ * Note that deserialization is not supported out of the box. Initialize this
+ * facade with a {@code StereofinoDeSer} with such support. Languages that
+ * provide stereotype symbols (implementations of {@link ISymbolicStereotype})
+ * should also provide such a DeSerializer.
+ */
 public class StereoinfoDeSer {
 
   public static final String STEREO_TYPE = "stereotype";
@@ -17,6 +37,17 @@ public class StereoinfoDeSer {
 
   protected static final String LOG_NAME = "StereoinfoDeSer";
 
+  /**
+   * Singleton instance with implementations of
+   * {@link StereoinfoDeSer#doPrintAsJson(ISymbolicStereotype, Optional)} and
+   * {@link StereoinfoDeSer#doDeserialize(JsonElement, IScope)}
+   * to which the  facade calls
+   * {@link StereoinfoDeSer#printAsJson(ISymbolicStereotype, Optional)},
+   * {@link StereoinfoDeSer#printAsJson(Map.Entry)}, and
+   * {@link StereoinfoDeSer#deserialize(JsonElement, IScope)}
+   * are delegated to. <p>
+   * Set this field from a sub class to configure the behavior.
+   */
   protected static StereoinfoDeSer instance;
 
   protected static StereoinfoDeSer getInstance() {
@@ -26,11 +57,23 @@ public class StereoinfoDeSer {
     return instance;
   }
 
+  /**
+   * Facade to convert the information that a symbol has stereotype into a json
+   * object that also holds the associated stereovalue if present.
+   * <p>
+   * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
+   */
   public static String printAsJson(
     Map.Entry<? extends ISymbolicStereotype, Optional<Value>> stereoinfo) {
     return printAsJson(stereoinfo.getKey(), stereoinfo.getValue());
   }
 
+  /**
+   * Facade to convert the information that a symbol has stereotype into a json
+   * object that also holds the associated stereovalue if present.
+   * <p>
+   * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
+   */
   public static String printAsJson(ISymbolicStereotype stereotype, Optional<Value> value) {
 
     return getInstance().doPrintAsJson(stereotype, value);
@@ -53,6 +96,12 @@ public class StereoinfoDeSer {
     return p.getContent();
   }
 
+  /**
+   * Facade to deserialize the information that a symbol has stereotype from a json
+   * object that also holds the associated stereovalue if present.
+   * <p>
+   * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
+   */
   public static Map.Entry<ISymbolicStereotype, Optional<Value>> deserialize(JsonElement json,
                                                                             IScope enclosingScope) {
     return getInstance().doDeserialize(json, enclosingScope);

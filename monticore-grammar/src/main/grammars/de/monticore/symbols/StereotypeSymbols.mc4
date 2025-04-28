@@ -3,8 +3,19 @@ package de.monticore.symbols;
 
 import de.monticore.*;
 
+/**
+ * This grammar introduces a reusable symbol for stereotypes.
+ *
+ * This grammar is used to generate symboltable infrastructure (and an abstract
+ * syntax) only. The symbol is then used to store information about legal use
+ * of it, such as which model elements may obtain the stereotype.
+ */
 component grammar StereotypeSymbols extends de.monticore.MCBasics {
 
+  /**
+   * A stereotype has a name and defines which model elements may obtain the
+   * stereotype.
+   */
   interface symbol MCStereotype = Name;
 
   symbolrule MCStereotype
