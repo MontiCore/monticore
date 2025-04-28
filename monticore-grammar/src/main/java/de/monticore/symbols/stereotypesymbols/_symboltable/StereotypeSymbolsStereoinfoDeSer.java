@@ -29,13 +29,13 @@ public class StereotypeSymbolsStereoinfoDeSer extends StereoinfoDeSer {
     }
 
     String stereotypeName = json.getAsJsonObject().getStringMember(STEREO_TYPE);
-    MCStereotypeSymbol stereotype = StereotypeSymbolsMill.mCStereotypeSymbolSurrogateBuilder()
-      .setName(stereotypeName)
-      .build();
+    MCStereotypeSymbolSurrogateBuilder stereotypeBuilder =
+      StereotypeSymbolsMill.mCStereotypeSymbolSurrogateBuilder()
+        .setName(stereotypeName);
 
     if (enclosingScope instanceof IStereotypeSymbolsScope) {
       IStereotypeSymbolsScope stereoScope = ((IStereotypeSymbolsScope) enclosingScope);
-      stereotype.setEnclosingScope(stereoScope);
+      stereotypeBuilder.setEnclosingScope(stereoScope);
     } else {
       Log.error(
         "0x82404 StereotypeSymbolsStereoinfoDeSer#deserialize expected an enclosing scope of " +
@@ -44,6 +44,6 @@ public class StereotypeSymbolsStereoinfoDeSer extends StereoinfoDeSer {
       );
     }
 
-    return Map.entry(stereotype, Optional.empty());
+    return Map.entry(stereotypeBuilder.build(), Optional.empty());
   }
 }

@@ -9,7 +9,7 @@ component grammar StereotypeSymbols extends de.monticore.MCBasics {
 
   symbolrule MCStereotype
     implements de.monticore.symboltable.stereotypes.ISymbolicStereotype =
-      annotatedElement : Class<? extends de.monticore.symboltable.ISymbol>
+      annotatedElement : java.lang.String
       allowedValueTypes : de.monticore.symboltable.stereotypes.StereoValueType+
     ;
 }

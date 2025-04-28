@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ISymbolicStereotype extends ISymbol {
 
-  Class<? extends ISymbol> getAnnotatedElement();
+  String getAnnotatedElement();
 
   List<StereoValueType> getAllowedValueTypesList();
 }

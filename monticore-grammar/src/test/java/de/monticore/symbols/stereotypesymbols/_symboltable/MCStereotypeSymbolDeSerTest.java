@@ -33,7 +33,7 @@ class MCStereotypeSymbolDeSerTest {
       "\"name\":\"Foo\"," +
       "\"fullName\":\"Foo\"," +
       "\"annotatedElement\":" +
-        "\"de.monticore.symbols.stereotypesymbols._symboltable.MCStereotypeSymbol\"," +
+        "\"foo.bar.Symbol\"," +
       "\"allowedValueTypes\":[\"boolean\",\"none\"]" +
       "}";
 
@@ -43,7 +43,7 @@ class MCStereotypeSymbolDeSerTest {
     MCStereotypeSymbol stereotype = StereotypeSymbolsMill
       .mCStereotypeSymbolBuilder()
       .setName("Foo")
-      .setAnnotatedElement(MCStereotypeSymbol.class)
+      .setAnnotatedElement("foo.bar.Symbol")
       .addAllowedValueTypes(StereoValueType.BOOLEAN)
       .addAllowedValueTypes(StereoValueType.NONE)
       .build();
@@ -65,7 +65,7 @@ class MCStereotypeSymbolDeSerTest {
 
     // Then
     assertAll(
-      () -> assertEquals(MCStereotypeSymbol.class, stereotype.getAnnotatedElement()),
+      () -> assertEquals("foo.bar.Symbol", stereotype.getAnnotatedElement()),
       () -> assertEquals(2, stereotype.getAllowedValueTypesList().size()),
       () -> assertEquals(0, Log.getFindingsCount())
     );

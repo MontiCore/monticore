@@ -54,8 +54,8 @@ class StereoinfoDeSerTest {
     }
 
     @Override
-    public Class<? extends ISymbol> getAnnotatedElement() {
-      return null;
+    public String getAnnotatedElement() {
+      return "";
     }
 
     @Override
