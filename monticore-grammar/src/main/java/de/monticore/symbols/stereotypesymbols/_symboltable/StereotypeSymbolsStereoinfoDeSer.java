@@ -2,6 +2,7 @@
 package de.monticore.symbols.stereotypesymbols._symboltable;
 
 import de.monticore.interpreter.Value;
+import de.monticore.symbols.stereotypesymbols.StereotypeSymbolsMill;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.stereotypes.ISymbolicStereotype;
@@ -28,7 +29,9 @@ public class StereotypeSymbolsStereoinfoDeSer extends StereoinfoDeSer {
     }
 
     String stereotypeName = json.getAsJsonObject().getStringMember(STEREO_TYPE);
-    MCStereotypeSymbol stereotype = new MCStereotypeSymbolSurrogate(stereotypeName);
+    MCStereotypeSymbol stereotype = StereotypeSymbolsMill.mCStereotypeSymbolSurrogateBuilder()
+      .setName(stereotypeName)
+      .build();
 
     if (enclosingScope instanceof IStereotypeSymbolsScope) {
       IStereotypeSymbolsScope stereoScope = ((IStereotypeSymbolsScope) enclosingScope);
