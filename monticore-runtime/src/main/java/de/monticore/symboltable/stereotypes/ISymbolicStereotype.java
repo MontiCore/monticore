@@ -17,8 +17,4 @@ import de.monticore.symboltable.ISymbol;
  */
 public interface ISymbolicStereotype extends ISymbol {
 
-  /**
-   * Defines which model elements are allowed to obtain this stereotype.
-   */
-  String getAnnotatedElement();
 }

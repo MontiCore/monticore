@@ -52,11 +52,6 @@ class StereoinfoDeSerTest {
     }
 
     @Override
-    public String getAnnotatedElement() {
-      return "";
-    }
-
-    @Override
     public String getName() {
       return "";
     }
