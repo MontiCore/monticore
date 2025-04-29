@@ -32,16 +32,6 @@ sourceSets {
     srcDirs += "$projectDir/src/test/java"
     includes = ["**/Assert.java"]
   }
-  testGradle {
-
-  }
-}
-
-dependencies {
-  testGradleImplementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-  testGradleImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-  testGradleRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-
 }
 
 description = 'MontiCore: Runtime'
