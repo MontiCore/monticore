@@ -190,6 +190,18 @@ jobs:
       pull-requests: write
     secrets: inherit
 
+  # Check for duplicate error codes (starting with '"0x') and incorrect error codes (not 5 hex chars after the 0x)
+  check-error-codes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+      - name: Check for duplicate and invalid error codes
+        run:  |
+          grep -riEno "\"(0x[0-9a-zA-Z]{3,})" --include="*.java" --exclude-dir="test" . | grep -ivE "\"0x[0-9A-F]{3,}" | awk -F ":" '{print "::warning file="$1",line="$2",title=ErrorCodeInvalid::Invalid error code "substr($3,2)" (" $1 ":" $2 ")";}'
+          grep -riEno "\"(0x[0-9a-zA-Z]{3,})" --include="*.java" --exclude-dir="test" . | awk -F '\"' '{if($2 in x){if(x[$2]) print x[$2]; print $1substr($2,1);x[$2]=""} else x[$2]=$1substr($2,1)}' | awk -F ":" '{print "::warning file="$1",line="$2",title=ErrorCodeDuplicate::Duplicate error code "$3" (" $1 ":" $2 ")";}'
+
+
 
 # TODO: FIX to specific version instead of @v3
 

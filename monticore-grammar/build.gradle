@@ -225,17 +225,16 @@ def grammarDependencies = ext {
 /**
  * Integration with MLC language and tool
  */
-task showArtifacts {}
-task checkArtifacts {}
+tasks.register('showArtifacts') { group = 'mlc'}
+tasks.register('checkArtifacts') { group = 'mlc'}
 configurations { MLC }
 dependencies {
   MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
   MLC(project(':monticore-runtime')) // Ensure the proper runtime is used for MLC
 }
-StringJoiner joiner = new StringJoiner(" ")
-configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
-joiner.add "$projectDir/target/symbols"
-String mp = joiner.toString()
+def mlcModelPath = []
+configurations.compileClasspath.resolve().each { mlcModelPath.addAll(["-mp", it.toString()]) }
+mlcModelPath.addAll(["-mp", "$projectDir/target/symbols"])
 
 ///////////// MLC tasks - Start ///////////////////////
 // two tasks per MLC file
@@ -244,23 +243,25 @@ fileTree("src/main/grammars").matching { include '**/*.mlc' }.each {
   def f = it
   def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
 
-  task "showArtifacts${mlcName}"(type: JavaExec) {
+  tasks.register("showArtifacts${mlcName}", JavaExec) {
     classpath = configurations.MLC
     group = 'MLC'
     mainClass = 'de.monticore.mlc.MLCTool'
-    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"
+    args = ["-input", f, "-projectDir", projectDir, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"]
+    args += mlcModelPath
     dependsOn("generateMCGrammars")
-    showArtifacts.dependsOn("showArtifacts${mlcName}")
   }
+  showArtifacts.dependsOn("showArtifacts${mlcName}")
 
-  task "checkArtifacts${mlcName}"(type: JavaExec) {
+  tasks.register("checkArtifacts${mlcName}", JavaExec) {
     classpath = configurations.MLC
     group = 'MLC'
     mainClass = 'de.monticore.mlc.MLCTool'
-    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${buildDir}/reports"
+    args = ["-input", f, "-projectDir", projectDir, "-s", "-check", "-reports", "${buildDir}/reports"]
+    args += mlcModelPath
     dependsOn("generateMCGrammars")
-    checkArtifacts.dependsOn("checkArtifacts${mlcName}")
   }
+  checkArtifacts.dependsOn("checkArtifacts${mlcName}")
 }
 
 ///////////// dependencies between check artifacts tasks ///////////////////////

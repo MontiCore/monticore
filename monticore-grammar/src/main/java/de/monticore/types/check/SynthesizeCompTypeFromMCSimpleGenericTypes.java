@@ -76,7 +76,10 @@ public class SynthesizeCompTypeFromMCSimpleGenericTypes implements MCSimpleGener
           return typeResult != null && typeResult.isPresentResult() ? typeResult.getResult() : null;
         })
         .collect(Collectors.toList());
-      this.resultWrapper.setResult(new KindOfGenericComponent(compSym.get(0), typeArgExpressions));
+
+      CompKindExpression result = new KindOfGenericComponent(compSym.get(0), typeArgExpressions);
+      result.setSourceNode(mcType);
+      this.resultWrapper.setResult(result);
     }
   }
 
