@@ -40,12 +40,8 @@ java {
   registerFeature('tests') {
     usingSourceSet(sourceSets.tests)
   }
-  registerFeature('testGradle') {
-    usingSourceSet(sourceSets.testGradle)
-  }
   withJavadocJar()
   withSourcesJar()
 }
 
 jar.dependsOn testsJar
-jar.dependsOn testGradleJar
