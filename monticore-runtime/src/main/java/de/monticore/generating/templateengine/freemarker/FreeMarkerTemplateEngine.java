@@ -62,7 +62,6 @@ public class FreeMarkerTemplateEngine {
    * @param buffer contains the result
    * @param data data for the template
    * @param template the template file
-   * @throws IOException
    */
   public void run(StringBuilder buffer, Object data, Template template) {
     Log.errorIfNull(template, "0xA0562 The given template must not be null");

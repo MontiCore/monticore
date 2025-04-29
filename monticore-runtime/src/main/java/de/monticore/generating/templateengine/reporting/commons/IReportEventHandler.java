@@ -174,7 +174,7 @@ public interface IReportEventHandler {
   /**
    * @param template
    * @param ast
-   * @param afterHps
+   * @param beforeHps
    */
   public void reportAddBeforeTemplate(String template,
                                      Optional<ASTNode> ast,

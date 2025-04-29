@@ -185,7 +185,6 @@ public class NodeTreeDecoratedReporter extends AReporter {
    * coming from
    * 
    * @param ast
-   * @return
    */
   protected void deriveTreeStructureAST(ASTNode ast) {
     

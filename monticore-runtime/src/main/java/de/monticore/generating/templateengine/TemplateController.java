@@ -158,8 +158,7 @@ public class TemplateController {
   }
 
   /**
-   * Defines the signature of a template. <br />
-   * <br />
+   * Defines the signature of a template.
    * Note that, due to technical constraints, at first, the current template is
    * included and the arguments are passed. Second, the signature is defined.
    *
@@ -348,7 +347,6 @@ public class TemplateController {
    *
    * @param templateName full qualified filename
    * @param ast where we execute the template on
-   * @return none (= empty string within Freemarker)
    */
   public void write(String templateName, String qualifiedFileName, ASTNode ast) {
     writeArgs(templateName, qualifiedFileName, config.getDefaultFileExtension(), ast,
@@ -374,7 +372,6 @@ public class TemplateController {
    *
    * @param templateName full qualified filename
    * @param ast where we execute the template on
-   * @return none (= empty string within Freemarker)
    */
   public void writeArgs(final String templateName, final String qualifiedFileName,
                         final String fileExtension, final ASTNode ast, final List<Object> templateArguments) {
