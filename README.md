@@ -5,6 +5,7 @@
 
 # MontiCore - Language Workbench and Development Tool Framework 
 
+<!--
 ---
 
 **NEWS**:
@@ -18,6 +19,8 @@
   * Deadline for submission of papers or abstracts: January, 10th.
 
 ---
+
+-->
 
 [MontiCore](https://www.monticore.de) is a language workbench for the efficient 
 development of domain-specific languages (DSLs). It processes an extended 
