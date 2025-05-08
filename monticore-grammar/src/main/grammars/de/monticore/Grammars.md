@@ -197,10 +197,9 @@ allowing to use the type `List<int>`.
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
 
-These two grammars do not provide syntax themselves, but 
-characterize important forms of symbols, that will be used
-in the type and the expression grammars to define shared 
-kinds of symbols. 
+These grammars do not provide syntax themselves, but characterize important
+forms of symbols. Especially _BasicSymbols_ and _OOSymbols_ will be used in the
+type and the expression grammars to define shared kinds of symbols. 
 
 ### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (stable)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
@@ -222,7 +221,11 @@ kinds of symbols.
   abstract syntax, but the
   infrastructure for symbols in objectoriented context. 
 
-
+### [StereotypeSymbols.mc4](symbols/StereotypeSymbols.mc4) (beta)
+* This grammar defines a symbol for _Stereotypes_ that symbols and other model
+  elements can obtain.
+* Remark: This grammar is not intended to define concrete or abstract
+  syntax, but the infrastructure for symbols.
 
 ## Expressions: List of Grammars in package `de.monticore.expressions`
 
