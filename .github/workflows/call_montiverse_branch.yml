@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Extract Branch Name
         # Use the refspec input if present, otherwise use GITHUB_REF
-        run: echo "BRANCH_NAME=${{ github.event.inputs.refspec || github.ref }}" >> $GITHUB_ENV
+        run: echo "BRANCH_NAME=${{ inputs.refspec || github.ref }}" >> $GITHUB_ENV
       - name: Trigger MontiVerse
         # Then actually trigger the MontiVerseCI projects pipeline
         uses: luepges/MontiVerseAction@main #
