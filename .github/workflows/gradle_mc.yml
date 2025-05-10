@@ -188,6 +188,7 @@ jobs:
       project: "MONTICORE"
     permissions:  # allow this action to give feedback on its checks
       pull-requests: write
+      statuses: write
     secrets: inherit
 
   # Check for duplicate error codes (starting with '"0x') and incorrect error codes (not 5 hex chars after the 0x)
