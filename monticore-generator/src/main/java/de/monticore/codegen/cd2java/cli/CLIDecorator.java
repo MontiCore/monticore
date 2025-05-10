@@ -241,7 +241,8 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     ASTCDParameter fileParameter = getCDParameterFacade().createParameter(stringType, "file");
     ASTCDParameter astParameter = getCDParameterFacade().createParameter(startProdType, "ast");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "prettyPrint", astParameter, fileParameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrettyPrint", symbolTableService.getMillFullName()));
+    String fullPrettyPrinterFQN = symbolTableService.getFullPrettyPrinterFullName();
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "PrettyPrint", fullPrettyPrinterFQN));
     return method;
   }
 

@@ -8,6 +8,11 @@ on:
         description: 'The (internal) name for this project, as defined within the MontiVerse job'
         type: string
         required: true
+      refspec:
+        description: 'The branch or commit to use. By default GITHUB_REF is used'
+        type: string
+        required: false
+        
     secrets:
       MONTIVERSE_TRIGGER_TOKEN:
         required: true
@@ -24,8 +29,11 @@ jobs:
       pull-requests: write  # to write PR comments
     steps:
       - name: Extract Branch Name
-        # We have to remove the refs/heads/ prefix from the branch which called this action
-        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        # Use the refspec input if present, otherwise use GITHUB_REF
+        run: |
+          echo "refspec=${{ inputs.refspec }}"
+          echo "ref=${{ github.ref }}"
+          echo "BRANCH_NAME=${{ inputs.refspec || github.ref }}" >> $GITHUB_ENV
       - name: Trigger MontiVerse
         # Then actually trigger the MontiVerseCI projects pipeline
         uses: luepges/MontiVerseAction@main #
@@ -37,6 +45,10 @@ jobs:
           id: '91803'  # MontiVerseCI project id
           ref: 'main'
           variables: '{"${{inputs.project}}_BRANCH":"${{env.BRANCH_NAME}}", "${{inputs.project}}_PROJECT":"${{ github.event.repository.full_name  }}"}'
+          repository: ${{ github.repository }}
+          sha: ${{ inputs.refspec || github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Write the result into the steps summary
         # Fetch the related PRs (if applicable)
       - uses: octokit/request-action@v2.x
