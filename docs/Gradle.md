@@ -93,7 +93,7 @@ which can be modified via the build file.
 For example, the following build file snippet changes the output directory:
 
 ```gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
     // manually change the output directory
     outputDir = project.layout.buildDirectory.dir("mc")
 }
@@ -147,7 +147,7 @@ The following snippets show examples, in which the default configuration is modi
 ### Different ModelPath
 
 ```build.gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
     modelPath("$projectDir/src/main/grammars", "$projectDir/src/notquitemain/grammars")
 }
 ```
@@ -160,7 +160,7 @@ The legacy usage now aborts with a descriptive error.
 ### Different workflow script
 
 ```build.gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
     script = "de/monticore/monticore_noreports.groovy"
 }
 ```
@@ -168,7 +168,7 @@ generateMCGrammars {
 ### Specify Groovy Hooks
 
 ```build.gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
     groovyHook1 = file "$projectDir/gs1.groovy"
     groovyHook2 = file "$projectDir/gs2.groovy"
 }
@@ -177,7 +177,7 @@ generateMCGrammars {
 ### ConfigTemplate
 
 ```build.gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   configTemplate = "ct.ftl"
   templatePath "$projectDir/src/main/tpl"
 }
@@ -210,7 +210,7 @@ To further exclude grammars, you can filter on the `extractTRGrammars` task:
 ```groovy
 if (("true").equals(getProperty('genTR'))) {
   // Further exclude the grammar and basic tf grammars from being included in the TR grammar input set
-  extractTRGrammars {
+  tasks.named('extractTRGrammars') {
     exclude(["**/de/monticore/tf/*", "**/de/monticore/grammar/*", "**/de/monticore/siunit/*"])
   }
 }
@@ -335,7 +335,7 @@ dependencies {
   // we also have to add the implementation/java classes
   implementation "de.monticore.languages:myolddsl:7.7.0"
 }
-tasks.generateMCGrammars.configure {
+tasks.named('generateMCGrammars') {
   // Add the legacy-grammars to the symbol/model path of the generation
   symbolPathConfiguration.from(configurations.legacyGrammar)
 }

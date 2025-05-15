@@ -2,7 +2,7 @@
 description = 'Experiments: forGradle'
 
 
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   // also test if we can generate into a different directory
   outputDir = file "$buildDir/generated-sources/in-a-different-directory/monticore/sourcecode"
   // Build all grammars from two directories
