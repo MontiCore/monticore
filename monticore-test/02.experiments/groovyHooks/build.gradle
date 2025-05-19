@@ -7,7 +7,7 @@ sonarqube {
 }
 
 // Modify the generateMCGrammars MCGenTask: Add the groovyHooks
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   groovyHook1 = file "$projectDir/gs1.groovy"
   groovyHook2 = file "$projectDir/gs2.groovy"
 }
