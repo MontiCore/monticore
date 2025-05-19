@@ -9,8 +9,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.rules.TemporaryFolder;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,6 +29,8 @@ import static org.gradle.testkit.runner.TaskOutcome.*;
  * <p>
  * Note: Due to the JUnit version used, we are unable to use parameterized tests
  */
+@Execution(ExecutionMode.SAME_THREAD) // Do not run in parallel, too memory hungry
+@NotThreadSafe // Technically thread safe, just memory hungry
 public class MCGenPluginTest {
   @Rule
   public TemporaryFolder temporaryFolder = new TemporaryFolder();
