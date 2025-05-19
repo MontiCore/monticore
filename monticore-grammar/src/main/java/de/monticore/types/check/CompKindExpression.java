@@ -44,10 +44,18 @@ public abstract class CompKindExpression {
     this.arguments.add(argument);
   }
 
+  /**
+   * Am I simple component type? (such as "C")
+   * (default: no)
+   */
   public boolean isComponentType() {
     return false;
   }
 
+  /**
+   * Logs an error if this is not a component type
+   * @return this expression as a component type
+   */
   public CompKindOfComponentType asComponentType() {
     Log.error("0xFDAB1 internal error: "
       + "tried to convert non-component to a component."
@@ -55,10 +63,18 @@ public abstract class CompKindExpression {
     return null;
   }
 
+  /**
+   * Am I a generic component type? (such as "C<int>")
+   * (default: no)
+   */
   public boolean isGenericComponentType() {
     return false;
   }
 
+  /**
+   * Logs an error if this is not a generic component type
+   * @return this expression as a generic component type
+   */
   public CompKindOfGenericComponentType asGenericComponentType() {
     Log.error("0xFDAB2 internal error: "
       + "tried to convert non-generic-component to a generic-component."
@@ -136,8 +152,8 @@ public abstract class CompKindExpression {
   }
 
   /**
-   * @see CompKindExpression#getSourceNode
    * @param sourceNode Must not be null
+   * @see CompKindExpression#getSourceNode
    */
   public void setSourceNode(ASTNode sourceNode) {
     Preconditions.checkNotNull(sourceNode);
