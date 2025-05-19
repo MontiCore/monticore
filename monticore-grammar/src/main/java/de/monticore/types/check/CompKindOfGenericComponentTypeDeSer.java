@@ -25,7 +25,7 @@ public class CompKindOfGenericComponentTypeDeSer {
 
     printer.beginObject();
     printer.member(JsonDeSers.KIND, SERIALIZED_KIND);
-    printer.member(CompKindOfComponentTypeDeSer.COMP_NAME, toSerialize.getTypeInfo().getFullName());
+    printer.member(CompKindOfComponentTypeDeSer.COMP_TYPE_NAME, toSerialize.getTypeInfo().getFullName());
     SymTypeExpressionDeSer.serializeMember(printer, TYPE_VAR_BINDINGS, toSerialize.getTypeBindingsAsList());
     printer.endObject();
 
@@ -40,9 +40,7 @@ public class CompKindOfGenericComponentTypeDeSer {
       SERIALIZED_KIND, JsonDeSers.getKind(serialized)
     );
 
-    Log.warn("Deserializing TypeExprOfGenericComponents is buggy currently!");
-
-    String compTypeName = serialized.getMember(CompKindOfComponentTypeDeSer.COMP_NAME)
+    String compTypeName = serialized.getMember(CompKindOfComponentTypeDeSer.COMP_TYPE_NAME)
       .getAsJsonString()
       .getValue();
 

@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class CompKindOfComponentTypeDeSer {
 
   public static final String SERIALIZED_KIND = "de.monticore.types.check.CompKindOfComponentType";
-  public static final String COMP_NAME = "componentName";
+  public static final String COMP_TYPE_NAME = "componentTypeName";
 
   public String serialize(@NonNull CompKindOfComponentType toSerialize) {
     Preconditions.checkNotNull(toSerialize);
@@ -25,7 +25,7 @@ public class CompKindOfComponentTypeDeSer {
 
     printer.beginObject();
     printer.member(JsonDeSers.KIND, SERIALIZED_KIND);
-    printer.member(COMP_NAME, toSerialize.getTypeInfo().getFullName());
+    printer.member(COMP_TYPE_NAME, toSerialize.getTypeInfo().getFullName());
     printer.endObject();
 
     return printer.getContent();
@@ -39,7 +39,7 @@ public class CompKindOfComponentTypeDeSer {
       SERIALIZED_KIND, JsonDeSers.getKind(serialized)
     );
 
-    String compTypeName = serialized.getMember(COMP_NAME).getAsJsonString().getValue();
+    String compTypeName = serialized.getMember(COMP_TYPE_NAME).getAsJsonString().getValue();
 
     ComponentTypeSymbolSurrogate compType = CompSymbolsMill
       .componentTypeSymbolSurrogateBuilder()

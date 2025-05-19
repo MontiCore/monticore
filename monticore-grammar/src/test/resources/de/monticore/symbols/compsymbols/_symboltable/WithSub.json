@@ -10,7 +10,7 @@
         "fullName": "Parent.inst",
         "type": {
           "kind": "de.monticore.types.check.CompKindOfComponentType",
-          "componentName": "Comp"
+          "componentTypeName": "Comp"
         }
       }
     ]

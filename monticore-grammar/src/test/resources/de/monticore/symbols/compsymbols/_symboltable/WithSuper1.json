@@ -5,7 +5,7 @@
   "super": [
     {
       "kind": "de.monticore.types.check.CompKindOfComponentType",
-      "componentName": "SuperCType"
+      "componentTypeName": "SuperCType"
     }
   ]
 }
