@@ -118,7 +118,7 @@ public class MCGenPluginTest {
   // and up-to-date-checks work on modified super files
   void testGenerateGrammar(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
-    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true");
+    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
     String buildFileContent = "plugins {" +
             "    id 'de.monticore.generator' " +
             "}";
@@ -244,7 +244,7 @@ public class MCGenPluginTest {
   // and up-to-date-checks work on modified super files
   void testMultiProject(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'\ninclude('A')\ninclude('B')");
-    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true");
+    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
     String buildFileContentA = "plugins {" +
             "    id 'de.monticore.generator' \n" +
             "    id 'maven-publish' \n" +
@@ -313,7 +313,6 @@ public class MCGenPluginTest {
             .withProjectDir(testProjectDir)
             .withArguments("generateMCGrammars", "--build-cache", "--info")
             .build();
-    System.err.println(result.getOutput());
 
     // and then check, that the build cache was used
     Assert.assertEquals("A:generateMCGrammars was not cached",
