@@ -41,7 +41,6 @@ java {
     usingSourceSet(sourceSets.tests)
   }
   withJavadocJar()
-  withSourcesJar()
 }
 
 jar.dependsOn testsJar
