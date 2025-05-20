@@ -92,8 +92,6 @@ public class MontiCoreTool {
    * @param args The input parameters for configuring the MontiCore tool.
    */
   public void run(String[] args) {
-    FileReaderWriterFix.init();
-
     runUpdateCheck();
   
     Options options = initOptions();
