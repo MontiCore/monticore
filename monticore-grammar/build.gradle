@@ -79,7 +79,7 @@ dependencies {
 }
 
 
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   outputDir = file grammarOutDir
   debug = false
   genINT = true

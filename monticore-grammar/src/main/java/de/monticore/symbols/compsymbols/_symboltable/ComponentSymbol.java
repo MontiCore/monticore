@@ -197,12 +197,14 @@ public class ComponentSymbol extends ComponentSymbolTOP {
     Set<PortSymbol> result = new LinkedHashSet<>(this.getPorts());
     for (CompKindExpression superComponent : this.getSuperComponentsList()) {
       if (visited.contains(superComponent.getTypeInfo())) continue;
+      Set<PortSymbol> inheritedPorts = new LinkedHashSet<>();
       for (PortSymbol port : superComponent.getTypeInfo().getAllPorts(visited)) {
         // Shadow super ports
         if (result.stream().noneMatch(e -> e.getName().equals(port.getName()))) {
-          result.add(port);
+          inheritedPorts.add(port);
         }
       }
+      result.addAll(inheritedPorts);
     }
     return result;
   }
