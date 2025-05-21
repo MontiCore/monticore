@@ -61,8 +61,9 @@ public class ${className} {
         return;
       }
   
+      ${dstlName}Mill.reset();
       ${dstlName}Mill.init();
-  
+
       Log.debug("----- Starting Transformation Generation -----", LOG_ID);
       Log.debug("Input file   : " + cmd.getOptionValue("i"), LOG_ID);
       Log.debug("Output dir    : " + cmd.getOptionValue("o", "out"), LOG_ID);
@@ -88,6 +89,7 @@ public class ${className} {
   }
   
   public Optional<AST${grammarName}TFRule> parseRule(Path model) {
+    ${dstlName}Mill.reset();
     ${dstlName}Mill.init();
     Log.debug("Start parsing of the model " + model, LOG_ID);
     try {
@@ -128,8 +130,9 @@ public class ${className} {
     
     Log.debug("Switching to OD ", LOG_ID);
     // Switch language to OD
+    ODRulesMill.reset();
     ODRulesMill.init();
-    
+
     ast.accept(variables.getTraverser());
     
     ast.accept(rule2OD.getTraverser());
