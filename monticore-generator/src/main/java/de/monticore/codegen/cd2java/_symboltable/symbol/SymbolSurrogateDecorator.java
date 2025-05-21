@@ -36,7 +36,7 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_SYMBOLIC_STEREOTYPE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_STEREOTYPE_SYMBOL;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.INTERPRETER_VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.STEREOINFO_VAR;
@@ -273,7 +273,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
 
   protected List<ASTCDMethod> createOverriddenStereotypeMethods() {
     ASTMCType stereoinfoType = getMCTypeFacade().createMapTypeOf(
-      getMCTypeFacade().createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+      getMCTypeFacade().createQualifiedType(I_STEREOTYPE_SYMBOL),
       getMCTypeFacade().createOptionalTypeOf(INTERPRETER_VALUE)
     );
 

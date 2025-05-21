@@ -17,5 +17,5 @@ component grammar StereotypeSymbols extends de.monticore.MCBasics {
   interface symbol MCStereotype = Name;
 
   symbolrule MCStereotype
-    implements de.monticore.symboltable.stereotypes.ISymbolicStereotype;
+    implements de.monticore.symboltable.stereotypes.IStereotypeSymbol;
 }

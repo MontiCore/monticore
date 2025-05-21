@@ -86,7 +86,7 @@ public class SymbolTableConstants {
 
   public static final String I_SYMBOL_DE_SER = "de.monticore.symboltable.serialization.ISymbolDeSer";
 
-  public static final String I_SYMBOLIC_STEREOTYPE = "de.monticore.symboltable.stereotypes.ISymbolicStereotype";
+  public static final String I_STEREOTYPE_SYMBOL = "de.monticore.symboltable.stereotypes.IStereotypeSymbol";
 
   public static final String INTERPRETER_VALUE = "de.monticore.interpreter.Value";
 

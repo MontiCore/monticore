@@ -24,7 +24,7 @@ class StereoinfoDeSerTest {
   @Test
   void shouldSerializeStereoInfoWithoutValue() {
     // Given
-    ISymbolicStereotype stereotype = new MockSymbolicStereotype("a.b.c.StereoType");
+    IStereotypeSymbol stereotype = new MockSymbolicStereotype("a.b.c.StereoType");
 
     // When
     String json = StereoinfoDeSer.printAsJson(stereotype, Optional.empty());
@@ -37,7 +37,7 @@ class StereoinfoDeSerTest {
    * stereotype. The only relevant field that we need, which is mocked with useful information, is
    * {@link MockSymbolicStereotype#getFullName()}
    */
-  protected static final class MockSymbolicStereotype implements ISymbolicStereotype {
+  protected static final class MockSymbolicStereotype implements IStereotypeSymbol {
 
     private final String fullName;
 
@@ -70,7 +70,7 @@ class StereoinfoDeSerTest {
     public void setAccessModifier(AccessModifier accessModifier) { }
 
     @Override
-    public Map<ISymbolicStereotype, Optional<Value>> getStereoinfo() {
+    public Map<IStereotypeSymbol, Optional<Value>> getStereoinfo() {
       return Map.of();
     }
 

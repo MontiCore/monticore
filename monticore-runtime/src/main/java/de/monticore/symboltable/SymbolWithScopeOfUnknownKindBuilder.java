@@ -3,7 +3,7 @@ package de.monticore.symboltable;
 
 import de.monticore.interpreter.Value;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.stereotypes.ISymbolicStereotype;
+import de.monticore.symboltable.stereotypes.IStereotypeSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.ast.ASTNode;
 
@@ -22,7 +22,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
 
   protected AccessModifier accessModifier;
 
-  protected Map<ISymbolicStereotype, Optional<Value>> stereoinfo = new HashMap<>();
+  protected Map<IStereotypeSymbol, Optional<Value>> stereoinfo = new HashMap<>();
 
   protected IScope enclosingScope;
 
@@ -86,7 +86,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
     return this.accessModifier;
   }
 
-  public Map<ISymbolicStereotype, Optional<Value>> getStereoinfo() {
+  public Map<IStereotypeSymbol, Optional<Value>> getStereoinfo() {
     return this.stereoinfo;
   }
 
@@ -119,18 +119,18 @@ public class SymbolWithScopeOfUnknownKindBuilder {
   }
 
   public SymbolWithScopeOfUnknownKindBuilder setStereoinfo(
-    Map<ISymbolicStereotype, Optional<Value>> stereoinfo) {
+    Map<IStereotypeSymbol, Optional<Value>> stereoinfo) {
 
     this.stereoinfo = stereoinfo;
     return this.realBuilder;
   }
 
-  public SymbolWithScopeOfUnknownKindBuilder addStereoinfo(ISymbolicStereotype stereotype) {
+  public SymbolWithScopeOfUnknownKindBuilder addStereoinfo(IStereotypeSymbol stereotype) {
     this.stereoinfo.put(stereotype, Optional.empty());
     return this.realBuilder;
   }
 
-  public  SymbolWithScopeOfUnknownKindBuilder addStereoinfo(ISymbolicStereotype stereotype,
+  public  SymbolWithScopeOfUnknownKindBuilder addStereoinfo(IStereotypeSymbol stereotype,
                                                             Value stereovalue) {
     this.stereoinfo.put(stereotype, Optional.of(stereovalue));
     return this.realBuilder;

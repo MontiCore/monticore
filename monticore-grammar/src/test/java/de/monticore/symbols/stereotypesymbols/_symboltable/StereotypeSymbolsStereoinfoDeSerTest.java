@@ -6,7 +6,7 @@ import de.monticore.symbols.stereotypesymbols.StereotypeSymbolsMill;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.symboltable.stereotypes.ISymbolicStereotype;
+import de.monticore.symboltable.stereotypes.IStereotypeSymbol;
 import de.monticore.symboltable.stereotypes.StereoinfoDeSer;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterEach;
@@ -85,7 +85,7 @@ class StereotypeSymbolsStereoinfoDeSerTest {
     StereotypeSymbolsMill.globalScope().addSubScope(artifactScope);
 
     // When
-    Map.Entry<ISymbolicStereotype, Optional<Value>> deserialized =
+    Map.Entry<IStereotypeSymbol, Optional<Value>> deserialized =
       StereoinfoDeSer.deserialize(jsonStereoInfo, StereotypeSymbolsMill.globalScope());
 
     // Then
@@ -116,7 +116,7 @@ class StereotypeSymbolsStereoinfoDeSerTest {
     commonScope.add(stereoSym);
 
     // When
-    Map.Entry<ISymbolicStereotype, Optional<Value>> deserialized =
+    Map.Entry<IStereotypeSymbol, Optional<Value>> deserialized =
       StereoinfoDeSer.deserialize(jsonStereoInfo, commonScope);
 
     // Then

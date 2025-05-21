@@ -218,7 +218,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PROTECTED.build(), ACCESS_MODIFIER, "accessModifier");
     this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION));
 
-    ASTMCType symbolicStereotype = getMCTypeFacade().createQualifiedType(I_SYMBOLIC_STEREOTYPE);
+    ASTMCType symbolicStereotype = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_SYMBOL);
     ASTMCType valueOptional = getMCTypeFacade().createOptionalTypeOf(INTERPRETER_VALUE);
     ASTMCType stereotypeMap = getMCTypeFacade().createMapTypeOf(symbolicStereotype, valueOptional);
     ASTCDAttribute stereotypes =
