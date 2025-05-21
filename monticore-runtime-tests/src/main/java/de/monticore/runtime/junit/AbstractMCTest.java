@@ -18,16 +18,27 @@ public abstract class AbstractMCTest {
 
   @BeforeEach
   public void initAbstract() {
-    Log.clearFindings();
-    LogStub.init();
-    Log.enableFailQuick(false);
+    defaultInitAbstract();
+  }
+
+  static void defaultInitAbstract() {
+    Log.clearFindings(); // clear previous findings
+    LogStub.init(); // replace log by a sideeffect free variant
+    Log.enableFailQuick(false); // do not fail quick/exit on the first error
   }
 
   @AfterEach
-  public void resetAndCheckLog() {
+  public void checkLogAfterTest() {
+    defaultCheckLogAfterTest();
+  }
+
+  static void defaultCheckLogAfterTest() {
     try {
+      // Ensure, no Findings are present
+      // the various Finding-methods of MCAssertions check for & remove
+      //  expected findings
       MCAssertions.assertNoFindings(
-          "After the test has run, findings were present."
+              "After the test has run, findings were present."
       );
     } finally {
       Log.clearFindings();

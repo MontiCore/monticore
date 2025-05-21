@@ -31,7 +31,7 @@ public abstract class PrettyPrinterTester {
    *                        {@code ast -> MyMill.prettyPrint(ast, true)}
    * @param additionalCheck additional check on the pretty printed String
    * @param <N>             the type of the ASTNode after parsing
-   * @throws IOException
+   * @throws IOException    thrown by the parser
    */
   public static <N extends ASTNode> void testPrettyPrinter(
       String model,
