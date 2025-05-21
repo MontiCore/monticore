@@ -203,7 +203,7 @@ type and the expression grammars to define shared kinds of symbols.
 
 ### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (stable)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
-  *Variables* and *TypeVariables*.
+  *Variables*, *TypeVariables*, and *Stereotypes*.
 * The defined symbols are of general form and can be used in functional, OO
   and other contexts. They do not preculde a concrete syntax and do not yet 
   embody OO specifics.
@@ -220,12 +220,6 @@ type and the expression grammars to define shared kinds of symbols.
 * Remark: This grammar is not intended to define concrete or 
   abstract syntax, but the
   infrastructure for symbols in objectoriented context. 
-
-### [StereotypeSymbols.mc4](symbols/StereotypeSymbols.mc4) (beta)
-* This grammar defines a symbol for _Stereotypes_ that symbols and other model
-  elements can obtain.
-* Remark: This grammar is not intended to define concrete or abstract
-  syntax, but the infrastructure for symbols.
 
 ## Expressions: List of Grammars in package `de.monticore.expressions`
 

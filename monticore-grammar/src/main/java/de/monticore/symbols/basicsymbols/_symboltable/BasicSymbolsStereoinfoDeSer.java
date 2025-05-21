@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.symbols.stereotypesymbols._symboltable;
+package de.monticore.symbols.basicsymbols._symboltable;
 
 import de.monticore.interpreter.Value;
-import de.monticore.symbols.stereotypesymbols.StereotypeSymbolsMill;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.stereotypes.IStereotypeSymbol;
@@ -12,10 +12,11 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Map;
 import java.util.Optional;
 
-public class StereotypeSymbolsStereoinfoDeSer extends StereoinfoDeSer {
+/** Implementation of {@link StereoinfoDeSer} for BasicSymbols */
+public class BasicSymbolsStereoinfoDeSer extends StereoinfoDeSer {
 
   public static void init() {
-    instance = new StereotypeSymbolsStereoinfoDeSer();
+    instance = new BasicSymbolsStereoinfoDeSer();
   }
 
   @Override
@@ -30,11 +31,11 @@ public class StereotypeSymbolsStereoinfoDeSer extends StereoinfoDeSer {
 
     String stereotypeName = json.getAsJsonObject().getStringMember(STEREO_TYPE);
     MCStereotypeSymbolSurrogateBuilder stereotypeBuilder =
-      StereotypeSymbolsMill.mCStereotypeSymbolSurrogateBuilder()
+      BasicSymbolsMill.mCStereotypeSymbolSurrogateBuilder()
         .setName(stereotypeName);
 
-    if (enclosingScope instanceof IStereotypeSymbolsScope) {
-      IStereotypeSymbolsScope stereoScope = ((IStereotypeSymbolsScope) enclosingScope);
+    if (enclosingScope instanceof IBasicSymbolsScope) {
+      IBasicSymbolsScope stereoScope = ((IBasicSymbolsScope) enclosingScope);
       stereotypeBuilder.setEnclosingScope(stereoScope);
     } else {
       Log.error(

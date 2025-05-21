@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.symbols.stereotypesymbols._symboltable;
+package de.monticore.symbols.basicsymbols._symboltable;
 
 import de.monticore.interpreter.Value;
-import de.monticore.symbols.stereotypesymbols.StereotypeSymbolsMill;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.serialization.json.JsonObject;
@@ -21,21 +21,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Tests {@link StereotypeSymbolsStereoinfoDeSer} */
-class StereotypeSymbolsStereoinfoDeSerTest {
+/** Tests {@link BasicSymbolsStereoinfoDeSer} */
+class BasicSymbolsStereoinfoDeSerTest {
 
   @BeforeEach
   void setUp() {
     LogStub.init();
-    StereotypeSymbolsMill.init();
-    StereotypeSymbolsStereoinfoDeSer.init();
+    BasicSymbolsMill.init();
+    BasicSymbolsStereoinfoDeSer.init();
     JsonElementFactory.setInstance(new JsonElementFactory());
   }
 
   @AfterEach
   void teardown() {
-    StereotypeSymbolsMill.globalScope().clear();
-    StereotypeSymbolsMill.reset();
+    BasicSymbolsMill.globalScope().clear();
+    BasicSymbolsMill.reset();
   }
 
   @Test
@@ -45,8 +45,8 @@ class StereotypeSymbolsStereoinfoDeSerTest {
     String stereoTypeName = "D";
 
     MCStereotypeSymbol stereoSym = createStereotype(stereoTypeName);
-    IStereotypeSymbolsScope artifactScope = wrapIntoArtifactScope(stereoSym, packageName);
-    StereotypeSymbolsMill.globalScope().addSubScope(artifactScope);
+    IBasicSymbolsScope artifactScope = wrapIntoArtifactScope(stereoSym, packageName);
+    BasicSymbolsMill.globalScope().addSubScope(artifactScope);
 
     // When
     String json = StereoinfoDeSer.printAsJson(stereoSym, Optional.empty());
@@ -60,7 +60,7 @@ class StereotypeSymbolsStereoinfoDeSerTest {
     // Given
     String stereoTypeName = "A";
     MCStereotypeSymbol stereoSym = createStereotype(stereoTypeName);
-    StereotypeSymbolsMill.globalScope().add(stereoSym);
+    BasicSymbolsMill.globalScope().add(stereoSym);
 
     // When
     String json = StereoinfoDeSer.printAsJson(stereoSym, Optional.empty());
@@ -81,12 +81,12 @@ class StereotypeSymbolsStereoinfoDeSerTest {
     jsonStereoInfo.putMember("stereotype", jsonTypeRef);
 
     MCStereotypeSymbol stereoSym = createStereotype(stereoTypeName);
-    IStereotypeSymbolsScope artifactScope = wrapIntoArtifactScope(stereoSym, packageName);
-    StereotypeSymbolsMill.globalScope().addSubScope(artifactScope);
+    IBasicSymbolsScope artifactScope = wrapIntoArtifactScope(stereoSym, packageName);
+    BasicSymbolsMill.globalScope().addSubScope(artifactScope);
 
     // When
     Map.Entry<IStereotypeSymbol, Optional<Value>> deserialized =
-      StereoinfoDeSer.deserialize(jsonStereoInfo, StereotypeSymbolsMill.globalScope());
+      StereoinfoDeSer.deserialize(jsonStereoInfo, BasicSymbolsMill.globalScope());
 
     // Then
     assertAll(
@@ -112,7 +112,7 @@ class StereotypeSymbolsStereoinfoDeSerTest {
     jsonStereoInfo.putMember("stereotype", jsonTypeRef);
 
     MCStereotypeSymbol stereoSym = createStereotype(stereoTypeName);
-    IStereotypeSymbolsScope commonScope = StereotypeSymbolsMill.scope();
+    IBasicSymbolsScope commonScope = BasicSymbolsMill.scope();
     commonScope.add(stereoSym);
 
     // When
@@ -134,14 +134,14 @@ class StereotypeSymbolsStereoinfoDeSerTest {
   }
 
   protected MCStereotypeSymbol createStereotype(String name) {
-    return StereotypeSymbolsMill.mCStereotypeSymbolBuilder()
+    return BasicSymbolsMill.mCStereotypeSymbolBuilder()
       .setName(name)
       .build();
   }
 
-  protected IStereotypeSymbolsScope wrapIntoArtifactScope(MCStereotypeSymbol stereotype,
+  protected IBasicSymbolsScope wrapIntoArtifactScope(MCStereotypeSymbol stereotype,
                                                           String packageName) {
-    IStereotypeSymbolsArtifactScope scope = StereotypeSymbolsMill.artifactScope();
+    IBasicSymbolsArtifactScope scope = BasicSymbolsMill.artifactScope();
     scope.setPackageName(packageName);
     scope.add(stereotype);
 
