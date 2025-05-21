@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.runtime.junit;
 
+import com.google.common.collect.Streams;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
@@ -191,9 +192,10 @@ public class MCAssertions {
     else {
       messageWithFindings.append("Got Log-Findings:");
       messageWithFindings.append(System.lineSeparator());
-      messageWithFindings.append(Log.getFindings().stream()
-          .map(Finding::buildMsg)
-          .collect(Collectors.joining(System.lineSeparator()))
+      messageWithFindings.append(Streams.mapWithIndex(
+                      Log.getFindings().stream().map(Finding::buildMsg),
+                      (str, index) -> "[" + index + "]" + str)
+              .collect(Collectors.joining(System.lineSeparator()))
       );
     }
     return Assertions.fail(messageWithFindings.toString());
