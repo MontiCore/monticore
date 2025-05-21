@@ -27,7 +27,7 @@ public class MCToolInvoker {
    * @param args CLI arguments passed to MontiCore
    */
   public static void run(String[] args) {
-    Log.info("Starting MontiCoreTool: " +
+    Log.debug("Starting MontiCoreTool: " +
             "\t  java -jar MontiCoreTool.jar " + Arrays.toString(args), MCToolInvoker.class.getName());
     SyncDeIsolated.run(() -> {
       // The MCTool is expensive with its the class loading (time)

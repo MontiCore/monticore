@@ -139,9 +139,11 @@ public class MCGenPluginTest {
             .build();
 
     // file MyTestGrammar is worked on
-    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammar.mc4]"));
+//    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammar.mc4]"));  // The Log-Prefix is unreliable
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("/src/main/grammars/MyTestGrammar.mc4"));
     // file MyTestGrammarS is worked on
-    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammarS.mc4]"));
+//    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammarS.mc4]")); // The Log-Prefix is unreliable
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("/src/main/grammars/MyTestGrammarS.mc4"));
     // and the task was successful
     Assert.assertEquals(SUCCESS, result.task(":generateMCGrammars").getOutcome());
 
@@ -288,9 +290,11 @@ public class MCGenPluginTest {
             .build();
 
     // file MyTestGrammar is worked on
-    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammar.mc4]"));
+    //    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammar.mc4]"));  // The Log-Prefix is unreliable
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("/src/main/grammars/MyTestGrammar.mc4"));
     // file MyTestGrammarS is worked on
-    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammarS.mc4]"));
+    //    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammarS.mc4]"));  // The Log-Prefix is unreliable
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("/src/main/grammars/MyTestGrammarS.mc4"));
     // and the task was successful
     Assert.assertEquals(SUCCESS, result.task(":A:generateMCGrammars").getOutcome());
     Assert.assertEquals(SUCCESS, result.task(":B:generateMCGrammars").getOutcome());
