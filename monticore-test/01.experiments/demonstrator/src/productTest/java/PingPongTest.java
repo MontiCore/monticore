@@ -1,51 +1,49 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Test;
+import de.monticore.runtime.junit.MCAssertions;
 
 import static org.junit.jupiter.api.Assertions.*;
-import de.se_rwth.commons.logging.Log;
 
 public class PingPongTest {
   
   String message = "The automaton is not in state \"%s\"";
   
-  @Test
+  @org.junit.jupiter.api.Test
   public void testPingPong(){
     PingPong pingpong = new PingPong();
     
     // assert we are in the initial state
-    assertTrue(String.format(message,"NoGame"),pingpong.currentState instanceof NoGameState);
+    assertInstanceOf(NoGameState.class, pingpong.currentState, String.format(message, "NoGame"));
   
     // trigger startGame
     pingpong.startGame();
   
     // assert we are in state Ping
-    assertTrue(String.format(message,"Ping"), pingpong.currentState instanceof PingState);
+    assertInstanceOf(PingState.class, pingpong.currentState, String.format(message, "Ping"));
   
     // trigger returnBall
     pingpong.returnBall();
   
     // assert we are in state Pong
-    assertTrue(String.format(message,"Pong"), pingpong.currentState instanceof PongState);
+    assertInstanceOf(PongState.class, pingpong.currentState, String.format(message, "Pong"));
     
     // trigger returnBall
     pingpong.returnBall();
   
     // assert we are in state Ping again
-    assertTrue(String.format(message,"Ping"), pingpong.currentState instanceof PingState);
+    assertInstanceOf(PingState.class, pingpong.currentState, String.format(message, "Ping"));
   
     // trigger startGame
     pingpong.startGame();
   
     // assert we are still in state Ping (wrong input should be ignored)
-    assertTrue(String.format(message,"Ping"), pingpong.currentState instanceof PingState);
+    assertInstanceOf(PingState.class, pingpong.currentState, String.format(message, "Ping"));
   
     // trigger stopGame
     pingpong.stopGame();
   
     // assert we are in state NoGame
-    assertTrue(String.format(message,"NoGame"), pingpong.currentState instanceof NoGameState);
+    assertInstanceOf(NoGameState.class, pingpong.currentState, String.format(message, "NoGame"));
   
     MCAssertions.assertNoFindings();
   }
