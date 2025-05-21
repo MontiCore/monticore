@@ -62,7 +62,7 @@ sourceSets {
 
 task generate {}
 
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   grammar.setFrom(file grammarDir)
   script = "de/monticore/monticore_emf.groovy"
   modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"

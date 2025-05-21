@@ -2,7 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbol;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler;
@@ -13,20 +13,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.List;
 
 /**
- * A visitor (a handler indeed) that creates a {@link KindOfComponent} from an
+ * A visitor (a handler indeed) that creates a {@link CompKindOfComponentType} from an
  * {@link ASTMCQualifiedType}, given that there is matching, resolvable
- * component symbol.
+ * component type symbol.
  */
-public class SynthesizeCompTypeFromMCBasicTypes implements MCBasicTypesHandler {
+public class SynthesizeCompKindFromMCBasicTypes implements MCBasicTypesHandler {
 
   protected MCBasicTypesTraverser traverser;
 
   /**
    * Common state with other visitors, if this visitor is part of a visitor composition.
    */
-  protected CompTypeCheckResult resultWrapper;
+  protected CompKindCheckResult resultWrapper;
 
-  public SynthesizeCompTypeFromMCBasicTypes(@NonNull CompTypeCheckResult resultWrapper) {
+  public SynthesizeCompKindFromMCBasicTypes(@NonNull CompKindCheckResult resultWrapper) {
     this.resultWrapper = Preconditions.checkNotNull(resultWrapper);
   }
 
@@ -47,7 +47,7 @@ public class SynthesizeCompTypeFromMCBasicTypes implements MCBasicTypesHandler {
     Preconditions.checkArgument(node.getEnclosingScope() instanceof ICompSymbolsScope);
 
     ICompSymbolsScope enclScope = ((ICompSymbolsScope) node.getEnclosingScope());
-    List<ComponentSymbol> comp = enclScope.resolveComponentMany(node.getMCQualifiedName().getQName());
+    List<ComponentTypeSymbol> comp = enclScope.resolveComponentTypeMany(node.getMCQualifiedName().getQName());
 
     if (comp.isEmpty()) {
       Log.error(String.format("0xD0104 Cannot resolve component '%s'", node.getMCQualifiedName().getQName()),
@@ -55,7 +55,7 @@ public class SynthesizeCompTypeFromMCBasicTypes implements MCBasicTypesHandler {
       );
       this.resultWrapper.setResultAbsent();
     } else {
-      CompKindExpression result = new KindOfComponent(comp.get(0));
+      CompKindExpression result = new CompKindOfComponentType(comp.get(0));
       result.setSourceNode(node);
       this.resultWrapper.setResult(result);
 
