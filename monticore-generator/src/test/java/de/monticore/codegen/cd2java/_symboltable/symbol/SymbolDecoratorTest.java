@@ -65,7 +65,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  private static final String I_SYMBOLIC_STEREOTYPE = "de.monticore.symboltable.stereotypes.ISymbolicStereotype";
+  private static final String I_STEREOTYPE_REF = "de.monticore.symboltable.stereotypes.IStereotypeReference";
 
   private static final String VALUE = "de.monticore.interpreter.Value";
 
@@ -235,7 +235,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals(
       mcTypeFacade.createMapTypeOf(
-        mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
         mcTypeFacade.createOptionalTypeOf(VALUE)
       ),
       astcdAttribute.getMCType()
@@ -531,7 +531,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(method.getMCReturnType().isPresentMCType());
     assertDeepEquals(
       mcTypeFacade.createMapTypeOf(
-        mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
         mcTypeFacade.createOptionalTypeOf(VALUE)
       ),
       method.getMCReturnType().getMCType()
@@ -552,7 +552,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertEquals(1, method.sizeCDParameters());
     assertDeepEquals(
       mcTypeFacade.createMapTypeOf(
-        mcTypeFacade.createQualifiedType(I_SYMBOLIC_STEREOTYPE),
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
         mcTypeFacade.createOptionalTypeOf(VALUE)
       ),
       method.getCDParameter(0).getMCType()
