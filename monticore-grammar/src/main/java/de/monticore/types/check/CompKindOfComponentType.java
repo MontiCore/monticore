@@ -58,7 +58,11 @@ public class CompKindOfComponentType extends CompKindExpression {
 
   @Override
   public CompKindOfComponentType deepClone(@NonNull ComponentTypeSymbol component) {
-    return new CompKindOfComponentType(component);
+    CompKindOfComponentType clone = new CompKindOfComponentType(component);
+    getSourceNode().ifPresent(clone::setSourceNode);
+    clone.addArgument(getArguments());
+    clone.bindParams();
+    return clone;
   }
 
   @Override
