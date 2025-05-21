@@ -6,8 +6,9 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.symboltable.stereotypes.IStereotypeSymbol;
+import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.symboltable.stereotypes.StereoinfoDeSer;
+import de.monticore.symboltable.stereotypes.SymbolBackedStereotypeReference;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,9 +48,10 @@ class BasicSymbolsStereoinfoDeSerTest {
     MCStereotypeSymbol stereoSym = createStereotype(stereoTypeName);
     IBasicSymbolsScope artifactScope = wrapIntoArtifactScope(stereoSym, packageName);
     BasicSymbolsMill.globalScope().addSubScope(artifactScope);
+    IStereotypeReference stereoRef = new SymbolBackedStereotypeReference(stereoSym);
 
     // When
-    String json = StereoinfoDeSer.printAsJson(stereoSym, Optional.empty());
+    String json = StereoinfoDeSer.printAsJson(stereoRef, Optional.empty());
 
     // Then
     assertEquals("{\"stereotype\":\"a.b.c.D\"}", json);
@@ -61,9 +63,10 @@ class BasicSymbolsStereoinfoDeSerTest {
     String stereoTypeName = "A";
     MCStereotypeSymbol stereoSym = createStereotype(stereoTypeName);
     BasicSymbolsMill.globalScope().add(stereoSym);
+    IStereotypeReference stereoRef = new SymbolBackedStereotypeReference(stereoSym);
 
     // When
-    String json = StereoinfoDeSer.printAsJson(stereoSym, Optional.empty());
+    String json = StereoinfoDeSer.printAsJson(stereoRef, Optional.empty());
 
     // Then
     assertEquals("{\"stereotype\":\"A\"}", json);
@@ -85,21 +88,21 @@ class BasicSymbolsStereoinfoDeSerTest {
     BasicSymbolsMill.globalScope().addSubScope(artifactScope);
 
     // When
-    Map.Entry<IStereotypeSymbol, Optional<Value>> deserialized =
+    Map.Entry<IStereotypeReference, Optional<Value>> deserialized =
       StereoinfoDeSer.deserialize(jsonStereoInfo, BasicSymbolsMill.globalScope());
 
     // Then
     assertAll(
-      () -> assertInstanceOf(MCStereotypeSymbolSurrogate.class, deserialized.getKey()),
+      () -> assertInstanceOf(BasicSymbolsStereotypeReference.class, deserialized.getKey()),
       () -> assertTrue(deserialized.getValue().isEmpty()),
       () -> assertEquals(0, LogStub.getFindingsCount())
     );
 
-    MCStereotypeSymbolSurrogate refAsSurrogate =
-      (MCStereotypeSymbolSurrogate) deserialized.getKey();
+    BasicSymbolsStereotypeReference refAsRef =
+      (BasicSymbolsStereotypeReference) deserialized.getKey();
 
-    assertTrue(refAsSurrogate.checkLazyLoadDelegate());
-    assertEquals(stereoSym, refAsSurrogate.lazyLoadDelegate());
+    assertTrue(refAsRef.getResolved().isPresent());
+    assertEquals(stereoSym, refAsRef.getResolved().get());
   }
 
   @Test
@@ -116,21 +119,21 @@ class BasicSymbolsStereoinfoDeSerTest {
     commonScope.add(stereoSym);
 
     // When
-    Map.Entry<IStereotypeSymbol, Optional<Value>> deserialized =
+    Map.Entry<IStereotypeReference, Optional<Value>> deserialized =
       StereoinfoDeSer.deserialize(jsonStereoInfo, commonScope);
 
     // Then
     assertAll(
-      () -> assertInstanceOf(MCStereotypeSymbolSurrogate.class, deserialized.getKey()),
+      () -> assertInstanceOf(BasicSymbolsStereotypeReference.class, deserialized.getKey()),
       () -> assertTrue(deserialized.getValue().isEmpty()),
       () -> assertEquals(0, LogStub.getFindingsCount())
     );
 
-    MCStereotypeSymbolSurrogate refAsSurrogate =
-      (MCStereotypeSymbolSurrogate) deserialized.getKey();
+    BasicSymbolsStereotypeReference refAsRef =
+      (BasicSymbolsStereotypeReference) deserialized.getKey();
 
-    assertTrue(refAsSurrogate.checkLazyLoadDelegate());
-    assertEquals(stereoSym, refAsSurrogate.lazyLoadDelegate());
+    assertTrue(refAsRef.getResolved().isPresent());
+    assertEquals(stereoSym, refAsRef.getResolved().get());
   }
 
   protected MCStereotypeSymbol createStereotype(String name) {

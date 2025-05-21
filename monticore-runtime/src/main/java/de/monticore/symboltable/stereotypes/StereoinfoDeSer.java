@@ -17,12 +17,12 @@ import java.util.Optional;
  * corresponding stereovalue for the stereotype, it is also de-/serialized.
  * <p>
  * The facade consists of
- * {@link StereoinfoDeSer#printAsJson(IStereotypeSymbol, Optional)},
+ * {@link StereoinfoDeSer#printAsJson(IStereotypeReference, Optional)},
  * {@link StereoinfoDeSer#printAsJson(Map.Entry)}, and
  * {@link StereoinfoDeSer#deserialize(JsonElement, IScope)}.
  * Custom de-/serialization behavior can be achieved by initializing the
  * singleton within this class with a sub class that overwrites
- * {@link StereoinfoDeSer#doPrintAsJson(IStereotypeSymbol, Optional)} and
+ * {@link StereoinfoDeSer#doPrintAsJson(IStereotypeReference, Optional)} and
  * {@link StereoinfoDeSer#doDeserialize(JsonElement, IScope)}.
  * <p>
  * Note that deserialization is not supported out of the box. Initialize this
@@ -39,10 +39,10 @@ public class StereoinfoDeSer {
 
   /**
    * Singleton instance with implementations of
-   * {@link StereoinfoDeSer#doPrintAsJson(IStereotypeSymbol, Optional)} and
+   * {@link StereoinfoDeSer#doPrintAsJson(IStereotypeReference, Optional)} and
    * {@link StereoinfoDeSer#doDeserialize(JsonElement, IScope)}
    * to which the  facade calls
-   * {@link StereoinfoDeSer#printAsJson(IStereotypeSymbol, Optional)},
+   * {@link StereoinfoDeSer#printAsJson(IStereotypeReference, Optional)},
    * {@link StereoinfoDeSer#printAsJson(Map.Entry)}, and
    * {@link StereoinfoDeSer#deserialize(JsonElement, IScope)}
    * are delegated to. <p>
@@ -64,7 +64,7 @@ public class StereoinfoDeSer {
    * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
    */
   public static String printAsJson(
-    Map.Entry<? extends IStereotypeSymbol, Optional<Value>> stereoinfo) {
+    Map.Entry<? extends IStereotypeReference, Optional<Value>> stereoinfo) {
     return printAsJson(stereoinfo.getKey(), stereoinfo.getValue());
   }
 
@@ -74,12 +74,12 @@ public class StereoinfoDeSer {
    * <p>
    * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
    */
-  public static String printAsJson(IStereotypeSymbol stereotype, Optional<Value> value) {
+  public static String printAsJson(IStereotypeReference stereotype, Optional<Value> value) {
 
     return getInstance().doPrintAsJson(stereotype, value);
   }
 
-  protected String doPrintAsJson(IStereotypeSymbol stereotype, Optional<Value> value) {
+  protected String doPrintAsJson(IStereotypeReference stereotype, Optional<Value> value) {
     if (value.isPresent()) {
       Log.errorInternal(
         "0x82401 Internal error: The serialization of values for symbolic stereotypes is not yet " +
@@ -87,10 +87,18 @@ public class StereoinfoDeSer {
       );
     }
 
+    if (stereotype.getResolved().isEmpty()) {
+      Log.errorInternal(
+        "0x82405 Internal error: The serialization of stereotype annotations was called with an " +
+          "invalid stereotype symbol reference."
+      );
+      return "";
+    }
+
     JsonPrinter p = new JsonPrinter();
 
     p.beginObject();
-    p.member(STEREO_TYPE, stereotype.getFullName());
+    p.member(STEREO_TYPE, stereotype.getResolved().get().getFullName());
     p.endObject();
 
     return p.getContent();
@@ -102,17 +110,18 @@ public class StereoinfoDeSer {
    * <p>
    * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
    */
-  public static Map.Entry<IStereotypeSymbol, Optional<Value>> deserialize(JsonElement json,
-                                                                          IScope enclosingScope) {
+  public static Map.Entry<IStereotypeReference, Optional<Value>> deserialize(
+    JsonElement json, IScope enclosingScope) {
+
     return getInstance().doDeserialize(json, enclosingScope);
   }
 
   @SuppressWarnings("unused")
-  protected Map.Entry<IStereotypeSymbol, Optional<Value>> doDeserialize(JsonElement json,
-                                                                          IScope enclosingScope) {
+  protected Map.Entry<IStereotypeReference, Optional<Value>> doDeserialize(JsonElement json,
+                                                                           IScope enclosingScope) {
     Log.errorInternal(
-      "0x82402 Internal error: The deserialization of symbolic stereotype annotations is not " +
-        "supported by default. Provide an adequate deserializer that can handle this."
+      "0x82402 Internal error: The deserialization of stereotype annotations is not supported by " +
+        "default. Provide an adequate deserializer that can handle this."
     );
     return null;
   }

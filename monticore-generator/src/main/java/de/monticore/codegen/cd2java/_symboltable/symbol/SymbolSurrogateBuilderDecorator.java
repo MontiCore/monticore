@@ -28,7 +28,7 @@ import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
-import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_STEREOTYPE_SYMBOL;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_STEREOTYPE_REFERENCE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.INTERPRETER_VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
@@ -130,7 +130,7 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
 
   protected ASTCDAttribute createStereoinfoAttribute() {
     ASTMCType type = getMCTypeFacade().createMapTypeOf(
-      getMCTypeFacade().createQualifiedType(I_STEREOTYPE_SYMBOL),
+      getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE),
       getMCTypeFacade().createOptionalTypeOf(INTERPRETER_VALUE)
     );
 
@@ -151,7 +151,7 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
    * more convenient, accessors.
    */
   protected List<ASTCDMethod> createStereoinfoComfortAccessors(ASTMCType builderType) {
-    ASTMCType stereotypeMCType = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_SYMBOL);
+    ASTMCType stereotypeMCType = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE);
     ASTMCType valueMCType = getMCTypeFacade().createQualifiedType(INTERPRETER_VALUE);
 
     ASTCDMethod addWithoutValue = getCDMethodFacade().createMethod(

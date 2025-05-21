@@ -25,9 +25,10 @@ class StereoinfoDeSerTest {
   void shouldSerializeStereoInfoWithoutValue() {
     // Given
     IStereotypeSymbol stereotype = new MockSymbolicStereotype("a.b.c.StereoType");
+    IStereotypeReference stereotypeRef = new SymbolBackedStereotypeReference(stereotype);
 
     // When
-    String json = StereoinfoDeSer.printAsJson(stereotype, Optional.empty());
+    String json = StereoinfoDeSer.printAsJson(stereotypeRef, Optional.empty());
 
     // Then
     assertEquals("{\"stereotype\":\"a.b.c.StereoType\"}", json);
@@ -70,7 +71,7 @@ class StereoinfoDeSerTest {
     public void setAccessModifier(AccessModifier accessModifier) { }
 
     @Override
-    public Map<IStereotypeSymbol, Optional<Value>> getStereoinfo() {
+    public Map<IStereotypeReference, Optional<Value>> getStereoinfo() {
       return Map.of();
     }
 

@@ -153,7 +153,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION));
     attrs.add(accessModifier);
 
-    ASTMCType symbolicStereotype = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_SYMBOL);
+    ASTMCType symbolicStereotype = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE);
     ASTMCType valueOptional = getMCTypeFacade().createOptionalTypeOf(INTERPRETER_VALUE);
     ASTMCType stereotypeMap = getMCTypeFacade().createMapTypeOf(symbolicStereotype, valueOptional);
     ASTCDAttribute stereotypes =
@@ -190,7 +190,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
    * more convenient, accessors.
    */
   protected List<ASTCDMethod> createStereoinfoConvenienceMethods(ASTMCType builderType) {
-    ASTMCType stereotypeMCType = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_SYMBOL);
+    ASTMCType stereotypeMCType = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE);
     ASTMCType valueMCType = getMCTypeFacade().createQualifiedType(INTERPRETER_VALUE);
 
     ASTCDMethod addWithoutValue = getCDMethodFacade().createMethod(

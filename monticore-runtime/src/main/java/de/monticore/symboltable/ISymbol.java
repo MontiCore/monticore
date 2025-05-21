@@ -6,6 +6,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.interpreter.Value;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.symboltable.stereotypes.IStereotypeSymbol;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
@@ -61,8 +62,13 @@ public interface ISymbol {
    */
   void setAccessModifier(AccessModifier accessModifier);
 
-  /** Returns the stereotypes of this symbol, associated with values for them if present */
-  Map<IStereotypeSymbol, Optional<Value>> getStereoinfo();
+  /**
+   * Returns the stereotypes of this symbol, associated with values for them if
+   * present.<br>
+   * The keys of the map reference {@link IStereotypeSymbol}s, while the values
+   * reference the optionally associated stereovalue.
+   */
+  Map<IStereotypeReference, Optional<Value>> getStereoinfo();
 
   boolean isPresentAstNode();
 
