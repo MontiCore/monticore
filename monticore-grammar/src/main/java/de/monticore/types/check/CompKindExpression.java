@@ -7,7 +7,8 @@ import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpressi
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbol;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ import java.util.Optional;
  */
 public abstract class CompKindExpression {
 
-  protected final ComponentSymbol component;
+  protected final ComponentTypeSymbol component;
   protected LinkedHashMap<VariableSymbol, ASTExpression> parameterBindings;
   protected List<ASTExpression> arguments;
   protected Optional<ASTNode> sourceNode;
@@ -41,6 +42,44 @@ public abstract class CompKindExpression {
   public void addArgument(ASTExpression argument) {
     Preconditions.checkNotNull(argument);
     this.arguments.add(argument);
+  }
+
+  /**
+   * Am I simple component type? (such as "C")
+   * (default: no)
+   */
+  public boolean isComponentType() {
+    return false;
+  }
+
+  /**
+   * Logs an error if this is not a component type
+   * @return this expression as a component type
+   */
+  public CompKindOfComponentType asComponentType() {
+    Log.error("0xFDAB1 internal error: "
+      + "tried to convert non-component to a component."
+      + " Actual: " + this.printFullName());
+    return null;
+  }
+
+  /**
+   * Am I a generic component type? (such as "C<int>")
+   * (default: no)
+   */
+  public boolean isGenericComponentType() {
+    return false;
+  }
+
+  /**
+   * Logs an error if this is not a generic component type
+   * @return this expression as a generic component type
+   */
+  public CompKindOfGenericComponentType asGenericComponentType() {
+    Log.error("0xFDAB2 internal error: "
+      + "tried to convert non-generic-component to a generic-component."
+      + " Actual: " + this.printFullName());
+    return null;
   }
 
   /**
@@ -113,8 +152,8 @@ public abstract class CompKindExpression {
   }
 
   /**
-   * @see CompKindExpression#getSourceNode
    * @param sourceNode Must not be null
+   * @see CompKindExpression#getSourceNode
    */
   public void setSourceNode(ASTNode sourceNode) {
     Preconditions.checkNotNull(sourceNode);
@@ -126,7 +165,7 @@ public abstract class CompKindExpression {
     this.sourceNode = Optional.empty();
   }
 
-  protected CompKindExpression(ComponentSymbol component) {
+  protected CompKindExpression(ComponentTypeSymbol component) {
     Preconditions.checkNotNull(component);
     this.component = component;
     this.arguments = new ArrayList<>();
@@ -134,7 +173,7 @@ public abstract class CompKindExpression {
     this.sourceNode = Optional.empty();
   }
 
-  public ComponentSymbol getTypeInfo() {
+  public ComponentTypeSymbol getTypeInfo() {
     return this.component;
   }
 
@@ -180,7 +219,7 @@ public abstract class CompKindExpression {
     return deepClone(getTypeInfo());
   }
 
-  public abstract CompKindExpression deepClone(ComponentSymbol component);
+  public abstract CompKindExpression deepClone(ComponentTypeSymbol component);
 
   public abstract boolean deepEquals(CompKindExpression compSymType);
 }

@@ -44,9 +44,11 @@ public abstract class MCGenTask extends MCSingleFileTask {
     // Input files to this task
     setIfPathExists(x -> this.getGrammar().from(x), Path.of(
             getProject().getProjectDir().getAbsolutePath(), "src", "main", "grammars"));
-    // Templates (such as the config templates) are loaded from there
+    // Templates (such as the config templates) are NOT loaded from resources,
+    // but from templates.
+    // In case config templates are present in resources, modify getTmplDir()
     setIfPathExists(this.getTmplDir()::set, Path.of(
-            getProject().getProjectDir().getAbsolutePath(), "src", "main", "resources"));
+            getProject().getProjectDir().getAbsolutePath(), "src", "main", "configtemplates"));
 
     // Gradle does not support a default value for ConfigurableFileCollection
     // Thus, we have to set a default value this way (and possibly, override it via setFrom)
@@ -130,6 +132,15 @@ public abstract class MCGenTask extends MCSingleFileTask {
     if (this.getGroovyHook2().isPresent()) {
       args.add("-" + MontiCoreConfiguration.GROOVYHOOK2);
       args.add(this.getGroovyHook2().get().getAsFile().getAbsolutePath());
+    }
+
+    // The templates directory is not set to src/${sourceSet}/resources
+    // it has to be set explicitly
+    if (this.getConfigTemplate().isPresent() && !this.getTmplDir().isPresent()) {
+      getLogger().warn("Task {} uses a custom config template " +
+                      "without setting the templates directory - " +
+                      "Consider setting it via tmplDir.from('src/main/resources').",
+              this.getPath());
     }
 
     return args;

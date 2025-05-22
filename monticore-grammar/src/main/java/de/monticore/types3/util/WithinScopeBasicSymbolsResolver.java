@@ -12,6 +12,7 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolExcepti
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeSourceInfo;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -96,15 +97,26 @@ public class WithinScopeBasicSymbolsResolver {
     }
     // get the correct variable
     if (varInType.isPresent() && optVar.isPresent()) {
-      if (varInType.get().getTypeInfo() == optVar.get().getTypeInfo()) {
-        types.add(varInType.get());
-      }
-      else if (optVar.get().getTypeInfo().getEnclosingScope()
-          .isProperSubScopeOf(varInType.get().getTypeInfo().getEnclosingScope())) {
-        types.add(optVar.get());
+      SymTypeSourceInfo varInTypeInfo = varInType.get().getSourceInfo();
+      SymTypeSourceInfo optVarInfo = optVar.get().getSourceInfo();
+      if (varInTypeInfo.getSourceSymbol().isPresent() &&
+          optVarInfo.getSourceSymbol().isPresent()
+      ) {
+        ISymbol varInTypeVarSymbol = varInTypeInfo.getSourceSymbol().get();
+        ISymbol optVarVarSymbol = optVarInfo.getSourceSymbol().get();
+        if (optVarVarSymbol.getEnclosingScope()
+            .isProperSubScopeOf(varInTypeVarSymbol.getEnclosingScope())
+        ) {
+          types.add(optVar.get());
+        }
+        else {
+          types.add(varInType.get());
+        }
       }
       else {
-        types.add(varInType.get());
+        Log.error("0xFDA25 internal error: " +
+            "expected variable symbol for resolved variable " + name
+        );
       }
     }
     else if (varInType.isPresent()) {

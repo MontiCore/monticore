@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbolSurrogate;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbolSurrogate;
 import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -13,28 +13,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 
-public class KindOfGenericComponentDeSer implements CompKindExprDeSer<KindOfGenericComponent> {
+public class CompKindOfGenericComponentTypeDeSer {
 
-  public static final String SERIALIZED_KIND = "genericarc.check.TypeExprOfGenericComponent";
+  public static final String SERIALIZED_KIND = "de.monticore.types.check.CompKindOfGenericComponentType";
   public static final String TYPE_VAR_BINDINGS = "typeVarBindings";
 
-  @Override
-  public String serializeAsJson(@NonNull KindOfGenericComponent toSerialize) {
+  public String serialize(@NonNull CompKindOfGenericComponentType toSerialize) {
     Preconditions.checkNotNull(toSerialize);
 
     JsonPrinter printer = new JsonPrinter();
 
     printer.beginObject();
     printer.member(JsonDeSers.KIND, SERIALIZED_KIND);
-    printer.member(KindOfComponentDeSer.COMP_NAME, toSerialize.getTypeInfo().getFullName());
+    printer.member(CompKindOfComponentTypeDeSer.COMP_TYPE_NAME, toSerialize.getTypeInfo().getFullName());
     SymTypeExpressionDeSer.serializeMember(printer, TYPE_VAR_BINDINGS, toSerialize.getTypeBindingsAsList());
     printer.endObject();
 
     return printer.getContent();
   }
 
-  @Override
-  public KindOfGenericComponent deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonObject serialized) {
+  public CompKindOfGenericComponentType deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonObject serialized) {
     Preconditions.checkNotNull(serialized);
     Preconditions.checkArgument(
       JsonDeSers.getKind(serialized).equals(SERIALIZED_KIND),
@@ -42,20 +40,18 @@ public class KindOfGenericComponentDeSer implements CompKindExprDeSer<KindOfGene
       SERIALIZED_KIND, JsonDeSers.getKind(serialized)
     );
 
-    Log.warn("Deserializing TypeExprOfGenericComponents is buggy currently!");
-
-    String compTypeName = serialized.getMember(KindOfComponentDeSer.COMP_NAME)
+    String compTypeName = serialized.getMember(CompKindOfComponentTypeDeSer.COMP_TYPE_NAME)
       .getAsJsonString()
       .getValue();
 
-    ComponentSymbolSurrogate compType = CompSymbolsMill
-      .componentSymbolSurrogateBuilder()
+    ComponentTypeSymbolSurrogate compType = CompSymbolsMill
+      .componentTypeSymbolSurrogateBuilder()
       .setName(compTypeName)
       .setEnclosingScope(scope)
       .build();
 
     List<SymTypeExpression> paramBindings = SymTypeExpressionDeSer.deserializeListMember(TYPE_VAR_BINDINGS, serialized, scope);
 
-    return new KindOfGenericComponent(compType, paramBindings);
+    return new CompKindOfGenericComponentType(compType, paramBindings);
   }
 }
