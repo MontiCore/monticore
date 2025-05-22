@@ -15,9 +15,8 @@ It is necessary to
 - use a comprehensive set of input models to be parsed, and
 - identify a set of negative (not parseable) models to prevent false positives.
 
-But languages consist not only of their syntax,  
- but also of context conditions, additional tooling, etc.
-These aspects of a grammar of high quality are also tested.
+However, languages consist of more than just syntax; 
+they also include context conditions and additional tools, which have to be tested.
 
 Unit tests are among the most helpful and efficient techniques to check a grammar 
  respectively its outcome for the desired behavior.
