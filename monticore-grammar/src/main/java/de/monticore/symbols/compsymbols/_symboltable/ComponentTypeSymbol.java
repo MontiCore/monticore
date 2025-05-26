@@ -6,6 +6,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.CompKindExpression;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
+
+  protected ComponentTypeSymbol outerComponent;
 
   public ComponentTypeSymbol(String name) {
     super(name);
@@ -315,5 +318,57 @@ public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
         return Optional.empty();
       }
     }
+  }
+
+  /**
+   * @return a {@code List} of the fields of this component type.
+   */
+  public List<VariableSymbol> getFields() {
+    return this.getSpannedScope().getLocalVariableSymbols().stream()
+      .filter(f -> !(f instanceof Port2VariableAdapter))
+      .filter(f -> !(f instanceof Subcomponent2VariableAdapter))
+      .filter(f -> !(getParameterList().contains(f)))
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Searches the fields of this component type for a field with the given name. Returns an {@code
+   * Optional} of a field of this component type with the given name, or an empty {@code Optional}
+   * if no such field exists. Throws an {@link IllegalArgumentException} if the given name is
+   * {@code null}.
+   *
+   * @param name the name of the field.
+   * @return an {@code Optional} of a field of this component type with the given name, or an
+   * empty {@code Optional} if no such field exists.
+   */
+  public Optional<VariableSymbol> getField(@NonNull String name) {
+    Preconditions.checkNotNull(name);
+    return this.getFields().stream().filter(field -> field.getName().equals(name)).findFirst();
+  }
+
+  /**
+   * @return {@code true}, if this is an inner component, else {@code false}.
+   */
+  public boolean isInnerComponent() {
+    return outerComponent != null;
+  }
+
+  /**
+   * @return an {@code Optional} of this component type's outer component, or an empty {@code
+   * Optional} if this is not an inner component type.
+   */
+  public Optional<ComponentTypeSymbol> getOuterComponent() {
+    return Optional.ofNullable(outerComponent);
+  }
+
+  /**
+   * Sets the outer component type that contains this component type and subsequently states
+   * whether this is an inner component type or not.
+   *
+   * @param outerComponent the component type that contains this component type.
+   */
+  public void setOuterComponent(@Nullable ComponentTypeSymbol outerComponent) {
+    Preconditions.checkArgument(!(outerComponent instanceof ComponentTypeSymbolSurrogate));
+    this.outerComponent = outerComponent;
   }
 }

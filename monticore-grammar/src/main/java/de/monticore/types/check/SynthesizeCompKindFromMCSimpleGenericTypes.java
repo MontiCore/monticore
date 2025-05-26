@@ -13,6 +13,7 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesHandler;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
 import de.monticore.types3.TypeCheck3;
+import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
@@ -58,8 +59,18 @@ public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGener
     List<ComponentTypeSymbol> compSym = enclScope.resolveComponentTypeMany(compName);
 
     if (compSym.isEmpty()) {
+      Log.error(String.format("0xD0104 Cannot resolve component '%s'", mcType.getNameList().stream().reduce("", String::concat)),
+        mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd()
+      );
       this.resultWrapper.setResultAbsent();
     } else {
+      if (compSym.size() > 1) {
+        Log.error(String.format(
+            "0xD0105 Ambiguous reference, both '%s' and '%s' match'",
+            compSym.get(0).getFullName(), compSym.get(1).getFullName()),
+          mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd()
+        );
+      }
       List<SymTypeExpression> typeArgExpressions = typeArgumentsToTypes(mcType.getMCTypeArgumentList()).stream()
         .map(TypeCheck3::symTypeFromAST)
         .collect(Collectors.toList());
@@ -76,6 +87,15 @@ public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGener
    */
   protected List<ASTMCType> typeArgumentsToTypes(@NonNull List<ASTMCTypeArgument> typeArgs) {
     Preconditions.checkNotNull(typeArgs);
+    Preconditions.checkArgument(typeArgs.stream().allMatch(
+        typeArg -> typeArg instanceof ASTMCBasicTypeArgument
+          || typeArg instanceof ASTMCPrimitiveTypeArgument
+          || typeArg instanceof ASTMCCustomTypeArgument),
+      "Only Type arguments of the types '%s', '%s', '%s' are supported in ArcBasis. For you that means " +
+        "that you can use other MontiCore types as type arguments. But you can not use WildCards as type arguments, " +
+        "such as GenericType<? extends Person>.", ASTMCBasicTypeArgument.class.getName(),
+      ASTMCPrimitiveTypeArgument.class.getName(), ASTMCCustomTypeArgument.class.getName()
+    );
 
     List<ASTMCType> types = new ArrayList<>(typeArgs.size());
     for (ASTMCTypeArgument typeArg : typeArgs) {
@@ -86,7 +106,7 @@ public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGener
       } else if (typeArg instanceof ASTMCCustomTypeArgument) {
         types.add(((ASTMCCustomTypeArgument) typeArg).getMCType());
       } else {
-        throw new IllegalStateException();
+        throw new IllegalStateException(); // Should have been caught by a precondition
       }
     }
     return types;

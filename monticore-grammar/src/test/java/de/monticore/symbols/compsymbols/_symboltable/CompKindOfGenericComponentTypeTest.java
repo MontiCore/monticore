@@ -18,7 +18,11 @@ public class CompKindOfGenericComponentTypeTest {
   @Test
   void testDeepClone() {
     // Given
-    CompKindOfGenericComponentType comp = new CompKindOfGenericComponentType(CompSymbolsMill.componentTypeSymbolBuilder().build(), List.of(SymTypeExpressionFactory.createPrimitive("int")));
+    CompKindOfGenericComponentType comp = new CompKindOfGenericComponentType(CompSymbolsMill.componentTypeSymbolBuilder()
+      .setName("A")
+      .setSpannedScope(CompSymbolsMill.scope())
+      .build(),
+      List.of(SymTypeExpressionFactory.createPrimitive("int")));
 
     // When
     CompKindOfGenericComponentType clone = comp.deepClone().asGenericComponentType();

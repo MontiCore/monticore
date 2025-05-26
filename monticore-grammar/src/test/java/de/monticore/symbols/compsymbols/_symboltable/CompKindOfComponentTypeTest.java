@@ -14,7 +14,10 @@ public class CompKindOfComponentTypeTest {
   @Test
   void testDeepClone() {
     // Given
-    CompKindOfComponentType comp = new CompKindOfComponentType(CompSymbolsMill.componentTypeSymbolBuilder().build());
+    CompKindOfComponentType comp = new CompKindOfComponentType(CompSymbolsMill.componentTypeSymbolBuilder()
+      .setName("A")
+      .setSpannedScope(CompSymbolsMill.scope())
+      .build());
 
     // When
     CompKindOfComponentType clone = comp.deepClone().asComponentType();
