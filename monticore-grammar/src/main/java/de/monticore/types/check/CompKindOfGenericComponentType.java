@@ -176,7 +176,11 @@ public class CompKindOfGenericComponentType extends CompKindExpression {
     List<SymTypeExpression> clonedBindings = this.getTypeBindingsAsList().stream()
       .map(SymTypeExpression::deepClone)
       .collect(Collectors.toList());
-    return new CompKindOfGenericComponentType(compTypeSymbol, clonedBindings);
+    CompKindOfGenericComponentType clone = new CompKindOfGenericComponentType(compTypeSymbol, clonedBindings);
+    getSourceNode().ifPresent(clone::setSourceNode);
+    clone.addArgument(getArguments());
+    clone.bindParams();
+    return clone;
   }
 
   @Override
