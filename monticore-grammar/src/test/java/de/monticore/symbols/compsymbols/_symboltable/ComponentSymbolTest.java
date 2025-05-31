@@ -3,7 +3,7 @@ package de.monticore.symbols.compsymbols._symboltable;
 
 
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
-import de.monticore.types.check.KindOfComponent;
+import de.monticore.types.check.CompKindOfComponentType;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Holds tests for the handwritten methods of {@link ComponentSymbol}.
+ * Holds tests for the handwritten methods of {@link ComponentTypeSymbol}.
  */
 public class ComponentSymbolTest {
 
   @Test
   void shouldGetAllInheritedPortsWithOverlappingName() {
     // Given
-    ComponentSymbol parent = CompSymbolsMill.componentSymbolBuilder()
+    ComponentTypeSymbol parent = CompSymbolsMill.componentTypeSymbolBuilder()
       .setSpannedScope(CompSymbolsMill.scope())
       .setName("sut")
       .build();
@@ -31,10 +31,10 @@ public class ComponentSymbolTest {
     parent.getSpannedScope().add(p1);
     parent.getSpannedScope().add(p2);
 
-    ComponentSymbol sut = CompSymbolsMill.componentSymbolBuilder()
+    ComponentTypeSymbol sut = CompSymbolsMill.componentTypeSymbolBuilder()
       .setName("sut")
       .setSpannedScope(CompSymbolsMill.scope())
-      .setSuperComponentsList(Collections.singletonList(new KindOfComponent(parent)))
+      .setSuperComponentsList(Collections.singletonList(new CompKindOfComponentType(parent)))
       .build();
 
     // When
